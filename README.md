@@ -49,10 +49,15 @@ npm run preview
 ```
 ai-business-lab/
 ├── index.html            # 앱 진입 HTML (메타·폰트 포함)
-├── public/               # 정적 에셋
+├── public/
+│   └── thumbnails/       # 실서비스 화면 캡처 (도구 카드 썸네일)
 ├── src/
 │   ├── main.tsx          # React 진입점
-│   ├── App.tsx           # 랜딩 페이지 (히어로 · 활용분야 · 도구 · 제작철학 · 문의)
+│   ├── App.tsx           # 랜딩 페이지 (히어로 · 대상 · 활용분야 · 도구 · 개발중 · 문의)
+│   ├── components/
+│   │   └── InquiryForm.tsx  # 업무 자동화 제작 문의 폼
+│   ├── data/
+│   │   └── tools.ts      # 도구·개발중 도구 데이터, 상태 배지, KPI 자동 계산
 │   └── index.css         # Tailwind 엔트리 · 폰트 토큰
 ├── vite.config.ts        # Vite + Tailwind 설정
 └── tsconfig*.json        # TypeScript 설정
@@ -60,9 +65,12 @@ ai-business-lab/
 
 ## 커스터마이징 메모
 
-- 활용분야·도구 목록은 `src/App.tsx` 상단의 `fields`, `tools` 배열에서 관리합니다.
-- 문의 CTA 버튼은 현재 `mailto:` 플레이스홀더입니다. `src/App.tsx`의 문의 섹션에서
-  실제 이메일 또는 문의 폼 주소로 교체하세요.
+- 도구/개발중 도구 목록과 상태(`status`, `subStatus`, `isPublic` 등)는 `src/data/tools.ts`에서
+  관리합니다. 운영 현황 KPI는 이 배열의 상태값을 기준으로 자동 계산됩니다.
+- 도구 카드 썸네일은 `public/thumbnails/<id>.png` 입니다. 서비스 화면이 바뀌면 같은 경로로
+  새 캡처를 덮어쓰면 됩니다. 비공개 도구(`isPublic: false`)는 잠금 표시로 렌더링됩니다.
+- 문의 폼(`src/components/InquiryForm.tsx`)은 전송 기능 없이 안내 메시지만 표시합니다.
+  실제 이메일 또는 폼 연동 주소(현재 `mailto:` 플레이스홀더)로 교체하세요.
 
 ## 라이선스
 
