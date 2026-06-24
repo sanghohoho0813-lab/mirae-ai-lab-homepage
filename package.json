@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "김팀장의 AI 경영도구 백화점 / AI Business Lab",
+  "description": "AI 도구를 직접 만드는 경영 컨설턴트, 김팀장 — 컨설턴트를 위한 실무형 AI 업무도구 / AI Business Lab",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

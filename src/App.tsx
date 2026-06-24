@@ -1,225 +1,534 @@
-type Tool = {
+type Field = {
   name: string
   description: string
-  badge: string
   icon: string
 }
 
-type Category = {
-  title: string
-  subtitle: string
-  tools: Tool[]
+type ToolStatus = '운영중' | '베타' | '개발중'
+
+type ToolItem = {
+  name: string
+  field: string
+  description: string
+  status: ToolStatus
 }
 
-const categories: Category[] = [
+type Principle = {
+  no: string
+  title: string
+  description: string
+}
+
+const navItems = [
+  { label: '소개', href: '#about' },
+  { label: '도구', href: '#tools' },
+  { label: '활용분야', href: '#fields' },
+  { label: '제작철학', href: '#philosophy' },
+  { label: '문의', href: '#contact' },
+]
+
+const domains =
+  '법인컨설팅 · 정책자금 · 고용지원금 · 기업인증 · 연구소 관리 · 세무·절세 · 자본거래 · 고객관리'
+
+const metrics = [
+  { value: '8', label: '다루는 실무 영역' },
+  { value: '20+', label: '직접 만든 업무 도구' },
+  { value: '100%', label: '현업에서 검증' },
+]
+
+const fields: Field[] = [
   {
-    title: '기획 · 전략',
-    subtitle: '사업 방향을 잡는 AI 도구',
-    tools: [
-      {
-        name: '시장 분석 어시스턴트',
-        description: '경쟁사·트렌드 리서치를 30분 만에 요약 리포트로.',
-        badge: '인기',
-        icon: '📊',
-      },
-      {
-        name: '사업계획서 코파일럿',
-        description: '한 줄 아이디어를 투자 가능한 사업계획서 초안으로.',
-        badge: '신규',
-        icon: '🧭',
-      },
-    ],
+    icon: '🏦',
+    name: '정책자금',
+    description: '정부·지자체 정책자금을 기업 요건에 맞춰 검토하고 매칭합니다.',
   },
   {
-    title: '마케팅 · 세일즈',
-    subtitle: '매출을 만드는 AI 도구',
-    tools: [
-      {
-        name: '카피라이팅 스튜디오',
-        description: '광고 문구·상세페이지·뉴스레터를 브랜드 톤으로 자동 작성.',
-        badge: '인기',
-        icon: '✍️',
-      },
-      {
-        name: '리드 스코어링 봇',
-        description: '문의 고객을 자동 분류하고 우선순위를 매겨줍니다.',
-        badge: '추천',
-        icon: '🎯',
-      },
-    ],
+    icon: '👥',
+    name: '고용지원금',
+    description: '지원금 수급 요건을 판단하고 신청 일정을 관리합니다.',
   },
   {
-    title: '운영 · 자동화',
-    subtitle: '반복 업무를 줄이는 AI 도구',
-    tools: [
-      {
-        name: '회의록 정리기',
-        description: '녹취를 핵심 결정·할 일·담당자까지 깔끔하게 정리.',
-        badge: '필수',
-        icon: '🗂️',
-      },
-      {
-        name: '업무 자동화 레시피',
-        description: '엑셀·이메일·메신저를 잇는 노코드 자동화 템플릿.',
-        badge: '신규',
-        icon: '⚙️',
-      },
-    ],
+    icon: '🏅',
+    name: '기업인증',
+    description: '벤처·이노비즈·메인비즈 등 인증 취득과 갱신을 관리합니다.',
+  },
+  {
+    icon: '🔬',
+    name: '연구소 관리',
+    description: '기업부설연구소 설립과 사후관리를 체계적으로 운영합니다.',
+  },
+  {
+    icon: '🧮',
+    name: '세무·절세',
+    description: '급여·배당·퇴직 설계를 바꿔가며 세부담을 시뮬레이션합니다.',
+  },
+  {
+    icon: '💱',
+    name: '자본거래',
+    description: '증자·가지급금·주식이동 등 자본거래를 사전 검토합니다.',
+  },
+  {
+    icon: '🤝',
+    name: '고객관리·영업',
+    description: '상담 기록과 제안, 고객 파이프라인을 한 곳에서 관리합니다.',
+  },
+  {
+    icon: '⚙️',
+    name: '업무자동화',
+    description: '반복되는 문서 작성·계산·안내 업무를 자동화합니다.',
   },
 ]
 
-const stats = [
-  { label: '엄선한 AI 도구', value: '120+' },
-  { label: '도입 기업', value: '4,800+' },
-  { label: '평균 업무 절감', value: '6.5시간/주' },
+const tools: ToolItem[] = [
+  {
+    name: '정책자금 매칭 엔진',
+    field: '정책자금',
+    description: '기업 정보를 입력하면 조건에 맞는 정책자금을 적합도 점수순으로 정렬합니다.',
+    status: '운영중',
+  },
+  {
+    name: '고용지원금 판단 어시스턴트',
+    field: '고용지원금',
+    description: '고용 형태와 요건을 입력하면 받을 수 있는 지원금과 예상 금액을 안내합니다.',
+    status: '운영중',
+  },
+  {
+    name: '상담 기록 자동 정리',
+    field: '고객관리·영업',
+    description: '상담 메모를 핵심 이슈·다음 액션·제안 포인트로 자동 정리합니다.',
+    status: '운영중',
+  },
+  {
+    name: '절세 시뮬레이터',
+    field: '세무·절세',
+    description: '급여·배당·퇴직 설계 시나리오별 세부담을 나란히 비교합니다.',
+    status: '베타',
+  },
+  {
+    name: '기업인증 관리 대시보드',
+    field: '기업인증',
+    description: '보유 인증의 갱신 시점과 요건 충족 여부를 한눈에 추적합니다.',
+    status: '베타',
+  },
+  {
+    name: '가지급금 정리 플래너',
+    field: '자본거래',
+    description: '가지급금 해소 시나리오를 단계별로 시뮬레이션하고 영향을 계산합니다.',
+    status: '개발중',
+  },
 ]
+
+const statusStyles: Record<ToolStatus, string> = {
+  운영중: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20',
+  베타: 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20',
+  개발중: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20',
+}
+
+const principles: Principle[] = [
+  {
+    no: '01',
+    title: '실무에서 출발합니다',
+    description:
+      '현장에서 매번 반복되는 판단과 계산을 먼저 관찰하고, 거기서부터 도구를 설계합니다. 기능이 아니라 업무가 기준입니다.',
+  },
+  {
+    no: '02',
+    title: '판단을 돕되, 대체하지 않습니다',
+    description:
+      '최종 결정은 컨설턴트가 합니다. 도구는 그 판단을 더 빠르고 정확하게 만들 뿐, 책임을 대신 지지 않습니다.',
+  },
+  {
+    no: '03',
+    title: '직접 만들고, 직접 씁니다',
+    description:
+      '현업에서 직접 써보고 검증한 도구만 공개합니다. 제가 쓰지 않을 도구는 만들지 않습니다.',
+  },
+]
+
+const matches = [
+  { title: '창업도약패키지', sub: '제조업 · 업력 5년', score: 92 },
+  { title: '혁신성장 운영자금', sub: '수출기업 · R&D 보유', score: 84 },
+  { title: '청년채용 연계자금', sub: '신규채용 3명', score: 76 },
+]
+
+const gridBackground = {
+  backgroundImage:
+    'linear-gradient(to right, rgba(148,163,184,0.10) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,163,184,0.10) 1px, transparent 1px)',
+  backgroundSize: '56px 56px',
+  WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%)',
+  maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%)',
+} as const
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-white text-slate-900 antialiased">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-slate-200/70 bg-white/80 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/70 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-indigo-600 text-lg font-black text-white">
+          <a href="#top" className="flex items-center gap-2.5">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-slate-900 text-sm font-black tracking-tight text-sky-400">
               AI
             </span>
-            <div className="leading-tight">
-              <p className="text-sm font-semibold text-slate-900">AI Business Lab</p>
-              <p className="text-xs text-slate-500">김팀장의 AI 경영도구 백화점</p>
-            </div>
-          </div>
-          <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
-            <a className="transition hover:text-indigo-600" href="#tools">
-              도구 둘러보기
-            </a>
-            <a className="transition hover:text-indigo-600" href="#about">
-              소개
-            </a>
-            <a
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-500"
-              href="#tools"
-            >
-              지금 시작하기
-            </a>
+            <span className="flex flex-col leading-tight">
+              <span className="text-sm font-bold tracking-tight text-slate-900">AI Business Lab</span>
+              <span className="text-[11px] font-medium text-slate-500">업무 자동화 LAB · 김팀장</span>
+            </span>
+          </a>
+          <nav className="hidden items-center gap-7 text-sm font-medium text-slate-600 md:flex">
+            {navItems.map((item) => (
+              <a key={item.href} href={item.href} className="transition-colors hover:text-slate-900">
+                {item.label}
+              </a>
+            ))}
           </nav>
+          <a
+            href="#contact"
+            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
+          >
+            제작 문의하기
+          </a>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-indigo-50 via-white to-slate-50" />
-        <div className="mx-auto max-w-6xl px-6 py-20 text-center md:py-28">
-          <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-1.5 text-sm font-medium text-indigo-700 shadow-sm">
-            🛍️ 실무에 바로 쓰는 AI 경영도구 모음
-          </span>
-          <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-black leading-tight tracking-tight text-slate-900 md:text-6xl">
-            김팀장의 <span className="text-indigo-600">AI 경영도구</span> 백화점
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600 md:text-xl">
-            기획부터 마케팅, 운영까지. 현장에서 검증된 AI 도구를 한 곳에서 골라 쓰세요.
-            복잡한 세팅 없이, 오늘 바로 업무에 적용할 수 있습니다.
+      <section id="top" className="relative overflow-hidden bg-slate-950">
+        <div aria-hidden className="pointer-events-none absolute inset-0" style={gridBackground} />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-32 -top-40 h-96 w-96 rounded-full bg-blue-600/25 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-44 right-0 h-[30rem] w-[30rem] rounded-full bg-sky-500/20 blur-3xl"
+        />
+
+        <div className="relative mx-auto max-w-6xl px-6 py-24 lg:py-32">
+          <div className="grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr]">
+            {/* Copy */}
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm font-medium text-slate-200 backdrop-blur">
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
+                업무 자동화 LAB
+              </span>
+
+              <h1 className="mt-6 text-pretty text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl lg:text-[3.4rem]">
+                <span className="bg-linear-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">
+                  AI 도구
+                </span>
+                를 직접 만드는
+                <br className="hidden sm:block" /> 경영 컨설턴트, 김팀장
+              </h1>
+
+              <p className="mt-6 max-w-xl text-lg font-medium text-slate-200">
+                컨설턴트를 위한 실무형 AI 업무도구를 만듭니다.
+              </p>
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-400">
+                법인컨설팅, 정책자금, 고용지원금, 기업인증, 절세, 고객관리 업무에서 반복되는
+                판단·계산·안내·제안 과정을 AI 도구로 바꾸고 있습니다.
+              </p>
+
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="#tools"
+                  className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-base font-semibold text-slate-900 shadow-lg shadow-black/20 transition-transform hover:-translate-y-0.5"
+                >
+                  도구 둘러보기
+                </a>
+                <a
+                  href="#contact"
+                  className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-white/10"
+                >
+                  제작 문의하기
+                </a>
+              </div>
+            </div>
+
+            {/* Product mockup */}
+            <div className="relative">
+              <div
+                aria-hidden
+                className="absolute -inset-6 rounded-[2rem] bg-blue-500/20 blur-2xl"
+              />
+              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl shadow-black/40">
+                <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-4 py-3">
+                  <span className="h-3 w-3 rounded-full bg-rose-300" />
+                  <span className="h-3 w-3 rounded-full bg-amber-300" />
+                  <span className="h-3 w-3 rounded-full bg-emerald-300" />
+                  <span className="ml-2 text-xs font-semibold text-slate-500">
+                    정책자금 매칭 엔진
+                  </span>
+                  <span className="ml-auto rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-600 ring-1 ring-inset ring-emerald-600/20">
+                    AI 분석 완료
+                  </span>
+                </div>
+                <div className="space-y-3 p-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    적합도 높은 순 · 매칭 결과
+                  </p>
+                  {matches.map((m) => (
+                    <div
+                      key={m.title}
+                      className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/70 px-4 py-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-slate-900">{m.title}</p>
+                        <p className="truncate text-xs text-slate-500">{m.sub}</p>
+                      </div>
+                      <div className="ml-4 shrink-0 text-right">
+                        <p className="text-sm font-bold text-slate-900">{m.score}점</p>
+                        <div className="mt-1.5 h-1.5 w-24 overflow-hidden rounded-full bg-slate-200">
+                          <div
+                            className="h-full rounded-full bg-linear-to-r from-sky-400 to-blue-500"
+                            style={{ width: `${m.score}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between rounded-xl bg-slate-900 px-4 py-3 text-white">
+                    <span className="text-sm font-medium text-slate-200">추천 자금 3건 · 예상 한도</span>
+                    <span className="text-sm font-bold">12억 원</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Domains strip */}
+      <div className="border-b border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-6 py-5">
+          <p className="text-center text-xs font-medium tracking-wide text-slate-500 sm:text-sm">
+            {domains}
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href="#tools"
-              className="w-full rounded-xl bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-500 sm:w-auto"
-            >
-              도구 둘러보기
-            </a>
-            <a
-              href="#about"
-              className="w-full rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 transition hover:border-slate-400 sm:w-auto"
-            >
-              어떻게 활용하나요?
-            </a>
+        </div>
+      </div>
+
+      {/* About */}
+      <section id="about" className="mx-auto max-w-6xl px-6 py-24">
+        <div className="grid gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">소개</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              컨설팅 현장에서 직접 쓰는,
+              <br />
+              실무형 AI 도구 모음
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-slate-600">
+              반복되는 컨설팅 업무를 AI 도구로 바꾸고 있습니다. 정책자금 검토, 고용지원금 판단,
+              기업인증 관리, 절세 시뮬레이션까지 — 컨설턴트가 매번 수작업으로 하던 업무를 더 빠르고
+              정확하게 처리할 수 있도록 실무형 도구를 직접 만듭니다.
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-slate-500">
+              화려한 데모가 아니라, 오늘 바로 업무에 쓸 수 있는지를 기준으로 만듭니다. 그래서 모든
+              도구는 제가 먼저 현업에서 써보고 공개합니다.
+            </p>
           </div>
 
-          <dl className="mx-auto mt-16 grid max-w-3xl grid-cols-1 gap-6 sm:grid-cols-3">
-            {stats.map((stat) => (
+          <dl className="grid grid-cols-3 gap-4">
+            {metrics.map((metric) => (
               <div
-                key={stat.label}
-                className="rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm"
+                key={metric.label}
+                className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm"
               >
-                <dt className="text-sm text-slate-500">{stat.label}</dt>
-                <dd className="mt-1 text-2xl font-bold text-slate-900">{stat.value}</dd>
+                <dt className="sr-only">{metric.label}</dt>
+                <dd>
+                  <span className="block text-3xl font-extrabold tracking-tight text-slate-900">
+                    {metric.value}
+                  </span>
+                  <span className="mt-1 block text-xs font-medium text-slate-500">
+                    {metric.label}
+                  </span>
+                </dd>
               </div>
             ))}
           </dl>
         </div>
       </section>
 
+      {/* Fields */}
+      <section id="fields" className="border-y border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">활용분야</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              컨설턴트 실무에 맞춘 8개 영역
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">
+              각 영역의 반복 업무를 AI 도구로 옮기고 있습니다. 필요한 영역부터 골라 적용해 보세요.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {fields.map((field) => (
+              <article
+                key={field.name}
+                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md"
+              >
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-xl transition-colors group-hover:bg-blue-600">
+                  {field.icon}
+                </div>
+                <h3 className="mt-4 text-base font-bold text-slate-900">{field.name}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{field.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Tools */}
-      <section id="tools" className="mx-auto max-w-6xl px-6 py-16">
-        <div className="mb-10 text-center">
-          <h2 className="text-3xl font-bold text-slate-900">카테고리별 추천 도구</h2>
-          <p className="mt-3 text-slate-600">
-            팀의 업무 흐름에 맞춰, 필요한 매장(카테고리)에서 도구를 골라보세요.
-          </p>
+      <section id="tools" className="mx-auto max-w-6xl px-6 py-24">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600">도구</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              실무형 AI 도구 모음
+            </h2>
+            <p className="mt-4 text-lg text-slate-600">
+              지금 운영 중인 도구부터 만들고 있는 도구까지. 컨설팅 업무에 바로 연결되는 도구들입니다.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs font-medium text-slate-500">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />운영중
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-blue-500" />베타
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-amber-500" />개발중
+            </span>
+          </div>
         </div>
 
-        <div className="space-y-12">
-          {categories.map((category) => (
-            <div key={category.title}>
-              <div className="mb-5 flex items-end justify-between">
-                <div>
-                  <h3 className="text-xl font-bold text-slate-900">{category.title}</h3>
-                  <p className="text-sm text-slate-500">{category.subtitle}</p>
-                </div>
+        <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {tools.map((tool) => (
+            <article
+              key={tool.name}
+              className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md"
+            >
+              <div className="flex items-center justify-between">
+                <span className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                  {tool.field}
+                </span>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusStyles[tool.status]}`}
+                >
+                  {tool.status}
+                </span>
               </div>
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                {category.tools.map((tool) => (
-                  <article
-                    key={tool.name}
-                    className="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md"
-                  >
-                    <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-indigo-50 text-2xl">
-                      {tool.icon}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h4 className="truncate font-semibold text-slate-900">{tool.name}</h4>
-                        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">
-                          {tool.badge}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-sm text-slate-600">{tool.description}</p>
-                      <span className="mt-3 inline-block text-sm font-medium text-indigo-600 opacity-0 transition group-hover:opacity-100">
-                        자세히 보기 →
-                      </span>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
+              <h3 className="mt-4 text-lg font-bold tracking-tight text-slate-900">{tool.name}</h3>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+                {tool.description}
+              </p>
+              <a
+                href="#contact"
+                className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700"
+              >
+                도구 살펴보기
+                <span aria-hidden>→</span>
+              </a>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* About / CTA */}
-      <section id="about" className="bg-slate-900">
-        <div className="mx-auto max-w-6xl px-6 py-16 text-center">
-          <h2 className="text-3xl font-bold text-white">
-            AI는 거들 뿐, 결정은 김팀장이 합니다
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-300">
-            화려한 기능보다 “오늘 바로 쓸 수 있는가”를 기준으로 도구를 큐레이션합니다.
-            도입 가이드와 실무 템플릿까지 함께 제공해, 팀이 헤매지 않도록 돕습니다.
-          </p>
-          <a
-            href="#tools"
-            className="mt-8 inline-block rounded-xl bg-indigo-500 px-6 py-3 text-base font-semibold text-white transition hover:bg-indigo-400"
-          >
-            무료로 시작하기
-          </a>
+      {/* Philosophy */}
+      <section id="philosophy" className="relative overflow-hidden bg-slate-950">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-0 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-6xl px-6 py-24">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-widest text-sky-400">제작철학</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              AI는 거들 뿐, 결정은 컨설턴트가 합니다
+            </h2>
+            <p className="mt-4 text-lg text-slate-400">
+              도구를 많이 만드는 것보다, 실제로 쓰이는 도구를 만드는 데 집중합니다.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-3">
+            {principles.map((p) => (
+              <div key={p.no} className="bg-slate-950 p-8">
+                <span className="text-sm font-bold tracking-widest text-sky-400">{p.no}</span>
+                <h3 className="mt-4 text-xl font-bold text-white">{p.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-400">{p.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact / CTA */}
+      <section id="contact" className="mx-auto max-w-6xl px-6 py-24">
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 px-8 py-16 text-center shadow-xl">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-blue-600/30 blur-3xl"
+          />
+          <div className="relative">
+            <p className="text-sm font-semibold uppercase tracking-widest text-sky-400">문의</p>
+            <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              필요한 업무 도구가 있다면, 함께 만듭니다
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-lg text-slate-300">
+              반복되는 업무를 알려주시면, 실무형 AI 도구로 바꿔 제안드립니다. 컨설팅 현장의 문제를
+              가장 잘 아는 분과 함께 만들 때 가장 좋은 도구가 나옵니다.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              {/* TODO: 실제 문의 이메일 또는 문의 폼 주소로 교체하세요 */}
+              <a
+                href="mailto:contact@aibusinesslab.kr"
+                className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-base font-semibold text-slate-900 transition-transform hover:-translate-y-0.5"
+              >
+                제작 문의하기
+              </a>
+              <a
+                href="#tools"
+                className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                도구 먼저 둘러보기
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-8 text-sm text-slate-500 sm:flex-row">
-          <p>© {new Date().getFullYear()} AI Business Lab · 김팀장의 AI 경영도구 백화점</p>
-          <p>실무에 바로 쓰는 AI, 여기 다 있습니다.</p>
+        <div className="mx-auto max-w-6xl px-6 py-12">
+          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            <div>
+              <div className="flex items-center gap-2.5">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-slate-900 text-sm font-black text-sky-400">
+                  AI
+                </span>
+                <span className="flex flex-col leading-tight">
+                  <span className="text-sm font-bold text-slate-900">AI Business Lab</span>
+                  <span className="text-[11px] font-medium text-slate-500">업무 자동화 LAB</span>
+                </span>
+              </div>
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-500">
+                AI 도구를 직접 만드는 경영 컨설턴트, 김팀장. 컨설턴트를 위한 실무형 AI 업무도구를
+                만듭니다.
+              </p>
+            </div>
+            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-slate-600">
+              {navItems.map((item) => (
+                <a key={item.href} href={item.href} className="transition-colors hover:text-slate-900">
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+          <div className="mt-10 flex flex-col gap-2 border-t border-slate-100 pt-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+            <p>© {new Date().getFullYear()} AI Business Lab · 김팀장</p>
+            <p>실무형 AI 도구 모음 · AI Business Tools</p>
+          </div>
         </div>
       </footer>
     </div>
