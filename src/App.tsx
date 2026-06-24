@@ -26,7 +26,7 @@ const navItems = [
   { label: '대상', href: '#audience' },
   { label: '도구', href: '#tools' },
   { label: '활용분야', href: '#fields' },
-  { label: '자료', href: '#resources' },
+  { label: '전자책', href: '#resources' },
   { label: '문의', href: '#inquiry' },
 ]
 
@@ -43,20 +43,18 @@ const fields: Field[] = [
 
 const audienceCards = [
   {
-    badge: '주 타깃',
     icon: '🧑‍💼',
-    title: '컨설턴트를 위한 실무 도구',
+    title: '컨설턴트 실무에 더 유용합니다',
     description:
-      '고객 상담, 제안 준비, 지원금 검토, 기업인증 관리, 절세 시뮬레이션처럼 반복되는 업무를 더 빠르고 체계적으로 처리할 수 있도록 돕습니다.',
-    audience: '법인·정책자금·고용지원금·기업인증·세무 컨설팅 실무자',
+      '고객 상담, 검토, 제안, 관리, 후속안내처럼 반복되는 실무를 더 빠르고 체계적으로 처리할 수 있도록 돕습니다.',
+    audience: '예: 법인·정책자금·고용지원금·기업인증·세무 컨설팅 실무자',
   },
   {
-    badge: '부 타깃',
     icon: '🏢',
-    title: '대표를 위한 이해 도구',
+    title: '대표님이 직접 확인할 때도 도움이 됩니다',
     description:
-      '정책자금, 고용지원금, 감면 가능성처럼 어려운 내용을 대표가 더 쉽게 이해하고, 컨설턴트와 더 좋은 의사결정을 할 수 있도록 돕습니다.',
-    audience: '중소기업 대표, 직접 검토하고 싶은 소규모 사업장 대표',
+      '정책자금, 지원금, 감면 여부처럼 어려운 내용을 더 쉽게 이해하고, 더 좋은 의사결정을 하는 데 도움을 줄 수 있습니다.',
+    audience: '예: 중소기업 대표, 직접 확인하고 싶은 소규모 사업장 대표',
   },
 ]
 
@@ -271,7 +269,7 @@ function App() {
                 업무 자동화 LAB
               </span>
 
-              <h1 className="mt-7 text-3xl font-extrabold leading-[1.18] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h1 className="mt-7 text-[1.7rem] font-extrabold leading-[1.2] tracking-tight text-white sm:text-[2.6rem] lg:text-[3.3rem]">
                 <span className="bg-linear-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">
                   AI 도구
                 </span>
@@ -333,12 +331,12 @@ function App() {
                 있습니다.
               </p>
               <p>
-                현장에서 느낀 가장 큰 문제는 많은 업무가 여전히 반복적인 수작업에 의존하고 있다는
+                현장에서 느낀 가장 큰 문제는 좋은 컨설팅이 결국 많은 반복 업무와 수작업 위에 올라가 있다는
                 점이었습니다.
               </p>
               <p>
-                그래서 실제로 사용하는 업무 흐름을 기반으로 AI 도구들을 직접 만들기 시작했고, 지금도 계속
-                개발하고 있습니다.
+                그래서 실제 실무 흐름을 바탕으로, 컨설턴트의 시간은 줄이고 고객에게는 더 빠르고 더 좋은
+                결과를 전달할 수 있는 AI 도구들을 직접 만들고 있습니다.
               </p>
               <p className="font-semibold text-slate-800">
                 이 사이트는 제가 직접 만들고 운영하는 실무형 AI 도구들을 모아둔 공간입니다.
@@ -385,17 +383,17 @@ function App() {
         </div>
       </section>
 
-      {/* Audience — 누구를 위한 도구인가요? */}
+      {/* Audience — 이런 분들께 특히 도움이 됩니다 */}
       <section id="audience" className="border-y border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-base font-bold uppercase tracking-widest text-blue-600">활용 대상</p>
             <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-              누구를 위한 도구인가요?
+              이런 분들께 특히 도움이 됩니다
             </h2>
             <p className="mt-5 text-xl leading-relaxed text-slate-600">
-              이 도구들은 컨설턴트가 고객에게 더 빠르고 정확하고 질 좋은 컨설팅을 제공하도록 돕습니다.
-              동시에 직접 확인하고 싶은 대표들도 기초 검토용으로 활용할 수 있습니다.
+              컨설턴트의 실무를 더 빠르고 정확하게 만드는 데 초점을 맞춰 만들었습니다. 그리고 그 과정은
+              대표님이 직접 확인하고 판단할 때도 충분히 도움이 됩니다.
             </p>
           </div>
 
@@ -405,14 +403,9 @@ function App() {
                 key={card.title}
                 className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md sm:p-10"
               >
-                <div className="flex items-center gap-3">
-                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-slate-900 text-2xl">
-                    {card.icon}
-                  </span>
-                  <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
-                    {card.badge}
-                  </span>
-                </div>
+                <span className="grid h-14 w-14 place-items-center rounded-2xl bg-slate-900 text-2xl">
+                  {card.icon}
+                </span>
                 <h3 className="mt-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{card.title}</h3>
                 <p className="mt-4 text-lg leading-relaxed text-slate-600">{card.description}</p>
                 <p className="mt-6 border-t border-slate-100 pt-5 text-base font-medium text-slate-500">
@@ -532,34 +525,39 @@ function App() {
         </div>
       </section>
 
-      {/* Resources — 무료 실무 자료 */}
+      {/* Resources — 컨설턴트를 위한 실무 전자책 */}
       <section id="resources" className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
         <div className="max-w-3xl">
-          <p className="text-base font-bold uppercase tracking-widest text-blue-600">무료 실무 자료</p>
+          <p className="text-base font-bold uppercase tracking-widest text-blue-600">실무 전자책</p>
           <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            실무에 바로 쓰는 자료를 무료로
+            컨설턴트를 위한 실무 전자책
           </h2>
+          <p className="mt-5 text-xl leading-relaxed text-slate-600">
+            도구로 업무를 자동화하기 전에, 실무 감각부터 잡고 싶은 분들을 위한 학습용 자료입니다.
+          </p>
         </div>
 
         <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:grid md:grid-cols-[1.1fr_0.9fr]">
           <div className="p-8 sm:p-10">
             <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
-              📘 무료 전자책
+              📘 실무 전자책
             </span>
             <h3 className="mt-5 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-              초보 컨설턴트를 위한 실무 가이드
+              정책자금 · 무상지원금 · 고용지원금 실무 가이드
             </h3>
             <p className="mt-4 text-lg leading-relaxed text-slate-600">
-              정책자금, 고용지원금, 기업인증, 상담 노하우 등 실무에 바로 활용할 수 있는 내용을 정리한
-              자료입니다.
+              고객들이 가장 궁금해하는 정책자금, 무상지원금, 고용지원금 3가지 영역을 중심으로 한 단계 더
+              업그레이드된 실무 내용을 담았습니다. 초보 컨설턴트는 실무 감각을 빠르게 익히고, 기존
+              컨설턴트도 상담과 제안에 바로 활용할 수 있습니다.
             </p>
-            {/* TODO: 실제 다운로드 링크(전자책 파일/노션/구글드라이브)로 교체하세요 */}
             <a
-              href="#"
+              href="https://futureailab.crekit.io/landing"
+              target="_blank"
+              rel="noopener noreferrer"
               className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-slate-700"
             >
-              무료 다운로드
-              <span aria-hidden>↓</span>
+              전자책 자세히 보기
+              <span aria-hidden>↗</span>
             </a>
           </div>
 
@@ -573,7 +571,7 @@ function App() {
             <div className="relative w-44 rotate-2 rounded-xl border border-white/10 bg-white p-5 shadow-2xl shadow-black/40">
               <div className="h-2 w-10 rounded-full bg-blue-500" />
               <p className="mt-4 text-lg font-extrabold leading-tight text-slate-900">
-                초보 컨설턴트
+                정책자금·지원금
                 <br />
                 실무 가이드
               </p>

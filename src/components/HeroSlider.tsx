@@ -1,50 +1,74 @@
 import { useEffect, useState } from 'react'
 
-type Stat = { label: string; value: string }
-type Slide = { tool: string; accentText: string; accentDot: string; stats: Stat[] }
+type Metric = { label: string; value: string }
+type Slide = {
+  tool: string
+  accentText: string
+  accentDot: string
+  metrics: Metric[]
+  feature: string
+}
 
 const slides: Slide[] = [
   {
     tool: '고용지원금 프로',
     accentText: 'text-blue-600',
     accentDot: 'bg-blue-500',
-    stats: [
-      { label: '예상 지원금', value: '32,000,000원' },
+    metrics: [
+      { label: '예상 수급 가능 지원금', value: '32,000,000원' },
       { label: '신청 가능 제도', value: '4건' },
+      { label: '관리 대상 인원', value: '12명' },
+      { label: '누락 위험 항목', value: '2건' },
     ],
+    feature: '받을 수 있는 지원금을 놓치지 않도록 관리하고, 고객에게 더 많은 혜택을 안내하도록 돕습니다.',
   },
   {
     tool: '연구소 사후관리 OS',
     accentText: 'text-indigo-600',
     accentDot: 'bg-indigo-500',
-    stats: [
-      { label: '이번 달 관리 필요', value: '3건' },
-      { label: '변경신고 예정', value: '2건' },
+    metrics: [
+      { label: '설립 준비 체크 항목', value: '18개' },
+      { label: '이번 달 관리 일정', value: '5건' },
+      { label: '월간 알림', value: '활성화' },
+      { label: '종합보고서', value: '생성 가능' },
     ],
+    feature: '설립 단계부터 사후관리·월간 알림·보고서·추가 제안까지 한 번에 관리합니다.',
   },
   {
     tool: '법인컨설팅 세일즈 OS',
     accentText: 'text-orange-600',
     accentDot: 'bg-orange-500',
-    stats: [
-      { label: '진행 고객', value: '58건' },
-      { label: '이번 달 계약률', value: '34%' },
+    metrics: [
+      { label: '잠재 고객', value: '58건' },
+      { label: '후속관리 대상', value: '14건' },
+      { label: '진행중 제안', value: '9건' },
+      { label: '미팅 전략 메모', value: '23건' },
     ],
+    feature: '고객관리만이 아니라 미팅 전략·제안·교육·콘텐츠까지 한 곳에서 관리합니다.',
   },
   {
     tool: '크레탑 자동분석기',
     accentText: 'text-emerald-600',
     accentDot: 'bg-emerald-500',
-    stats: [
-      { label: '위험 신호', value: '2건' },
-      { label: '추천 컨설팅', value: '4건' },
+    metrics: [
+      { label: '분석 완료 시간', value: '2초' },
+      { label: '핵심 재무지표', value: '12개' },
+      { label: '3개년 증감 분석', value: '완료' },
+      { label: '추천 미팅 주제', value: '7개' },
     ],
+    feature: '재무분석 시간을 줄이고, 미팅 전에 꺼낼 핵심 포인트를 한눈에 정리합니다.',
   },
   {
     tool: '창업감면 & 취등록세 체크',
     accentText: 'text-rose-600',
     accentDot: 'bg-rose-500',
-    stats: [{ label: '예상 절세효과', value: '72,000,000원' }],
+    metrics: [
+      { label: '창업감면 가능성', value: '높음' },
+      { label: '취등록세 절감 예상', value: '72,000,000원' },
+      { label: '검토 필요 항목', value: '3개' },
+      { label: '1분 진단', value: '가능' },
+    ],
+    feature: '복잡한 창업감면·취등록세 판단을 1분 안에 확인해 고객 앞에서 바로 보여줍니다.',
   },
 ]
 
@@ -54,7 +78,7 @@ function HeroSlider() {
 
   useEffect(() => {
     if (paused) return
-    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 3500)
+    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 3800)
     return () => clearInterval(id)
   }, [index, paused])
 
@@ -81,7 +105,7 @@ function HeroSlider() {
         </div>
 
         {/* Slide */}
-        <div className="relative px-6 py-7 sm:px-7">
+        <div className="relative px-5 py-6 sm:px-7 sm:py-7">
           <div key={index} className="animate-fade-in">
             <div className="flex items-center gap-2.5">
               <span className={`h-2.5 w-2.5 rounded-full ${slide.accentDot}`} />
@@ -91,17 +115,26 @@ function HeroSlider() {
               </span>
             </div>
 
-            <div
-              className={`mt-6 grid gap-4 ${slide.stats.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}
-            >
-              {slide.stats.map((stat) => (
-                <div key={stat.label} className="rounded-2xl border border-slate-100 bg-slate-50 px-5 py-5">
-                  <p className="text-sm font-medium text-slate-500">{stat.label}</p>
-                  <p className={`mt-2 text-2xl font-extrabold tracking-tight sm:text-4xl ${slide.accentText}`}>
-                    {stat.value}
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              {slide.metrics.map((metric, i) => (
+                <div key={metric.label} className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3.5">
+                  <p className="text-xs font-medium text-slate-500">{metric.label}</p>
+                  <p
+                    className={`mt-1.5 text-lg font-extrabold tracking-tight sm:text-xl ${
+                      i === 0 ? slide.accentText : 'text-slate-900'
+                    }`}
+                  >
+                    {metric.value}
                   </p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-4 flex items-start gap-2 rounded-xl bg-slate-900 px-4 py-3.5">
+              <span className={`mt-0.5 text-sm font-bold ${slide.accentText}`} aria-hidden>
+                ✦
+              </span>
+              <p className="text-sm font-medium leading-relaxed text-slate-200">{slide.feature}</p>
             </div>
           </div>
 
@@ -110,7 +143,7 @@ function HeroSlider() {
             type="button"
             onClick={() => go(index - 1)}
             aria-label="이전 미리보기"
-            className="absolute left-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/90 text-slate-600 shadow-sm transition hover:bg-white"
+            className="absolute -left-1 top-[44%] grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-600 shadow-sm transition hover:bg-white sm:left-2"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
               <path d="M15 18l-6-6 6-6" />
@@ -120,7 +153,7 @@ function HeroSlider() {
             type="button"
             onClick={() => go(index + 1)}
             aria-label="다음 미리보기"
-            className="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/90 text-slate-600 shadow-sm transition hover:bg-white"
+            className="absolute -right-1 top-[44%] grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-600 shadow-sm transition hover:bg-white sm:right-2"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
               <path d="M9 6l6 6-6 6" />

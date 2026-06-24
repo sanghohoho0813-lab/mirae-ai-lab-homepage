@@ -3,45 +3,50 @@
   <rect width="1200" height="96" fill="#ffffff"/>
   <rect y="95" width="1200" height="1" fill="#e2e8f0"/>
   <rect x="40" y="26" width="44" height="44" rx="12" fill="#ea580c"/>
-  <text x="62" y="57" font-size="20" font-weight="800" fill="#ffffff" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">세</text>
+  <text x="62" y="57" font-size="20" font-weight="800" fill="#ffffff" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif" text-anchor="middle">세</text>
   <text x="100" y="46" font-size="22" font-weight="700" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">법인컨설팅 세일즈 OS</text>
-  <text x="100" y="72" font-size="14" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">법인컨설팅 영업·고객관리</text>
-  <rect x="980" y="33" width="180" height="32" rx="16" fill="#eff6ff"/>
-  <text x="1070" y="54" font-size="13" font-weight="600" fill="#2563eb" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">● 진행중</text>
-
-  <rect x="40" y="128" width="360" height="150" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="68" y="178" font-size="15" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">진행 고객</text>
-  <text x="68" y="234" font-size="34" font-weight="800" fill="#ea580c" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">58건</text>
-  <rect x="420" y="128" width="360" height="150" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="448" y="178" font-size="15" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">이번 달 계약률</text>
-  <text x="448" y="234" font-size="34" font-weight="800" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">34%</text>
-  <rect x="800" y="128" width="360" height="150" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="828" y="178" font-size="15" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">예정 상담</text>
-  <text x="828" y="234" font-size="34" font-weight="800" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">9건</text>
-  <rect x="40" y="302" width="1120" height="408" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="72" y="350" font-size="18" font-weight="700" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">영업 파이프라인</text>
-
-  <text x="72" y="418" font-size="16" font-weight="600" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">상담 예정</text>
-  <rect x="520" y="406" width="420" height="12" rx="6" fill="#e2e8f0"/>
-  <rect x="520" y="406" width="126" height="12" rx="6" fill="#ea580c"/>
-  <rect x="978" y="396" width="150" height="32" rx="16" fill="#f1f5f9"/>
-  <text x="1053" y="417" font-size="13" font-weight="600" fill="#475569" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">14건</text>
-  <rect x="72" y="444" width="1056" height="1" fill="#f1f5f9"/>
-  <text x="72" y="492" font-size="16" font-weight="600" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">제안 진행</text>
-  <rect x="520" y="480" width="420" height="12" rx="6" fill="#e2e8f0"/>
-  <rect x="520" y="480" width="231" height="12" rx="6" fill="#ea580c"/>
-  <rect x="978" y="470" width="150" height="32" rx="16" fill="#eff6ff"/>
-  <text x="1053" y="491" font-size="13" font-weight="600" fill="#2563eb" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">21건</text>
-  <rect x="72" y="518" width="1056" height="1" fill="#f1f5f9"/>
-  <text x="72" y="566" font-size="16" font-weight="600" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">계약 검토</text>
-  <rect x="520" y="554" width="420" height="12" rx="6" fill="#e2e8f0"/>
-  <rect x="520" y="554" width="302" height="12" rx="6" fill="#ea580c"/>
-  <rect x="978" y="544" width="150" height="32" rx="16" fill="#f5f3ff"/>
-  <text x="1053" y="565" font-size="13" font-weight="600" fill="#7c3aed" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">12건</text>
-  <rect x="72" y="592" width="1056" height="1" fill="#f1f5f9"/>
-  <text x="72" y="640" font-size="16" font-weight="600" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">계약 완료</text>
-  <rect x="520" y="628" width="420" height="12" rx="6" fill="#e2e8f0"/>
-  <rect x="520" y="628" width="378" height="12" rx="6" fill="#ea580c"/>
-  <rect x="978" y="618" width="150" height="32" rx="16" fill="#ecfdf5"/>
-  <text x="1053" y="639" font-size="13" font-weight="600" fill="#059669" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">11건</text>
+  <text x="100" y="72" font-size="14" font-weight="400" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">영업·고객관리·전략</text>
+  <rect x="982" y="33" width="178" height="32" rx="16" fill="#eff6ff"/><text x="1071" y="54" font-size="13" font-weight="600" fill="#2563eb" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif" text-anchor="middle">● 진행중</text>
+  <rect x="40" y="128" width="268" height="128" rx="14" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="62" y="170" font-size="13" font-weight="500" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">잠재 고객</text>
+      <text x="62" y="214" font-size="26" font-weight="800" fill="#ea580c" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">58건</text>
+<rect x="324" y="128" width="268" height="128" rx="14" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="346" y="170" font-size="13" font-weight="500" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">후속관리 대상</text>
+      <text x="346" y="214" font-size="26" font-weight="800" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">14건</text>
+<rect x="608" y="128" width="268" height="128" rx="14" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="630" y="170" font-size="13" font-weight="500" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">진행중 제안</text>
+      <text x="630" y="214" font-size="26" font-weight="800" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">9건</text>
+<rect x="892" y="128" width="268" height="128" rx="14" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="914" y="170" font-size="13" font-weight="500" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">미팅 전략 메모</text>
+      <text x="914" y="214" font-size="26" font-weight="800" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">23건</text>
+  <rect x="20" y="288" width="1160" height="422" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="40" y="320" font-size="16" font-weight="700" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">영업 파이프라인</text>
+  <rect x="40" y="332" width="120" height="32" rx="16" fill="#f1f5f9"/><text x="100" y="353" font-size="13" font-weight="600" fill="#475569" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif" text-anchor="middle">잠재 고객</text>
+<rect x="40" y="384" width="256" height="56" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+          <text x="58" y="410" font-size="14" font-weight="600" fill="#1e293b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">(주)대성정밀</text>
+          <rect x="58" y="420" width="120" height="6" rx="3" fill="#e2e8f0"/>
+<rect x="40" y="454" width="256" height="56" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+          <text x="58" y="480" font-size="14" font-weight="600" fill="#1e293b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">한울바이오</text>
+          <rect x="58" y="490" width="120" height="6" rx="3" fill="#e2e8f0"/>
+<rect x="40" y="524" width="256" height="56" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+          <text x="58" y="550" font-size="14" font-weight="600" fill="#1e293b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">제이텍</text>
+          <rect x="58" y="560" width="120" height="6" rx="3" fill="#e2e8f0"/>
+<rect x="320" y="332" width="120" height="32" rx="16" fill="#eff6ff"/><text x="380" y="353" font-size="13" font-weight="600" fill="#2563eb" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif" text-anchor="middle">상담 진행</text>
+<rect x="320" y="384" width="256" height="56" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+          <text x="338" y="410" font-size="14" font-weight="600" fill="#1e293b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">우진산업</text>
+          <rect x="338" y="420" width="120" height="6" rx="3" fill="#e2e8f0"/>
+<rect x="320" y="454" width="256" height="56" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+          <text x="338" y="480" font-size="14" font-weight="600" fill="#1e293b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">코어에너지</text>
+          <rect x="338" y="490" width="120" height="6" rx="3" fill="#e2e8f0"/>
+<rect x="600" y="332" width="120" height="32" rx="16" fill="#f5f3ff"/><text x="660" y="353" font-size="13" font-weight="600" fill="#7c3aed" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif" text-anchor="middle">제안 검토</text>
+<rect x="600" y="384" width="256" height="56" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+          <text x="618" y="410" font-size="14" font-weight="600" fill="#1e293b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">그린팩토리</text>
+          <rect x="618" y="420" width="120" height="6" rx="3" fill="#e2e8f0"/>
+<rect x="600" y="454" width="256" height="56" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+          <text x="618" y="480" font-size="14" font-weight="600" fill="#1e293b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">아이엠</text>
+          <rect x="618" y="490" width="120" height="6" rx="3" fill="#e2e8f0"/>
+<rect x="880" y="332" width="120" height="32" rx="16" fill="#ecfdf5"/><text x="940" y="353" font-size="13" font-weight="600" fill="#059669" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif" text-anchor="middle">계약 완료</text>
+<rect x="880" y="384" width="256" height="56" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+          <text x="898" y="410" font-size="14" font-weight="600" fill="#1e293b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">세종ENG</text>
+          <rect x="898" y="420" width="120" height="6" rx="3" fill="#e2e8f0"/>
 </svg>
