@@ -1,3 +1,4 @@
+import HeroSlider from './components/HeroSlider'
 import InquiryForm from './components/InquiryForm'
 import {
   kpis,
@@ -25,6 +26,7 @@ const navItems = [
   { label: '대상', href: '#audience' },
   { label: '도구', href: '#tools' },
   { label: '활용분야', href: '#fields' },
+  { label: '자료', href: '#resources' },
   { label: '문의', href: '#inquiry' },
 ]
 
@@ -77,12 +79,6 @@ const principles: Principle[] = [
     description:
       '현업에서 직접 써보고 검증한 도구만 공개합니다. 제가 쓰지 않을 도구는 만들지 않습니다.',
   },
-]
-
-const heroPreview = [
-  { title: '청년채용 장려금', sub: '신규채용 3명 · 12개월', score: 95 },
-  { title: '고용유지 지원금', sub: '근로시간 단축 적용', score: 82 },
-  { title: '고용촉진 장려금', sub: '취약계층 채용', score: 74 },
 ]
 
 const gridBackground = {
@@ -275,22 +271,19 @@ function App() {
                 업무 자동화 LAB
               </span>
 
-              <h1 className="mt-7 text-5xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
+              <h1 className="mt-7 text-3xl font-extrabold leading-[1.18] tracking-tight text-white sm:text-5xl lg:text-6xl">
                 <span className="bg-linear-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">
                   AI 도구
                 </span>
-                를 직접 만드는 경영 컨설턴트, <span className="text-sky-300">김팀장</span>
+                를 직접 만드는
+                <br />
+                경영 컨설턴트, <span className="text-sky-300">김팀장</span>
               </h1>
 
-              <p className="mt-8 text-2xl font-bold leading-snug text-slate-100 sm:text-3xl">
-                컨설턴트가 더 빠르게 판단하고,
-                <br />
-                대표가 더 쉽게 이해할 수 있도록
-                <br />
-                <span className="bg-linear-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">
-                  실무형 AI 업무도구
-                </span>
-                를 만듭니다.
+              <p className="mt-7 text-lg leading-relaxed text-slate-300 sm:text-xl sm:leading-relaxed">
+                9년간 노무·법무·세무·자금 실무를 경험했고, 현재는 4년째 법인컨설팅 업무를 하고 있습니다.
+                실제 현장에서 반복되는 판단·계산·검토·안내 업무를{' '}
+                <span className="font-semibold text-white">AI 도구</span>로 바꾸고 있습니다.
               </p>
 
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
@@ -309,47 +302,8 @@ function App() {
               </div>
             </div>
 
-            {/* Decorative product mockup */}
-            <div className="relative">
-              <div aria-hidden className="absolute -inset-6 rounded-[2rem] bg-blue-500/20 blur-2xl" />
-              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl shadow-black/40">
-                <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-4 py-3">
-                  <span className="h-3 w-3 rounded-full bg-rose-300" />
-                  <span className="h-3 w-3 rounded-full bg-amber-300" />
-                  <span className="h-3 w-3 rounded-full bg-emerald-300" />
-                  <span className="ml-2 text-sm font-semibold text-slate-500">고용지원금 진단 · 미리보기</span>
-                </div>
-                <div className="space-y-3 p-5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    수급 가능성 높은 순
-                  </p>
-                  {heroPreview.map((row) => (
-                    <div
-                      key={row.title}
-                      className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/70 px-4 py-3"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate text-base font-semibold text-slate-900">{row.title}</p>
-                        <p className="truncate text-sm text-slate-500">{row.sub}</p>
-                      </div>
-                      <div className="ml-4 shrink-0 text-right">
-                        <p className="text-base font-bold text-slate-900">{row.score}점</p>
-                        <div className="mt-1.5 h-1.5 w-24 overflow-hidden rounded-full bg-slate-200">
-                          <div
-                            className="h-full rounded-full bg-linear-to-r from-sky-400 to-blue-500"
-                            style={{ width: `${row.score}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="flex items-center justify-between rounded-xl bg-slate-900 px-4 py-3.5 text-white">
-                    <span className="text-base font-medium text-slate-200">예상 수급 가능 지원금</span>
-                    <span className="text-base font-bold text-sky-300">최대 4,800만원</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Auto-rotating product preview */}
+            <HeroSlider />
           </div>
         </div>
       </section>
@@ -375,18 +329,19 @@ function App() {
             </h2>
             <div className="mt-7 space-y-5 text-lg leading-relaxed text-slate-600 sm:text-xl sm:leading-relaxed">
               <p>
-                안녕하세요. 저는 법인컨설팅 실무를 하면서 반복되는 판단, 계산, 안내, 검토 업무를 AI 도구로
-                바꾸고 있는 김팀장입니다.
+                9년간 노무·법무·세무·자금 분야 실무를 경험했고, 현재는 4년째 법인컨설팅 업무를 하고
+                있습니다.
               </p>
               <p>
-                정책자금, 고용지원금, 기업인증, 연구소, 절세, 자본거래 등 다양한 분야의 컨설팅을 진행하며
-                느낀 것은 많은 업무가 여전히 수작업에 의존하고 있다는 점이었습니다.
+                현장에서 느낀 가장 큰 문제는 많은 업무가 여전히 반복적인 수작업에 의존하고 있다는
+                점이었습니다.
               </p>
               <p>
-                그래서 실제 현장에서 사용하는 도구들을 직접 만들기 시작했고, 지금도 계속 개발하고 있습니다.
+                그래서 실제로 사용하는 업무 흐름을 기반으로 AI 도구들을 직접 만들기 시작했고, 지금도 계속
+                개발하고 있습니다.
               </p>
               <p className="font-semibold text-slate-800">
-                이 사이트는 제가 직접 만들고 운영하는 AI 업무도구들을 모아둔 공간입니다.
+                이 사이트는 제가 직접 만들고 운영하는 실무형 AI 도구들을 모아둔 공간입니다.
               </p>
             </div>
           </div>
@@ -405,7 +360,7 @@ function App() {
             <ul className="mt-7 space-y-4 text-lg text-slate-600">
               <li className="flex items-start gap-2.5">
                 <span className="mt-0.5 text-emerald-500" aria-hidden>✓</span>
-                법인컨설팅 실무 경험을 기반으로 도구를 설계합니다.
+                노무·법무·세무·자금 실무를 거친 법인컨설팅 전문가입니다.
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="mt-0.5 text-emerald-500" aria-hidden>✓</span>
@@ -416,6 +371,16 @@ function App() {
                 현업에서 직접 쓰고 검증한 도구만 공개합니다.
               </li>
             </ul>
+            <dl className="mt-7 grid grid-cols-2 gap-3 border-t border-slate-100 pt-6">
+              <div>
+                <dd className="text-3xl font-extrabold tracking-tight text-slate-900">9년</dd>
+                <dt className="mt-1 text-sm font-medium text-slate-500">노무·법무·세무·자금 실무</dt>
+              </div>
+              <div>
+                <dd className="text-3xl font-extrabold tracking-tight text-slate-900">4년차</dd>
+                <dt className="mt-1 text-sm font-medium text-slate-500">법인컨설팅 진행중</dt>
+              </div>
+            </dl>
           </div>
         </div>
       </section>
@@ -519,7 +484,7 @@ function App() {
           <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-rose-500" />비공개 검토중</span>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
           {tools.map((tool) => (
             <ToolCard key={tool.id} tool={tool} />
           ))}
@@ -563,6 +528,62 @@ function App() {
                 </button>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Resources — 무료 실무 자료 */}
+      <section id="resources" className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
+        <div className="max-w-3xl">
+          <p className="text-base font-bold uppercase tracking-widest text-blue-600">무료 실무 자료</p>
+          <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            실무에 바로 쓰는 자료를 무료로
+          </h2>
+        </div>
+
+        <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:grid md:grid-cols-[1.1fr_0.9fr]">
+          <div className="p-8 sm:p-10">
+            <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
+              📘 무료 전자책
+            </span>
+            <h3 className="mt-5 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              초보 컨설턴트를 위한 실무 가이드
+            </h3>
+            <p className="mt-4 text-lg leading-relaxed text-slate-600">
+              정책자금, 고용지원금, 기업인증, 상담 노하우 등 실무에 바로 활용할 수 있는 내용을 정리한
+              자료입니다.
+            </p>
+            {/* TODO: 실제 다운로드 링크(전자책 파일/노션/구글드라이브)로 교체하세요 */}
+            <a
+              href="#"
+              className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-slate-700"
+            >
+              무료 다운로드
+              <span aria-hidden>↓</span>
+            </a>
+          </div>
+
+          {/* Visual */}
+          <div className="relative hidden items-center justify-center overflow-hidden bg-slate-950 p-10 md:flex">
+            <div aria-hidden className="absolute inset-0 opacity-50" style={gridBackground} />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-10 top-0 h-56 w-56 rounded-full bg-blue-600/30 blur-3xl"
+            />
+            <div className="relative w-44 rotate-2 rounded-xl border border-white/10 bg-white p-5 shadow-2xl shadow-black/40">
+              <div className="h-2 w-10 rounded-full bg-blue-500" />
+              <p className="mt-4 text-lg font-extrabold leading-tight text-slate-900">
+                초보 컨설턴트
+                <br />
+                실무 가이드
+              </p>
+              <div className="mt-4 space-y-1.5">
+                <div className="h-1.5 w-full rounded-full bg-slate-200" />
+                <div className="h-1.5 w-4/5 rounded-full bg-slate-200" />
+                <div className="h-1.5 w-3/5 rounded-full bg-slate-200" />
+              </div>
+              <p className="mt-5 text-[11px] font-semibold text-slate-400">AI Business Lab</p>
+            </div>
           </div>
         </div>
       </section>

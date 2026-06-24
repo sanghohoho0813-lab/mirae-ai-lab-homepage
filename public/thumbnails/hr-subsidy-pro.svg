@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="1200" height="750" role="img">
+  <rect width="1200" height="750" fill="#f8fafc"/>
+  <rect width="1200" height="96" fill="#ffffff"/>
+  <rect y="95" width="1200" height="1" fill="#e2e8f0"/>
+  <rect x="40" y="26" width="44" height="44" rx="12" fill="#2563eb"/>
+  <text x="62" y="57" font-size="20" font-weight="800" fill="#ffffff" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">고</text>
+  <text x="100" y="46" font-size="22" font-weight="700" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">고용지원금 Pro</text>
+  <text x="100" y="72" font-size="14" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">컨설턴트용 고용지원금 운영관리</text>
+  <rect x="980" y="33" width="180" height="32" rx="16" fill="#ecfdf5"/>
+  <text x="1070" y="54" font-size="13" font-weight="600" fill="#059669" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">● 분석 완료</text>
+
+  <rect x="40" y="128" width="360" height="150" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="68" y="178" font-size="15" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">예상 지원금</text>
+  <text x="68" y="234" font-size="34" font-weight="800" fill="#2563eb" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">32,000,000원</text>
+  <rect x="420" y="128" width="360" height="150" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="448" y="178" font-size="15" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">신청 가능 제도</text>
+  <text x="448" y="234" font-size="34" font-weight="800" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">4건</text>
+  <rect x="800" y="128" width="360" height="150" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="828" y="178" font-size="15" fill="#64748b" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">검토중 고객</text>
+  <text x="828" y="234" font-size="34" font-weight="800" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">12곳</text>
+  <rect x="40" y="302" width="1120" height="408" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="72" y="350" font-size="18" font-weight="700" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">지원금 검토 결과</text>
+
+  <text x="72" y="418" font-size="16" font-weight="600" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">청년채용 장려금</text>
+  <rect x="520" y="406" width="420" height="12" rx="6" fill="#e2e8f0"/>
+  <rect x="520" y="406" width="386" height="12" rx="6" fill="#2563eb"/>
+  <rect x="978" y="396" width="150" height="32" rx="16" fill="#ecfdf5"/>
+  <text x="1053" y="417" font-size="13" font-weight="600" fill="#059669" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">수급 가능</text>
+  <rect x="72" y="444" width="1056" height="1" fill="#f1f5f9"/>
+  <text x="72" y="492" font-size="16" font-weight="600" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">고용유지 지원금</text>
+  <rect x="520" y="480" width="420" height="12" rx="6" fill="#e2e8f0"/>
+  <rect x="520" y="480" width="286" height="12" rx="6" fill="#2563eb"/>
+  <rect x="978" y="470" width="150" height="32" rx="16" fill="#fffbeb"/>
+  <text x="1053" y="491" font-size="13" font-weight="600" fill="#d97706" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">검토중</text>
+  <rect x="72" y="518" width="1056" height="1" fill="#f1f5f9"/>
+  <text x="72" y="566" font-size="16" font-weight="600" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">고용촉진 장려금</text>
+  <rect x="520" y="554" width="420" height="12" rx="6" fill="#e2e8f0"/>
+  <rect x="520" y="554" width="357" height="12" rx="6" fill="#2563eb"/>
+  <rect x="978" y="544" width="150" height="32" rx="16" fill="#ecfdf5"/>
+  <text x="1053" y="565" font-size="13" font-weight="600" fill="#059669" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">수급 가능</text>
+  <rect x="72" y="592" width="1056" height="1" fill="#f1f5f9"/>
+  <text x="72" y="640" font-size="16" font-weight="600" fill="#0f172a" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">일자리 함께하기</text>
+  <rect x="520" y="628" width="420" height="12" rx="6" fill="#e2e8f0"/>
+  <rect x="520" y="628" width="168" height="12" rx="6" fill="#2563eb"/>
+  <rect x="978" y="618" width="150" height="32" rx="16" fill="#f1f5f9"/>
+  <text x="1053" y="639" font-size="13" font-weight="600" fill="#475569" text-anchor="middle" font-family="'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Pretendard',sans-serif">자료 확인</text>
+</svg>
