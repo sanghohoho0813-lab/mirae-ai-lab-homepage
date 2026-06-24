@@ -49,7 +49,7 @@ npm run preview
 ```
 ai-business-lab/
 ├── api/
-│   └── contact.ts        # 문의 폼 → Resend 이메일 전송 (Vercel Serverless)
+│   └── inquiry.ts        # 문의 폼 → Resend 이메일 전송 (Vercel Serverless / Node)
 ├── index.html            # 앱 진입 HTML (메타·폰트 포함)
 ├── public/
 │   └── thumbnails/       # 도구 카드 썸네일 (실서비스 캡처 .png / 대시보드 미리보기 .svg)
@@ -57,7 +57,7 @@ ai-business-lab/
 │   └── gen-thumbnails.mjs # 대시보드 미리보기 SVG 생성기
 ├── src/
 │   ├── main.tsx          # React 진입점
-│   ├── App.tsx           # 랜딩 페이지 (히어로 · 소개 · 대상 · 도구 · 개발중 · 자료 · 문의)
+│   ├── App.tsx           # 랜딩 페이지 (히어로 · 소개 · 대상 · 도구 · 개발중 · 전자책 · 문의)
 │   ├── components/
 │   │   ├── HeroSlider.tsx   # 히어로 자동 슬라이드 미리보기
 │   │   └── InquiryForm.tsx  # 업무 자동화 제작 문의 폼
@@ -69,20 +69,53 @@ ai-business-lab/
 └── tsconfig*.json        # TypeScript 설정
 ```
 
-## 문의 폼 이메일 설정 (Resend)
+## 문의 폼 메일 발송 설정 방법
 
-문의 폼은 `/api/contact` (Vercel Serverless Edge Function)로 전송되어
-[Resend](https://resend.com)를 통해 메일로 발송됩니다. 배포 환경(Vercel)에 아래 환경변수를
-등록하세요. (`.env.example` 참고)
+문의 폼은 `POST /api/inquiry` (Vercel Serverless Function, Node 런타임)로 전송되어
+[Resend](https://resend.com) SDK로 메일을 발송합니다. 메일 제목은 `[AI Business Lab 문의] {이름}`
+형식입니다.
+
+### 1) Resend 가입 & API Key 발급
+1. <https://resend.com> 에 가입합니다.
+2. 좌측 **API Keys → Create API Key** 로 키를 발급합니다. (`re_...`)
+3. (선택) 본인 도메인을 쓰려면 **Domains** 에서 도메인을 인증합니다.
+   인증 전에는 기본 발신주소 `onboarding@resend.dev` 를 그대로 사용하면 됩니다.
+
+### 2) 로컬 `.env` 설정
+`.env.example` 을 복사해 `.env` 를 만들고 값을 채웁니다.
+
+```bash
+cp .env.example .env
+```
 
 | 환경변수 | 필수 | 설명 |
 | --- | --- | --- |
-| `RESEND_API_KEY` | ✅ | Resend API 키. 미설정 시 폼은 안내 메시지로 안전하게 폴백됩니다. |
-| `CONTACT_TO_EMAIL` | ⬜ | 받는 주소 (기본값 `sanghohoho0813@gmail.com`) |
-| `CONTACT_FROM_EMAIL` | ⬜ | 보내는 주소 (기본값 `onboarding@resend.dev`, 인증 도메인 권장) |
+| `RESEND_API_KEY` | ✅ | Resend API 키. 없으면 서버가 500을 반환하고 폼은 안내 메시지로 폴백됩니다. |
+| `INQUIRY_TO_EMAIL` | ⬜ | 받는 주소 (기본값 `sanghohoho0813@gmail.com`) |
+| `INQUIRY_FROM_EMAIL` | ⬜ | 보내는 주소 (기본값 `AI Business Lab <onboarding@resend.dev>`) |
 
-- 메일 제목 형식: `[AI Business Lab 문의] {이름}`
-- 로컬 `npm run dev`에는 서버리스 함수가 없어 전송이 폴백 처리됩니다. 실제 전송은 Vercel 배포 환경에서 동작합니다.
+> 로컬 `npm run dev` 에는 서버리스 함수(`/api`)가 동작하지 않습니다. 실제 발송 테스트는
+> `vercel dev` 또는 Vercel 배포 환경에서 가능합니다.
+
+### 3) Vercel 환경변수 설정
+Vercel 프로젝트 → **Settings → Environment Variables** 에 아래 3개를 등록합니다.
+(Production / Preview 모두 체크 권장)
+
+```
+RESEND_API_KEY        = re_xxxxxxxxxxxxxxxx
+INQUIRY_TO_EMAIL      = sanghohoho0813@gmail.com
+INQUIRY_FROM_EMAIL    = AI Business Lab <onboarding@resend.dev>
+```
+
+### 4) 재배포 (중요)
+환경변수는 **저장만으로는 적용되지 않습니다.** Vercel → **Deployments → 최신 배포 → Redeploy**
+로 반드시 재배포해야 새 환경변수가 함수에 반영됩니다.
+
+### 5) 테스트
+1. 배포된 사이트의 `#inquiry` 폼에서 필수값(이름·연락처·반복 업무·문의 내용)을 채워 제출합니다.
+2. `sanghohoho0813@gmail.com` 수신함을 확인합니다. (처음엔 스팸함도 확인)
+3. 실패 시 Vercel → **Functions/Logs** 에서 `[inquiry]` 로그로 원인을 확인합니다.
+   (키 누락 / Resend 오류 등)
 
 ## 커스터마이징 메모
 
@@ -92,8 +125,7 @@ ai-business-lab/
   대시보드 미리보기를 보여주는 3개 도구는 `scripts/gen-thumbnails.mjs`로 생성한 SVG를 사용합니다
   (`node scripts/gen-thumbnails.mjs`로 재생성). 실제 대시보드 캡처가 생기면 같은 경로로 교체하세요.
   비공개 도구(`isPublic: false`)는 잠금 표시로 렌더링됩니다.
-- 무료 전자책(`#resources`) 다운로드 버튼과 문의 외 `mailto:` 값은 플레이스홀더입니다. 실제
-  파일/주소로 교체하세요.
+- 전자책(`#resources`) 버튼은 외부 랜딩(`futureailab.crekit.io/landing`)으로 연결됩니다.
 
 ## 라이선스
 

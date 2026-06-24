@@ -9,21 +9,27 @@ const labelClass = 'mb-2 block text-base font-semibold text-slate-800'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
+const SUCCESS_MESSAGE = '문의가 접수되었습니다. 확인 후 연락드리겠습니다.'
+
 function InquiryForm() {
   const [status, setStatus] = useState<Status>('idle')
+  const [serverMessage, setServerMessage] = useState('')
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = event.currentTarget
     const payload = Object.fromEntries(new FormData(form).entries())
     setStatus('submitting')
+    setServerMessage('')
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch('/api/inquiry', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      if (!res.ok) throw new Error('request failed')
+      const data = (await res.json().catch(() => ({}))) as { message?: string }
+      if (!res.ok) throw new Error(data.message || 'request failed')
+      setServerMessage(data.message || SUCCESS_MESSAGE)
       setStatus('success')
       form.reset()
     } catch {
@@ -38,20 +44,20 @@ function InquiryForm() {
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className={labelClass}>
-            이름
+            이름 <span className="text-rose-500">*</span>
           </label>
           <input id="name" name="name" type="text" required placeholder="예: 김대표" className={inputClass} />
         </div>
         <div>
           <label htmlFor="contact" className={labelClass}>
-            연락처
+            연락처 <span className="text-rose-500">*</span>
           </label>
           <input
             id="contact"
             name="contact"
             type="text"
             required
-            placeholder="연락 가능한 전화번호 또는 이메일"
+            placeholder="이메일 또는 휴대폰 번호"
             className={inputClass}
           />
         </div>
@@ -69,7 +75,7 @@ function InquiryForm() {
         </div>
         <div>
           <label htmlFor="toolType" className={labelClass}>
-            만들고 싶은 도구
+            만들고 싶은 도구 유형
           </label>
           <input
             id="toolType"
@@ -83,12 +89,13 @@ function InquiryForm() {
 
       <div className="mt-6">
         <label htmlFor="repetitiveTask" className={labelClass}>
-          가장 시간이 오래 걸리는 반복 업무
+          가장 시간이 오래 걸리는 반복 업무 <span className="text-rose-500">*</span>
         </label>
         <input
           id="repetitiveTask"
           name="repetitiveTask"
           type="text"
+          required
           placeholder="예: 엑셀 정리, 상담 기록, 지원금 요건 검토"
           className={inputClass}
         />
@@ -96,12 +103,13 @@ function InquiryForm() {
 
       <div className="mt-6">
         <label htmlFor="message" className={labelClass}>
-          문의 내용
+          문의 내용 <span className="text-rose-500">*</span>
         </label>
         <textarea
           id="message"
           name="message"
           rows={5}
+          required
           placeholder="자동화하고 싶은 업무 흐름을 편하게 적어주세요."
           className={`${inputClass} resize-y`}
         />
@@ -112,7 +120,7 @@ function InquiryForm() {
           role="status"
           className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-base font-medium text-emerald-800"
         >
-          문의가 정상적으로 접수되었습니다. 확인 후 빠르게 회신드리겠습니다. 감사합니다.
+          {serverMessage || SUCCESS_MESSAGE}
         </div>
       )}
 
@@ -121,7 +129,7 @@ function InquiryForm() {
           role="status"
           className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-base font-medium text-amber-800"
         >
-          전송에 문제가 발생했습니다. 번거로우시면 아래 메일로 보내주세요:{' '}
+          문의 전송에 문제가 발생했습니다. 아래 이메일로 직접 보내주세요.{' '}
           <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold underline">
             {CONTACT_EMAIL}
           </a>
