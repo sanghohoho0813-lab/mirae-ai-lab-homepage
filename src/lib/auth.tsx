@@ -1,18 +1,17 @@
-// 미래 AI 랩 — mock 인증 컨텍스트 (localStorage).
-// ⚠️ 비밀번호 검증/이메일 인증이 없는 mock입니다. 실제 보안은 Supabase Auth로 교체.
-// 가입 정책: AUTH_POLICY.md 참고.
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
+// 미래 AI 랩 — Supabase Auth 기반 인증 컨텍스트.
+// 환경변수 미설정(supabase=null) 시 configured=false 로 두고 화면에서 안내합니다.
 import {
-  ADMIN_EMAIL,
-  createUser,
-  getSessionUserId,
-  getUserByEmail,
-  getUserById,
-  getUserByPhone,
-  setSession,
-  touchLogin,
-  type Profile,
-} from './platform'
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
+import type { Session, User } from '@supabase/supabase-js'
+import { isSupabaseConfigured, supabase } from './supabase'
+import type { Profile } from './platform'
 
 export type SignupInput = {
   name: string
@@ -23,83 +22,131 @@ export type SignupInput = {
   interests?: string[]
 }
 
-export type AuthResult = { ok: boolean; error?: string; user?: Profile }
-
-const PASSWORD_MIN = 8
+export type AuthResult = { ok: boolean; error?: string; needsEmailConfirm?: boolean }
 
 type AuthValue = {
-  user: Profile | null
+  configured: boolean
+  loading: boolean
+  user: User | null
+  profile: Profile | null
   isAdmin: boolean
-  login: (email: string, password?: string) => AuthResult
-  signup: (input: SignupInput) => AuthResult
-  logout: () => void
-  refresh: () => void
+  signIn: (email: string, password: string) => Promise<AuthResult>
+  signUp: (input: SignupInput) => Promise<AuthResult>
+  signOut: () => Promise<void>
+  refreshProfile: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthValue | null>(null)
 
-const eq = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase()
+async function loadProfile(userId: string): Promise<Profile | null> {
+  if (!supabase) return null
+  const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
+  return (data as Profile | null) ?? null
+}
+
+function mapAuthError(message: string): string {
+  const m = message.toLowerCase()
+  if (m.includes('already') || m.includes('registered')) return '이미 가입된 이메일입니다. 로그인해 주세요.'
+  if (m.includes('invalid login')) return '이메일 또는 비밀번호가 올바르지 않습니다.'
+  if (m.includes('email not confirmed')) return '이메일 인증이 필요합니다. 메일함을 확인해 주세요.'
+  return message
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<Profile | null>(() => {
-    const id = getSessionUserId()
-    return id ? getUserById(id) ?? null : null
-  })
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
 
-  const refresh = useCallback(() => {
-    const id = getSessionUserId()
-    setUser(id ? getUserById(id) ?? null : null)
-  }, [])
-
-  // mock 로그인: 가입된 이메일만 허용. (관리자 이메일은 데모 편의를 위해 자동 생성)
-  const login = useCallback((email: string): AuthResult => {
-    const existing = getUserByEmail(email)
-    if (existing) {
-      setSession(existing.id)
-      touchLogin(existing.id)
-      setUser(getUserById(existing.id) ?? existing)
-      return { ok: true, user: existing }
+  useEffect(() => {
+    if (!supabase) {
+      setLoading(false)
+      return
     }
-    if (eq(email, ADMIN_EMAIL)) {
-      const admin = createUser({ email, name: '관리자', phone: '', organization: '미래경영지원센터' })
-      setSession(admin.id)
-      setUser(admin)
-      return { ok: true, user: admin }
+    let active = true
+    const sync = async (session: Session | null) => {
+      const u = session?.user ?? null
+      if (!active) return
+      setUser(u)
+      setProfile(u ? await loadProfile(u.id) : null)
     }
-    return { ok: false, error: '가입되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요.' }
-  }, [])
-
-  // mock 회원가입: 이메일/휴대폰 중복 가입 방지 + 비밀번호 최소 길이
-  const signup = useCallback((input: SignupInput): AuthResult => {
-    if ((input.password ?? '').length < PASSWORD_MIN) {
-      return { ok: false, error: `비밀번호는 ${PASSWORD_MIN}자 이상이어야 합니다.` }
-    }
-    if (getUserByEmail(input.email)) {
-      return { ok: false, error: '이미 가입된 이메일입니다. 로그인해 주세요.' }
-    }
-    if (input.phone && getUserByPhone(input.phone)) {
-      return { ok: false, error: '이미 가입된 휴대폰 번호입니다.' }
-    }
-    const profile = createUser({
-      email: input.email,
-      name: input.name,
-      phone: input.phone,
-      organization: input.organization,
-      interests: input.interests,
+    supabase.auth.getSession().then(async ({ data }) => {
+      await sync(data.session)
+      if (active) setLoading(false)
     })
-    setSession(profile.id)
-    setUser(profile)
-    return { ok: true, user: profile }
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      void sync(session)
+    })
+    return () => {
+      active = false
+      sub.subscription.unsubscribe()
+    }
   }, [])
 
-  const logout = useCallback(() => {
-    setSession(null)
+  const refreshProfile = useCallback(async () => {
+    if (user) setProfile(await loadProfile(user.id))
+  }, [user])
+
+  const signIn = useCallback(async (email: string, password: string): Promise<AuthResult> => {
+    if (!supabase) return { ok: false, error: 'Supabase 환경변수가 설정되지 않았습니다.' }
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    if (error) return { ok: false, error: mapAuthError(error.message) }
+    if (data.user) {
+      await supabase
+        .from('profiles')
+        .update({ last_login_at: new Date().toISOString() })
+        .eq('id', data.user.id)
+      setProfile(await loadProfile(data.user.id))
+    }
+    return { ok: true }
+  }, [])
+
+  const signUp = useCallback(async (input: SignupInput): Promise<AuthResult> => {
+    if (!supabase) return { ok: false, error: 'Supabase 환경변수가 설정되지 않았습니다.' }
+    if ((input.password ?? '').length < 8) {
+      return { ok: false, error: '비밀번호는 8자 이상이어야 합니다.' }
+    }
+    // 휴대폰 중복 사전 확인 (security definer RPC)
+    if (input.phone) {
+      const { data: exists } = await supabase.rpc('phone_exists', { p: input.phone.trim() })
+      if (exists === true) return { ok: false, error: '이미 등록된 휴대폰 번호입니다.' }
+    }
+    const { data, error } = await supabase.auth.signUp({
+      email: input.email.trim(),
+      password: input.password,
+      options: {
+        data: {
+          name: input.name.trim(),
+          phone: input.phone.trim(),
+          organization: input.organization.trim(),
+        },
+      },
+    })
+    if (error) return { ok: false, error: mapAuthError(error.message) }
+    // 세션이 없으면 이메일 인증 대기 상태
+    if (!data.session) return { ok: true, needsEmailConfirm: true }
+    if (data.user) setProfile(await loadProfile(data.user.id))
+    return { ok: true }
+  }, [])
+
+  const signOut = useCallback(async () => {
+    if (supabase) await supabase.auth.signOut()
     setUser(null)
+    setProfile(null)
   }, [])
 
   const value = useMemo<AuthValue>(
-    () => ({ user, isAdmin: user?.role === 'admin', login, signup, logout, refresh }),
-    [user, login, signup, logout, refresh],
+    () => ({
+      configured: isSupabaseConfigured,
+      loading,
+      user,
+      profile,
+      isAdmin: profile?.role === 'admin',
+      signIn,
+      signUp,
+      signOut,
+      refreshProfile,
+    }),
+    [loading, user, profile, signIn, signUp, signOut, refreshProfile],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

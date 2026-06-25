@@ -6,11 +6,9 @@
 // 동일 로직으로 다시 검증해야 합니다. (ACCESS_CONTROL_PLAN.md 참고)
 // ───────────────────────────────────────────────────────────────────────────
 import type { ToolAccess } from '../lib/platform'
+import { EXTENSION_DAYS, MAX_FREE_DAYS, REVIEW_MIN_CHARS, TRIAL_DAYS } from '../lib/trial-policy'
 
-export const TRIAL_DAYS = 7
-export const EXTENSION_DAYS = 7
-export const MAX_FREE_DAYS = 21 // 기본 7 + 리뷰 7 + 설문 7
-export const REVIEW_MIN_CHARS = 500
+export { TRIAL_DAYS, EXTENSION_DAYS, MAX_FREE_DAYS, REVIEW_MIN_CHARS }
 
 const DAY_MS = 24 * 60 * 60 * 1000
 

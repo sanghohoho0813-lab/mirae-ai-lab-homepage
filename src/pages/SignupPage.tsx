@@ -10,15 +10,19 @@ const inputClass =
 const labelClass = 'mb-2 block text-base font-semibold text-slate-800'
 
 export default function SignupPage() {
-  const { signup } = useAuth()
+  const { signUp, configured } = useAuth()
   const navigate = useNavigate()
   const modules = getTrialModules()
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [confirmMsg, setConfirmMsg] = useState('')
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setError('')
     const fd = new FormData(event.currentTarget)
-    const result = signup({
+    setBusy(true)
+    const result = await signUp({
       name: String(fd.get('name') ?? '').trim(),
       email: String(fd.get('email') ?? '').trim(),
       phone: String(fd.get('phone') ?? '').trim(),
@@ -26,15 +30,38 @@ export default function SignupPage() {
       organization: String(fd.get('organization') ?? '').trim(),
       interests: fd.getAll('interests').map(String),
     })
+    setBusy(false)
     if (!result.ok) {
       setError(result.error ?? '회원가입에 실패했습니다.')
+      return
+    }
+    if (result.needsEmailConfirm) {
+      setConfirmMsg('가입 확인 메일을 보냈습니다. 메일함에서 인증을 완료한 뒤 로그인해 주세요.')
       return
     }
     navigate('/my-tools')
   }
 
+  if (confirmMsg) {
+    return (
+      <PageShell title="회원가입" subtitle="가입 확인 메일을 확인해주세요.">
+        <div className="mx-auto max-w-xl rounded-3xl border border-emerald-200 bg-emerald-50 p-8 text-emerald-800">
+          <p className="text-lg font-semibold">{confirmMsg}</p>
+          <Link to="/login" className="mt-4 inline-block font-semibold text-emerald-700 underline">
+            로그인 화면으로
+          </Link>
+        </div>
+      </PageShell>
+    )
+  }
+
   return (
     <PageShell title="회원가입" subtitle="간단한 정보만 입력하면 도구별 7일 무료 체험을 시작할 수 있습니다.">
+      {!configured && (
+        <div className="mx-auto mb-6 max-w-xl rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+          Supabase 환경변수가 설정되지 않았습니다. 회원가입은 환경변수 설정 후 사용할 수 있습니다.
+        </div>
+      )}
       <div className="mx-auto max-w-xl rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
@@ -106,9 +133,10 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700"
+            disabled={busy || !configured}
+            className="w-full rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            회원가입하고 시작하기
+            {busy ? '가입 중…' : '회원가입하고 시작하기'}
           </button>
         </form>
 
@@ -119,11 +147,6 @@ export default function SignupPage() {
           </Link>
         </p>
       </div>
-
-      <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed text-slate-400">
-        현재는 베타(mock) 단계로, 입력 정보는 브라우저(localStorage)에만 저장됩니다. 향후 Supabase 기반
-        회원가입/로그인으로 전환될 예정입니다.
-      </p>
     </PageShell>
   )
 }

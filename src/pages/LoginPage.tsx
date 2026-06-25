@@ -2,7 +2,6 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PageShell from '../components/PageShell'
 import { useAuth } from '../lib/auth'
-import { ADMIN_EMAIL } from '../lib/platform'
 
 const inputClass =
   'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
@@ -11,24 +10,35 @@ const socialClass =
   'flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-semibold text-slate-400'
 
 export default function LoginPage() {
-  const { login } = useAuth()
+  const { signIn, configured } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!email.trim()) return
-    const result = login(email.trim())
+    setError('')
+    setBusy(true)
+    const result = await signIn(email, password)
+    setBusy(false)
     if (!result.ok) {
       setError(result.error ?? '로그인에 실패했습니다.')
       return
     }
-    navigate(result.user?.role === 'admin' ? '/admin' : '/my-tools')
+    navigate('/my-tools')
   }
 
   return (
     <PageShell title="로그인" subtitle="미래 AI 랩에 로그인하고 내 도구함을 확인하세요.">
+      {!configured && (
+        <div className="mx-auto mb-6 max-w-md rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+          Supabase 환경변수가 설정되지 않았습니다. 로그인/회원가입은 환경변수(`VITE_SUPABASE_URL`,
+          `VITE_SUPABASE_ANON_KEY`) 설정 후 사용할 수 있습니다. (README 참고)
+        </div>
+      )}
+
       <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -52,16 +62,25 @@ export default function LoginPage() {
             <label htmlFor="password" className="mb-2 block text-base font-semibold text-slate-800">
               비밀번호
             </label>
-            <input id="password" type="password" placeholder="비밀번호" className={inputClass} />
+            <input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호"
+              className={inputClass}
+            />
           </div>
           {error && (
             <p className="rounded-lg bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700">{error}</p>
           )}
           <button
             type="submit"
-            className="w-full rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700"
+            disabled={busy || !configured}
+            className="w-full rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            로그인
+            {busy ? '로그인 중…' : '로그인'}
           </button>
         </form>
 
@@ -89,9 +108,8 @@ export default function LoginPage() {
       </div>
 
       <p className="mx-auto mt-6 max-w-md text-center text-xs leading-relaxed text-slate-400">
-        현재는 베타(mock) 단계입니다. 비밀번호 검증 없이 입력한 이메일로 로그인되며, 데이터는 브라우저에만
-        저장됩니다. 관리자 화면은 <span className="font-semibold text-slate-500">{ADMIN_EMAIL}</span> 로
-        로그인하면 열립니다.
+        관리자 화면은 <span className="font-semibold text-slate-500">sanghohoho0813@gmail.com</span> 으로
+        가입/로그인하면 자동으로 열립니다. (Supabase 트리거로 role=admin 부여)
       </p>
     </PageShell>
   )

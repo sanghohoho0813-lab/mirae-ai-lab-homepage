@@ -49,25 +49,64 @@ npm run preview
 ```
 ai-business-lab/
 ├── api/
-│   └── inquiry.ts        # 문의 폼 → Resend 이메일 전송 (Vercel Serverless / Node)
-├── index.html            # 앱 진입 HTML (메타·폰트 포함)
-├── public/
-│   └── thumbnails/       # 도구 카드 썸네일 (실서비스 캡처 .png / 대시보드 미리보기 .svg)
-├── scripts/
-│   └── gen-thumbnails.mjs # 대시보드 미리보기 SVG 생성기
+│   ├── inquiry.ts        # 문의 폼 → Resend 이메일 전송
+│   ├── _supabase.ts      # 서버리스 공용: service_role 클라이언트 + 토큰 검증
+│   ├── trial/{start,review,survey}.ts  # 체험 시작/리뷰·설문 연장 (service_role)
+│   └── admin/access.ts   # 관리자 권한 변경 (admin 검증 후 service_role)
+├── supabase/
+│   └── schema.sql        # 테이블·RLS·트리거·시드 (SQL Editor에서 실행)
 ├── src/
-│   ├── main.tsx          # React 진입점
-│   ├── App.tsx           # 랜딩 페이지 (히어로 · 소개 · 대상 · 도구 · 개발중 · 전자책 · 문의)
-│   ├── components/
-│   │   ├── HeroSlider.tsx   # 히어로 자동 슬라이드 미리보기
-│   │   └── InquiryForm.tsx  # 업무 자동화 제작 문의 폼
-│   ├── data/
-│   │   └── tools.ts      # 도구·개발중 도구 데이터, 상태 배지, KPI 자동 계산
-│   └── index.css         # Tailwind 엔트리 · 폰트 토큰 · 애니메이션
-├── .env.example          # 문의 폼 이메일 전송용 환경변수 예시
-├── vite.config.ts        # Vite + Tailwind 설정
-└── tsconfig*.json        # TypeScript 설정
+│   ├── main.tsx          # 라우터 (/, /login, /signup, /my-tools, /admin)
+│   ├── App.tsx           # 랜딩 페이지
+│   ├── components/       # HeroSlider · InquiryForm · PageShell
+│   ├── pages/            # LoginPage · SignupPage · MyToolsPage · AdminPage
+│   ├── lib/
+│   │   ├── supabase.ts   # Supabase client (env 없으면 null)
+│   │   ├── auth.tsx      # Supabase Auth 컨텍스트
+│   │   ├── portal.ts     # 클라이언트 Supabase 데이터/액션
+│   │   ├── platform.ts   # 타입·라벨·평가(evaluateAccess)
+│   │   └── trial-policy.ts # 체험 상수/계산 (클라/서버 공용)
+│   ├── utils/access.ts   # 체험 판정 순수 함수
+│   └── data/tools.ts     # 도구 카드 데이터
+├── .env.example
+└── vite.config.ts / tsconfig*.json
 ```
+
+## Supabase 회원/권한 설정 방법
+
+미래 AI 랩 포털의 회원가입/로그인/체험/권한은 Supabase 기반입니다.
+**환경변수가 없어도 `npm run build`는 통과**하며, 로그인/회원가입은 환경변수 설정 후 동작합니다.
+
+### 1) Supabase 프로젝트 생성 & 키 확인
+1. <https://supabase.com> 에서 프로젝트 생성.
+2. **Settings → API** 에서 `Project URL`, `anon public`, `service_role` 키 확인.
+
+### 2) 스키마 실행
+**SQL Editor** 에 `supabase/schema.sql` 전체를 붙여넣고 실행합니다.
+(테이블 6개 + RLS + 가입 트리거 + 도구 시드가 생성됩니다.)
+
+### 3) 환경변수 등록 (로컬 `.env` / Vercel)
+
+| 환경변수 | 노출 | 설명 |
+| --- | --- | --- |
+| `VITE_SUPABASE_URL` | 프론트 | 프로젝트 URL |
+| `VITE_SUPABASE_ANON_KEY` | 프론트 | anon public 키 |
+| `SUPABASE_SERVICE_ROLE_KEY` | **서버 전용** | service_role 키 — **절대 프론트에 노출 금지**, `api/*` 에서만 사용 |
+
+> Vercel → Settings → Environment Variables 에 위 3개를 등록한 뒤 **반드시 Redeploy** 하세요.
+
+### 4) 이메일 인증
+- Supabase **Authentication → Providers → Email** 에서 confirm email on/off 선택.
+- on: 회원가입 후 "가입 확인 메일을 확인해주세요" 안내가 표시됩니다.
+- off: 가입 즉시 로그인됩니다.
+
+### 5) 관리자 계정
+- **`sanghohoho0813@gmail.com`** 으로 회원가입하면 트리거가 `role='admin'`을 부여합니다.
+- 해당 계정으로 로그인하면 `/admin` 접근이 열립니다. (다른 계정은 차단)
+
+### 6) 권한 변경은 서버에서
+- 체험 시작/연장, 관리자 권한 변경은 클라이언트가 DB를 직접 수정하지 않고
+  서버리스 API(`/api/trial/*`, `/api/admin/access`)가 `service_role`로 검증 후 처리합니다.
 
 ## 문의 폼 메일 발송 설정 방법
 

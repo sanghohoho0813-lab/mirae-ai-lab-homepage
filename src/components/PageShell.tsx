@@ -25,7 +25,7 @@ export default function PageShell({
   subtitle?: string
   children: ReactNode
 }) {
-  const { user, isAdmin, logout } = useAuth()
+  const { user, profile, isAdmin, signOut } = useAuth()
   const navigate = useNavigate()
 
   return (
@@ -48,11 +48,11 @@ export default function PageShell({
                   </Link>
                 )}
                 <span className="hidden text-slate-400 md:inline">·</span>
-                <span className="hidden text-slate-500 md:inline">{user.name}님</span>
+                <span className="hidden text-slate-500 md:inline">{profile?.name ?? user.email}님</span>
                 <button
                   type="button"
-                  onClick={() => {
-                    logout()
+                  onClick={async () => {
+                    await signOut()
                     navigate('/')
                   }}
                   className="rounded-lg border border-slate-300 px-3 py-1.5 text-slate-700 transition-colors hover:bg-slate-100"
