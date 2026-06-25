@@ -751,7 +751,7 @@ function App() {
 
         <div className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
           <a
-            href="https://futureailab.crekit.io/landing"
+            href="https://futureailab.crekit.io/l/deals/zy3n6rjd"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="실무 전자책 자세히 보기 (새 탭에서 열림)"
@@ -782,7 +782,7 @@ function App() {
               1~2년차 컨설턴트에게는 충분히 좋은 첫 번째 무기가 될 거라 확신합니다.
             </p>
             <a
-              href="https://futureailab.crekit.io/landing"
+              href="https://futureailab.crekit.io/l/deals/zy3n6rjd"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-slate-700"
