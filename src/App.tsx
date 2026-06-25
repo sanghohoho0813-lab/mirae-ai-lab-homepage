@@ -537,7 +537,21 @@ function App() {
           </p>
         </div>
 
-        <div className="mt-12 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:grid md:grid-cols-[1.1fr_0.9fr]">
+        <div className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <a
+            href="https://futureailab.crekit.io/l/deals/zy3n6rjd"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="실무 전자책 자세히 보기 (새 탭에서 열림)"
+            className="group block overflow-hidden bg-slate-100"
+          >
+            <img
+              src="/ebook-cover.png"
+              alt="정책자금 · 무상지원금 · 고용지원금 실무 전자책 표지"
+              loading="lazy"
+              className="w-full transition-transform duration-500 group-hover:scale-[1.03]"
+            />
+          </a>
           <div className="p-8 sm:p-10">
             <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
               📘 실무 전자책
@@ -551,7 +565,7 @@ function App() {
               컨설턴트도 상담과 제안에 바로 활용할 수 있습니다.
             </p>
             <a
-              href="https://futureailab.crekit.io/landing"
+              href="https://futureailab.crekit.io/l/deals/zy3n6rjd"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-slate-700"
@@ -559,29 +573,6 @@ function App() {
               전자책 자세히 보기
               <span aria-hidden>↗</span>
             </a>
-          </div>
-
-          {/* Visual */}
-          <div className="relative hidden items-center justify-center overflow-hidden bg-slate-950 p-10 md:flex">
-            <div aria-hidden className="absolute inset-0 opacity-50" style={gridBackground} />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-10 top-0 h-56 w-56 rounded-full bg-blue-600/30 blur-3xl"
-            />
-            <div className="relative w-44 rotate-2 rounded-xl border border-white/10 bg-white p-5 shadow-2xl shadow-black/40">
-              <div className="h-2 w-10 rounded-full bg-blue-500" />
-              <p className="mt-4 text-lg font-extrabold leading-tight text-slate-900">
-                정책자금·지원금
-                <br />
-                실무 가이드
-              </p>
-              <div className="mt-4 space-y-1.5">
-                <div className="h-1.5 w-full rounded-full bg-slate-200" />
-                <div className="h-1.5 w-4/5 rounded-full bg-slate-200" />
-                <div className="h-1.5 w-3/5 rounded-full bg-slate-200" />
-              </div>
-              <p className="mt-5 text-[11px] font-semibold text-slate-400">AI Business Lab</p>
-            </div>
           </div>
         </div>
       </section>
