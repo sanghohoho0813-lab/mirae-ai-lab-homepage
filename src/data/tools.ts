@@ -1,3 +1,5 @@
+import { MAX_FREE_DAYS } from '../lib/trial-policy'
+
 export type ToolStatus = 'MVP 베타' | '비공개 검토중' | '개발중'
 
 export type SubStatus = '정식 출시 예정' | '내부 테스트중' | '현재 외부 공개 제한'
@@ -203,22 +205,24 @@ export const subStatusStyles: Record<SubStatus, string> = {
   '현재 외부 공개 제한': 'bg-rose-50 text-rose-600 ring-1 ring-inset ring-rose-500/20',
 }
 
-// 상태값 기준으로 자동 계산되는 운영 현황 KPI (하드코딩 금지)
-export const kpis = [
+// 운영 현황 KPI — 가능한 값은 데이터에서 자동 계산.
+// 거짓 수치 금지: 실집계 전까지 피드백 항목은 "수집 중"으로 표기.
+// 향후 Supabase 집계(예: 분석 횟수·관리 중 고객)로 value 만 교체하면 됩니다.
+export const kpis: { value: string; label: string }[] = [
   {
-    value: tools.filter((tool) => tool.status === 'MVP 베타').length,
-    label: '지금 쓸 수 있는 도구',
+    value: `${tools.filter((tool) => tool.status === 'MVP 베타').length}개`,
+    label: '운영 중인 실무 도구',
   },
   {
-    value: new Set(tools.map((tool) => tool.stage)).size,
-    label: '연결된 업무 단계',
+    value: `${upcomingTools.length}개`,
+    label: '개발 중인 도구',
   },
   {
-    value: upcomingTools.length,
-    label: '개발 중',
+    value: `${MAX_FREE_DAYS}일`,
+    label: '최대 무료 체험',
   },
   {
-    value: tools.filter((tool) => tool.subStatus === '정식 출시 예정').length,
-    label: '정식 출시 준비',
+    value: '수집 중',
+    label: '베타 피드백',
   },
 ]

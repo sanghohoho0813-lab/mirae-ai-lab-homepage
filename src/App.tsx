@@ -27,7 +27,7 @@ type Principle = {
 const navItems = [
   { label: '소개', href: '#about' },
   { label: '도구', href: '#tools' },
-  { label: '입문 과정', href: '#resources' },
+  { label: '전자책', href: '#resources' },
   { label: '이용 방식', href: '#pricing' },
   { label: '문의', href: '#inquiry' },
 ]
@@ -107,6 +107,30 @@ const audienceCards = [
     title: '직접 확인하고 싶은 대표님',
     description: '정책자금·지원금·감면 가능성을 쉽게 가늠하고, 상담 전에 미리 판단해 볼 수 있습니다.',
     audience: '중소기업 대표 · 소규모 사업장 대표',
+  },
+]
+
+const osFlow = [
+  { title: '고객 상담', caption: '첫 미팅에서 놓치지 않기' },
+  { title: '기업 분석', caption: '재무·지원금·감면 포인트 확인' },
+  { title: '제안 포인트 발굴', caption: '고객에게 말할 무기 정리' },
+  { title: '계약', caption: '상담을 제안으로 연결' },
+  { title: '사후관리', caption: '관리받는 느낌 제공' },
+  { title: '재계약', caption: '추가 제안과 관계 유지' },
+]
+
+const faqs = [
+  {
+    q: '7일 체험 후에는 어떻게 되나요?',
+    a: '체험 기간이 종료되면 도구 이용이 제한됩니다. 리뷰 또는 설문에 참여하면 최대 21일까지 연장할 수 있고, 정식 이용은 결제 또는 관리자 승인 후 제공될 예정입니다.',
+  },
+  {
+    q: '도구별로 따로 체험할 수 있나요?',
+    a: '네. 각 도구는 신청한 시각부터 개별적으로 7일간 체험할 수 있습니다.',
+  },
+  {
+    q: '중소기업 대표도 사용할 수 있나요?',
+    a: '네. 주로 컨설턴트의 상담·검토·제안 업무를 돕기 위해 만들었지만, 직접 가능성을 확인하고 싶은 대표님도 기초 검토용으로 활용할 수 있습니다.',
   },
 ]
 
@@ -359,26 +383,22 @@ function App() {
                 9년 노무·세무·법무·자금 실무를 직접 겪은 컨설턴트, 김팀장이 만들었습니다.
               </p>
 
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
                 <Link
                   to="/signup"
-                  className="inline-flex items-center justify-center rounded-xl bg-white px-7 py-4 text-lg font-semibold text-slate-900 shadow-lg shadow-black/20 transition-transform hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-bold text-slate-900 shadow-xl shadow-black/25 transition-transform hover:-translate-y-0.5"
                 >
-                  상담에 7일 무료로 써보기
+                  7일 체험 시작하기
                 </Link>
                 <a
-                  href="#tools"
-                  className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-7 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-900/30 transition-colors hover:bg-blue-500"
+                  href="#flow"
+                  className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white/10"
                 >
-                  내 업무에 맞는 도구 보기
-                </a>
-                <a
-                  href="#inquiry"
-                  className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-7 py-4 text-lg font-semibold text-white transition-colors hover:bg-white/10"
-                >
-                  내 반복 업무 도구화 문의
+                  업무 흐름 살펴보기
                 </a>
               </div>
+
+              <p className="mt-4 text-sm text-slate-400">카드 등록 없이, 신청한 시각부터 정확히 7일 체험</p>
             </div>
 
             {/* Auto-rotating product preview */}
@@ -387,21 +407,21 @@ function App() {
         </div>
       </section>
 
-      {/* Emphasis box */}
-      <div className="relative z-20 mx-auto -mt-20 max-w-5xl px-6 lg:-mt-24">
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-2xl shadow-slate-900/10 sm:p-10">
-          <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-2 text-sm font-bold text-slate-500 sm:text-base">
-            {['상담', '분석', '검토', '제안', '계약', '사후관리'].map((step) => (
-              <span key={step} className="inline-flex items-center gap-x-1.5">
-                <span className="rounded-lg bg-slate-100 px-2.5 py-1">{step}</span>
-                <span aria-hidden className="text-slate-300">→</span>
-              </span>
-            ))}
-            <span className="rounded-lg bg-blue-50 px-2.5 py-1 text-blue-600">재계약</span>
-          </div>
-          <p className="mt-6 text-xl font-semibold leading-relaxed text-slate-800 sm:text-2xl lg:text-3xl lg:leading-relaxed">
-            도구 5개가 아니라, <span className="font-bold text-blue-600">끊기지 않는 하나의 업무 흐름</span>.
+      {/* Consultant OS flow — 도구보다 먼저, 업무 흐름을 한눈에 */}
+      <div id="flow" className="relative z-20 mx-auto -mt-20 max-w-5xl scroll-mt-24 px-6 lg:-mt-24">
+        <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-2xl shadow-slate-900/10 sm:p-9">
+          <p className="text-center text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
+            상담부터 재계약까지, <span className="text-blue-600">끊기지 않는 하나의 흐름</span>
           </p>
+          <ol className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {osFlow.map((s, i) => (
+              <li key={s.title} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-center">
+                <span className="text-xs font-extrabold text-blue-500">{`0${i + 1}`}</span>
+                <p className="mt-1 text-sm font-bold text-slate-900">{s.title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">{s.caption}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
 
@@ -539,9 +559,8 @@ function App() {
         <dl className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {kpis.map((kpi) => (
             <div key={kpi.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center sm:p-7">
-              <dd className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+              <dd className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
                 {kpi.value}
-                <span className="text-2xl sm:text-3xl">개</span>
               </dd>
               <dt className="mt-2 text-base font-medium text-slate-500">{kpi.label}</dt>
             </div>
@@ -667,22 +686,51 @@ function App() {
             ))}
           </div>
 
-          <p className="mt-8 text-sm leading-relaxed text-slate-500">
+          <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-medium text-slate-600">
+            {['카드 등록 없이 시작', '신청한 시각부터 정확히 7일', '리뷰·설문 참여 시 최대 21일', '정식 출시 전 베타 참여자 우선'].map(
+              (t) => (
+                <span key={t} className="inline-flex items-center gap-1.5">
+                  <span className="text-emerald-500" aria-hidden>✓</span>
+                  {t}
+                </span>
+              ),
+            )}
+          </div>
+
+          <p className="mt-6 text-sm leading-relaxed text-slate-500">
             각 도구는 신청 시각부터 정확히 7일 무료 체험. 리뷰·설문 참여 시 최대 21일까지 연장됩니다. 정식
             이용은 결제 또는 관리자 승인 후 제공됩니다.
           </p>
         </div>
       </section>
 
-      {/* Resources — 컨설턴트를 위한 실무 전자책 */}
+      {/* FAQ — 체험 전 핵심 3가지 */}
+      <section id="faq" className="mx-auto max-w-6xl px-6 pt-28 sm:pt-32">
+        <div className="max-w-3xl">
+          <p className="text-base font-bold uppercase tracking-widest text-blue-600">자주 묻는 질문</p>
+          <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            체험 전, 이것만 확인하세요
+          </h2>
+        </div>
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {faqs.map((item) => (
+            <article key={item.q} className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+              <p className="text-lg font-bold text-slate-900">Q. {item.q}</p>
+              <p className="mt-3 text-base leading-relaxed text-slate-600">{item.a}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Resources — 1~2년차 컨설턴트를 위한 실무 전자책 */}
       <section id="resources" className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
         <div className="max-w-3xl">
-          <p className="text-base font-bold uppercase tracking-widest text-blue-600">입문 과정</p>
+          <p className="text-base font-bold uppercase tracking-widest text-blue-600">실무 전자책</p>
           <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            컨설턴트 실무, 빠르게 익히는 입문 과정
+            1~2년차 컨설턴트를 위한 실무 전자책
           </h2>
           <p className="mt-5 text-xl leading-relaxed text-slate-600">
-            상담에서 가장 많이 나오는 정책자금·무상지원금·고용지원금 3가지를 빠르게 익히는 과정입니다.
+            상담 현장에서 바로 설명하고 제안에 활용할 수 있는, 초보 컨설턴트의 실무 기준점입니다.
           </p>
         </div>
 
@@ -705,14 +753,18 @@ function App() {
           </a>
           <div className="p-8 sm:p-10">
             <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
-              📘 컨설턴트 입문 과정
+              📘 실무 전자책
             </span>
             <h3 className="mt-5 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
               정책자금 · 무상지원금 · 고용지원금 실무 가이드
             </h3>
             <p className="mt-4 text-lg leading-relaxed text-slate-600">
-              고객이 가장 많이 묻는 3가지를 중심으로, 상담과 제안에 바로 쓰도록 정리했습니다. 입문 컨설턴트의
-              첫 무기가 됩니다.
+              중소기업 대표님들이 가장 많이 묻는 정책자금, 무상지원금, 고용지원금 3가지 주제를 중심으로
+              정리했습니다. 상담 현장에서 바로 설명하고 제안에 활용할 수 있도록, 초보 컨설턴트가 꼭 알아야 할
+              실무 흐름과 핵심 포인트를 담았습니다.
+            </p>
+            <p className="mt-4 rounded-xl bg-blue-50 px-4 py-3 text-base font-semibold text-blue-700">
+              1~2년차 컨설턴트에게는 충분히 좋은 첫 번째 무기가 될 거라 확신합니다.
             </p>
             <a
               href="https://futureailab.crekit.io/landing"
@@ -720,7 +772,7 @@ function App() {
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-slate-700"
             >
-              입문 과정 살펴보기
+              전자책 자세히 보기
               <span aria-hidden>↗</span>
             </a>
           </div>

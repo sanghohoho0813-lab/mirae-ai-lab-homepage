@@ -62,6 +62,17 @@ export default function SignupPage() {
           Supabase 환경변수가 설정되지 않았습니다. 회원가입은 환경변수 설정 후 사용할 수 있습니다.
         </div>
       )}
+      <div className="mx-auto mb-6 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-medium text-slate-600">
+        {['카드 등록 없이 시작', '신청한 시각부터 정확히 7일', '리뷰·설문 참여 시 최대 21일', '베타 참여자 우선 제공'].map(
+          (t) => (
+            <span key={t} className="inline-flex items-center gap-1.5">
+              <span className="text-emerald-500" aria-hidden>✓</span>
+              {t}
+            </span>
+          ),
+        )}
+      </div>
+
       <div className="mx-auto max-w-xl rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
