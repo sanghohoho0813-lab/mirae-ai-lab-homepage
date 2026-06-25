@@ -5,7 +5,7 @@ import { EXTENSION_DAYS, MAX_FREE_DAYS, computeTrialExpiry } from '../_trial'
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     if (req.method !== 'POST') return fail(res, 405, '허용되지 않은 요청입니다.', 'method')
-    const admin = getAdmin()
+    const admin = await getAdmin()
     if (!admin) return fail(res, 500, '서버 환경변수가 설정되지 않았습니다.', 'no_env')
 
     const token = bearer(req)
@@ -40,6 +40,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return ok(res, { message: `설문이 접수되어 체험이 ${EXTENSION_DAYS}일 연장되었습니다. (최대 ${MAX_FREE_DAYS}일)` })
   } catch (e) {
-    return fail(res, 500, '서버 오류가 발생했습니다.', 'unhandled', e)
+    return fail(res, 500, '서버 처리 중 예외가 발생했습니다.', 'unhandled_exception', e)
   }
 }

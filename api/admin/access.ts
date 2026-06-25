@@ -33,24 +33,24 @@ async function ensureRow(admin: SupabaseClient, userId: string, toolId: string) 
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') return json(res, 405, { message: '허용되지 않은 요청입니다.' })
-  const admin = getAdmin()
-  if (!admin) return json(res, 500, { message: '서버 환경변수가 설정되지 않았습니다.' })
-
-  const token = bearer(req)
-  if (!token) return json(res, 401, { message: '로그인이 필요합니다.' })
-  const user = await getUser(admin, token)
-  if (!user) return json(res, 401, { message: '세션이 유효하지 않습니다.' })
-  if (!(await isAdmin(admin, user.id))) return json(res, 403, { message: '관리자 권한이 필요합니다.' })
-
-  const body = parseBody<Body>(req)
-  const { action, userId, toolId } = body
-
   try {
+    if (req.method !== 'POST') return fail(res, 405, '허용되지 않은 요청입니다.', 'method')
+    const admin = await getAdmin()
+    if (!admin) return fail(res, 500, '서버 환경변수가 설정되지 않았습니다.', 'no_env')
+
+    const token = bearer(req)
+    if (!token) return fail(res, 401, '인증 토큰이 없습니다. 다시 로그인해 주세요.', 'no_auth')
+    const user = await getUser(admin, token)
+    if (!user) return fail(res, 401, '세션이 유효하지 않습니다.', 'bad_token')
+    if (!(await isAdmin(admin, user.id))) return fail(res, 403, '관리자 권한이 필요합니다.', 'not_admin')
+
+    const body = parseBody<Body>(req)
+    const { action, userId, toolId } = body
+
     if (action === 'memo') {
       if (!userId) return json(res, 400, { message: 'userId가 필요합니다.' })
       await admin.from('profiles').update({ memo: body.memo ?? '' }).eq('id', userId)
-      return json(res, 200, { message: '메모를 저장했습니다.' })
+      return json(res, 200, { ok: true, message: '메모를 저장했습니다.' })
     }
 
     if (action === 'reviewStatus') {
@@ -112,6 +112,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (error) return fail(res, 500, '처리에 실패했습니다.', 'admin_update', error)
     return json(res, 200, { ok: true, message: '처리되었습니다.' })
   } catch (e) {
-    return fail(res, 500, '서버 오류가 발생했습니다.', 'admin_unhandled', e)
+    return fail(res, 500, '서버 처리 중 예외가 발생했습니다.', 'unhandled_exception', e)
   }
 }

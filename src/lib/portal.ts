@@ -47,7 +47,8 @@ async function post(url: string, body: unknown): Promise<ApiResult> {
 
   if (!res.ok || data.ok === false) {
     const code = data.debugCode ? ` [${String(data.debugCode)}]` : ''
-    throw new Error(`${data.message || `요청 실패 (HTTP ${res.status})`}${code}`)
+    const detail = data.detail ? ` ${String(data.detail)}` : ''
+    throw new Error(`${data.message || `요청 실패 (HTTP ${res.status})`}${code}${detail}`)
   }
   return data
 }
