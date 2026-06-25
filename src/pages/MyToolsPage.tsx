@@ -29,9 +29,9 @@ function ReviewPanel({ onSubmit, busy }: { onSubmit: (content: string) => void; 
   return (
     <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
       <p className="text-sm leading-relaxed text-slate-600">
-        <b>{REVIEW_MIN_CHARS}자 이상</b> 사용 후기를 남기면 7일 체험 기간을 연장할 수 있습니다. 좋았던
-        점뿐 아니라 불편했던 점, 개선되면 좋을 점도 자유롭게 적어주세요. 실제 개선에 반영하기 위한
-        피드백으로 활용됩니다. (연장 1회 · 최대 {MAX_FREE_DAYS}일)
+        <b>{REVIEW_MIN_CHARS}자 이상</b>의 솔직한 사용 후기를 남기면 7일 체험 기간을 연장할 수 있습니다.
+        좋았던 점뿐 아니라 불편했던 점, 개선되면 좋을 점도 자유롭게 적어주세요. 실제 도구 개선에
+        반영됩니다. (연장 1회 · 최대 {MAX_FREE_DAYS}일)
       </p>
       <textarea
         rows={5}
@@ -94,8 +94,8 @@ function SurveyPanel({ onSubmit, busy }: { onSubmit: (a: Record<string, string>)
   return (
     <form onSubmit={handle} className="mt-4 space-y-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
       <p className="text-sm leading-relaxed text-slate-600">
-        간단한 설문(객관식 중심)에 참여하시면 체험이 {EXTENSION_DAYS}일 연장됩니다. (연장 1회 · 최대{' '}
-        {MAX_FREE_DAYS}일)
+        짧은 설문(객관식 중심)에 참여하면 7일 체험 기간을 연장할 수 있습니다. 응답은 도구 개선과 정식 출시
+        방향을 정하는 데 활용됩니다. (연장 1회 · 최대 {MAX_FREE_DAYS}일)
       </p>
       {surveyQuestions.map((q) => (
         <div key={q.name}>
@@ -208,6 +208,11 @@ export default function MyToolsPage() {
         ))}
       </div>
 
+      <p className="mb-8 text-center text-sm leading-relaxed text-slate-500">
+        각 도구는 신청한 시각부터 정확히 {TRIAL_DAYS}일간 체험할 수 있습니다. 리뷰와 설문에 참여하면 최대{' '}
+        {MAX_FREE_DAYS}일까지 무료 체험을 연장할 수 있습니다.
+      </p>
+
       {dataLoading ? (
         <p className="text-slate-500">도구를 불러오는 중…</p>
       ) : (
@@ -239,13 +244,32 @@ export default function MyToolsPage() {
                       </span>
                     </div>
                     <h3 className="mt-3 text-xl font-bold tracking-tight text-slate-900">{tool.title}</h3>
-                    <p className="mt-1 text-sm text-slate-500">
-                      {view.unlimited
-                        ? '무제한 이용 권한이 부여되었습니다.'
-                        : view.status === 'none'
-                          ? `아직 체험을 시작하지 않았습니다. 시작하면 ${TRIAL_DAYS}일간 이용할 수 있습니다.`
-                          : `만료 ${formatDateTime(view.expiresAt)} · 남은 기간 ${view.remainingLabel}`}
-                    </p>
+                    <div className="mt-1.5 space-y-1 text-sm text-slate-500">
+                      {view.unlimited ? (
+                        <p>무제한 이용 권한이 부여되었습니다.</p>
+                      ) : view.status === 'none' ? (
+                        <p>
+                          아직 체험을 시작하지 않았습니다. 시작하면 지금 시각부터 정확히 {TRIAL_DAYS}일 동안
+                          사용할 수 있습니다.
+                        </p>
+                      ) : view.blocked ? (
+                        <p>관리자에 의해 접근이 제한되었습니다.</p>
+                      ) : (
+                        <>
+                          <p>
+                            만료 {formatDateTime(view.expiresAt)} · 남은 기간{' '}
+                            <b className="text-slate-700">{view.remainingLabel}</b>
+                          </p>
+                          <p>
+                            {view.paid
+                              ? '정식 이용 중입니다. 만료 전까지 도구를 열어 사용하세요.'
+                              : view.active
+                                ? '현재 체험 중입니다. 만료 전까지 도구를 열어 실제 업무 흐름을 확인해보세요.'
+                                : '체험 기간이 종료되었습니다. 리뷰, 설문, 결제 또는 관리자 승인을 통해 이용 기간을 연장할 수 있습니다.'}
+                          </p>
+                        </>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex shrink-0 flex-col items-end gap-2">

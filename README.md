@@ -178,8 +178,8 @@ INQUIRY_FROM_EMAIL    = AI Business Lab <onboarding@resend.dev>
   대시보드 미리보기를 보여주는 3개 도구는 `scripts/gen-thumbnails.mjs`로 생성한 SVG를 사용합니다
   (`node scripts/gen-thumbnails.mjs`로 재생성). 실제 대시보드 캡처가 생기면 같은 경로로 교체하세요.
   비공개 도구(`isPublic: false`)는 잠금 표시로 렌더링됩니다.
-- 전자책(`#resources`) 표지 이미지(`public/ebook-cover.png`)와 버튼은 외부 판매 페이지
-  (`futureailab.crekit.io/l/deals/zy3n6rjd`)로 새 탭 연결됩니다.
+- 전자책(`#resources`) 표지 이미지(`public/ebook-cover.webp`)와 버튼은 외부 랜딩 페이지
+  (`futureailab.crekit.io/landing`)로 새 탭 연결됩니다.
 
 ## 라이선스
 

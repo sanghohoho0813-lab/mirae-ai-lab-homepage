@@ -56,16 +56,16 @@ function ModuleRow({
       </td>
       <td className="py-3 pl-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          <button onClick={() => run({ action: 'grant', userId: user.id, toolId: module.id })} className={btnNeutral}>허용</button>
-          <button onClick={() => run({ action: 'extend', userId: user.id, toolId: module.id, days: 7 })} className={btnNeutral}>+7일</button>
-          <button onClick={() => run({ action: 'unlimited', userId: user.id, toolId: module.id })} className={`${btn} border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100`}>무제한</button>
-          <button onClick={() => run({ action: 'revoke', userId: user.id, toolId: module.id })} className={`${btn} border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100`}>차단</button>
+          <button onClick={() => run({ action: 'grant', userId: user.id, toolId: module.id })} className={btnNeutral}>체험 허용</button>
+          <button onClick={() => run({ action: 'extend', userId: user.id, toolId: module.id, days: 7 })} className={btnNeutral}>7일 연장</button>
+          <button onClick={() => run({ action: 'unlimited', userId: user.id, toolId: module.id })} className={`${btn} border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100`}>무제한 권한</button>
+          <button onClick={() => run({ action: 'revoke', userId: user.id, toolId: module.id })} className={`${btn} border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100`}>접근 차단</button>
           <button onClick={() => run({ action: 'paid', userId: user.id, toolId: module.id, paid: !view.paid })} className={btnNeutral}>
-            {view.paid ? '결제해제' : '결제처리'}
+            {view.paid ? '결제 해제' : '결제 완료 처리'}
           </button>
           <span className="inline-flex items-center gap-1">
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded border border-slate-300 px-1.5 py-1 text-xs" />
-            <button disabled={!date} onClick={() => run({ action: 'setExpiry', userId: user.id, toolId: module.id, date })} className={`${btnNeutral} disabled:opacity-40`}>적용</button>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} title="만료일 직접 지정" className="rounded border border-slate-300 px-1.5 py-1 text-xs" />
+            <button disabled={!date} onClick={() => run({ action: 'setExpiry', userId: user.id, toolId: module.id, date })} className={`${btnNeutral} disabled:opacity-40`}>만료일 적용</button>
           </span>
         </div>
       </td>
@@ -273,7 +273,7 @@ export default function AdminPage() {
   )
 
   return (
-    <PageShell title="관리자" subtitle="사용자별 도구 이용 기간과 권한을 직접 조정할 수 있습니다.">
+    <PageShell title="관리자" subtitle="사용자별 도구 이용 기간, 체험 상태, 리뷰·설문 참여 여부, 결제 상태를 관리할 수 있습니다.">
       {err && <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700">{err}</div>}
 
       <div className="mb-6 grid grid-cols-3 gap-3">

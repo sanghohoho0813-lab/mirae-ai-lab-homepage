@@ -48,7 +48,7 @@ export const tools: Tool[] = [
     accessType: 'beta',
     isTrialAvailable: true,
     description:
-      '받을 수 있는 지원금을 회차별로 관리하고 입·퇴사 변동까지 반영해, 고객에게 더 많은 혜택을 더 정확히 안내할 수 있도록 돕는 도구입니다.',
+      '고용지원금 검토 시간을 줄이고 입사자·퇴사자·회차별 관리까지 놓치지 않도록 도와, 고객에게 더 많은 지원금 기회를 정확히 안내할 수 있는 도구입니다.',
     valueLine: '놓치는 지원금 없이, 더 많은 혜택을 더 정확히',
     url: 'https://hr-subsidy-pro.vercel.app/',
     isPublic: true,
@@ -66,7 +66,8 @@ export const tools: Tool[] = [
     subStatus: '정식 출시 예정',
     accessType: 'beta',
     isTrialAvailable: true,
-    description: '사후관리 누락을 줄이고 고객 만족도를 높이는 연구소 관리 도구입니다.',
+    description:
+      '연구소 설립 준비부터 사후관리, 월간 알림, 종합보고서, 추가 컨설팅 제안까지 이어줘 고객에게 “관리받고 있다”는 느낌을 주고, 추가 제안 기회까지 발굴하는 연구소 관리 도구입니다.',
     valueLine: '관리 누락은 줄이고 고객 만족도는 높이고',
     url: 'https://labcare-rnd-os.vercel.app/dashboard',
     isPublic: true,
@@ -84,11 +85,12 @@ export const tools: Tool[] = [
     subStatus: '내부 테스트중',
     accessType: 'restricted',
     isTrialAvailable: true,
-    description: '고객관리와 상담이력을 체계화해 계약률과 업무 효율을 높이는 도구입니다.',
+    description:
+      '단순 고객관리 툴이 아니라 미팅 전략·잠재고객·후속관리·콘텐츠 아이디어·최신 공고까지 한곳에서 관리해, 흩어진 메모와 기억을 계약 전략으로 바꾸는 컨설턴트 전략 도구입니다.',
     valueLine: '계약률을 높이는 컨설턴트용 영업 도구',
     url: 'https://corp-sales-os.vercel.app/',
     isPublic: true,
-    features: ['잠재고객·후속관리', '미팅 전략 메모', '제안·상담 이력', '콘텐츠·교육 관리'],
+    features: ['미팅 전략 관리', '계약 실패 고객 후속관리', '콘텐츠·교육 아이디어', '최신 법령·공고 체크'],
     target: '컨설턴트',
     thumbnail: '/thumbnails/corp-sales-os.svg',
     thumbPos: 'top',
@@ -103,7 +105,7 @@ export const tools: Tool[] = [
     accessType: 'beta',
     isTrialAvailable: true,
     description:
-      '크레탑 자료 해석을 자동화해 3개년 재무구조와 증감, 미팅에서 꺼낼 핵심 포인트까지 몇 초 만에 정리하는 도구입니다.',
+      '크레탑 자료를 올리면 핵심 재무지표와 3개년 증감, 임시 주식가치 가평가, 미팅에서 꺼낼 주제까지 몇 초 만에 정리해, 놓치던 컨설팅 무기를 찾아주는 분석 도구입니다.',
     valueLine: '미팅 전에 꺼낼 무기를 몇 초 만에',
     url: 'https://corp-sales-os-git-claude-cretop-mini-app-ksh90813.vercel.app/mini.html',
     isPublic: true,
