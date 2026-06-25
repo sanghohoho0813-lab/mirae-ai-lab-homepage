@@ -243,7 +243,8 @@ function ToolCard({ tool }: { tool: Tool }) {
           </span>
         </div>
 
-        <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">{tool.title}</h3>
+        <p className="mt-4 text-sm font-medium text-slate-400">{tool.outcome}</p>
+        <h3 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">{tool.title}</h3>
         <p className="mt-2.5 text-base leading-relaxed text-slate-600">{tool.description}</p>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -373,14 +374,17 @@ function App() {
                 </span>
               </h1>
 
-              <p className="mt-7 text-lg leading-relaxed text-slate-300 sm:text-xl sm:leading-relaxed">
+              <p className="mt-7 text-lg font-semibold leading-relaxed text-white sm:text-xl sm:leading-relaxed">
+                놓치는 제안을 줄이고, 계약으로 이어지는 상담을 만들기 위해 직접 만들었습니다.
+              </p>
+
+              <p className="mt-4 text-base leading-relaxed text-slate-300 sm:text-lg sm:leading-relaxed">
                 상담·분석·제안·사후관리까지, 흩어진 컨설팅 업무를 하나로 잇는{' '}
-                <span className="font-semibold text-white">컨설턴트 OS</span>. 놓치던 제안을 다시
-                꺼내고, 계약 가능성을 높입니다.
+                <span className="font-semibold text-white">컨설턴트 OS</span>입니다.
               </p>
 
               <p className="mt-4 text-base text-slate-400 sm:text-lg">
-                9년 노무·세무·법무·자금 실무를 직접 겪은 컨설턴트, 김팀장이 만들었습니다.
+                9년 동안 현장에서 직접 쓰던 방식을, 하나의 컨설턴트 OS로 정리했습니다.
               </p>
 
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
@@ -417,11 +421,19 @@ function App() {
             {osFlow.map((s, i) => (
               <li
                 key={s.title}
-                className="flex flex-col items-center rounded-2xl border border-slate-100 bg-slate-50 px-3 py-4 text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                className="relative flex flex-col items-center rounded-2xl border border-slate-100 bg-slate-50 px-3 py-4 text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
                 <span className="text-base font-extrabold text-blue-600">{`0${i + 1}`}</span>
                 <p className="mt-1.5 text-lg font-bold leading-tight text-slate-900 sm:text-xl">{s.title}</p>
                 <p className="mt-1.5 text-sm leading-snug text-slate-500">{s.caption}</p>
+                {i < osFlow.length - 1 && (
+                  <span
+                    aria-hidden
+                    className="absolute right-0 top-1/2 hidden -translate-y-1/2 translate-x-1/2 text-base font-bold text-slate-300 lg:block"
+                  >
+                    →
+                  </span>
+                )}
               </li>
             ))}
           </ol>
@@ -815,11 +827,11 @@ function App() {
           <div className="relative">
             <p className="text-base font-bold uppercase tracking-widest text-sky-400">문의</p>
             <h2 className="mx-auto mt-3 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              당신의 반복 업무도, 도구가 될 수 있습니다
+              오늘의 상담이, 조금 더 수월해지기를 바랍니다
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-slate-300">
-              엑셀 계산, 흩어진 고객관리, 매번 새로 쓰던 제안서. 당신의 업무 흐름 그대로, 직접 쓰는 도구로
-              만들어 드립니다.
+              현장에서 반복하던 일을 도구로 정리하면, 더 중요한 대화에 집중할 수 있습니다. 필요한 도구가
+              있다면 편하게 들려주세요.
             </p>
             <a
               href="#inquiry"

@@ -14,6 +14,8 @@ export type Tool = {
   category: string
   /** 컨설팅 업무 흐름 단계 (상담→분석→검토→제안→사후관리→재계약) */
   stage: string
+  /** 도구 이름보다 먼저 보이는 "얻게 되는 결과" 한 줄 (이모지 포함) */
+  outcome: string
   status: ToolStatus
   subStatus: SubStatus
   /** 향후 권한/체험 제어용 접근 유형 */
@@ -48,6 +50,7 @@ export const tools: Tool[] = [
     title: '고용지원금 프로',
     category: '고용지원금',
     stage: '지원금 검토',
+    outcome: '💰 받을 수 있는 지원금을 놓치지 않도록',
     status: 'MVP 베타',
     subStatus: '정식 출시 예정',
     accessType: 'beta',
@@ -68,6 +71,7 @@ export const tools: Tool[] = [
     title: '연구소 사후관리 OS',
     category: '연구소 관리',
     stage: '사후관리',
+    outcome: '🧪 연구소 관리를 끊기지 않도록',
     status: 'MVP 베타',
     subStatus: '정식 출시 예정',
     accessType: 'beta',
@@ -88,6 +92,7 @@ export const tools: Tool[] = [
     title: '법인컨설팅 세일즈 OS',
     category: '고객관리·영업',
     stage: '상담·제안 관리',
+    outcome: '📈 계약으로 이어지는 제안을 위해',
     status: 'MVP 베타',
     subStatus: '내부 테스트중',
     accessType: 'restricted',
@@ -108,6 +113,7 @@ export const tools: Tool[] = [
     title: '크레탑 자동분석기',
     category: '기업분석',
     stage: '기업 분석',
+    outcome: '🏢 기업을 빠르게 파악하도록',
     status: 'MVP 베타',
     subStatus: '정식 출시 예정',
     accessType: 'beta',
@@ -128,6 +134,7 @@ export const tools: Tool[] = [
     title: '주식 EXIT 솔루션 시뮬레이터',
     category: '자본거래',
     stage: '자본 전략',
+    outcome: '📊 복잡한 자본거래를 한눈에',
     status: '비공개 검토중',
     subStatus: '현재 외부 공개 제한',
     accessType: 'private',
@@ -148,6 +155,7 @@ export const tools: Tool[] = [
     title: '창업감면 & 취등록세 체크',
     category: '절세',
     stage: '절세 진단',
+    outcome: '💡 창업 인정 여부를 빠르게 확인',
     status: 'MVP 베타',
     subStatus: '정식 출시 예정',
     accessType: 'beta',
