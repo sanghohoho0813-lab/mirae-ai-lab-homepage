@@ -20,7 +20,7 @@ const slides: Slide[] = [
       { label: '관리 대상 인원', value: '12명' },
       { label: '누락 위험 항목', value: '2건' },
     ],
-    feature: '받을 수 있는 지원금을 놓치지 않도록 관리하고, 고객에게 더 많은 혜택을 안내하도록 돕습니다.',
+    feature: '놓친 지원금이 없도록 챙겨, 고객에게 더 많은 혜택을 제안합니다.',
   },
   {
     tool: '연구소 사후관리 OS',
@@ -32,7 +32,7 @@ const slides: Slide[] = [
       { label: '월간 알림', value: '활성화' },
       { label: '종합보고서', value: '생성 가능' },
     ],
-    feature: '설립 단계부터 사후관리·월간 알림·보고서·추가 제안까지 한 번에 관리합니다.',
+    feature: '사후관리·알림·보고서까지 챙겨, 고객이 "관리받는 느낌"을 받게 합니다.',
   },
   {
     tool: '법인컨설팅 세일즈 OS',
@@ -44,7 +44,7 @@ const slides: Slide[] = [
       { label: '진행중 제안', value: '9건' },
       { label: '미팅 전략 메모', value: '23건' },
     ],
-    feature: '고객관리만이 아니라 미팅 전략·제안·교육·콘텐츠까지 한 곳에서 관리합니다.',
+    feature: '미팅 전략·후속관리·제안을 한 곳에서. 흩어진 메모를 계약으로 바꿉니다.',
   },
   {
     tool: '크레탑 자동분석기',
@@ -56,7 +56,7 @@ const slides: Slide[] = [
       { label: '3개년 증감 분석', value: '완료' },
       { label: '추천 미팅 주제', value: '7개' },
     ],
-    feature: '재무분석 시간을 줄이고, 미팅 전에 꺼낼 핵심 포인트를 한눈에 정리합니다.',
+    feature: '미팅 전, 꺼낼 핵심 포인트와 제안거리를 몇 초 만에 정리합니다.',
   },
   {
     tool: '창업감면 & 취등록세 체크',
@@ -68,7 +68,7 @@ const slides: Slide[] = [
       { label: '검토 필요 항목', value: '3개' },
       { label: '1분 진단', value: '가능' },
     ],
-    feature: '복잡한 창업감면·취등록세 판단을 1분 안에 확인해 고객 앞에서 바로 보여줍니다.',
+    feature: '복잡한 감면 판단을 1분에. 고객 앞에서 바로 보여줍니다.',
   },
 ]
 
@@ -98,7 +98,7 @@ function HeroSlider() {
           <span className="h-3 w-3 rounded-full bg-rose-300" />
           <span className="h-3 w-3 rounded-full bg-amber-300" />
           <span className="h-3 w-3 rounded-full bg-emerald-300" />
-          <span className="ml-2 text-sm font-semibold text-slate-500">미래 AI 랩 · 도구 미리보기</span>
+          <span className="ml-2 text-sm font-semibold text-slate-500">컨설턴트 OS · 미리보기</span>
           <span className="ml-auto rounded-full bg-slate-900 px-2.5 py-0.5 text-[11px] font-semibold text-sky-300">
             {index + 1} / {slides.length}
           </span>

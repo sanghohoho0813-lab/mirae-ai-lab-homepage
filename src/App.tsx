@@ -27,8 +27,8 @@ type Principle = {
 const navItems = [
   { label: '소개', href: '#about' },
   { label: '도구', href: '#tools' },
-  { label: '전자책', href: '#resources' },
-  { label: '요금제', href: '#pricing' },
+  { label: '입문 과정', href: '#resources' },
+  { label: '이용 방식', href: '#pricing' },
   { label: '문의', href: '#inquiry' },
 ]
 
@@ -48,12 +48,12 @@ const pricingPlans: PricingPlan[] = [
     badgeClass: 'bg-emerald-50 text-emerald-700',
     highlight: true,
     points: [
+      '정식 출시 전 피드백 참여자 우선 제공',
       '신청 시각부터 정확히 7일 체험',
-      '솔직한 리뷰 작성 시 7일 연장',
-      '설문 참여 시 7일 연장',
-      '최대 21일까지 무료 체험',
+      '리뷰·설문 참여 시 최대 21일까지 연장',
+      '실제 고객 상담에 바로 적용',
     ],
-    cta: { label: '무료 체험 시작', to: '/signup' },
+    cta: { label: '지금 무료로 시작', to: '/signup' },
   },
   {
     name: '컨설턴트 이용권',
@@ -79,7 +79,7 @@ const pricingPlans: PricingPlan[] = [
       '나만의 업무 자동화 도구 제작',
       '반복 업무 분석 · 내부 프로세스 자동화',
     ],
-    cta: { label: '제작 문의하기', href: '#inquiry' },
+    cta: { label: '내 업무 도구 만들기', href: '#inquiry' },
   },
 ]
 
@@ -97,38 +97,34 @@ const fields: Field[] = [
 const audienceCards = [
   {
     icon: '🧑‍💼',
-    title: '컨설턴트 실무에 더 유용합니다',
+    title: '“그 얘기도 했어야 했는데”를 줄이고 싶은 컨설턴트',
     description:
-      '고객 상담, 검토, 제안, 관리, 후속안내처럼 반복되는 실무를 더 빠르고 체계적으로 처리할 수 있도록 돕습니다.',
-    audience: '예: 법인·정책자금·고용지원금·기업인증·세무 컨설팅 실무자',
+      '상담·검토·제안·사후관리를 한 곳에서. 흩어진 메모 대신, 고객 앞에서 꺼낼 무기가 쌓입니다.',
+    audience: '법인·정책자금·고용지원금·기업인증·세무 컨설턴트',
   },
   {
     icon: '🏢',
-    title: '대표님이 직접 확인할 때도 도움이 됩니다',
-    description:
-      '정책자금, 지원금, 감면 여부처럼 어려운 내용을 더 쉽게 이해하고, 더 좋은 의사결정을 하는 데 도움을 줄 수 있습니다.',
-    audience: '예: 중소기업 대표, 직접 확인하고 싶은 소규모 사업장 대표',
+    title: '직접 확인하고 싶은 대표님',
+    description: '정책자금·지원금·감면 가능성을 쉽게 가늠하고, 상담 전에 미리 판단해 볼 수 있습니다.',
+    audience: '중소기업 대표 · 소규모 사업장 대표',
   },
 ]
 
 const principles: Principle[] = [
   {
     no: '01',
-    title: '실무에서 출발합니다',
-    description:
-      '현장에서 매번 반복되는 판단과 계산을 먼저 관찰하고, 거기서부터 도구를 설계합니다. 기능이 아니라 업무가 기준입니다.',
+    title: '업무에서 출발합니다',
+    description: '기능이 아니라, 매일 반복되는 업무에서 도구를 설계합니다.',
   },
   {
     no: '02',
-    title: '품질과 속도를 함께 높입니다',
-    description:
-      'AI가 컨설턴트를 대체하는 것이 아니라, 컨설팅의 품질과 속도를 함께 높이는 데 집중합니다. 결정은 사람이 합니다.',
+    title: '결정은 사람이 합니다',
+    description: 'AI는 판단을 돕고, 계약은 컨설턴트가 만듭니다.',
   },
   {
     no: '03',
     title: '직접 만들고, 직접 씁니다',
-    description:
-      '현업에서 직접 써보고 검증한 도구만 공개합니다. 제가 쓰지 않을 도구는 만들지 않습니다.',
+    description: '현업에서 검증한 도구만 공개합니다. 안 쓰는 도구는 만들지 않습니다.',
   },
 ]
 
@@ -211,8 +207,9 @@ function ToolCard({ tool }: { tool: Tool }) {
       <ToolThumbnail tool={tool} />
       <div className="flex flex-1 flex-col p-6 sm:p-7">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-md bg-slate-100 px-2.5 py-1 text-sm font-semibold text-slate-600">
-            {tool.category}
+          <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2.5 py-1 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">
+            <span aria-hidden className="text-blue-400">◆</span>
+            {tool.stage}
           </span>
           <span className={`rounded-full px-2.5 py-1 text-sm font-semibold ${statusStyles[tool.status]}`}>
             {tool.status}
@@ -341,47 +338,45 @@ function App() {
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-base font-medium text-slate-200 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-sky-400" />
-                미래 AI 랩 · 실무형 AI 도구 플랫폼
+                컨설턴트 업무 OS · 정식 출시 전 베타
               </span>
 
-              <h1 className="mt-7 text-[1.7rem] font-extrabold leading-[1.2] tracking-tight text-white sm:text-[2.6rem] lg:text-[3.3rem]">
-                <span className="bg-linear-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">
-                  AI 도구
-                </span>
-                를 직접 만드는
+              <h1 className="mt-7 text-[1.9rem] font-extrabold leading-[1.18] tracking-tight text-white sm:text-[2.8rem] lg:text-[3.4rem]">
+                고객 앞에서,
                 <br />
-                경영 컨설턴트, <span className="text-sky-300">김팀장</span>
+                <span className="bg-linear-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">
+                  더 전문가처럼.
+                </span>
               </h1>
 
               <p className="mt-7 text-lg leading-relaxed text-slate-300 sm:text-xl sm:leading-relaxed">
-                9년간 노무·법무·세무·자금 실무를 경험하고, 4년째 법인컨설팅 현장에서 반복되는
-                상담·검토·제안 업무를{' '}
-                <span className="font-semibold text-white">실무형 AI 도구</span>로 바꾸고 있습니다.
+                상담·분석·제안·사후관리까지, 흩어진 컨설팅 업무를 하나로 잇는{' '}
+                <span className="font-semibold text-white">컨설턴트 OS</span>. 놓치던 제안을 다시
+                꺼내고, 계약 가능성을 높입니다.
               </p>
 
-              <p className="mt-5 text-base leading-relaxed text-slate-400 sm:text-lg sm:leading-relaxed">
-                고객 앞에서 더 빠르게 판단하고, 놓치던 제안 포인트를 다시 꺼내고, 후속관리까지
-                체계화할 수 있도록 돕습니다.
+              <p className="mt-4 text-base text-slate-400 sm:text-lg">
+                9년 노무·세무·법무·자금 실무를 직접 겪은 컨설턴트, 김팀장이 만들었습니다.
               </p>
 
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a
-                  href="#tools"
-                  className="inline-flex items-center justify-center rounded-xl bg-white px-7 py-4 text-lg font-semibold text-slate-900 shadow-lg shadow-black/20 transition-transform hover:-translate-y-0.5"
-                >
-                  실무 도구 둘러보기
-                </a>
                 <Link
                   to="/signup"
+                  className="inline-flex items-center justify-center rounded-xl bg-white px-7 py-4 text-lg font-semibold text-slate-900 shadow-lg shadow-black/20 transition-transform hover:-translate-y-0.5"
+                >
+                  상담에 7일 무료로 써보기
+                </Link>
+                <a
+                  href="#tools"
                   className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-7 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-900/30 transition-colors hover:bg-blue-500"
                 >
-                  7일 체험 시작하기
-                </Link>
+                  내 업무에 맞는 도구 보기
+                </a>
                 <a
                   href="#inquiry"
                   className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-7 py-4 text-lg font-semibold text-white transition-colors hover:bg-white/10"
                 >
-                  자동화 도구 제작 문의
+                  내 반복 업무 도구화 문의
                 </a>
               </div>
             </div>
@@ -395,10 +390,17 @@ function App() {
       {/* Emphasis box */}
       <div className="relative z-20 mx-auto -mt-20 max-w-5xl px-6 lg:-mt-24">
         <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-2xl shadow-slate-900/10 sm:p-10">
-          <p className="text-xl font-semibold leading-relaxed text-slate-800 sm:text-2xl lg:text-3xl lg:leading-relaxed">
-            <span className="text-blue-600">상담·검토·제안·후속관리</span>까지.
-            <br className="hidden sm:block" /> 컨설턴트의 반복 업무를 줄이고{' '}
-            <span className="font-bold text-slate-900">고객 앞에서 더 전문적으로 설명하고 계약 가능성을 높이는</span> 실무형 AI 도구를 만듭니다.
+          <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-2 text-sm font-bold text-slate-500 sm:text-base">
+            {['상담', '분석', '검토', '제안', '계약', '사후관리'].map((step) => (
+              <span key={step} className="inline-flex items-center gap-x-1.5">
+                <span className="rounded-lg bg-slate-100 px-2.5 py-1">{step}</span>
+                <span aria-hidden className="text-slate-300">→</span>
+              </span>
+            ))}
+            <span className="rounded-lg bg-blue-50 px-2.5 py-1 text-blue-600">재계약</span>
+          </div>
+          <p className="mt-6 text-xl font-semibold leading-relaxed text-slate-800 sm:text-2xl lg:text-3xl lg:leading-relaxed">
+            도구 5개가 아니라, <span className="font-bold text-blue-600">끊기지 않는 하나의 업무 흐름</span>.
           </p>
         </div>
       </div>
@@ -407,26 +409,17 @@ function App() {
       <section id="about" className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
         <div className="grid gap-14 lg:grid-cols-[1fr_0.8fr] lg:items-center">
           <div>
-            <p className="text-base font-bold uppercase tracking-widest text-blue-600">제작자 소개</p>
+            <p className="text-base font-bold uppercase tracking-widest text-blue-600">만든 사람</p>
             <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-              실무에서 시작된 AI 도구들
+              반복 업무를 직접 겪은 사람이 만들었습니다
             </h2>
             <div className="mt-7 space-y-5 text-lg leading-relaxed text-slate-600 sm:text-xl sm:leading-relaxed">
+              <p>9년간 노무·세무·법무·자금 실무를, 4년째 법인컨설팅 현장을 직접 겪었습니다.</p>
               <p>
-                9년간 노무·법무·세무·자금 분야 실무를 경험했고, 현재는 4년째 법인컨설팅 업무를 하고
-                있습니다.
+                좋은 컨설팅이 결국 흩어진 메모와 반복 수작업 위에 있다는 걸 알기에, 그 일을 대신할 도구를
+                직접 만들고 매일 씁니다.
               </p>
-              <p>
-                현장에서 느낀 가장 큰 문제는 좋은 컨설팅이 결국 많은 반복 업무와 수작업 위에 올라가 있다는
-                점이었습니다.
-              </p>
-              <p>
-                그래서 실제 실무 흐름을 바탕으로, 컨설턴트의 반복 업무는 줄이고 고객 앞에서는 더 빠르게
-                판단하고 더 전문적으로 설명할 수 있도록 돕는 실무형 AI 도구를 직접 만들고 있습니다.
-              </p>
-              <p className="font-semibold text-slate-800">
-                이 사이트는 제가 직접 만들고 운영하는 실무형 AI 도구들을 모아둔 공간입니다.
-              </p>
+              <p className="font-semibold text-slate-800">제가 직접 쓰지 않는 도구는 만들지 않습니다.</p>
             </div>
           </div>
 
@@ -438,21 +431,21 @@ function App() {
               </span>
               <div>
                 <p className="text-2xl font-bold text-slate-900">김팀장</p>
-                <p className="text-base text-slate-500">경영 컨설턴트 · AI 도구 제작</p>
+                <p className="text-base text-slate-500">법인컨설팅 · 컨설턴트 OS 제작</p>
               </div>
             </div>
             <ul className="mt-7 space-y-4 text-lg text-slate-600">
               <li className="flex items-start gap-2.5">
                 <span className="mt-0.5 text-emerald-500" aria-hidden>✓</span>
-                노무·법무·세무·자금 실무를 거친 법인컨설팅 전문가입니다.
+                노무·세무·법무·자금 실무를 거친 법인컨설팅 전문가
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="mt-0.5 text-emerald-500" aria-hidden>✓</span>
-                정책자금·고용지원금·기업인증 등 다분야 컨설팅을 진행합니다.
+                정책자금·고용지원금·기업인증 등 다분야 컨설팅 진행
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="mt-0.5 text-emerald-500" aria-hidden>✓</span>
-                현업에서 직접 쓰고 검증한 도구만 공개합니다.
+                현업에서 직접 쓰고 검증한 도구만 공개
               </li>
             </ul>
             <dl className="mt-7 grid grid-cols-2 gap-3 border-t border-slate-100 pt-6">
@@ -473,13 +466,12 @@ function App() {
       <section id="audience" className="border-y border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-base font-bold uppercase tracking-widest text-blue-600">활용 대상</p>
+            <p className="text-base font-bold uppercase tracking-widest text-blue-600">누구를 위한 OS인가</p>
             <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-              이런 분들께 특히 도움이 됩니다
+              아마, 당신의 이야기일 겁니다
             </h2>
             <p className="mt-5 text-xl leading-relaxed text-slate-600">
-              컨설턴트의 실무를 더 빠르고 정확하게 만드는 데 초점을 맞춰 만들었습니다. 그리고 그 과정은
-              대표님이 직접 확인하고 판단할 때도 충분히 도움이 됩니다.
+              컨설턴트의 하루를 기준으로 설계했습니다. 대표님이 직접 확인할 때도 똑같이 쓸 수 있습니다.
             </p>
           </div>
 
@@ -506,12 +498,12 @@ function App() {
       {/* Fields */}
       <section id="fields" className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
         <div className="max-w-3xl">
-          <p className="text-base font-bold uppercase tracking-widest text-blue-600">활용분야</p>
+          <p className="text-base font-bold uppercase tracking-widest text-blue-600">다루는 업무</p>
           <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            컨설턴트 실무에 맞춘 8개 영역
+            한 흐름 안에서 다루는 8개 업무
           </h2>
           <p className="mt-5 text-xl leading-relaxed text-slate-600">
-            각 영역의 반복 업무를 AI 도구로 옮기고 있습니다. 필요한 영역부터 골라 적용해 보세요.
+            상담부터 재계약까지, 컨설턴트가 매일 만나는 업무를 도구로 옮깁니다.
           </p>
         </div>
 
@@ -534,13 +526,12 @@ function App() {
       {/* Tools */}
       <section id="tools" className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
         <div className="max-w-3xl">
-          <p className="text-base font-bold uppercase tracking-widest text-blue-600">도구</p>
+          <p className="text-base font-bold uppercase tracking-widest text-blue-600">컨설턴트 OS</p>
           <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            실무형 AI 도구 모음
+            업무 흐름으로 연결되는 도구
           </h2>
           <p className="mt-5 text-xl leading-relaxed text-slate-600">
-            데모가 아니라 실제 컨설팅 현장에서 직접 쓰는 도구들입니다. 카드를 누르면 진짜 서비스가 새 탭에서
-            열립니다.
+            각 도구는 따로, 또 같이 작동합니다. 카드를 누르면 실제 서비스가 새 탭에서 열립니다.
           </p>
         </div>
 
@@ -578,7 +569,7 @@ function App() {
             <p className="text-base font-bold uppercase tracking-widest text-amber-600">로드맵</p>
             <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">현재 개발중</h2>
             <p className="mt-5 text-xl leading-relaxed text-slate-600">
-              곧 공개될 도구들입니다. 현장에서 가장 필요한 순서대로 만들고 있습니다.
+              현장에서 가장 급한 순서로 만들고 있습니다.
             </p>
           </div>
 
@@ -618,12 +609,10 @@ function App() {
           <div className="max-w-3xl">
             <p className="text-base font-bold uppercase tracking-widest text-blue-600">이용 방식</p>
             <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-              단계적으로 이용하는 실무형 AI 도구
+              베타는 지금, 정식은 곧
             </h2>
             <p className="mt-5 text-xl leading-relaxed text-slate-600">
-              미래 AI 랩은 컨설턴트와 중소기업 대표가 실무형 AI 도구를 직접 체험하고, 필요한 도구를
-              단계적으로 이용할 수 있도록 준비 중인 플랫폼입니다. 현재는 MVP 베타 도구를 중심으로 제한적으로
-              공개하고 있으며, 향후 회원가입과 결제 기반으로 도구별 이용 권한을 제공할 예정입니다.
+              정식 출시 전, 피드백을 주시는 분들께 먼저 열어드립니다. 지금은 베타로 무료 체험할 수 있습니다.
             </p>
           </div>
 
@@ -679,9 +668,8 @@ function App() {
           </div>
 
           <p className="mt-8 text-sm leading-relaxed text-slate-500">
-            각 도구는 시작한 시각부터 정확히 7일간 체험할 수 있으며, 솔직한 리뷰나 설문에 참여하면 최대
-            21일까지 무료 체험을 연장할 수 있습니다. 정식 이용은 결제 또는 관리자 승인 후 제공됩니다. 현재는
-            MVP 베타 운영 단계이며, 일부 도구는 제한적으로 공개됩니다.
+            각 도구는 신청 시각부터 정확히 7일 무료 체험. 리뷰·설문 참여 시 최대 21일까지 연장됩니다. 정식
+            이용은 결제 또는 관리자 승인 후 제공됩니다.
           </p>
         </div>
       </section>
@@ -689,13 +677,12 @@ function App() {
       {/* Resources — 컨설턴트를 위한 실무 전자책 */}
       <section id="resources" className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
         <div className="max-w-3xl">
-          <p className="text-base font-bold uppercase tracking-widest text-blue-600">실무 전자책</p>
+          <p className="text-base font-bold uppercase tracking-widest text-blue-600">입문 과정</p>
           <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            컨설턴트를 위한 실무 전자책
+            컨설턴트 실무, 빠르게 익히는 입문 과정
           </h2>
           <p className="mt-5 text-xl leading-relaxed text-slate-600">
-            초보 컨설턴트가 정책자금·무상지원금·고용지원금 실무 감각을 빠르게 익히고, 기존 컨설턴트도 상담과
-            제안에 바로 활용할 수 있는 실무 전자책입니다.
+            상담에서 가장 많이 나오는 정책자금·무상지원금·고용지원금 3가지를 빠르게 익히는 과정입니다.
           </p>
         </div>
 
@@ -718,14 +705,14 @@ function App() {
           </a>
           <div className="p-8 sm:p-10">
             <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
-              📘 실무 전자책
+              📘 컨설턴트 입문 과정
             </span>
             <h3 className="mt-5 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
               정책자금 · 무상지원금 · 고용지원금 실무 가이드
             </h3>
             <p className="mt-4 text-lg leading-relaxed text-slate-600">
-              고객들이 가장 많이 묻는 정책자금, 무상지원금, 고용지원금 3가지 영역을 중심으로, 초보 컨설턴트가
-              상담과 제안에 바로 활용할 수 있도록 정리한 실무 전자책입니다.
+              고객이 가장 많이 묻는 3가지를 중심으로, 상담과 제안에 바로 쓰도록 정리했습니다. 입문 컨설턴트의
+              첫 무기가 됩니다.
             </p>
             <a
               href="https://futureailab.crekit.io/landing"
@@ -733,7 +720,7 @@ function App() {
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-slate-700"
             >
-              전자책 자세히 보기
+              입문 과정 살펴보기
               <span aria-hidden>↗</span>
             </a>
           </div>
@@ -747,10 +734,10 @@ function App() {
           <div className="max-w-3xl">
             <p className="text-base font-bold uppercase tracking-widest text-sky-400">제작철학</p>
             <h2 className="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              AI는 컨설팅의 품질과 속도를 높입니다
+              AI는 엔진일 뿐, 주인공은 컨설턴트
             </h2>
             <p className="mt-5 text-xl leading-relaxed text-slate-400">
-              AI가 컨설턴트를 대체하는 것이 아니라, 더 좋은 결과를 더 빠르게 만들도록 돕습니다.
+              AI가 컨설턴트를 대신하지 않습니다. 더 빠르게, 더 전문가처럼 일하도록 도울 뿐입니다.
             </p>
           </div>
 
@@ -773,17 +760,17 @@ function App() {
           <div className="relative">
             <p className="text-base font-bold uppercase tracking-widest text-sky-400">문의</p>
             <h2 className="mx-auto mt-3 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              반복되는 상담·검토·관리 업무를 도구로 바꾸고 싶으신가요?
+              당신의 반복 업무도, 도구가 될 수 있습니다
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-slate-300">
-              엑셀로 반복하던 계산, 흩어진 고객관리, 매번 새로 준비하던 제안서와 보고서. 컨설턴트의 실제 업무
-              흐름을 바탕으로 직접 사용할 수 있는 자동화 도구로 바꿔드립니다.
+              엑셀 계산, 흩어진 고객관리, 매번 새로 쓰던 제안서. 당신의 업무 흐름 그대로, 직접 쓰는 도구로
+              만들어 드립니다.
             </p>
             <a
               href="#inquiry"
               className="mt-9 inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-semibold text-slate-900 transition-transform hover:-translate-y-0.5"
             >
-              나만의 업무 자동화 도구 문의하기
+              내 반복 업무 도구화 문의
             </a>
           </div>
         </div>
@@ -794,8 +781,7 @@ function App() {
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">업무 자동화 제작 문의</h2>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-slate-600">
-            컨설턴트 업무, 고객관리, 엑셀 반복작업, 상담 자동화, 제안서 작성 등 자동화하고 싶은 업무를
-            편하게 남겨주세요.
+            자동화하고 싶은 업무를 편하게 남겨주세요. 김팀장이 직접 검토해 답해드립니다.
           </p>
         </div>
         <InquiryForm />
@@ -816,8 +802,8 @@ function App() {
                 </span>
               </div>
               <p className="mt-4 max-w-sm text-base leading-relaxed text-slate-500">
-                미래경영지원센터가 운영하는 실무형 AI 도구 플랫폼. AI 도구를 직접 만드는 경영 컨설턴트
-                김팀장이 만들고, 컨설턴트와 대표 모두를 위한 실무형 AI 업무도구를 제공합니다.
+                컨설턴트의 상담·분석·제안·사후관리를 하나로 잇는 업무 OS. 반복 업무를 직접 겪은 컨설턴트
+                김팀장이 만듭니다.
               </p>
             </div>
             <nav className="flex flex-wrap gap-x-6 gap-y-2 text-base font-medium text-slate-600">
@@ -830,7 +816,7 @@ function App() {
           </div>
           <div className="mt-10 flex flex-col gap-2 border-t border-slate-100 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
             <p>© {new Date().getFullYear()} 미래 AI 랩 · 미래경영지원센터</p>
-            <p>실무형 AI 도구 플랫폼 · Mirae AI Lab</p>
+            <p>컨설턴트 업무 OS · Mirae AI Lab</p>
           </div>
         </div>
       </footer>

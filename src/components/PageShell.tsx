@@ -87,7 +87,7 @@ export default function PageShell({
 
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-6 py-8 text-sm text-slate-400">
-          © {new Date().getFullYear()} 미래 AI 랩 · 미래경영지원센터 — 실무형 AI 도구 플랫폼 (베타)
+          © {new Date().getFullYear()} 미래 AI 랩 · 미래경영지원센터 — 컨설턴트 업무 OS (베타)
         </div>
       </footer>
     </div>
