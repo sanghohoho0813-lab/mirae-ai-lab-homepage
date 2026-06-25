@@ -27,12 +27,20 @@ function InquiryForm() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      const data = (await res.json().catch(() => ({}))) as { message?: string }
-      if (!res.ok) throw new Error(data.message || 'request failed')
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean
+        message?: string
+        debugCode?: string
+      }
+      if (!res.ok || data.ok === false) {
+        const code = data.debugCode ? ` [${data.debugCode}]` : ''
+        throw new Error(data.message ? `${data.message}${code}` : `요청 실패 (HTTP ${res.status})`)
+      }
       setServerMessage(data.message || SUCCESS_MESSAGE)
       setStatus('success')
       form.reset()
-    } catch {
+    } catch (e) {
+      setServerMessage(e instanceof Error ? e.message : '')
       setStatus('error')
     }
   }
@@ -133,6 +141,9 @@ function InquiryForm() {
           <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold underline">
             {CONTACT_EMAIL}
           </a>
+          {serverMessage && (
+            <span className="mt-1.5 block text-sm font-normal text-amber-700/80">사유: {serverMessage}</span>
+          )}
         </div>
       )}
 

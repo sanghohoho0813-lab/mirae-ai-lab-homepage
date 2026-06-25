@@ -125,8 +125,9 @@ ai-business-lab/
 ## 문의 폼 메일 발송 설정 방법
 
 문의 폼은 `POST /api/inquiry` (Vercel Serverless Function, Node 런타임)로 전송되어
-[Resend](https://resend.com) SDK로 메일을 발송합니다. 메일 제목은 `[AI Business Lab 문의] {이름}`
-형식입니다.
+[Resend](https://resend.com) SDK로 메일을 발송합니다. 메일 제목은 `[미래 AI 랩 문의] {이름}`
+형식이며, HTML·텍스트 본문을 함께 보냅니다. 함수는 Resend 를 핸들러 안에서 동적 import 하므로
+환경변수가 없어도 빈 500 없이 `{ ok:false, debugCode }` JSON 으로 응답합니다.
 
 ### 1) Resend 가입 & API Key 발급
 1. <https://resend.com> 에 가입합니다.
@@ -165,10 +166,30 @@ INQUIRY_FROM_EMAIL    = AI Business Lab <onboarding@resend.dev>
 로 반드시 재배포해야 새 환경변수가 함수에 반영됩니다.
 
 ### 5) 테스트
-1. 배포된 사이트의 `#inquiry` 폼에서 필수값(이름·연락처·반복 업무·문의 내용)을 채워 제출합니다.
-2. `sanghohoho0813@gmail.com` 수신함을 확인합니다. (처음엔 스팸함도 확인)
-3. 실패 시 Vercel → **Functions/Logs** 에서 `[inquiry]` 로그로 원인을 확인합니다.
-   (키 누락 / Resend 오류 등)
+1. **함수 살아있는지 확인 (GET health):** 브라우저에서 `https://<배포도메인>/api/inquiry` 접속 →
+   `{ "ok": true, "message": "inquiry api alive" }` 가 보이면 함수는 정상입니다.
+2. 배포된 사이트의 `#inquiry` 폼에서 필수값(이름·연락처·반복 업무·문의 내용)을 채워 제출합니다.
+3. `sanghohoho0813@gmail.com` 수신함을 확인합니다. (처음엔 스팸함도 확인)
+4. 실패 시 폼에 **`사유: ... [debugCode]`** 가 표시되고, Vercel → **Functions/Logs** 에 `[inquiry]`
+   로그가 남습니다. (API Key 등 민감정보는 응답·로그에 노출하지 않습니다.)
+
+#### 실패 debugCode 의미
+| debugCode | 원인 | 조치 |
+| --- | --- | --- |
+| `no_env` | `RESEND_API_KEY` 미설정 | Vercel 환경변수 등록 후 **Redeploy** |
+| `bad_body` | 필수값 누락 / JSON 파싱 실패 | 폼 필수값 확인 |
+| `resend_import` | resend 모듈 로드 실패 | `resend` 의존성/배포 상태 확인 |
+| `resend_error` | Resend 발송 거부 | 아래 "메일이 안 올 때" 참고 |
+| `unhandled_exception` | 기타 예외 | Functions 로그의 detail 확인 |
+
+#### 메일이 안 올 때 체크리스트
+1. `/api/inquiry` GET 이 `inquiry api alive` 를 반환하는지 (함수 자체 생존).
+2. Vercel 에 `RESEND_API_KEY` 가 등록되어 있고 **Redeploy** 했는지.
+3. **Resend 테스트 발신주소(`onboarding@resend.dev`) 는 기본적으로 Resend 가입 계정 이메일로만 배달됩니다.**
+   `INQUIRY_TO_EMAIL` 이 Resend 가입 이메일과 다르면 도착하지 않을 수 있으니, 본인 도메인을
+   **Domains** 에서 인증하고 `INQUIRY_FROM_EMAIL` 을 그 도메인 주소로 바꾸면 어떤 주소로도 발송됩니다.
+4. 받은편지함에 없으면 **스팸/프로모션** 함을 확인합니다.
+5. Vercel → Functions/Logs 의 `[inquiry] resend send error` detail 로 거절 사유를 확인합니다.
 
 ## 커스터마이징 메모
 
