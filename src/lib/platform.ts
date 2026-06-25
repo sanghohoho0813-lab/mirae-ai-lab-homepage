@@ -18,6 +18,7 @@ import {
   applyReviewExtension,
   applySurveyExtension,
   calculateTrialDaysLeft,
+  formatRemaining,
   canExtendByReview,
   canExtendBySurvey,
   canUseTool,
@@ -309,6 +310,8 @@ export type AccessView = {
   paid: boolean
   blocked: boolean
   remainingDays: number
+  /** 사람이 보기 좋은 남은 기간 (예: "6일", "23시간", "15분", "체험 종료", "무제한") */
+  remainingLabel: string
   expiresAt: string | null
   canStart: boolean
   canExtendReview: boolean
@@ -325,6 +328,7 @@ export function evaluateAccess(rec: ToolAccess | undefined): AccessView {
       paid: false,
       blocked: false,
       remainingDays: 0,
+      remainingLabel: '미시작',
       expiresAt: null,
       canStart: true,
       canExtendReview: false,
@@ -354,6 +358,14 @@ export function evaluateAccess(rec: ToolAccess | undefined): AccessView {
       ? Math.max(0, Math.ceil((new Date(rec.paid_until!).getTime() - now) / DAY_MS))
       : calculateTrialDaysLeft(rec, now)
 
+  const remainingLabel = rec.is_unlimited
+    ? '무제한'
+    : status === 'none'
+      ? '미시작'
+      : blocked
+        ? '권한 회수'
+        : formatRemaining(expMs, now)
+
   return {
     status,
     statusLabel: accessStatusLabel[status],
@@ -362,6 +374,7 @@ export function evaluateAccess(rec: ToolAccess | undefined): AccessView {
     paid,
     blocked,
     remainingDays,
+    remainingLabel,
     expiresAt: rec.is_unlimited ? null : expMs ? new Date(expMs).toISOString() : null,
     canStart: status === 'none',
     canExtendReview: canExtendByReview(rec),
@@ -528,4 +541,17 @@ export function getToolTitle(toolId: string): string {
 export function formatDate(iso: string | null | undefined): string {
   if (!iso) return '-'
   return new Date(iso).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+}
+
+/** 정확한 만료 "시각"까지 표시 (예: 2026. 07. 02. 14:37) */
+export function formatDateTime(iso: string | null | undefined): string {
+  if (!iso) return '-'
+  return new Date(iso).toLocaleString('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
 }

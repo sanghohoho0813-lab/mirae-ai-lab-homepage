@@ -1,8 +1,14 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { bearer, fail, getAdmin, getUser, isAdmin, json, parseBody } from '../_supabase'
-import type { SupabaseClient } from '@supabase/supabase-js'
+// /api/admin/access — 관리자 권한 변경(연장/만료/무제한/회수/결제/메모/리뷰상태).
+// 자체 포함(외부 helper import 0개) + 동적 supabase import. service_role 전용.
+// ⚠️ SUPABASE_SERVICE_ROLE_KEY 는 이 서버리스 함수 안에서만 사용됩니다(프론트 노출 금지).
 
 const DAY = 86400000
+
+function detailOf(e: unknown): string {
+  if (e instanceof Error) return `${e.name}: ${e.message}`.slice(0, 180)
+  if (e && typeof e === 'object' && 'message' in e) return String((e as { message?: unknown }).message).slice(0, 180)
+  return String(e).slice(0, 180)
+}
 
 type Body = {
   action?: string
@@ -16,13 +22,8 @@ type Body = {
   status?: string
 }
 
-async function ensureRow(admin: SupabaseClient, userId: string, toolId: string) {
-  const { data } = await admin
-    .from('tool_access')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('tool_id', toolId)
-    .maybeSingle()
+async function ensureRow(admin: any, userId: string, toolId: string) {
+  const { data } = await admin.from('tool_access').select('*').eq('user_id', userId).eq('tool_id', toolId).maybeSingle()
   if (data) return data
   const { data: created } = await admin
     .from('tool_access')
@@ -32,36 +33,67 @@ async function ensureRow(admin: SupabaseClient, userId: string, toolId: string) 
   return created
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: any, res: any) {
   try {
-    if (req.method !== 'POST') return fail(res, 405, '허용되지 않은 요청입니다.', 'method')
-    const admin = await getAdmin()
-    if (!admin) return fail(res, 500, '서버 환경변수가 설정되지 않았습니다.', 'no_env')
+    if (req.method !== 'POST') {
+      return res.status(405).json({ ok: false, message: 'POST만 허용됩니다.', debugCode: 'method_not_allowed' })
+    }
 
-    const token = bearer(req)
-    if (!token) return fail(res, 401, '인증 토큰이 없습니다. 다시 로그인해 주세요.', 'no_auth')
-    const user = await getUser(admin, token)
-    if (!user) return fail(res, 401, '세션이 유효하지 않습니다.', 'bad_token')
-    if (!(await isAdmin(admin, user.id))) return fail(res, 403, '관리자 권한이 필요합니다.', 'not_admin')
+    const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!url || !serviceKey) {
+      return res.status(500).json({ ok: false, message: '서버 환경변수가 설정되지 않았습니다.', debugCode: 'no_env' })
+    }
 
-    const body = parseBody<Body>(req)
+    const authHeader: unknown = req.headers?.authorization ?? req.headers?.Authorization
+    const token = typeof authHeader === 'string' && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+    if (!token) return res.status(401).json({ ok: false, message: '인증 토큰이 없습니다. 다시 로그인해 주세요.', debugCode: 'no_auth' })
+
+    let body: Body = {}
+    try {
+      body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body ?? {}
+    } catch (e) {
+      return res.status(400).json({ ok: false, message: '요청 본문(JSON)을 해석할 수 없습니다.', debugCode: 'bad_body', detail: detailOf(e) })
+    }
+
+    let createClient: (url: string, key: string, opts?: unknown) => any
+    try {
+      ;({ createClient } = await import('@supabase/supabase-js'))
+    } catch (e) {
+      return res.status(500).json({ ok: false, message: 'Supabase 모듈 로드에 실패했습니다.', debugCode: 'supabase_import', detail: detailOf(e) })
+    }
+    const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
+
+    const { data: userData, error: userErr } = await admin.auth.getUser(token)
+    if (userErr || !userData?.user) {
+      return res.status(401).json({ ok: false, message: '세션이 유효하지 않습니다. 다시 로그인해 주세요.', debugCode: 'bad_token', detail: detailOf(userErr) })
+    }
+    const user = userData.user
+
+    const { data: me } = await admin.from('profiles').select('role').eq('id', user.id).maybeSingle()
+    if ((me as { role?: string } | null)?.role !== 'admin') {
+      return res.status(403).json({ ok: false, message: '관리자 권한이 필요합니다.', debugCode: 'not_admin' })
+    }
+
     const { action, userId, toolId } = body
 
     if (action === 'memo') {
-      if (!userId) return json(res, 400, { message: 'userId가 필요합니다.' })
-      await admin.from('profiles').update({ memo: body.memo ?? '' }).eq('id', userId)
-      return json(res, 200, { ok: true, message: '메모를 저장했습니다.' })
+      if (!userId) return res.status(400).json({ ok: false, message: 'userId가 필요합니다.', debugCode: 'bad_body' })
+      const { error } = await admin.from('profiles').update({ memo: body.memo ?? '' }).eq('id', userId)
+      if (error) return res.status(500).json({ ok: false, message: '메모 저장에 실패했습니다.', debugCode: 'memo_update', detail: detailOf(error) })
+      return res.status(200).json({ ok: true, message: '메모를 저장했습니다.' })
     }
 
     if (action === 'reviewStatus') {
-      if (!body.reviewId || !body.status) return json(res, 400, { message: '잘못된 요청입니다.' })
-      await admin.from('reviews').update({ status: body.status }).eq('id', body.reviewId)
-      return json(res, 200, { message: '리뷰 상태를 변경했습니다.' })
+      if (!body.reviewId || !body.status) return res.status(400).json({ ok: false, message: '잘못된 요청입니다.', debugCode: 'bad_body' })
+      const { error } = await admin.from('reviews').update({ status: body.status }).eq('id', body.reviewId)
+      if (error) return res.status(500).json({ ok: false, message: '리뷰 상태 변경에 실패했습니다.', debugCode: 'review_status', detail: detailOf(error) })
+      return res.status(200).json({ ok: true, message: '리뷰 상태를 변경했습니다.' })
     }
 
-    if (!userId || !toolId) return json(res, 400, { message: 'userId, toolId가 필요합니다.' })
+    if (!userId || !toolId) return res.status(400).json({ ok: false, message: 'userId, toolId가 필요합니다.', debugCode: 'bad_body' })
     const rec = await ensureRow(admin, userId, toolId)
-    if (!rec) return json(res, 500, { message: '접근 레코드 생성 실패' })
+    if (!rec) return res.status(500).json({ ok: false, message: '접근 레코드 생성에 실패했습니다.', debugCode: 'ensure_row' })
 
     let patch: Record<string, unknown> = { granted_by_admin: true }
     const now = Date.now()
@@ -85,7 +117,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         break
       }
       case 'setExpiry':
-        if (!body.date) return json(res, 400, { message: 'date가 필요합니다.' })
+        if (!body.date) return res.status(400).json({ ok: false, message: 'date가 필요합니다.', debugCode: 'bad_body' })
         patch = {
           ...patch,
           trial_started_at: rec.trial_started_at ?? new Date(now).toISOString(),
@@ -105,13 +137,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           : { paid_until: null, access_status: rec.trial_started_at ? 'trial_active' : 'none' }
         break
       default:
-        return json(res, 400, { message: '알 수 없는 action 입니다.' })
+        return res.status(400).json({ ok: false, message: '알 수 없는 action 입니다.', debugCode: 'bad_action' })
     }
 
     const { error } = await admin.from('tool_access').update(patch).eq('id', rec.id)
-    if (error) return fail(res, 500, '처리에 실패했습니다.', 'admin_update', error)
-    return json(res, 200, { ok: true, message: '처리되었습니다.' })
-  } catch (e) {
-    return fail(res, 500, '서버 처리 중 예외가 발생했습니다.', 'unhandled_exception', e)
+    if (error) return res.status(500).json({ ok: false, message: '처리에 실패했습니다.', debugCode: 'admin_update', detail: detailOf(error) })
+    return res.status(200).json({ ok: true, message: '처리되었습니다.' })
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: '서버 처리 중 예외가 발생했습니다.', debugCode: 'unhandled_exception', detail: error instanceof Error ? error.message : String(error) })
   }
 }

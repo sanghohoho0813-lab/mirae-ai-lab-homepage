@@ -8,7 +8,7 @@ import {
   REVIEW_MIN_CHARS,
   TRIAL_DAYS,
   evaluateAccess,
-  formatDate,
+  formatDateTime,
   type ToolAccess,
 } from '../lib/platform'
 import {
@@ -244,9 +244,7 @@ export default function MyToolsPage() {
                         ? '무제한 이용 권한이 부여되었습니다.'
                         : view.status === 'none'
                           ? `아직 체험을 시작하지 않았습니다. 시작하면 ${TRIAL_DAYS}일간 이용할 수 있습니다.`
-                          : `만료일 ${formatDate(view.expiresAt)} · 남은 기간 ${
-                              view.remainingDays === Infinity ? '무제한' : `${view.remainingDays}일`
-                            }`}
+                          : `만료 ${formatDateTime(view.expiresAt)} · 남은 기간 ${view.remainingLabel}`}
                     </p>
                   </div>
 
@@ -256,11 +254,11 @@ export default function MyToolsPage() {
                         type="button"
                         disabled={busy}
                         onClick={() => run(tool.id, () => apiStartTrial(tool.id))}
-                        className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-700 disabled:opacity-50"
+                        className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {busy ? '처리 중…' : '7일 체험 시작'}
                       </button>
-                    ) : view.active && tool.is_public && tool.external_url ? (
+                    ) : view.active && tool.external_url ? (
                       <a
                         href={tool.external_url}
                         target="_blank"
@@ -271,7 +269,7 @@ export default function MyToolsPage() {
                       </a>
                     ) : (
                       <span className="rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-400">
-                        {view.status === 'revoked' ? '권한 회수됨' : '체험 만료 · 연장/결제 필요'}
+                        {view.status === 'revoked' ? '권한 회수됨' : '체험 종료 · 연장/결제 필요'}
                       </span>
                     )}
                   </div>

@@ -11,6 +11,28 @@ import { EXTENSION_DAYS, MAX_FREE_DAYS, REVIEW_MIN_CHARS, TRIAL_DAYS } from '../
 export { TRIAL_DAYS, EXTENSION_DAYS, MAX_FREE_DAYS, REVIEW_MIN_CHARS }
 
 const DAY_MS = 24 * 60 * 60 * 1000
+const HOUR_MS = 60 * 60 * 1000
+const MIN_MS = 60 * 1000
+
+/**
+ * 남은 기간을 "신청 시각부터 정확히" 밀리초 기준으로 floor 하여 표시.
+ *  - >=1일 → "N일"  (절대 올림하지 않음 → 8일 같은 과대표시 방지)
+ *  - <1일  → "N시간"
+ *  - <1시간 → "N분"
+ *  - 만료   → "체험 종료"
+ */
+export function formatRemaining(expiryMs: number | null, now = Date.now()): string {
+  if (expiryMs == null) return '-'
+  const ms = expiryMs - now
+  if (ms <= 0) return '체험 종료'
+  const days = Math.floor(ms / DAY_MS)
+  if (days >= 1) return `${days}일`
+  const hours = Math.floor(ms / HOUR_MS)
+  if (hours >= 1) return `${hours}시간`
+  const mins = Math.floor(ms / MIN_MS)
+  if (mins >= 1) return `${mins}분`
+  return '곧 종료'
+}
 
 /** 무료 체험으로 허용되는 총 일수 (기본 + 리뷰/설문 연장), 최대 21일로 고정 */
 export function trialAllowedDays(a: ToolAccess): number {
@@ -42,7 +64,8 @@ export function effectiveExpiryMs(a: ToolAccess): number | null {
 export function calculateTrialDaysLeft(a: ToolAccess, now = Date.now()): number {
   const exp = effectiveExpiryMs(a)
   if (exp == null) return 0
-  return Math.max(0, Math.ceil((exp - now) / DAY_MS))
+  // floor: 7일 체험을 8일로 과대표시하지 않도록 (밀리초 기준)
+  return Math.max(0, Math.floor((exp - now) / DAY_MS))
 }
 
 export function isTrialExpired(a: ToolAccess, now = Date.now()): boolean {

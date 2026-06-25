@@ -47,7 +47,7 @@ function ModuleRow({
       </td>
       <td className="px-2 py-3 text-slate-500">{formatDate(rec?.trial_started_at)}</td>
       <td className="px-2 py-3 text-slate-500">{view.unlimited ? '무제한' : formatDate(view.expiresAt)}</td>
-      <td className="px-2 py-3 text-slate-500">{view.unlimited ? '∞' : view.remainingDays > 0 ? `${view.remainingDays}일` : '-'}</td>
+      <td className="px-2 py-3 text-slate-500">{view.unlimited ? '∞' : view.remainingLabel}</td>
       <td className="px-2 py-3 text-xs text-slate-400">
         R {rec?.review_extension_used ? '✓' : '–'} / S {rec?.survey_extension_used ? '✓' : '–'}
       </td>
