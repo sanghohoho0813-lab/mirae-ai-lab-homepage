@@ -111,12 +111,12 @@ const audienceCards = [
 ]
 
 const osFlow = [
-  { title: '고객 상담', caption: '첫 미팅에서 놓치지 않기' },
-  { title: '기업 분석', caption: '재무·지원금·감면 확인' },
-  { title: '제안 포인트 발굴', caption: '고객에게 말할 무기 정리' },
-  { title: '계약', caption: '상담을 제안으로 연결' },
-  { title: '사후관리', caption: '관리받는 느낌 제공' },
-  { title: '재계약', caption: '추가 제안과 관계 유지' },
+  { title: '고객 상담', caption: '첫 미팅 준비' },
+  { title: '기업 분석', caption: '핵심 포인트 확인' },
+  { title: '제안 포인트 발굴', caption: '말할 무기 정리' },
+  { title: '계약', caption: '제안으로 연결' },
+  { title: '사후관리', caption: '관리받는 느낌' },
+  { title: '재계약', caption: '추가 제안 유지' },
 ]
 
 const faqs = [
@@ -413,15 +413,15 @@ function App() {
           <p className="text-center text-2xl font-extrabold leading-snug tracking-tight text-slate-900 sm:text-3xl">
             상담부터 재계약까지, <span className="text-blue-600">끊기지 않는 하나의 흐름</span>
           </p>
-          <ol className="mt-9 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-6">
+          <ol className="mt-8 grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
             {osFlow.map((s, i) => (
               <li
                 key={s.title}
-                className="rounded-3xl border border-slate-100 bg-slate-50 p-5 text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-7"
+                className="flex flex-col items-center rounded-2xl border border-slate-100 bg-slate-50 px-3 py-4 text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
                 <span className="text-base font-extrabold text-blue-600">{`0${i + 1}`}</span>
-                <p className="mt-2.5 text-lg font-bold leading-snug text-slate-900 sm:text-xl">{s.title}</p>
-                <p className="mt-2 text-base leading-relaxed text-slate-500">{s.caption}</p>
+                <p className="mt-1.5 text-lg font-bold leading-tight text-slate-900 sm:text-xl">{s.title}</p>
+                <p className="mt-1.5 text-sm leading-snug text-slate-500">{s.caption}</p>
               </li>
             ))}
           </ol>
