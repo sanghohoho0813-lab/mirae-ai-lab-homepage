@@ -546,10 +546,12 @@ function App() {
             className="group block overflow-hidden bg-slate-100"
           >
             <img
-              src="/ebook-cover.png"
+              src="/ebook-cover.webp"
               alt="정책자금 · 무상지원금 · 고용지원금 실무 전자책 표지"
+              width={1500}
+              height={844}
               loading="lazy"
-              className="w-full transition-transform duration-500 group-hover:scale-[1.03]"
+              className="block w-full transition-transform duration-500 group-hover:scale-[1.03]"
             />
           </a>
           <div className="p-8 sm:p-10">
