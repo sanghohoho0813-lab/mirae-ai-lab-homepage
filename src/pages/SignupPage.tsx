@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PageShell from '../components/PageShell'
 import { useAuth } from '../lib/auth'
@@ -13,11 +13,12 @@ export default function SignupPage() {
   const { signup } = useAuth()
   const navigate = useNavigate()
   const modules = getTrialModules()
+  const [error, setError] = useState('')
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const fd = new FormData(event.currentTarget)
-    signup({
+    const result = signup({
       name: String(fd.get('name') ?? '').trim(),
       email: String(fd.get('email') ?? '').trim(),
       phone: String(fd.get('phone') ?? '').trim(),
@@ -25,6 +26,10 @@ export default function SignupPage() {
       organization: String(fd.get('organization') ?? '').trim(),
       interests: fd.getAll('interests').map(String),
     })
+    if (!result.ok) {
+      setError(result.error ?? '회원가입에 실패했습니다.')
+      return
+    }
     navigate('/my-tools')
   }
 
@@ -55,7 +60,15 @@ export default function SignupPage() {
               <label htmlFor="password" className={labelClass}>
                 비밀번호 <span className="text-rose-500">*</span>
               </label>
-              <input id="password" name="password" type="password" required placeholder="비밀번호" className={inputClass} />
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                minLength={8}
+                placeholder="8자 이상"
+                className={inputClass}
+              />
             </div>
           </div>
 
@@ -86,6 +99,10 @@ export default function SignupPage() {
               ))}
             </div>
           </div>
+
+          {error && (
+            <p className="rounded-lg bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700">{error}</p>
+          )}
 
           <button
             type="submit"

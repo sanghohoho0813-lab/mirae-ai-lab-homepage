@@ -23,8 +23,9 @@ function ReviewPanel({ onSubmit }: { onSubmit: (content: string) => void }) {
   return (
     <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
       <p className="text-sm leading-relaxed text-slate-600">
-        솔직한 사용 후기와 개선 피드백을 <b>{REVIEW_MIN_CHARS}자 이상</b> 남겨주시면 체험이 {EXTENSION_DAYS}일
-        연장됩니다. (좋은 평가를 강요하지 않습니다. 정직한 후기를 환영합니다.)
+        <b>{REVIEW_MIN_CHARS}자 이상</b> 사용 후기를 남기면 7일 체험 기간을 연장할 수 있습니다. 좋았던
+        점뿐 아니라 불편했던 점, 개선되면 좋을 점도 자유롭게 적어주세요. 실제 개선에 반영하기 위한
+        피드백으로 활용됩니다. (연장 1회 · 최대 {MAX_FREE_DAYS}일)
       </p>
       <textarea
         rows={5}
@@ -50,13 +51,64 @@ function ReviewPanel({ onSubmit }: { onSubmit: (content: string) => void }) {
   )
 }
 
-const surveyQuestions: { name: string; label: string; type: 'text' | 'select'; options?: string[] }[] = [
-  { name: 'used', label: '어떤 도구를 사용하셨나요?', type: 'text' },
-  { name: 'helpful', label: '가장 도움이 된 기능은?', type: 'text' },
-  { name: 'inconvenient', label: '불편했던 점은?', type: 'text' },
-  { name: 'price', label: '유료로 쓴다면 적정 가격은?', type: 'text' },
-  { name: 'want', label: '추가로 원하는 기능은?', type: 'text' },
-  { name: 'recommend', label: '추천 의향', type: 'select', options: ['매우 있음', '있음', '보통', '낮음'] },
+type SurveyQuestion =
+  | { name: string; label: string; type: 'radio'; required?: boolean; options: string[] }
+  | { name: string; label: string; type: 'text' }
+
+// 객관식 중심 + 마지막 주관식 2개
+const surveyQuestions: SurveyQuestion[] = [
+  {
+    name: 'used',
+    label: '1. 어떤 도구를 사용하셨나요?',
+    type: 'radio',
+    required: true,
+    options: [
+      '고용지원금 프로',
+      '연구소 사후관리 OS',
+      '법인컨설팅 세일즈 OS',
+      '크레탑 자동분석기',
+      '창업감면 & 취등록세 체크',
+    ],
+  },
+  {
+    name: 'helpful',
+    label: '2. 가장 도움이 된 부분은 무엇인가요?',
+    type: 'radio',
+    options: [
+      '검토 시간 단축',
+      '고객 설명이 쉬워짐',
+      '제안서/보고서 준비에 도움',
+      '놓치던 항목 발견',
+      '고객관리/후속관리 도움',
+      '아직 잘 모르겠음',
+    ],
+  },
+  {
+    name: 'reuse',
+    label: '3. 실제 업무에 다시 사용할 의향이 있나요?',
+    type: 'radio',
+    options: ['매우 있음', '있음', '보통', '낮음', '없음'],
+  },
+  {
+    name: 'price',
+    label: '4. 유료로 이용한다면 적정하다고 느끼는 월 이용료는?',
+    type: 'radio',
+    options: ['1만원 미만', '1~3만원', '3~5만원', '5~10만원', '10만원 이상', '아직 판단 어려움'],
+  },
+  {
+    name: 'improve',
+    label: '5. 가장 개선이 필요한 부분은?',
+    type: 'radio',
+    options: ['기능 부족', '설명 부족', 'UI/UX', '속도', '정확도', '도구별 활용 방법', '기타'],
+  },
+  {
+    name: 'recommend',
+    label: '6. 다른 컨설턴트에게 추천할 의향이 있나요?',
+    type: 'radio',
+    options: ['매우 추천', '추천', '보통', '비추천', '매우 비추천'],
+  },
+  { name: 'want', label: '7. 추가로 원하는 기능이 있다면 적어주세요.', type: 'text' },
+  { name: 'inconvenient', label: '8. 적용하면서 불편했던 점이 있다면 적어주세요.', type: 'text' },
 ]
 
 function SurveyPanel({ onSubmit }: { onSubmit: (answers: Record<string, string>) => void }) {
@@ -68,29 +120,37 @@ function SurveyPanel({ onSubmit }: { onSubmit: (answers: Record<string, string>)
     onSubmit(answers)
   }
   return (
-    <form onSubmit={handle} className="mt-4 space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-5">
+    <form onSubmit={handle} className="mt-4 space-y-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
       <p className="text-sm leading-relaxed text-slate-600">
-        간단한 설문에 참여하시면 체험이 {EXTENSION_DAYS}일 연장됩니다.
+        간단한 설문(객관식 중심)에 참여하시면 체험이 {EXTENSION_DAYS}일 연장됩니다. (연장 1회 · 최대{' '}
+        {MAX_FREE_DAYS}일)
       </p>
       {surveyQuestions.map((q) => (
         <div key={q.name}>
-          <label className="mb-1 block text-sm font-medium text-slate-700">{q.label}</label>
-          {q.type === 'select' ? (
-            <select
-              name={q.name}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500"
-            >
-              {q.options?.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
+          <p className="mb-2 text-sm font-semibold text-slate-800">{q.label}</p>
+          {q.type === 'radio' ? (
+            <div className="flex flex-wrap gap-2">
+              {q.options.map((opt) => (
+                <label
+                  key={opt}
+                  className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:text-blue-700"
+                >
+                  <input
+                    type="radio"
+                    name={q.name}
+                    value={opt}
+                    required={q.required}
+                    className="h-3.5 w-3.5 accent-blue-600"
+                  />
+                  {opt}
+                </label>
               ))}
-            </select>
+            </div>
           ) : (
-            <input
+            <textarea
               name={q.name}
-              type="text"
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              rows={2}
+              className="w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
             />
           )}
         </div>

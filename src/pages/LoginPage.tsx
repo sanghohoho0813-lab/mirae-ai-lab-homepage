@@ -14,12 +14,17 @@ export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!email.trim()) return
-    const profile = login(email.trim())
-    navigate(profile.role === 'admin' ? '/admin' : '/my-tools')
+    const result = login(email.trim())
+    if (!result.ok) {
+      setError(result.error ?? '로그인에 실패했습니다.')
+      return
+    }
+    navigate(result.user?.role === 'admin' ? '/admin' : '/my-tools')
   }
 
   return (
@@ -35,7 +40,10 @@ export default function LoginPage() {
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                setError('')
+              }}
               placeholder="you@example.com"
               className={inputClass}
             />
@@ -46,6 +54,9 @@ export default function LoginPage() {
             </label>
             <input id="password" type="password" placeholder="비밀번호" className={inputClass} />
           </div>
+          {error && (
+            <p className="rounded-lg bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700">{error}</p>
+          )}
           <button
             type="submit"
             className="w-full rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700"
