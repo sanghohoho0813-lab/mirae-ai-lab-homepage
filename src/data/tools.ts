@@ -2,18 +2,25 @@ export type ToolStatus = 'MVP 베타' | '비공개 검토중' | '개발중'
 
 export type SubStatus = '정식 출시 예정' | '내부 테스트중' | '현재 외부 공개 제한'
 
+// 향후 회원 권한 기반 접근으로 확장하기 위한 접근 유형
+export type AccessType = 'public' | 'beta' | 'restricted' | 'private' | 'comingSoon'
+
 export type Tool = {
   id: string
+  slug: string
   title: string
   category: string
   status: ToolStatus
   subStatus: SubStatus
+  /** 향후 권한/체험 제어용 접근 유형 */
+  accessType: AccessType
+  /** 7일 무료 체험 대상 모듈 여부 */
+  isTrialAvailable: boolean
   description: string
   /** 카드 하단 한 줄 가치 메시지 */
   valueLine: string
   url: string
   isPublic: boolean
-  buttonText: string
   features: string[]
   /** 추천 대상 */
   target: string
@@ -33,16 +40,18 @@ export type UpcomingTool = {
 export const tools: Tool[] = [
   {
     id: 'hr-subsidy-pro',
+    slug: 'hr-subsidy-pro',
     title: '고용지원금 프로',
     category: '고용지원금',
     status: 'MVP 베타',
     subStatus: '정식 출시 예정',
+    accessType: 'beta',
+    isTrialAvailable: true,
     description:
       '받을 수 있는 지원금을 회차별로 관리하고 입·퇴사 변동까지 반영해, 고객에게 더 많은 혜택을 더 정확히 안내할 수 있도록 돕는 도구입니다.',
     valueLine: '놓치는 지원금 없이, 더 많은 혜택을 더 정확히',
     url: 'https://hr-subsidy-pro.vercel.app/',
     isPublic: true,
-    buttonText: '베타 버전 보기',
     features: ['수급 가능액 자동 산정', '회차별 누락 방지', '입·퇴사 변동 관리', '고객 보고 자료화'],
     target: '컨설턴트 · 대표',
     thumbnail: '/thumbnails/hr-subsidy-pro.svg',
@@ -50,16 +59,17 @@ export const tools: Tool[] = [
   },
   {
     id: 'labcare-rnd-os',
+    slug: 'labcare-rnd-os',
     title: '연구소 사후관리 OS',
     category: '연구소 관리',
     status: 'MVP 베타',
     subStatus: '정식 출시 예정',
-    description:
-      '설립 준비부터 사후관리·월간 알림·종합보고서·추가 제안까지 한 흐름으로 묶어, 관리 누락은 줄이고 고객 만족도는 높이는 도구입니다.',
+    accessType: 'beta',
+    isTrialAvailable: true,
+    description: '사후관리 누락을 줄이고 고객 만족도를 높이는 연구소 관리 도구입니다.',
     valueLine: '관리 누락은 줄이고 고객 만족도는 높이고',
     url: 'https://labcare-rnd-os.vercel.app/dashboard',
     isPublic: true,
-    buttonText: '베타 버전 보기',
     features: ['설립 준비 체크', '월간 관리 알림', '종합보고서 생성', '추가 컨설팅 제안'],
     target: '컨설턴트',
     thumbnail: '/thumbnails/labcare-rnd-os.svg',
@@ -67,16 +77,17 @@ export const tools: Tool[] = [
   },
   {
     id: 'corp-sales-os',
+    slug: 'corp-sales-os',
     title: '법인컨설팅 세일즈 OS',
     category: '고객관리·영업',
     status: 'MVP 베타',
     subStatus: '내부 테스트중',
-    description:
-      '단순 CRM을 넘어 미팅 전략·잠재고객·제안·교육·콘텐츠까지 한 곳에서 관리해, 계약률과 업무 효율을 높이는 도구입니다.',
-    valueLine: '흩어진 영업 지식을 한곳에, 계약률은 위로',
+    accessType: 'restricted',
+    isTrialAvailable: true,
+    description: '고객관리와 상담이력을 체계화해 계약률과 업무 효율을 높이는 도구입니다.',
+    valueLine: '계약률을 높이는 컨설턴트용 영업 도구',
     url: 'https://corp-sales-os.vercel.app/',
     isPublic: true,
-    buttonText: '베타 버전 보기',
     features: ['잠재고객·후속관리', '미팅 전략 메모', '제안·상담 이력', '콘텐츠·교육 관리'],
     target: '컨설턴트',
     thumbnail: '/thumbnails/corp-sales-os.svg',
@@ -84,16 +95,18 @@ export const tools: Tool[] = [
   },
   {
     id: 'cretop-analyzer',
+    slug: 'cretop-analyzer',
     title: '크레탑 자동분석기',
     category: '기업분석',
     status: 'MVP 베타',
     subStatus: '정식 출시 예정',
+    accessType: 'beta',
+    isTrialAvailable: true,
     description:
       '크레탑 자료 해석을 자동화해 3개년 재무구조와 증감, 미팅에서 꺼낼 핵심 포인트까지 몇 초 만에 정리하는 도구입니다.',
     valueLine: '미팅 전에 꺼낼 무기를 몇 초 만에',
     url: 'https://corp-sales-os-git-claude-cretop-mini-app-ksh90813.vercel.app/mini.html',
     isPublic: true,
-    buttonText: '베타 버전 보기',
     features: ['3개년 증감 분석', '핵심 재무지표 정리', '추천 미팅 주제', '임시 가치평가'],
     target: '컨설턴트',
     thumbnail: '/thumbnails/cretop-analyzer.png',
@@ -101,16 +114,18 @@ export const tools: Tool[] = [
   },
   {
     id: 'stock-exit-simulator',
+    slug: 'stock-exit-simulator',
     title: '주식 EXIT 솔루션 시뮬레이터',
     category: '자본거래',
     status: '비공개 검토중',
     subStatus: '현재 외부 공개 제한',
+    accessType: 'private',
+    isTrialAvailable: false,
     description:
       '이익소각·자사주·배당 등 EXIT 전략을 비교해, 대표의 복잡한 자본거래 의사결정을 한눈에 돕는 도구입니다.',
     valueLine: '복잡한 자본거래 의사결정을 한눈에',
     url: 'https://stock-exit-simulator-a1vm.vercel.app/?review=1',
     isPublic: false,
-    buttonText: '공개 준비중',
     features: ['EXIT 전략 비교', '절세효과 시뮬레이션', '자본거래 시나리오', '의사결정 리포트'],
     target: '컨설턴트 · 대표',
     thumbnail: '',
@@ -118,16 +133,18 @@ export const tools: Tool[] = [
   },
   {
     id: 'startup-tax-checker',
+    slug: 'startup-tax-checker',
     title: '창업감면 & 취등록세 체크',
     category: '절세',
     status: 'MVP 베타',
     subStatus: '정식 출시 예정',
+    accessType: 'beta',
+    isTrialAvailable: true,
     description:
       '업종·나이·지역·법령 변화에 따라 달라지는 감면 판단을 1분 안에 정리해, 고객 앞에서 바로 절세 가능성을 보여줄 수 있는 도구입니다.',
     valueLine: '복잡한 감면 판단을 1분 만에, 고객 앞에서 바로',
     url: 'https://startup-tax-checker.vercel.app/',
     isPublic: true,
-    buttonText: '베타 버전 보기',
     features: ['창업감면 1분 진단', '취등록세 절감 확인', '법령 기준 반영', '상담 즉시 활용'],
     target: '컨설턴트 · 대표',
     thumbnail: '/thumbnails/startup-tax-checker.png',

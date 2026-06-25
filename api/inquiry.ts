@@ -12,9 +12,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Resend } from 'resend'
 
-const SITE_NAME = 'AI Business Lab'
+const SITE_NAME = '미래 AI 랩'
 const DEFAULT_TO = 'sanghohoho0813@gmail.com'
-const DEFAULT_FROM = 'AI Business Lab <onboarding@resend.dev>'
+const DEFAULT_FROM = '미래 AI 랩 <onboarding@resend.dev>'
 
 type InquiryBody = {
   name?: string
@@ -116,7 +116,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     <div style="font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;background:#f1f5f9;padding:24px">
       <div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden">
         <div style="background:#0f172a;padding:20px 24px">
-          <p style="margin:0;color:#38bdf8;font-size:12px;font-weight:700;letter-spacing:1px">AI BUSINESS LAB</p>
+          <p style="margin:0;color:#38bdf8;font-size:12px;font-weight:700;letter-spacing:1px">미래 AI 랩 · MIRAE AI LAB</p>
           <p style="margin:6px 0 0;color:#ffffff;font-size:18px;font-weight:700">새 업무 자동화 제작 문의</p>
         </div>
         <table style="width:100%;border-collapse:collapse">${tableRows}</table>

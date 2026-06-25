@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "AI 도구를 직접 만드는 경영 컨설턴트, 김팀장 — 컨설턴트를 위한 실무형 AI 업무도구 / AI Business Lab",
+  "description": "미래 AI 랩 (Mirae AI Lab) — 미래경영지원센터가 운영하는 실무형 AI 도구 플랫폼",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -13,6 +13,7 @@
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-router-dom": "^7.18.0",
     "resend": "^6.14.0"
   },
   "devDependencies": {

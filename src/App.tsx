@@ -1,5 +1,8 @@
+import { Link } from 'react-router-dom'
 import HeroSlider from './components/HeroSlider'
 import InquiryForm from './components/InquiryForm'
+import { useAuth } from './lib/auth'
+import { accessTypeLabel } from './lib/platform'
 import {
   kpis,
   statusStyles,
@@ -23,11 +26,61 @@ type Principle = {
 
 const navItems = [
   { label: '소개', href: '#about' },
-  { label: '대상', href: '#audience' },
   { label: '도구', href: '#tools' },
-  { label: '활용분야', href: '#fields' },
   { label: '전자책', href: '#resources' },
+  { label: '요금제', href: '#pricing' },
   { label: '문의', href: '#inquiry' },
+]
+
+type PricingPlan = {
+  name: string
+  badge: string
+  badgeClass: string
+  highlight: boolean
+  points: string[]
+  cta: { label: string; to?: string; href?: string }
+}
+
+const pricingPlans: PricingPlan[] = [
+  {
+    name: '7일 무료 체험',
+    badge: '베타 운영 중',
+    badgeClass: 'bg-emerald-50 text-emerald-700',
+    highlight: true,
+    points: [
+      '모듈별 기본 7일 체험',
+      '리뷰 작성 시 7일 연장',
+      '설문 참여 시 7일 연장',
+      '최대 21일까지 무료 체험',
+    ],
+    cta: { label: '무료 체험 시작', to: '/signup' },
+  },
+  {
+    name: '컨설턴트 이용권',
+    badge: '출시 예정',
+    badgeClass: 'bg-blue-50 text-blue-700',
+    highlight: false,
+    points: [
+      '정식 출시 후 유료 이용 예정',
+      '도구별 또는 통합 이용권 제공 예정',
+      '고객관리 · 검토 · 제안 업무 지원',
+      '결제 연동 준비 중',
+    ],
+    cta: { label: '출시 알림 받기', href: '#inquiry' },
+  },
+  {
+    name: '관리자 승인 · 맞춤 제작',
+    badge: '준비 중',
+    badgeClass: 'bg-slate-100 text-slate-600',
+    highlight: false,
+    points: [
+      '관리자 승인으로 기간 연장 가능',
+      '특정 도구 무제한 권한 부여 가능',
+      '나만의 업무 자동화 도구 제작',
+      '반복 업무 분석 · 내부 프로세스 자동화',
+    ],
+    cta: { label: '제작 문의하기', href: '#inquiry' },
+  },
 ]
 
 const fields: Field[] = [
@@ -191,7 +244,7 @@ function ToolCard({ tool }: { tool: Tool }) {
           </p>
           {tool.isPublic ? (
             <span className="mt-4 inline-flex items-center gap-1.5 text-base font-bold text-blue-600 transition-colors group-hover:text-blue-700">
-              {tool.buttonText}
+              {accessTypeLabel[tool.accessType]}
               <span aria-hidden className="transition-transform group-hover:translate-x-0.5">↗</span>
             </span>
           ) : (
@@ -200,7 +253,7 @@ function ToolCard({ tool }: { tool: Tool }) {
               disabled
               className="mt-4 inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-4 py-2.5 text-base font-semibold text-slate-400"
             >
-              🔒 {tool.buttonText}
+              🔒 {accessTypeLabel[tool.accessType]}
             </button>
           )}
         </div>
@@ -224,6 +277,7 @@ function ToolCard({ tool }: { tool: Tool }) {
 }
 
 function App() {
+  const { user, isAdmin } = useAuth()
   return (
     <div className="min-h-screen bg-white text-slate-900 antialiased [word-break:keep-all]">
       {/* Header */}
@@ -234,8 +288,8 @@ function App() {
               AI
             </span>
             <span className="flex flex-col leading-tight">
-              <span className="text-base font-bold tracking-tight text-slate-900">AI Business Lab</span>
-              <span className="text-xs font-medium text-slate-500">업무 자동화 LAB · 김팀장</span>
+              <span className="text-base font-bold tracking-tight text-slate-900">미래 AI 랩</span>
+              <span className="text-xs font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</span>
             </span>
           </a>
           <nav className="hidden items-center gap-7 text-base font-medium text-slate-600 lg:flex">
@@ -245,12 +299,33 @@ function App() {
               </a>
             ))}
           </nav>
-          <a
-            href="#inquiry"
-            className="rounded-lg bg-slate-900 px-4 py-2.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
-          >
-            제작 문의하기
-          </a>
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="hidden text-base font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline"
+                  >
+                    관리자
+                  </Link>
+                )}
+                <Link
+                  to="/my-tools"
+                  className="rounded-lg bg-slate-900 px-4 py-2.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
+                >
+                  내 도구함
+                </Link>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="rounded-lg bg-slate-900 px-4 py-2.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
+              >
+                로그인
+              </Link>
+            )}
+          </div>
         </div>
       </header>
 
@@ -266,7 +341,7 @@ function App() {
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-base font-medium text-slate-200 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-sky-400" />
-                업무 자동화 LAB
+                미래 AI 랩 · 실무형 AI 도구 플랫폼
               </span>
 
               <h1 className="mt-7 text-[1.7rem] font-extrabold leading-[1.2] tracking-tight text-white sm:text-[2.6rem] lg:text-[3.3rem]">
@@ -525,6 +600,80 @@ function App() {
         </div>
       </section>
 
+      {/* Pricing — 이용 방식 */}
+      <section id="pricing" className="border-y border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
+          <div className="max-w-3xl">
+            <p className="text-base font-bold uppercase tracking-widest text-blue-600">이용 방식</p>
+            <h2 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+              단계적으로 이용하는 실무형 AI 도구
+            </h2>
+            <p className="mt-5 text-xl leading-relaxed text-slate-600">
+              미래 AI 랩은 컨설턴트와 중소기업 대표가 실무형 AI 도구를 직접 체험하고, 필요한 도구를
+              단계적으로 이용할 수 있도록 준비 중인 플랫폼입니다. 현재는 MVP 베타 도구를 중심으로 제한적으로
+              공개하고 있으며, 향후 회원가입과 결제 기반으로 도구별 이용 권한을 제공할 예정입니다.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-6 lg:grid-cols-3">
+            {pricingPlans.map((plan) => (
+              <article
+                key={plan.name}
+                className={`flex flex-col rounded-3xl bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-md ${
+                  plan.highlight ? 'border-2 border-blue-300' : 'border border-slate-200'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="text-xl font-bold tracking-tight text-slate-900">{plan.name}</h3>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${plan.badgeClass}`}>
+                    {plan.badge}
+                  </span>
+                </div>
+                <ul className="mt-6 flex-1 space-y-3 text-base text-slate-600">
+                  {plan.points.map((point) => (
+                    <li key={point} className="flex items-start gap-2.5">
+                      <span className="mt-0.5 text-blue-500" aria-hidden>
+                        ✓
+                      </span>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+                {plan.cta.to ? (
+                  <Link
+                    to={plan.cta.to}
+                    className={`mt-8 inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-base font-semibold transition-colors ${
+                      plan.highlight
+                        ? 'bg-slate-900 text-white hover:bg-slate-700'
+                        : 'border border-slate-300 text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    {plan.cta.label}
+                  </Link>
+                ) : (
+                  <a
+                    href={plan.cta.href}
+                    className={`mt-8 inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-base font-semibold transition-colors ${
+                      plan.highlight
+                        ? 'bg-slate-900 text-white hover:bg-slate-700'
+                        : 'border border-slate-300 text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    {plan.cta.label}
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
+
+          <p className="mt-8 text-sm leading-relaxed text-slate-500">
+            각 도구는 기본 7일 동안 체험할 수 있으며, 리뷰 또는 설문에 참여하면 최대 21일까지 무료 체험을
+            연장할 수 있습니다. 정식 이용은 결제 또는 관리자 승인을 통해 제공될 예정입니다. 현재는 MVP 베타
+            운영 단계이며, 일부 도구는 제한적으로 공개됩니다.
+          </p>
+        </div>
+      </section>
+
       {/* Resources — 컨설턴트를 위한 실무 전자책 */}
       <section id="resources" className="mx-auto max-w-6xl px-6 py-28 sm:py-32">
         <div className="max-w-3xl">
@@ -651,13 +800,13 @@ function App() {
                   AI
                 </span>
                 <span className="flex flex-col leading-tight">
-                  <span className="text-base font-bold text-slate-900">AI Business Lab</span>
-                  <span className="text-xs font-medium text-slate-500">업무 자동화 LAB</span>
+                  <span className="text-base font-bold text-slate-900">미래 AI 랩</span>
+                  <span className="text-xs font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</span>
                 </span>
               </div>
               <p className="mt-4 max-w-sm text-base leading-relaxed text-slate-500">
-                AI 도구를 직접 만드는 경영 컨설턴트, 김팀장. 컨설턴트와 대표 모두를 위한 실무형 AI
-                업무도구를 만듭니다.
+                미래경영지원센터가 운영하는 실무형 AI 도구 플랫폼. AI 도구를 직접 만드는 경영 컨설턴트
+                김팀장이 만들고, 컨설턴트와 대표 모두를 위한 실무형 AI 업무도구를 제공합니다.
               </p>
             </div>
             <nav className="flex flex-wrap gap-x-6 gap-y-2 text-base font-medium text-slate-600">
@@ -669,8 +818,8 @@ function App() {
             </nav>
           </div>
           <div className="mt-10 flex flex-col gap-2 border-t border-slate-100 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-            <p>© {new Date().getFullYear()} AI Business Lab · 김팀장</p>
-            <p>실무형 AI 도구 모음 · AI Business Tools</p>
+            <p>© {new Date().getFullYear()} 미래 AI 랩 · 미래경영지원센터</p>
+            <p>실무형 AI 도구 플랫폼 · Mirae AI Lab</p>
           </div>
         </div>
       </footer>

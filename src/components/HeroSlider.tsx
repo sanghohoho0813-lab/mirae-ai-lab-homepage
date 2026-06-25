@@ -98,7 +98,7 @@ function HeroSlider() {
           <span className="h-3 w-3 rounded-full bg-rose-300" />
           <span className="h-3 w-3 rounded-full bg-amber-300" />
           <span className="h-3 w-3 rounded-full bg-emerald-300" />
-          <span className="ml-2 text-sm font-semibold text-slate-500">AI Business Lab · 도구 미리보기</span>
+          <span className="ml-2 text-sm font-semibold text-slate-500">미래 AI 랩 · 도구 미리보기</span>
           <span className="ml-auto rounded-full bg-slate-900 px-2.5 py-0.5 text-[11px] font-semibold text-sky-300">
             {index + 1} / {slides.length}
           </span>
