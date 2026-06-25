@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { bearer, getAdmin, getUser, isAdmin, json, parseBody } from '../_supabase'
+import { bearer, fail, getAdmin, getUser, isAdmin, json, parseBody } from '../_supabase'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 const DAY = 86400000
@@ -109,9 +109,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const { error } = await admin.from('tool_access').update(patch).eq('id', rec.id)
-    if (error) return json(res, 500, { message: '처리에 실패했습니다.' })
-    return json(res, 200, { message: '처리되었습니다.' })
-  } catch {
-    return json(res, 500, { message: '서버 오류가 발생했습니다.' })
+    if (error) return fail(res, 500, '처리에 실패했습니다.', 'admin_update', error)
+    return json(res, 200, { ok: true, message: '처리되었습니다.' })
+  } catch (e) {
+    return fail(res, 500, '서버 오류가 발생했습니다.', 'admin_unhandled', e)
   }
 }

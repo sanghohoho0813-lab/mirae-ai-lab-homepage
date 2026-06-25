@@ -26,16 +26,29 @@ async function getToken(): Promise<string | null> {
 
 async function post(url: string, body: unknown): Promise<ApiResult> {
   const token = await getToken()
+  if (!token) throw new Error('로그인이 필요합니다. 다시 로그인해 주세요.')
+
   const res = await fetch(url, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(body),
   })
-  const data = (await res.json().catch(() => ({}))) as ApiResult
-  if (!res.ok) throw new Error(data.message || '요청에 실패했습니다.')
+
+  let data: ApiResult = {}
+  try {
+    data = (await res.json()) as ApiResult
+  } catch {
+    // 비정상(비-JSON) 응답 → 함수 크래시/404 등. 상태코드를 노출해 진단 가능하게.
+    throw new Error(`요청 실패 (HTTP ${res.status}). 잠시 후 다시 시도하거나 관리자에게 문의해 주세요.`)
+  }
+
+  if (!res.ok || data.ok === false) {
+    const code = data.debugCode ? ` [${String(data.debugCode)}]` : ''
+    throw new Error(`${data.message || `요청 실패 (HTTP ${res.status})`}${code}`)
+  }
   return data
 }
 

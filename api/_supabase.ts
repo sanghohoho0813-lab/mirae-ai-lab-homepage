@@ -39,3 +39,30 @@ export function parseBody<T = Record<string, unknown>>(req: VercelRequest): T {
 }
 
 export const json = (res: VercelResponse, status: number, body: unknown) => res.status(status).json(body)
+
+/** 성공 응답: { ok: true, message?, ... } */
+export const ok = (res: VercelResponse, body: Record<string, unknown> = {}) =>
+  res.status(200).json({ ok: true, ...body })
+
+/**
+ * 실패 응답: { ok: false, message, debugCode }
+ * 서버 콘솔(Vercel Logs)에는 debugCode + 원인(Supabase error message 등)을 남깁니다.
+ */
+export function fail(
+  res: VercelResponse,
+  status: number,
+  message: string,
+  debugCode: string,
+  cause?: unknown,
+): VercelResponse {
+  const detail =
+    cause instanceof Error
+      ? cause.message
+      : cause && typeof cause === 'object' && 'message' in cause
+        ? String((cause as { message?: unknown }).message)
+        : cause
+        ? String(cause)
+        : ''
+  console.error(`[trial-api] ${debugCode} (${status}) ${message}${detail ? ` :: ${detail}` : ''}`)
+  return res.status(status).json({ ok: false, message, debugCode })
+}
