@@ -54,7 +54,8 @@ ai-business-lab/
 │   ├── trial/{start,review,survey}.ts  # 체험 시작/리뷰·설문 연장 (service_role)
 │   └── admin/access.ts   # 관리자 권한 변경 (admin 검증 후 service_role)
 ├── supabase/
-│   └── schema.sql        # 테이블·RLS·트리거·시드 (SQL Editor에서 실행)
+│   ├── schema.sql        # 새 프로젝트용 전체 스키마·RLS·트리거·시드
+│   └── migrate-existing-cretop-mini.sql  # 기존 프로젝트에 비파괴적으로 추가
 ├── src/
 │   ├── main.tsx          # 라우터 (/, /login, /signup, /my-tools, /admin)
 │   ├── App.tsx           # 랜딩 페이지
@@ -84,6 +85,19 @@ ai-business-lab/
 ### 2) 스키마 실행
 **SQL Editor** 에 `supabase/schema.sql` 전체를 붙여넣고 실행합니다.
 (테이블 6개 + RLS + 가입 트리거 + 도구 시드가 생성됩니다.)
+
+#### 기존 Supabase 프로젝트에 적용하는 방법 (이미 다른 테이블이 있는 경우)
+새 프로젝트가 아니라 **이미 사용 중인 프로젝트**(예: `cretop-mini` → `mirae-ai-lab`,
+기존 `analyses`/`profiles`/`usage_events` 보유)에 얹는 경우에는 `schema.sql` 대신
+**`supabase/migrate-existing-cretop-mini.sql`** 를 실행하세요.
+
+- 기존 테이블을 **DROP/덮어쓰지 않습니다.** `profiles` 는 `ADD COLUMN IF NOT EXISTS` 로
+  없는 컬럼만 추가하고(기존 컬럼/데이터 보존), `analyses`·`usage_events` 는 건드리지 않습니다.
+- 새 테이블(tools/tool_access/reviews/surveys/payments)과 RLS·`is_admin()`·`phone_exists()`·
+  가입 트리거·도구 시드를 추가합니다. 가입 트리거는 **멱등(ON CONFLICT)** 이라 기존 가입 트리거와
+  공존합니다.
+- ⚠️ 기존 앱이 `profiles` 의 RLS=OFF 에 의존했다면, 마이그레이션의 RLS 활성화 영향을 먼저
+  검토하세요. (파일 상단 주석 참고)
 
 ### 3) 환경변수 등록 (로컬 `.env` / Vercel)
 
