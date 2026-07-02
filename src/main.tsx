@@ -9,6 +9,7 @@ import SignupPage from './pages/SignupPage'
 import MyToolsPage from './pages/MyToolsPage'
 import AdminPage from './pages/AdminPage'
 import BusinessServicesPage from './pages/BusinessServicesPage'
+import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
 import GatewayPage from './pages/GatewayPage'
 
 createRoot(document.getElementById('root')!).render(
@@ -25,6 +26,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/dashboard" element={<Navigate to="/my-tools" replace />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/business-services" element={<BusinessServicesPage />} />
+          <Route path="/business-services/:slug" element={<BusinessServiceDetailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
