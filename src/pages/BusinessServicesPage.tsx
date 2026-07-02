@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
-import PackageThumb from '../components/PackageThumb'
+import BusinessServiceVisual, { type BusinessVisualType } from '../components/BusinessServiceVisual'
 
 // 중소기업 대표님을 위한 공개 서비스몰. 상품 선택이 빨리 보이는 "모바일 우선 서비스몰" 구성.
 // 기존 페이지/컴포넌트/기능 로직은 건드리지 않습니다.
@@ -20,6 +20,19 @@ type Package = {
   process: string
   expectation: string
   featured?: boolean
+  /** 실제 이미지가 준비되면 지정 (예: '/assets/business-services/fund-diagnosis.png').
+   *  없으면 아래 packageVisual 의 visualType mockup 이 표시됩니다. */
+  imageSrc?: string
+}
+
+// 패키지 id → 비주얼 mockup 타입. 실제 이미지가 생기면 각 패키지의 imageSrc 만 채우면 됩니다.
+const packageVisual: Record<string, BusinessVisualType> = {
+  'fund-diagnosis': 'funding',
+  'gov-plan': 'gov',
+  'venture-story': 'venture',
+  'web-mvp': 'mvp',
+  'lab-cert': 'lab',
+  full: 'full',
 }
 
 const packages: Package[] = [
@@ -204,6 +217,8 @@ export default function BusinessServicesPage() {
       {/* Compact hero */}
       <section className="border-b border-slate-200 bg-slate-50/70">
         <div className="mx-auto max-w-6xl px-5 pb-10 pt-10 sm:px-6 sm:pb-12 sm:pt-14">
+          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.92fr] lg:items-center">
+            <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[0.8rem] font-semibold text-slate-600">
             <span className="h-2 w-2 rounded-full bg-blue-500" />
             미래경영지원센터 · AI 경영지원 서비스몰
@@ -248,6 +263,18 @@ export default function BusinessServicesPage() {
             <span className="text-slate-300">→</span>
             <span className="rounded-md bg-blue-50 px-2.5 py-1 text-blue-700 ring-1 ring-inset ring-blue-600/15">추천 패키지</span>
           </div>
+            </div>
+
+            {/* Hero visual — 대표가 서비스를 검토하는 화면 (데스크톱). 실제 이미지 준비 시 imageSrc 로 교체 */}
+            <div className="hidden lg:block">
+              <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl ring-1 ring-slate-900/5">
+                <div className="aspect-[4/3]">
+                  <BusinessServiceVisual type="hero" />
+                </div>
+              </div>
+              <div aria-hidden className="mx-auto mt-2 h-2 w-[86%] rounded-b-xl bg-slate-200/70" />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -263,7 +290,9 @@ export default function BusinessServicesPage() {
                 key={pkg.id}
                 className="flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-900/5"
               >
-                <PackageThumb variant={pkg.id} />
+                <div className="aspect-[16/9]">
+                  <BusinessServiceVisual type={packageVisual[pkg.id]} imageSrc={pkg.imageSrc} alt={pkg.name} />
+                </div>
                 <div className="flex flex-1 flex-col p-5 sm:p-6">
                   <div className="flex items-center gap-2">
                     <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${badgeToneClass[pkg.badgeTone]}`}>{pkg.badge}</span>
@@ -364,7 +393,9 @@ export default function BusinessServicesPage() {
                     pkg.featured ? 'border-2 border-blue-200' : 'border border-slate-200'
                   }`}
                 >
-                  <PackageThumb variant={pkg.id} />
+                  <div className="aspect-[16/9]">
+                  <BusinessServiceVisual type={packageVisual[pkg.id]} imageSrc={pkg.imageSrc} alt={pkg.name} />
+                </div>
                   <div className="flex flex-1 flex-col p-5 sm:p-6">
                     <div className="flex items-center gap-2">
                       <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">{pkg.category}</span>
@@ -500,9 +531,18 @@ export default function BusinessServicesPage() {
             <p className="mt-2 text-sm text-slate-500">이해를 돕기 위한 비식별 예시입니다. (실제 업체명이 아닙니다.)</p>
             <div className="mt-5 grid gap-4 md:grid-cols-3">
               {cases.map((c) => (
-                <div key={c.before} className="rounded-2xl border border-slate-200 bg-white p-5">
-                  <p className="text-xs font-semibold text-slate-400">기존 · {c.before}</p>
-                  <p className="mt-2 text-sm font-bold leading-relaxed text-slate-900">→ {c.after}</p>
+                <div key={c.before} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="flex items-stretch gap-2">
+                    <div className="flex-1 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                      <p className="text-[11px] font-bold text-slate-400">기존</p>
+                      <p className="mt-1 text-sm font-semibold leading-snug text-slate-600">{c.before}</p>
+                    </div>
+                    <div className="flex items-center text-slate-300" aria-hidden>→</div>
+                    <div className="flex-1 rounded-xl border border-blue-200 bg-blue-50/60 p-3">
+                      <p className="text-[11px] font-bold text-blue-500">정리 후</p>
+                      <p className="mt-1 text-sm font-bold leading-snug text-slate-900">{c.after}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
