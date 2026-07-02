@@ -9,7 +9,9 @@ import {
   DISCLAIMER,
   getPackageBySlug,
   packageBanner,
+  PERIOD_NOTE,
   PROCEDURE,
+  REVIEW_NOTE,
 } from '../data/businessPackages'
 
 const eyebrow = 'text-sm font-bold uppercase tracking-widest text-blue-600'
@@ -86,7 +88,7 @@ export default function BusinessServiceDetailPage() {
           {/* Banner image */}
           <div className="overflow-hidden rounded-3xl border border-slate-200 shadow-sm ring-1 ring-slate-900/5">
             <div className="aspect-[4/3]">
-              <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} imageSrc={pkg.imageSrc} alt={pkg.name} size="hero" />
+              <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} size="hero" />
             </div>
           </div>
 
@@ -98,6 +100,7 @@ export default function BusinessServiceDetailPage() {
             </div>
             <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">{pkg.name}</h1>
             <p className="mt-2.5 text-base leading-relaxed text-slate-600">{pkg.tagline}</p>
+            <p className="mt-2 text-xs font-medium text-slate-400">{REVIEW_NOTE} · 상담문의 언제든</p>
 
             <div className="mt-5 border-t border-slate-100 pt-4">
               <p className="text-xs font-bold uppercase tracking-wide text-slate-400">이런 대표님께 추천</p>
@@ -122,10 +125,16 @@ export default function BusinessServiceDetailPage() {
               </ul>
             </div>
 
-            <div className="mt-5 flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-inset ring-slate-100">
-              <span className="text-sm font-semibold text-slate-500">비용</span>
-              <span className="text-sm font-bold text-slate-900">{COST_NOTE}</span>
-            </div>
+            <dl className="mt-5 space-y-2 rounded-2xl bg-slate-50 px-4 py-3.5 ring-1 ring-inset ring-slate-100">
+              <div className="flex items-center justify-between">
+                <dt className="text-sm font-semibold text-slate-500">진행기간</dt>
+                <dd className="text-sm font-bold text-slate-900">{PERIOD_NOTE}</dd>
+              </div>
+              <div className="flex items-center justify-between border-t border-slate-200/70 pt-2">
+                <dt className="text-sm font-semibold text-slate-500">비용</dt>
+                <dd className="text-sm font-bold text-slate-900">{COST_NOTE}</dd>
+              </div>
+            </dl>
 
             <button
               type="button"

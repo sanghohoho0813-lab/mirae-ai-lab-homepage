@@ -36,6 +36,9 @@ export const PROCEDURE = ['기본 진단', '자료 확인', '전략 정리', '�
 
 // 공통 비용 안내 / 유의사항
 export const COST_NOTE = '진단 후 제안 · 상담 후 맞춤 안내'
+export const COST_SHORT = '진단 후 안내'
+export const PERIOD_NOTE = '상담 후 안내'
+export const REVIEW_NOTE = '리뷰 0 · 진행사례 준비중'
 export const DISCLAIMER =
   '본 서비스는 정책자금 승인, 정부지원사업 선정, 벤처기업확인 취득을 보장하지 않습니다. 기업의 업종, 재무상태, 대표자 이력, 신청 시점, 기관 심사 기준에 따라 결과는 달라질 수 있습니다.'
 

@@ -2,10 +2,20 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
 import BusinessServiceVisual from '../components/BusinessServiceVisual'
-import { badgeToneClass, businessPackages, CATEGORIES, DISCLAIMER, packageBanner } from '../data/businessPackages'
+import {
+  badgeToneClass,
+  businessPackages,
+  CATEGORIES,
+  COST_SHORT,
+  DISCLAIMER,
+  PERIOD_NOTE,
+  packageBanner,
+  REVIEW_NOTE,
+  type BusinessPackage,
+} from '../data/businessPackages'
 
-// 중소기업 대표님을 위한 공개 서비스몰 홈. 상품 데이터는 ../data/businessPackages 공유.
-// 기존 페이지/컴포넌트/기능 로직은 건드리지 않습니다.
+// 중소기업 대표님을 위한 공개 서비스몰 홈 (카페24형 상품몰 UI).
+// 상품 데이터는 ../data/businessPackages 공유. 기존 기능 로직은 건드리지 않습니다.
 
 const recommendations = [
   { when: '운전자금', cat: '자금' },
@@ -64,19 +74,63 @@ const homeFaqs = [
   { q: '비용은 어떻게 정해지나요?', a: '대표님 상황과 범위에 따라 달라, 진단·상담 후 맞춤 안내드립니다.' },
 ]
 
-const accentDot: Record<string, string> = {
-  blue: 'bg-blue-400',
-  sky: 'bg-sky-400',
-  indigo: 'bg-indigo-400',
-  cyan: 'bg-cyan-400',
-  slate: 'bg-slate-400',
-}
-
 const eyebrow = 'text-sm font-bold uppercase tracking-widest text-blue-600'
 const h2Class = 'mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl'
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// 쇼핑몰형 상품 카드
+function ProductCard({ pkg }: { pkg: BusinessPackage }) {
+  const b = packageBanner[pkg.id]
+  return (
+    <article className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      <Link to={`/business-services/${pkg.slug}`} className="block aspect-[16/10]">
+        <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} />
+      </Link>
+      <div className="flex flex-1 flex-col p-4">
+        <span className={`w-fit rounded-full px-2 py-0.5 text-[11px] font-bold ${badgeToneClass[pkg.badgeTone]}`}>{pkg.badge}</span>
+        <h3 className="mt-2 line-clamp-1 text-[1.02rem] font-bold tracking-tight text-slate-900">{pkg.name}</h3>
+        <p className="mt-1 line-clamp-1 text-sm text-slate-500">{pkg.short}</p>
+        <p className="mt-1.5 text-xs text-slate-400">{REVIEW_NOTE}</p>
+
+        <div className="mt-2.5 flex flex-wrap gap-1">
+          {pkg.deliverables.slice(0, 2).map((d) => (
+            <span key={d} className="rounded bg-slate-50 px-1.5 py-0.5 text-[11px] font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
+              {d}
+            </span>
+          ))}
+        </div>
+
+        <dl className="mt-2.5 space-y-1 border-t border-slate-100 pt-2.5 text-xs">
+          <div className="flex justify-between">
+            <dt className="text-slate-400">진행기간</dt>
+            <dd className="font-semibold text-slate-600">{PERIOD_NOTE}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-slate-400">비용</dt>
+            <dd className="font-semibold text-slate-600">{COST_SHORT}</dd>
+          </div>
+        </dl>
+
+        <div className="mt-3 flex gap-2">
+          <Link
+            to={`/business-services/${pkg.slug}`}
+            className="flex flex-1 items-center justify-center rounded-lg bg-slate-900 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-slate-700"
+          >
+            자세히 보기
+          </Link>
+          <a
+            href="#apply"
+            className="rounded-lg border border-slate-300 px-3 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+          >
+            상담문의
+          </a>
+        </div>
+      </div>
+    </article>
+  )
 }
 
 export default function BusinessServicesPage() {
@@ -88,7 +142,7 @@ export default function BusinessServicesPage() {
   }, [])
 
   useEffect(() => {
-    const onScroll = () => setShowBar(window.scrollY > 420)
+    const onScroll = () => setShowBar(window.scrollY > 360)
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
@@ -139,140 +193,64 @@ export default function BusinessServicesPage() {
         </div>
       </header>
 
-      {/* Promotion-banner hero (navy) */}
+      {/* Short promotion banner (navy) */}
       <section className="relative overflow-hidden bg-slate-900">
-        <div aria-hidden className="pointer-events-none absolute -left-24 -top-28 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -bottom-32 right-0 h-96 w-96 rounded-full bg-sky-500/15 blur-3xl" />
-        <div className="relative mx-auto max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.8rem] font-semibold text-slate-200 backdrop-blur">
-                <span className="h-2 w-2 rounded-full bg-sky-400" />
-                미래경영지원센터 · AI 경영지원 서비스몰
-              </span>
-              <h1 className="mt-5 text-[1.75rem] font-extrabold leading-[1.22] tracking-tight text-white sm:text-[2.5rem] sm:leading-[1.15]">
-                정책자금·벤처인증·MVP 준비,
-                <br />
-                <span className="text-sky-300">대표님 상황에 맞는 패키지</span>로 시작하세요
-              </h1>
-              <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
-                사업계획서, 홈페이지, 인증 로드맵까지 흩어진 준비물을 하나의 실행 패키지로 정리합니다.
-              </p>
-
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={() => scrollToId('top3')}
-                  className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-4 text-base font-bold text-slate-900 shadow-lg shadow-black/20 transition-transform hover:-translate-y-0.5 sm:text-lg"
-                >
-                  인기 패키지 보기
-                </button>
-                <a
-                  href="#apply"
-                  className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-6 py-4 text-base font-bold text-white transition-colors hover:bg-white/10 sm:text-lg"
-                >
-                  무료 진단 신청
-                </a>
-              </div>
-
-              <div className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[0.8rem] font-medium text-slate-400">
-                <span>누적 자금조달 100억+</span>
-                <span className="text-slate-600">·</span>
-                <span>ISO 인증 심사원</span>
-                <span className="text-slate-600">·</span>
-                <span>정책자금·인증·사업계획 실무 경험</span>
-              </div>
-            </div>
-
-            {/* Right preview: package list card */}
-            <div className="hidden lg:block">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-3 shadow-2xl shadow-black/30 backdrop-blur">
-                {featured.map((pkg) => {
-                  const b = packageBanner[pkg.id]
-                  return (
-                    <Link
-                      key={pkg.id}
-                      to={`/business-services/${pkg.slug}`}
-                      className="flex items-center gap-3 rounded-2xl px-3 py-3 transition-colors hover:bg-white/10"
-                    >
-                      <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${accentDot[b.accent]}`} />
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-bold text-white">{b.title}</span>
-                        <span className="block truncate text-xs text-slate-400">{b.subtitle}</span>
-                      </span>
-                      <span className="text-xs font-semibold text-slate-300">자세히 →</span>
-                    </Link>
-                  )
-                })}
-              </div>
-            </div>
+        <div aria-hidden className="pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-sky-500/15 blur-3xl" />
+        <div className="relative mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.8rem] font-semibold text-slate-200 backdrop-blur">
+            <span className="h-2 w-2 rounded-full bg-sky-400" />
+            미래경영지원센터 · AI 경영지원 서비스몰
+          </span>
+          <h1 className="mt-4 max-w-3xl text-[1.55rem] font-extrabold leading-[1.25] tracking-tight text-white sm:text-[2.2rem] sm:leading-[1.2]">
+            정책자금·벤처인증·MVP 준비, <span className="text-sky-300">필요한 패키지를 골라보세요</span>
+          </h1>
+          <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-slate-300 sm:text-base">
+            사업계획서, 홈페이지, 인증 로드맵까지 흩어진 준비물을 하나의 실행 패키지로 정리합니다.
+          </p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={() => scrollToId('top3')}
+              className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3.5 text-base font-bold text-slate-900 shadow-lg shadow-black/20 transition-transform hover:-translate-y-0.5"
+            >
+              인기 패키지 보기
+            </button>
+            <a
+              href="#apply"
+              className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-white/10"
+            >
+              무료 진단 신청
+            </a>
+          </div>
+          <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[0.78rem] font-medium text-slate-400">
+            <span>누적 자금조달 100억+</span>
+            <span className="text-slate-600">·</span>
+            <span>ISO 인증 심사원</span>
+            <span className="text-slate-600">·</span>
+            <span>정책자금·인증·사업계획 실무 경험</span>
           </div>
         </div>
       </section>
 
       {/* TOP 3 popular packages */}
       <section id="top3" className="scroll-mt-16 border-b border-slate-200">
-        <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>인기 패키지</p>
           <h2 className={h2Class}>대표님들이 먼저 확인하는 패키지</h2>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            {featured.map((pkg) => {
-              const b = packageBanner[pkg.id]
-              return (
-                <article
-                  key={pkg.id}
-                  className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-900/5"
-                >
-                  <Link to={`/business-services/${pkg.slug}`} className="block aspect-[16/9]">
-                    <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} imageSrc={pkg.imageSrc} alt={pkg.name} />
-                  </Link>
-                  <div className="flex flex-1 flex-col p-4 sm:p-5">
-                    <div className="flex items-center gap-2">
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${badgeToneClass[pkg.badgeTone]}`}>{pkg.badge}</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">{pkg.category}</span>
-                    </div>
-                    <h3 className="mt-2.5 text-lg font-bold tracking-tight text-slate-900 sm:text-xl">{pkg.name}</h3>
-                    <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-600">{pkg.short}</p>
-                    <ul className="mt-3 space-y-1">
-                      {pkg.deliverables.slice(0, 3).map((d) => (
-                        <li key={d} className="flex items-start gap-2 text-sm text-slate-700">
-                          <span className="mt-0.5 text-blue-500" aria-hidden>✓</span>
-                          {d}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-3">
-                      <Link
-                        to={`/business-services/${pkg.slug}`}
-                        className="flex flex-1 items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-[0.95rem] font-bold text-white transition-colors hover:bg-slate-700"
-                      >
-                        자세히 보기
-                      </Link>
-                      <a
-                        href="#apply"
-                        className="rounded-xl border border-slate-300 px-4 py-3 text-[0.95rem] font-semibold text-slate-700 transition-colors hover:bg-slate-50"
-                      >
-                        상담
-                      </a>
-                    </div>
-                  </div>
-                </article>
-              )
-            })}
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((pkg) => (
+              <ProductCard key={pkg.id} pkg={pkg} />
+            ))}
           </div>
         </div>
       </section>
 
       {/* All products + tabs + compact situation chips */}
       <section id="packages" className="scroll-mt-16 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className={eyebrow}>전체 상품</p>
-              <h2 className={h2Class}>대표님 상황에 맞는 패키지를 고르세요</h2>
-            </div>
-          </div>
+        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
+          <p className={eyebrow}>전체 상품</p>
+          <h2 className={h2Class}>대표님 상황에 맞는 패키지를 고르세요</h2>
 
           {/* Category tabs */}
           <div className="mt-5 flex flex-wrap gap-2">
@@ -309,52 +287,10 @@ export default function BusinessServicesPage() {
             ))}
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {visible.map((pkg) => {
-              const b = packageBanner[pkg.id]
-              return (
-                <article
-                  key={pkg.id}
-                  className={`flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ${
-                    pkg.featured ? 'border-2 border-blue-200' : 'border border-slate-200'
-                  }`}
-                >
-                  <Link to={`/business-services/${pkg.slug}`} className="block aspect-[16/9]">
-                    <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} imageSrc={pkg.imageSrc} alt={pkg.name} />
-                  </Link>
-                  <div className="flex flex-1 flex-col p-4 sm:p-5">
-                    <div className="flex items-center gap-2">
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">{pkg.category}</span>
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${badgeToneClass[pkg.badgeTone]}`}>{pkg.badge}</span>
-                    </div>
-                    <h3 className="mt-2.5 text-lg font-bold tracking-tight text-slate-900 sm:text-xl">{pkg.name}</h3>
-                    <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-600">{pkg.short}</p>
-                    <ul className="mt-3 space-y-1">
-                      {pkg.deliverables.slice(0, 2).map((d) => (
-                        <li key={d} className="flex items-start gap-2 text-sm text-slate-700">
-                          <span className="mt-0.5 text-blue-500" aria-hidden>✓</span>
-                          {d}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-3">
-                      <Link
-                        to={`/business-services/${pkg.slug}`}
-                        className="flex flex-1 items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-[0.95rem] font-bold text-white transition-colors hover:bg-slate-700"
-                      >
-                        자세히 보기
-                      </Link>
-                      <a
-                        href="#apply"
-                        className="rounded-xl border border-slate-300 px-4 py-3 text-[0.95rem] font-semibold text-slate-700 transition-colors hover:bg-slate-50"
-                      >
-                        상담
-                      </a>
-                    </div>
-                  </div>
-                </article>
-              )
-            })}
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {visible.map((pkg) => (
+              <ProductCard key={pkg.id} pkg={pkg} />
+            ))}
           </div>
 
           <p className="mt-5 text-sm leading-relaxed text-slate-500">비용은 대표님 상황에 따라 달라 상담 후 맞춤 안내드립니다.</p>
@@ -363,7 +299,7 @@ export default function BusinessServicesPage() {
 
       {/* 진행사례 (review-style) */}
       <section id="cases" className="scroll-mt-16 border-t border-slate-200">
-        <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>진행 사례</p>
           <h2 className={h2Class}>이렇게 정리했습니다</h2>
           <p className="mt-2 text-sm text-slate-500">이해를 돕기 위한 비식별 예시입니다. (실제 업체명이 아닙니다.)</p>
@@ -401,7 +337,7 @@ export default function BusinessServicesPage() {
 
       {/* Compact why/process band */}
       <section className="border-y border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
           <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2">
             <span className="mr-2 text-sm font-bold text-slate-900">진행 과정</span>
             {processSteps.map((step, i) => (
@@ -434,7 +370,7 @@ export default function BusinessServicesPage() {
 
       {/* FAQ */}
       <section id="faq" className="scroll-mt-16">
-        <div className="mx-auto max-w-3xl px-5 py-11 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>자주 묻는 질문</p>
           <h2 className={h2Class}>대표님들이 자주 묻는 질문</h2>
           <div className="mt-6 space-y-3">

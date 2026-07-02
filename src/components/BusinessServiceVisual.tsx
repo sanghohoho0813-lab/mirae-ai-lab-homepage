@@ -14,6 +14,8 @@ type Props = {
   accent?: VisualAccent
   imageSrc?: string
   alt?: string
+  /** 배너 좌상단 태그 라벨 (예: 카테고리). 기본 '서비스 패키지' */
+  tag?: string
   /** 크게: 상세 상단 배너 등에서 텍스트를 키움 */
   size?: 'card' | 'hero'
 }
@@ -100,7 +102,7 @@ function Motif({ type }: { type: BusinessVisualType }) {
   }
 }
 
-export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, size = 'card' }: Props) {
+export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, tag = '서비스 패키지', size = 'card' }: Props) {
   if (imageSrc) {
     return (
       <div className="relative h-full w-full overflow-hidden bg-slate-100">
@@ -123,7 +125,7 @@ export default function BusinessServiceVisual({ type, title, subtitle, accent = 
       </div>
       {/* text */}
       <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-        <span className={`inline-block rounded-md px-2 py-0.5 text-[11px] font-bold ${a.chip}`}>서비스 패키지</span>
+        <span className={`inline-block rounded-md px-2 py-0.5 text-[11px] font-bold ${a.chip}`}>{tag}</span>
         <p className={`mt-2 font-black leading-tight tracking-tight text-white ${titleSize}`}>{title}</p>
         {subtitle && <p className="mt-1.5 text-xs font-medium text-slate-300 sm:text-[0.8rem]">{subtitle}</p>}
       </div>
