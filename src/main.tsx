@@ -9,13 +9,16 @@ import SignupPage from './pages/SignupPage'
 import MyToolsPage from './pages/MyToolsPage'
 import AdminPage from './pages/AdminPage'
 import BusinessServicesPage from './pages/BusinessServicesPage'
+import GatewayPage from './pages/GatewayPage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<GatewayPage />} />
+          <Route path="/consultants" element={<App />} />
+          <Route path="/for-consultants" element={<Navigate to="/consultants" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/my-tools" element={<MyToolsPage />} />

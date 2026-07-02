@@ -6,11 +6,13 @@ import BusinessInquiryForm from '../components/BusinessInquiryForm'
 // 디자인 토큰(화이트 배경·네이비 포인트·담백한 카드)은 기존 사이트(App.tsx)를 따릅니다.
 
 const trustStats = [
-  { value: '348억', label: '누적 자금조달 지원' },
-  { value: '700곳', label: '파트너 고객사' },
-  { value: '96%', label: '고객 만족도' },
-  { value: '실무 기반', label: 'ISO 인증 심사원 · 기업컨설팅 경험' },
+  { value: '100억+', label: '누적 자금조달 지원' },
+  { value: '실무 경험', label: '정책자금·인증·사업계획' },
+  { value: 'ISO', label: 'ISO 인증 심사원' },
+  { value: 'AI 도구', label: 'AI 기반 경영지원 도구 개발' },
 ]
+
+const flowSteps = ['정책자금', '사업계획', '벤처·인증', '홈페이지+MVP']
 
 const problems = [
   { icon: '🧭', text: '받을 수 있는 지원사업이 있어도, 어디서부터 봐야 할지 모르겠습니다.' },
@@ -256,8 +258,25 @@ export default function BusinessServicesPage() {
             </div>
           </div>
 
+          {/* Connected flow graphic (CSS only) */}
+          <div className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-sm font-bold text-slate-600 sm:text-base">
+              {flowSteps.map((step, i) => (
+                <span key={step} className="inline-flex items-center gap-x-2">
+                  <span className="rounded-lg bg-slate-100 px-3 py-1.5">{step}</span>
+                  {i < flowSteps.length - 1 && (
+                    <span aria-hidden className="text-slate-300">→</span>
+                  )}
+                </span>
+              ))}
+            </div>
+            <p className="mt-4 text-center text-sm leading-relaxed text-slate-500">
+              따로 준비하던 자금·사업계획·인증·결과물을 하나의 흐름으로 정리합니다.
+            </p>
+          </div>
+
           {/* Trust numbers */}
-          <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
             {trustStats.map((s) => (
               <div key={s.label} className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
                 <p className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">{s.value}</p>
@@ -265,7 +284,7 @@ export default function BusinessServicesPage() {
               </div>
             ))}
           </div>
-          <p className="mt-3 text-center text-xs text-slate-400 sm:text-left">2025년 8월 운영 기준</p>
+          <p className="mt-3 text-center text-xs text-slate-400 sm:text-left">미래경영지원센터 운영 기준</p>
         </div>
       </section>
 
