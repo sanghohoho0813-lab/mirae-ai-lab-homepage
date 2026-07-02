@@ -33,6 +33,7 @@ type Package = {
   recommendedFor: string[]
   deliverables: string[]
   process: string
+  expectation: string
   featured?: boolean
 }
 
@@ -47,6 +48,7 @@ const packages: Package[] = [
     recommendedFor: ['대출 금리를 낮추고 싶은 대표', '운전자금이 필요한 대표', '어떤 자금부터 봐야 할지 막막한 대표'],
     deliverables: ['정책자금 가능성 진단 리포트', '우선 검토 제도 목록', '신청 전 준비물 체크리스트'],
     process: '진단 → 우선순위 정리 → 신청 준비 안내',
+    expectation: '어떤 자금부터 검토할지 우선순위가 정리되고, 신청 전 준비물이 명확해집니다.',
     featured: true,
   },
   {
@@ -59,6 +61,7 @@ const packages: Package[] = [
     recommendedFor: ['지원사업을 처음 준비하는 대표', '사업계획서 작성이 막막한 대표'],
     deliverables: ['사업계획 스토리 구조안', '항목별 작성 가이드', '심사 포인트 정리'],
     process: '분석 → 스토리 구조화 → 작성 가이드 제공',
+    expectation: '사업계획의 뼈대와 심사 포인트가 잡혀, 작성 방향이 또렷해집니다.',
   },
   {
     id: 'venture-story',
@@ -70,6 +73,7 @@ const packages: Package[] = [
     recommendedFor: ['벤처기업확인을 준비하는 법인', '기술기업처럼 보여야 하는 대표'],
     deliverables: ['기술성·성장성 스토리라인', '벤처 유형 검토', '준비 서류 로드맵'],
     process: '현황 분석 → 스토리 재구성 → 서류 로드맵',
+    expectation: '우리 사업이 기술성·성장성 관점에서 어떻게 보이는지 정리되고, 준비 순서가 잡힙니다.',
     featured: true,
   },
   {
@@ -82,6 +86,7 @@ const packages: Package[] = [
     recommendedFor: ['아이디어는 있지만 보여줄 결과물이 부족한 대표', '심사자에게 보여줄 화면이 필요한 대표'],
     deliverables: ['소개 웹페이지', '작동형 MVP 화면', '데모용 시연 시나리오'],
     process: '기획 → 화면 제작 → 데모 정리',
+    expectation: '심사자와 고객에게 보여줄 웹페이지와 작동 화면이 생겨, 설명이 쉬워집니다.',
     featured: true,
   },
   {
@@ -94,6 +99,7 @@ const packages: Package[] = [
     recommendedFor: ['인증과 사후관리를 함께 보고 싶은 법인', '여러 인증을 순서대로 준비하려는 대표'],
     deliverables: ['인증 우선순위 로드맵', '요건·서류 체크리스트', '사후관리 일정안'],
     process: '요건 점검 → 우선순위 → 사후관리 계획',
+    expectation: '어떤 인증을 어떤 순서로 준비할지 로드맵이 생기고, 사후관리 일정이 잡힙니다.',
   },
   {
     id: 'full',
@@ -105,6 +111,7 @@ const packages: Package[] = [
     recommendedFor: ['중장기적으로 기업지원제도를 제대로 활용하려는 대표', '전체 로드맵이 필요한 대표'],
     deliverables: ['통합 성장 로드맵', '단계별 실행 계획', '우선 제작물 우선순위'],
     process: '종합 진단 → 로드맵 설계 → 단계별 실행',
+    expectation: '자금·인증·사업계획·결과물이 하나의 성장 로드맵으로 연결되어 실행 순서가 명확해집니다.',
   },
 ]
 
@@ -177,6 +184,52 @@ function CtaBanner({ heading, sub, tone = 'light' }: { heading: string; sub?: st
   )
 }
 
+// 히어로 미니 대시보드: 회사 현황 → 필요한 준비물 → 추천 패키지 흐름을 담담하게 시각화.
+function HeroFunnel() {
+  const steps = [
+    { no: '1', title: '회사 현황', chips: ['업종', '매출', '업력'] },
+    { no: '2', title: '필요한 준비물', chips: ['사업계획', '인증', '자금'] },
+  ]
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-md ring-1 ring-slate-900/5 sm:p-7">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-bold text-slate-900">내 상황 진단 미리보기</p>
+        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-500">예시 화면</span>
+      </div>
+      <div className="mt-5 space-y-2">
+        {steps.map((s) => (
+          <div key={s.no}>
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <div className="flex items-center gap-2">
+                <span className="grid h-6 w-6 place-items-center rounded-lg bg-white text-xs font-extrabold text-blue-600 ring-1 ring-inset ring-slate-200">
+                  {s.no}
+                </span>
+                <p className="text-sm font-bold text-slate-800">{s.title}</p>
+              </div>
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {s.chips.map((c) => (
+                  <span key={c} className="rounded-md bg-white px-2 py-1 text-xs font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div aria-hidden className="py-1 text-center text-slate-300">↓</div>
+          </div>
+        ))}
+        <div className="rounded-2xl border-2 border-blue-200 bg-blue-50/60 p-4">
+          <div className="flex items-center gap-2">
+            <span className="grid h-6 w-6 place-items-center rounded-lg bg-blue-600 text-xs font-extrabold text-white">3</span>
+            <p className="text-sm font-bold text-slate-900">추천 패키지</p>
+          </div>
+          <p className="mt-2 text-sm font-bold text-blue-700">정책자금 가능성 진단 패키지</p>
+          <p className="mt-1 text-xs text-slate-500">대표님 상황에 따라 추천 패키지는 달라집니다.</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function BusinessServicesPage() {
   const [activeCat, setActiveCat] = useState('전체')
   const [openId, setOpenId] = useState<string | null>(null)
@@ -207,9 +260,12 @@ export default function BusinessServicesPage() {
               <span className="text-xs font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</span>
             </span>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link to="/" className="hidden text-base font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">
               홈
+            </Link>
+            <Link to="/consultants" className="hidden text-base font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">
+              컨설턴트용
             </Link>
             <a
               href="#apply"
@@ -224,38 +280,43 @@ export default function BusinessServicesPage() {
       {/* Hero */}
       <section className="border-b border-slate-200 bg-slate-50/60">
         <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm font-semibold text-slate-600">
-              <span className="h-2 w-2 rounded-full bg-blue-500" />
-              미래 AI 랩 · 미래경영지원센터
-            </span>
-            <h1 className="mt-6 text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl sm:leading-[1.15]">
-              중소기업 대표님을 위한
-              <br />
-              AI 경영지원 서비스몰
-            </h1>
-            <p className="mt-6 text-lg font-semibold leading-relaxed text-slate-800 sm:text-xl">
-              대표님의 사업을 <span className="text-blue-600">자금·인증·지원사업</span> 관점에서 정리해드립니다.
-            </p>
-            <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
-              홈페이지, MVP, 사업계획, 인증 로드맵을 따로 보지 않고 하나의 흐름으로 정리합니다.
-            </p>
+          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm font-semibold text-slate-600">
+                <span className="h-2 w-2 rounded-full bg-blue-500" />
+                미래 AI 랩 · 미래경영지원센터
+              </span>
+              <h1 className="mt-6 text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl sm:leading-[1.15]">
+                중소기업 대표님을 위한
+                <br />
+                AI 경영지원 서비스몰
+              </h1>
+              <p className="mt-6 text-lg font-semibold leading-relaxed text-slate-800 sm:text-xl">
+                대표님의 사업을 <span className="text-blue-600">정책자금·정부지원사업·벤처인증</span>에 맞는 언어로
+                정리하고, 필요한 결과물을 함께 준비합니다.
+              </p>
+              <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
+                홈페이지, MVP, 사업계획, 인증 로드맵을 따로 보지 않고 하나의 흐름으로 정리합니다.
+              </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#apply"
-                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-7 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
-              >
-                내 회사에 맞는 패키지 진단받기
-              </a>
-              <button
-                type="button"
-                onClick={() => scrollToId('packages')}
-                className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-4 text-lg font-semibold text-slate-800 transition-colors hover:bg-slate-50"
-              >
-                패키지 둘러보기
-              </button>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="#apply"
+                  className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-7 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
+                >
+                  내 회사에 맞는 패키지 진단받기
+                </a>
+                <button
+                  type="button"
+                  onClick={() => scrollToId('packages')}
+                  className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-7 py-4 text-lg font-semibold text-slate-800 transition-colors hover:bg-slate-50"
+                >
+                  패키지 둘러보기
+                </button>
+              </div>
             </div>
+
+            <HeroFunnel />
           </div>
 
           {/* Connected flow graphic (CSS only) */}
@@ -421,7 +482,7 @@ export default function BusinessServicesPage() {
                   {open && (
                     <div className="mt-5 space-y-5 border-t border-slate-100 pt-5">
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">이런 대표님께 추천</p>
+                        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">이런 대표님께 맞습니다</p>
                         <ul className="mt-2 space-y-1.5">
                           {pkg.recommendedFor.map((r) => (
                             <li key={r} className="flex items-start gap-2 text-sm text-slate-700">
@@ -432,7 +493,7 @@ export default function BusinessServicesPage() {
                         </ul>
                       </div>
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">제공 결과물</p>
+                        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">제공되는 결과물</p>
                         <ul className="mt-2 space-y-1.5">
                           {pkg.deliverables.map((d) => (
                             <li key={d} className="flex items-start gap-2 text-sm text-slate-700">
@@ -446,6 +507,13 @@ export default function BusinessServicesPage() {
                         <p className="text-xs font-bold uppercase tracking-wide text-slate-400">진행 방식</p>
                         <p className="mt-2 text-sm font-medium text-slate-700">{pkg.process}</p>
                       </div>
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">진행 후 기대되는 변화</p>
+                        <p className="mt-2 text-sm leading-relaxed text-slate-700">{pkg.expectation}</p>
+                      </div>
+                      <p className="rounded-lg bg-slate-50 px-3 py-2.5 text-xs leading-relaxed text-slate-500 ring-1 ring-inset ring-slate-100">
+                        유의: 선정·승인·취득을 보장하지 않으며, 심사 기준과 기업 상황에 따라 결과는 달라질 수 있습니다.
+                      </p>
                     </div>
                   )}
 

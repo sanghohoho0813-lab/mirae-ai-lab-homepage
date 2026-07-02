@@ -322,6 +322,12 @@ function App() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
+            <Link
+              to="/business-services"
+              className="hidden text-base font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline"
+            >
+              대표님용
+            </Link>
             {user ? (
               <>
                 {isAdmin && (
