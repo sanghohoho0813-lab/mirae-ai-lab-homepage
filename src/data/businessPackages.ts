@@ -171,6 +171,19 @@ export const businessPackages: BusinessPackage[] = [
   },
 ]
 
+// ── 상품 배너(썸네일) 메타 ───────────────────────────────────────────────────
+// 카드/상세 상단 배너에 크게 노출되는 상품 키워드 + 결과 문구 + 색상 포인트.
+export type BannerAccent = 'blue' | 'sky' | 'indigo' | 'cyan' | 'slate'
+
+export const packageBanner: Record<string, { title: string; subtitle: string; accent: BannerAccent }> = {
+  'fund-diagnosis': { title: '정책자금 가능성 진단', subtitle: '운전자금·시설자금 방향 먼저 확인', accent: 'blue' },
+  'gov-plan': { title: '사업계획 전략', subtitle: '지원사업 신청 전 구조 정리', accent: 'sky' },
+  'venture-story': { title: '벤처인증 스토리', subtitle: '기술성·성장성 중심으로 재구성', accent: 'indigo' },
+  'web-mvp': { title: '홈페이지 + MVP', subtitle: '심사자에게 보여줄 결과물 제작', accent: 'cyan' },
+  'lab-cert': { title: '기업인증 로드맵', subtitle: '연구소·벤처·이노비즈 흐름 정리', accent: 'slate' },
+  full: { title: '정책자금·벤처 풀패키지', subtitle: '자금·인증·MVP를 하나로', accent: 'blue' },
+}
+
 export function getPackageBySlug(slug: string | undefined): BusinessPackage | undefined {
   return businessPackages.find((p) => p.slug === slug)
 }
