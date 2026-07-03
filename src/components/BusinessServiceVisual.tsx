@@ -3,6 +3,8 @@
 //    (예: '/assets/business-services/funding-diagnosis.png' → public/assets/business-services/…)
 //  - 없으면 어두운 네이비 배경 + 큰 상품 키워드 + 결과 문구 + 상품별 색상 포인트 + 작은 그래픽.
 // 부모가 비율(aspect) 컨테이너를 주고, 이 컴포넌트는 h-full w-full 로 채웁니다.
+// imageSrc 파일이 없거나 로드 실패하면 자동으로 CSS 배너로 폴백합니다(깨진 이미지 방지).
+import { useState } from 'react'
 
 export type BusinessVisualType = 'hero' | 'funding' | 'gov' | 'venture' | 'mvp' | 'lab' | 'full'
 export type VisualAccent = 'blue' | 'sky' | 'indigo' | 'cyan' | 'slate'
@@ -103,10 +105,18 @@ function Motif({ type }: { type: BusinessVisualType }) {
 }
 
 export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, tag = '서비스 패키지', size = 'card' }: Props) {
-  if (imageSrc) {
+  const [imgFailed, setImgFailed] = useState(false)
+
+  if (imageSrc && !imgFailed) {
     return (
       <div className="relative h-full w-full overflow-hidden bg-slate-100">
-        <img src={imageSrc} alt={alt ?? title ?? ''} loading="lazy" className="h-full w-full object-cover" />
+        <img
+          src={imageSrc}
+          alt={alt ?? title ?? ''}
+          loading="lazy"
+          onError={() => setImgFailed(true)}
+          className="h-full w-full object-cover"
+        />
       </div>
     )
   }

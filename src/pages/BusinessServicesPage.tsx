@@ -86,7 +86,7 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
   const b = packageBanner[pkg.id]
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-      <Link to={`/business-services/${pkg.slug}`} className="block aspect-[16/10]">
+      <Link to={`/business-services/${pkg.slug}`} className="block aspect-square">
         <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} />
       </Link>
       <div className="flex flex-1 flex-col p-4">

@@ -87,7 +87,7 @@ export default function BusinessServiceDetailPage() {
         <div className="grid gap-6 lg:grid-cols-2 lg:items-start lg:gap-8">
           {/* Banner image */}
           <div className="overflow-hidden rounded-3xl border border-slate-200 shadow-sm ring-1 ring-slate-900/5">
-            <div className="aspect-[4/3]">
+            <div className="aspect-square">
               <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} size="hero" />
             </div>
           </div>

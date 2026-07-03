@@ -63,6 +63,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '진단 후 신청까지 도와주나요?', a: '진단 결과에 따라 준비물과 다음 단계를 안내드리고, 이후 진행은 상담에서 함께 정합니다.' },
     ],
     visualType: 'funding',
+    imageSrc: '/assets/business-services/package-funding-diagnosis.png',
     featured: true,
   },
   {
@@ -85,6 +86,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '어떤 지원사업에 맞나요?', a: '예창패·초창패·소상공인 지원사업 등 대표님 상황에 맞춰 방향을 정리합니다.' },
     ],
     visualType: 'gov',
+    imageSrc: '/assets/business-services/package-government-plan.png',
   },
   {
     id: 'venture-story',
@@ -106,6 +108,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '서류 준비도 도와주나요?', a: '준비 서류 로드맵을 정리해 드리고, 진행은 상담에서 함께 정합니다.' },
     ],
     visualType: 'venture',
+    imageSrc: '/assets/business-services/package-venture-story.png',
     featured: true,
   },
   {
@@ -128,6 +131,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '디자인만 하는 건가요?', a: '디자인뿐 아니라 심사·상담에서 보여줄 수 있는 작동 화면 중심으로 만듭니다.' },
     ],
     visualType: 'mvp',
+    imageSrc: '/assets/business-services/package-homepage-mvp.png',
     featured: true,
   },
   {
@@ -150,6 +154,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '사후관리도 포함되나요?', a: '사후관리 일정안을 함께 정리해 드립니다.' },
     ],
     visualType: 'lab',
+    imageSrc: '/assets/business-services/package-rnd-cert-roadmap.png',
   },
   {
     id: 'full',
@@ -171,6 +176,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '필요한 것만 골라도 되나요?', a: '네. 로드맵을 기준으로 필요한 부분부터 진행할 수 있습니다.' },
     ],
     visualType: 'full',
+    imageSrc: '/assets/business-services/package-full-growth-roadmap.png',
   },
 ]
 
