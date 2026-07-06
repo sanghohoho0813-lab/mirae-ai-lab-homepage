@@ -1,6 +1,6 @@
 // 대표자용 서비스몰 상품 배너(썸네일) — 실사 사진 대신 CSS/HTML 로 만든 "상품 배너형" 비주얼.
 //  - imageSrc 가 있으면 실제 이미지(<img>)를 보여줍니다.
-//    (예: '/assets/business-services/funding-diagnosis.png' → public/assets/business-services/…)
+//    (예: '/assets/business-services/funding-consulting.png' → public/assets/business-services/…)
 //  - 없으면 어두운 네이비 배경 + 큰 상품 키워드 + 결과 문구 + 상품별 색상 포인트 + 작은 그래픽.
 // 부모가 비율(aspect) 컨테이너를 주고, 이 컴포넌트는 h-full w-full 로 채웁니다.
 // imageSrc 파일이 없거나 로드 실패하면 자동으로 CSS 배너로 폴백합니다(깨진 이미지 방지).
