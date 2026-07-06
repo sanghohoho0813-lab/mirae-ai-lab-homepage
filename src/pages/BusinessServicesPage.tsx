@@ -89,7 +89,7 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
       }`}
     >
       {/* 썸네일 (텍스트 오버레이 없음 — 이미지에 문구 포함) */}
-      <Link to={`/business-services/${pkg.slug}`} className="relative block aspect-square">
+      <Link to={`/business-services/${pkg.slug}`} className="relative block aspect-[3/2] bg-slate-100">
         <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} />
         {flagship && (
           <span className="absolute left-3 top-3 z-10 rounded-full bg-amber-400 px-3 py-1 text-xs font-black text-slate-900 shadow-md">

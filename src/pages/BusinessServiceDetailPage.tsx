@@ -86,7 +86,7 @@ export default function BusinessServiceDetailPage() {
         <div className="grid gap-6 lg:grid-cols-2 lg:items-start lg:gap-8">
           {/* Thumbnail image */}
           <div className={`overflow-hidden rounded-3xl shadow-sm ${flagship ? 'border-2 border-amber-400 ring-1 ring-amber-300/40' : 'border border-slate-200 ring-1 ring-slate-900/5'}`}>
-            <div className="aspect-square">
+            <div className="aspect-[3/2]">
               <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} size="hero" />
             </div>
           </div>

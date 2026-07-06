@@ -115,7 +115,7 @@ export default function BusinessServiceVisual({ type, title, subtitle, accent = 
           alt={alt ?? title ?? ''}
           loading="lazy"
           onError={() => setImgFailed(true)}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain"
         />
       </div>
     )
