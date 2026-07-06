@@ -86,8 +86,8 @@ export default function BusinessServiceDetailPage() {
         <div className="grid gap-6 lg:grid-cols-2 lg:items-start lg:gap-8">
           {/* Thumbnail image */}
           <div className={`overflow-hidden rounded-3xl shadow-sm ${flagship ? 'border-2 border-amber-400 ring-1 ring-amber-300/40' : 'border border-slate-200 ring-1 ring-slate-900/5'}`}>
-            <div className="aspect-[3/2]">
-              <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} size="hero" />
+            <div className="relative aspect-[3/2]">
+              <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} size="hero" fit="contain" />
             </div>
           </div>
 
@@ -109,6 +109,24 @@ export default function BusinessServiceDetailPage() {
               <p className="text-xs font-bold uppercase tracking-wide text-slate-400">가격</p>
               <p className={`mt-1 text-3xl font-black tracking-tight sm:text-4xl ${flagship ? 'text-amber-600' : 'text-slate-900'}`}>{pkg.price}</p>
               {pkg.priceNote && <p className="mt-1 text-sm font-medium text-slate-500">{pkg.priceNote}</p>}
+            </div>
+
+            {/* 핵심 혜택 (썸네일 하단 밴드에 있던 문구를 텍스트로 노출) */}
+            <div className="mt-5">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">핵심 혜택</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {pkg.highlights.map((h) => (
+                  <span
+                    key={h}
+                    className={`rounded-lg px-2.5 py-1 text-sm font-semibold ring-1 ring-inset ${
+                      flagship ? 'bg-amber-50 text-amber-700 ring-amber-500/20' : 'bg-blue-50 text-blue-700 ring-blue-600/15'
+                    }`}
+                  >
+                    {h}
+                  </span>
+                ))}
+              </div>
+              {pkg.highlightNote && <p className="mt-2 text-sm font-medium text-slate-500">{pkg.highlightNote}</p>}
             </div>
 
             <div className="mt-5 border-t border-slate-100 pt-4">

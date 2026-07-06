@@ -20,6 +20,8 @@ type Props = {
   tag?: string
   /** 크게: 상세 상단 배너 등에서 텍스트를 키움 */
   size?: 'card' | 'hero'
+  /** 이미지 맞춤: cover=상단 고정 크롭(카드), contain=전체 표시(상세) */
+  fit?: 'cover' | 'contain'
 }
 
 const accentMap: Record<VisualAccent, { glow: string; chip: string; bar: string; motif: string }> = {
@@ -104,18 +106,18 @@ function Motif({ type }: { type: BusinessVisualType }) {
   }
 }
 
-export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, tag = '서비스 패키지', size = 'card' }: Props) {
+export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, tag = '서비스 패키지', size = 'card', fit = 'cover' }: Props) {
   const [imgFailed, setImgFailed] = useState(false)
 
   if (imageSrc && !imgFailed) {
     return (
-      <div className="relative h-full w-full overflow-hidden bg-slate-100">
+      <div className="absolute inset-0 overflow-hidden bg-slate-100">
         <img
           src={imageSrc}
           alt={alt ?? title ?? ''}
           loading="lazy"
           onError={() => setImgFailed(true)}
-          className="h-full w-full object-contain"
+          className={`h-full w-full object-top ${fit === 'contain' ? 'object-contain' : 'object-cover'}`}
         />
       </div>
     )
@@ -125,7 +127,7 @@ export default function BusinessServiceVisual({ type, title, subtitle, accent = 
   const titleSize = size === 'hero' ? 'text-2xl sm:text-4xl' : 'text-xl sm:text-2xl'
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-slate-900">
+    <div className="absolute inset-0 overflow-hidden bg-slate-900">
       {/* accent glow */}
       <div aria-hidden className={`absolute -right-10 -top-12 h-40 w-40 rounded-full blur-2xl ${a.glow}`} />
       <div aria-hidden className="absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-white/5 blur-2xl" />

@@ -15,10 +15,14 @@ export type BusinessPackage = {
   tagline: string
   /** 카드용 짧은 설명 */
   short: string
-  /** 가격 표기 (예: '55만원', '499만원~') */
+  /** 가격 표기 (예: '55만원', '199만원~') */
   price: string
   /** 가격 보조 문구 (예: '44만원 상당 특허출원 포함') */
   priceNote?: string
+  /** 썸네일 하단 밴드에 있던 핵심 혜택 키워드 (텍스트로 노출) */
+  highlights: string[]
+  /** 썸네일 하단 캐치프레이즈 */
+  highlightNote?: string
   recommendedFor: string[]
   deliverables: string[]
   process: string
@@ -62,6 +66,8 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '운전자금·시설자금 가능성 진단부터 신청 전략까지 정리해 드립니다.',
     short: '운전자금·시설자금 가능성 진단부터 신청 전략까지',
     price: '55만원',
+    highlights: ['운전자금 가능성 진단', '시설자금 가능성 진단', '신청 전략 수립'],
+    highlightNote: '운전자금·시설자금 가능성 진단부터 신청 전략까지',
     recommendedFor: ['운전자금·시설자금 가능성을 먼저 확인하고 싶은 대표님', '어떤 자금부터 검토할지 막막한 대표님'],
     deliverables: ['정책자금 가능성 진단', '우선 검토 자금 방향 정리', '신청 전략 및 준비서류 안내'],
     process: '진단 → 자금 방향 정리 → 신청 전략 안내',
@@ -89,6 +95,8 @@ export const businessPackages: BusinessPackage[] = [
     short: '기업 상황에 맞는 고용지원금을 찾아 신청부터 사후관리까지 지원합니다.',
     price: '선불 5% + 성공보수 15%',
     priceNote: '총 20% (선불 5% + 성공보수 15%)',
+    highlights: ['신규채용 지원', '기존직원 지원', '육아지원금'],
+    highlightNote: '기업의 인건비 부담을 줄이고, 고용 안정을 지원합니다.',
     recommendedFor: ['채용 계획이 있어 고용지원금을 활용하고 싶은 대표님', '신청부터 사후관리까지 맡기고 싶은 기업'],
     deliverables: ['지원금 가능성 검토', '신청 대상 제도 정리', '신청 및 사후관리 안내'],
     process: '가능성 검토 → 제도 정리 → 신청·사후관리 안내',
@@ -101,6 +109,8 @@ export const businessPackages: BusinessPackage[] = [
     ],
     visualType: 'gov',
     imageSrc: '/assets/business-services/employment-subsidy.png',
+    notice:
+      '지원금 지급 여부와 금액은 기업 및 요건에 따라 달라질 수 있으며 특정 결과를 보장하지 않습니다. 요건 충족과 기관 심사에 따라 결과가 달라질 수 있습니다.',
     featured: true,
   },
   {
@@ -114,6 +124,8 @@ export const businessPackages: BusinessPackage[] = [
     short: '기술성과 성장성을 중심으로 벤처확인을 준비합니다.',
     price: '199만원',
     priceNote: '44만원 상당 특허출원 포함',
+    highlights: ['정책자금 우대 혜택', '정부지원사업 가점 확보', '기업 신뢰도 상승 효과'],
+    highlightNote: '44만원 상당 특허출원 포함',
     recommendedFor: ['기술성·성장성 중심으로 벤처확인을 준비하는 법인', '특허출원과 벤처인증을 함께 준비하려는 대표님'],
     deliverables: ['벤처확인 방향 진단', '기술성·성장성 스토리 정리', '특허출원 연계', '신청 준비자료 안내'],
     process: '진단 → 스토리 정리 → 특허출원 연계 → 신청 준비',
@@ -139,6 +151,8 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략입니다.',
     short: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략입니다.',
     price: '500만원',
+    highlights: ['전문직·자산가 절세 전략', '소득공제 가능성 안내', '투자금 회수 구조 설명', '벤처확인(투자유형) 준비'],
+    highlightNote: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략',
     recommendedFor: ['연봉 1억 이상 전문직·자산가 대표님', '투자유형으로 벤처확인과 소득공제를 함께 검토하려는 대표님'],
     deliverables: ['투자유형 구조 검토', '소득공제 가능성 안내', '투자금 회수 구조 설명', '벤처확인 준비 방향 정리'],
     process: '구조 검토 → 소득공제 안내 → 회수 구조 설명 → 준비 방향 정리',
@@ -164,6 +178,8 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '24시간 일하는 온라인 영업사원을 만들어 드립니다.',
     short: '24시간 일하는 온라인 영업사원',
     price: '49만원',
+    highlights: ['모바일·PC 완벽 대응', '문의 유입 구조 구성', '브랜드 가치 향상'],
+    highlightNote: '고객이 믿는 첫인상, 24시간 일하는 온라인 영업사원',
     recommendedFor: ['온라인에서 회사를 보여줄 홈페이지가 필요한 대표님', '모바일까지 대응되는 반응형 홈페이지를 원하는 기업'],
     deliverables: ['반응형 홈페이지', '회사 소개 구조 정리', '서비스·문의 섹션 구성', '모바일 최적화'],
     process: '기획 → 구조 설계 → 제작 → 모바일 최적화',
@@ -188,6 +204,8 @@ export const businessPackages: BusinessPackage[] = [
     short: '반복업무 자동화 · PC/모바일 통합관리 · 데이터 기반 경영',
     price: '129만원',
     priceNote: '홈페이지 포함 시 149만원',
+    highlights: ['업무 효율 향상', '인건비·시간 절약', '데이터 기반 경영'],
+    highlightNote: '반복업무 자동화 · PC/모바일 통합관리',
     recommendedFor: ['반복업무를 자동화하고 싶은 대표님', 'PC·모바일에서 회사 운영을 통합 관리하려는 기업'],
     deliverables: ['업무관리 화면', '데이터 입력·조회 구조', 'PC·모바일 대응', '간단한 자동화·리포트 구조'],
     process: '업무 진단 → 화면 설계 → 구축 → 자동화·리포트 구성',
@@ -212,6 +230,8 @@ export const businessPackages: BusinessPackage[] = [
     short: '정부지원사업 · 정책자금 가점 확보',
     price: '149만원',
     priceNote: '사후관리 월 2만원 선택',
+    highlights: ['R&D 세액공제 활용', '정부지원사업 가점 부여', '정책자금 우대 혜택'],
+    highlightNote: '정부지원사업·정책자금 가점 확보에 도움이 됩니다.',
     recommendedFor: ['정부지원사업·정책자금 가점을 확보하고 싶은 대표님', '연구개발 활동을 체계화하려는 법인'],
     deliverables: ['연구소/연구전담부서 설립 방향 진단', '설립 요건·인력 기준 정리', '필요 서류 및 신청 절차 안내', '설립 후 사후관리 안내'],
     process: '요건 점검 → 설립 준비 → 신청 → 사후관리 안내',
@@ -236,6 +256,8 @@ export const businessPackages: BusinessPackage[] = [
     short: '대기업 거래 · 공공입찰 · 해외수출 준비',
     price: '각 149만원',
     priceNote: 'ISO 9001/14001/45001 각 149만원 · 3종 패키지 399만원',
+    highlights: ['ISO 9001 품질경영', 'ISO 14001 환경경영', 'ISO 45001 안전보건경영'],
+    highlightNote: '대기업 거래 · 공공입찰 · 해외수출 준비에 활용됩니다.',
     recommendedFor: ['대기업 거래·공공입찰을 준비하는 기업', '해외 수출을 준비하는 기업'],
     deliverables: ['ISO 인증 유형 진단 (9001/14001/45001)', '요구사항·문서화 방향 정리', '심사 준비 자료 안내', '3종 패키지 통합 진행 옵션'],
     process: '현황 점검 → 문서화 준비 → 심사 대응 안내',
@@ -259,6 +281,8 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '정책자금·정부지원사업 선정 가점 확보에 도움이 되는 경영혁신 인증을 준비합니다.',
     short: '정책자금 · 정부지원사업 선정 가점 확보',
     price: '199만원',
+    highlights: ['정책자금 우대평가', '정부지원사업 선정 가점', '기업 신뢰도 상승'],
+    highlightNote: '경영혁신을 통해 더 큰 혜택으로 연결됩니다.',
     recommendedFor: ['정책자금·정부지원사업 가점을 확보하고 싶은 대표님', '경영혁신 활동을 인증으로 정리하려는 기업'],
     deliverables: ['메인비즈 인증 방향 진단', '경영혁신 평가 항목 정리', '신청 준비 자료 안내'],
     process: '진단 → 평가항목 정리 → 신청 준비 안내',
@@ -282,6 +306,8 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '기술혁신기업 인증을 통한 정책자금·정부지원사업 우대를 준비합니다.',
     short: '기술혁신기업 인증을 통한 정책자금·정부지원사업 우대',
     price: '249만원',
+    highlights: ['정책자금 우대 혜택', '정부지원사업 선정 가점', '기술혁신 기업 가치 상승'],
+    highlightNote: '기술혁신형 중소기업으로 성장의 기회를 넓히세요.',
     recommendedFor: ['기술혁신 역량을 인증으로 정리하려는 기업', '정책자금·정부지원사업 우대를 준비하는 대표님'],
     deliverables: ['이노비즈 인증 방향 진단', '기술혁신 평가 항목 정리', '신청 준비 자료 안내'],
     process: '진단 → 평가항목 정리 → 신청 준비 안내',
@@ -304,8 +330,10 @@ export const businessPackages: BusinessPackage[] = [
     name: '성장 로드맵 풀패키지',
     tagline: '대표님은 사업에 집중하고, 정책자금·인증·홈페이지·AI 시스템까지 필요한 성장 구조를 한 번에 설계합니다.',
     short: '대표님은 사업에 집중하고, 필요한 성장 구조를 한 번에 설계합니다.',
-    price: '499만원~',
-    priceNote: '기업 상황에 따라 맞춤 견적',
+    price: '199만원~',
+    priceNote: '기업 상황에 따라 맞춤 견적 · 상담 후 협의',
+    highlights: ['맞춤 자금 조달 설계', '기업 성장 전략 수립', '맞춤형 솔루션', '안정적 성장 관리', '전문가 전담 원스톱 관리'],
+    highlightNote: '복잡한 과정을 한 번에, 대표님은 사업에만 집중하세요.',
     recommendedFor: ['사업에 집중하면서 성장 구조 전체를 맡기고 싶은 대표님', '정책자금·인증·홈페이지·AI를 한 번에 설계하려는 기업'],
     deliverables: ['통합 성장 로드맵 설계', '정책자금·인증 우선순위 정리', '홈페이지·AI 시스템 구축 계획', '단계별 실행 및 진행 관리'],
     process: '종합 진단 → 로드맵 설계 → 단계별 실행 관리',
@@ -313,7 +341,7 @@ export const businessPackages: BusinessPackage[] = [
     why: '필요한 것을 따로따로 준비하면 흐름이 끊기고 시간이 오래 걸립니다. 정책자금·인증·홈페이지·AI 시스템을 하나의 성장 구조로 설계하면 대표님은 사업에 집중하실 수 있습니다.',
     faqs: [
       { q: '한 번에 다 진행하나요?', a: '우선순위를 정해 단계적으로 진행합니다. 무엇부터 할지는 종합 진단에서 함께 정합니다.' },
-      { q: '견적은 어떻게 정해지나요?', a: '기업 상황과 범위에 따라 달라, 499만원부터 맞춤 견적으로 상담 후 안내드립니다.' },
+      { q: '견적은 어떻게 정해지나요?', a: '기업 상황과 범위에 따라 달라, 199만원부터 시작해 맞춤 견적으로 상담 후 협의드립니다.' },
       { q: '필요한 것만 골라도 되나요?', a: '네. 성장 로드맵을 기준으로 필요한 부분부터 진행할 수 있습니다.' },
     ],
     visualType: 'full',

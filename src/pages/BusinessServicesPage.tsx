@@ -88,14 +88,9 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
           : 'border border-slate-200 shadow-sm hover:shadow-lg'
       }`}
     >
-      {/* 썸네일 (텍스트 오버레이 없음 — 이미지에 문구 포함) */}
-      <Link to={`/business-services/${pkg.slug}`} className="relative block aspect-[3/2] bg-slate-100">
+      {/* 썸네일 (상단 고정 크롭 · 텍스트 오버레이 없음 — 이미지에 문구 포함) */}
+      <Link to={`/business-services/${pkg.slug}`} className="relative block aspect-[9/4] bg-slate-100">
         <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} />
-        {flagship && (
-          <span className="absolute left-3 top-3 z-10 rounded-full bg-amber-400 px-3 py-1 text-xs font-black text-slate-900 shadow-md">
-            ★ 대표 상품
-          </span>
-        )}
       </Link>
 
       <div className="flex flex-1 flex-col p-5">
@@ -104,8 +99,10 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
           <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>
             {pkg.category}
           </span>
-          {pkg.badge && !flagship && (
-            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{pkg.badge}</span>
+          {flagship ? (
+            <span className="rounded-full bg-amber-400 px-2.5 py-1 text-xs font-black text-slate-900">★ 대표 상품</span>
+          ) : (
+            pkg.badge && <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{pkg.badge}</span>
           )}
         </div>
 
@@ -120,15 +117,20 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
           {pkg.priceNote && <p className="mt-0.5 text-xs font-medium text-slate-400">{pkg.priceNote}</p>}
         </div>
 
-        {/* 핵심 혜택 2~3개 */}
-        <ul className="mt-3.5 space-y-1.5 border-t border-slate-100 pt-3.5">
-          {pkg.deliverables.slice(0, 3).map((d) => (
-            <li key={d} className="flex items-start gap-1.5 text-[0.82rem] leading-snug text-slate-600">
-              <span className={`mt-0.5 shrink-0 font-black ${flagship ? 'text-amber-500' : 'text-blue-500'}`} aria-hidden>✓</span>
-              <span className="line-clamp-1">{d}</span>
-            </li>
-          ))}
-        </ul>
+        {/* 핵심 혜택 (썸네일 하단 밴드에 있던 문구를 텍스트로 노출) */}
+        <div className="mt-3.5 border-t border-slate-100 pt-3.5">
+          <ul className="space-y-1.5">
+            {pkg.highlights.slice(0, 3).map((h) => (
+              <li key={h} className="flex items-start gap-1.5 text-[0.82rem] leading-snug text-slate-600">
+                <span className={`mt-0.5 shrink-0 font-black ${flagship ? 'text-amber-500' : 'text-blue-500'}`} aria-hidden>✓</span>
+                <span className="line-clamp-1">{h}</span>
+              </li>
+            ))}
+          </ul>
+          {pkg.highlightNote && (
+            <p className="mt-2 line-clamp-2 text-[0.78rem] font-medium leading-snug text-slate-400">{pkg.highlightNote}</p>
+          )}
+        </div>
 
         {/* 버튼 2개 (상담 신청 / 자세히 보기) */}
         <div className="mt-auto flex gap-2 pt-5">
