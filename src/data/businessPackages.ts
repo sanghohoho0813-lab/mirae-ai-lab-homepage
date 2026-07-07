@@ -5,6 +5,13 @@ export type BadgeTone = 'primary' | 'blue' | 'slate'
 
 export type Faq = { q: string; a: string }
 
+// 결제 방식:
+//  - fixed   : 고정가 일회성 결제 (예: 55만원)
+//  - variant : 선택형(옵션에 따라 금액 변동, 예: ISO 1/2/3종)
+//  - consult : 카드결제 없이 상담 후 결정
+export type PriceType = 'fixed' | 'variant' | 'consult'
+export type PriceVariant = { label: string; amount: number; note?: string; badge?: string }
+
 export type BusinessPackage = {
   id: string
   slug: string
@@ -15,10 +22,14 @@ export type BusinessPackage = {
   tagline: string
   /** 카드용 짧은 설명 */
   short: string
-  /** 가격 표기 (예: '55만원', '199만원~') */
+  /** 가격 표기 (예: '55만원', '상담 후 결정') */
   price: string
   /** 가격 보조 문구 (예: '44만원 상당 특허출원 포함') */
   priceNote?: string
+  /** 결제 방식 (기본 fixed) */
+  priceType?: PriceType
+  /** variant 결제 시 선택 옵션 */
+  variants?: PriceVariant[]
   /** 썸네일 하단 밴드에 있던 핵심 혜택 키워드 (텍스트로 노출) */
   highlights: string[]
   /** 썸네일 하단 캐치프레이즈 */
@@ -93,8 +104,9 @@ export const businessPackages: BusinessPackage[] = [
     name: '고용지원금 패키지',
     tagline: '기업 상황에 맞는 고용지원금을 찾아 신청부터 사후관리까지 지원합니다.',
     short: '기업 상황에 맞는 고용지원금을 찾아 신청부터 사후관리까지 지원합니다.',
-    price: '선불 5% + 성공보수 15%',
-    priceNote: '총 20% (선불 5% + 성공보수 15%)',
+    price: '상담 후 안내',
+    priceNote: '기업 상황·지원 범위에 따라 맞춤 안내',
+    priceType: 'consult',
     highlights: ['신규채용 지원', '기존직원 지원', '육아지원금'],
     highlightNote: '기업의 인건비 부담을 줄이고, 고용 안정을 지원합니다.',
     recommendedFor: ['채용 계획이 있어 고용지원금을 활용하고 싶은 대표님', '신청부터 사후관리까지 맡기고 싶은 기업'],
@@ -104,7 +116,7 @@ export const businessPackages: BusinessPackage[] = [
     why: '고용지원금은 제도가 다양하고 요건·기간 관리가 까다롭습니다. 기업 상황에 맞는 제도를 찾아 신청과 사후관리까지 함께 진행하면 놓치는 부분을 줄일 수 있습니다.',
     faqs: [
       { q: '지원금 지급을 보장하나요?', a: '아니요. 지급 여부는 요건 충족과 기관 심사에 따라 달라집니다. 저희는 가능성 검토와 신청·사후관리 진행을 돕습니다.' },
-      { q: '비용은 어떻게 되나요?', a: '선불 5%와 성공보수 15%(총 20%) 구조로, 기업 상황에 따라 상담에서 안내드립니다.' },
+      { q: '비용은 어떻게 되나요?', a: '기업 상황과 지원 범위에 따라 달라, 상담 후 맞춤으로 안내드립니다.' },
       { q: '어떤 지원금이 대상인가요?', a: '채용·고용유지 등 기업 상황에 맞는 제도를 검토해 신청 대상을 정리합니다.' },
     ],
     visualType: 'gov',
@@ -254,8 +266,14 @@ export const businessPackages: BusinessPackage[] = [
     name: 'ISO 인증 패키지',
     tagline: '대기업 거래·공공입찰·해외수출 준비에 필요한 ISO 인증을 준비합니다.',
     short: '대기업 거래 · 공공입찰 · 해외수출 준비',
-    price: '각 149만원',
-    priceNote: 'ISO 9001/14001/45001 각 149만원 · 3종 패키지 399만원',
+    price: '149만원~',
+    priceNote: '1·2·3종 선택 · 3종 패키지 할인',
+    priceType: 'variant',
+    variants: [
+      { label: '1종 · ISO 9001·14001·45001 중 택1', amount: 1490000 },
+      { label: '2종 선택', amount: 2180000 },
+      { label: '3종 패키지', amount: 3990000, badge: '할인' },
+    ],
     highlights: ['ISO 9001 품질경영', 'ISO 14001 환경경영', 'ISO 45001 안전보건경영'],
     highlightNote: '대기업 거래 · 공공입찰 · 해외수출 준비에 활용됩니다.',
     recommendedFor: ['대기업 거래·공공입찰을 준비하는 기업', '해외 수출을 준비하는 기업'],
@@ -330,8 +348,9 @@ export const businessPackages: BusinessPackage[] = [
     name: '성장 로드맵 풀패키지',
     tagline: '대표님은 사업에 집중하고, 정책자금·인증·홈페이지·AI 시스템까지 필요한 성장 구조를 한 번에 설계합니다.',
     short: '대표님은 사업에 집중하고, 필요한 성장 구조를 한 번에 설계합니다.',
-    price: '199만원~',
-    priceNote: '기업 상황에 따라 맞춤 견적 · 상담 후 협의',
+    price: '상담 후 결정',
+    priceNote: '기업 상황에 따라 맞춤 견적',
+    priceType: 'consult',
     highlights: ['맞춤 자금 조달 설계', '기업 성장 전략 수립', '맞춤형 솔루션', '안정적 성장 관리', '전문가 전담 원스톱 관리'],
     highlightNote: '복잡한 과정을 한 번에, 대표님은 사업에만 집중하세요.',
     recommendedFor: ['사업에 집중하면서 성장 구조 전체를 맡기고 싶은 대표님', '정책자금·인증·홈페이지·AI를 한 번에 설계하려는 기업'],
@@ -341,7 +360,7 @@ export const businessPackages: BusinessPackage[] = [
     why: '필요한 것을 따로따로 준비하면 흐름이 끊기고 시간이 오래 걸립니다. 정책자금·인증·홈페이지·AI 시스템을 하나의 성장 구조로 설계하면 대표님은 사업에 집중하실 수 있습니다.',
     faqs: [
       { q: '한 번에 다 진행하나요?', a: '우선순위를 정해 단계적으로 진행합니다. 무엇부터 할지는 종합 진단에서 함께 정합니다.' },
-      { q: '견적은 어떻게 정해지나요?', a: '기업 상황과 범위에 따라 달라, 199만원부터 시작해 맞춤 견적으로 상담 후 협의드립니다.' },
+      { q: '견적은 어떻게 정해지나요?', a: '기업 상황과 범위에 따라 달라, 상담 후 맞춤 견적으로 협의드립니다.' },
       { q: '필요한 것만 골라도 되나요?', a: '네. 성장 로드맵을 기준으로 필요한 부분부터 진행할 수 있습니다.' },
     ],
     visualType: 'full',

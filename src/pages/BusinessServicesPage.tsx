@@ -111,9 +111,15 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
         {/* 짧은 설명 */}
         <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-slate-500">{pkg.short}</p>
 
-        {/* 가격 (크게) */}
+        {/* 가격 (크게) — consult 는 톤다운, variant 는 '~' 시작가 */}
         <div className="mt-3.5">
-          <p className={`text-2xl font-black tracking-tight ${flagship ? 'text-amber-600' : 'text-slate-900'}`}>{pkg.price}</p>
+          <p
+            className={`font-black tracking-tight ${pkg.priceType === 'consult' ? 'text-xl' : 'text-2xl'} ${
+              flagship ? 'text-amber-600' : pkg.priceType === 'consult' ? 'text-slate-700' : 'text-slate-900'
+            }`}
+          >
+            {pkg.price}
+          </p>
           {pkg.priceNote && <p className="mt-0.5 text-xs font-medium text-slate-400">{pkg.priceNote}</p>}
         </div>
 

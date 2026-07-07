@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import BusinessServiceVisual from '../components/BusinessServiceVisual'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
@@ -30,6 +30,7 @@ function scrollToId(id: string) {
 export default function BusinessServiceDetailPage() {
   const { slug } = useParams()
   const pkg = getPackageBySlug(slug)
+  const [variantIdx, setVariantIdx] = useState(0)
 
   useEffect(() => {
     if (pkg) document.title = `${pkg.name} | 미래 AI 랩 서비스몰`
@@ -41,6 +42,11 @@ export default function BusinessServiceDetailPage() {
   const b = packageBanner[pkg.id]
   const flagship = pkg.flagship
   const others = businessPackages.filter((p) => p.id !== pkg.id).slice(0, 3)
+
+  const variants = pkg.variants
+  const selectedVariant = variants?.[Math.min(variantIdx, variants.length - 1)]
+  const isConsult = pkg.priceType === 'consult'
+  const displayPrice = selectedVariant ? `${(selectedVariant.amount / 10000).toLocaleString('ko-KR')}만원` : pkg.price
 
   return (
     <div className="min-h-screen bg-white pb-20 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
@@ -107,7 +113,34 @@ export default function BusinessServiceDetailPage() {
             {/* Price */}
             <div className="mt-5 rounded-2xl bg-slate-50 px-5 py-4 ring-1 ring-inset ring-slate-100">
               <p className="text-xs font-bold uppercase tracking-wide text-slate-400">가격</p>
-              <p className={`mt-1 text-3xl font-black tracking-tight sm:text-4xl ${flagship ? 'text-amber-600' : 'text-slate-900'}`}>{pkg.price}</p>
+              {variants && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {variants.map((v, i) => {
+                    const active = i === Math.min(variantIdx, variants.length - 1)
+                    return (
+                      <button
+                        key={v.label}
+                        type="button"
+                        onClick={() => setVariantIdx(i)}
+                        aria-pressed={active}
+                        className={`rounded-xl px-3 py-2 text-sm font-bold transition-colors ${
+                          active ? 'bg-slate-900 text-white' : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        {v.label}
+                        {v.badge && (
+                          <span className={`ml-1.5 rounded px-1.5 py-0.5 text-[11px] font-black ${active ? 'bg-amber-400 text-slate-900' : 'bg-amber-100 text-amber-700'}`}>
+                            {v.badge}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+              <p className={`mt-2 font-black tracking-tight ${isConsult ? 'text-2xl' : 'text-3xl sm:text-4xl'} ${flagship ? 'text-amber-600' : isConsult ? 'text-slate-700' : 'text-slate-900'}`}>
+                {displayPrice}
+              </p>
               {pkg.priceNote && <p className="mt-1 text-sm font-medium text-slate-500">{pkg.priceNote}</p>}
             </div>
 
