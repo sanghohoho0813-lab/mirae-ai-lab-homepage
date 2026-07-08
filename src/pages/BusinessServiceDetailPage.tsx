@@ -297,8 +297,31 @@ export default function BusinessServiceDetailPage() {
             ))}
           </ul>
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            → 혼자 고민하지 마세요. <span className={accentText}>함께 정리해 드립니다.</span>
+            → 그런데, 이 고민들… <span className="text-red-600">미룰수록 비싸집니다.</span>
           </p>
+        </div>
+      </section>
+
+      {/* 손실 환기 — 미루면 잃는 것 (적당한 긴장) */}
+      <section className={`bg-rose-50/60 ${band}`}>
+        <div className={inner}>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
+          <h2 className={bigHead}>
+            이 문제를 안 풀면,<br /><span className="text-red-600">매달 이런 것들을 잃습니다</span>
+          </h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {content.losses.map((l) => (
+              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-2xl" aria-hidden>{l.icon}</span>
+                <p className="mt-3 text-base font-extrabold leading-snug text-slate-900">{l.t}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{l.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
+            <p className="text-lg font-black leading-snug text-white sm:text-xl">{content.lossClosing}</p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">다행인 건, 지금 확인하면 아직 늦지 않았다는 겁니다.</p>
+          </div>
         </div>
       </section>
 
@@ -323,6 +346,32 @@ export default function BusinessServiceDetailPage() {
           <div className="mt-6 rounded-2xl bg-amber-400 p-6 text-center">
             <p className="text-base font-black text-slate-900 sm:text-lg">{pkg.expectation}</p>
           </div>
+        </div>
+      </section>
+
+      {/* 변화 — 진행 후 달라지는 것 (Before → After) */}
+      <section className={`bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>진행 후, 달라지는 것</p>
+          <h2 className={bigHead}>
+            이 서비스 후,<br /><span className={accentText}>대표님의 일상이 달라집니다</span>
+          </h2>
+          <div className="mt-10 space-y-4">
+            {content.afters.map((a) => (
+              <div key={a.after} className="grid items-stretch gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[1fr_auto_1.1fr] sm:gap-3 sm:p-5">
+                <div className="rounded-xl bg-slate-100 p-4">
+                  <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">지금</p>
+                  <p className="mt-1 text-sm font-semibold leading-snug text-slate-500 line-through decoration-slate-300 sm:text-[0.95rem]">{a.before}</p>
+                </div>
+                <div className={`flex items-center justify-center text-xl font-black sm:text-2xl ${accentText}`} aria-hidden>→</div>
+                <div className={`rounded-xl p-4 ${flagship ? 'bg-amber-50 ring-1 ring-inset ring-amber-200' : 'bg-blue-50 ring-1 ring-inset ring-blue-100'}`}>
+                  <p className={`text-[11px] font-black uppercase tracking-wide ${flagship ? 'text-amber-600' : 'text-blue-500'}`}>진행 후</p>
+                  <p className="mt-1 text-[0.95rem] font-extrabold leading-snug text-slate-900 sm:text-base">{a.after}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">{content.afterClosing}</p>
         </div>
       </section>
 
@@ -443,6 +492,10 @@ export default function BusinessServiceDetailPage() {
             <div className="mt-7">
               <BuyButtons />
             </div>
+            <p className="mt-5 border-t border-slate-100 pt-4 text-center text-sm leading-relaxed text-slate-500">
+              지금 결정이 어려우셔도 괜찮습니다.<br />
+              <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요 — 확인해 두는 데는 비용이 들지 않습니다.
+            </p>
           </div>
         </div>
       </section>

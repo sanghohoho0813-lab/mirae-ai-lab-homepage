@@ -41,6 +41,22 @@ const cases = [
 // 믿을 수 있는 이유 (과장 없는 정성 표현)
 const reasons = ['정책자금·인증 실무 경험', '기업 상황에 맞춘 맞춤 진단', '신청 전략·준비서류까지 안내']
 
+// 미루면 잃는 것 (적당한 긴장 — 조작 통계·과도한 협박 금지)
+const losses = [
+  { icon: '⏳', t: '정책자금 예산은 소진되면 끝', d: '정책자금은 예산 소진형입니다. 알아보는 사이 올해 예산이 마감되면, 다음 기회는 내년입니다.' },
+  { icon: '💸', t: '높은 금리로 새는 이자', d: '방향을 몰라 고금리 대출로 버티는 동안, 금리 차이만큼의 이자가 매달 조용히 빠져나갑니다.' },
+  { icon: '🚪', t: '경쟁사는 이미 활용하고 있습니다', d: '비슷한 조건의 회사가 정책자금으로 설비와 인력에 투자하는 동안, 격차는 매달 벌어집니다.' },
+]
+const lossClosing = '가장 비싼 비용은 “몰라서 못 받은 자금”입니다.'
+
+// 진행 후 변화 (Before → After)
+const afters = [
+  { before: '매달 이자 낼 때마다 아까웠던 마음', after: '더 낮은 금리 가능성을 확인하고 세우는 이자 계획' },
+  { before: '어디서 뭘 알아봐야 할지 몰라 미루던 상태', after: '뭘 먼저 준비할지 순서가 정해진 상태' },
+  { before: '은행 창구에서 아쉬운 소리 하던 자리', after: '준비된 서류로 당당하게 신청하는 자리' },
+]
+const afterClosing = '자금 걱정이 줄면, 대표님의 결정이 빨라집니다.'
+
 const steps = [
   { t: '상담 신청', d: '간단한 정보를 남기면 담당자가 연락드립니다.' },
   { t: '기업 현황 진단', d: '업종·업력·재무 상황을 함께 확인합니다.' },
@@ -210,8 +226,31 @@ export default function FundingConsultingDetailPage() {
             ))}
           </ul>
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            → 무턱대고 알아보기 전에, <span className="text-blue-600">진단이 먼저입니다.</span>
+            → 그런데 이 고민들, <span className="text-red-600">미룰수록 비싸집니다.</span>
           </p>
+        </div>
+      </section>
+
+      {/* 손실 환기 — 미루면 잃는 것 */}
+      <section className={`bg-rose-50/60 ${band}`}>
+        <div className={inner}>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
+          <h2 className={bigHead}>
+            이 문제를 안 풀면,<br /><span className="text-red-600">매달 이런 것들을 잃습니다</span>
+          </h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {losses.map((l) => (
+              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-2xl" aria-hidden>{l.icon}</span>
+                <p className="mt-3 text-base font-extrabold leading-snug text-slate-900">{l.t}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{l.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
+            <p className="text-lg font-black leading-snug text-white sm:text-xl">{lossClosing}</p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">다행인 건, 지금 확인하면 아직 늦지 않았다는 겁니다.</p>
+          </div>
         </div>
       </section>
 
@@ -236,6 +275,32 @@ export default function FundingConsultingDetailPage() {
           <div className="mt-6 rounded-2xl bg-amber-400 p-6 text-center">
             <p className="text-base font-black text-slate-900 sm:text-lg">{pkg.expectation}</p>
           </div>
+        </div>
+      </section>
+
+      {/* 변화 — 진행 후 달라지는 것 (Before → After) */}
+      <section className={`bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>진행 후, 달라지는 것</p>
+          <h2 className={bigHead}>
+            진단 후,<br /><span className="text-blue-600">대표님의 일상이 달라집니다</span>
+          </h2>
+          <div className="mt-10 space-y-4">
+            {afters.map((a) => (
+              <div key={a.after} className="grid items-stretch gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[1fr_auto_1.1fr] sm:gap-3 sm:p-5">
+                <div className="rounded-xl bg-slate-100 p-4">
+                  <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">지금</p>
+                  <p className="mt-1 text-sm font-semibold leading-snug text-slate-500 line-through decoration-slate-300 sm:text-[0.95rem]">{a.before}</p>
+                </div>
+                <div className="flex items-center justify-center text-xl font-black text-blue-600 sm:text-2xl" aria-hidden>→</div>
+                <div className="rounded-xl bg-blue-50 p-4 ring-1 ring-inset ring-blue-100">
+                  <p className="text-[11px] font-black uppercase tracking-wide text-blue-500">진행 후</p>
+                  <p className="mt-1 text-[0.95rem] font-extrabold leading-snug text-slate-900 sm:text-base">{a.after}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">{afterClosing}</p>
         </div>
       </section>
 
@@ -384,6 +449,10 @@ export default function FundingConsultingDetailPage() {
             <div className="mt-7">
               <BuyButtons variant="light" />
             </div>
+            <p className="mt-5 border-t border-slate-100 pt-4 text-center text-sm leading-relaxed text-slate-500">
+              지금 결정이 어려우셔도 괜찮습니다.<br />
+              <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요 — 확인해 두는 데는 비용이 들지 않습니다.
+            </p>
           </div>
         </div>
       </section>
