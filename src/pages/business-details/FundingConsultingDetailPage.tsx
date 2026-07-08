@@ -9,6 +9,11 @@ import { getPackageBySlug } from '../../data/businessPackages'
 const pkg = getPackageBySlug('funding-consulting')!
 const IMG = '/assets/business-services/funding-consulting.png'
 
+// 할인 표기 (정가 100만원 → 판매가 50만원)
+const LIST_PRICE = '100만원'
+const SALE_PRICE = pkg.price // '50만원'
+const DISCOUNT_RATE = '50%'
+
 const eyebrow = 'text-sm font-bold uppercase tracking-widest text-blue-600'
 const h2 = 'mt-2 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'
 
@@ -81,6 +86,13 @@ const cases = [
 
 export default function FundingConsultingDetailPage() {
   const [showBar, setShowBar] = useState(false)
+  const [payNotice, setPayNotice] = useState(false)
+
+  // 결제(포트원)는 연동 예정 → 지금은 상담 신청으로 브릿지
+  function handleBuy() {
+    setPayNotice(true)
+    scrollToId('apply')
+  }
 
   useEffect(() => {
     document.title = '정책자금 컨설팅 | 미래 AI 랩 서비스몰'
@@ -151,27 +163,47 @@ export default function FundingConsultingDetailPage() {
               대표님 상황에 맞는 방향을 정리해 드립니다.
             </p>
 
-            <div className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 backdrop-blur">
-              <span className="text-3xl font-black tracking-tight text-white sm:text-4xl">{pkg.price}</span>
-              <span className="text-sm font-medium text-slate-300">정책자금 가능성 진단 · 신청 전략</span>
+            <div className="mt-6 rounded-2xl border border-white/15 bg-white/5 px-5 py-4 backdrop-blur">
+              <div className="flex items-center gap-2">
+                <span className="rounded-md bg-amber-400 px-2 py-0.5 text-sm font-black text-slate-900">{DISCOUNT_RATE} 할인</span>
+                <span className="text-sm font-medium text-slate-400 line-through">정가 {LIST_PRICE}</span>
+              </div>
+              <div className="mt-1.5 flex items-baseline gap-2">
+                <span className="text-4xl font-black tracking-tight text-white sm:text-5xl">{SALE_PRICE}</span>
+                <span className="text-sm font-medium text-slate-300">가능성 진단 · 신청 전략</span>
+              </div>
+              <p className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-amber-200">
+                <span aria-hidden>💳</span> 카드 무이자 할부 가능
+              </p>
             </div>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
-                onClick={() => scrollToId('apply')}
+                onClick={handleBuy}
                 className="inline-flex items-center justify-center rounded-xl bg-amber-400 px-7 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
               >
-                무료 진단 신청하기
+                바로 구매하기
               </button>
               <button
                 type="button"
-                onClick={() => scrollToId('flow')}
-                className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-lg font-bold text-white transition-colors hover:bg-white/10"
+                onClick={handleBuy}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-lg font-bold text-white transition-colors hover:bg-white/10"
               >
-                진행 과정 보기
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
+                </svg>
+                장바구니
               </button>
             </div>
+            <button
+              type="button"
+              onClick={() => scrollToId('apply')}
+              className="mt-3 text-sm font-semibold text-slate-300 underline underline-offset-4 transition-colors hover:text-white"
+            >
+              또는 무료 상담 신청하기 →
+            </button>
             <p className="mt-4 text-xs font-medium text-slate-400">
               ※ 정책자금 승인·금리·한도는 보장하지 않습니다. 가능성 진단과 신청 전략을 돕습니다.
             </p>
@@ -325,10 +357,17 @@ export default function FundingConsultingDetailPage() {
           <div className="lg:col-span-2 lg:sticky lg:top-24">
             <div className="rounded-3xl border-2 border-slate-900 bg-white p-7 shadow-xl">
               <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-600/15">정책자금 컨설팅</span>
-              <div className="mt-4 flex items-end gap-2">
-                <span className="text-4xl font-black tracking-tight text-slate-900">{pkg.price}</span>
+              <div className="mt-4 flex items-center gap-2">
+                <span className="rounded-md bg-amber-400 px-2 py-0.5 text-xs font-black text-slate-900">{DISCOUNT_RATE} 할인</span>
+                <span className="text-sm font-medium text-slate-400 line-through">정가 {LIST_PRICE}</span>
+              </div>
+              <div className="mt-1 flex items-end gap-2">
+                <span className="text-4xl font-black tracking-tight text-slate-900">{SALE_PRICE}</span>
                 <span className="pb-1 text-sm font-medium text-slate-500">가능성 진단 패키지</span>
               </div>
+              <p className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-blue-600">
+                <span aria-hidden>💳</span> 카드 무이자 할부 가능
+              </p>
               <ul className="mt-5 space-y-2.5 border-t border-slate-100 pt-5">
                 {pkg.deliverables.map((d) => (
                   <li key={d} className="flex items-start gap-2 text-sm text-slate-700">
@@ -337,16 +376,36 @@ export default function FundingConsultingDetailPage() {
                   </li>
                 ))}
               </ul>
+              <div className="mt-6 flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleBuy}
+                  className="flex flex-1 items-center justify-center rounded-xl bg-slate-900 px-5 py-4 text-lg font-bold text-white shadow-sm transition-colors hover:bg-slate-700"
+                >
+                  바로 구매
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBuy}
+                  aria-label="장바구니"
+                  className="flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-4 text-slate-700 transition-colors hover:bg-slate-50"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
+                  </svg>
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={() => scrollToId('apply')}
-                className="mt-6 flex w-full items-center justify-center rounded-xl bg-slate-900 px-6 py-4 text-lg font-bold text-white shadow-sm transition-colors hover:bg-slate-700"
+                className="mt-2.5 w-full text-sm font-semibold text-slate-500 underline underline-offset-4 transition-colors hover:text-slate-900"
               >
-                무료 진단 신청하기
+                또는 무료 상담 신청
               </button>
               <Link
                 to="/business-services"
-                className="mt-2.5 flex w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-base font-semibold text-slate-800 transition-colors hover:bg-slate-50"
+                className="mt-3 flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
               >
                 다른 상품 보기
               </Link>
@@ -422,6 +481,12 @@ export default function FundingConsultingDetailPage() {
               간단히 남겨주시면 어떤 자금부터 검토하면 좋을지 방향을 정리해 안내드립니다.
             </p>
           </div>
+          {payNotice && (
+            <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-800">
+              🛒 온라인 카드결제(무이자 할부 포함)는 <b>곧 오픈</b>됩니다. 지금은 아래 <b>상담 신청</b>으로 접수해 주시면
+              결제·진행을 함께 안내드릴게요.
+            </div>
+          )}
           <div className="mt-8">
             <BusinessInquiryForm />
           </div>
@@ -441,13 +506,16 @@ export default function FundingConsultingDetailPage() {
       {/* Mobile sticky CTA */}
       {showBar && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
-          <span className="shrink-0 text-lg font-black text-slate-900">{pkg.price}</span>
+          <span className="flex shrink-0 items-baseline gap-1">
+            <span className="text-xs font-medium text-slate-400 line-through">{LIST_PRICE}</span>
+            <span className="text-lg font-black text-slate-900">{SALE_PRICE}</span>
+          </span>
           <button
             type="button"
-            onClick={() => scrollToId('apply')}
+            onClick={handleBuy}
             className="flex flex-1 items-center justify-center rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white"
           >
-            무료 진단 신청하기
+            바로 구매하기
           </button>
         </div>
       )}
