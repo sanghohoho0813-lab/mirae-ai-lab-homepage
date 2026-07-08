@@ -33,10 +33,13 @@ const whyPoints = [
 
 // 예시 사례 (⚠️ 실제 데이터로 교체 예정 · 승인/실행 보장 아님)
 const cases = [
-  { bank: '○○은행', product: '혁신성장촉진자금 (운전)', amount: '70,000,000원', rate: '연 3.5%', date: '실행 예시' },
-  { bank: '○○은행', product: '일반자금대출 (일시상환)', amount: '100,000,000원', rate: '연 2.9%', date: '실행 예시' },
-  { bank: '○○은행', product: '소상공인 정책자금 (운전)', amount: '50,000,000원', rate: '연 3.2%', date: '실행 예시' },
+  { bank: '○○은행', product: '혁신성장촉진자금 (운전)', repay: '일시상환', amount: '70,000,000원', big: '7,000만원', rate: '연 3.5%' },
+  { bank: '○○은행', product: '일반자금대출', repay: '분할상환', amount: '100,000,000원', big: '1억원', rate: '연 2.9%' },
+  { bank: '○○기금', product: '소상공인 정책자금 (운전)', repay: '분할상환', amount: '50,000,000원', big: '5,000만원', rate: '연 3.2%' },
 ]
+
+// 믿을 수 있는 이유 (과장 없는 정성 표현)
+const reasons = ['정책자금·인증 실무 경험', '기업 상황에 맞춘 맞춤 진단', '신청 전략·준비서류까지 안내']
 
 const steps = [
   { t: '상담 신청', d: '간단한 정보를 남기면 담당자가 연락드립니다.' },
@@ -195,6 +198,7 @@ export default function FundingConsultingDetailPage() {
       {/* 공감 (이런 고민) */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🤔</div>
           <p className={kicker}>이런 고민, 있으셨죠?</p>
           <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막</span>합니다</h2>
           <ul className="mx-auto mt-9 max-w-xl space-y-3">
@@ -235,35 +239,67 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 진행 사례 (예시) */}
+      {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>진행을 이렇게 돕습니다</p>
-          <h2 className={bigHead}>대표님 상황에 맞춰<br /><span className="text-blue-600">방향을 잡아드립니다</span></h2>
-          <p className="mt-4 text-center text-sm font-semibold text-slate-400">아래는 이해를 돕기 위한 예시 화면입니다. (실제 고객 데이터로 교체 예정)</p>
+          <p className={kicker}>믿을 수 있는 이유</p>
+          <h2 className={bigHead}>왜 미래 AI 랩<br /><span className="text-blue-600">정책자금 컨설팅일까요</span></h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {reasons.map((r) => (
+              <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-blue-600 text-xl font-black text-white" aria-hidden>✓</span>
+                <p className="mt-3 text-base font-bold text-slate-900">{r}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div className="mt-9 space-y-5">
+      {/* 실제 진행 예시 (알림톡형) */}
+      <section className={`bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-white text-4xl shadow-sm ring-1 ring-slate-200">🙋‍♂️</div>
+          <p className={kicker}>실제 이렇게 진행됩니다</p>
+          <h2 className={bigHead}>전문가만 되는 거<br />아니냐고요? <span className="text-blue-600">아닙니다</span></h2>
+          <p className="mx-auto mt-5 max-w-md text-center text-base font-semibold leading-relaxed text-slate-600">
+            대표님 상황을 정확히 파악해 <b className="text-slate-900">맞는 자금 방향</b>을 함께 잡아드립니다.
+          </p>
+
+          <div className="mt-12 space-y-14">
             {cases.map((c, i) => (
-              <div key={i} className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
-                <div className="flex items-center gap-2 bg-amber-300 px-5 py-2.5">
-                  <span className="grid h-6 w-6 place-items-center rounded-md bg-slate-900 text-xs font-black text-amber-300">톡</span>
-                  <span className="text-sm font-black text-slate-900">알림톡 도착 · 예시</span>
-                </div>
-                <div className="p-6">
-                  <p className="text-base font-bold text-slate-900">[{c.bank}] 대출 실행 안내</p>
-                  <dl className="mt-4 space-y-2 text-sm">
-                    <div className="flex justify-between"><dt className="text-slate-500">대출상품</dt><dd className="font-semibold text-slate-800">{c.product}</dd></div>
-                    <div className="flex justify-between"><dt className="text-slate-500">대출금리</dt><dd className="font-semibold text-slate-800">{c.rate}</dd></div>
-                    <div className="flex justify-between"><dt className="text-slate-500">구분</dt><dd className="font-semibold text-slate-800">{c.date}</dd></div>
-                  </dl>
-                  <div className="mt-4 rounded-xl bg-blue-600 px-4 py-3 text-center">
-                    <span className="text-2xl font-black tracking-tight text-white sm:text-3xl">{c.amount}</span>
+              <div key={i}>
+                <p className="text-center text-[1.6rem] font-black tracking-tight text-slate-900 sm:text-4xl">
+                  <span className="text-blue-600">{c.big}</span> 진행 예시
+                </p>
+                <div className="mx-auto mt-5 max-w-sm overflow-hidden rounded-3xl bg-slate-200/70 shadow-xl ring-1 ring-slate-200">
+                  {/* 카톡 알림톡 헤더 */}
+                  <div className="flex items-center gap-2 bg-[#FEE500] px-4 py-2.5">
+                    <span className="grid h-6 w-6 place-items-center rounded-md bg-[#3C1E1E] text-[10px] font-black text-[#FEE500]">TALK</span>
+                    <span className="text-sm font-black text-[#3C1E1E]">알림톡 도착</span>
+                    <span className="ml-auto rounded bg-black/10 px-1.5 py-0.5 text-[10px] font-black text-[#3C1E1E]">예시</span>
+                  </div>
+                  {/* 메시지 버블 */}
+                  <div className="p-4">
+                    <div className="rounded-2xl rounded-tl-md bg-white p-4 shadow-sm">
+                      <p className="text-sm font-bold text-slate-900">[{c.bank}] 대출 실행 안내</p>
+                      <p className="mt-1 text-xs text-slate-400">■■■ 고객님, 대출이 정상 실행되었습니다.</p>
+                      <dl className="mt-3 space-y-1.5 border-t border-slate-100 pt-3 text-[13px]">
+                        <div className="flex justify-between"><dt className="text-slate-400">대출상품</dt><dd className="font-semibold text-slate-700">{c.product}</dd></div>
+                        <div className="flex justify-between"><dt className="text-slate-400">상환방법</dt><dd className="font-semibold text-slate-700">{c.repay}</dd></div>
+                        <div className="flex justify-between"><dt className="text-slate-400">대출금리</dt><dd className="font-semibold text-slate-700">{c.rate}</dd></div>
+                      </dl>
+                      {/* 파랑 강조 박스 */}
+                      <div className="relative mt-5 rounded-xl border-2 border-blue-600 bg-blue-50 px-4 py-3 text-center">
+                        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded bg-blue-600 px-2 py-0.5 text-[10px] font-black text-white">대출금액</span>
+                        <p className="mt-1 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">{c.amount}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <p className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs leading-relaxed text-slate-500">
+          <p className="mt-12 rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-500">
             ※ 위 화면은 이해를 돕기 위한 <b>예시</b>이며 실제 고객 정보가 아닙니다. 대출 승인·실행·금리·한도는 기관 심사에 따라 달라지며 보장하지 않습니다.
           </p>
         </div>
