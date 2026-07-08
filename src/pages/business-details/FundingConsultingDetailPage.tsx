@@ -23,12 +23,12 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-const pains = ['운전자금이 급한데 어디서 봐야 할지 막막', '대출 금리를 조금이라도 낮추고 싶다', '정책자금 종류가 너무 많아 뭐부터 볼지 모르겠다', '자격 요건·서류가 복잡해 시작이 어렵다']
+const pains = ['운전자금이 급한데, 어디서부터 봐야 할지 모르겠어요', '대출 금리를 조금이라도 낮추고 싶어요', '정책자금 종류가 너무 많아서 뭐가 뭔지 모르겠어요', '요건이니 서류니, 보다가 그냥 덮었어요']
 
 const whyPoints = [
-  { n: '01', t: '시행착오를 줄입니다', d: '무턱대고 여러 곳을 알아보기 전에, 검토 가능한 방향을 먼저 좁혀 준비 시간을 아낍니다.' },
-  { n: '02', t: '우선순위가 생깁니다', d: '지금 우리 회사가 먼저 확인할 자금과 순서를 정리해 드립니다.' },
-  { n: '03', t: '준비가 명확해집니다', d: '신청 전략과 준비서류를 안내받아 다음에 무엇을 해야 할지 또렷해집니다.' },
+  { n: '01', t: '헛걸음부터 줄여드려요', d: '무턱대고 여기저기 알아보기 전에, 되는 방향부터 좁혀서 시간을 아껴드립니다.' },
+  { n: '02', t: '순서를 정해드려요', d: '지금 우리 회사가 먼저 봐야 할 자금이 뭔지, 우선순위를 잡아드립니다.' },
+  { n: '03', t: '다음 할 일이 또렷해져요', d: '신청 전략과 준비서류까지 알려드리니까, 뭘 하면 되는지가 명확해집니다.' },
 ]
 
 // 예시 사례 (⚠️ 실제 데이터로 교체 예정 · 승인/실행 보장 아님)
@@ -43,26 +43,26 @@ const reasons = ['정책자금·인증 실무 경험', '기업 상황에 맞춘 
 
 // 미루면 잃는 것 (적당한 긴장 — 조작 통계·과도한 협박 금지)
 const losses = [
-  { icon: '⏳', t: '정책자금 예산은 소진되면 끝', d: '정책자금은 예산 소진형입니다. 알아보는 사이 올해 예산이 마감되면, 다음 기회는 내년입니다.' },
-  { icon: '💸', t: '높은 금리로 새는 이자', d: '방향을 몰라 고금리 대출로 버티는 동안, 금리 차이만큼의 이자가 매달 조용히 빠져나갑니다.' },
-  { icon: '🚪', t: '경쟁사는 이미 활용하고 있습니다', d: '비슷한 조건의 회사가 정책자금으로 설비와 인력에 투자하는 동안, 격차는 매달 벌어집니다.' },
+  { icon: '⏳', t: '정책자금 예산은 소진되면 끝이에요', d: '정책자금은 예산 소진형이거든요. 알아보는 사이 올해 예산이 마감되면, 다음 기회는 내년입니다.' },
+  { icon: '💸', t: '높은 금리로 이자가 새고 있어요', d: '방향을 몰라 고금리 대출로 버티는 동안, 금리 차이만큼의 이자가 매달 조용히 빠져나가요.' },
+  { icon: '🚪', t: '경쟁사는 벌써 쓰고 있어요', d: '비슷한 조건의 회사가 정책자금으로 설비랑 인력에 투자하는 동안, 격차는 매달 벌어집니다.' },
 ]
-const lossClosing = '가장 비싼 비용은 “몰라서 못 받은 자금”입니다.'
+const lossClosing = '제일 비싼 비용은 “몰라서 못 받은 자금”이에요.'
 
 // 진행 후 변화 (Before → After)
 const afters = [
-  { before: '매달 이자 낼 때마다 아까웠던 마음', after: '더 낮은 금리 가능성을 확인하고 세우는 이자 계획' },
+  { before: '매달 이자 낼 때마다 아까웠던 마음', after: '더 낮은 금리 가능성 확인하고 세우는 이자 계획' },
   { before: '어디서 뭘 알아봐야 할지 몰라 미루던 상태', after: '뭘 먼저 준비할지 순서가 정해진 상태' },
   { before: '은행 창구에서 아쉬운 소리 하던 자리', after: '준비된 서류로 당당하게 신청하는 자리' },
 ]
-const afterClosing = '자금 걱정이 줄면, 대표님의 결정이 빨라집니다.'
+const afterClosing = '자금 걱정이 줄면, 대표님의 결정이 빨라져요.'
 
 const steps = [
-  { t: '상담 신청', d: '간단한 정보를 남기면 담당자가 연락드립니다.' },
-  { t: '기업 현황 진단', d: '업종·업력·재무 상황을 함께 확인합니다.' },
-  { t: '자금 방향 정리', d: '검토 가능한 자금과 우선순위를 정리합니다.' },
-  { t: '신청 전략·서류 안내', d: '신청 전략과 준비서류를 안내드립니다.' },
-  { t: '이후 진행 협의', d: '실제 진행 여부·범위는 상담에서 함께 정합니다.' },
+  { t: '상담 신청', d: '편하게 남겨주세요. 담당자가 연락드릴게요.' },
+  { t: '기업 현황 진단', d: '업종, 업력, 재무 상황을 같이 살펴봐요.' },
+  { t: '자금 방향 정리', d: '검토해볼 만한 자금과 순서를 잡아드려요.' },
+  { t: '신청 전략·서류 안내', d: '신청 전략이랑 준비서류를 알려드려요.' },
+  { t: '이후 진행 협의', d: '진행할지 말지는 이야기해 보고 정하셔도 돼요.' },
 ]
 
 function CartIcon() {
@@ -216,7 +216,7 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🤔</div>
           <p className={kicker}>이런 고민, 있으셨죠?</p>
-          <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막</span>합니다</h2>
+          <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막하죠</span></h2>
           <ul className="mx-auto mt-9 max-w-xl space-y-3">
             {pains.map((p) => (
               <li key={p} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-base font-bold text-slate-800 sm:text-lg">
@@ -226,7 +226,7 @@ export default function FundingConsultingDetailPage() {
             ))}
           </ul>
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            → 그런데 이 고민들, <span className="text-red-600">미룰수록 비싸집니다.</span>
+            그런데 이 고민들, <span className="text-red-600">미룰수록 비싸지더라고요.</span>
           </p>
         </div>
       </section>
@@ -236,7 +236,7 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
           <h2 className={bigHead}>
-            이 문제를 안 풀면,<br /><span className="text-red-600">매달 이런 것들을 잃습니다</span>
+            가만히 두면,<br /><span className="text-red-600">이런 것들이 조용히 새나가요</span>
           </h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {losses.map((l) => (
@@ -249,7 +249,7 @@ export default function FundingConsultingDetailPage() {
           </div>
           <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
             <p className="text-lg font-black leading-snug text-white sm:text-xl">{lossClosing}</p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">다행인 건, 지금 확인하면 아직 늦지 않았다는 겁니다.</p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">그래도 다행인 건, 지금 시작해도 늦지 않았다는 거예요.</p>
           </div>
         </div>
       </section>
@@ -257,9 +257,9 @@ export default function FundingConsultingDetailPage() {
       {/* 왜 진단부터 */}
       <section className={`bg-slate-900 ${band}`}>
         <div className={inner}>
-          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">왜 진단부터</p>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">왜 진단부터냐면요</p>
           <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
-            진단부터 시작하면<br /><span className="text-amber-300">달라집니다</span>
+            진단부터 하면<br /><span className="text-amber-300">이런 게 달라져요</span>
           </h2>
           <div className="mt-10 space-y-4">
             {whyPoints.map((w) => (
@@ -283,7 +283,7 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className={kicker}>진행 후, 달라지는 것</p>
           <h2 className={bigHead}>
-            진단 후,<br /><span className="text-blue-600">대표님의 일상이 달라집니다</span>
+            진단받고 나면,<br /><span className="text-blue-600">대표님 하루가 이렇게 달라져요</span>
           </h2>
           <div className="mt-10 space-y-4">
             {afters.map((a) => (
@@ -308,7 +308,7 @@ export default function FundingConsultingDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>믿을 수 있는 이유</p>
-          <h2 className={bigHead}>왜 미래 AI 랩<br /><span className="text-blue-600">정책자금 컨설팅일까요</span></h2>
+          <h2 className={bigHead}>“왜 미래 AI 랩이냐”<br /><span className="text-blue-600">물으신다면요</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -327,7 +327,7 @@ export default function FundingConsultingDetailPage() {
           <p className={kicker}>실제 이렇게 진행됩니다</p>
           <h2 className={bigHead}>전문가만 되는 거<br />아니냐고요? <span className="text-blue-600">아닙니다</span></h2>
           <p className="mx-auto mt-5 max-w-md text-center text-base font-semibold leading-relaxed text-slate-600">
-            대표님 상황을 정확히 파악해 <b className="text-slate-900">맞는 자금 방향</b>을 함께 잡아드립니다.
+            대표님 상황부터 제대로 보고, <b className="text-slate-900">맞는 자금 방향</b>을 같이 잡아드려요.
           </p>
 
           <div className="mt-12 space-y-14">
@@ -386,7 +386,7 @@ export default function FundingConsultingDetailPage() {
               </li>
             ))}
           </ol>
-          <p className="mt-5 text-center text-sm text-slate-500">실제 진행 여부와 범위는 상담에서 함께 정합니다.</p>
+          <p className="mt-5 text-center text-sm text-slate-500">부담 갖지 마세요. 진행할지 말지는 이야기해 보고 정하셔도 됩니다.</p>
         </div>
       </section>
 
@@ -394,7 +394,7 @@ export default function FundingConsultingDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>제공 결과물</p>
-          <h2 className={bigHead}>이런 결과물을<br /><span className="text-blue-600">받아보세요</span></h2>
+          <h2 className={bigHead}>손에 쥐어지는 건<br /><span className="text-blue-600">이것들이에요</span></h2>
           <div className="mt-10 space-y-4">
             {pkg.deliverables.map((d, i) => (
               <div key={d} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-6">
@@ -415,7 +415,7 @@ export default function FundingConsultingDetailPage() {
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
           <p className={kicker}>추천 대상</p>
-          <h2 className={bigHead}>이런 대표님께<br /><span className="text-blue-600">추천합니다</span></h2>
+          <h2 className={bigHead}>이런 대표님이라면<br /><span className="text-blue-600">잘 맞으실 거예요</span></h2>
           <ul className="mx-auto mt-10 max-w-xl space-y-3">
             {pkg.recommendedFor.map((r) => (
               <li key={r} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-5 text-base font-semibold text-slate-800 shadow-sm">
@@ -430,7 +430,7 @@ export default function FundingConsultingDetailPage() {
       {/* 가격 / 구매 (재CTA) */}
       <section className={`bg-slate-900 ${band}`}>
         <div className="mx-auto max-w-[520px] px-1">
-          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">지금 시작하세요</p>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">고민은 여기까지</p>
           <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.5rem]">정책자금 컨설팅</h2>
           <div className="mt-8 rounded-3xl border border-white/10 bg-white p-7 shadow-2xl">
             <div className="flex items-center justify-center gap-2">
@@ -450,8 +450,8 @@ export default function FundingConsultingDetailPage() {
               <BuyButtons variant="light" />
             </div>
             <p className="mt-5 border-t border-slate-100 pt-4 text-center text-sm leading-relaxed text-slate-500">
-              지금 결정이 어려우셔도 괜찮습니다.<br />
-              <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요 — 확인해 두는 데는 비용이 들지 않습니다.
+              지금 당장 결정 안 하셔도 괜찮아요.<br />
+              <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요. 확인만 해두는 건 공짜니까요.
             </p>
           </div>
         </div>
@@ -488,13 +488,13 @@ export default function FundingConsultingDetailPage() {
       <section id="apply" className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>무료 진단 신청</p>
-          <h2 className={bigHead}>먼저, 대표님 상황부터<br />진단해보세요</h2>
+          <h2 className={bigHead}>일단, 대표님 상황부터<br />같이 봐요</h2>
           <p className="mx-auto mt-4 max-w-md text-center text-base leading-relaxed text-slate-600">
             간단히 남겨주시면 어떤 자금부터 검토하면 좋을지 방향을 정리해 안내드립니다.
           </p>
           {payNotice && (
             <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-800">
-              🛒 온라인 카드결제(무이자 할부 포함)는 <b>곧 오픈</b>됩니다. 지금은 아래 <b>상담 신청</b>으로 접수해 주시면 결제·진행을 함께 안내드릴게요.
+              🛒 온라인 카드결제(무이자 할부)는 지금 준비 중이에요. 우선 아래 <b>상담 신청</b>을 남겨주시면, 결제와 진행을 같이 안내드릴게요.
             </div>
           )}
           <div className="mt-8">
