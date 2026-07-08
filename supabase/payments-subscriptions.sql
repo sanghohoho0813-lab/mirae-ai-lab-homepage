@@ -194,16 +194,16 @@ create policy sub_items_admin_write on public.subscription_items for all to auth
 --    상담형이라 등록하지 않습니다.
 -- ============================================================================
 insert into public.billing_products (code, name, kind, audience, amount, sort) values
-  ('funding-consulting',     '정책자금 컨설팅',            'one_time', 'ceo',  550000, 10),
+  ('funding-consulting',     '정책자금 컨설팅',            'one_time', 'ceo',  500000, 10),
   ('venture-innovation',     '벤처인증 패키지(혁신성장형)', 'one_time', 'ceo', 1990000, 20),
-  ('venture-investment',     '벤처인증 패키지(투자유형)',   'one_time', 'ceo', 5000000, 30),
+  ('venture-investment',     '벤처인증 패키지(투자유형)',   'one_time', 'ceo', 4990000, 30),
   ('responsive-homepage',    '반응형 홈페이지 제작',        'one_time', 'ceo',  490000, 40),
   ('ai-ax-system',           'AI 기반 회사 운영시스템 구축','one_time', 'ceo', 1290000, 50),
   ('rnd-center',             '기업부설연구소 설립',        'one_time', 'ceo', 1490000, 60),
   ('mainbiz-certification',  '메인비즈 인증',              'one_time', 'ceo', 1990000, 70),
   ('innobiz-certification',  '이노비즈 인증',              'one_time', 'ceo', 2490000, 80),
   ('iso-1',                  'ISO 인증 1종',              'one_time', 'ceo', 1490000, 91),
-  ('iso-2',                  'ISO 인증 2종',              'one_time', 'ceo', 2180000, 92),
+  ('iso-2',                  'ISO 인증 2종',              'one_time', 'ceo', 2780000, 92),
   ('iso-3',                  'ISO 인증 3종 패키지',        'one_time', 'ceo', 3990000, 93)
 on conflict (code) do update set
   name = excluded.name, kind = excluded.kind, audience = excluded.audience,
