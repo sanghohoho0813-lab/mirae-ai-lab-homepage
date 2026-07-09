@@ -16,11 +16,11 @@ const bigHead = 'mt-3 text-center text-[1.85rem] font-black leading-[1.28] track
 
 // 공용 진행 과정 (상담 → 진단 → 방향 → 안내 → 협의)
 const STEPS = [
-  { t: '상담 신청', d: '편하게 남겨주세요. 담당자가 연락드릴게요.' },
-  { t: '기업 현황 진단', d: '업종, 업력, 지금 상황을 같이 살펴봐요.' },
-  { t: '준비 방향 정리', d: '뭘 먼저 하면 좋을지 순서를 잡아드려요.' },
-  { t: '전략·자료 안내', d: '필요한 전략과 준비 자료를 알려드려요.' },
-  { t: '이후 진행 협의', d: '진행할지 말지는 이야기해 보고 정하셔도 돼요.' },
+  { t: '상담 신청', d: '편하게 남겨주세요. 담당자가 연락드립니다.' },
+  { t: '기업 현황 진단', d: '업종·업력·현재 상황을 함께 살펴봅니다.' },
+  { t: '준비 방향 정리', d: '무엇을 먼저 하면 좋을지 순서를 잡아드립니다.' },
+  { t: '전략·자료 안내', d: '필요한 전략과 준비 자료를 안내해 드립니다.' },
+  { t: '이후 진행 협의', d: '진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' },
 ]
 
 function scrollToId(id: string) {
@@ -275,6 +275,17 @@ export default function BusinessServiceDetailPage() {
             {content.hookLine}<br /><span className={accentText}>{content.hookAccent}</span>
           </h2>
           <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">{content.hookSub}</p>
+          {pkg.imageSrc && (
+            <div className="relative mx-auto mt-10 max-w-md">
+              <div className="-rotate-1 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+                <div className="relative aspect-[3/2]">
+                  <img src={pkg.imageSrc} alt={pkg.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                </div>
+              </div>
+              <span className="absolute -left-4 -top-5 grid h-14 w-14 -rotate-6 place-items-center rounded-2xl bg-white text-3xl shadow-lg ring-1 ring-slate-200" aria-hidden>{content.emoji}</span>
+              <span className="absolute -bottom-4 -right-3 grid h-12 w-12 rotate-6 place-items-center rounded-2xl bg-white text-2xl shadow-lg ring-1 ring-slate-200" aria-hidden>💡</span>
+            </div>
+          )}
           <div className="mx-auto mt-8 flex max-w-sm items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
             <span className="text-3xl font-black tracking-tight text-slate-900">{displayPrice}</span>
             {pkg.priceNote && <span className="text-xs font-medium text-slate-400">{pkg.priceNote}</span>}
@@ -287,7 +298,7 @@ export default function BusinessServiceDetailPage() {
         <div className={inner}>
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">{content.emoji}</div>
           <p className={kicker}>이런 고민, 있으시죠?</p>
-          <h2 className={bigHead}>대표님만 <span className={accentText}>그런 게 아니에요</span></h2>
+          <h2 className={bigHead}>대표님만 <span className={accentText}>그런 게 아닙니다</span></h2>
           <ul className="mx-auto mt-9 max-w-xl space-y-3">
             {content.pains.map((p) => (
               <li key={p} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-base font-bold text-slate-800 sm:text-lg">
@@ -297,7 +308,7 @@ export default function BusinessServiceDetailPage() {
             ))}
           </ul>
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            그런데 이 고민들, <span className="text-red-600">미룰수록 비싸지더라고요.</span>
+            그런데 이 고민들, <span className="text-red-600">미룰수록 비싸집니다.</span>
           </p>
         </div>
       </section>
@@ -307,7 +318,7 @@ export default function BusinessServiceDetailPage() {
         <div className={inner}>
           <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
           <h2 className={bigHead}>
-            가만히 두면,<br /><span className="text-red-600">이런 것들이 조용히 새나가요</span>
+            가만히 두면,<br /><span className="text-red-600">이런 것들이 조용히 새나갑니다</span>
           </h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {content.losses.map((l) => (
@@ -320,7 +331,7 @@ export default function BusinessServiceDetailPage() {
           </div>
           <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
             <p className="text-lg font-black leading-snug text-white sm:text-xl">{content.lossClosing}</p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">그래도 다행인 건, 지금 시작해도 늦지 않았다는 거예요.</p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">다행히, 지금 시작해도 늦지 않았습니다.</p>
           </div>
         </div>
       </section>
@@ -328,9 +339,9 @@ export default function BusinessServiceDetailPage() {
       {/* 왜 필요한가 (네이비) */}
       <section className={`bg-slate-900 ${band}`}>
         <div className={inner}>
-          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">그래서, 저희가 합니다</p>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">그래서, 저희가 이렇게 합니다</p>
           <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
-            혼자 애쓰지 마세요<br /><span className="text-amber-300">저희가 이렇게 도와드릴게요</span>
+            혼자 애쓰실 필요 없습니다<br /><span className="text-amber-300">저희가 이렇게 돕겠습니다</span>
           </h2>
           <div className="mt-10 space-y-4">
             {content.whyPoints.map((w, i) => (
@@ -354,7 +365,7 @@ export default function BusinessServiceDetailPage() {
         <div className={inner}>
           <p className={kicker}>진행하고 나면</p>
           <h2 className={bigHead}>
-            대표님의 하루가<br /><span className={accentText}>이렇게 달라져요</span>
+            대표님의 하루가<br /><span className={accentText}>이렇게 달라집니다</span>
           </h2>
           <div className="mt-10 space-y-4">
             {content.afters.map((a) => (
@@ -379,7 +390,7 @@ export default function BusinessServiceDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>믿을 수 있는 이유</p>
-          <h2 className={bigHead}>“왜 미래 AI 랩이냐”<br /><span className={accentText}>물으신다면요</span></h2>
+          <h2 className={bigHead}>“왜 미래 AI 랩인가요?”<br /><span className={accentText}>물으신다면</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {content.reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -428,7 +439,7 @@ export default function BusinessServiceDetailPage() {
               </li>
             ))}
           </ol>
-          <p className="mt-5 text-center text-sm text-slate-500">부담 갖지 마세요. 진행할지 말지는 이야기해 보고 정하셔도 됩니다.</p>
+          <p className="mt-5 text-center text-sm text-slate-500">부담 갖지 않으셔도 됩니다. 진행 여부는 이야기 나눈 뒤 정하셔도 좋습니다.</p>
         </div>
       </section>
 
@@ -436,7 +447,7 @@ export default function BusinessServiceDetailPage() {
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
           <p className={kicker}>제공 결과물</p>
-          <h2 className={bigHead}>손에 쥐어지는 건<br /><span className={accentText}>이것들이에요</span></h2>
+          <h2 className={bigHead}>손에 쥐어지는 결과물은<br /><span className={accentText}>이것들입니다</span></h2>
           <div className="mt-10 space-y-4">
             {pkg.deliverables.map((d, i) => (
               <div key={d} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -457,7 +468,7 @@ export default function BusinessServiceDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>추천 대상</p>
-          <h2 className={bigHead}>이런 대표님이라면<br /><span className={accentText}>잘 맞으실 거예요</span></h2>
+          <h2 className={bigHead}>이런 대표님이라면<br /><span className={accentText}>잘 맞습니다</span></h2>
           <ul className="mx-auto mt-10 max-w-xl space-y-3">
             {pkg.recommendedFor.map((r) => (
               <li key={r} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-base font-semibold text-slate-800">
@@ -493,8 +504,8 @@ export default function BusinessServiceDetailPage() {
               <BuyButtons />
             </div>
             <p className="mt-5 border-t border-slate-100 pt-4 text-center text-sm leading-relaxed text-slate-500">
-              지금 당장 결정 안 하셔도 괜찮아요.<br />
-              <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요. 확인만 해두는 건 공짜니까요.
+              지금 당장 결정하지 않으셔도 괜찮습니다.<br />
+              <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요. 확인하는 데는 비용이 들지 않습니다.
             </p>
           </div>
         </div>
@@ -531,13 +542,13 @@ export default function BusinessServiceDetailPage() {
       <section id="apply" className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>무료 상담 신청</p>
-          <h2 className={bigHead}>일단, 대표님 상황부터<br />같이 봐요</h2>
+          <h2 className={bigHead}>먼저, 대표님 상황부터<br />같이 살펴보시죠</h2>
           <p className="mx-auto mt-4 max-w-md text-center text-base leading-relaxed text-slate-600">
-            간단히만 남겨주세요. {pkg.name} 기준으로 뭐부터 하면 좋을지 정리해서 알려드릴게요.
+            간단히 남겨주시면, {pkg.name} 기준으로 무엇부터 하면 좋을지 정리해 안내드립니다.
           </p>
           {payNotice && (
             <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-800">
-              🛒 온라인 카드결제(무이자 할부)는 지금 준비 중이에요. 우선 아래 <b>상담 신청</b>을 남겨주시면, 결제와 진행을 같이 안내드릴게요.
+              🛒 온라인 카드결제(무이자 할부)는 준비 중입니다. 우선 아래 <b>상담 신청</b>을 남겨주시면 결제와 진행을 함께 안내드리겠습니다.
             </div>
           )}
           <div className="mt-8">
