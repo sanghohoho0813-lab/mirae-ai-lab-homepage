@@ -12,34 +12,73 @@ const trustItems = [
   'AI 기반 경영지원 도구 개발',
 ]
 
+type Theme = {
+  card: string
+  glow: string
+  label: string
+  labelBox: string
+  iconBox: string
+  desc: string
+  chip: string
+  cta: string
+  arrow: string
+}
+
 type Choice = {
   to: string
   icon: string
+  label: string
   title: string
   desc: string
   cta: string
   keywords: string[]
-  accent: 'blue' | 'navy'
+  theme: Theme
+}
+
+// 대표님 = 밝은 블루(경영지원 서비스) / 컨설턴트 = 다크+사이언(AI 실무 도구)
+const blueTheme: Theme = {
+  card: 'bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30',
+  glow: 'bg-white/20',
+  label: 'text-white',
+  labelBox: 'bg-white/15 ring-1 ring-inset ring-white/25',
+  iconBox: 'bg-white/15 ring-1 ring-inset ring-white/20',
+  desc: 'text-blue-50',
+  chip: 'bg-white/10 text-blue-50 ring-1 ring-inset ring-white/20',
+  cta: 'bg-white text-blue-700 group-hover:bg-blue-50',
+  arrow: 'text-blue-700',
+}
+const techTheme: Theme = {
+  card: 'bg-gradient-to-br from-slate-800 to-slate-950 shadow-lg shadow-slate-900/30 hover:shadow-2xl hover:shadow-sky-500/20',
+  glow: 'bg-sky-400/25',
+  label: 'text-sky-300',
+  labelBox: 'bg-sky-400/15 ring-1 ring-inset ring-sky-400/30',
+  iconBox: 'bg-white/10 ring-1 ring-inset ring-white/15',
+  desc: 'text-slate-300',
+  chip: 'bg-white/5 text-slate-300 ring-1 ring-inset ring-white/10',
+  cta: 'bg-sky-400 text-slate-900 group-hover:bg-sky-300',
+  arrow: 'text-slate-900',
 }
 
 const choices: Choice[] = [
   {
     to: '/business-services',
     icon: '🏢',
+    label: '경영지원 서비스',
     title: '중소기업 대표님이신가요?',
-    desc: '정책자금, 정부지원사업, 벤처인증, 연구소, 홈페이지+MVP 패키지를 확인해보세요.',
+    desc: '정책자금·고용지원금·기업인증·AX 시스템까지, 회사에 필요한 성장 서비스를 골라보세요.',
     cta: '대표님용 서비스 보기',
-    keywords: ['정책자금', '벤처인증', 'MVP', '사업계획'],
-    accent: 'blue',
+    keywords: ['정책자금', '고용지원금', '기업인증', 'AX 컨설팅'],
+    theme: blueTheme,
   },
   {
     to: '/consultants',
     icon: '🧑‍💼',
+    label: 'AI 실무 도구',
     title: '컨설턴트이신가요?',
-    desc: '고객 진단, 제안서, 지원금·인증 업무를 더 빠르게 처리하는 AI 도구를 확인해보세요.',
+    desc: '고객 진단·제안서·지원금·인증 업무를 더 빠르게 처리하는 AI 실무 도구를 확인해보세요.',
     cta: '컨설턴트용 도구 보기',
     keywords: ['고객진단', '제안서', '업무자동화', 'AI도구'],
-    accent: 'navy',
+    theme: techTheme,
   },
 ]
 
@@ -76,54 +115,46 @@ export default function GatewayPage() {
           <br className="hidden sm:block" /> <span className="text-blue-600">AI로 연결</span>합니다.
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          정책자금·정부지원사업·벤처인증·사업계획·AI 업무도구를 목적에 맞게 나누어 안내합니다.
+          정책자금·고용지원금·기업인증·AX 시스템·AI 업무도구를 목적에 맞게 나누어 안내합니다.
         </p>
 
         {/* Choice cards */}
         <div className="mt-11 grid w-full gap-5 sm:grid-cols-2 sm:gap-6">
-          {choices.map((c) => (
-            <Link
-              key={c.to}
-              to={c.to}
-              className={`group relative flex flex-col rounded-3xl border bg-white/90 p-7 text-left shadow-sm backdrop-blur-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl sm:p-8 ${
-                c.accent === 'blue' ? 'border-slate-200 hover:border-blue-300' : 'border-slate-200 hover:border-slate-400'
-              }`}
-            >
-              <span
-                className={`grid h-14 w-14 place-items-center rounded-2xl text-2xl ${
-                  c.accent === 'blue' ? 'bg-blue-50' : 'bg-slate-100'
-                }`}
+          {choices.map((c) => {
+            const t = c.theme
+            return (
+              <Link
+                key={c.to}
+                to={c.to}
+                className={`group relative flex flex-col overflow-hidden rounded-3xl p-7 text-left transition duration-200 hover:-translate-y-1.5 sm:p-8 ${t.card}`}
               >
-                {c.icon}
-              </span>
-              <h2 className="mt-5 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">{c.title}</h2>
-              <p className="mt-2.5 text-[0.95rem] leading-relaxed text-slate-600">{c.desc}</p>
+                <div aria-hidden className={`pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full blur-2xl ${t.glow}`} />
+                <div className="relative flex flex-1 flex-col">
+                  <div className="flex items-center gap-2">
+                    <span className={`grid h-14 w-14 place-items-center rounded-2xl text-2xl ${t.iconBox}`}>{c.icon}</span>
+                    <span className={`rounded-full px-3 py-1 text-xs font-black ${t.labelBox} ${t.label}`}>{c.label}</span>
+                  </div>
+                  <h2 className="mt-5 text-xl font-extrabold tracking-tight text-white sm:text-2xl">{c.title}</h2>
+                  <p className={`mt-2.5 text-[0.95rem] leading-relaxed ${t.desc}`}>{c.desc}</p>
 
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {c.keywords.map((k) => (
-                  <span
-                    key={k}
-                    className="rounded-md bg-slate-50 px-2 py-1 text-xs font-medium text-slate-500 ring-1 ring-inset ring-slate-200"
-                  >
-                    {k}
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {c.keywords.map((k) => (
+                      <span key={k} className={`rounded-md px-2 py-1 text-xs font-semibold ${t.chip}`}>
+                        {k}
+                      </span>
+                    ))}
+                  </div>
+
+                  <span className={`mt-7 inline-flex items-center justify-center gap-1.5 rounded-xl px-6 py-3.5 text-base font-bold shadow-sm transition-colors ${t.cta}`}>
+                    {c.cta}
+                    <span aria-hidden className={`transition-transform group-hover:translate-x-0.5 ${t.arrow}`}>
+                      →
+                    </span>
                   </span>
-                ))}
-              </div>
-
-              <span
-                className={`mt-6 inline-flex items-center justify-center gap-1.5 rounded-xl px-6 py-3.5 text-base font-semibold transition-colors ${
-                  c.accent === 'blue'
-                    ? 'bg-blue-600 text-white group-hover:bg-blue-500'
-                    : 'bg-slate-900 text-white group-hover:bg-slate-700'
-                }`}
-              >
-                {c.cta}
-                <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-                  →
-                </span>
-              </span>
-            </Link>
-          ))}
+                </div>
+              </Link>
+            )
+          })}
         </div>
 
         {/* Trust line */}
