@@ -318,7 +318,7 @@ export default function BusinessServiceDetailPage() {
         <div className={inner}>
           <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
           <h2 className={bigHead}>
-            가만히 두면,<br /><span className="text-red-600">이런 것들이 조용히 새나갑니다</span>
+            {content.lossLine}<br /><span className="text-red-600">{content.lossAccent}</span>
           </h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {content.losses.map((l) => (
@@ -363,9 +363,9 @@ export default function BusinessServiceDetailPage() {
       {/* 변화 — 진행 후 달라지는 것 (Before → After) */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>진행하고 나면</p>
+          <p className={kicker}>얻게 되는 결과</p>
           <h2 className={bigHead}>
-            대표님의 하루가<br /><span className={accentText}>이렇게 달라집니다</span>
+            {content.afterLine}<br /><span className={accentText}>{content.afterAccent}</span>
           </h2>
           <div className="mt-10 space-y-4">
             {content.afters.map((a) => (
@@ -390,7 +390,7 @@ export default function BusinessServiceDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>믿을 수 있는 이유</p>
-          <h2 className={bigHead}>“왜 미래 AI 랩인가요?”<br /><span className={accentText}>물으신다면</span></h2>
+          <h2 className={bigHead}>왜 미래 AI 랩과<br /><span className={accentText}>함께해야 할까요</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {content.reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -398,6 +398,22 @@ export default function BusinessServiceDetailPage() {
                 <p className="mt-3 text-base font-bold text-slate-900">{r}</p>
               </div>
             ))}
+          </div>
+          {/* 데이터 기반 진단 — 자체 개발 SaaS */}
+          <div className="mt-6 rounded-2xl border-2 border-slate-900 bg-white p-6 sm:p-7">
+            <p className="text-center text-lg font-black text-slate-900 sm:text-xl">
+              감(感)으로 하는 컨설팅과는 <span className={accentText}>다릅니다</span>
+            </p>
+            <p className="mx-auto mt-3 max-w-lg text-center text-sm leading-relaxed text-slate-600 sm:text-[0.95rem]">
+              직접 개발하고 전문가 검증을 거친 <b className="text-slate-900">자체 SaaS 프로그램</b>이
+              인증·자금 심사 데이터를 계속 학습하고 최적화합니다.
+              그래서 저희는 감이 아니라 <b className="text-slate-900">수치와 데이터를 근거로</b> 진단하고 방향을 제시합니다.
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">🧠 데이터 학습·최적화</span>
+              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">🛠️ 자체 개발 프로그램</span>
+              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">✅ 전문가 검증 완료</span>
+            </div>
           </div>
         </div>
       </section>

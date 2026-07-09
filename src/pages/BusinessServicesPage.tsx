@@ -5,21 +5,16 @@ import BusinessServiceVisual from '../components/BusinessServiceVisual'
 import {
   businessPackages,
   CATEGORIES,
+  CATEGORY_SCENARIOS,
   categoryToneClass,
   DISCLAIMER,
+  FEATURED_IDS,
   packageBanner,
   type BusinessPackage,
 } from '../data/businessPackages'
 
 // 중소기업 대표님을 위한 공개 경영지원 서비스몰 홈 (서비스몰형 상품 UI).
 // 상품 데이터는 ../data/businessPackages 공유. 기존 기능 로직은 건드리지 않습니다.
-
-const recommendations = [
-  { when: '운전자금·지원금', cat: '자금·지원금' },
-  { when: '벤처·기업인증', cat: '벤처·인증' },
-  { when: '홈페이지·AI 시스템', cat: '홈페이지·AI' },
-  { when: '전체 성장 로드맵', cat: '풀패키지' },
-]
 
 const compareCards = [
   { title: '단순 대행', points: ['신청서 작성 중심', '단건 처리로 끝'], primary: false },
@@ -175,8 +170,17 @@ export default function BusinessServicesPage() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const featured = businessPackages.filter((p) => p.featured)
-  const visible = activeCat === '전체' ? businessPackages : businessPackages.filter((p) => p.category === activeCat)
+  // 대표 상품 TOP 5 (FEATURED_IDS 순서)
+  const featured = FEATURED_IDS.map((id) => businessPackages.find((p) => p.id === id)).filter(
+    (p): p is BusinessPackage => Boolean(p),
+  )
+  // 전체 보기: 카테고리(상황) 순서대로 그룹핑
+  const scenarioCats = CATEGORIES.filter((c) => c !== '전체')
+  const groups = (activeCat === '전체' ? scenarioCats : [activeCat]).map((cat) => ({
+    cat,
+    scenario: CATEGORY_SCENARIOS[cat],
+    items: businessPackages.filter((p) => p.category === cat),
+  }))
 
   return (
     <div className="min-h-screen bg-white pb-20 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
@@ -260,11 +264,11 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 대표 상품 3개 즉시 노출 */}
+      {/* 대표 상품 TOP 5 */}
       <section id="top3" className="scroll-mt-16 border-b border-slate-200">
         <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
-          <p className={eyebrow}>대표 상품</p>
-          <h2 className={h2Class}>대표님들이 먼저 확인하는 서비스</h2>
+          <p className={eyebrow}>대표 상품 TOP 5</p>
+          <h2 className={h2Class}>대표님들이 가장 많이 찾는 서비스</h2>
           <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((pkg) => (
               <ProductCard key={pkg.id} pkg={pkg} />
@@ -299,24 +303,17 @@ export default function BusinessServicesPage() {
             })}
           </div>
 
-          {/* Situation shortcuts */}
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <span className="font-semibold text-slate-400">상황별 바로가기</span>
-            {recommendations.map((r) => (
-              <button
-                key={r.cat}
-                type="button"
-                onClick={() => setActiveCat(r.cat)}
-                className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-medium text-slate-600 transition-colors hover:border-blue-300 hover:text-blue-700"
-              >
-                {r.when}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {visible.map((pkg) => (
-              <ProductCard key={pkg.id} pkg={pkg} />
+          {/* 상황별 시나리오 그룹 */}
+          <div className="mt-9 space-y-12">
+            {groups.map((g) => (
+              <div key={g.cat}>
+                <h3 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{g.scenario}</h3>
+                <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {g.items.map((pkg) => (
+                    <ProductCard key={pkg.id} pkg={pkg} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
 

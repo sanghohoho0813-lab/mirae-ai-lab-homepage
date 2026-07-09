@@ -31,11 +31,17 @@ export type DetailContent = {
   hookAccent: string
   hookSub: string
   pains: string[]
+  /** 손실 섹션 제목 — [윗줄, 붉은 강조줄] (상품별 차별화) */
+  lossLine: string
+  lossAccent: string
   /** 미루면 잃는 것 (시간/비용/기회) — 적당한 긴장 */
   losses: DetailLoss[]
   /** 손실 섹션 마무리 한 줄 (핵심 찌르기) */
   lossClosing: string
   whyPoints: { t: string; d: string }[]
+  /** 변화(결과) 섹션 제목 — [윗줄, 강조줄] (혜택/결과 중심, 상품별 차별화) */
+  afterLine: string
+  afterAccent: string
   /** 진행 후 변화 (Before → After, 감정적·구체적) */
   afters: DetailAfter[]
   /** 변화 섹션 마무리 한 줄 */
@@ -61,6 +67,8 @@ export const detailContent: Record<string, DetailContent> = {
       '서류 챙기고 관리할 시간이 없어요',
       '우리 회사가 되는지 안 되는지도 모르겠어요',
     ],
+    lossLine: '놓친 지원금은',
+    lossAccent: '돌아오지 않습니다',
     losses: [
       { icon: '⏳', t: '신청 기한은 생각보다 짧습니다', d: '채용하고 시간이 좀 지나면 아예 신청 자격이 사라지는 제도가 많습니다. 지금도 기한은 흘러가고 있습니다.' },
       { icon: '💸', t: '나간 인건비는 다시 안 돌아옵니다', d: '받을 수 있었던 지원금을 놓치면, 그 돈은 회사가 그대로 다 부담한 셈입니다. 놓친 만큼이 고스란히 손해입니다.' },
@@ -72,6 +80,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '신청, 함께 합니다', d: '요건 확인부터 서류까지, 혼자 하실 필요 없습니다.' },
       { t: '받은 뒤까지 챙깁니다', d: '지급 이후 요건 관리까지 안내해서 환수 걱정을 덜어드립니다.' },
     ],
+    afterLine: '대표님은',
+    afterAccent: '이런 혜택을 얻으십니다',
     afters: [
       { before: '채용할 때마다 커지던 인건비 걱정', after: '채용 계획 세울 때 지원금부터 계산하는 여유' },
       { before: '공고 뒤지다 지쳐서 포기하던 밤', after: '우리 회사 되는 것만 정리된 리포트 한 장' },
@@ -124,6 +134,8 @@ export const detailContent: Record<string, DetailContent> = {
       '특허까지 하려니 비용이 부담돼요',
       '평가 서류 보다가 그냥 덮었어요',
     ],
+    lossLine: '준비 없이 내면',
+    lossAccent: '시간부터 잃습니다',
     losses: [
       { icon: '⏳', t: '반려 한 번에 몇 달이 갑니다', d: '준비 없이 냈다가 반려되면, 다시 준비하는 시간은 오롯이 대표님 몫입니다.' },
       { icon: '💸', t: '그동안 우대·가점은 남의 얘기', d: '벤처확인이 없는 동안엔 정책자금 우대도, 지원사업 가점도 그냥 지나갑니다.' },
@@ -135,6 +147,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '스토리를 다시 씁니다', d: '심사자 눈에 들어오게, 기술성·성장성 관점으로 정리합니다.' },
       { t: '특허까지 묶어서 진행합니다', d: '44만원 상당 특허출원이 패키지에 포함돼 있습니다.' },
     ],
+    afterLine: '대표님 회사는',
+    afterAccent: '이렇게 바뀝니다',
     afters: [
       { before: '“우리가 기술기업 맞나?” 싶던 자신 없음', after: '기술성·성장성으로 정리된 우리 회사 이야기' },
       { before: '가점 없이 맨몸으로 내던 지원서', after: '벤처확인에 특허까지 갖춘 지원서' },
@@ -186,6 +200,8 @@ export const detailContent: Record<string, DetailContent> = {
       '벤처투자는 왠지 위험해 보여요',
       '구조가 복잡해서 들어도 모르겠어요',
     ],
+    lossLine: '검토하지 않으면',
+    lossAccent: '세금은 매년 그대로입니다',
     losses: [
       { icon: '⏳', t: '올해 공제는 올해까지입니다', d: '소득공제는 그해 안에 실행해야 합니다. 12월에 알아보기 시작하면 이미 늦습니다.' },
       { icon: '💸', t: '검토 안 하면 세금은 늘 그대로', d: '매년 같은 세금을 내면서 공제 가능성을 한 번도 안 알아봤다면, 그 차액이 지금도 쌓이고 있습니다.' },
@@ -197,6 +213,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '공제 가능성을 짚어드립니다', d: '소득 구조 기준으로 어디까지 가능한지 안내합니다. (요건 충족 시)' },
       { t: '회수까지 설명드립니다', d: '돈이 어떻게 돌아오는지, 조건과 시점을 상담에서 구체적으로 말씀드립니다.' },
     ],
+    afterLine: '검토가 끝나면',
+    afterAccent: '이런 결과를 얻게 됩니다',
     afters: [
       { before: '5월만 되면 한숨부터 나오던 세금 시즌', after: '공제 구조를 알고 준비된 채 맞는 시즌' },
       { before: '복잡해서 덮어두던 벤처투자', after: '내 소득 기준으로 정리된 검토 결과' },
@@ -249,6 +267,8 @@ export const detailContent: Record<string, DetailContent> = {
       '홈페이지가 폰에서 다 깨져 보여요',
       '문의가 들어올 데가 없어요',
     ],
+    lossLine: '홈페이지가 없는 동안',
+    lossAccent: '고객이 그냥 지나갑니다',
     losses: [
       { icon: '⏳', t: '고객은 3초면 떠납니다', d: '검색해서 안 나오거나 화면이 깨져 있으면, 고객은 바로 뒤로 가기를 누르고 경쟁사를 검색합니다.' },
       { icon: '💸', t: '놓친 문의는 흔적도 남지 않습니다', d: '홈페이지가 없는 동안 문의가 몇 건이나 지나갔는지 아무도 모릅니다. 보이지 않아서 더 무서운 손실입니다.' },
@@ -260,6 +280,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '폰에서도 깔끔하게 나옵니다', d: 'PC·태블릿·모바일 어디서 봐도 깨지지 않는 반응형입니다.' },
       { t: '문의가 들어오게 설계합니다', d: '방문자가 바로 상담을 남길 수 있게 문의 동선을 설계합니다.' },
     ],
+    afterLine: '홈페이지가 생기면',
+    afterAccent: '회사가 이렇게 바뀝니다',
     afters: [
       { before: '명함 주고 말로 설명하던 회사 소개', after: '링크 하나 보내면 끝나는 소개' },
       { before: '퇴근하면 같이 닫히던 영업', after: '자는 동안에도 쌓이는 문의' },
@@ -298,6 +320,8 @@ export const detailContent: Record<string, DetailContent> = {
       '사무실만 나가면 회사 상황을 알 수가 없어요',
       '정리하다 보면 하루가 다 가요',
     ],
+    lossLine: '오늘도 반복업무에',
+    lossAccent: '하루가 새고 있습니다',
     losses: [
       { icon: '⏳', t: '하루 한두 시간이면, 1년에 몇 주입니다', d: '매일 반복하는 정리 시간을 모아보면 몇 주치 근무시간입니다. 그 시간에 영업을 했다면 어땠을까요.' },
       { icon: '💸', t: '손으로 할수록 실수도 돈입니다', d: '누락, 오타, 중복 입력… 작은 실수들이 결국 비용과 신뢰로 돌아옵니다.' },
@@ -309,6 +333,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '한 화면에 모읍니다', d: '흩어진 자료를 업무관리 화면 하나로 정리합니다.' },
       { t: '모바일에서도 됩니다', d: '밖에서도 회사가 돌아가는 게 보이도록 만듭니다.' },
     ],
+    afterLine: '시스템이 돌아가면',
+    afterAccent: '회사가 이렇게 바뀝니다',
     afters: [
       { before: '퇴근하고도 붙잡고 있던 엑셀', after: '아침에 열면 정리돼 있는 화면' },
       { before: '나가 있으면 깜깜하던 회사 상황', after: '폰으로 한눈에 보이는 우리 회사' },
@@ -347,6 +373,8 @@ export const detailContent: Record<string, DetailContent> = {
       '신고 서류랑 절차가 복잡해요',
       '만들고 나서 관리를 못 할까 봐 걱정돼요',
     ],
+    lossLine: '가점 없이 내는 지원서,',
+    lossAccent: '결과도 비슷합니다',
     losses: [
       { icon: '⏳', t: '공고를 보고 시작하면 늦습니다', d: '가점은 미리 만들어둔 회사의 몫입니다. 공고가 뜨고 나서 만들기 시작하면 그 시즌은 이미 끝나 있습니다.' },
       { icon: '💸', t: '세액공제 기회도 함께 지나갑니다', d: '연구소 없이 쓴 연구개발비는, 공제 검토 기회도 없이 그냥 지나갑니다.' },
@@ -358,6 +386,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '절차대로 안내합니다', d: '서류와 신고 절차를 순서대로 알려드립니다.' },
       { t: '만든 뒤에도 챙깁니다', d: '사후관리는 월 2만원 옵션으로 계속 관리해 드립니다.' },
     ],
+    afterLine: '연구소가 생기면',
+    afterAccent: '이런 결과를 얻게 됩니다',
     afters: [
       { before: '가점이 부족해 아깝게 밀리던 지원사업', after: '가점 요소 갖추고 내는 지원서' },
       { before: '요건이 헷갈려 미뤄두던 설립', after: '체크리스트 따라 착착 진행되는 설립' },
@@ -409,6 +439,8 @@ export const detailContent: Record<string, DetailContent> = {
       '9001? 14001? 뭐부터 받아야 할지 모르겠어요',
       '문서화는 진짜 엄두가 안 나요',
     ],
+    lossLine: '인증이 없으면',
+    lossAccent: '입찰 기회부터 닫힙니다',
     losses: [
       { icon: '⏳', t: '공고를 보고 준비하면 그 입찰은 늦습니다', d: 'ISO는 신청해서 받기까지 시간이 걸립니다. 공고가 뜨고 시작하면 그 기회는 이미 남의 것입니다.' },
       { icon: '💸', t: '인증이 없어서 못 들어간 거래', d: '협력사 등록에서 막히면 그 매출이 통째로 사라집니다. 인증 비용과는 비교되지 않는 금액입니다.' },
@@ -420,6 +452,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '문서화, 함께 합니다', d: '요구사항에 맞는 문서화와 심사 준비를 함께 정리합니다.' },
       { t: '3종이면 패키지가 이득입니다', d: '3종을 묶으면 399만원. 따로 받는 것보다 비용을 크게 아낄 수 있습니다.' },
     ],
+    afterLine: 'ISO를 갖추면',
+    afterAccent: '이런 결과를 얻게 됩니다',
     afters: [
       { before: '서류 요건에서 밀리던 입찰', after: '요건 갖춰서 내는 입찰' },
       { before: '문턱만 보고 돌아서던 협력사 등록', after: '등록 요건에 대응되는 회사' },
@@ -471,6 +505,8 @@ export const detailContent: Record<string, DetailContent> = {
       '평가 항목이 복잡해서 손을 못 대겠어요',
       '이노비즈랑 뭐가 다른지도 헷갈려요',
     ],
+    lossLine: '증명하지 못한 노력은',
+    lossAccent: '점수가 되지 않습니다',
     losses: [
       { icon: '⏳', t: '인증도 취득까지 시간이 걸립니다', d: '지원사업 시즌에 맞추려면 미리 준비해야 합니다. 시즌이 시작되고 알아보면 이번에도 가점 없이 도전입니다.' },
       { icon: '💸', t: '떨어질 때마다 사라지는 준비 비용', d: '가점 없이 아깝게 밀릴 때마다, 사업계획서에 쏟은 시간과 비용이 함께 사라집니다.' },
@@ -482,6 +518,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '보완점을 짚어드립니다', d: '어떤 항목을 채우면 되는지 정리해 드립니다.' },
       { t: '신청까지 함께 갑니다', d: '자료 준비와 절차를 순서대로 안내합니다.' },
     ],
+    afterLine: '메인비즈를 갖추면',
+    afterAccent: '이런 혜택을 얻으십니다',
     afters: [
       { before: '비슷한 점수에서 아깝게 밀리던 심사', after: '가점 가능성 챙기고 들어가는 심사' },
       { before: '뭘 보완할지 몰라 답답하던 상태', after: '항목별로 정리된 개선 방향' },
@@ -520,6 +558,8 @@ export const detailContent: Record<string, DetailContent> = {
       '기술혁신 평가라니, 벌써 어렵네요',
       '준비 자료가 부족한 것 같아요',
     ],
+    lossLine: '보여주지 못한 기술력은',
+    lossAccent: '없는 것과 같습니다',
     losses: [
       { icon: '⏳', t: '필요할 때 시작하면 늦는 인증입니다', d: '이노비즈도 평가·심사에 시간이 걸립니다. 우대가 필요한 순간에 시작하면 그 기회는 지나갑니다.' },
       { icon: '💸', t: '우대 없이 받는 자금은 더 비쌉니다', d: '기술력이 있어도 인증이 없으면 우대 대상에서 빠집니다. 같은 돈을 더 비싸게 쓰는 셈입니다.' },
@@ -531,6 +571,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '보완점을 정리합니다', d: '평가 항목에 맞춰 뭘 채우면 되는지 알려드립니다.' },
       { t: '신청까지 함께 갑니다', d: '자료 준비와 절차를 순서대로 안내합니다.' },
     ],
+    afterLine: '이노비즈를 갖추면',
+    afterAccent: '이런 결과를 얻게 됩니다',
     afters: [
       { before: '말로만 설명하던 기술력', after: '확인서로 증명하는 미팅' },
       { before: '우대 없이 진행하던 정책자금', after: '우대 가능성 확인하고 넣는 신청' },
@@ -569,6 +611,8 @@ export const detailContent: Record<string, DetailContent> = {
       '업체 여러 곳 상대하는 게 너무 지쳐요',
       '이러다 정작 사업할 시간이 없어요',
     ],
+    lossLine: '순서 없이 하면',
+    lossAccent: '시간과 비용이 두 배입니다',
     losses: [
       { icon: '⏳', t: '따로따로 하다 보면 1년이 갑니다', d: '자금 따로, 인증 따로, 홈페이지 따로… 순서 없이 하면 시간이 두 배로 들고, 그 사이 시즌은 지나가 버립니다.' },
       { icon: '💸', t: '업체마다 다른 말, 겹치는 비용', d: '연결이 안 된 외주는 다시 하는 작업과 헛걸음을 만듭니다. 그 비용이 조용히 쌓입니다.' },
@@ -580,6 +624,8 @@ export const detailContent: Record<string, DetailContent> = {
       { t: '순서를 정해드립니다', d: '우리 회사 기준으로 뭘 먼저 할지 정리합니다.' },
       { t: '전담이 끝까지 챙깁니다', d: '단계별 실행과 진행을 한 팀이 계속 관리합니다.' },
     ],
+    afterLine: '전담 파트너가 붙으면',
+    afterAccent: '회사가 이렇게 바뀝니다',
     afters: [
       { before: '업체마다 전화 돌리다 끝나던 하루', after: '전담 한 팀과 정리하는 성장 계획' },
       { before: '뭐부터 할지 몰라 멈춰 있던 회사', after: '이번 달 할 일이 정해져 있는 회사' },
@@ -622,6 +668,8 @@ export function getDetailContent(id: string, name: string): DetailContent {
         { icon: '💸', t: '몰라서 놓치는 비용이 쌓입니다', d: '검토조차 안 하면, 아낄 수 있던 비용이 그대로 지출됩니다.' },
         { icon: '🚪', t: '준비된 회사가 기회를 가져갑니다', d: '같은 기회 앞에서, 준비된 회사와의 격차는 계속 벌어집니다.' },
       ],
+      lossLine: '미루는 동안',
+      lossAccent: '기회비용이 쌓입니다',
       lossClosing: '가장 비싼 비용은 “몰라서 놓친 것”입니다.',
       whyPoints: [
         { t: '방향부터 진단해 드립니다', d: '회사 상황 기준으로 준비 방향을 먼저 잡습니다.' },
@@ -633,6 +681,8 @@ export function getDetailContent(id: string, name: string): DetailContent {
         { before: '혼자 알아보던 시간', after: '전문가와 함께 정리하는 시간' },
         { before: '불안한 채 내리던 결정', after: '확인하고 내리는 결정' },
       ],
+      afterLine: '진행하고 나면',
+      afterAccent: '이런 결과를 얻게 됩니다',
       afterClosing: '방향이 정해지면, 속도는 따라옵니다.',
       reasons: DEFAULT_REASONS,
       casesKicker: '이렇게 진행됩니다',

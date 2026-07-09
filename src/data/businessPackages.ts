@@ -53,7 +53,19 @@ export type BusinessPackage = {
 }
 
 // 카테고리 탭
-export const CATEGORIES = ['전체', '자금·지원금', '벤처·인증', '홈페이지·AI', '풀패키지']
+export const CATEGORIES = ['전체', '자금조달', '지원금', '인증·절세', 'AX 컨설팅', '풀패키지']
+
+// 카테고리별 상황 헤드라인 (서비스몰 홈 섹션 제목 — 쇼핑몰 톤)
+export const CATEGORY_SCENARIOS: Record<string, string> = {
+  '자금조달': '💰 저금리로 자금 조달이 필요하다면',
+  '지원금': '🎁 정부 지원금, 놓치지 않고 받고 싶다면',
+  '인증·절세': '🏅 대외 신뢰도·가점·세금 혜택까지 챙기고 싶다면',
+  'AX 컨설팅': '🤖 AI 시대에 뒤처지지 않는 회사로 만들고 싶다면',
+  '풀패키지': '🤝 믿을 만한 파트너가 늘 함께했으면 한다면',
+}
+
+// 대표 상품 TOP 5 노출 순서
+export const FEATURED_IDS = ['funding-consulting', 'employment-subsidy', 'growth-roadmap-package', 'venture-innovation', 'ai-ax-system']
 
 // 공통 진행 절차
 export const PROCEDURE = ['기본 진단', '자료 확인', '전략 정리', '결과물 제작 또는 문서화', '후속 안내']
@@ -70,14 +82,15 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'funding-consulting',
     slug: 'funding-consulting',
-    category: '자금·지원금',
+    category: '자금조달',
     badge: '가능성 진단',
     badgeTone: 'blue',
     name: '정책자금 컨설팅',
     tagline: '운전자금·시설자금 가능성 진단부터 신청 전략까지 정리해 드립니다.',
     short: '운전자금·시설자금 가능성 진단부터 신청 전략까지',
     price: '50만원',
-    highlights: ['운전자금 가능성 진단', '시설자금 가능성 진단', '신청 전략 수립'],
+    priceNote: '성공수수료 0원 · 20만원 상당 전자책 3종 증정',
+    highlights: ['성공수수료 0원 (업계 평균 5~7%)', '20만원 상당 전자책 3종 증정', '운전·시설자금 가능성 진단'],
     highlightNote: '운전자금·시설자금 가능성 진단부터 신청 전략까지',
     recommendedFor: ['운전자금·시설자금 가능성을 먼저 확인하고 싶은 대표님', '어떤 자금부터 검토할지 막막한 대표님'],
     deliverables: ['정책자금 가능성 진단', '우선 검토 자금 방향 정리', '신청 전략 및 준비서류 안내'],
@@ -88,17 +101,19 @@ export const businessPackages: BusinessPackage[] = [
       { q: '정책자금 승인을 보장하나요?', a: '아니요. 승인·금리·한도는 기관 심사 사항입니다. 저희는 가능성 진단과 신청 전략, 준비서류 방향을 함께 정리합니다.' },
       { q: '매출이 적어도 진단이 되나요?', a: '네. 업종·업력·재무 상황에 맞춰 검토 가능한 자금 방향을 정리합니다.' },
       { q: '진단 후 신청까지 도와주나요?', a: '진단 결과에 따라 준비물과 다음 단계를 안내드리고, 이후 진행은 상담에서 함께 정합니다.' },
+      { q: '비용이 정말 50만원이 전부인가요?', a: '네. 업계에서 흔한 성공수수료(실행액의 5~7%)를 받지 않습니다. 진단·전략 비용 50만원이 전부입니다.' },
+      { q: '증정 전자책은 어떻게 받나요?', a: '결제 후 바로 받으실 수 있도록 안내드립니다. 다만 전자책을 다운로드하신 후에는 환불이 불가한 점 양해 부탁드립니다.' },
     ],
     visualType: 'funding',
     imageSrc: '/assets/business-services/funding-consulting.png',
     notice:
-      '정책자금 승인, 대출 실행, 금리, 한도는 보장하지 않습니다. 기업의 업종·재무상태·신청 시점·기관 심사 기준에 따라 결과는 달라질 수 있습니다.',
+      '정책자금 승인, 대출 실행, 금리, 한도는 보장하지 않습니다. 기업의 업종·재무상태·신청 시점·기관 심사 기준에 따라 결과는 달라질 수 있습니다. 증정 전자책을 다운로드하신 후에는 결제 환불이 불가합니다.',
     featured: true,
   },
   {
     id: 'employment-subsidy',
     slug: 'employment-subsidy',
-    category: '자금·지원금',
+    category: '지원금',
     badge: '성공보수형',
     badgeTone: 'blue',
     name: '고용지원금 패키지',
@@ -128,7 +143,7 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'venture-innovation',
     slug: 'venture-innovation',
-    category: '벤처·인증',
+    category: '인증·절세',
     badge: '특허출원 포함',
     badgeTone: 'blue',
     name: '벤처인증 패키지 (혁신성장형)',
@@ -150,13 +165,14 @@ export const businessPackages: BusinessPackage[] = [
     ],
     visualType: 'venture',
     imageSrc: '/assets/business-services/venture-innovation.png',
+    featured: true,
     notice:
       '벤처기업확인 취득을 보장하지 않습니다. 기업의 기술성·성장성 평가와 기관 심사 기준에 따라 결과는 달라질 수 있습니다.',
   },
   {
     id: 'venture-investment',
     slug: 'venture-investment',
-    category: '벤처·인증',
+    category: '인증·절세',
     badge: '절세 전략',
     badgeTone: 'blue',
     name: '벤처인증 패키지 (투자유형)',
@@ -183,7 +199,7 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'responsive-homepage',
     slug: 'responsive-homepage',
-    category: '홈페이지·AI',
+    category: 'AX 컨설팅',
     badge: '온라인 영업',
     badgeTone: 'slate',
     name: '반응형 홈페이지 제작',
@@ -208,7 +224,7 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'ai-ax-system',
     slug: 'ai-ax-system',
-    category: '홈페이지·AI',
+    category: 'AX 컨설팅',
     badge: '업무 자동화',
     badgeTone: 'slate',
     name: 'AI 기반 회사 운영시스템 구축',
@@ -230,11 +246,12 @@ export const businessPackages: BusinessPackage[] = [
     ],
     visualType: 'mvp',
     imageSrc: '/assets/business-services/ai-ax-system.png',
+    featured: true,
   },
   {
     id: 'rnd-center',
     slug: 'rnd-center',
-    category: '벤처·인증',
+    category: '인증·절세',
     badge: '가점 확보',
     badgeTone: 'slate',
     name: '기업부설연구소 설립',
@@ -260,7 +277,7 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'iso-certification',
     slug: 'iso-certification',
-    category: '벤처·인증',
+    category: '인증·절세',
     badge: '3종 패키지',
     badgeTone: 'slate',
     name: 'ISO 인증 패키지',
@@ -292,7 +309,7 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'mainbiz-certification',
     slug: 'mainbiz-certification',
-    category: '벤처·인증',
+    category: '인증·절세',
     badge: '가점 확보',
     badgeTone: 'slate',
     name: '메인비즈 인증',
@@ -317,7 +334,7 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'innobiz-certification',
     slug: 'innobiz-certification',
-    category: '벤처·인증',
+    category: '인증·절세',
     badge: '기술혁신',
     badgeTone: 'slate',
     name: '이노비즈 인증',
@@ -400,8 +417,9 @@ export const badgeToneClass: Record<BadgeTone, string> = {
 
 // 카테고리 배지 색상
 export const categoryToneClass: Record<string, string> = {
-  '자금·지원금': 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/15',
-  '벤처·인증': 'bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/15',
-  '홈페이지·AI': 'bg-cyan-50 text-cyan-700 ring-1 ring-inset ring-cyan-600/15',
+  '자금조달': 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/15',
+  '지원금': 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/15',
+  '인증·절세': 'bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/15',
+  'AX 컨설팅': 'bg-cyan-50 text-cyan-700 ring-1 ring-inset ring-cyan-600/15',
   '풀패키지': 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-500/20',
 }

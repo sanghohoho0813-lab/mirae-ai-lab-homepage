@@ -182,6 +182,10 @@ export default function FundingConsultingDetailPage() {
               <span className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{SALE_PRICE}</span>
             </div>
             <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
+            <ul className="mt-3 space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
+              <li className="flex items-center gap-1.5"><span aria-hidden>✅</span> 성공수수료 0원 (업계 평균 5~7%)</li>
+              <li className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 20만원 상당 전자책 3종 증정</li>
+            </ul>
 
             <div className="mt-5">
               <BuyButtons variant="light" />
@@ -245,7 +249,7 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
           <h2 className={bigHead}>
-            가만히 두면,<br /><span className="text-red-600">이런 것들이 조용히 새나갑니다</span>
+            미루는 동안에도<br /><span className="text-red-600">이자와 기회는 새고 있습니다</span>
           </h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {losses.map((l) => (
@@ -290,9 +294,9 @@ export default function FundingConsultingDetailPage() {
       {/* 변화 — 진행 후 달라지는 것 (Before → After) */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>진행 후, 달라지는 것</p>
+          <p className={kicker}>얻게 되는 결과</p>
           <h2 className={bigHead}>
-            진단받고 나면,<br /><span className="text-blue-600">대표님의 하루가 이렇게 달라집니다</span>
+            진단받고 나면,<br /><span className="text-blue-600">대표님 회사는 이렇게 바뀝니다</span>
           </h2>
           <div className="mt-10 space-y-4">
             {afters.map((a) => (
@@ -313,11 +317,67 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
+      {/* 혜택 1 — 성공수수료 0원 */}
+      <section className={`bg-white ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>다른 곳과 결정적으로 다른 점</p>
+          <h2 className={bigHead}>
+            성공수수료,<br /><span className="text-blue-600">받지 않습니다</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+            업계에서는 정책자금이 실행되면 <b className="text-slate-900">실행 금액의 5~7%</b>를
+            성공보수로 추가로 받는 경우가 많습니다. 미래 AI 랩은 받지 않습니다.
+          </p>
+          <div className="mx-auto mt-9 grid max-w-lg gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
+              <p className="text-xs font-black uppercase tracking-wide text-slate-400">업계 평균</p>
+              <p className="mt-2 text-3xl font-black tracking-tight text-slate-400 line-through decoration-red-400/70">5~7%</p>
+              <p className="mt-1 text-sm font-semibold text-slate-500">1억 실행 시 500~700만원</p>
+            </div>
+            <div className="rounded-2xl bg-blue-600 p-6 text-center shadow-lg shadow-blue-600/20">
+              <p className="text-xs font-black uppercase tracking-wide text-blue-200">미래 AI 랩</p>
+              <p className="mt-2 text-4xl font-black tracking-tight text-white">0원</p>
+              <p className="mt-1 text-sm font-semibold text-blue-100">비용은 50만원이 전부</p>
+            </div>
+          </div>
+          <p className="mt-7 text-center text-lg font-black text-slate-900 sm:text-xl">
+            1억을 실행해도, 추가로 내실 돈은 <span className="text-blue-600">없습니다.</span>
+          </p>
+        </div>
+      </section>
+
+      {/* 혜택 2 — 전자책 3종 증정 */}
+      <section className={`bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>구매 혜택</p>
+          <h2 className={bigHead}>
+            20만원 상당 전자책 3종,<br /><span className="text-blue-600">함께 드립니다</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+            현재 판매 중인 <b className="text-slate-900">정책자금 셀프 진행 전자책 3종</b>을 무료로 드립니다.
+            이번에는 저희와 함께, <b className="text-slate-900">다음번에는 대표님이 직접</b> 하실 수 있습니다.
+          </p>
+          <div className="relative mx-auto mt-9 max-w-sm rounded-3xl border border-slate-200 bg-white p-7 text-center shadow-xl">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-400 px-3 py-1 text-xs font-black text-slate-900">구매 시 무료 증정</span>
+            <p className="text-5xl" aria-hidden>📕📗📘</p>
+            <p className="mt-3 text-lg font-extrabold text-slate-900">정책자금 셀프 진행 전자책 3종</p>
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <span className="text-base font-bold text-slate-400 line-through">20만원 상당</span>
+              <span className="text-2xl font-black text-blue-600">0원</span>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-500">판매 중인 유료 자료 그대로 드립니다</p>
+          </div>
+          <p className="mx-auto mt-6 max-w-sm text-center text-xs leading-relaxed text-slate-400">
+            ※ 증정 전자책을 다운로드하신 후에는 결제 환불이 불가합니다.
+          </p>
+        </div>
+      </section>
+
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>믿을 수 있는 이유</p>
-          <h2 className={bigHead}>“왜 미래 AI 랩인가요?”<br /><span className="text-blue-600">물으신다면</span></h2>
+          <h2 className={bigHead}>왜 미래 AI 랩과<br /><span className="text-blue-600">함께해야 할까요</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -325,6 +385,22 @@ export default function FundingConsultingDetailPage() {
                 <p className="mt-3 text-base font-bold text-slate-900">{r}</p>
               </div>
             ))}
+          </div>
+          {/* 데이터 기반 진단 — 자체 개발 SaaS */}
+          <div className="mt-6 rounded-2xl border-2 border-slate-900 bg-white p-6 sm:p-7">
+            <p className="text-center text-lg font-black text-slate-900 sm:text-xl">
+              감(感)으로 하는 컨설팅과는 <span className="text-blue-600">다릅니다</span>
+            </p>
+            <p className="mx-auto mt-3 max-w-lg text-center text-sm leading-relaxed text-slate-600 sm:text-[0.95rem]">
+              직접 개발하고 전문가 검증을 거친 <b className="text-slate-900">자체 SaaS 프로그램</b>이
+              자금·인증 심사 데이터를 계속 학습하고 최적화합니다.
+              그래서 저희는 감이 아니라 <b className="text-slate-900">수치와 데이터를 근거로</b> 진단하고 방향을 제시합니다.
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">🧠 데이터 학습·최적화</span>
+              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">🛠️ 자체 개발 프로그램</span>
+              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">✅ 전문가 검증 완료</span>
+            </div>
           </div>
         </div>
       </section>
@@ -448,7 +524,11 @@ export default function FundingConsultingDetailPage() {
             </div>
             <p className="mt-2 text-center text-5xl font-black tracking-tight text-slate-900">{SALE_PRICE}</p>
             <p className="mt-2 flex items-center justify-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
-            <ul className="mx-auto mt-6 max-w-xs space-y-2.5 border-t border-slate-100 pt-6">
+            <div className="mx-auto mt-4 max-w-xs space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
+              <p className="flex items-center gap-1.5"><span aria-hidden>✅</span> 성공수수료 0원 (업계 평균 5~7%)</p>
+              <p className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 20만원 상당 전자책 3종 증정</p>
+            </div>
+            <ul className="mx-auto mt-5 max-w-xs space-y-2.5 border-t border-slate-100 pt-5">
               {pkg.deliverables.map((d) => (
                 <li key={d} className="flex items-start gap-2 text-sm text-slate-700">
                   <span className="mt-0.5 font-black text-blue-500" aria-hidden>✓</span>{d}
