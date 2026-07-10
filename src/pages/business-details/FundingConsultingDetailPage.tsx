@@ -317,29 +317,67 @@ export default function FundingConsultingDetailPage() {
       {/* 혜택 1 — 성공수수료 0원 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>다른 곳과 결정적으로 다른 점</p>
+          <p className={kicker}>미래 AI 랩의 방식</p>
           <h2 className={bigHead}>
-            성공수수료,<br /><span className="text-blue-600">받지 않습니다</span>
+            “전부 대신 해주는” 컨설팅,<br /><span className="text-blue-600">그 시대는 저물고 있습니다</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-            업계에서는 정책자금이 실행되면 <b className="text-slate-900">실행 금액의 5~7%</b>를
-            성공보수로 추가로 받는 경우가 많습니다. 미래 AI 랩은 받지 않습니다.
+          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+            사업의 주인은 대표님입니다. 그래서 저희는 <b className="text-slate-900">반드시 필요한 부분만</b> 돕고,
+            신청 같은 나머지는 <b className="text-slate-900">대표님이 직접 하실 수 있도록</b> 만들어 드립니다.
+            실행액의 5~7%를 성공수수료로 떼는 방식이 아니라요.
           </p>
+
+          {/* 성공수수료 0원 비교 */}
           <div className="mx-auto mt-9 grid max-w-lg gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
-              <p className="text-xs font-black uppercase tracking-wide text-slate-400">업계 평균</p>
+              <p className="text-xs font-black uppercase tracking-wide text-slate-400">업계 평균 성공수수료</p>
               <p className="mt-2 text-3xl font-black tracking-tight text-slate-400 line-through decoration-red-400/70">5~7%</p>
               <p className="mt-1 text-sm font-semibold text-slate-500">1억 실행 시 500~700만원</p>
             </div>
             <div className="rounded-2xl bg-blue-600 p-6 text-center shadow-lg shadow-blue-600/20">
-              <p className="text-xs font-black uppercase tracking-wide text-blue-200">미래 AI 랩</p>
+              <p className="text-xs font-black uppercase tracking-wide text-blue-200">미래 AI 랩 진단·전략</p>
               <p className="mt-2 text-4xl font-black tracking-tight text-white">0원</p>
               <p className="mt-1 text-sm font-semibold text-blue-100">비용은 50만원이 전부</p>
             </div>
           </div>
-          <p className="mt-7 text-center text-lg font-black text-slate-900 sm:text-xl">
-            1억을 실행해도, 추가로 내실 돈은 <span className="text-blue-600">없습니다.</span>
+
+          {/* 업무 범위 */}
+          <p className="mt-14 text-center text-xl font-black text-slate-900 sm:text-2xl">
+            50만원으로, <span className="text-blue-600">여기까지 해드립니다</span>
           </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {[
+              { icon: '🎯', t: '가장 적합한 기관·자금 판단', d: '어떤 자금이 가장 효율적인지, 승인 가능성이 높은 방향은 무엇인지 짚어드립니다.' },
+              { icon: '📄', t: '필요 서류 안내', d: '무엇을 어떻게 준비해야 하는지 빠짐없이 안내해 드립니다.' },
+              { icon: '📝', t: '사업계획서 작성', d: '대표님이 바로 신청만 하면 되는, “신청 가능한 상태”까지 만들어 드립니다.' },
+              { icon: '🔁', t: '다음엔 직접 하실 수 있게', d: '이후에는 대표님이 스스로 진행하실 수 있도록 방법까지 알려드립니다.' },
+            ].map((it) => (
+              <div key={it.t} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{it.icon}</span>
+                <p className="mt-3 text-base font-extrabold text-slate-900">{it.t}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{it.d}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* 3% 전액대행 옵션 */}
+          <div className="mt-8 rounded-3xl border-2 border-slate-900 bg-slate-50 p-6 sm:p-7">
+            <p className="text-sm font-black text-blue-600">그래도 정말 손댈 여유가 없으시다면</p>
+            <p className="mt-2 text-lg font-black leading-snug text-slate-900 sm:text-xl">
+              신청까지 전부 대행 — 업계 5~7%가 아닌 <span className="text-blue-600">3%</span>로 진행해 드립니다
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              아무것도 손대기 어려운 상황이라면, 처음부터 끝까지 저희가 맡아 진행합니다. 그래도 업계 절반 수준입니다.
+            </p>
+          </div>
+
+          {/* 철학 마무리 */}
+          <div className="mt-6 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
+            <p className="text-lg font-black leading-snug text-white sm:text-xl">
+              저희의 목적은 대표님이 <span className="text-amber-300">스스로 하실 수 있게</span> 만드는 것입니다.
+            </p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">정책 환경도 점점 그 방향으로 바뀌어 가고 있습니다.</p>
+          </div>
         </div>
       </section>
 
@@ -373,8 +411,8 @@ export default function FundingConsultingDetailPage() {
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>믿을 수 있는 이유</p>
-          <h2 className={bigHead}>왜 미래 AI 랩과<br /><span className="text-blue-600">함께해야 할까요</span></h2>
+          <p className={kicker}>함께하면 좋은 이유</p>
+          <h2 className={bigHead}>미래 AI 랩과 함께하시면<br /><span className="text-blue-600">좋은 이유들</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -405,11 +443,11 @@ export default function FundingConsultingDetailPage() {
       {/* 실제 진행 예시 (알림톡형) */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-white text-4xl shadow-sm ring-1 ring-slate-200">🙋‍♂️</div>
-          <p className={kicker}>실제 이렇게 진행됩니다</p>
-          <h2 className={bigHead}>전문가만 되는 거<br />아니냐고요? <span className="text-blue-600">아닙니다</span></h2>
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-white text-4xl shadow-sm ring-1 ring-slate-200">💬</div>
+          <p className={kicker}>진행 예시</p>
+          <h2 className={bigHead}>준비가 되면,<br /><span className="text-blue-600">이런 결과로 이어집니다</span></h2>
           <p className="mx-auto mt-5 max-w-md text-center text-base font-semibold leading-relaxed text-slate-600">
-            대표님 상황부터 제대로 보고, <b className="text-slate-900">맞는 자금 방향</b>을 함께 잡아드립니다.
+            대표님 상황부터 제대로 보고, <b className="text-slate-900">승인 가능성이 높은 방향</b>으로 준비를 도와드립니다.
           </p>
 
           <div className="mt-12 space-y-14">
@@ -473,8 +511,8 @@ export default function FundingConsultingDetailPage() {
       {/* 제공 결과물 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>제공 결과물</p>
-          <h2 className={bigHead}>손에 쥐어지는 결과물은<br /><span className="text-blue-600">이것들입니다</span></h2>
+          <p className={kicker}>제공 항목</p>
+          <h2 className={bigHead}>이 상품으로 대표님이<br /><span className="text-blue-600">얻으시는 것들입니다</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {pkg.deliverables.map((d, i) => (
               <div key={d} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">

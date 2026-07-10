@@ -386,8 +386,8 @@ export default function BusinessServiceDetailPage() {
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>믿을 수 있는 이유</p>
-          <h2 className={bigHead}>왜 미래 AI 랩과<br /><span className={accentText}>함께해야 할까요</span></h2>
+          <p className={kicker}>함께하면 좋은 이유</p>
+          <h2 className={bigHead}>미래 AI 랩과 함께하시면<br /><span className={accentText}>좋은 이유들</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {content.reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -457,8 +457,8 @@ export default function BusinessServiceDetailPage() {
       {/* 제공 결과물 */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>제공 결과물</p>
-          <h2 className={bigHead}>손에 쥐어지는 결과물은<br /><span className={accentText}>이것들입니다</span></h2>
+          <p className={kicker}>제공 항목</p>
+          <h2 className={bigHead}>이 상품으로 대표님이<br /><span className={accentText}>얻으시는 것들입니다</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pkg.deliverables.map((d, i) => (
               <div key={d} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
