@@ -1,12 +1,11 @@
 // 정책자금·보증부 자금 실제 사례 섹션 (정책자금 상세페이지 전용).
-// 카톡(승인 사례 공유) 감성: 채팅방 헤더 + 파란 배경 + 흰/노란 말풍선 + 승인 결과 카드.
-// 승인 완료 사례와 '진행 중' 사례를 명확히 분리. 모바일 1열 스택.
-// ⚠️ 대화는 개인정보 보호를 위해 재구성한 예시(각 창에 '예시' 배지 표기).
+// 카톡(승인 사례 공유) 감성: 채팅방 헤더 + 진행 요약 + 흰/노란 말풍선 + 승인 결과 카드.
+// 승인 완료 사례만 게시. 모바일 1열 스택.
+// ⚠️ 대화는 개인정보 보호를 위해 회사명·세부 상황을 바꿔 정리(고지문 표기).
 import {
   caseStats,
   fundingCases,
   moreFundingCases,
-  inProgressCase,
   CASES_DISCLAIMER,
   CASES_CTA,
   type ChatLine,
@@ -142,41 +141,6 @@ export default function FundingCasesSection() {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
-
-        {/* 진행 중 사례 (승인 완료와 분리) */}
-        <div className="mt-14">
-          <h3 className={subHead}>진행 중인 사례</h3>
-          <div className="mt-5 overflow-hidden rounded-3xl border-2 border-dashed border-amber-300 bg-white shadow-sm sm:mx-auto sm:max-w-md">
-            {/* 헤더 (진행 중 표시) */}
-            <div className="flex items-center gap-2.5 border-b border-amber-100 bg-amber-50 px-4 py-3">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-amber-400 text-base" aria-hidden>🚚</span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[15px] font-bold text-slate-900">{inProgressCase.industry}</p>
-                <p className="truncate text-xs font-medium text-slate-500">{inProgressCase.size}</p>
-              </div>
-              <span className="shrink-0 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-black text-slate-900">진행 중</span>
-            </div>
-
-            {/* 대화 */}
-            <div className={`space-y-3 ${KAKAO_BG} px-4 py-5`}>
-              {inProgressCase.chat.map((line, i) => (
-                <Bubble key={i} line={line} />
-              ))}
-              {/* 진행 상태 (승인 아님) */}
-              <div className="pt-1">
-                <div className="rounded-2xl bg-white p-4 text-center shadow ring-1 ring-inset ring-amber-200">
-                  <p className="text-xs font-black uppercase tracking-wide text-amber-600">⏳ 아직 승인 전 · 신청 진행 단계</p>
-                  <p className="mt-2 text-base font-bold leading-snug text-slate-900">{inProgressCase.status}</p>
-                  <div className="mt-3 flex flex-wrap justify-center gap-1.5">
-                    {inProgressCase.prep.map((p) => (
-                      <span key={p} className="rounded-md bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">{p}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

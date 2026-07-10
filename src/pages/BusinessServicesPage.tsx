@@ -83,9 +83,9 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
           : 'border border-slate-200 shadow-sm hover:shadow-lg'
       }`}
     >
-      {/* 썸네일 (상단 고정 크롭 · 텍스트 오버레이 없음 — 이미지에 문구 포함) */}
-      <Link to={`/business-services/${pkg.slug}`} className="relative block aspect-[9/4] bg-slate-100">
-        <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} />
+      {/* 썸네일 (3:2 원본 비율 그대로 — 하단 문구 잘림 방지) */}
+      <Link to={`/business-services/${pkg.slug}`} className="relative block aspect-[3/2] bg-slate-100">
+        <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="contain" />
       </Link>
 
       <div className="flex flex-1 flex-col p-5">
@@ -102,29 +102,30 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
         </div>
 
         {/* 상품명 (크게) */}
-        <h3 className="mt-2.5 text-xl font-extrabold leading-snug tracking-tight text-slate-900">{pkg.name}</h3>
+        <h3 className="mt-2.5 text-[1.35rem] font-extrabold leading-snug tracking-tight text-slate-900">{pkg.name}</h3>
         {/* 짧은 설명 */}
         <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-slate-500">{pkg.short}</p>
 
         {/* 가격 (크게) — consult 는 톤다운, variant 는 '~' 시작가 */}
         <div className="mt-3.5">
           <p
-            className={`font-black tracking-tight ${pkg.priceType === 'consult' ? 'text-xl' : 'text-2xl'} ${
+            className={`font-black tracking-tight ${pkg.priceType === 'consult' ? 'text-[1.35rem]' : 'text-[1.65rem]'} ${
               flagship ? 'text-amber-600' : pkg.priceType === 'consult' ? 'text-slate-700' : 'text-slate-900'
             }`}
           >
             {pkg.price}
           </p>
+          {pkg.priceHighlight && <p className="mt-0.5 text-[0.95rem] font-black leading-snug text-red-600">{pkg.priceHighlight}</p>}
           {pkg.priceNote && <p className="mt-0.5 text-xs font-medium text-slate-400">{pkg.priceNote}</p>}
         </div>
 
         {/* 핵심 혜택 (썸네일 하단 밴드에 있던 문구를 텍스트로 노출) */}
         <div className="mt-3.5 border-t border-slate-100 pt-3.5">
-          <ul className="space-y-1.5">
+          <ul className="space-y-2">
             {pkg.highlights.slice(0, 3).map((h) => (
-              <li key={h} className="flex items-start gap-1.5 text-[0.82rem] leading-snug text-slate-600">
+              <li key={h} className="flex items-start gap-1.5 text-[1.05rem] font-bold leading-snug text-slate-700">
                 <span className={`mt-0.5 shrink-0 font-black ${flagship ? 'text-amber-500' : 'text-blue-500'}`} aria-hidden>✓</span>
-                <span className="line-clamp-1">{h}</span>
+                <span>{h}</span>
               </li>
             ))}
           </ul>
@@ -283,7 +284,7 @@ export default function BusinessServicesPage() {
           <p className={eyebrow}>전체 상품</p>
           <h2 className={h2Class}>기업 상황에 맞는 서비스를 고르세요</h2>
 
-          {/* Category tabs */}
+          {/* Category tabs — 상황 문장으로 표기 */}
           <div className="mt-6 flex flex-wrap gap-2">
             {CATEGORIES.map((cat) => {
               const active = activeCat === cat
@@ -297,7 +298,7 @@ export default function BusinessServicesPage() {
                     active ? 'bg-slate-900 text-white' : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
                   }`}
                 >
-                  {cat}
+                  {cat === '전체' ? '전체' : CATEGORY_SCENARIOS[cat]}
                 </button>
               )
             })}

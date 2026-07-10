@@ -276,14 +276,10 @@ export default function BusinessServiceDetailPage() {
           </h2>
           <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">{content.hookSub}</p>
           {pkg.imageSrc && (
-            <div className="relative mx-auto mt-10 max-w-md">
-              <div className="-rotate-1 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-                <div className="relative aspect-[3/2]">
-                  <img src={pkg.imageSrc} alt={pkg.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-                </div>
+            <div className="mx-auto mt-10 max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+              <div className="relative aspect-[3/2]">
+                <img src={pkg.imageSrc} alt={pkg.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
               </div>
-              <span className="absolute -left-4 -top-5 grid h-14 w-14 -rotate-6 place-items-center rounded-2xl bg-white text-3xl shadow-lg ring-1 ring-slate-200" aria-hidden>{content.emoji}</span>
-              <span className="absolute -bottom-4 -right-3 grid h-12 w-12 rotate-6 place-items-center rounded-2xl bg-white text-2xl shadow-lg ring-1 ring-slate-200" aria-hidden>💡</span>
             </div>
           )}
           <div className="mx-auto mt-8 flex max-w-sm items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm">

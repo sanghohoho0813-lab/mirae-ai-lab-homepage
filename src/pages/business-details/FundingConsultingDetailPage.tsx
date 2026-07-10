@@ -9,6 +9,7 @@ import { getPackageBySlug } from '../../data/businessPackages'
 
 const pkg = getPackageBySlug('funding-consulting')!
 const IMG = '/assets/business-services/funding-consulting.png'
+const EBOOK_IMG = '/assets/business-services/ebook-3set.webp'
 
 // 할인 표기 (정가 100만원 → 판매가 50만원)
 const LIST_PRICE = '100만원'
@@ -24,46 +25,23 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-const pains = ['운전자금이 급한데, 어디서부터 봐야 할지 모르겠어요', '대출 금리를 조금이라도 낮추고 싶어요', '정책자금 종류가 너무 많아서 뭐가 뭔지 모르겠어요', '요건이니 서류니, 보다가 그냥 덮었어요']
-
-const whyPoints = [
-  { n: '01', t: '헛걸음부터 줄여드립니다', d: '무턱대고 여기저기 알아보기 전에, 되는 방향부터 좁혀서 시간을 아껴드립니다.' },
-  { n: '02', t: '순서를 정해드립니다', d: '지금 우리 회사가 먼저 봐야 할 자금이 뭔지, 우선순위를 잡아드립니다.' },
-  { n: '03', t: '다음 할 일이 또렷해집니다', d: '신청 전략과 준비서류까지 알려드리니까, 뭘 하면 되는지가 명확해집니다.' },
-]
-
-// 예시 사례 (⚠️ 실제 데이터로 교체 예정 · 승인/실행 보장 아님)
-const cases = [
-  { bank: '○○은행', product: '혁신성장촉진자금 (운전)', repay: '일시상환', amount: '70,000,000원', big: '7,000만원', rate: '연 3.5%' },
-  { bank: '○○은행', product: '일반자금대출', repay: '분할상환', amount: '100,000,000원', big: '1억원', rate: '연 2.9%' },
-  { bank: '○○기금', product: '소상공인 정책자금 (운전)', repay: '분할상환', amount: '50,000,000원', big: '5,000만원', rate: '연 3.2%' },
+const pains = [
+  '은행에서는 거절당했는데, 정책자금은 가능할 수도 있다던데… 어디서부터 봐야 하죠?',
+  '믿을 만한 업체가 어디인지 모르겠어요',
+  '수수료가 너무 비싸요. 조금만 도움받으면 스스로 할 수 있을 것 같은데…',
+  '정책자금 종류가 너무 많아서 뭐가 뭔지 모르겠어요',
+  '대출 금리를 조금이라도 낮추고 싶어요',
+  '운전자금이 급한데, 어디서부터 봐야 할지 모르겠어요',
 ]
 
 // 믿을 수 있는 이유 (과장 없는 정성 표현)
-const reasons = ['정책자금·인증 실무 경험', '기업 상황에 맞춘 맞춤 진단', '신청 전략·준비서류까지 안내']
+const reasons = ['정책자금·인증 실무 경험 5년 이상', '기업 상황에 맞춘 맞춤 진단', '신청 전략·준비서류까지 안내']
 
 // 미루면 잃는 것 (적당한 긴장 — 조작 통계·과도한 협박 금지)
 const losses = [
-  { icon: '⏳', t: '정책자금 예산은 소진되면 끝입니다', d: '정책자금은 예산 소진형입니다. 알아보는 사이 올해 예산이 마감되면, 다음 기회는 내년입니다.' },
-  { icon: '💸', t: '높은 금리로 이자가 새고 있습니다', d: '방향을 몰라 고금리 대출로 버티는 동안, 금리 차이만큼의 이자가 매달 조용히 빠져나갑니다.' },
+  { icon: '⏳', t: '정책자금 예산은 소진되면 끝입니다', d: '보통 8월부터 예산이 눈에 띄게 줄고, 12월엔 거의 남지 않습니다. 시기를 놓쳤다면 다음 연도 예산을 미리 준비해 두어야 합니다.' },
+  { icon: '💸', t: '높은 금리로 이자가 불어나고 있습니다', d: '방향을 몰라 고금리 대출로 버티는 동안, 금리 차이만큼의 이자가 매달 쌓여 갑니다.' },
   { icon: '🚪', t: '경쟁사는 이미 활용하고 있습니다', d: '비슷한 조건의 회사가 정책자금으로 설비와 인력에 투자하는 동안, 격차는 매달 벌어집니다.' },
-]
-const lossClosing = '가장 비싼 비용은 “몰라서 못 받은 자금”입니다.'
-
-// 진행 후 변화 (Before → After)
-const afters = [
-  { before: '매달 이자 낼 때마다 아까웠던 마음', after: '더 낮은 금리 가능성 확인하고 세우는 이자 계획' },
-  { before: '어디서 뭘 알아봐야 할지 몰라 미루던 상태', after: '뭘 먼저 준비할지 순서가 정해진 상태' },
-  { before: '은행 창구에서 아쉬운 소리 하던 자리', after: '준비된 서류로 당당하게 신청하는 자리' },
-]
-const afterClosing = '자금 걱정이 줄면, 대표님의 결정이 빨라집니다.'
-
-const steps = [
-  { t: '상담 신청', d: '편하게 남겨주세요. 담당자가 연락드립니다.' },
-  { t: '기업 현황 진단', d: '업종·업력·재무 상황을 함께 살펴봅니다.' },
-  { t: '자금 방향 정리', d: '검토할 만한 자금과 순서를 잡아드립니다.' },
-  { t: '신청 전략·서류 안내', d: '신청 전략과 준비서류를 안내해 드립니다.' },
-  { t: '이후 진행 협의', d: '진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' },
 ]
 
 function CartIcon() {
@@ -179,13 +157,15 @@ export default function FundingConsultingDetailPage() {
               <span className="rounded-md bg-amber-400 px-2 py-0.5 text-sm font-black text-slate-900">{DISCOUNT_RATE} 할인</span>
               <span className="text-sm font-medium text-slate-400 line-through">정가 {LIST_PRICE}</span>
             </div>
-            <div className="mt-1 flex items-end gap-2">
+            <div className="mt-1 flex flex-wrap items-end gap-x-2.5 gap-y-1">
               <span className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{SALE_PRICE}</span>
+              <span className="pb-1 text-xl font-black leading-tight text-red-600 sm:pb-1.5 sm:text-2xl">+ 성공수수료 없음</span>
             </div>
+            <p className="mt-1.5 text-base font-black text-red-600">업계 평균 성공수수료 5~7% → 미래 AI 랩은 0원</p>
             <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
-            <ul className="mt-3 space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
-              <li className="flex items-center gap-1.5"><span aria-hidden>✅</span> 성공수수료 0원 (업계 평균 5~7%)</li>
-              <li className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 20만원 상당 전자책 3종 증정</li>
+            <ul className="mt-3 space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-base font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
+              <li className="flex items-center gap-1.5 font-black text-red-600"><span aria-hidden>🚫</span> 성공수수료 없음 — 업계 평균 5~7%</li>
+              <li className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 23만 7천원 상당 전자책 3종 증정</li>
             </ul>
 
             <div className="mt-5">
@@ -208,19 +188,18 @@ export default function FundingConsultingDetailPage() {
             그래서 <b className="text-blue-600">가능성 진단부터</b> 시작합니다.<br />
             운전자금·시설자금, 지금 우리 회사가 <b className="text-slate-900">뭐부터 봐야 하는지</b> 정리해 드립니다.
           </p>
-          <div className="relative mx-auto mt-10 max-w-md">
-            <div className="-rotate-1 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-              <div className="relative aspect-[3/2]">
-                <img src={IMG} alt="정책자금 컨설팅" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-              </div>
+          <div className="mx-auto mt-10 max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+            <div className="relative aspect-[3/2]">
+              <img src={IMG} alt="정책자금 컨설팅" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
             </div>
-            <span className="absolute -left-4 -top-5 grid h-14 w-14 -rotate-6 place-items-center rounded-2xl bg-white text-3xl shadow-lg ring-1 ring-slate-200" aria-hidden>💰</span>
-            <span className="absolute -bottom-4 -right-3 grid h-12 w-12 rotate-6 place-items-center rounded-2xl bg-white text-2xl shadow-lg ring-1 ring-slate-200" aria-hidden>🏦</span>
           </div>
-          <div className="mx-auto mt-8 flex max-w-sm items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
-            <span className="rounded-md bg-amber-400 px-2 py-0.5 text-sm font-black text-slate-900">{DISCOUNT_RATE}</span>
-            <span className="text-sm font-medium text-slate-400 line-through">{LIST_PRICE}</span>
-            <span className="text-3xl font-black tracking-tight text-slate-900">{SALE_PRICE}</span>
+          <div className="mx-auto mt-8 max-w-sm rounded-2xl border border-slate-200 bg-white px-6 py-5 text-center shadow-sm">
+            <div className="flex items-center justify-center gap-3">
+              <span className="rounded-md bg-amber-400 px-2 py-0.5 text-sm font-black text-slate-900">{DISCOUNT_RATE}</span>
+              <span className="text-sm font-medium text-slate-400 line-through">{LIST_PRICE}</span>
+              <span className="text-3xl font-black tracking-tight text-slate-900">{SALE_PRICE}</span>
+            </div>
+            <p className="mt-2 text-base font-black text-red-600">+ 성공수수료 없음 (업계 평균 5~7%)</p>
           </div>
         </div>
       </section>
@@ -240,7 +219,7 @@ export default function FundingConsultingDetailPage() {
             ))}
           </div>
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            그런데 이 고민들, <span className="text-red-600">미룰수록 비싸집니다.</span>
+            그런데 결론을 미루는 동안에도, <span className="text-red-600">비용은 계속 나가고 있습니다.</span>
           </p>
         </div>
       </section>
@@ -250,7 +229,7 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
           <h2 className={bigHead}>
-            미루는 동안에도<br /><span className="text-red-600">이자와 기회는 새고 있습니다</span>
+            미루는 동안에도 <span className="text-red-600">이자는 불어나고,</span><br /><span className="text-red-600">기회는 사라지고 있습니다</span>
           </h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {losses.map((l) => (
@@ -262,56 +241,11 @@ export default function FundingConsultingDetailPage() {
             ))}
           </div>
           <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
-            <p className="text-lg font-black leading-snug text-white sm:text-xl">{lossClosing}</p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">다행히, 지금 시작해도 늦지 않았습니다.</p>
+            <p className="text-lg font-black leading-snug text-white sm:text-xl">
+              컨설팅은 받아야겠는데, <span className="text-amber-300">어디를 골라야 할지</span> 막막하시죠?
+            </p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">그래서 저희는 일하는 방식부터 다르게 잡았습니다.</p>
           </div>
-        </div>
-      </section>
-
-      {/* 왜 진단부터 */}
-      <section className={`bg-slate-900 ${band}`}>
-        <div className={inner}>
-          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">왜 진단부터일까요</p>
-          <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
-            진단부터 하면<br /><span className="text-amber-300">이런 게 달라집니다</span>
-          </h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {whyPoints.map((w) => (
-              <div key={w.n} className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-                <span className="text-3xl font-black text-amber-300 sm:text-4xl">{w.n}</span>
-                <p className="mt-3 text-lg font-bold text-white">{w.t}</p>
-                <p className="mt-1.5 text-[1.05rem] leading-relaxed text-slate-300">{w.d}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 rounded-2xl bg-amber-400 p-6 text-center">
-            <p className="text-base font-black text-slate-900 sm:text-lg">{pkg.expectation}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 변화 — 진행 후 달라지는 것 (Before → After) */}
-      <section className={`bg-slate-50 ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>얻게 되는 결과</p>
-          <h2 className={bigHead}>
-            진단받고 나면,<br /><span className="text-blue-600">대표님 회사는 이렇게 바뀝니다</span>
-          </h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {afters.map((a) => (
-              <div key={a.after} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">지금</p>
-                <p className="mt-1 text-sm font-semibold leading-snug text-slate-500 line-through decoration-slate-300">{a.before}</p>
-                <div className="my-3 flex items-center gap-2 text-blue-600" aria-hidden>
-                  <span className="text-lg font-black">↓</span>
-                  <span className="h-px flex-1 bg-slate-200" />
-                </div>
-                <p className="text-[11px] font-black uppercase tracking-wide text-blue-500">진행 후</p>
-                <p className="mt-1 text-[1.2rem] font-extrabold leading-snug text-slate-900">{a.after}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">{afterClosing}</p>
         </div>
       </section>
 
@@ -382,26 +316,30 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
+      {/* 정책자금·보증부 자금 실제 사례 (카톡 승인 공유) */}
+      <FundingCasesSection />
+
       {/* 혜택 2 — 전자책 3종 증정 */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
           <p className={kicker}>구매 혜택</p>
           <h2 className={bigHead}>
-            20만원 상당 전자책 3종,<br /><span className="text-blue-600">함께 드립니다</span>
+            23만 7천 원에 판매 중인 전자책 3종,<br /><span className="text-blue-600">그대로 드립니다</span>
           </h2>
           <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-            현재 판매 중인 <b className="text-slate-900">정책자금 셀프 진행 전자책 3종</b>을 무료로 드립니다.
+            현재 <b className="text-slate-900">23만 7천 원에 판매 중인 정책자금 셀프 진행 전자책 3종</b>을 무료로 드립니다.
             이번에는 저희와 함께, <b className="text-slate-900">다음번에는 대표님이 직접</b> 하실 수 있습니다.
           </p>
-          <div className="relative mx-auto mt-9 max-w-sm rounded-3xl border border-slate-200 bg-white p-7 text-center shadow-xl">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-400 px-3 py-1 text-xs font-black text-slate-900">구매 시 무료 증정</span>
-            <p className="text-5xl" aria-hidden>📕📗📘</p>
-            <p className="mt-3 text-lg font-extrabold text-slate-900">정책자금 셀프 진행 전자책 3종</p>
-            <div className="mt-2 flex items-center justify-center gap-2">
-              <span className="text-base font-bold text-slate-400 line-through">20만원 상당</span>
-              <span className="text-2xl font-black text-blue-600">0원</span>
+          <div className="relative mx-auto mt-10 max-w-lg">
+            <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-400 px-3.5 py-1.5 text-sm font-black text-slate-900 shadow">구매 시 무료 증정</span>
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+              <img src={EBOOK_IMG} alt="정책자금·지원금 전자책 3종" loading="lazy" className="w-full" />
+              <div className="flex items-center justify-center gap-2.5 border-t border-slate-100 px-6 py-4">
+                <span className="text-base font-bold text-slate-400 line-through">판매가 23만 7천 원</span>
+                <span aria-hidden className="text-slate-300">→</span>
+                <span className="text-3xl font-black text-blue-600">0원</span>
+              </div>
             </div>
-            <p className="mt-3 text-[1.05rem] leading-relaxed text-slate-500">판매 중인 유료 자료 그대로 드립니다</p>
           </div>
           <p className="mx-auto mt-6 max-w-sm text-center text-xs leading-relaxed text-slate-400">
             ※ 증정 전자책을 다운로드하신 후에는 결제 환불이 불가합니다.
@@ -441,80 +379,12 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 실제 진행 예시 (알림톡형) */}
-      <section className={`bg-slate-50 ${band}`}>
-        <div className={inner}>
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-white text-4xl shadow-sm ring-1 ring-slate-200">💬</div>
-          <p className={kicker}>진행 예시</p>
-          <h2 className={bigHead}>준비가 되면,<br /><span className="text-blue-600">이런 결과로 이어집니다</span></h2>
-          <p className="mx-auto mt-5 max-w-md text-center text-base font-semibold leading-relaxed text-slate-600">
-            대표님 상황부터 제대로 보고, <b className="text-slate-900">승인 가능성이 높은 방향</b>으로 준비를 도와드립니다.
-          </p>
-
-          <div className="mt-12 space-y-14">
-            {cases.map((c, i) => (
-              <div key={i}>
-                <p className="text-center text-[1.6rem] font-black tracking-tight text-slate-900 sm:text-4xl">
-                  <span className="text-blue-600">{c.big}</span> 진행 예시
-                </p>
-                <div className="mx-auto mt-5 max-w-sm overflow-hidden rounded-3xl bg-slate-200/70 shadow-xl ring-1 ring-slate-200">
-                  {/* 카톡 알림톡 헤더 */}
-                  <div className="flex items-center gap-2 bg-[#FEE500] px-4 py-2.5">
-                    <span className="grid h-6 w-6 place-items-center rounded-md bg-[#3C1E1E] text-[10px] font-black text-[#FEE500]">TALK</span>
-                    <span className="text-sm font-black text-[#3C1E1E]">알림톡 도착</span>
-                    <span className="ml-auto rounded bg-black/10 px-1.5 py-0.5 text-[10px] font-black text-[#3C1E1E]">예시</span>
-                  </div>
-                  {/* 메시지 버블 */}
-                  <div className="p-4">
-                    <div className="rounded-2xl rounded-tl-md bg-white p-4 shadow-sm">
-                      <p className="text-sm font-bold text-slate-900">[{c.bank}] 대출 실행 안내</p>
-                      <p className="mt-1 text-xs text-slate-400">■■■ 고객님, 대출이 정상 실행되었습니다.</p>
-                      <dl className="mt-3 space-y-1.5 border-t border-slate-100 pt-3 text-[13px]">
-                        <div className="flex justify-between"><dt className="text-slate-400">대출상품</dt><dd className="font-semibold text-slate-700">{c.product}</dd></div>
-                        <div className="flex justify-between"><dt className="text-slate-400">상환방법</dt><dd className="font-semibold text-slate-700">{c.repay}</dd></div>
-                        <div className="flex justify-between"><dt className="text-slate-400">대출금리</dt><dd className="font-semibold text-slate-700">{c.rate}</dd></div>
-                      </dl>
-                      {/* 파랑 강조 박스 */}
-                      <div className="relative mt-5 rounded-xl border-2 border-blue-600 bg-blue-50 px-4 py-3 text-center">
-                        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded bg-blue-600 px-2 py-0.5 text-[10px] font-black text-white">대출금액</span>
-                        <p className="mt-1 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">{c.amount}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="mt-12 rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-500">
-            ※ 위 화면은 이해를 돕기 위한 <b>예시</b>이며 실제 고객 정보가 아닙니다. 대출 승인·실행·금리·한도는 기관 심사에 따라 달라지며 보장하지 않습니다.
-          </p>
-        </div>
-      </section>
-
-      {/* 진단 과정 */}
-      <section id="flow" className={`bg-slate-50 ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>진행 과정</p>
-          <h2 className={bigHead}>진단은 이렇게 진행됩니다</h2>
-          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {steps.map((s, i) => (
-              <li key={s.t} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span className="grid h-11 w-11 place-items-center rounded-full bg-slate-900 text-lg font-black text-white">{i + 1}</span>
-                <p className="mt-3 text-[1.2rem] font-bold text-slate-900">{s.t}</p>
-                <p className="mt-1 text-[1.05rem] leading-relaxed text-slate-500">{s.d}</p>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-5 text-center text-[1.05rem] text-slate-500">부담 갖지 않으셔도 됩니다. 진행 여부는 이야기 나눈 뒤 정하셔도 좋습니다.</p>
-        </div>
-      </section>
-
       {/* 제공 결과물 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>제공 항목</p>
           <h2 className={bigHead}>이 상품으로 대표님이<br /><span className="text-blue-600">얻으시는 것들입니다</span></h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {pkg.deliverables.map((d, i) => (
               <div key={d} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
                 <span className="text-2xl font-black text-blue-600 sm:text-3xl">{`0${i + 1}`}</span>
@@ -529,9 +399,6 @@ export default function FundingConsultingDetailPage() {
           </div>
         </div>
       </section>
-
-      {/* 정책자금·보증부 자금 실제 사례 */}
-      <FundingCasesSection />
 
       {/* 추천 대상 */}
       <section className={`bg-slate-50 ${band}`}>
@@ -562,8 +429,8 @@ export default function FundingConsultingDetailPage() {
             <p className="mt-2 text-center text-5xl font-black tracking-tight text-slate-900">{SALE_PRICE}</p>
             <p className="mt-2 flex items-center justify-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
             <div className="mx-auto mt-4 max-w-xs space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
-              <p className="flex items-center gap-1.5"><span aria-hidden>✅</span> 성공수수료 0원 (업계 평균 5~7%)</p>
-              <p className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 20만원 상당 전자책 3종 증정</p>
+              <p className="flex items-center gap-1.5 font-black text-red-600"><span aria-hidden>🚫</span> 성공수수료 없음 — 업계 평균 5~7%</p>
+              <p className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 23만 7천원 상당 전자책 3종 증정</p>
             </div>
             <ul className="mx-auto mt-5 max-w-xs space-y-2.5 border-t border-slate-100 pt-5">
               {pkg.deliverables.map((d) => (
