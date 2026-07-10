@@ -230,14 +230,14 @@ export default function FundingConsultingDetailPage() {
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🤔</div>
           <p className={kicker}>이런 고민, 있으셨죠?</p>
           <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막하죠</span></h2>
-          <ul className="mx-auto mt-9 max-w-xl space-y-3">
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {pains.map((p) => (
-              <li key={p} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-base font-bold text-slate-800 sm:text-lg">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-blue-600 text-sm font-black text-white" aria-hidden>?</span>
-                “{p}”
-              </li>
+              <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>?</span>
+                <p className="mt-3 text-base font-bold leading-snug text-slate-800 sm:text-lg">“{p}”</p>
+              </div>
             ))}
-          </ul>
+          </div>
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
             그런데 이 고민들, <span className="text-red-600">미룰수록 비싸집니다.</span>
           </p>
@@ -274,14 +274,12 @@ export default function FundingConsultingDetailPage() {
           <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
             진단부터 하면<br /><span className="text-amber-300">이런 게 달라집니다</span>
           </h2>
-          <div className="mt-10 space-y-4">
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {whyPoints.map((w) => (
-              <div key={w.n} className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-                <span className="text-2xl font-black text-amber-300 sm:text-3xl">{w.n}</span>
-                <div>
-                  <p className="text-lg font-bold text-white sm:text-xl">{w.t}</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-300 sm:text-base">{w.d}</p>
-                </div>
+              <div key={w.n} className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+                <span className="text-3xl font-black text-amber-300 sm:text-4xl">{w.n}</span>
+                <p className="mt-3 text-lg font-bold text-white">{w.t}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-300">{w.d}</p>
               </div>
             ))}
           </div>
@@ -298,18 +296,17 @@ export default function FundingConsultingDetailPage() {
           <h2 className={bigHead}>
             진단받고 나면,<br /><span className="text-blue-600">대표님 회사는 이렇게 바뀝니다</span>
           </h2>
-          <div className="mt-10 space-y-4">
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {afters.map((a) => (
-              <div key={a.after} className="grid items-stretch gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[1fr_auto_1.1fr] sm:gap-3 sm:p-5">
-                <div className="rounded-xl bg-slate-100 p-4">
-                  <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">지금</p>
-                  <p className="mt-1 text-sm font-semibold leading-snug text-slate-500 line-through decoration-slate-300 sm:text-[0.95rem]">{a.before}</p>
+              <div key={a.after} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">지금</p>
+                <p className="mt-1 text-sm font-semibold leading-snug text-slate-500 line-through decoration-slate-300">{a.before}</p>
+                <div className="my-3 flex items-center gap-2 text-blue-600" aria-hidden>
+                  <span className="text-lg font-black">↓</span>
+                  <span className="h-px flex-1 bg-slate-200" />
                 </div>
-                <div className="flex items-center justify-center text-xl font-black text-blue-600 sm:text-2xl" aria-hidden>→</div>
-                <div className="rounded-xl bg-blue-50 p-4 ring-1 ring-inset ring-blue-100">
-                  <p className="text-[11px] font-black uppercase tracking-wide text-blue-500">진행 후</p>
-                  <p className="mt-1 text-[0.95rem] font-extrabold leading-snug text-slate-900 sm:text-base">{a.after}</p>
-                </div>
+                <p className="text-[11px] font-black uppercase tracking-wide text-blue-500">진행 후</p>
+                <p className="mt-1 text-base font-extrabold leading-snug text-slate-900">{a.after}</p>
               </div>
             ))}
           </div>
@@ -460,14 +457,12 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className={kicker}>진행 과정</p>
           <h2 className={bigHead}>진단은 이렇게 진행됩니다</h2>
-          <ol className="mt-10 space-y-4">
+          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {steps.map((s, i) => (
-              <li key={s.t} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-900 text-lg font-black text-white">{i + 1}</span>
-                <div className="pt-1">
-                  <p className="text-lg font-bold text-slate-900">{s.t}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-500 sm:text-base">{s.d}</p>
-                </div>
+              <li key={s.t} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-slate-900 text-lg font-black text-white">{i + 1}</span>
+                <p className="mt-3 text-base font-bold text-slate-900">{s.t}</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-500">{s.d}</p>
               </li>
             ))}
           </ol>
@@ -480,11 +475,11 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className={kicker}>제공 결과물</p>
           <h2 className={bigHead}>손에 쥐어지는 결과물은<br /><span className="text-blue-600">이것들입니다</span></h2>
-          <div className="mt-10 space-y-4">
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {pkg.deliverables.map((d, i) => (
-              <div key={d} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+              <div key={d} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
                 <span className="text-2xl font-black text-blue-600 sm:text-3xl">{`0${i + 1}`}</span>
-                <p className="text-lg font-extrabold text-slate-900 sm:text-xl">{d}</p>
+                <p className="mt-3 text-lg font-extrabold leading-snug text-slate-900">{d}</p>
               </div>
             ))}
           </div>
@@ -501,14 +496,14 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className={kicker}>추천 대상</p>
           <h2 className={bigHead}>이런 대표님이라면<br /><span className="text-blue-600">잘 맞습니다</span></h2>
-          <ul className="mx-auto mt-10 max-w-xl space-y-3">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {pkg.recommendedFor.map((r) => (
-              <li key={r} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-5 text-base font-semibold text-slate-800 shadow-sm">
-                <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-blue-600 text-sm font-black text-white" aria-hidden>✓</span>
-                {r}
-              </li>
+              <div key={r} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>✓</span>
+                <p className="mt-3 text-base font-semibold leading-snug text-slate-800">{r}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 
