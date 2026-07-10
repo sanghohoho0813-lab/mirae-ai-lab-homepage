@@ -77,7 +77,7 @@ export default function FundingCasesSection() {
             <h3 className={subHead}>대표 사례</h3>
             <span className="rounded-full bg-[#fee500] px-2.5 py-1 text-[11px] font-black text-[#3c1e1e]">카톡 승인 공유</span>
           </div>
-          <p className="mt-2 text-center text-sm text-slate-500">대표님과 나눈 실제 상담을 예시로 재구성했습니다.</p>
+          <p className="mt-2 text-center text-sm text-slate-500">상담부터 승인까지의 과정을 짧게 정리했습니다.</p>
 
           <div className="mt-7 grid gap-6 sm:grid-cols-2">
             {fundingCases.map((c) => (
@@ -89,7 +89,6 @@ export default function FundingCasesSection() {
                     <p className="truncate text-[15px] font-bold text-slate-900">{c.industry}</p>
                     <p className="truncate text-xs font-medium text-slate-400">{c.size}</p>
                   </div>
-                  <span className="shrink-0 rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-black text-slate-500">예시</span>
                 </div>
 
                 {/* 대화 (카톡 파란 배경) */}
@@ -115,8 +114,6 @@ export default function FundingCasesSection() {
                   </div>
                 </div>
 
-                {/* 한 줄 요약 */}
-                <p className="px-4 py-3.5 text-sm font-semibold leading-snug text-slate-600">{c.highlight}</p>
               </article>
             ))}
           </div>
@@ -126,7 +123,7 @@ export default function FundingCasesSection() {
         <div className="mt-14">
           <h3 className={subHead}>더 다양한 사례</h3>
           <div className={`mt-5 rounded-3xl border border-slate-200 ${KAKAO_BG} p-4 shadow-sm sm:p-6`}>
-            <p className="mb-4 text-center text-xs font-bold text-slate-700/70"># 정책자금 승인 공유방 · 예시</p>
+            <p className="mb-4 text-center text-xs font-bold text-slate-700/70"># 정책자금 승인 공유방</p>
             <div className="space-y-4">
               {moreFundingCases.map((m) => (
                 <div key={m.industry} className="flex items-start gap-2">
