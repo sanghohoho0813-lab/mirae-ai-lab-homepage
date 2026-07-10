@@ -4,8 +4,8 @@
 // 질문을 추가/수정할 때 이 파일만 고치면 됩니다. showIf 로 분기(생략) 처리.
 import type { DiagnosisAnswers, DiagnosisQuestion, DiagnosisStage, InlineFeedback } from '../types/businessDiagnosis'
 
-// v3: 점진형 3단계 + 질문 pool 확장(자금 규모/기존 대출/재무제표/회사소개자료/반복업무 등)
-export const DIAGNOSIS_VERSION = 3
+// v4: 실시간 현황·결과 기록·문제중심 보고서 (질문 구조 호환 → v3 답변은 이관 유지)
+export const DIAGNOSIS_VERSION = 4
 
 export const STAGE_INFO: Record<DiagnosisStage, { name: string; copy: string }> = {
   1: { name: '기업 기초체력', copy: '먼저 우리 회사의 현재 상태를 1분 만에 확인해볼게요.' },
@@ -14,6 +14,7 @@ export const STAGE_INFO: Record<DiagnosisStage, { name: string; copy: string }> 
 }
 
 const one = (a: DiagnosisAnswers, id: string) => (typeof a[id] === 'string' ? (a[id] as string) : undefined)
+const many = (a: DiagnosisAnswers, id: string) => (Array.isArray(a[id]) ? (a[id] as string[]) : [])
 
 export const isFounderToBe = (a: DiagnosisAnswers) => one(a, 'bizType') === 'pre'
 export const isIndividual = (a: DiagnosisAnswers) => one(a, 'bizType') === 'individual'
@@ -327,6 +328,50 @@ export const questions: DiagnosisQuestion[] = [
       { value: 'some', label: '어느 정도 있어요' },
       { value: 'little', label: '많지 않아요' },
       { value: 'unsure', label: '생각해본 적 없어요' },
+    ],
+  },
+  {
+    id: 'repetitiveTime',
+    stage: 3,
+    type: 'single',
+    title: '같은 내용을 여러 번 입력하는 업무에 하루 몇 시간이나 쓰시나요?',
+    desc: '대략적인 느낌이면 충분해요.',
+    // 반복업무가 있거나 업무가 흩어진 경우에만
+    showIf: (a) => ['lots', 'some'].includes(one(a, 'repetitiveWork') ?? '') || ['excel', 'kakao', 'paper', 'scattered'].includes(one(a, 'workflow') ?? ''),
+    options: [
+      { value: 'none', label: '거의 없어요' },
+      { value: 'lt30', label: '하루 30분 미만' },
+      { value: 'm30to60', label: '하루 30분~1시간' },
+      { value: 'h1to2', label: '하루 1~2시간' },
+      { value: 'h2plus', label: '하루 2시간 이상' },
+      { value: 'unsure', label: '잘 모르겠어요' },
+    ],
+  },
+  {
+    id: 'remoteAccess',
+    stage: 3,
+    type: 'single',
+    title: '외부에서도 휴대전화로 회사 데이터를 확인할 수 있나요?',
+    showIf: (a) => ['excel', 'kakao', 'paper', 'scattered'].includes(one(a, 'workflow') ?? ''),
+    options: [
+      { value: 'most', label: '대부분 가능해요' },
+      { value: 'some', label: '일부만 가능해요' },
+      { value: 'hard', label: '거의 어려워요' },
+      { value: 'ask', label: '직원에게 물어봐야 해요' },
+    ],
+  },
+  {
+    id: 'aiUsage',
+    stage: 3,
+    type: 'single',
+    title: '최근 1년 안에 AI나 자동화 도구를 업무에 써보셨나요?',
+    showIf: (a) => ['excel', 'kakao', 'paper', 'scattered'].includes(one(a, 'workflow') ?? '') || many(a, 'concerns').includes('manualWork'),
+    options: [
+      { value: 'using', label: '실제 업무에 쓰고 있어요' },
+      { value: 'partial', label: '일부 직원만 써요' },
+      { value: 'tested', label: '테스트만 해봤어요' },
+      { value: 'none', label: '쓰지 않아요' },
+      { value: 'unknown', label: '무엇을 써야 할지 모르겠어요' },
     ],
   },
   {

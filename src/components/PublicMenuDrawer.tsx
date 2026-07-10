@@ -1,8 +1,9 @@
 // 공개 페이지 공용 햄버거 메뉴 — 대표자용/컨설턴트용 variant 분리.
 // 공통 shell(overlay·ESC·focus·body scroll lock·safe-area)만 재사용하고, 메뉴·CTA는 variant 로 나눕니다.
 // drawer 레이아웃: 100dvh, 상단 헤더 고정 / 중간 메뉴 스크롤 / 하단 CTA 고정.
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { loadHistory } from '../lib/businessDiagnosisStorage'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
@@ -107,14 +108,31 @@ export default function PublicMenuDrawer({
   buttonClassName?: string
 }) {
   const [open, setOpen] = useState(false)
+  const [historyCount, setHistoryCount] = useState(0)
   const location = useLocation()
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const config = MENUS[variant]
+
+  // 대표자 메뉴에 '내 진단 결과 N건' 동적 항목 추가 (저장된 결과가 있을 때만)
+  const config = useMemo<MenuConfig>(() => {
+    if (variant !== 'business' || historyCount <= 0) return MENUS[variant]
+    const base = MENUS.business
+    const resultsItem: MenuItem = {
+      label: `내 진단 결과 ${historyCount}건`,
+      desc: '저장된 진단 결과를 다시 볼 수 있어요.',
+      to: '/business-diagnosis/results',
+      match: (p) => p.startsWith('/business-diagnosis/results'),
+    }
+    return { ...base, groups: base.groups.map((g, i) => (i === 0 ? { ...g, items: [...g.items, resultsItem] } : g)) }
+  }, [variant, historyCount])
 
   useEffect(() => {
     setOpen(false)
   }, [location.pathname, location.search, location.hash])
+
+  useEffect(() => {
+    if (open && variant === 'business') setHistoryCount(loadHistory().length)
+  }, [open, variant])
 
   useEffect(() => {
     if (!open) return

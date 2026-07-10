@@ -34,8 +34,22 @@ export type InlineFeedback = {
   text: string
 }
 
-/** 근거 유형 — 1차에서는 전부 qualitative (검증된 수치 아님) */
-export type ClaimType = 'qualitative' | 'verified'
+/** 근거 유형 — qualitative(정성) / conditional_verified(조건부 검증 수치) / verified(검증) */
+export type ClaimType = 'qualitative' | 'conditional_verified' | 'verified'
+
+/** 공식 출처 (수치형 혜택은 반드시 출처+확인일 함께) */
+export type BenefitSource = { name: string; url?: string; verifiedAt?: string }
+
+/** 조건부/검증 혜택 (수치·세제 등) */
+export type VerifiedBenefit = {
+  text: string
+  claimType: ClaimType
+  /** 화면 배지 (예: '조건 충족 시 50% 감면 검토') */
+  badge?: string
+  /** 적용 조건 (반드시 함께 노출) */
+  conditions?: string[]
+  source?: BenefitSource
+}
 
 export type BenefitCard = {
   id: string
@@ -63,6 +77,19 @@ export type BenefitCard = {
   sourceLabel?: string
   verifiedMetric?: string
   lastVerifiedAt?: string
+  // ── 확장(선택) — 없으면 기존 표시 유지 ──
+  /** 현재 상태에서 아쉬운 점 (한 문장) */
+  currentRisk?: string
+  /** 쉬운 설명 (중학생도 이해) */
+  simpleDescription?: string
+  /** '혜택 더 보기'로 펼치는 추가 정성 혜택 */
+  moreBenefits?: string[]
+  /** 조건부·검증 혜택 (수치·세제) */
+  verifiedBenefits?: VerifiedBenefit[]
+  /** 연결 상품 slug (부족 시) */
+  relatedProductSlugs?: string[]
+  /** 하단 주의문구 */
+  disclaimer?: string
 }
 
 /** 6개 준비도 영역 */
@@ -70,22 +97,41 @@ export type ScoreArea = 'funding' | 'employment' | 'govSupport' | 'certification
 
 export type AreaPriority = '지금 필요' | '있으면 유리' | '현재 우선순위 낮음' | '먼저 해결할 선결과제'
 
+/** 색상 심각도 톤 */
+export type SeverityTone = 'green' | 'blue' | 'amber' | 'orange' | 'red'
+
 export type AreaResult = {
   area: ScoreArea
   label: string
   /** 0~100 — 실제 승인확률이 아닌 내부 준비도 점수 */
   score: number
-  status: '먼저 준비 필요' | '보완하면 활용 가능' | '활용 검토 가능'
+  status: '먼저 준비 필요' | '기본 준비 부족' | '보완하면 활용 가능' | '활용 준비 양호' | '자료·증빙까지 우수'
   priority: AreaPriority
   note: string
   /** 펼쳤을 때 보여줄 근거 목록 */
   reasons: string[]
+  // ── 확장(문제·행동 중심) ──
+  /** 현재 상태 한 문장 */
+  statusSentence: string
+  /** 그대로 두면 놓칠 수 있는 부분 */
+  missText: string
+  /** 지금 할 수 있는 가장 작은 행동 */
+  smallAction: string
+  /** 연결 상품 slug */
+  linkedProductSlug?: string
+  /** 색상 톤 */
+  tone: SeverityTone
 }
+
+/** 진단 확신도 (잘 모르겠음 응답 기반) */
+export type DiagnosisConfidence = { level: '높음' | '보통' | '낮음'; unknownCount: number; note: string }
 
 export type ProductRecommendation = {
   slug: string
   rank: '1순위' | '2순위' | '장기 검토'
   reason: string
+  /** 이 서비스로 해결되는 문제 (결과 보고서 표시용) */
+  problems?: string[]
 }
 
 export type DiagnosisResultData = {
@@ -102,6 +148,35 @@ export type DiagnosisResultData = {
   /** 게이트 전 티저용 — 최우선 과제 1개 / 종합 준비도(내부 지표) */
   topTask: string
   overallScore: number
+  /** 진단 확신도 */
+  confidence: DiagnosisConfidence
+  /** 지금 먼저 확인할 3가지 (문제·행동 중심) */
+  topPriorities: TopPriority[]
+  /** 지금 놓치고 있을 수 있는 혜택 (≤4) */
+  missedBenefits: MissedBenefit[]
+  /** 기간별 실행 로드맵 */
+  roadmap: { now30: string[]; m1to3: string[]; m3to12: string[] }
+  /** 한줄 종합 진단 */
+  headline: string
+}
+
+export type TopPriority = {
+  rank: number
+  problem: string
+  why: string
+  ifIgnored: string
+  action: string
+  linkedProductSlug?: string
+  tone: SeverityTone
+}
+
+export type MissedBenefit = {
+  title: string
+  status: '조건 확인 필요' | '현재 검토 가능' | '자료 확인 필요' | '현재는 대상 가능성 낮음'
+  note: string
+  /** 수치형이면 조건·출처 */
+  verified?: VerifiedBenefit
+  linkedProductSlug?: string
 }
 
 /** 정책자금 평가·우대 참고요소 (⚠️ 확정 가점·승인확률 아님) */
@@ -197,6 +272,38 @@ export type StageReportData = {
   nextHint?: string
   /** 종합 준비도 (내부 지표) */
   overallScore: number
+  // ── 3단계 종합 보고서 확장 ──
+  topPriorities?: TopPriority[]
+  missedBenefits?: MissedBenefit[]
+  roadmap?: { now30: string[]; m1to3: string[]; m3to12: string[] }
+  confidence?: DiagnosisConfidence
+}
+
+/** 실시간 진단 현황 (질문 답변마다 갱신) */
+export type LiveStatus = {
+  strengthCount: number
+  gapCount: number
+  interestCount: number
+  headline: string
+  /** 최근 변화 (강조용) */
+  lastChange?: { kind: 'strength' | 'gap' | 'interest' | 'info'; text: string }
+}
+
+/** 저장된 완료 결과 기록 (localStorage history) */
+export type SavedResult = {
+  resultId: string
+  sessionId: string
+  createdAt: string
+  updatedAt: string
+  completedStage: DiagnosisStage
+  diagnosisDepth: DiagnosisDepth
+  answers: DiagnosisAnswers
+  interests: string[]
+  foundAdvantages: string[]
+  resultVersion: number
+  /** 재계산 가능하도록 답변만 보관하고, 표시 스냅샷도 저장 */
+  snapshot: StageReportData
+  leadId?: string
 }
 
 /** localStorage 저장 구조 (v3: 점진형 단계) */

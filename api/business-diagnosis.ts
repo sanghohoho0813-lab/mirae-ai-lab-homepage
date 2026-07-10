@@ -30,7 +30,8 @@ const BIZ_TYPES = ['individual', 'corp', 'pre']
 const CONTACT_METHODS = ['전화', '카카오톡', '문자', '대면상담', '아직 상담은 원하지 않음']
 const EVENT_TYPES = [
   'diagnosis_started', 'stage_completed', 'question_answered', 'benefit_revealed', 'benefit_interest_clicked',
-  'benefit_added_to_recommendations', 'benefit_skipped',
+  'benefit_added_to_recommendations', 'benefit_skipped', 'benefit_removed_from_recommendations', 'benefit_more_opened',
+  'live_status_updated', 'saved_result_opened', 'saved_result_deleted', 'product_recommended', 'product_detail_clicked', 'report_printed',
   'product_clicked', 'lead_form_viewed', 'lead_submitted', 'result_unlocked', 'consultation_clicked', 'diagnosis_restarted',
 ]
 const DEPTHS = ['basic', 'funding', 'comprehensive']

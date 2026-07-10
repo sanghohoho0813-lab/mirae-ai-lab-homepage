@@ -107,3 +107,30 @@
     stroke-dashoffset: 0 !important;
   }
 }
+
+/* ── 진단 결과 인쇄 / PDF 저장 ── */
+@media print {
+  /* 상단 헤더·진행바·드로어 등 화면 전용 요소 숨김 */
+  header,
+  nav,
+  [data-diagnosis-progress],
+  [data-live-status] {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  [data-print-region] {
+    max-width: 100% !important;
+    padding-top: 0 !important;
+  }
+  /* 카드가 페이지 경계에서 잘리지 않도록 */
+  section,
+  article {
+    break-inside: avoid;
+  }
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+}

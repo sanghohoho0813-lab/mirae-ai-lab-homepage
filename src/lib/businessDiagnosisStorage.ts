@@ -1,9 +1,12 @@
-// 퀘스트형 기업 성장진단 — localStorage 임시 저장 (1차: DB 미사용).
-// diagnosisVersion 이 다르면 안전하게 초기화합니다.
-import type { DiagnosisSession } from '../types/businessDiagnosis'
+// 퀘스트형 기업 성장진단 — localStorage 저장.
+// 진행 세션(miraeBusinessDiagnosis) + 완료 결과 기록(miraeBusinessDiagnosisHistory) 분리.
+// v3→v4 는 답변을 유지한 채 버전만 승격합니다(구조 호환). 그 외 불일치만 안전 초기화.
+import type { DiagnosisSession, SavedResult, StageReportData } from '../types/businessDiagnosis'
 import { DIAGNOSIS_VERSION } from '../data/businessDiagnosisQuestions'
 
 const KEY = 'miraeBusinessDiagnosis'
+const HISTORY_KEY = 'miraeBusinessDiagnosisHistory'
+const MAX_HISTORY = 5
 
 export function loadSession(): DiagnosisSession | null {
   try {
@@ -11,8 +14,13 @@ export function loadSession(): DiagnosisSession | null {
     if (!raw) return null
     const parsed = JSON.parse(raw) as DiagnosisSession
     if (parsed.diagnosisVersion !== DIAGNOSIS_VERSION) {
-      localStorage.removeItem(KEY)
-      return null
+      // v3 → v4: 질문·세션 구조가 호환되므로 답변을 유지한 채 버전만 승격
+      if (parsed.diagnosisVersion === 3 && parsed.answers && typeof parsed.answers === 'object') {
+        parsed.diagnosisVersion = DIAGNOSIS_VERSION
+      } else {
+        localStorage.removeItem(KEY)
+        return null
+      }
     }
     if (!parsed.answers || typeof parsed.answers !== 'object') return null
     if (!Array.isArray(parsed.interests)) parsed.interests = []
@@ -41,6 +49,70 @@ export function saveSession(session: DiagnosisSession) {
 export function clearSession() {
   try {
     localStorage.removeItem(KEY)
+  } catch {
+    /* noop */
+  }
+}
+
+// ── 완료 결과 기록 (최근 5개, 진단을 다시 시작해도 지워지지 않음) ──
+// 사용자가 직접 삭제할 때만 사라집니다.
+export function loadHistory(): SavedResult[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY)
+    if (!raw) return []
+    const arr = JSON.parse(raw)
+    if (!Array.isArray(arr)) return []
+    return (arr as SavedResult[]).filter((r) => r && r.resultId && r.snapshot)
+  } catch {
+    return []
+  }
+}
+
+export function saveResultToHistory(input: {
+  sessionId: string
+  completedStage: SavedResult['completedStage']
+  diagnosisDepth: SavedResult['diagnosisDepth']
+  answers: SavedResult['answers']
+  interests: string[]
+  foundAdvantages: string[]
+  snapshot: StageReportData
+  leadId?: string
+}): SavedResult {
+  const now = new Date().toISOString()
+  const list = loadHistory()
+  const prev = list.find((r) => r.sessionId === input.sessionId)
+  const result: SavedResult = {
+    resultId: prev?.resultId ?? `res_${input.sessionId}`,
+    sessionId: input.sessionId,
+    createdAt: prev?.createdAt ?? now,
+    updatedAt: now,
+    completedStage: input.completedStage,
+    diagnosisDepth: input.diagnosisDepth,
+    answers: input.answers,
+    interests: input.interests,
+    foundAdvantages: input.foundAdvantages,
+    resultVersion: DIAGNOSIS_VERSION,
+    snapshot: input.snapshot,
+    leadId: input.leadId ?? prev?.leadId,
+  }
+  try {
+    const rest = list.filter((r) => r.sessionId !== input.sessionId)
+    const next = [result, ...rest].slice(0, MAX_HISTORY)
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
+  } catch {
+    /* 저장 실패해도 진단 진행은 막지 않음 */
+  }
+  return result
+}
+
+export function getResultById(resultId: string): SavedResult | null {
+  return loadHistory().find((r) => r.resultId === resultId) ?? null
+}
+
+export function deleteResult(resultId: string) {
+  try {
+    const next = loadHistory().filter((r) => r.resultId !== resultId)
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
   } catch {
     /* noop */
   }

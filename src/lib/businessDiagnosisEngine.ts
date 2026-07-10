@@ -13,6 +13,7 @@ import type {
 } from '../types/businessDiagnosis'
 import { hasArrears, isFounderToBe, isIndividual, isCorp } from '../data/businessDiagnosisQuestions'
 import { computeAdvantageItems } from '../data/policyAdvantageFactors'
+import { ruleFor } from '../data/businessDiagnosisProductRules'
 
 const one = (a: DiagnosisAnswers, id: string) => (typeof a[id] === 'string' ? (a[id] as string) : undefined)
 const many = (a: DiagnosisAnswers, id: string) => (Array.isArray(a[id]) ? (a[id] as string[]) : [])
@@ -116,8 +117,36 @@ function scoreArea(area: ScoreArea, answers: DiagnosisAnswers, interestBonus: nu
   return clamp(s)
 }
 
+// 보수적 5구간 상태 (section 10)
 const statusOf = (score: number): AreaResult['status'] =>
-  score < 40 ? '먼저 준비 필요' : score < 70 ? '보완하면 활용 가능' : '활용 검토 가능'
+  score < 35 ? '먼저 준비 필요' : score < 55 ? '기본 준비 부족' : score < 70 ? '보완하면 활용 가능' : score < 85 ? '활용 준비 양호' : '자료·증빙까지 우수'
+
+// 색상 톤 (초록=양호 / 파랑=중립 / 앰버=보완 / 주황=우선확인)
+function toneOf(score: number, priority: AreaResult['priority']): AreaResult['tone'] {
+  if (priority === '먼저 해결할 선결과제') return 'orange'
+  if (score < 35) return 'orange'
+  if (score < 55) return 'amber'
+  if (score < 70) return 'blue'
+  return 'green'
+}
+
+// 각 영역의 '자료 확인 필요'(불확실) 답변 존재 여부 → 85점 이상 남발 방지
+const AREA_UNSURE_QS: Record<ScoreArea, string[]> = {
+  funding: ['taxArrears', 'operatingProfit', 'financials'],
+  employment: ['hiring'],
+  govSupport: ['bizPlan', 'govExperience', 'companyIntro'],
+  certification: ['venture', 'researchLab', 'ipRights', 'innobiz', 'rndRatio', 'newProduct'],
+  credibility: ['iso', 'mainbiz', 'venture'],
+  digital: ['website', 'workflow'],
+}
+const UNSURE_VALUES = ['unsure', 'unknown', 'notClosed', 'notManaged', 'expired']
+function areaHasUnsure(area: ScoreArea, a: DiagnosisAnswers): boolean {
+  return AREA_UNSURE_QS[area].some((q) => {
+    const v = a[q]
+    if (Array.isArray(v)) return v.some((x) => UNSURE_VALUES.includes(x))
+    return typeof v === 'string' && UNSURE_VALUES.includes(v)
+  })
+}
 
 /** 혜택 카드 관심 클릭 → 해당 영역 소폭 가산 (진단 내부 지표) */
 const INTEREST_AREA: Record<string, ScoreArea> = {
@@ -150,9 +179,95 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
   const interestBonus = (area: ScoreArea) =>
     interests.filter((k) => INTEREST_AREA[k] === area).length * 3
 
+  const wantsBig = plans.some((p) => ['bigCorp', 'bidding', 'export'].includes(p))
+  const weakSite = ['none', 'snsOnly', 'old'].includes(website ?? '')
+  const weakOps = ['excel', 'kakao', 'paper', 'scattered'].includes(workflow ?? '')
+
+  // 영역별 문제·행동·연결상품 (문제 중심 카드)
+  function enrich(area: ScoreArea): { statusSentence: string; missText: string; smallAction: string; linkedProductSlug?: string } {
+    if (area === 'funding') {
+      return {
+        statusSentence: arrears
+          ? '자금보다 먼저 체납 정리를 확인해야 해요.'
+          : (byAreaScore.funding ?? 0) < 55
+            ? '돈이 필요한 이유는 있지만, 심사자에게 보여줄 자료가 아직 부족해요.'
+            : '자금을 검토할 기본 자료가 어느 정도 준비되어 있어요.',
+        missText: '인증이 없어도 신청할 수는 있지만, 매출·재무·업종 경쟁력만으로 설명해야 하는 비중이 커질 수 있어요.',
+        smallAction: arrears
+          ? '체납·분납 상태와 신청 가능 시점을 먼저 확인하세요.'
+          : bizPlan !== 'recent'
+            ? '사업계획과 자금 사용목적부터 정리하세요.'
+            : '정책자금 가능성 진단을 받아보세요.',
+        linkedProductSlug: 'funding-consulting',
+      }
+    }
+    if (area === 'employment') {
+      const active = hiring && hiring !== 'na'
+      return {
+        statusSentence: active ? '채용·고용 상황이 있어 지원금을 확인해볼 수 있어요.' : '지금은 채용 이슈가 없어 해당 사항이 적어요.',
+        missText: '지원대상이었더라도 신청시기를 지나면 활용하기 어려운 제도가 있을 수 있어요.',
+        smallAction: active ? '채용 시기와 대상 요건을 확인해보세요.' : '채용 계획이 생기면 그때 다시 확인하세요.',
+        linkedProductSlug: active ? 'employment-subsidy' : undefined,
+      }
+    }
+    if (area === 'govSupport') {
+      return {
+        statusSentence:
+          (byAreaScore.govSupport ?? 0) < 55 ? '좋은 사업이라도 설명자료가 부족하면 심사자가 장점을 알아보기 어려워요.' : '지원사업에 대응할 기본 자료가 준비되어 있어요.',
+        missText: '준비 없이 급하게 신청하면 회사의 강점을 제대로 보여주기 어려울 수 있어요.',
+        smallAction: bizPlan !== 'recent' ? '회사를 설명할 사업계획서부터 정리하세요.' : '관심 지원사업 공고를 미리 확인하세요.',
+        linkedProductSlug: 'funding-consulting',
+      }
+    }
+    if (area === 'certification') {
+      const weakCert = ['none', 'expired', 'unsure'].includes(venture ?? '') && ['none', 'unsure'].includes(lab ?? '')
+      return {
+        statusSentence: weakCert ? '공식적으로 보여줄 기술·연구개발 증빙이 부족해요.' : '기술·인증 기반이 어느 정도 갖춰져 있어요.',
+        missText: '인증이 없어도 정책자금을 신청할 수는 있지만, 같은 조건의 기업과 비교할 때 기술성이나 성장성을 증명할 공식 자료가 적을 수 있어요.',
+        smallAction:
+          corp && (years === 'lt1' || years === 'y1to3') && ['none', 'expired', 'unsure'].includes(venture ?? '')
+            ? '창업 3년 미만 법인이라면 벤처기업확인 가능성부터 먼저 살펴보세요.'
+            : ['none', 'unsure'].includes(lab ?? '')
+              ? '연구개발 활동이 있으면 연구조직부터 검토하세요.'
+              : '보유한 인증의 유효기간을 점검하세요.',
+        linkedProductSlug:
+          founder || individual
+            ? undefined
+            : corp && (years === 'lt1' || years === 'y1to3') && ['none', 'expired', 'unsure'].includes(venture ?? '')
+              ? 'venture-innovation'
+              : ['none', 'unsure'].includes(lab ?? '') && (industryIsTech || plans.includes('newProduct'))
+                ? 'rnd-center'
+                : ['y3to7', 'y7plus'].includes(years ?? '')
+                  ? 'innobiz-certification'
+                  : 'venture-innovation',
+      }
+    }
+    if (area === 'credibility') {
+      return {
+        statusSentence: wantsBig && !hasIso ? '입찰·거래처 요구에 대응할 인증이 부족할 수 있어요.' : '대외신인도 자료가 어느 정도 준비되어 있어요.',
+        missText: '입찰이나 대기업 거래를 시작한 뒤 인증을 준비하면 일정이 촉박할 수 있어요.',
+        smallAction: wantsBig && !hasIso ? '계획에 맞는 ISO 규격부터 확인하세요.' : '거래처 요구조건을 미리 확인하세요.',
+        linkedProductSlug: wantsBig && !hasIso ? 'iso-certification' : ['y3to7', 'y7plus'].includes(years ?? '') && one(answers, 'mainbiz') !== 'have' ? 'mainbiz-certification' : undefined,
+      }
+    }
+    // digital
+    return {
+      statusSentence: weakSite && weakOps ? '온라인 첫인상과 내부 운영 모두 정비가 필요해요.' : weakSite ? '회사를 검색했을 때 보여줄 대표 화면이 부족해요.' : weakOps ? '업무자료가 여러 곳에 흩어져 있을 가능성이 높아요.' : '홈페이지와 업무 운영이 잘 갖춰져 있어요.',
+      missText: '직원이 늘어난 뒤 업무시스템을 정리하면 이미 흩어진 자료를 다시 모으는 데 더 많은 시간이 들 수 있어요.',
+      smallAction: weakSite ? '회사를 보여줄 홈페이지부터 정비하세요.' : weakOps ? '반복업무 1가지부터 자동화를 검토하세요.' : '현재 상태를 유지하며 데이터 활용을 넓혀보세요.',
+      linkedProductSlug: weakSite ? 'responsive-homepage' : weakOps ? 'ai-ax-system' : undefined,
+    }
+  }
+
+  const industryIsTech = ['manufacture', 'it'].includes(one(answers, 'industry') ?? '')
+  // 1차 점수 (enrich 의 statusSentence 문턱 판단용)
+  const byAreaScore = Object.fromEntries((Object.keys(AREA_LABELS) as ScoreArea[]).map((k) => [k, scoreArea(k, answers, interestBonus(k))])) as Record<ScoreArea, number>
+
   // ── 6개 영역 점수 ──
   const areas: AreaResult[] = (Object.keys(AREA_LABELS) as ScoreArea[]).map((area) => {
-    const score = scoreArea(area, answers, interestBonus(area))
+    let score = byAreaScore[area]
+    // 보수적 상한 — 불확실 답변이 있으면 85점 이상 남발하지 않음
+    if (score >= 85 && areaHasUnsure(area, answers)) score = 84
     const status = statusOf(score)
 
     // 우선순위 + 한 줄 설명 + 근거
@@ -270,7 +385,21 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
     }
 
     if (reasons.length === 0) reasons.push('답변 내용을 종합해 산출한 내부 준비도 지표입니다.')
-    return { area, label: AREA_LABELS[area], score, status, priority, note, reasons }
+    const e = enrich(area)
+    return {
+      area,
+      label: AREA_LABELS[area],
+      score,
+      status,
+      priority,
+      note,
+      reasons,
+      statusSentence: e.statusSentence,
+      missText: e.missText,
+      smallAction: e.smallAction,
+      linkedProductSlug: e.linkedProductSlug,
+      tone: toneOf(score, priority),
+    }
   })
 
   const byArea = Object.fromEntries(areas.map((a) => [a.area, a])) as Record<ScoreArea, AreaResult>
@@ -331,7 +460,117 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
     (applicable.length ? applicable : areas).reduce((sum, x) => sum + x.score, 0) / (applicable.length ? applicable.length : areas.length),
   )
 
-  return { summary, areas, strengths, improvements, prerequisites, actionPlan, recommendations, advantages, ownedAdvantageCount, topTask, overallScore }
+  // ── 진단 확신도 (잘 모르겠음 응답 수) ──
+  let unknownCount = 0
+  for (const [, v] of Object.entries(answers)) {
+    if (Array.isArray(v)) {
+      if (v.some((x) => UNSURE_VALUES.includes(x))) unknownCount++
+    } else if (typeof v === 'string' && UNSURE_VALUES.includes(v)) unknownCount++
+  }
+  const confidence = {
+    level: unknownCount >= 5 ? ('낮음' as const) : unknownCount >= 3 ? ('보통' as const) : ('높음' as const),
+    unknownCount,
+    note: unknownCount > 0 ? `확인이 필요한 답변이 ${unknownCount}개 있어요.` : '답변이 명확해 결과 신뢰도가 높아요.',
+  }
+
+  // ── 지금 먼저 확인할 3가지 (문제·행동 중심) ──
+  const prio = [...areas].filter((a) => a.priority !== '현재 우선순위 낮음').sort((x, y) => x.score - y.score)
+  const topPriorities = [
+    ...(arrears
+      ? [{ rank: 1, problem: '세금 체납 정리', why: '대부분의 정책자금은 체납 정리가 먼저 확인돼요.', ifIgnored: '정리 전에는 신청 자체가 어려울 수 있어요.', action: '체납·분납 상태와 신청 가능 시점을 확인하세요.', linkedProductSlug: 'funding-consulting', tone: 'red' as const }]
+      : []),
+    ...prio.slice(0, arrears ? 2 : 3).map((a, i) => ({
+      rank: (arrears ? 2 : 1) + i,
+      problem: a.smallAction,
+      why: a.statusSentence,
+      ifIgnored: a.missText,
+      action: a.smallAction,
+      linkedProductSlug: a.linkedProductSlug,
+      tone: (i === 0 && !arrears ? 'orange' : 'amber') as 'orange' | 'amber',
+    })),
+  ].slice(0, 3)
+
+  // ── 지금 놓치고 있을 수 있는 혜택 (판매 상품 연계, ≤4) ──
+  const missedBenefits = buildMissedBenefits(answers, { founder, individual, corp, arrears, wantsBig, hasIso, weakSite, weakOps })
+
+  // ── 기간별 로드맵 ──
+  const roadmap = {
+    now30: [
+      ...(arrears ? ['체납·분납 상태 확인 및 정리 계획'] : []),
+      ...(bizPlan !== 'recent' ? ['사업계획과 자금 사용목적 정리'] : []),
+      ...(fundingWhen && fundingWhen !== 'none' && !arrears ? ['정책자금 가능성 진단·상담'] : []),
+    ],
+    m1to3: [
+      ...(weakSite ? ['홈페이지 또는 대표 화면 정비'] : []),
+      ...(!founder && ['none', 'expired', 'unsure'].includes(venture ?? '') && (years === 'lt1' || years === 'y1to3') ? ['벤처기업확인 가능성 검토'] : []),
+      ...(weakOps ? ['반복업무 1가지 자동화 검토'] : []),
+    ],
+    m3to12: [
+      ...(!founder && !individual && ['y3to7', 'y7plus'].includes(years ?? '') ? ['이노비즈·메인비즈 등 인증 고도화 검토'] : []),
+      ...(wantsBig && !hasIso ? ['ISO 등 거래·입찰 인증 준비'] : []),
+      '보유 인증 사후관리 및 추가 자금조달 계획',
+    ],
+  }
+  if (roadmap.now30.length === 0) roadmap.now30.push('현재 상태 점검 및 상담으로 우선순위 확정')
+
+  const headline = summary
+
+  return {
+    summary,
+    headline,
+    areas,
+    strengths,
+    improvements,
+    prerequisites,
+    actionPlan,
+    recommendations,
+    advantages,
+    ownedAdvantageCount,
+    topTask,
+    overallScore,
+    confidence,
+    topPriorities,
+    missedBenefits,
+    roadmap,
+  }
+}
+
+// 놓치고 있을 수 있는 혜택 (판매 상품 관련 부족항목 중심)
+function buildMissedBenefits(
+  a: DiagnosisAnswers,
+  ctx: { founder: boolean; individual: boolean; corp: boolean; arrears: boolean; wantsBig: boolean; hasIso: boolean; weakSite: boolean; weakOps: boolean },
+): DiagnosisResultData['missedBenefits'] {
+  const out: DiagnosisResultData['missedBenefits'] = []
+  const v = one(a, 'venture')
+  const lab = one(a, 'researchLab')
+  const years = one(a, 'years')
+  if (!ctx.founder && ['none', 'expired', 'unsure'].includes(v ?? '')) {
+    const young = ctx.corp && ['lt1', 'y1to3'].includes(years ?? '')
+    out.push({
+      title: '창업벤처중소기업 세액감면 검토 가능성',
+      status: young ? '조건 확인 필요' : '현재는 대상 가능성 낮음',
+      note: young
+        ? '창업 후 3년 이내 벤처확인 등 요건을 충족하면 소득세·법인세 50% 감면을 검토할 수 있어요. 자동 적용은 아닙니다.'
+        : '창업 3년 이상이라 이 세제혜택보다 기술성·대외신인도 중심으로 검토하는 편이 맞아요.',
+      linkedProductSlug: 'venture-innovation',
+    })
+  }
+  if (!ctx.founder && ['none', 'unsure'].includes(lab ?? '') && (['manufacture', 'it'].includes(one(a, 'industry') ?? '') || many(a, 'futurePlans').includes('newProduct'))) {
+    out.push({ title: '연구개발비 세액공제 검토 기반', status: '자료 확인 필요', note: '연구조직과 적격 비용·증빙을 갖추면 R&D 세제지원을 검토할 수 있어요. 설립만으로 자동 감면되지 않아요.', linkedProductSlug: 'rnd-center' })
+  }
+  if (one(a, 'hiring') && one(a, 'hiring') !== 'na') {
+    out.push({ title: '고용지원금 활용 가능성', status: '조건 확인 필요', note: '채용 전후 시기와 근로자·회사 요건을 확인해야 활용 여부를 알 수 있어요.', linkedProductSlug: 'employment-subsidy' })
+  }
+  if (ctx.wantsBig && !ctx.hasIso) {
+    out.push({ title: 'ISO·이노비즈 등 거래·입찰 준비', status: '현재 검토 가능', note: '대기업 거래·입찰 계획에 맞춰 관리체계·기술 인증을 준비할 수 있어요.', linkedProductSlug: 'iso-certification' })
+  }
+  if (ctx.weakSite && out.length < 4) {
+    out.push({ title: '홈페이지 온라인 신뢰도', status: '현재 검토 가능', note: '회사를 검색했을 때 보여줄 대표 화면을 마련하면 첫인상이 달라져요.', linkedProductSlug: 'responsive-homepage' })
+  }
+  if (ctx.weakOps && out.length < 4) {
+    out.push({ title: 'AX로 반복업무 축소', status: '현재 검토 가능', note: '반복 입력·자료 분산을 줄이면 대표님과 직원의 시간을 아낄 수 있어요.', linkedProductSlug: 'ai-ax-system' })
+  }
+  return out.slice(0, 4)
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -457,7 +696,58 @@ export function computeStageResult(depth: DiagnosisStage, answers: DiagnosisAnsw
     actionPlan: full.actionPlan,
     recommendations: full.recommendations,
     overallScore: full.overallScore,
+    topPriorities: full.topPriorities,
+    missedBenefits: full.missedBenefits,
+    roadmap: full.roadmap,
+    confidence: full.confidence,
   }
+}
+
+// ── 실시간 진단 현황 (질문 답변마다 갱신) ──
+export function computeLiveStatus(answers: DiagnosisAnswers, interests: string[]): import('../types/businessDiagnosis').LiveStatus {
+  const has = (id: string, vals: string[]) => vals.includes(one(answers, id) ?? '')
+  const isMulti = (id: string, v: string) => many(answers, id).includes(v)
+  let strengthCount = 0
+  let gapCount = 0
+
+  // 강점
+  if (has('operatingProfit', ['profit'])) strengthCount++
+  if (has('taxArrears', ['no'])) strengthCount++
+  if (has('venture', ['have'])) strengthCount++
+  if (has('researchLab', ['lab', 'dept'])) strengthCount++
+  if (has('mainbiz', ['have'])) strengthCount++
+  if (has('innobiz', ['have'])) strengthCount++
+  if (has('ipRights', ['patent', 'utility'])) strengthCount++
+  if (has('website', ['good'])) strengthCount++
+  if (has('workflow', ['system'])) strengthCount++
+  if (has('bizPlan', ['recent'])) strengthCount++
+  if (has('govExperience', ['won'])) strengthCount++
+  if (many(answers, 'iso').some((v) => ['iso9001', 'iso14001', 'iso45001', 'isoEtc'].includes(v))) strengthCount++
+
+  // 확인할 부분
+  if (has('taxArrears', ['yes', 'paying'])) gapCount++
+  if (has('operatingProfit', ['loss'])) gapCount++
+  if (has('venture', ['none', 'expired'])) gapCount++
+  if (has('researchLab', ['none'])) gapCount++
+  if (has('bizPlan', ['none', 'simple'])) gapCount++
+  if (has('companyIntro', ['none'])) gapCount++
+  if (has('website', ['none', 'snsOnly', 'old'])) gapCount++
+  if (has('workflow', ['excel', 'kakao', 'paper', 'scattered'])) gapCount++
+  if (isMulti('iso', 'none') && many(answers, 'futurePlans').some((p) => ['bigCorp', 'bidding', 'export'].includes(p))) gapCount++
+
+  const arrears = has('taxArrears', ['yes'])
+  const weakSite = has('website', ['none', 'snsOnly', 'old'])
+  const headline = arrears
+    ? '자금보다 먼저 체납 정리를 확인하는 것이 좋아요.'
+    : has('bizPlan', ['none', 'simple'])
+      ? '회사를 설명할 사업계획서와 자료를 먼저 챙기면 좋아요.'
+      : weakSite
+        ? '온라인에서 회사를 보여줄 화면부터 정비하면 좋아요.'
+        : strengthCount > gapCount
+          ? '기반이 잘 갖춰지고 있어요. 남은 부분만 보완하면 돼요.'
+          : '지금 부족한 부분부터 하나씩 확인해보세요.'
+
+  return { strengthCount, gapCount, interestCount: interests.length, headline }
 }
 
 type RecContext = {
@@ -599,6 +889,21 @@ function recommend(answers: DiagnosisAnswers, ctx: RecContext): ProductRecommend
     })
   }
 
+  // 이미 잘 갖춘 회사 — 신규 취득 대신 갱신·사후관리·고도화·통합 로드맵 연결 (최소 1개 후속 행동)
+  if (cand.length === 0) {
+    if (venture === 'expired' || one(answers, 'innobiz') === 'expired' || one(answers, 'mainbiz') === 'expired') {
+      cand.push({ slug: 'growth-roadmap-package', w: 40, reason: '보유하셨던 인증 중 만료된 항목이 있어, 갱신과 사후관리를 함께 점검하는 편이 좋습니다.' })
+    } else if (['lab', 'dept'].includes(lab ?? '') && fundingWhen && fundingWhen !== 'none') {
+      cand.push({ slug: 'funding-consulting', w: 45, reason: '연구조직과 기본 기반을 갖추셨으니, 이를 근거로 정책자금 활용을 검토해볼 수 있습니다.' })
+    } else if (website === 'good' && ['excel', 'kakao', 'paper', 'scattered'].includes(workflow ?? '')) {
+      cand.push({ slug: 'ai-ax-system', w: 45, reason: '온라인 기반은 갖추셨으니, 다음은 내부 업무 자동화로 운영을 고도화할 수 있습니다.' })
+    } else if (venture === 'have' || ['lab', 'dept'].includes(lab ?? '') || hasIso) {
+      cand.push({ slug: 'growth-roadmap-package', w: 42, reason: '주요 인증·기반을 갖추셨으니, 정책자금·추가 인증·AX 등 다음 성장단계를 로드맵으로 설계할 수 있습니다.' })
+    } else {
+      cand.push({ slug: 'funding-consulting', w: 35, reason: '큰 공백은 없지만, 지금 상태에서 활용할 수 있는 자금·지원제도를 상담으로 확인해두면 좋습니다.' })
+    }
+  }
+
   // 정렬 → 최대 3개 (같은 slug 중복 제거)
   const seen = new Set<string>()
   let picked = cand
@@ -616,5 +921,6 @@ function recommend(answers: DiagnosisAnswers, ctx: RecContext): ProductRecommend
     slug: c.slug,
     rank: ctx.arrears && c.slug === 'funding-consulting' ? '장기 검토' : ranks[i],
     reason: c.reason,
+    problems: ruleFor(c.slug)?.problems(answers),
   }))
 }

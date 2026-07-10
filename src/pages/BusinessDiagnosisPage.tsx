@@ -9,14 +9,15 @@ import DiagnosisQuestion from '../components/diagnosis/DiagnosisQuestion'
 import DiagnosisProgress from '../components/diagnosis/DiagnosisProgress'
 import InlineBenefitPanel from '../components/diagnosis/InlineBenefitPanel'
 import InlineAdvantagePanel from '../components/diagnosis/InlineAdvantagePanel'
+import LiveDiagnosisStatus from '../components/diagnosis/LiveDiagnosisStatus'
 import StageReport from '../components/diagnosis/StageReport'
 import LeadGate from '../components/diagnosis/LeadGate'
 import { getBenefitAfter } from '../data/businessDiagnosisBenefits'
 import { getInlineFeedback, STAGE_INFO, stageQuestions } from '../data/businessDiagnosisQuestions'
 import { factorById, ownedAdvantageIdsFor } from '../data/policyAdvantageFactors'
-import { computeStageResult } from '../lib/businessDiagnosisEngine'
+import { computeLiveStatus, computeStageResult } from '../lib/businessDiagnosisEngine'
 import { submitLead, syncSession, trackEvent } from '../lib/businessDiagnosisApi'
-import { captureUtmOnce, clearSession, loadSession, newSession, saveSession } from '../lib/businessDiagnosisStorage'
+import { captureUtmOnce, clearSession, loadSession, newSession, saveResultToHistory, saveSession } from '../lib/businessDiagnosisStorage'
 import type {
   BenefitCard,
   DiagnosisSession,
@@ -80,6 +81,8 @@ export default function BusinessDiagnosisPage() {
 
   const visibleQs = useMemo(() => stageQuestions(stage, session.answers), [stage, session.answers])
   const current = visibleQs[qIdx]
+  const liveStatus = useMemo(() => computeLiveStatus(session.answers, session.interests), [session.answers, session.interests])
+  const answeredCount = Object.keys(session.answers).length
   // 진행률: 완료 단계 + 현재 단계 진행 (전체 3단계 기준 대략치)
   const stageProgress = visibleQs.length ? qIdx / visibleQs.length : 0
   const percent = Math.min(100, ((stage - 1 + stageProgress) / 3) * 100)
@@ -209,6 +212,17 @@ export default function BusinessDiagnosisPage() {
     persist(nextSession)
     const rep = computeStageResult(st, nextSession.answers, nextSession.interests)
     setReport(rep)
+    // 완료 결과를 기록에 저장 (같은 세션은 최신 스냅샷으로 갱신, 최근 5개 유지)
+    saveResultToHistory({
+      sessionId: nextSession.sessionId,
+      completedStage: st,
+      diagnosisDepth: st === 1 ? 'basic' : st === 2 ? 'funding' : 'comprehensive',
+      answers: nextSession.answers,
+      interests: nextSession.interests,
+      foundAdvantages: nextSession.foundAdvantages,
+      snapshot: rep,
+      leadId: nextSession.leadId,
+    })
     setScreen('stageReport')
     window.scrollTo(0, 0)
     trackEvent(s.sessionId, 'stage_completed', String(st))
@@ -221,13 +235,33 @@ export default function BusinessDiagnosisPage() {
     setTimeout(() => (advancingRef.current = false), 60)
   }, [persist, setStageIdx])
 
-  // 인라인 패널 액션
+  // 인라인 패널 액션 — 담기는 화면 유지, 넘어가기는 별도 버튼
   function handleBenefitAdd() {
     const s = sRef.current
     if (pending?.kind === 'benefit') {
       const key = pending.card.interestKey
       trackEvent(s.sessionId, 'benefit_added_to_recommendations', pending.card.id)
-      if (!s.interests.includes(key)) persist({ ...s, interests: [...s.interests, key] })
+      const skipped = s.skippedBenefits.filter((id) => id !== pending!.card.id)
+      if (!s.interests.includes(key)) persist({ ...s, interests: [...s.interests, key], skippedBenefits: skipped })
+    }
+  }
+  function handleBenefitRemove() {
+    const s = sRef.current
+    if (pending?.kind === 'benefit') {
+      const key = pending.card.interestKey
+      trackEvent(s.sessionId, 'benefit_removed_from_recommendations', pending.card.id)
+      persist({ ...s, interests: s.interests.filter((k) => k !== key) })
+    }
+  }
+  function handleBenefitConfirm() {
+    const s = sRef.current
+    if (pending?.kind === 'benefit') {
+      const key = pending.card.interestKey
+      // 담지 않고 넘어가면 '건너뜀'으로 기록
+      if (!s.interests.includes(key) && !s.skippedBenefits.includes(pending.card.id)) {
+        trackEvent(s.sessionId, 'benefit_skipped', pending.card.id)
+        persist({ ...s, skippedBenefits: [...s.skippedBenefits, pending.card.id] })
+      }
     }
     advance()
   }
@@ -299,6 +333,17 @@ export default function BusinessDiagnosisPage() {
       })
       setConsultationConsented(form.consultationConsent)
       persist({ ...sRef.current, leadId, leadSubmittedAt: new Date().toISOString() })
+      // 결과 기록에 leadId 반영
+      saveResultToHistory({
+        sessionId: s.sessionId,
+        completedStage: depth,
+        diagnosisDepth: depth === 1 ? 'basic' : depth === 2 ? 'funding' : 'comprehensive',
+        answers: s.answers,
+        interests: s.interests,
+        foundAdvantages: s.foundAdvantages,
+        snapshot: report,
+        leadId,
+      })
       trackEvent(sRef.current.sessionId, 'result_unlocked', leadId)
       setScreen('stageReport')
       window.scrollTo(0, 0)
@@ -323,7 +368,15 @@ export default function BusinessDiagnosisPage() {
   const submitted = Boolean(session.leadId)
   const pendingPanel =
     pending?.kind === 'benefit' ? (
-      <InlineBenefitPanel card={pending.card} onAdd={handleBenefitAdd} onSkip={handleBenefitSkip} />
+      <InlineBenefitPanel
+        card={pending.card}
+        added={session.interests.includes(pending.card.interestKey)}
+        listCount={session.interests.length}
+        onAdd={handleBenefitAdd}
+        onRemove={handleBenefitRemove}
+        onConfirm={handleBenefitConfirm}
+        onSkip={handleBenefitSkip}
+      />
     ) : pending?.kind === 'advantage' ? (
       <InlineAdvantagePanel factor={pending.factor} totalFound={session.foundAdvantages.length} onContinue={advance} />
     ) : undefined
@@ -363,6 +416,7 @@ export default function BusinessDiagnosisPage() {
 
         {screen === 'question' && current && (
           <>
+            {answeredCount > 0 && <LiveDiagnosisStatus status={liveStatus} />}
             {qIdx === 0 && !pending && (
               <p className="animate-rise-in mx-auto mt-6 w-full max-w-[720px] px-5 text-sm font-bold text-blue-600">{STAGE_INFO[current.stage].copy}</p>
             )}
@@ -390,6 +444,7 @@ export default function BusinessDiagnosisPage() {
             onRestart={handleRestart}
             onProductClick={handleProductClick}
             onConsultClick={handleConsultClick}
+            onPrint={() => trackEvent(sRef.current.sessionId, 'report_printed', String(report.depth))}
           />
         )}
 

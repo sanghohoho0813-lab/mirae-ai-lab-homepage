@@ -111,12 +111,13 @@ alter table public.business_diagnosis_sessions
 
 create index if not exists idx_bds_completed_stage on public.business_diagnosis_sessions (completed_stage);
 
--- 이벤트 종류 확장(추천 담기/건너뛰기) — 기존 환경의 check 제약을 안전하게 갱신
+-- 이벤트 종류 확장(추천 담기/건너뛰기/실시간 현황/결과 기록/인쇄 등) — 기존 환경의 check 제약을 안전하게 갱신
 alter table public.business_diagnosis_events drop constraint if exists business_diagnosis_events_event_type_check;
 alter table public.business_diagnosis_events add constraint business_diagnosis_events_event_type_check
   check (event_type in
     ('diagnosis_started','stage_completed','question_answered','benefit_revealed','benefit_interest_clicked',
-     'benefit_added_to_recommendations','benefit_skipped',
+     'benefit_added_to_recommendations','benefit_skipped','benefit_removed_from_recommendations','benefit_more_opened',
+     'live_status_updated','saved_result_opened','saved_result_deleted','product_recommended','product_detail_clicked','report_printed',
      'product_clicked','lead_form_viewed','lead_submitted','result_unlocked','consultation_clicked','diagnosis_restarted'));
 
 -- ── updated_at 자동 갱신 ──
