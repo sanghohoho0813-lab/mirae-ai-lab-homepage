@@ -170,23 +170,59 @@ export type LeadFormData = {
   marketingConsent: boolean
 }
 
-/** localStorage 저장 구조 */
+/** 진단 깊이 (완료 단계) */
+export type DiagnosisDepth = 'basic' | 'funding' | 'comprehensive' // 1 / 2 / 3 단계
+
+/** 단계별 즉시 리포트 */
+export type StageReportData = {
+  depth: DiagnosisStage // 1 | 2 | 3
+  headline: string
+  summary: string
+  /** 단계 상단 지표 카드 (라벨/값/보조문구) */
+  metricCards: { label: string; value: string; sub?: string; tone?: 'blue' | 'emerald' | 'amber' | 'slate' }[]
+  strengths: string[]
+  improvements: string[]
+  prerequisites: string[]
+  /** 1단계 전용 — 가장 시급한 과제 1개 */
+  topTask?: string
+  /** 6개 영역 (2·3단계) */
+  areas?: AreaResult[]
+  /** 3단계 종합 전용 */
+  advantages?: AdvantageResultItem[]
+  ownedAdvantageCount?: number
+  actionPlan?: string[]
+  /** 단계별 추천 상품 (1·2단계 ≤2, 3단계 ≤3) */
+  recommendations: ProductRecommendation[]
+  /** 다음 단계 안내 문구 (3단계는 없음) */
+  nextHint?: string
+  /** 종합 준비도 (내부 지표) */
+  overallScore: number
+}
+
+/** localStorage 저장 구조 (v3: 점진형 단계) */
 export type DiagnosisSession = {
   diagnosisVersion: number
   sessionId: string
   startedAt: string
-  /** 현재 보고 있던 질문 id (이어하기용) */
   currentQuestionId: string | null
   answers: DiagnosisAnswers
-  /** 혜택 카드에서 '점검해볼게요'를 누른 관심 키 목록 */
+  /** '내 추천 목록에 담기'로 저장된 관심 키 */
   interests: string[]
-  /** 답변 중 발견된 보유 우대 참고요소 id (모션·카운트용) */
+  /** 답변 중 발견된 보유 우대 참고요소 id */
   foundAdvantages: string[]
+  /** 혜택 패널에서 '추천에 넣지 않고 다음'을 누른 키 */
+  skippedBenefits: string[]
+  /** 진단 진행 상태 */
+  currentStage: DiagnosisStage
+  completedStages: DiagnosisStage[]
+  stoppedAfterStage: DiagnosisStage | null
+  nextStageInterest: boolean
+  /** 각 단계 시작 시각(ms) — 소요시간 측정 */
+  stageStartedAt: Partial<Record<DiagnosisStage, number>>
+  stageDurations: Partial<Record<DiagnosisStage, number>>
   completed: boolean
   completedAt?: string
-  /** 유입경로 (최초 1회) */
   utm?: UtmInfo
-  /** 서버 저장 연결 정보 */
   serverSessionId?: string
   leadId?: string
   leadSubmittedAt?: string

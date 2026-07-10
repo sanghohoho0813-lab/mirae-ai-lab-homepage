@@ -17,6 +17,13 @@ export function loadSession(): DiagnosisSession | null {
     if (!parsed.answers || typeof parsed.answers !== 'object') return null
     if (!Array.isArray(parsed.interests)) parsed.interests = []
     if (!Array.isArray(parsed.foundAdvantages)) parsed.foundAdvantages = []
+    if (!Array.isArray(parsed.skippedBenefits)) parsed.skippedBenefits = []
+    if (!Array.isArray(parsed.completedStages)) parsed.completedStages = []
+    if (!parsed.currentStage) parsed.currentStage = 1
+    if (!parsed.stageStartedAt) parsed.stageStartedAt = {}
+    if (!parsed.stageDurations) parsed.stageDurations = {}
+    if (parsed.stoppedAfterStage === undefined) parsed.stoppedAfterStage = null
+    if (parsed.nextStageInterest === undefined) parsed.nextStageInterest = false
     return parsed
   } catch {
     return null
@@ -48,6 +55,13 @@ export function newSession(): DiagnosisSession {
     answers: {},
     interests: [],
     foundAdvantages: [],
+    skippedBenefits: [],
+    currentStage: 1,
+    completedStages: [],
+    stoppedAfterStage: null,
+    nextStageInterest: false,
+    stageStartedAt: {},
+    stageDurations: {},
     completed: false,
     utm: loadUtm() ?? undefined,
   }

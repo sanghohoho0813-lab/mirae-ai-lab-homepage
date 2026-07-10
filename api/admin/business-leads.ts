@@ -86,7 +86,7 @@ export default async function handler(req: any, res: any) {
       if (ids.length > 0) {
         const { data: ss } = await admin
           .from('business_diagnosis_sessions')
-          .select('id, lead_id, answers, scores, result_summary, advantage_factors, recommended_products, clicked_benefits, utm_source, utm_medium, utm_campaign, referrer, landing_path, started_at, completed_at, submitted_at')
+          .select('id, lead_id, answers, scores, result_summary, advantage_factors, recommended_products, clicked_benefits, skipped_benefits, completed_stage, diagnosis_depth, stopped_after_stage, next_stage_interest, stage1_duration_seconds, stage2_duration_seconds, stage3_duration_seconds, total_duration_seconds, utm_source, utm_medium, utm_campaign, referrer, landing_path, started_at, completed_at, submitted_at')
           .in('lead_id', ids)
         sessions = ss ?? []
       }

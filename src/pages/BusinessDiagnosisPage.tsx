@@ -1,267 +1,307 @@
-// 3분 기업 성장진단 — 퀘스트형 진단 페이지 (오케스트레이터).
-// 화면 상태: start → question ↔ (advantage|benefit) → stageComplete → result(티저→게이트→전체)
-// 데이터·점수·저장은 data/lib 파일에 분리. 서버 저장은 lib/businessDiagnosisApi (실패해도 진행 유지).
+// 3분 기업 성장진단 — 점진형(1단계만 해도 결과 → 원하면 2·3단계) 오케스트레이터.
+// 화면: start → question ↔ (인라인 혜택/우대요소) → stageReport → gate → stageReport(제출)
+// 빠른 전환(가짜 로딩 제거), 인라인 혜택 패널(질문 유지), 단계별 즉시 리포트.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
 import DiagnosisStart from '../components/diagnosis/DiagnosisStart'
 import DiagnosisQuestion from '../components/diagnosis/DiagnosisQuestion'
 import DiagnosisProgress from '../components/diagnosis/DiagnosisProgress'
-import AdvantageFound from '../components/diagnosis/AdvantageFound'
-import BenefitReveal from '../components/diagnosis/BenefitReveal'
-import StageComplete from '../components/diagnosis/StageComplete'
-import DiagnosisResult from '../components/diagnosis/DiagnosisResult'
+import InlineBenefitPanel from '../components/diagnosis/InlineBenefitPanel'
+import InlineAdvantagePanel from '../components/diagnosis/InlineAdvantagePanel'
+import StageReport from '../components/diagnosis/StageReport'
+import LeadGate from '../components/diagnosis/LeadGate'
 import { getBenefitAfter } from '../data/businessDiagnosisBenefits'
-import { getInlineFeedback, getVisibleQuestions, STAGE_INFO } from '../data/businessDiagnosisQuestions'
+import { getInlineFeedback, STAGE_INFO, stageQuestions } from '../data/businessDiagnosisQuestions'
 import { factorById, ownedAdvantageIdsFor } from '../data/policyAdvantageFactors'
-import { computeResult } from '../lib/businessDiagnosisEngine'
+import { computeStageResult } from '../lib/businessDiagnosisEngine'
 import { submitLead, syncSession, trackEvent } from '../lib/businessDiagnosisApi'
 import { captureUtmOnce, clearSession, loadSession, newSession, saveSession } from '../lib/businessDiagnosisStorage'
 import type {
   BenefitCard,
-  DiagnosisAnswers,
   DiagnosisSession,
   DiagnosisStage,
   InlineFeedback,
   LeadFormData,
   PolicyAdvantageFactor,
+  StageReportData,
 } from '../types/businessDiagnosis'
 
-type Screen = 'start' | 'question' | 'advantage' | 'benefit' | 'stageComplete' | 'result'
+type Screen = 'start' | 'question' | 'stageReport' | 'gate'
+type Pending = { kind: 'benefit'; card: BenefitCard } | { kind: 'advantage'; factor: PolicyAdvantageFactor } | null
+
+const AUTO_MS = 180 // 단일선택 자동 전환 (빠르게)
 
 export default function BusinessDiagnosisPage() {
   const [session, setSession] = useState<DiagnosisSession>(() => loadSession() ?? newSession())
   const [screen, setScreen] = useState<Screen>('start')
-  const [qIndex, setQIndex] = useState(0)
-  const [benefit, setBenefit] = useState<BenefitCard | null>(null)
-  const [advantageFactor, setAdvantageFactor] = useState<PolicyAdvantageFactor | null>(null)
+  const [stage, setStage] = useState<DiagnosisStage>(1)
+  const [qIdx, setQIdx] = useState(0) // 현재 단계 내 질문 인덱스
+  const [pending, setPending] = useState<Pending>(null)
   const [feedback, setFeedback] = useState<InlineFeedback | null>(null)
-  const [completedStage, setCompletedStage] = useState<DiagnosisStage>(1)
+  const [report, setReport] = useState<StageReportData | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [consultationConsented, setConsultationConsented] = useState(false)
-  // 미완료 저장분이 있으면 시작 화면에 '이어서 진단하기' 노출
   const [hasSaved, setHasSaved] = useState<boolean>(() => {
-    const saved = loadSession()
-    return Boolean(saved && !saved.completed && Object.keys(saved.answers).length > 0)
+    const s = loadSession()
+    return Boolean(s && !s.completed && Object.keys(s.answers).length > 0)
   })
 
-  // 자동 진행 타이머가 이전 렌더의 클로저를 잡아도 최신 상태를 읽도록 ref 로 미러링
-  const sessionRef = useRef(session)
-  const qIndexRef = useRef(qIndex)
+  // 최신 상태 미러 (자동전환 타이머 stale closure 방지)
+  const sRef = useRef(session)
+  const stageRef = useRef(stage)
+  const qRef = useRef(qIdx)
+  const advancingRef = useRef(false)
   const gateViewedRef = useRef(false)
-  const completionSyncedRef = useRef(false)
+  const autoTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     document.title = '3분 기업 성장진단 | 미래AI랩'
     window.scrollTo(0, 0)
-    captureUtmOnce() // 최초 유입값 저장 (이미 있으면 유지)
+    captureUtmOnce()
+    return () => {
+      if (autoTimer.current) clearTimeout(autoTimer.current)
+    }
   }, [])
 
-  // 답변 기준 노출 질문 목록 (분기 반영)
-  const visible = useMemo(() => getVisibleQuestions(session.answers), [session.answers])
-  const current = visible[qIndex]
-  const percent = visible.length > 0 ? Math.min(100, (qIndex / visible.length) * 100) : 0
-
   const persist = useCallback((next: DiagnosisSession) => {
-    sessionRef.current = next
+    sRef.current = next
     setSession(next)
     saveSession(next)
   }, [])
 
-  const setIndex = useCallback((i: number) => {
-    qIndexRef.current = i
-    setQIndex(i)
+  const setStageIdx = useCallback((st: DiagnosisStage, i: number) => {
+    stageRef.current = st
+    qRef.current = i
+    setStage(st)
+    setQIdx(i)
   }, [])
 
+  const visibleQs = useMemo(() => stageQuestions(stage, session.answers), [stage, session.answers])
+  const current = visibleQs[qIdx]
+  // 진행률: 완료 단계 + 현재 단계 진행 (전체 3단계 기준 대략치)
+  const stageProgress = visibleQs.length ? qIdx / visibleQs.length : 0
+  const percent = Math.min(100, ((stage - 1 + stageProgress) / 3) * 100)
+
   // ── 시작/이어하기/다시하기 ──
+  function enterStage(st: DiagnosisStage, sess: DiagnosisSession) {
+    const startedAt = { ...sess.stageStartedAt, [st]: Date.now() }
+    persist({ ...sess, currentStage: st, currentQuestionId: stageQuestions(st, sess.answers)[0]?.id ?? null, stageStartedAt: startedAt })
+    setStageIdx(st, 0)
+    setPending(null)
+    setFeedback(null)
+    setReport(null)
+    setScreen('question')
+    window.scrollTo(0, 0)
+  }
+
   function handleStart() {
     const fresh = newSession()
     fresh.utm = captureUtmOnce()
-    persist(fresh)
-    setIndex(0)
-    setFeedback(null)
-    setScreen('question')
-    window.scrollTo(0, 0)
     trackEvent(fresh.sessionId, 'diagnosis_started')
     void syncSession(fresh, { status: 'in_progress', currentStage: 1 })
+    enterStage(1, fresh)
   }
 
   function handleResume() {
     const saved = loadSession()
     if (!saved || saved.completed) return handleStart()
+    const st = saved.currentStage ?? 1
+    const qs = stageQuestions(st, saved.answers)
+    const idx = saved.currentQuestionId ? qs.findIndex((q) => q.id === saved.currentQuestionId) : 0
     persist(saved)
-    const vis = getVisibleQuestions(saved.answers)
-    const idx = saved.currentQuestionId ? vis.findIndex((q) => q.id === saved.currentQuestionId) : 0
-    setIndex(idx < 0 ? 0 : idx)
+    setStageIdx(st, idx < 0 ? 0 : idx)
+    setPending(null)
     setFeedback(null)
     setScreen('question')
     window.scrollTo(0, 0)
   }
 
   function handleRestart() {
-    trackEvent(sessionRef.current.sessionId, 'diagnosis_restarted')
+    trackEvent(sRef.current.sessionId, 'diagnosis_restarted')
     clearSession()
-    persist(newSession())
-    setIndex(0)
+    const fresh = newSession()
+    persist(fresh)
+    setStageIdx(1, 0)
+    setPending(null)
     setFeedback(null)
+    setReport(null)
     setHasSaved(false)
     setConsultationConsented(false)
     setSubmitError(null)
     gateViewedRef.current = false
-    completionSyncedRef.current = false
     setScreen('start')
     window.scrollTo(0, 0)
   }
 
   // ── 답변 저장 ──
-  function handleAnswer(value: string | string[]) {
+  function handleSelect(value: string | string[]) {
     if (!current) return
-    const s = sessionRef.current
-    const answers: DiagnosisAnswers = { ...s.answers, [current.id]: value }
-    persist({ ...s, answers, currentQuestionId: current.id })
+    const s = sRef.current
+    persist({ ...s, answers: { ...s.answers, [current.id]: value }, currentQuestionId: current.id })
+    // 단일선택 → 빠른 자동 전환 예약 (인라인 패널이 뜨면 취소됨)
+    if (current.type === 'single') {
+      if (autoTimer.current) clearTimeout(autoTimer.current)
+      autoTimer.current = setTimeout(() => decide(), AUTO_MS)
+    }
   }
 
-  // 실제 인덱스 전진 (+단계 완료/결과 처리) — ref 에서 최신 상태를 읽음
-  const advance = useCallback(() => {
-    const s = sessionRef.current
-    const idx = qIndexRef.current
-    const vis = getVisibleQuestions(s.answers)
-    const cur = vis[idx]
-    const next = vis[idx + 1]
-
-    setFeedback(cur ? getInlineFeedback(cur.id, s.answers) : null)
-
-    if (!next) {
-      // 마지막 질문 → 결과
-      persist({ ...s, completed: true, completedAt: new Date().toISOString(), currentQuestionId: null })
-      setScreen('result')
-      window.scrollTo(0, 0)
-      return
-    }
-    if (cur && next.stage !== cur.stage) {
-      setCompletedStage(cur.stage)
-      setScreen('stageComplete')
-      window.scrollTo(0, 0)
-      trackEvent(s.sessionId, 'stage_completed', String(cur.stage))
-      void syncSession(sessionRef.current, { status: 'in_progress', currentStage: cur.stage + 1 })
-      return
-    }
-    setIndex(idx + 1)
-    persist({ ...sessionRef.current, currentQuestionId: next.id })
-    setScreen('question')
-    window.scrollTo(0, 0)
-  }, [persist, setIndex])
-
-  // ── 다음 이동: 우대요소 발견 → 혜택 카드 → 전진 ──
-  const goNext = useCallback(() => {
-    const s = sessionRef.current
-    const vis = getVisibleQuestions(s.answers)
-    const cur = vis[qIndexRef.current]
+  // 답변 직후 처리: 우대요소 발견 → 혜택 패널 → 전진
+  const decide = useCallback(() => {
+    const s = sRef.current
+    const qs = stageQuestions(stageRef.current, s.answers)
+    const cur = qs[qRef.current]
     if (!cur) return
 
-    // 1) '보유' 답변 → 우대요소 발견 모션 (새로 발견된 것만)
-    const ownedIds = ownedAdvantageIdsFor(cur.id, s.answers).filter((id) => !s.foundAdvantages.includes(id))
-    if (ownedIds.length > 0) {
-      persist({ ...s, foundAdvantages: [...s.foundAdvantages, ...ownedIds] })
-      const factor = factorById(ownedIds[0])
-      if (factor) {
-        setAdvantageFactor(factor)
-        setScreen('advantage')
-        window.scrollTo(0, 0)
-        trackEvent(s.sessionId, 'benefit_revealed', `advantage:${factor.id}`)
+    // 1) '보유' 답변 → 우대요소 발견 (아직 발견 안 한 것만)
+    const owned = ownedAdvantageIdsFor(cur.id, s.answers).filter((id) => !s.foundAdvantages.includes(id))
+    if (owned.length > 0) {
+      persist({ ...s, foundAdvantages: [...s.foundAdvantages, ...owned] })
+      const f = factorById(owned[0])
+      if (f) {
+        trackEvent(s.sessionId, 'benefit_revealed', `advantage:${f.id}`)
+        setPending({ kind: 'advantage', factor: f })
         return
       }
     }
-
-    // 2) 미보유 답변 → 혜택 발견 카드
+    // 2) 미보유 답변 → 혜택 패널
     const b = getBenefitAfter(cur.id, s.answers)
     if (b) {
-      setBenefit(b)
-      setScreen('benefit')
-      window.scrollTo(0, 0)
+      trackEvent(s.sessionId, 'benefit_revealed', b.id)
+      setPending({ kind: 'benefit', card: b })
       return
     }
     advance()
-  }, [advance, persist])
+  }, [persist])
 
-  function handleAdvantageContinue() {
-    setAdvantageFactor(null)
-    // 우대요소 확인 후에도 같은 질문의 혜택 카드 조건은 검사 (보유+미보유 조합 케이스 대비)
-    const s = sessionRef.current
-    const vis = getVisibleQuestions(s.answers)
-    const cur = vis[qIndexRef.current]
-    const b = cur ? getBenefitAfter(cur.id, s.answers) : null
-    if (b) {
-      setBenefit(b)
-      setScreen('benefit')
+  // 다음 질문 / 단계 완료
+  const advance = useCallback(() => {
+    if (advancingRef.current) return
+    advancingRef.current = true
+    setPending(null)
+    const s = sRef.current
+    const st = stageRef.current
+    const qs = stageQuestions(st, s.answers)
+    const cur = qs[qRef.current]
+    const next = qs[qRef.current + 1]
+    setFeedback(cur ? getInlineFeedback(cur.id, s.answers) : null)
+
+    if (next) {
+      setStageIdx(st, qRef.current + 1)
+      persist({ ...s, currentQuestionId: next.id })
+      setScreen('question')
       window.scrollTo(0, 0)
+      setTimeout(() => (advancingRef.current = false), 60)
       return
     }
-    advance()
-  }
 
-  function handleBenefitContinue(interested: boolean) {
-    const s = sessionRef.current
-    if (benefit) {
-      trackEvent(s.sessionId, interested ? 'benefit_interest_clicked' : 'benefit_revealed', benefit.id)
-      if (interested && !s.interests.includes(benefit.interestKey)) {
-        persist({ ...s, interests: [...s.interests, benefit.interestKey] })
-      }
+    // 단계 완료 → 리포트
+    const dur = s.stageStartedAt[st] ? Math.round((Date.now() - (s.stageStartedAt[st] as number)) / 1000) : undefined
+    const completedStages = s.completedStages.includes(st) ? s.completedStages : [...s.completedStages, st]
+    const nextSession: DiagnosisSession = {
+      ...s,
+      completedStages,
+      stageDurations: dur ? { ...s.stageDurations, [st]: dur } : s.stageDurations,
+      completed: st === 3 ? true : s.completed,
+      completedAt: st === 3 ? new Date().toISOString() : s.completedAt,
     }
-    setBenefit(null)
-    advance()
-  }
-
-  function handleStageDone() {
-    const s = sessionRef.current
-    const vis = getVisibleQuestions(s.answers)
-    const nextIdx = qIndexRef.current + 1
-    setIndex(nextIdx)
-    const nq = vis[nextIdx]
-    if (nq) persist({ ...s, currentQuestionId: nq.id })
-    setScreen('question')
+    persist(nextSession)
+    const rep = computeStageResult(st, nextSession.answers, nextSession.interests)
+    setReport(rep)
+    setScreen('stageReport')
     window.scrollTo(0, 0)
+    trackEvent(s.sessionId, 'stage_completed', String(st))
+    void syncSession(nextSession, {
+      status: st === 3 ? 'completed' : 'in_progress',
+      currentStage: st,
+      result: st === 3 ? rep : null,
+      stageMeta: { completedStage: st, completedStages, stageDurations: nextSession.stageDurations },
+    })
+    setTimeout(() => (advancingRef.current = false), 60)
+  }, [persist, setStageIdx])
+
+  // 인라인 패널 액션
+  function handleBenefitAdd() {
+    const s = sRef.current
+    if (pending?.kind === 'benefit') {
+      const key = pending.card.interestKey
+      trackEvent(s.sessionId, 'benefit_added_to_recommendations', pending.card.id)
+      if (!s.interests.includes(key)) persist({ ...s, interests: [...s.interests, key] })
+    }
+    advance()
+  }
+  function handleBenefitSkip() {
+    const s = sRef.current
+    if (pending?.kind === 'benefit') {
+      trackEvent(s.sessionId, 'benefit_skipped', pending.card.id)
+      if (!s.skippedBenefits.includes(pending.card.id)) persist({ ...s, skippedBenefits: [...s.skippedBenefits, pending.card.id] })
+    }
+    advance()
   }
 
   function handlePrev() {
-    if (qIndexRef.current === 0) {
-      setScreen('start')
+    if (pending) {
+      setPending(null)
       return
     }
-    setFeedback(null)
-    setIndex(Math.max(0, qIndexRef.current - 1))
+    if (qRef.current > 0) {
+      setStageIdx(stageRef.current, qRef.current - 1)
+      setFeedback(null)
+      window.scrollTo(0, 0)
+      return
+    }
+    if (stageRef.current > 1) {
+      // 이전 단계 리포트로
+      const prev = (stageRef.current - 1) as DiagnosisStage
+      setStage(prev)
+      stageRef.current = prev
+      setReport(computeStageResult(prev, sRef.current.answers, sRef.current.interests))
+      setScreen('stageReport')
+      window.scrollTo(0, 0)
+      return
+    }
+    setScreen('start')
+  }
+
+  // ── 단계 리포트 액션 ──
+  function continueToNextStage() {
+    const s = sRef.current
+    const nextStage = (stageRef.current + 1) as DiagnosisStage
+    if (nextStage > 3) return
+    persist({ ...s, nextStageInterest: true })
+    enterStage(nextStage, sRef.current)
+  }
+
+  function wantResultGate() {
+    gateViewedRef.current = true
+    trackEvent(sRef.current.sessionId, 'lead_form_viewed')
+    // 중단 지점 기록
+    persist({ ...sRef.current, stoppedAfterStage: stageRef.current })
+    setSubmitError(null)
+    setScreen('gate')
     window.scrollTo(0, 0)
   }
 
-  // 결과 계산 (완료 시점 기준)
-  const result = useMemo(
-    () => (screen === 'result' ? computeResult(session.answers, session.interests) : null),
-    [screen, session.answers, session.interests],
-  )
-
-  // 진단 완료 시 세션 서버 동기화 (1회)
-  useEffect(() => {
-    if (screen === 'result' && result && !completionSyncedRef.current) {
-      completionSyncedRef.current = true
-      void syncSession(sessionRef.current, {
-        status: sessionRef.current.leadId ? 'submitted' : 'completed',
-        scores: result.areas.map((a) => ({ area: a.area, score: a.score, priority: a.priority })),
-        result,
-      })
-    }
-  }, [screen, result])
-
-  // ── 게이트 제출 ──
   async function handleSubmitLead(form: LeadFormData & { privacyConsentVersion: string; honeypot?: string; formElapsedMs: number }) {
-    if (!result || submitting) return
+    if (!report || submitting) return
     setSubmitting(true)
     setSubmitError(null)
+    const s = sRef.current
+    const depth = report.depth
     try {
-      const { leadId } = await submitLead(sessionRef.current, form, result)
+      const { leadId } = await submitLead(s, form, report, {
+        completedStage: depth,
+        diagnosisDepth: depth === 1 ? 'basic' : depth === 2 ? 'funding' : 'comprehensive',
+        stoppedAfterStage: depth < 3,
+        nextStageInterest: s.nextStageInterest,
+        stageDurations: s.stageDurations,
+      })
       setConsultationConsented(form.consultationConsent)
-      persist({ ...sessionRef.current, leadId, leadSubmittedAt: new Date().toISOString() })
-      trackEvent(sessionRef.current.sessionId, 'result_unlocked', leadId)
+      persist({ ...sRef.current, leadId, leadSubmittedAt: new Date().toISOString() })
+      trackEvent(sRef.current.sessionId, 'result_unlocked', leadId)
+      setScreen('stageReport')
+      window.scrollTo(0, 0)
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : '저장 중 문제가 발생했습니다.')
     } finally {
@@ -269,30 +309,30 @@ export default function BusinessDiagnosisPage() {
     }
   }
 
-  function handleGateViewed() {
-    if (gateViewedRef.current) return
-    gateViewedRef.current = true
-    trackEvent(sessionRef.current.sessionId, 'lead_form_viewed')
-  }
-
   function handleProductClick(slug: string, rank: string, position: string) {
-    trackEvent(sessionRef.current.sessionId, 'product_clicked', slug, { rank, position, leadId: sessionRef.current.leadId ?? null })
+    trackEvent(sRef.current.sessionId, 'product_clicked', slug, { rank, position, leadId: sRef.current.leadId ?? null })
   }
-
   function handleConsultClick(slug?: string) {
-    trackEvent(sessionRef.current.sessionId, 'consultation_clicked', slug ?? 'general', {
-      leadId: sessionRef.current.leadId ?? null,
-      topTask: result?.topTask ?? null,
-      recommended: result?.recommendations.map((r) => r.slug) ?? [],
+    trackEvent(sRef.current.sessionId, 'consultation_clicked', slug ?? 'general', {
+      leadId: sRef.current.leadId ?? null,
+      topTask: report?.topTask ?? report?.summary ?? null,
+      recommended: report?.recommendations.map((r) => r.slug) ?? [],
     })
   }
 
+  const submitted = Boolean(session.leadId)
+  const pendingPanel =
+    pending?.kind === 'benefit' ? (
+      <InlineBenefitPanel card={pending.card} onAdd={handleBenefitAdd} onSkip={handleBenefitSkip} />
+    ) : pending?.kind === 'advantage' ? (
+      <InlineAdvantagePanel factor={pending.factor} totalFound={session.foundAdvantages.length} onContinue={advance} />
+    ) : undefined
+
   return (
     <div className="flex min-h-dvh flex-col bg-white text-slate-900 antialiased [word-break:keep-all]">
-      {/* Header */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link to="/business-services" className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
@@ -300,7 +340,7 @@ export default function BusinessDiagnosisPage() {
             </span>
           </Link>
           <div className="flex items-center gap-1.5">
-            {screen !== 'start' && screen !== 'result' && (
+            {screen !== 'start' && (
               <button
                 type="button"
                 onClick={handleRestart}
@@ -309,20 +349,13 @@ export default function BusinessDiagnosisPage() {
                 처음부터
               </button>
             )}
-            <PublicMenuDrawer />
+            <PublicMenuDrawer variant="business" />
           </div>
         </div>
       </header>
 
-      {/* 질문 화면 상단 진행 표시 */}
       {screen === 'question' && current && (
-        <DiagnosisProgress
-          stage={current.stage}
-          questionNumber={qIndex + 1}
-          totalEstimate={visible.length}
-          percent={percent}
-          onBack={handlePrev}
-        />
+        <DiagnosisProgress stage={current.stage} questionNumber={qIdx + 1} totalEstimate={visibleQs.length} percent={percent} onBack={handlePrev} />
       )}
 
       <main className="flex flex-1 flex-col">
@@ -330,50 +363,43 @@ export default function BusinessDiagnosisPage() {
 
         {screen === 'question' && current && (
           <>
-            {(qIndex === 0 || visible[qIndex - 1]?.stage !== current.stage) && (
-              <p className="animate-rise-in mx-auto mt-6 w-full max-w-[720px] px-5 text-sm font-bold text-blue-600">
-                {STAGE_INFO[current.stage].copy}
-              </p>
+            {qIdx === 0 && !pending && (
+              <p className="animate-rise-in mx-auto mt-6 w-full max-w-[720px] px-5 text-sm font-bold text-blue-600">{STAGE_INFO[current.stage].copy}</p>
             )}
             <DiagnosisQuestion
               question={current}
               value={session.answers[current.id]}
               feedback={feedback}
-              onAnswer={handleAnswer}
-              onAutoNext={goNext}
-              onNext={goNext}
+              inlinePanel={pendingPanel}
+              onSelect={handleSelect}
+              onNext={decide}
               onPrev={handlePrev}
               canPrev
-              onSkip={current.optional ? goNext : undefined}
             />
           </>
         )}
 
-        {screen === 'advantage' && advantageFactor && (
-          <AdvantageFound
-            factor={advantageFactor}
-            totalFound={session.foundAdvantages.length}
-            onContinue={handleAdvantageContinue}
-          />
-        )}
-
-        {screen === 'benefit' && benefit && <BenefitReveal card={benefit} onContinue={handleBenefitContinue} />}
-
-        {screen === 'stageComplete' && <StageComplete stage={completedStage} onDone={handleStageDone} />}
-
-        {screen === 'result' && result && (
-          <DiagnosisResult
-            result={result}
-            unlocked={Boolean(session.leadId)}
+        {screen === 'stageReport' && report && (
+          <StageReport
+            report={report}
+            submitted={submitted}
             consultationConsented={consultationConsented}
-            submitting={submitting}
-            errorMessage={submitError}
-            onSubmitLead={handleSubmitLead}
+            onContinueStage={continueToNextStage}
+            onWantResult={wantResultGate}
+            onContinueAfterSubmit={continueToNextStage}
             onRestart={handleRestart}
             onProductClick={handleProductClick}
             onConsultClick={handleConsultClick}
-            onGateViewed={handleGateViewed}
           />
+        )}
+
+        {screen === 'gate' && report && (
+          <div className="mx-auto w-full max-w-[860px] px-5 pb-20 pt-6">
+            <button type="button" onClick={() => setScreen('stageReport')} className="mb-2 text-sm font-semibold text-slate-500 hover:text-slate-900">
+              ← 결과로 돌아가기
+            </button>
+            <LeadGate submitting={submitting} errorMessage={submitError} onSubmit={handleSubmitLead} />
+          </div>
         )}
       </main>
     </div>

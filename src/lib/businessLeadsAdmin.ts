@@ -49,6 +49,15 @@ export type SessionRow = {
   advantage_factors: Array<{ id: string; label: string; status: string; group: string }> | null
   recommended_products: Array<{ slug: string; rank: string; reason: string }> | null
   clicked_benefits: string[] | null
+  skipped_benefits: string[] | null
+  completed_stage: number | null
+  diagnosis_depth: string | null
+  stopped_after_stage: boolean | null
+  next_stage_interest: boolean | null
+  stage1_duration_seconds: number | null
+  stage2_duration_seconds: number | null
+  stage3_duration_seconds: number | null
+  total_duration_seconds: number | null
   utm_source: string | null
   utm_medium: string | null
   utm_campaign: string | null

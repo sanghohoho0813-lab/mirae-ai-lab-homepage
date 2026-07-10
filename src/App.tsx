@@ -354,7 +354,7 @@ function App() {
                 로그인
               </Link>
             )}
-            <PublicMenuDrawer />
+            <PublicMenuDrawer variant="consultant" />
           </div>
         </div>
       </header>

@@ -86,6 +86,7 @@ create table if not exists public.business_diagnosis_events (
   session_id  uuid not null references public.business_diagnosis_sessions (id) on delete cascade,
   event_type  text not null check (event_type in
     ('diagnosis_started','stage_completed','question_answered','benefit_revealed','benefit_interest_clicked',
+     'benefit_added_to_recommendations','benefit_skipped',
      'product_clicked','lead_form_viewed','lead_submitted','result_unlocked','consultation_clicked','diagnosis_restarted')),
   event_key   text,
   payload     jsonb,
@@ -94,6 +95,29 @@ create table if not exists public.business_diagnosis_events (
 
 create index if not exists idx_bde_session on public.business_diagnosis_events (session_id, created_at);
 create index if not exists idx_bde_type on public.business_diagnosis_events (event_type);
+
+-- ── (점진형 진단) 단계 컬럼 추가 — 기존 데이터 호환 위해 전부 nullable/기본값 ──
+-- 이미 실행한 환경에서도 안전하게 재실행 가능 (add column if not exists)
+alter table public.business_diagnosis_sessions
+  add column if not exists skipped_benefits         jsonb,
+  add column if not exists completed_stage          integer,
+  add column if not exists diagnosis_depth          text,       -- basic | funding | comprehensive
+  add column if not exists stopped_after_stage       boolean not null default false,
+  add column if not exists next_stage_interest        boolean not null default false,
+  add column if not exists stage1_duration_seconds   integer,
+  add column if not exists stage2_duration_seconds   integer,
+  add column if not exists stage3_duration_seconds   integer,
+  add column if not exists total_duration_seconds    integer;
+
+create index if not exists idx_bds_completed_stage on public.business_diagnosis_sessions (completed_stage);
+
+-- 이벤트 종류 확장(추천 담기/건너뛰기) — 기존 환경의 check 제약을 안전하게 갱신
+alter table public.business_diagnosis_events drop constraint if exists business_diagnosis_events_event_type_check;
+alter table public.business_diagnosis_events add constraint business_diagnosis_events_event_type_check
+  check (event_type in
+    ('diagnosis_started','stage_completed','question_answered','benefit_revealed','benefit_interest_clicked',
+     'benefit_added_to_recommendations','benefit_skipped',
+     'product_clicked','lead_form_viewed','lead_submitted','result_unlocked','consultation_clicked','diagnosis_restarted'));
 
 -- ── updated_at 자동 갱신 ──
 create or replace function public.bd_touch_updated_at()

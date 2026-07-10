@@ -6,8 +6,10 @@ import type {
   AreaResult,
   DiagnosisAnswers,
   DiagnosisResultData,
+  DiagnosisStage,
   ProductRecommendation,
   ScoreArea,
+  StageReportData,
 } from '../types/businessDiagnosis'
 import { hasArrears, isFounderToBe, isIndividual, isCorp } from '../data/businessDiagnosisQuestions'
 import { computeAdvantageItems } from '../data/policyAdvantageFactors'
@@ -330,6 +332,132 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
   )
 
   return { summary, areas, strengths, improvements, prerequisites, actionPlan, recommendations, advantages, ownedAdvantageCount, topTask, overallScore }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 단계별 즉시 리포트 (점진형 진단) — 각 단계 완료 시 그 단계까지의 답변으로 계산.
+// ⚠️ 승인확률이 아닌 내부 준비도 지표.
+// ─────────────────────────────────────────────────────────────
+
+// 1단계 기초체력 점수 (기본 재무·규모·리스크 종합, 0~100)
+function basicVitalityScore(a: DiagnosisAnswers): number {
+  let s = 45
+  s += ({ pre: -10, lt1: -2, y1to3: 4, y3to7: 10, y7plus: 12 }[one(a, 'years') ?? ''] ?? 0)
+  s += ({ none: -6, lt1: 0, r1to5: 6, r5to10: 10, r10to30: 13, r30plus: 15 }[one(a, 'revenue') ?? ''] ?? 0)
+  s += ({ none: -2, e1to4: 4, e5to9: 7, e10to29: 9, e30plus: 10 }[one(a, 'employees') ?? ''] ?? 0)
+  s += ({ profit: 16, breakeven: 4, loss: -14, notClosed: 0, unsure: 0 }[one(a, 'operatingProfit') ?? ''] ?? 0)
+  s += ({ no: 8, paying: -6, yes: -18, unsure: -2 }[one(a, 'taxArrears') ?? ''] ?? 0)
+  return clamp(s)
+}
+
+function companyStageLabel(a: DiagnosisAnswers): string {
+  const years = one(a, 'years')
+  const rev = one(a, 'revenue')
+  const profit = one(a, 'operatingProfit')
+  if (years === 'pre' || years === 'lt1' || rev === 'none') return '성장 초기'
+  if (profit === 'loss' || one(a, 'taxArrears') === 'yes') return '전환 필요'
+  if (years === 'y7plus' && ['r10to30', 'r30plus'].includes(rev ?? '')) return '안정 운영'
+  return '성장 중'
+}
+
+export function computeStageResult(depth: DiagnosisStage, answers: DiagnosisAnswers, interests: string[]): StageReportData {
+  const full = computeResult(answers, interests)
+  const arrears = hasArrears(answers)
+  const byArea = Object.fromEntries(full.areas.map((x) => [x.area, x])) as Record<ScoreArea, AreaResult>
+
+  if (depth === 1) {
+    const score = basicVitalityScore(answers)
+    const stageName = companyStageLabel(answers)
+
+    const strengths: string[] = []
+    if (one(answers, 'operatingProfit') === 'profit') strengths.push('최근 결산에서 이익이 나고 있어 자금 계획을 세우기 좋아요.')
+    if (one(answers, 'taxArrears') === 'no') strengths.push('세금 체납이 없어 자금·지원제도를 알아보기 좋은 상태예요.')
+    if (['y3to7', 'y7plus'].includes(one(answers, 'years') ?? '')) strengths.push('사업을 꾸준히 이어와 업력이 안정적이에요.')
+    if (['r5to10', 'r10to30', 'r30plus'].includes(one(answers, 'revenue') ?? '')) strengths.push('매출 규모가 자금·지원사업을 검토하기에 충분한 편이에요.')
+    if (strengths.length === 0) strengths.push('진단을 시작하신 것 자체가 성장 준비의 첫걸음이에요.')
+
+    const checks: string[] = []
+    if (arrears) checks.push('세금 체납은 자금을 알아보기 전에 먼저 정리하는 것이 좋아요.')
+    if (one(answers, 'operatingProfit') === 'loss') checks.push('최근 손실이 있어, 자금 계획에서 이 부분을 함께 봐야 해요.')
+    if (['unsure', 'notClosed'].includes(one(answers, 'operatingProfit') ?? '')) checks.push('결산·재무 상태는 자료로 한 번 더 확인하면 좋아요.')
+    if (one(answers, 'taxArrears') === 'unsure') checks.push('체납 여부를 정확히 확인해두면 자금 준비가 수월해져요.')
+    if (checks.length === 0) checks.push('큰 위험요소는 보이지 않아요. 2단계에서 자금·지원제도를 더 살펴보세요.')
+
+    const topTask = arrears
+      ? '세금 체납 정리 (자금 검토 전 먼저 확인)'
+      : one(answers, 'operatingProfit') === 'loss'
+        ? '수익 구조 점검 후 자금 계획 세우기'
+        : full.topTask
+
+    return {
+      depth: 1,
+      headline: '우리 회사의 기초체력을 확인했어요.',
+      summary:
+        stageName === '전환 필요'
+          ? '지금은 자금보다 먼저 정리할 부분이 있어요. 순서를 잡으면 훨씬 수월해집니다.'
+          : '기본 상태를 확인했어요. 받을 수 있는 자금과 지원제도는 2단계에서 더 자세히 살펴볼 수 있어요.',
+      metricCards: [
+        { label: '현재 회사 단계', value: stageName, tone: 'blue' },
+        { label: '기초체력 점수', value: `${score}점`, sub: '내부 진단 지표', tone: score >= 60 ? 'emerald' : 'amber' },
+      ],
+      strengths: strengths.slice(0, 3),
+      improvements: checks.slice(0, 3),
+      prerequisites: full.prerequisites,
+      topTask,
+      recommendations: full.recommendations.slice(0, 2),
+      nextHint: '2단계에서는 받을 수 있는 자금과 지원제도를 더 자세히 살펴봅니다.',
+      overallScore: score,
+    }
+  }
+
+  if (depth === 2) {
+    const focus: ScoreArea[] = ['funding', 'employment', 'govSupport']
+    const areas = focus.map((k) => byArea[k])
+    const usable = areas.filter((a) => a.score >= 60).map((a) => a.label)
+    const improve = areas.filter((a) => a.score < 60).map((a) => a.label)
+    return {
+      depth: 2,
+      headline: '자금과 지원제도 준비상태를 확인했어요.',
+      summary: arrears
+        ? '체납 정리라는 먼저 할 일이 있어요. 그 뒤에 자금을 준비하면 순서가 깔끔해집니다.'
+        : improve.length > 0
+          ? `${withWa(improve[0].replace(/ (준비도|활용 가능성)$/, ''))} 관련 준비를 조금 더 하면 활용하기 좋아져요.`
+          : '자금·지원제도 활용 준비가 잘 되어 있어요.',
+      metricCards: areas.map((a) => ({
+        label: a.label,
+        value: `${a.score}점`,
+        sub: a.status,
+        tone: a.score >= 70 ? 'emerald' : a.score >= 40 ? 'blue' : 'amber',
+      })),
+      strengths: usable.length ? usable.map((l) => `${l}는 지금도 활용을 검토할 수 있어요.`) : ['조금씩 준비하면 활용할 수 있는 영역이 있어요.'],
+      improvements: improve.length ? improve.map((l) => `${l}는 자료를 보완하면 검토 범위가 넓어져요.`) : ['큰 공백 없이 준비되어 있어요.'],
+      prerequisites: full.prerequisites,
+      areas,
+      recommendations: full.recommendations.slice(0, 2),
+      nextHint: '3단계에서는 벤처·연구소·ISO 같은 인증과 홈페이지·업무시스템까지 확인합니다.',
+      overallScore: Math.round(areas.reduce((s, a) => s + a.score, 0) / areas.length),
+    }
+  }
+
+  // depth 3 — 종합
+  return {
+    depth: 3,
+    headline: '종합 성장진단이 완료되었습니다.',
+    summary: full.summary,
+    metricCards: [
+      { label: '종합 준비도', value: `${full.overallScore}점`, sub: '내부 진단 지표', tone: 'blue' },
+      { label: '평가 참고요소 발견', value: `${full.ownedAdvantageCount}개`, sub: '보유 우대요소', tone: 'emerald' },
+    ],
+    strengths: full.strengths,
+    improvements: full.improvements,
+    prerequisites: full.prerequisites,
+    areas: full.areas,
+    advantages: full.advantages,
+    ownedAdvantageCount: full.ownedAdvantageCount,
+    actionPlan: full.actionPlan,
+    recommendations: full.recommendations,
+    overallScore: full.overallScore,
+  }
 }
 
 type RecContext = {

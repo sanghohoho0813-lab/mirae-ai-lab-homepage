@@ -30,8 +30,10 @@ const BIZ_TYPES = ['individual', 'corp', 'pre']
 const CONTACT_METHODS = ['전화', '카카오톡', '문자', '대면상담', '아직 상담은 원하지 않음']
 const EVENT_TYPES = [
   'diagnosis_started', 'stage_completed', 'question_answered', 'benefit_revealed', 'benefit_interest_clicked',
+  'benefit_added_to_recommendations', 'benefit_skipped',
   'product_clicked', 'lead_form_viewed', 'lead_submitted', 'result_unlocked', 'consultation_clicked', 'diagnosis_restarted',
 ]
+const DEPTHS = ['basic', 'funding', 'comprehensive']
 const SESSION_STATUS = ['in_progress', 'completed', 'submitted']
 
 function jsonCap(v: unknown, maxLen: number): unknown {
@@ -69,9 +71,11 @@ export function scoreLead(answers: Record<string, unknown>, interests: string[],
   const wantsBig = plans.some((p) => ['bigCorp', 'bidding', 'export'].includes(p))
   const arrears = one(answers, 'taxArrears') === 'yes' || one(answers, 'taxArrears') === 'paying'
 
-  // A. 실행 긴급도 (25)
+  // A. 실행 긴급도 (25) — 1단계만 완료해도 상담의향/자금고민으로 긴급도 반영 (단계로 과도 감점 금지)
   let a = 0
   a += fundingWhen === 'm1' ? 15 : fundingWhen === 'm3' ? 12 : fundingWhen === 'm6' ? 8 : fundingWhen === 'planning' ? 4 : 0
+  // 아직 2단계 전(자금 시점 미응답)이라도 자금 고민 + 즉시 상담이면 긴급으로 인정
+  if (!fundingWhen && (concerns.includes('workingCapital') || concerns.includes('facility')) && consultTiming === 'now') a += 12
   a += consultTiming === 'now' ? 10 : consultTiming === 'm1' ? 7 : consultTiming === 'm3' ? 4 : 0
   a = cap(a, 25)
 
@@ -122,7 +126,7 @@ export function scoreLead(answers: Record<string, unknown>, interests: string[],
 
   const flags: string[] = []
   if (total >= 85 || (fundingWhen === 'm1' && consultTiming === 'now')) flags.push('hot')
-  if (fundingWhen === 'm1' || fundingWhen === 'm3') flags.push('funding_urgent')
+  if (fundingWhen === 'm1' || fundingWhen === 'm3' || (!fundingWhen && consultTiming === 'now' && (concerns.includes('workingCapital') || concerns.includes('facility')))) flags.push('funding_urgent')
   if (interests.some((k) => ['venture', 'researchLab', 'iso'].includes(k)) || concerns.includes('certification')) flags.push('certification_interest')
   if (hiring && hiring !== 'na') flags.push('employment_interest')
   if (['none', 'snsOnly', 'old'].includes(website ?? '') || ['excel', 'kakao', 'paper', 'scattered'].includes(workflow ?? '') || interests.includes('website') || interests.includes('workflow')) flags.push('digital_interest')
@@ -168,6 +172,22 @@ export default async function handler(req: any, res: any) {
     }
     const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
 
+    // 단계 메타 (점진형)
+    const sm = body.stageMeta && typeof body.stageMeta === 'object' ? body.stageMeta : {}
+    const clampStage = (n: unknown) => Math.min(3, Math.max(1, Number(n) || 1))
+    const stageMetaRow: Record<string, unknown> = {}
+    if (sm.completedStage !== undefined) stageMetaRow.completed_stage = clampStage(sm.completedStage)
+    if (sm.diagnosisDepth !== undefined && DEPTHS.includes(strip(sm.diagnosisDepth, 20))) stageMetaRow.diagnosis_depth = strip(sm.diagnosisDepth, 20)
+    if (sm.stoppedAfterStage !== undefined) stageMetaRow.stopped_after_stage = sm.stoppedAfterStage === true
+    if (sm.nextStageInterest !== undefined) stageMetaRow.next_stage_interest = sm.nextStageInterest === true
+    if (sm.stageDurations !== undefined) {
+      const d = sm.stageDurations || {}
+      stageMetaRow.stage1_duration_seconds = Number(d['1']) || null
+      stageMetaRow.stage2_duration_seconds = Number(d['2']) || null
+      stageMetaRow.stage3_duration_seconds = Number(d['3']) || null
+      stageMetaRow.total_duration_seconds = (Number(d['1']) || 0) + (Number(d['2']) || 0) + (Number(d['3']) || 0) || null
+    }
+
     // 세션 upsert 공통 페이로드
     const utm = body.utm && typeof body.utm === 'object' ? body.utm : {}
     const sessionRow = {
@@ -175,12 +195,14 @@ export default async function handler(req: any, res: any) {
       diagnosis_version: Number(body.diagnosisVersion) || 0,
       answers: jsonCap(body.answers, 20000) ?? {},
       clicked_benefits: jsonCap(body.interests, 2000) ?? [],
+      skipped_benefits: jsonCap(body.skippedBenefits, 2000),
       advantage_factors: jsonCap(body.advantageFactors ?? body.foundAdvantages, 8000),
       current_question_id: body.currentQuestionId ? strip(body.currentQuestionId, 40) : null,
       scores: jsonCap(body.scores, 4000),
       result_summary: jsonCap(body.resultSummary, 8000),
       recommended_products: jsonCap(body.recommendedProducts, 4000),
       completed_at: body.completedAt ? strip(body.completedAt, 40) : null,
+      ...stageMetaRow,
       updated_at: new Date().toISOString(),
     }
 

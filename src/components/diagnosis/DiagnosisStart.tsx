@@ -8,9 +8,9 @@ type Props = {
 }
 
 const QUEST_CARDS = [
-  { stage: 1 as const, desc: '사업 형태·업력·매출 등 현재 위치 파악' },
-  { stage: 2 as const, desc: '자금 시점·체납·지원사업 경험 점검' },
-  { stage: 3 as const, desc: '홈페이지·업무시스템·인증 기반 점검' },
+  { stage: 1 as const, desc: '약 1분 · 여기까지만 해도 결과를 받아요', badge: '먼저 여기부터' },
+  { stage: 2 as const, desc: '원하면 이어서 · 받을 수 있는 자금·지원제도' },
+  { stage: 3 as const, desc: '원하면 이어서 · 인증과 홈페이지·업무시스템' },
 ]
 
 export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
@@ -29,14 +29,19 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
         {QUEST_CARDS.map((c, i) => (
           <div
             key={c.stage}
-            className="animate-rise-in flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
-            style={{ animationDelay: `${180 + i * 90}ms` }}
+            className={`animate-rise-in flex items-center gap-4 rounded-2xl border bg-white p-4 shadow-sm sm:p-5 ${
+              c.stage === 1 ? 'border-blue-500 ring-1 ring-blue-200' : 'border-slate-200'
+            }`}
+            style={{ animationDelay: `${140 + i * 70}ms` }}
           >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-base font-black text-blue-700">
+            <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl text-base font-black ${c.stage === 1 ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700'}`}>
               {c.stage}
             </span>
             <div className="min-w-0">
-              <p className="text-base font-extrabold text-slate-900">{STAGE_INFO[c.stage].name}</p>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <p className="text-base font-extrabold text-slate-900">{STAGE_INFO[c.stage].name}</p>
+                {'badge' in c && c.badge && <span className="rounded-md bg-blue-600 px-1.5 py-0.5 text-[10px] font-black text-white">{c.badge}</span>}
+              </div>
               <p className="mt-0.5 text-sm leading-snug text-slate-500">{c.desc}</p>
             </div>
             <span aria-hidden className="ml-auto text-slate-300">›</span>
@@ -45,21 +50,21 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
       </div>
 
       {/* 안내 정보 */}
-      <ul className="animate-rise-in mt-6 flex flex-wrap gap-x-4 gap-y-1.5 text-[0.85rem] font-medium text-slate-500 [animation-delay:420ms]">
-        <li>예상 소요시간 약 3분</li>
-        <li>기본 질문 약 15개 (답변에 따라 최대 20개)</li>
+      <ul className="animate-rise-in mt-6 flex flex-wrap gap-x-4 gap-y-1.5 text-[0.85rem] font-medium text-slate-500 [animation-delay:380ms]">
+        <li>1단계 기초진단 약 1분</li>
+        <li>각 단계가 끝날 때마다 결과 확인</li>
         <li>로그인 없이 시작</li>
-        <li>입력 내용은 브라우저에만 임시 저장</li>
+        <li>언제든 이어서 진행 가능</li>
       </ul>
 
       {/* CTA */}
-      <div className="animate-rise-in mt-8 flex flex-col gap-2.5 [animation-delay:480ms]">
+      <div className="animate-rise-in mt-8 flex flex-col gap-2.5 [animation-delay:440ms]">
         <button
           type="button"
           onClick={onStart}
           className="flex min-h-[56px] items-center justify-center gap-1.5 rounded-2xl bg-blue-600 px-7 py-4 text-lg font-black text-white shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
         >
-          무료 성장진단 시작하기
+          1단계 무료진단 시작하기
           <span aria-hidden>→</span>
         </button>
         {hasSaved && (

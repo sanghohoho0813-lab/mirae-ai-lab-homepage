@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import NetworkBackdrop from '../components/NetworkBackdrop'
-import PublicMenuDrawer from '../components/PublicMenuDrawer'
 
 // 루트(/) 역할 선택 게이트웨이. 기존 페이지/컴포넌트는 건드리지 않습니다.
 // 배경은 실제 이미지 대신 CSS/SVG 로만 은은한 "AI 경영지원 네트워크"를 구현합니다.
@@ -97,9 +96,14 @@ export default function GatewayPage() {
       </div>
       <NetworkBackdrop />
 
-      {/* 우상단 전체 메뉴 */}
+      {/* 우상단 로그인 링크만 (역할 선택 전에는 메뉴 미노출) */}
       <div className="absolute right-4 top-4 z-20">
-        <PublicMenuDrawer buttonClassName="bg-white/80 shadow-sm ring-1 ring-slate-200 backdrop-blur" />
+        <Link
+          to="/login"
+          className="rounded-lg bg-white/80 px-3.5 py-2 text-sm font-semibold text-slate-600 shadow-sm ring-1 ring-slate-200 backdrop-blur transition-colors hover:text-slate-900"
+        >
+          로그인
+        </Link>
       </div>
 
       {/* Content */}

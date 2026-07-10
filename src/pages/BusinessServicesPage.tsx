@@ -245,13 +245,13 @@ export default function BusinessServicesPage() {
                 <path d="m20 20-3-3" />
               </svg>
             </button>
-            <a
-              href="#apply"
-              className="hidden rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 sm:inline-flex"
+            <Link
+              to="/business-diagnosis"
+              className="hidden rounded-lg bg-blue-600 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex"
             >
-              무료 진단 신청하기
-            </a>
-            <PublicMenuDrawer />
+              3분 무료 성장진단
+            </Link>
+            <PublicMenuDrawer variant="business" />
           </div>
         </div>
       </header>
@@ -272,12 +272,12 @@ export default function BusinessServicesPage() {
             정책자금·고용지원금·기업인증·홈페이지·AI 시스템까지, 기업 상황에 맞는 패키지를 상담 후 제안드립니다.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#apply"
-              className="inline-flex items-center justify-center rounded-xl bg-amber-400 px-7 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
+            <Link
+              to="/business-diagnosis"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-7 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
             >
-              무료 진단 신청하기
-            </a>
+              🩺 3분 무료 성장진단
+            </Link>
             <button
               type="button"
               onClick={() => scrollToId('packages')}
@@ -285,7 +285,16 @@ export default function BusinessServicesPage() {
             >
               전체 상품 보기
             </button>
+            <a
+              href="#apply"
+              className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-lg font-bold text-white transition-colors hover:bg-white/10"
+            >
+              상담 신청하기
+            </a>
           </div>
+          <p className="mt-3 text-[0.8rem] font-medium text-slate-400">
+            <b className="text-slate-200">성장진단</b>은 로그인 없이 바로 · <b className="text-slate-200">상담 신청</b>은 담당자가 직접 연락드립니다.
+          </p>
           <div className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[0.78rem] font-medium text-slate-400">
             <span>누적 자금조달 100억+</span>
             <span className="text-slate-600">·</span>
@@ -475,12 +484,18 @@ export default function BusinessServicesPage() {
 
       {/* Mobile sticky CTA */}
       {showBar && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-2 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
+          <Link
+            to="/business-diagnosis"
+            className="flex flex-1 items-center justify-center rounded-xl bg-blue-600 px-4 py-3.5 text-base font-bold text-white"
+          >
+            3분 무료 성장진단
+          </Link>
           <a
             href="#apply"
-            className="flex w-full items-center justify-center rounded-xl bg-slate-900 px-6 py-4 text-lg font-bold text-white"
+            className="flex flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base font-bold text-slate-700"
           >
-            무료 진단 신청하기
+            상담 신청
           </a>
         </div>
       )}

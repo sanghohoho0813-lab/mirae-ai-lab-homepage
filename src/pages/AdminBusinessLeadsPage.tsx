@@ -91,6 +91,14 @@ function consultationChecklist(answers: Record<string, string | string[]>): stri
   return out
 }
 
+function stageLabel(s?: SessionRow | null): string {
+  const st = s?.completed_stage
+  if (st === 3) return '종합 완료'
+  if (st === 2) return '2단계 완료'
+  if (st === 1) return '1단계 완료'
+  return '-'
+}
+
 const th = 'px-3 py-2.5 text-left text-xs font-black uppercase tracking-wide text-slate-400 whitespace-nowrap'
 const td = 'px-3 py-2.5 text-sm text-slate-700 whitespace-nowrap'
 const selectCls = 'rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm font-semibold text-slate-700'
@@ -111,6 +119,8 @@ export default function AdminBusinessLeadsPage() {
   const [fFlag, setFFlag] = useState('')
   const [fProduct, setFProduct] = useState('')
   const [fAssignee, setFAssignee] = useState('')
+  const [fStage, setFStage] = useState('')
+  const [fNextInterest, setFNextInterest] = useState('')
   const [fFrom, setFFrom] = useState('')
   const [fTo, setFTo] = useState('')
   const [search, setSearch] = useState('')
@@ -157,6 +167,8 @@ export default function AdminBusinessLeadsPage() {
     if (fFlag) rows = rows.filter((l) => (l.flags ?? []).includes(fFlag))
     if (fProduct) rows = rows.filter((l) => (s.get(l.id)?.recommended_products ?? []).some((r) => r.slug === fProduct))
     if (fAssignee) rows = rows.filter((l) => (l.assigned_label ?? '(미배정)') === fAssignee)
+    if (fStage) rows = rows.filter((l) => String(s.get(l.id)?.completed_stage ?? '') === fStage)
+    if (fNextInterest === 'yes') rows = rows.filter((l) => s.get(l.id)?.next_stage_interest)
     if (fFrom) rows = rows.filter((l) => l.created_at >= fFrom)
     if (fTo) rows = rows.filter((l) => l.created_at <= `${fTo}T23:59:59`)
     if (search.trim()) {
@@ -171,7 +183,7 @@ export default function AdminBusinessLeadsPage() {
       )
     }
     return rows
-  }, [data, sessionByLead, fGrade, fStatus, fConsent, fIndustry, fBizType, fUtm, fFlag, fProduct, fAssignee, fFrom, fTo, search])
+  }, [data, sessionByLead, fGrade, fStatus, fConsent, fIndustry, fBizType, fUtm, fFlag, fProduct, fAssignee, fStage, fNextInterest, fFrom, fTo, search])
 
   // 필터 옵션 (데이터 기반)
   const industryOptions = useMemo(() => [...new Set((data?.leads ?? []).map((l) => l.industry).filter(Boolean))] as string[], [data])
@@ -345,6 +357,16 @@ export default function AdminBusinessLeadsPage() {
             <option value="">담당자 전체</option>
             {assigneeOptions.map((a) => <option key={a} value={a}>{a}</option>)}
           </select>
+          <select value={fStage} onChange={(e) => setFStage(e.target.value)} className={selectCls}>
+            <option value="">완료 단계 전체</option>
+            <option value="1">1단계 완료</option>
+            <option value="2">2단계 완료</option>
+            <option value="3">종합 완료</option>
+          </select>
+          <select value={fNextInterest} onChange={(e) => setFNextInterest(e.target.value)} className={selectCls}>
+            <option value="">다음 단계 관심 전체</option>
+            <option value="yes">다음 단계 관심 있음</option>
+          </select>
           <input type="date" value={fFrom} onChange={(e) => setFFrom(e.target.value)} className={selectCls} aria-label="접수일 시작" />
           <span className="text-slate-300">~</span>
           <input type="date" value={fTo} onChange={(e) => setFTo(e.target.value)} className={selectCls} aria-label="접수일 끝" />
@@ -355,7 +377,7 @@ export default function AdminBusinessLeadsPage() {
           <table className="min-w-full divide-y divide-slate-100">
             <thead className="bg-slate-50">
               <tr>
-                {['접수일', '등급', '회사명', '대표자', '연락처', '유형', '업종', '업력', '매출', '직원', '최우선 과제', '우대', '추천 1순위', '상담동의', '상태', '담당자', '유입'].map((h) => (
+                {['접수일', '등급', '단계', '회사명', '대표자', '연락처', '유형', '업종', '업력', '매출', '최우선 과제', '우대', '추천 1순위', '상담동의', '상태', '담당자', '유입'].map((h) => (
                   <th key={h} className={th}>{h}</th>
                 ))}
               </tr>
@@ -372,6 +394,10 @@ export default function AdminBusinessLeadsPage() {
                       <span className={`rounded-md px-2 py-0.5 text-xs font-black ${GRADE_TONE[l.lead_grade]}`}>{l.lead_grade}</span>
                       <span className="ml-1 text-xs text-slate-400">{l.lead_score}</span>
                     </td>
+                    <td className={td}>
+                      <span className={`rounded-md px-1.5 py-0.5 text-[11px] font-bold ${s?.completed_stage === 3 ? 'bg-emerald-100 text-emerald-700' : s?.completed_stage === 2 ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>{stageLabel(s)}</span>
+                      {s?.next_stage_interest && s?.completed_stage !== 3 && <span className="ml-1 text-[10px] font-bold text-amber-500">▲</span>}
+                    </td>
                     <td className={`${td} font-bold text-slate-900`}>{l.company_name}</td>
                     <td className={td}>{l.representative_name}</td>
                     <td className={td}>{maskPhone(l.phone)}</td>
@@ -379,7 +405,6 @@ export default function AdminBusinessLeadsPage() {
                     <td className={td}>{answerLabel('industry', l.industry ?? undefined)}</td>
                     <td className={td}>{answerLabel('years', a['years'])}</td>
                     <td className={td}>{answerLabel('revenue', a['revenue'])}</td>
-                    <td className={td}>{answerLabel('employees', a['employees'])}</td>
                     <td className={`${td} max-w-[180px] truncate`}>{s?.result_summary?.topTask ?? '-'}</td>
                     <td className={td}>{s?.result_summary?.ownedAdvantageCount ?? 0}개</td>
                     <td className={`${td} max-w-[160px] truncate`}>{rec1 ? (getPackageBySlug(rec1.slug)?.name ?? rec1.slug) : '-'}</td>
@@ -439,6 +464,27 @@ export default function AdminBusinessLeadsPage() {
                       <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
                         상담 {answerLabel('consultTiming', a['consultTiming'])} · {lead.contact_method ?? '방식 미선택'} {lead.preferred_contact_time ? `· ${lead.preferred_contact_time}` : ''}
                       </span>
+                    </div>
+
+                    {/* 진단 진행 (점진형) */}
+                    <div className="mt-4 flex flex-wrap gap-1.5 rounded-2xl border border-slate-200 bg-white p-3.5 text-xs">
+                      <span className="rounded-md bg-slate-900 px-2 py-1 font-black text-white">{stageLabel(session)}</span>
+                      {session?.stopped_after_stage && session?.completed_stage !== 3 && (
+                        <span className="rounded-md bg-amber-100 px-2 py-1 font-bold text-amber-700">{session?.completed_stage}단계에서 결과 요청</span>
+                      )}
+                      {session?.next_stage_interest && session?.completed_stage !== 3 && (
+                        <span className="rounded-md bg-blue-100 px-2 py-1 font-bold text-blue-700">다음 단계 관심 있음</span>
+                      )}
+                      <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-600">
+                        소요 {session?.stage1_duration_seconds ?? '-'}s / {session?.stage2_duration_seconds ?? '-'}s / {session?.stage3_duration_seconds ?? '-'}s
+                        {session?.total_duration_seconds ? ` · 합 ${session.total_duration_seconds}s` : ''}
+                      </span>
+                      {(session?.clicked_benefits?.length ?? 0) > 0 && (
+                        <span className="rounded-md bg-emerald-50 px-2 py-1 font-semibold text-emerald-700">추천 담기 {session?.clicked_benefits?.length}건</span>
+                      )}
+                      {(session?.skipped_benefits?.length ?? 0) > 0 && (
+                        <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-500">건너뛰기 {session?.skipped_benefits?.length}건</span>
+                      )}
                     </div>
 
                     {/* 상태 관리 */}
