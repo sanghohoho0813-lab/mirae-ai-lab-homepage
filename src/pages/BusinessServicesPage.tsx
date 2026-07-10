@@ -135,16 +135,27 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
           )}
         </div>
 
-        {/* 버튼 2개 (상담 신청 / 자세히 보기) */}
+        {/* 버튼 2개 (결제하기·상담 신청 / 자세히 보기) — consult 상품만 상담, 나머지는 카드결제 */}
         <div className="mt-auto flex gap-2 pt-5">
-          <a
-            href="#apply"
-            className={`flex flex-1 items-center justify-center rounded-xl px-3 py-3 text-base font-bold text-white shadow-sm transition-colors ${
-              flagship ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-slate-700'
-            }`}
-          >
-            상담 신청
-          </a>
+          {pkg.priceType === 'consult' ? (
+            <a
+              href="#apply"
+              className={`flex flex-1 items-center justify-center rounded-xl px-3 py-3 text-base font-bold text-white shadow-sm transition-colors ${
+                flagship ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-slate-700'
+              }`}
+            >
+              상담 신청
+            </a>
+          ) : (
+            <Link
+              to={`/business-services/${pkg.slug}?buy=1`}
+              className={`flex flex-1 items-center justify-center rounded-xl px-3 py-3 text-base font-bold text-white shadow-sm transition-colors ${
+                flagship ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-slate-700'
+              }`}
+            >
+              결제하기
+            </Link>
+          )}
           <Link
             to={`/business-services/${pkg.slug}`}
             className="flex flex-1 items-center justify-center rounded-xl border border-slate-300 px-3 py-3 text-base font-semibold text-slate-700 transition-colors hover:bg-slate-50"

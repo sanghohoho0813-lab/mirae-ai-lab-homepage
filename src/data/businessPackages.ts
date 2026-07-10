@@ -24,6 +24,8 @@ export type BusinessPackage = {
   short: string
   /** 가격 표기 (예: '55만원', '상담 후 결정') */
   price: string
+  /** 카드결제 금액(원) — fixed 상품용. variant 상품은 variants[].amount 사용, consult 는 없음 */
+  amount?: number
   /** 가격 보조 문구 (예: '44만원 상당 특허출원 포함') */
   priceNote?: string
   /** 가격 옆 강조 문구 (빨간색 표시 — 예: '성공수수료 없음') */
@@ -91,6 +93,7 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '운전자금·시설자금 가능성 진단부터 신청 전략까지 정리해 드립니다.',
     short: '운전자금·시설자금 가능성 진단부터 신청 전략까지',
     price: '50만원',
+    amount: 500000,
     priceNote: '23만 7천원 상당 전자책 3종 증정',
     priceHighlight: '성공수수료 없음 (업계 평균 5~7%)',
     highlights: ['성공수수료 없음 — 업계 평균 5~7%', '23만 7천원 상당 전자책 3종 증정', '바로 신청 가능한 사업계획서 작성'],
@@ -158,6 +161,7 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '기술성과 성장성을 중심으로 벤처확인을 준비합니다.',
     short: '기술성과 성장성을 중심으로 벤처확인을 준비합니다.',
     price: '199만원',
+    amount: 1990000,
     priceNote: '44만원 상당 특허출원 포함',
     highlights: ['정책자금 우대 혜택', '정부지원사업 가점 확보', '기업 신뢰도 상승 효과'],
     highlightNote: '44만원 상당 특허출원 포함',
@@ -187,6 +191,7 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략입니다.',
     short: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략입니다.',
     price: '499만원',
+    amount: 4990000,
     highlights: ['전문직·자산가 절세 전략', '소득공제 가능성 안내', '투자금 회수 구조 설명', '벤처확인(투자유형) 준비'],
     highlightNote: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략',
     recommendedFor: ['연봉 1억 이상 전문직·자산가 대표님', '투자유형으로 벤처확인과 소득공제를 함께 검토하려는 대표님'],
@@ -214,6 +219,7 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '24시간 일하는 온라인 영업사원을 만들어 드립니다.',
     short: '24시간 일하는 온라인 영업사원',
     price: '49만원',
+    amount: 490000,
     highlights: ['모바일·PC 완벽 대응', '문의 유입 구조 구성', '브랜드 가치 향상'],
     highlightNote: '고객이 믿는 첫인상, 24시간 일하는 온라인 영업사원',
     recommendedFor: ['온라인에서 회사를 보여줄 홈페이지가 필요한 대표님', '모바일까지 대응되는 반응형 홈페이지를 원하는 기업'],
@@ -240,6 +246,8 @@ export const businessPackages: BusinessPackage[] = [
     short: '반복업무 1가지를 자동화 프로그램으로 · 일회성 구축',
     price: '129만원부터',
     priceNote: '반복업무 1가지 자동화 기준 · 일회성 구축 (월 고정비 없음)',
+    priceType: 'variant',
+    variants: [{ label: '기본 구축 · 반복업무 1가지 자동화', amount: 1290000, note: '풀패키지 AX 구축은 상담 후 결정' }],
     highlights: ['반복업무 1가지 자동화 (기초 모델)', '일회성 구축 · 월 고정비 없음', '풀패키지 AX 구축은 상담 후 결정'],
     highlightNote: '본격 AX 풀패키지 구축(세팅비+월 운영비)은 상담 후 결정',
     recommendedFor: ['매일 반복되는 업무 1가지부터 자동화해보고 싶은 대표님', '큰 비용 부담 없이 AX를 시작해보려는 기업'],
@@ -266,6 +274,7 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '정부지원사업·정책자금 가점 확보에 도움이 되는 연구소 설립을 지원합니다.',
     short: '정부지원사업 · 정책자금 가점 확보',
     price: '149만원',
+    amount: 1490000,
     priceNote: '사후관리 월 2만원 선택',
     highlights: ['R&D 세액공제 활용', '정부지원사업 가점 부여', '정책자금 우대 혜택'],
     highlightNote: '정부지원사업·정책자금 가점 확보에 도움이 됩니다.',
@@ -324,6 +333,7 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '정책자금·정부지원사업 선정 가점 확보에 도움이 되는 경영혁신 인증을 준비합니다.',
     short: '정책자금 · 정부지원사업 선정 가점 확보',
     price: '199만원',
+    amount: 1990000,
     highlights: ['정책자금 우대평가', '정부지원사업 선정 가점', '기업 신뢰도 상승'],
     highlightNote: '경영혁신을 통해 더 큰 혜택으로 연결됩니다.',
     recommendedFor: ['정책자금·정부지원사업 가점을 확보하고 싶은 대표님', '경영혁신 활동을 인증으로 정리하려는 기업'],
@@ -349,6 +359,7 @@ export const businessPackages: BusinessPackage[] = [
     tagline: '기술혁신기업 인증을 통한 정책자금·정부지원사업 우대를 준비합니다.',
     short: '기술혁신기업 인증을 통한 정책자금·정부지원사업 우대',
     price: '249만원',
+    amount: 2490000,
     highlights: ['정책자금 우대 혜택', '정부지원사업 선정 가점', '기술혁신 기업 가치 상승'],
     highlightNote: '기술혁신형 중소기업으로 성장의 기회를 넓히세요.',
     recommendedFor: ['기술혁신 역량을 인증으로 정리하려는 기업', '정책자금·정부지원사업 우대를 준비하는 대표님'],

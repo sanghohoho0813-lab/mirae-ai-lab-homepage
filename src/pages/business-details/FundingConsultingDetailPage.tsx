@@ -4,9 +4,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import BusinessInquiryForm from '../../components/BusinessInquiryForm'
+import CheckoutModal from '../../components/CheckoutModal'
 import PublicMenuDrawer from '../../components/PublicMenuDrawer'
 import FundingCasesSection from '../../components/FundingCasesSection'
 import { getPackageBySlug } from '../../data/businessPackages'
+import { completePayment } from '../../lib/checkout'
 
 const pkg = getPackageBySlug('funding-consulting')!
 const IMG = '/assets/business-services/funding-consulting.png'
@@ -56,16 +58,43 @@ function CartIcon() {
 
 export default function FundingConsultingDetailPage() {
   const [showBar, setShowBar] = useState(false)
-  const [payNotice, setPayNotice] = useState(false)
+  const [checkoutOpen, setCheckoutOpen] = useState(false)
+  const [returnMsg, setReturnMsg] = useState<{ ok: boolean; text: string } | null>(null)
 
   function handleBuy() {
-    setPayNotice(true)
-    scrollToId('apply')
+    setReturnMsg(null)
+    setCheckoutOpen(true)
   }
 
   useEffect(() => {
     document.title = '정책자금 컨설팅 | 미래 AI 랩 서비스몰'
     window.scrollTo(0, 0)
+  }, [])
+
+  // ?buy=1 자동 결제창 + 모바일 리디렉션 결제 복귀 처리
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search)
+    const pid = q.get('paymentId')
+    if (pid) {
+      const errCode = q.get('code')
+      window.history.replaceState(null, '', window.location.pathname)
+      if (errCode) {
+        setReturnMsg({ ok: false, text: q.get('message') ?? '결제가 완료되지 않았습니다. 다시 시도해주세요.' })
+        return
+      }
+      void completePayment({ paymentId: pid, slug: pkg.slug, variantIdx: 0 }).then((r) =>
+        setReturnMsg(
+          r.ok
+            ? { ok: true, text: `결제가 완료되었습니다 (주문번호 ${r.orderNo}). 담당자가 확인 후 진행 안내를 드립니다.` }
+            : { ok: false, text: r.message },
+        ),
+      )
+      return
+    }
+    if (q.get('buy') === '1') {
+      window.history.replaceState(null, '', window.location.pathname)
+      setCheckoutOpen(true)
+    }
   }, [])
 
   useEffect(() => {
@@ -81,19 +110,9 @@ export default function FundingConsultingDetailPage() {
         <button
           type="button"
           onClick={handleBuy}
-          className="flex flex-1 items-center justify-center rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
         >
-          바로 구매하기
-        </button>
-        <button
-          type="button"
-          onClick={handleBuy}
-          aria-label="장바구니"
-          className={`flex items-center justify-center gap-2 rounded-xl border px-5 py-4 font-bold transition-colors ${
-            variant === 'dark' ? 'border-white/25 bg-white/5 text-white hover:bg-white/10' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
-          }`}
-        >
-          <CartIcon />
+          <CartIcon /> 결제하기
         </button>
       </div>
       <button
@@ -103,7 +122,7 @@ export default function FundingConsultingDetailPage() {
           variant === 'dark' ? 'text-slate-300 hover:text-white' : 'text-slate-500 hover:text-slate-900'
         }`}
       >
-        또는 무료 상담 신청하기 →
+        결제 전에 상담을 먼저 받고 싶다면 →
       </button>
     </>
   )
@@ -123,7 +142,7 @@ export default function FundingConsultingDetailPage() {
           <div className="flex items-center gap-4">
             <Link to="/business-services" className="hidden text-[0.95rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
             <button type="button" onClick={handleBuy} className="rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">
-              바로 구매
+              결제하기
             </button>
             <PublicMenuDrawer />
           </div>
@@ -140,6 +159,20 @@ export default function FundingConsultingDetailPage() {
           <span className="font-semibold text-slate-700">정책자금 컨설팅</span>
         </div>
       </div>
+
+      {/* 모바일 리디렉션 결제 복귀 결과 배너 */}
+      {returnMsg && (
+        <div className="mx-auto max-w-[900px] px-5 pt-4">
+          <div
+            role="status"
+            className={`rounded-2xl px-5 py-4 text-[0.95rem] font-semibold leading-relaxed ${
+              returnMsg.ok ? 'border border-emerald-200 bg-emerald-50 text-emerald-800' : 'border border-red-200 bg-red-50 text-red-700'
+            }`}
+          >
+            {returnMsg.text}
+          </div>
+        </div>
+      )}
 
       {/* ── 상단 구매영역 (카페24형) ───────────────────────────── */}
       <section className="border-b border-slate-200 bg-white">
@@ -487,11 +520,6 @@ export default function FundingConsultingDetailPage() {
           <p className="mx-auto mt-4 max-w-md text-center text-base leading-relaxed text-slate-600">
             간단히 남겨주시면 어떤 자금부터 검토하면 좋을지 방향을 정리해 안내드립니다.
           </p>
-          {payNotice && (
-            <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-[1.05rem] leading-relaxed text-amber-800">
-              🛒 온라인 카드결제(무이자 할부)는 준비 중입니다. 우선 아래 <b>상담 신청</b>을 남겨주시면 결제와 진행을 함께 안내드리겠습니다.
-            </div>
-          )}
           <div className="mt-8">
             <BusinessInquiryForm />
           </div>
@@ -514,9 +542,21 @@ export default function FundingConsultingDetailPage() {
             <span className="text-lg font-black text-slate-900">{SALE_PRICE}</span>
           </span>
           <button type="button" onClick={handleBuy} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white">
-            <CartIcon /> 바로 구매하기
+            <CartIcon /> 결제하기
           </button>
         </div>
+      )}
+
+      {/* 카드결제 모달 */}
+      {checkoutOpen && (
+        <CheckoutModal
+          pkg={pkg}
+          onClose={() => setCheckoutOpen(false)}
+          onConsultInstead={() => {
+            setCheckoutOpen(false)
+            scrollToId('apply')
+          }}
+        />
       )}
     </div>
   )

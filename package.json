@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@portone/browser-sdk": "^0.1.9",
     "@supabase/supabase-js": "^2.108.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
