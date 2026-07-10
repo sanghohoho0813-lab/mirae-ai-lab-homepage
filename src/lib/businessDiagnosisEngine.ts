@@ -10,6 +10,7 @@ import type {
   ScoreArea,
 } from '../types/businessDiagnosis'
 import { hasArrears, isFounderToBe, isIndividual, isCorp } from '../data/businessDiagnosisQuestions'
+import { computeAdvantageItems } from '../data/policyAdvantageFactors'
 
 const one = (a: DiagnosisAnswers, id: string) => (typeof a[id] === 'string' ? (a[id] as string) : undefined)
 const many = (a: DiagnosisAnswers, id: string) => (Array.isArray(a[id]) ? (a[id] as string[]) : [])
@@ -43,6 +44,7 @@ const AREA_RULES: Record<ScoreArea, { base: number; rules: Rule[] }> = {
       { q: 'revenue', map: { none: -6, lt1: 0, r1to5: 6, r5to10: 9, r10to30: 10, r30plus: 10 } },
       { q: 'govExperience', map: { won: 8, applied: 4, prepared: 2, never: 0 } },
       { q: 'venture', map: { have: 6, preparing: 2, expired: 0, none: 0, unsure: 0 } },
+      { q: 'operatingProfit', map: { profit: 8, breakeven: 2, loss: -8, notClosed: 0, unsure: 0 } },
     ],
   },
   employment: {
@@ -60,25 +62,29 @@ const AREA_RULES: Record<ScoreArea, { base: number; rules: Rule[] }> = {
       { q: 'govExperience', map: { won: 16, applied: 8, prepared: 4, never: 0 } },
       { q: 'website', map: { good: 6, old: 2, snsOnly: 0, none: -4 } },
       { q: 'venture', map: { have: 6, preparing: 2, expired: 0, none: 0, unsure: 0 } },
-      { q: 'researchLab', map: { have: 6, preparing: 2, none: 0, unsure: 0 } },
+      { q: 'researchLab', map: { lab: 6, dept: 4, preparing: 2, none: 0, unsure: 0 } },
     ],
   },
   certification: {
     base: 38,
     rules: [
-      { q: 'venture', map: { have: 20, preparing: 8, expired: 4, none: 0, unsure: 0 } },
-      { q: 'researchLab', map: { have: 16, preparing: 6, none: 0, unsure: 0 } },
-      {
-        q: 'otherCerts',
-        map: { mainbiz: 8, innobiz: 8, iso: 8, patent: 6, etc: 3, none: 0, unsure: 0 },
-      },
+      { q: 'venture', map: { have: 16, preparing: 7, expired: 3, none: 0, unsure: 0 } },
+      { q: 'researchLab', map: { lab: 13, dept: 10, preparing: 5, none: 0, unsure: 0 } },
+      { q: 'ipRights', map: { patent: 10, utility: 8, filed: 3, none: 0, unsure: 0 } },
+      { q: 'innobiz', map: { have: 7, preparing: 3, expired: 1, none: 0, unsure: 0 } },
+      { q: 'mainbiz', map: { have: 7, preparing: 3, expired: 1, none: 0, unsure: 0 } },
+      { q: 'iso', map: { iso9001: 4, iso14001: 3, iso45001: 3, isoEtc: 2, preparing: 1, none: 0, unsure: 0 } },
+      { q: 'rndRatio', map: { ge5: 5, lt5: 0, notManaged: 0, unsure: 0 } },
+      { q: 'newProduct', map: { launched3y: 5, developing: 2, planned: 0, none: 0, na: 0 } },
       { q: 'years', map: { pre: -6, lt1: 0, y1to3: 2, y3to7: 4, y7plus: 4 } },
     ],
   },
   credibility: {
     base: 40,
     rules: [
-      { q: 'otherCerts', map: { iso: 16, mainbiz: 8, innobiz: 8, patent: 5, etc: 2, none: 0, unsure: 0 } },
+      { q: 'iso', map: { iso9001: 8, iso14001: 6, iso45001: 6, isoEtc: 4, preparing: 2, none: 0, unsure: 0 } },
+      { q: 'mainbiz', map: { have: 6, preparing: 2, expired: 1, none: 0, unsure: 0 } },
+      { q: 'innobiz', map: { have: 6, preparing: 2, expired: 1, none: 0, unsure: 0 } },
       { q: 'website', map: { good: 10, old: 3, snsOnly: 0, none: -6 } },
       { q: 'venture', map: { have: 8, preparing: 3, expired: 2, none: 0, unsure: 0 } },
       { q: 'revenue', map: { none: -4, lt1: 0, r1to5: 3, r5to10: 5, r10to30: 7, r30plus: 8 } },
@@ -128,7 +134,7 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
   const corp = isCorp(answers)
   const concerns = many(answers, 'concerns')
   const plans = many(answers, 'futurePlans')
-  const certs = many(answers, 'otherCerts')
+  const hasIso = many(answers, 'iso').some((v) => ['iso9001', 'iso14001', 'iso45001', 'isoEtc'].includes(v))
   const fundingWhen = one(answers, 'fundingWhen')
   const hiring = one(answers, 'hiring')
   const employees = one(answers, 'employees')
@@ -226,7 +232,7 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
 
     if (area === 'credibility') {
       const wantsBig = plans.some((p) => ['bigCorp', 'bidding', 'export'].includes(p))
-      if (wantsBig && !certs.includes('iso')) {
+      if (wantsBig && !hasIso) {
         priority = '지금 필요'
         note = '대기업·입찰·수출 계획 대비 관리체계 자료 보완이 필요합니다.'
         reasons.push('대기업 납품·입찰·수출 계획이 있지만 ISO 인증이 없다고 답하셨어요.')
@@ -273,9 +279,11 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
   if (bizPlan === 'recent') strengths.push('최신 사업계획서를 보유해 어떤 신청이든 빠르게 시작할 수 있어요.')
   if (one(answers, 'govExperience') === 'won') strengths.push('정부지원사업 선정 경험이 있어 심사 대응에 익숙해요.')
   if (venture === 'have') strengths.push('벤처기업확인을 보유해 기술성·성장성 근거가 이미 있어요.')
+  if (['lab', 'dept'].includes(one(answers, 'researchLab') ?? '')) strengths.push('연구개발 조직을 보유해 연구 역량을 설명할 수 있어요.')
   if (website === 'good') strengths.push('모바일 대응 홈페이지가 있어 온라인 첫인상이 준비되어 있어요.')
   if (workflow === 'system') strengths.push('업무를 전용 시스템으로 통합관리하고 있어 운영 기반이 좋아요.')
-  if (certs.includes('iso')) strengths.push('ISO 인증을 보유해 관리체계를 자료로 설명할 수 있어요.')
+  if (hasIso) strengths.push('ISO 인증을 보유해 관리체계를 자료로 설명할 수 있어요.')
+  if (['patent', 'utility'].includes(one(answers, 'ipRights') ?? '')) strengths.push('최근 3년 내 등록 지식재산권이 있어 기술력을 자료로 보여줄 수 있어요.')
   if (strengths.length === 0) strengths.push('진단을 끝까지 완료하신 것 자체가 성장 준비의 시작이에요.')
 
   const improvements: string[] = []
@@ -310,7 +318,18 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
   // ── 상품 추천 (최대 3개, 반드시 이유 포함) ──
   const recommendations = recommend(answers, { arrears, founder, individual, corp, areas: byArea })
 
-  return { summary, areas, strengths, improvements, prerequisites, actionPlan, recommendations }
+  // ── 정책자금·지원사업 활용 기반 (우대 참고요소) ──
+  const advantages = computeAdvantageItems(answers)
+  const ownedAdvantageCount = advantages.filter((x) => x.status === '보유').length
+
+  // 게이트 전 티저 — 최우선 과제 1개 + 종합 준비도(해당 없음 제외 평균, 내부 지표)
+  const topTask = actionPlan[0] ?? '현재 준비 상태 유지'
+  const applicable = areas.filter((x) => x.priority !== '현재 우선순위 낮음')
+  const overallScore = Math.round(
+    (applicable.length ? applicable : areas).reduce((sum, x) => sum + x.score, 0) / (applicable.length ? applicable.length : areas.length),
+  )
+
+  return { summary, areas, strengths, improvements, prerequisites, actionPlan, recommendations, advantages, ownedAdvantageCount, topTask, overallScore }
 }
 
 type RecContext = {
@@ -324,7 +343,7 @@ type RecContext = {
 function recommend(answers: DiagnosisAnswers, ctx: RecContext): ProductRecommendation[] {
   const concerns = many(answers, 'concerns')
   const plans = many(answers, 'futurePlans')
-  const certs = many(answers, 'otherCerts')
+  const hasIso = many(answers, 'iso').some((v) => ['iso9001', 'iso14001', 'iso45001', 'isoEtc'].includes(v))
   const fundingWhen = one(answers, 'fundingWhen')
   const hiring = one(answers, 'hiring')
   const website = one(answers, 'website')
@@ -425,7 +444,7 @@ function recommend(answers: DiagnosisAnswers, ctx: RecContext): ProductRecommend
 
   // ISO
   const wantsBig = plans.some((p) => ['bigCorp', 'bidding', 'export'].includes(p))
-  if (!ctx.founder && wantsBig && !certs.includes('iso')) {
+  if (!ctx.founder && wantsBig && !hasIso) {
     cand.push({
       slug: 'iso-certification',
       w: 84,
@@ -435,10 +454,10 @@ function recommend(answers: DiagnosisAnswers, ctx: RecContext): ProductRecommend
 
   // 메인비즈/이노비즈 — 업력 3년+ & 미보유일 때 보조 후보
   const mature = years === 'y3to7' || years === 'y7plus'
-  if (!ctx.founder && !ctx.individual && mature && !certs.includes('mainbiz') && wantsBig) {
+  if (!ctx.founder && !ctx.individual && mature && one(answers, 'mainbiz') !== 'have' && wantsBig) {
     cand.push({ slug: 'mainbiz-certification', w: 52, reason: '업력이 3년 이상이고 거래처 계획이 있어 메인비즈로 경영혁신 근거를 더할 수 있습니다.' })
   }
-  if (!ctx.founder && !ctx.individual && mature && !certs.includes('innobiz') && (industry === 'manufacture' || industry === 'it')) {
+  if (!ctx.founder && !ctx.individual && mature && one(answers, 'innobiz') !== 'have' && (industry === 'manufacture' || industry === 'it')) {
     cand.push({ slug: 'innobiz-certification', w: 50, reason: '기술 기반 업종에 업력 3년 이상이라 이노비즈로 기술혁신 역량을 정리할 수 있습니다.' })
   }
 

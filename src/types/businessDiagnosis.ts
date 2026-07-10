@@ -96,6 +96,78 @@ export type DiagnosisResultData = {
   prerequisites: string[]
   actionPlan: string[]
   recommendations: ProductRecommendation[]
+  /** 정책자금·지원사업 활용 기반 (우대 참고요소) */
+  advantages: AdvantageResultItem[]
+  ownedAdvantageCount: number
+  /** 게이트 전 티저용 — 최우선 과제 1개 / 종합 준비도(내부 지표) */
+  topTask: string
+  overallScore: number
+}
+
+/** 정책자금 평가·우대 참고요소 (⚠️ 확정 가점·승인확률 아님) */
+export type AdvantageGroup = 'technology' | 'management' | 'credibility' | 'expert'
+
+export type AdvantageStatus = '보유' | '준비 중' | '검토 추천' | '자료 확인 필요' | '현재 우선순위 낮음'
+
+export type PolicyAdvantageFactor = {
+  id: string
+  label: string
+  group: AdvantageGroup
+  description: string
+  /** 관련 질문 id (관리자 화면 근거 표시용) */
+  questionIds: string[]
+  /** 보유로 판정되는 조건 */
+  ownedCondition: (answers: DiagnosisAnswers) => boolean
+  /** '준비 중'으로 판정되는 조건 */
+  preparingCondition?: (answers: DiagnosisAnswers) => boolean
+  /** '자료 확인 필요'로 판정되는 조건 (모름·미결산 등) */
+  verifyCondition?: (answers: DiagnosisAnswers) => boolean
+  /** '검토 추천'(미보유)으로 판정되는 조건 */
+  missingCondition: (answers: DiagnosisAnswers) => boolean
+  benefits: string[]
+  relevantProductSlugs: string[]
+  claimType: ClaimType
+  sourceLabel?: string
+  sourceDate?: string
+  verificationNote?: string
+  priority: number
+  /** true 면 상품 판매 대신 '전문가 연결 검토' 로만 안내 */
+  expertReferralOnly: boolean
+  /** expertReferralOnly 항목의 노출 조건 */
+  showIf?: (answers: DiagnosisAnswers) => boolean
+}
+
+export type AdvantageResultItem = {
+  id: string
+  label: string
+  group: AdvantageGroup
+  status: AdvantageStatus
+  description: string
+  expertReferralOnly: boolean
+}
+
+/** 유입경로 (첫 진입 시 1회 캡처) */
+export type UtmInfo = {
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
+  utmContent?: string
+  utmTerm?: string
+  referrer?: string
+  landingPath?: string
+}
+
+/** 결과 게이트에서 수집하는 대표자 정보 */
+export type LeadFormData = {
+  companyName: string
+  representativeName: string
+  phone: string
+  email?: string
+  contactMethod?: string
+  preferredContactTime?: string
+  privacyConsent: boolean
+  consultationConsent: boolean
+  marketingConsent: boolean
 }
 
 /** localStorage 저장 구조 */
@@ -108,6 +180,14 @@ export type DiagnosisSession = {
   answers: DiagnosisAnswers
   /** 혜택 카드에서 '점검해볼게요'를 누른 관심 키 목록 */
   interests: string[]
+  /** 답변 중 발견된 보유 우대 참고요소 id (모션·카운트용) */
+  foundAdvantages: string[]
   completed: boolean
   completedAt?: string
+  /** 유입경로 (최초 1회) */
+  utm?: UtmInfo
+  /** 서버 저장 연결 정보 */
+  serverSessionId?: string
+  leadId?: string
+  leadSubmittedAt?: string
 }

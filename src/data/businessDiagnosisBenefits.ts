@@ -11,11 +11,11 @@ export const benefitCards: BenefitCard[] = [
     id: 'venture',
     afterQuestionId: 'venture',
     triggerIf: (a) => ['none', 'expired', 'unsure'].includes(one(a, 'venture') ?? ''),
-    title: '아직 벤처기업확인은 없으시군요.',
+    title: '현재 벤처기업확인은 보유하고 있지 않습니다.',
     desc: '기업 상황에 따라 기술성과 성장성을 정리하면 정책자금·지원사업·대외신인도 측면에서 활용할 수 있는 여지가 있습니다.',
-    revealCta: '취득하면 무엇이 달라질까요?',
+    revealCta: '준비하면 무엇이 달라질까요?',
     beforeLabel: '벤처기업확인 미보유',
-    afterLabel: '벤처기업확인 보유 시',
+    afterLabel: '벤처기업확인 준비 시',
     benefits: [
       '기술성과 성장성을 설명할 근거가 보강됩니다.',
       '일부 정책자금·정부지원사업에서 우대요소로 활용될 수 있습니다.',
@@ -24,13 +24,14 @@ export const benefitCards: BenefitCard[] = [
     feedbackLabel: '기업인증 준비도 +8',
     feedbackArea: 'certification',
     feedbackPoints: 8,
-    continueCta: '우리 회사도 한 번 점검해볼게요',
+    continueCta: '우리 회사도 가능성을 점검해볼게요',
     interestKey: 'venture',
     claimType: 'qualitative',
   },
   {
     id: 'researchLab',
     afterQuestionId: 'researchLab',
+    // v2: lab/dept 보유는 '우대요소 발견' 모션으로 처리, 미보유만 혜택 카드
     triggerIf: (a) => ['none', 'unsure'].includes(one(a, 'researchLab') ?? ''),
     title: '기업부설연구소·전담부서가 아직 없으시군요.',
     desc: '연구개발 활동이 조금이라도 있다면, 이를 정식 조직으로 정리하는 것만으로 활용 범위가 넓어질 수 있습니다.',
@@ -45,7 +46,7 @@ export const benefitCards: BenefitCard[] = [
     feedbackLabel: '연구개발 기반 +10',
     feedbackArea: 'certification',
     feedbackPoints: 10,
-    continueCta: '우리 회사도 한 번 점검해볼게요',
+    continueCta: '우리 회사도 가능성을 점검해볼게요',
     interestKey: 'researchLab',
     claimType: 'qualitative',
   },
@@ -66,7 +67,7 @@ export const benefitCards: BenefitCard[] = [
     feedbackLabel: '온라인 신뢰도 +12',
     feedbackArea: 'digital',
     feedbackPoints: 12,
-    continueCta: '우리 회사도 한 번 점검해볼게요',
+    continueCta: '우리 회사도 가능성을 점검해볼게요',
     interestKey: 'website',
     claimType: 'qualitative',
   },
@@ -87,7 +88,7 @@ export const benefitCards: BenefitCard[] = [
     feedbackLabel: '운영 효율 준비도 +10',
     feedbackArea: 'digital',
     feedbackPoints: 10,
-    continueCta: '우리 회사도 한 번 점검해볼게요',
+    continueCta: '우리 회사도 가능성을 점검해볼게요',
     interestKey: 'workflow',
     claimType: 'qualitative',
   },
@@ -96,9 +97,10 @@ export const benefitCards: BenefitCard[] = [
     afterQuestionId: 'futurePlans',
     triggerIf: (a) => {
       const plans = many(a, 'futurePlans')
-      const certs = many(a, 'otherCerts')
+      const iso = many(a, 'iso')
+      const hasIso = iso.some((v) => ['iso9001', 'iso14001', 'iso45001', 'isoEtc'].includes(v))
       const wantsBig = plans.some((p) => ['bigCorp', 'bidding', 'export'].includes(p))
-      return wantsBig && !certs.includes('iso')
+      return wantsBig && !hasIso
     },
     title: '대기업·입찰·수출 계획이 있는데, ISO가 아직 없으시네요.',
     desc: '거래처와 심사기관은 품질·환경·안전관리 체계를 자료로 확인하고 싶어합니다.',
@@ -113,7 +115,7 @@ export const benefitCards: BenefitCard[] = [
     feedbackLabel: '대외신인도 +9',
     feedbackArea: 'credibility',
     feedbackPoints: 9,
-    continueCta: '우리 회사도 한 번 점검해볼게요',
+    continueCta: '우리 회사도 가능성을 점검해볼게요',
     interestKey: 'iso',
     claimType: 'qualitative',
   },
@@ -134,7 +136,7 @@ export const benefitCards: BenefitCard[] = [
     feedbackLabel: '지원사업 준비도 +11',
     feedbackArea: 'govSupport',
     feedbackPoints: 11,
-    continueCta: '우리 회사도 한 번 점검해볼게요',
+    continueCta: '우리 회사도 가능성을 점검해볼게요',
     interestKey: 'bizPlan',
     claimType: 'qualitative',
   },

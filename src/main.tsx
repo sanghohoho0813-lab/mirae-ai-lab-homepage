@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import MyToolsPage from './pages/MyToolsPage'
 import AdminPage from './pages/AdminPage'
+import AdminBusinessLeadsPage from './pages/AdminBusinessLeadsPage'
 import BusinessDiagnosisPage from './pages/BusinessDiagnosisPage'
 import BusinessServicesPage from './pages/BusinessServicesPage'
 import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/my-tools" element={<MyToolsPage />} />
           <Route path="/dashboard" element={<Navigate to="/my-tools" replace />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/business-leads" element={<AdminBusinessLeadsPage />} />
           <Route path="/business-services" element={<BusinessServicesPage />} />
           <Route path="/business-diagnosis" element={<BusinessDiagnosisPage />} />
           <Route path="/business-services/funding-consulting" element={<FundingConsultingDetailPage />} />
