@@ -91,6 +91,12 @@ export default function FundingCasesSection() {
                   </div>
                 </div>
 
+                {/* 진행 요약 (상단) */}
+                <div className="bg-white px-4 pb-3.5 pt-4">
+                  <p className="text-[11px] font-black uppercase tracking-wide text-blue-600">진행 요약</p>
+                  <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-700">{c.summary}</p>
+                </div>
+
                 {/* 대화 (카톡 파란 배경) */}
                 <div className={`space-y-3 ${KAKAO_BG} px-4 py-5`}>
                   {c.chat.map((line, i) => (
