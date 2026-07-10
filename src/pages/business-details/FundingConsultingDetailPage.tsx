@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import BusinessInquiryForm from '../../components/BusinessInquiryForm'
+import FundingCasesSection from '../../components/FundingCasesSection'
 import { getPackageBySlug } from '../../data/businessPackages'
 
 const pkg = getPackageBySlug('funding-consulting')!
@@ -528,6 +529,9 @@ export default function FundingConsultingDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* 정책자금·보증부 자금 실제 사례 */}
+      <FundingCasesSection />
 
       {/* 추천 대상 */}
       <section className={`bg-slate-50 ${band}`}>
