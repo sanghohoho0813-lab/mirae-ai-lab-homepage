@@ -235,7 +235,7 @@ export default function FundingConsultingDetailPage() {
             {pains.map((p) => (
               <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>?</span>
-                <p className="mt-3 text-base font-bold leading-snug text-slate-800 sm:text-lg">“{p}”</p>
+                <p className="mt-3 text-[1.2rem] font-bold leading-snug text-slate-800 sm:text-[1.35rem]">“{p}”</p>
               </div>
             ))}
           </div>
@@ -256,8 +256,8 @@ export default function FundingConsultingDetailPage() {
             {losses.map((l) => (
               <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
                 <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-2xl" aria-hidden>{l.icon}</span>
-                <p className="mt-3 text-base font-extrabold leading-snug text-slate-900">{l.t}</p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{l.d}</p>
+                <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
+                <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
               </div>
             ))}
           </div>
@@ -280,7 +280,7 @@ export default function FundingConsultingDetailPage() {
               <div key={w.n} className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
                 <span className="text-3xl font-black text-amber-300 sm:text-4xl">{w.n}</span>
                 <p className="mt-3 text-lg font-bold text-white">{w.t}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-300">{w.d}</p>
+                <p className="mt-1.5 text-[1.05rem] leading-relaxed text-slate-300">{w.d}</p>
               </div>
             ))}
           </div>
@@ -307,7 +307,7 @@ export default function FundingConsultingDetailPage() {
                   <span className="h-px flex-1 bg-slate-200" />
                 </div>
                 <p className="text-[11px] font-black uppercase tracking-wide text-blue-500">진행 후</p>
-                <p className="mt-1 text-base font-extrabold leading-snug text-slate-900">{a.after}</p>
+                <p className="mt-1 text-[1.2rem] font-extrabold leading-snug text-slate-900">{a.after}</p>
               </div>
             ))}
           </div>
@@ -355,8 +355,8 @@ export default function FundingConsultingDetailPage() {
             ].map((it) => (
               <div key={it.t} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{it.icon}</span>
-                <p className="mt-3 text-base font-extrabold text-slate-900">{it.t}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{it.d}</p>
+                <p className="mt-3 text-[1.2rem] font-extrabold text-slate-900">{it.t}</p>
+                <p className="mt-1.5 text-[1.05rem] leading-relaxed text-slate-600">{it.d}</p>
               </div>
             ))}
           </div>
@@ -367,7 +367,7 @@ export default function FundingConsultingDetailPage() {
             <p className="mt-2 text-lg font-black leading-snug text-slate-900 sm:text-xl">
               신청까지 전부 대행 — 업계 5~7%가 아닌 <span className="text-blue-600">3%</span>로 진행해 드립니다
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">
               아무것도 손대기 어려운 상황이라면, 처음부터 끝까지 저희가 맡아 진행합니다. 그래도 업계 절반 수준입니다.
             </p>
           </div>
@@ -401,7 +401,7 @@ export default function FundingConsultingDetailPage() {
               <span className="text-base font-bold text-slate-400 line-through">20만원 상당</span>
               <span className="text-2xl font-black text-blue-600">0원</span>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-slate-500">판매 중인 유료 자료 그대로 드립니다</p>
+            <p className="mt-3 text-[1.05rem] leading-relaxed text-slate-500">판매 중인 유료 자료 그대로 드립니다</p>
           </div>
           <p className="mx-auto mt-6 max-w-sm text-center text-xs leading-relaxed text-slate-400">
             ※ 증정 전자책을 다운로드하신 후에는 결제 환불이 불가합니다.
@@ -418,7 +418,7 @@ export default function FundingConsultingDetailPage() {
             {reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
                 <span className="grid h-12 w-12 place-items-center rounded-full bg-blue-600 text-xl font-black text-white" aria-hidden>✓</span>
-                <p className="mt-3 text-base font-bold text-slate-900">{r}</p>
+                <p className="mt-3 text-[1.2rem] font-bold text-slate-900">{r}</p>
               </div>
             ))}
           </div>
@@ -427,7 +427,7 @@ export default function FundingConsultingDetailPage() {
             <p className="text-center text-lg font-black text-slate-900 sm:text-xl">
               감(感)으로 하는 컨설팅과는 <span className="text-blue-600">다릅니다</span>
             </p>
-            <p className="mx-auto mt-3 max-w-lg text-center text-sm leading-relaxed text-slate-600 sm:text-[0.95rem]">
+            <p className="mx-auto mt-3 max-w-lg text-center text-[1.05rem] leading-relaxed text-slate-600 sm:text-[1.1rem]">
               직접 개발하고 전문가 검증을 거친 <b className="text-slate-900">자체 SaaS 프로그램</b>이
               자금·인증 심사 데이터를 계속 학습하고 최적화합니다.
               그래서 저희는 감이 아니라 <b className="text-slate-900">수치와 데이터를 근거로</b> 진단하고 방향을 제시합니다.
@@ -500,12 +500,12 @@ export default function FundingConsultingDetailPage() {
             {steps.map((s, i) => (
               <li key={s.t} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <span className="grid h-11 w-11 place-items-center rounded-full bg-slate-900 text-lg font-black text-white">{i + 1}</span>
-                <p className="mt-3 text-base font-bold text-slate-900">{s.t}</p>
-                <p className="mt-1 text-sm leading-relaxed text-slate-500">{s.d}</p>
+                <p className="mt-3 text-[1.2rem] font-bold text-slate-900">{s.t}</p>
+                <p className="mt-1 text-[1.05rem] leading-relaxed text-slate-500">{s.d}</p>
               </li>
             ))}
           </ol>
-          <p className="mt-5 text-center text-sm text-slate-500">부담 갖지 않으셔도 됩니다. 진행 여부는 이야기 나눈 뒤 정하셔도 좋습니다.</p>
+          <p className="mt-5 text-center text-[1.05rem] text-slate-500">부담 갖지 않으셔도 됩니다. 진행 여부는 이야기 나눈 뒤 정하셔도 좋습니다.</p>
         </div>
       </section>
 
@@ -542,7 +542,7 @@ export default function FundingConsultingDetailPage() {
             {pkg.recommendedFor.map((r) => (
               <div key={r} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>✓</span>
-                <p className="mt-3 text-base font-semibold leading-snug text-slate-800">{r}</p>
+                <p className="mt-3 text-[1.2rem] font-semibold leading-snug text-slate-800">{r}</p>
               </div>
             ))}
           </div>
@@ -567,7 +567,7 @@ export default function FundingConsultingDetailPage() {
             </div>
             <ul className="mx-auto mt-5 max-w-xs space-y-2.5 border-t border-slate-100 pt-5">
               {pkg.deliverables.map((d) => (
-                <li key={d} className="flex items-start gap-2 text-sm text-slate-700">
+                <li key={d} className="flex items-start gap-2 text-[1.05rem] text-slate-700">
                   <span className="mt-0.5 font-black text-blue-500" aria-hidden>✓</span>{d}
                 </li>
               ))}
@@ -575,7 +575,7 @@ export default function FundingConsultingDetailPage() {
             <div className="mt-7">
               <BuyButtons variant="light" />
             </div>
-            <p className="mt-5 border-t border-slate-100 pt-4 text-center text-sm leading-relaxed text-slate-500">
+            <p className="mt-5 border-t border-slate-100 pt-4 text-center text-[1.05rem] leading-relaxed text-slate-500">
               지금 당장 결정하지 않으셔도 괜찮습니다.<br />
               <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요. 확인하는 데는 비용이 들지 않습니다.
             </p>
@@ -591,11 +591,11 @@ export default function FundingConsultingDetailPage() {
           <div className="mt-9 space-y-3">
             {pkg.faqs.map((f) => (
               <details key={f.q} className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 [&_summary]:cursor-pointer">
-                <summary className="flex items-center justify-between text-base font-bold text-slate-900 marker:content-['']">
+                <summary className="flex items-center justify-between text-[1.2rem] font-bold text-slate-900 marker:content-['']">
                   <span>Q. {f.q}</span>
                   <span className="ml-3 text-slate-400 transition-transform group-open:rotate-45" aria-hidden>+</span>
                 </summary>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{f.a}</p>
+                <p className="mt-3 text-[1.05rem] leading-relaxed text-slate-600">{f.a}</p>
               </details>
             ))}
           </div>
@@ -606,7 +606,7 @@ export default function FundingConsultingDetailPage() {
       <section className="bg-white px-5 pb-4">
         <div className={`${inner} rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6`}>
           <p className="text-sm font-bold text-slate-700">안내 및 유의사항</p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-500">{pkg.notice}</p>
+          <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-500">{pkg.notice}</p>
         </div>
       </section>
 
@@ -619,7 +619,7 @@ export default function FundingConsultingDetailPage() {
             간단히 남겨주시면 어떤 자금부터 검토하면 좋을지 방향을 정리해 안내드립니다.
           </p>
           {payNotice && (
-            <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-800">
+            <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-[1.05rem] leading-relaxed text-amber-800">
               🛒 온라인 카드결제(무이자 할부)는 준비 중입니다. 우선 아래 <b>상담 신청</b>을 남겨주시면 결제와 진행을 함께 안내드리겠습니다.
             </div>
           )}
