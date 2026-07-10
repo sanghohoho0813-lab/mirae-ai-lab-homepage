@@ -34,8 +34,76 @@
   animation: fade-in 0.45s ease both;
 }
 
+/* ── 진단/드로어 공용 모션 ─────────────────────────── */
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.85); }
+  70% { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes check-draw {
+  from { stroke-dashoffset: 48; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes ring-draw {
+  from { stroke-dashoffset: 260; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes press-tap {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+@keyframes confetti-fall {
+  0% { opacity: 1; transform: translateY(-4px) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(46px) rotate(140deg); }
+}
+@keyframes bar-glow {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.animate-drawer-in { animation: drawer-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-overlay-in { animation: overlay-in 0.2s ease both; }
+.animate-rise-in { animation: rise-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-pop-in { animation: pop-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-press { animation: press-tap 0.22s ease; }
+.animate-check-draw {
+  stroke-dasharray: 48;
+  animation: check-draw 0.4s ease 0.1s both;
+}
+.animate-ring-draw {
+  stroke-dasharray: 260;
+  animation: ring-draw 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-confetti { animation: confetti-fall 0.8s ease-out both; }
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-in {
+  .animate-fade-in,
+  .animate-drawer-in,
+  .animate-overlay-in,
+  .animate-rise-in,
+  .animate-pop-in,
+  .animate-press,
+  .animate-check-draw,
+  .animate-ring-draw,
+  .animate-confetti {
     animation: none;
+  }
+  .animate-check-draw,
+  .animate-ring-draw {
+    stroke-dashoffset: 0 !important;
   }
 }

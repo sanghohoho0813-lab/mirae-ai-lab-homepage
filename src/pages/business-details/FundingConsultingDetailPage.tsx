@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import BusinessInquiryForm from '../../components/BusinessInquiryForm'
+import PublicMenuDrawer from '../../components/PublicMenuDrawer'
 import FundingCasesSection from '../../components/FundingCasesSection'
 import { getPackageBySlug } from '../../data/businessPackages'
 
@@ -124,6 +125,7 @@ export default function FundingConsultingDetailPage() {
             <button type="button" onClick={handleBuy} className="rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">
               바로 구매
             </button>
+            <PublicMenuDrawer />
           </div>
         </div>
       </header>

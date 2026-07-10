@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
 import BusinessServiceVisual from '../components/BusinessServiceVisual'
+import PublicMenuDrawer from '../components/PublicMenuDrawer'
 import {
   businessPackages,
   CATEGORIES,
@@ -156,13 +157,42 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
   )
 }
 
+// 햄버거 메뉴 등 외부 링크용 카테고리 쿼리 (?category=funding 등)
+const CATEGORY_QUERY_MAP: Record<string, string> = {
+  funding: '자금조달',
+  subsidy: '지원금',
+  certification: '인증·절세',
+  digital: 'AX 컨설팅',
+  full: '풀패키지',
+}
+
 export default function BusinessServicesPage() {
   const [activeCat, setActiveCat] = useState('전체')
   const [showBar, setShowBar] = useState(false)
+  const [searchParams] = useSearchParams()
+  const location = useLocation()
 
   useEffect(() => {
     document.title = '대표님을 위한 경영지원 서비스몰 | 미래 AI 랩'
   }, [])
+
+  // ?category= 쿼리 → 카테고리 필터 + 상품 섹션으로 스크롤
+  useEffect(() => {
+    const q = searchParams.get('category')
+    const mapped = q ? CATEGORY_QUERY_MAP[q] : undefined
+    if (mapped && CATEGORIES.includes(mapped)) {
+      setActiveCat(mapped)
+      setTimeout(() => scrollToId('packages'), 60)
+    }
+  }, [searchParams])
+
+  // #hash 이동 (drawer 의 /business-services#faq 등 라우터 링크 대응)
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.slice(1)
+      setTimeout(() => scrollToId(id), 60)
+    }
+  }, [location.hash])
 
   useEffect(() => {
     const onScroll = () => setShowBar(window.scrollY > 420)
@@ -221,6 +251,7 @@ export default function BusinessServicesPage() {
             >
               무료 진단 신청하기
             </a>
+            <PublicMenuDrawer />
           </div>
         </div>
       </header>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import HeroSlider from './components/HeroSlider'
 import InquiryForm from './components/InquiryForm'
+import PublicMenuDrawer from './components/PublicMenuDrawer'
 import { useAuth } from './lib/auth'
 import { accessTypeLabel } from './lib/platform'
 import {
@@ -353,6 +354,7 @@ function App() {
                 로그인
               </Link>
             )}
+            <PublicMenuDrawer />
           </div>
         </div>
       </header>
