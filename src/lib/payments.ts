@@ -64,6 +64,29 @@ export function paymentConfigured(): boolean {
   return Boolean(STORE_ID && CHANNEL_KEY)
 }
 
+// ── 테스트 결제 접근코드 — sessionStorage(탭 종료 시 소멸)만 사용, localStorage 영구 저장 금지 ──
+const TEST_ACCESS_KEY = 'miraePayTestAccess'
+
+export function rememberTestAccessCode(code: string) {
+  try { sessionStorage.setItem(TEST_ACCESS_KEY, code) } catch { /* noop */ }
+}
+export function getTestAccessCode(): string {
+  try { return sessionStorage.getItem(TEST_ACCESS_KEY) ?? '' } catch { return '' }
+}
+
+/** 로그인 세션이 있으면 Bearer 헤더 (관리자는 테스트 게이트 통과용 — 서버에서 role 재검증) */
+async function authHeader(): Promise<Record<string, string>> {
+  try {
+    const { supabase } = await import('./supabase')
+    if (!supabase) return {}
+    const { data } = await supabase.auth.getSession()
+    const token = data.session?.access_token
+    return token ? { Authorization: `Bearer ${token}` } : {}
+  } catch {
+    return {}
+  }
+}
+
 export const formatKrw = (n: number) => `${n.toLocaleString('ko-KR')}원`
 
 async function post<T>(body: Record<string, unknown>): Promise<T | ApiError> {
@@ -86,19 +109,25 @@ export function trackPaymentEvent(eventType: string, paymentId?: string | null, 
   void post({ action: 'event', eventType, paymentId: paymentId ?? undefined, payload }).catch(() => {})
 }
 
-/** 서버 결제환경 조회 (테스트 배지 표시용 — 값 없음, 설정 여부만) */
-export async function getPaymentHealth(): Promise<{ portoneConfigured: boolean; environment: 'test' | 'live' } | null> {
+/** 서버 결제환경 조회 (테스트 배지·접근 게이트 여부 — secret 값은 오지 않음) */
+export async function getPaymentHealth(): Promise<{ portoneConfigured: boolean; environment: 'test' | 'live'; testGateActive: boolean } | null> {
   try {
     const res = await fetch('/api/payments', { method: 'GET' })
     const data = await res.json()
-    if (data?.ok) return { portoneConfigured: Boolean(data.portoneConfigured), environment: data.environment === 'live' ? 'live' : 'test' }
+    if (data?.ok) {
+      return {
+        portoneConfigured: Boolean(data.portoneConfigured),
+        environment: data.environment === 'live' ? 'live' : 'test',
+        testGateActive: Boolean(data.testGateActive),
+      }
+    }
     return null
   } catch {
     return null
   }
 }
 
-export function preparePayment(input: {
+export async function preparePayment(input: {
   productSlug: string
   optionId: string | null
   requestId: string
@@ -109,8 +138,26 @@ export function preparePayment(input: {
   consentVersions: { privacyVersion: string; purchaseTermsVersion: string; refundPolicyVersion: string }
   honeypot?: string
 }): Promise<PrepareResponse | ApiError> {
-  return post<PrepareResponse>({
+  // 테스트 게이트: 접근코드(sessionStorage) + 관리자 세션 헤더 — 검증은 서버가 수행
+  const headers = await authHeader()
+  try {
+    const res = await fetch('/api/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...headers },
+      body: JSON.stringify(buildPrepareBody(input)),
+    })
+    const data = (await res.json().catch(() => null)) as PrepareResponse | ApiError | null
+    if (!data) return { ok: false, message: '서버 응답을 읽지 못했습니다. 잠시 후 다시 시도해주세요.' }
+    return data
+  } catch {
+    return { ok: false, message: '네트워크 오류가 발생했습니다. 연결을 확인하고 다시 시도해주세요.', debugCode: 'network' }
+  }
+}
+
+function buildPrepareBody(input: Parameters<typeof preparePayment>[0]): Record<string, unknown> {
+  return {
     action: 'prepare',
+    testAccessCode: getTestAccessCode() || undefined,
     productSlug: input.productSlug,
     optionId: input.optionId ?? undefined,
     requestId: input.requestId,
@@ -130,7 +177,7 @@ export function preparePayment(input: {
     purchaseTermsVersion: input.consentVersions.purchaseTermsVersion,
     refundPolicyVersion: input.consentVersions.refundPolicyVersion,
     honeypot: input.honeypot ?? '',
-  })
+  }
 }
 
 /**

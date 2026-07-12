@@ -7,9 +7,10 @@ import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-r
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
 import { getPackageBySlug } from '../data/businessPackages'
 import { checkoutTerms } from '../config/checkoutTerms'
+import { useAuth } from '../lib/auth'
 import {
-  formatKrw, getPaymentHealth, newRequestId, openPortOnePayment, paymentConfigured,
-  preparePayment, saveLocalOrder, trackPaymentEvent, type BuyerInput,
+  formatKrw, getPaymentHealth, getTestAccessCode, newRequestId, openPortOnePayment, paymentConfigured,
+  preparePayment, rememberTestAccessCode, saveLocalOrder, trackPaymentEvent, type BuyerInput,
 } from '../lib/payments'
 
 const ISO_STANDARDS = ['ISO9001', 'ISO14001', 'ISO45001'] as const
@@ -37,12 +38,16 @@ export default function CheckoutPage() {
   const [phase, setPhase] = useState<'form' | 'preparing' | 'window'>('form')
   const [error, setError] = useState<string | null>(null)
   const [environment, setEnvironment] = useState<'test' | 'live'>('test')
+  const [testGateActive, setTestGateActive] = useState(false)
   // requestId — 체크아웃 진입마다 1개 (중복 클릭·재시도 시 같은 pending 주문 재사용)
   const requestIdRef = useRef(newRequestId())
   const busyRef = useRef(false)
+  const { isAdmin } = useAuth()
 
   const configured = paymentConfigured()
   const consult = pkg?.priceType === 'consult'
+  // 테스트 결제 게이트 — 서버(prepare)가 최종 검증. 여기서는 안내 표시용.
+  const gateBlocked = testGateActive && !getTestAccessCode() && !isAdmin
 
   const selected = useMemo(() => variants?.find((v) => v.optionId === optionId) ?? null, [variants, optionId])
   const amount = selected ? selected.amount : (pkg?.amount ?? 0)
@@ -52,8 +57,21 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (pkg) document.title = `결제하기 — ${pkg.name} | 미래 AI 랩`
     window.scrollTo(0, 0)
+    // 테스트 접근코드 — URL 로 전달되면 세션 저장(탭 한정) 후 주소창에서 제거 (공유 방지)
+    const ta = searchParams.get('testAccess')
+    if (ta) {
+      rememberTestAccessCode(ta)
+      const url = new URL(window.location.href)
+      url.searchParams.delete('testAccess')
+      window.history.replaceState(null, '', url.pathname + url.search)
+    }
     trackPaymentEvent('checkout_viewed', null, { productSlug: pkg?.slug })
-    void getPaymentHealth().then((h) => { if (h) setEnvironment(h.environment) })
+    void getPaymentHealth().then((h) => {
+      if (h) {
+        setEnvironment(h.environment)
+        setTestGateActive(h.testGateActive)
+      }
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -173,6 +191,15 @@ export default function CheckoutPage() {
             결제 설정이 아직 완료되지 않았습니다. 아래 상담 신청을 남겨주시면 결제와 진행을 함께 안내드리겠습니다.
             <Link to={`/business-services/${pkg.slug}#apply`} className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
               상담 신청하기 →
+            </Link>
+          </div>
+        )}
+
+        {configured && gateBlocked && (
+          <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-[0.95rem] leading-relaxed text-amber-800">
+            현재 결제 기능을 준비하고 있습니다. 결제 전 상담을 이용해주세요.
+            <Link to={`/business-services/${pkg.slug}#apply`} className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
+              결제 전 상담하기 →
             </Link>
           </div>
         )}
@@ -302,7 +329,7 @@ export default function CheckoutPage() {
           <button
             type="button"
             onClick={handlePay}
-            disabled={busy || !configured}
+            disabled={busy || !configured || gateBlocked}
             className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {phase === 'preparing' ? '주문을 준비하고 있어요…' : phase === 'window' ? '결제창 확인 중…' : `${formatKrw(amount)} 결제하기`}

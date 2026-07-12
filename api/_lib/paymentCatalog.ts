@@ -1,7 +1,8 @@
 // 서버 상품 카탈로그 — 결제금액의 '정답'은 서버만 압니다.
 // 1순위: Supabase billing_products (운영자가 금액·활성상태를 직접 관리)
-// 2순위: 아래 LOCAL_CATALOG (SQL 미실행·DB 장애 시 폴백. 시드값과 동일하게 유지할 것)
-// ⚠️ 클라이언트가 보낸 금액은 어떤 경우에도 사용하지 않습니다.
+// 2순위: 아래 LOCAL_CATALOG — ⚠️ PORTONE_ENV=test 에서만 허용되는 개발 편의 폴백.
+//        live 에서는 billing_products 에 active 레코드가 없으면 결제를 차단합니다(코드 가격으로 진행 금지).
+// ⚠️ 클라이언트가 보낸 금액은 어떤 경우에도 사용하지 않습니다. (businessPackages 화면가도 불신)
 import type { SupabaseAdmin } from './supabaseAdmin'
 
 export type ServerProduct = {
@@ -34,21 +35,30 @@ const LOCAL_CATALOG: Array<Omit<ServerProduct, 'source'>> = [
   { productSlug: 'iso-certification', optionId: 'iso-three', name: 'ISO 인증 패키지', optionName: 'ISO 3종 패키지', amount: 3990000, paymentType: 'one_time', vatIncluded: true },
 ]
 
+export type CatalogLookup =
+  | { kind: 'ok'; product: ServerProduct }
+  | { kind: 'consult_only' }
+  | { kind: 'not_found' }
+  /** live 환경에서 billing_products 조회 불가/미시드 — 결제 차단 (설정 오류) */
+  | { kind: 'catalog_unavailable' }
+
 /**
  * 상품·옵션으로 서버 결제 상품을 조회합니다.
- * - 상담 전용 상품 → { consultOnly: true } (결제 차단용)
- * - 미존재/비활성 → null
+ * - live: billing_products 의 active 레코드만 신뢰. 없거나 DB 오류면 catalog_unavailable(결제 차단).
+ * - test: DB 우선, 미시드·오류 시 LOCAL_CATALOG 폴백 허용(개발 편의).
  */
 export async function getServerProduct(
   admin: SupabaseAdmin | null,
   productSlug: string,
   optionId: string | null,
-): Promise<{ product: ServerProduct | null; consultOnly: boolean }> {
-  if (CONSULT_ONLY_SLUGS.includes(productSlug)) return { product: null, consultOnly: true }
+): Promise<CatalogLookup> {
+  if (CONSULT_ONLY_SLUGS.includes(productSlug)) return { kind: 'consult_only' }
 
+  const isLive = process.env.PORTONE_ENV === 'live'
   const normOption = optionId && optionId.trim() ? optionId.trim() : null
+  const localExists = LOCAL_CATALOG.some((p) => p.productSlug === productSlug && p.optionId === normOption)
 
-  // 1) DB (billing_products) 우선
+  // 1) DB (billing_products)
   if (admin) {
     try {
       let q = admin
@@ -61,7 +71,7 @@ export async function getServerProduct(
       const { data, error } = await q.maybeSingle()
       if (!error && data && typeof data.amount === 'number' && data.amount > 0) {
         return {
-          consultOnly: false,
+          kind: 'ok',
           product: {
             productSlug,
             optionId: normOption,
@@ -74,14 +84,23 @@ export async function getServerProduct(
           },
         }
       }
-      // DB 조회는 됐지만 행이 없음 → 로컬 폴백 시도(SQL 미시드 환경 대비)
+      if (error) {
+        // DB 오류 — live 는 차단, test 는 폴백
+        if (isLive) return { kind: 'catalog_unavailable' }
+      } else if (isLive) {
+        // DB 정상 조회됐지만 행 없음 — live 에서는 코드 가격으로 진행 금지.
+        // 알려진 상품(로컬 카탈로그 존재)이면 '미시드 설정 오류', 아니면 '없는 상품'.
+        return localExists ? { kind: 'catalog_unavailable' } : { kind: 'not_found' }
+      }
     } catch {
-      // DB 오류 → 로컬 폴백
+      if (isLive) return { kind: 'catalog_unavailable' }
     }
+  } else if (isLive) {
+    return { kind: 'catalog_unavailable' }
   }
 
-  // 2) 로컬 카탈로그 폴백
+  // 2) 로컬 카탈로그 폴백 — test 환경 전용
   const local = LOCAL_CATALOG.find((p) => p.productSlug === productSlug && p.optionId === normOption)
-  if (local) return { product: { ...local, source: 'local' }, consultOnly: false }
-  return { product: null, consultOnly: false }
+  if (local) return { kind: 'ok', product: { ...local, source: 'local' } }
+  return { kind: 'not_found' }
 }

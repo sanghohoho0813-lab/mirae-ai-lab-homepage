@@ -69,6 +69,8 @@ export default async function handler(req: VercelReq, res: VercelRes) {
         supabaseConfigured: supabaseConfigured(),
         webhookConfigured: Boolean(process.env.PORTONE_WEBHOOK_SECRET),
         environment: portoneEnvironment(),
+        // test 환경에서 접근코드 게이트가 켜져 있는지 (코드 값 자체는 절대 반환하지 않음)
+        testGateActive: portoneEnvironment() !== 'live' && Boolean(process.env.PAYMENT_TEST_ACCESS_CODE),
       })
     }
     if (!admin) return res.status(503).json({ ok: false, message: '서버 설정이 완료되지 않았습니다.', debugCode: 'supabase_not_configured' })
@@ -143,14 +145,39 @@ export default async function handler(req: VercelReq, res: VercelRes) {
       return res.status(400).json({ ok: false, message: '이메일 주소를 확인해주세요.', debugCode: 'bad_email' })
     }
 
+    // ── 테스트 결제 외부노출 방지 게이트 (live 에서는 미적용) ──
+    // PORTONE_ENV=test + PAYMENT_TEST_ACCESS_CODE 설정 시: 일치하는 접근코드 또는 관리자만 prepare 허용.
+    // 접근코드 값은 로그·응답에 절대 출력하지 않음 (비교는 sha256 해시로 — 타이밍 안전).
+    const gateCode = process.env.PAYMENT_TEST_ACCESS_CODE
+    if (portoneEnvironment() !== 'live' && gateCode) {
+      const provided = stripControl(body.testAccessCode, 120)
+      let allowed = provided.length > 0 && sha256(provided) === sha256(gateCode)
+      if (!allowed && req.headers['authorization']) {
+        const adminCheck = await verifyAdmin(admin, req.headers['authorization'])
+        allowed = adminCheck.ok
+      }
+      if (!allowed) {
+        return res.status(403).json({
+          ok: false,
+          message: '현재 결제 기능을 준비하고 있습니다. 결제 전 상담을 이용해주세요.',
+          debugCode: 'test_access_required',
+        })
+      }
+    }
+
     // 상담 전용 상품 차단 + 서버 금액 결정 (클라이언트 amount 는 어떤 필드로 와도 무시)
-    const { product, consultOnly } = await getServerProduct(admin, productSlug, optionId)
-    if (consultOnly) {
+    const lookup = await getServerProduct(admin, productSlug, optionId)
+    if (lookup.kind === 'consult_only') {
       return res.status(422).json({ ok: false, message: '이 상품은 상담 후 진행되는 상품입니다. 상담 신청을 이용해주세요.', debugCode: 'consultation_only' })
     }
-    if (!product) {
+    if (lookup.kind === 'catalog_unavailable') {
+      // live: billing_products 미시드/조회 불가 — 코드 가격으로 진행하지 않고 차단
+      return res.status(503).json({ ok: false, message: '현재 결제상품 설정을 확인하고 있습니다. 잠시 후 다시 시도해주세요.', debugCode: 'catalog_unavailable' })
+    }
+    if (lookup.kind === 'not_found') {
       return res.status(400).json({ ok: false, message: '결제 가능한 상품을 찾을 수 없습니다.', debugCode: 'unknown_product' })
     }
+    const product = lookup.product
 
     // requestId 멱등성 — 같은 요청 재전송이면 기존 pending 주문 재사용 (토큰만 재발급)
     const { data: existing } = await admin.from('product_payments').select('*').eq('request_id', requestId).maybeSingle()
@@ -299,10 +326,12 @@ export default async function handler(req: VercelReq, res: VercelRes) {
     let q = admin.from('product_payments').select('*').order('created_at', { ascending: false }).limit(limit)
     const fStatus = stripControl(body.status, 30)
     const fSlug = stripControl(body.productSlug, 60)
+    const fEnv = stripControl(body.environment, 10)
     const fFrom = stripControl(body.from, 30)
     const fTo = stripControl(body.to, 30)
     if (fStatus) q = q.eq('status', fStatus)
     if (fSlug) q = q.eq('product_slug', fSlug)
+    if (fEnv === 'test' || fEnv === 'live') q = q.eq('environment', fEnv)
     if (fFrom) q = q.gte('created_at', fFrom)
     if (fTo) q = q.lte('created_at', fTo)
     const { data: rows, error: listErr } = await q
@@ -317,12 +346,16 @@ export default async function handler(req: VercelReq, res: VercelRes) {
     }
     const orderByPayment = new Map(orders.map((o) => [o.payment_id, o]))
 
-    // 요약 (오늘/이번달 paid 합계 — partial_cancelled 는 잔액 반영)
+    // ── 요약 — 현재 서버 환경(PORTONE_ENV)의 주문만 집계 (live 통계에 test 주문 미합산) ──
+    //  · 매출 합산: paid + partial_cancelled(순액 = 결제금액 - 취소금액)만. cancelled 전액취소 제외.
+    //  · amount_mismatch / verification_failed / exception 은 매출에 포함하지 않음(확인 필요 건수로만).
+    const summaryEnv = portoneEnvironment()
     const now = new Date()
     const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
     let todayAmount = 0, monthAmount = 0, paidCount = 0, needsReview = 0, cancelledCount = 0
     for (const r of list) {
+      if (r.environment !== summaryEnv) continue
       const paidLike = r.status === 'paid' || r.status === 'partial_cancelled'
       const net = r.amount - (r.cancel_amount || 0)
       const t = r.paid_at ? new Date(r.paid_at).getTime() : 0
@@ -337,7 +370,7 @@ export default async function handler(req: VercelReq, res: VercelRes) {
 
     return res.status(200).json({
       ok: true,
-      summary: { todayAmount, monthAmount, paidCount, needsReview, cancelledCount },
+      summary: { environment: summaryEnv, todayAmount, monthAmount, paidCount, needsReview, cancelledCount },
       payments: list.map((r) => {
         const { access_token_hash: _h, buyer_phone, buyer_email, buyer_business_number: _b, ...rest } = r as PaymentRow & Record<string, unknown>
         return {

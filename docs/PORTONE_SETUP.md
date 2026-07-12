@@ -7,7 +7,8 @@
 
 ## 0. 먼저 이해할 구조
 
-- 결제금액의 '정답'은 서버입니다: Supabase `billing_products` → (미시드 시) `api/_lib/paymentCatalog.ts` 로컬 폴백.
+- 결제금액의 '정답'은 서버입니다: Supabase `billing_products`. **live 에서는 billing_products 에
+  active 레코드가 없으면 결제가 차단**됩니다(코드 폴백은 test 환경 전용). SQL 시드를 먼저 실행하세요.
   브라우저가 보낸 금액은 어떤 경우에도 사용하지 않습니다.
 - 결제 확정은 3중 확인입니다: ① 브라우저 결제창 결과 → ② 서버 complete API 가 PortOne 단건조회로
   상태(PAID)·금액·storeId 재검증 → ③ 웹훅(서명 검증 후 다시 단건조회)으로 누락·취소 동기화.
@@ -44,10 +45,22 @@
 | `PORTONE_API_SECRET` | V2 API Secret | **서버 전용** |
 | `PORTONE_WEBHOOK_SECRET` | whsec_... | **서버 전용** |
 | `PORTONE_ENV` | `test` 또는 `live` | 서버 (test 면 화면에 '테스트 결제' 배지) |
+| `PAYMENT_TEST_ACCESS_CODE` | 임의 문자열 (선택) | **서버 전용** — test 환경 결제 접근 제한 |
 
 - ⚠️ Secret 2종은 절대 `VITE_` 접두사 금지. 등록 후 **Redeploy** 해야 적용됩니다.
 - 설정 확인: 브라우저에서 `/api/payments` GET → `portoneConfigured/webhookConfigured/environment` 확인
   (`/api/portone/webhook` GET 도 동일한 상태 점검 제공)
+
+### 테스트 결제 외부노출 방지 (권장)
+
+운영 도메인에서 테스트하는 동안 일반 방문자가 테스트 결제를 실행하지 못하게 하려면
+`PAYMENT_TEST_ACCESS_CODE` 를 설정하세요 (PORTONE_ENV=test 일 때만 동작).
+
+- 접근 URL: `https://<도메인>/checkout/<상품슬러그>?testAccess=<코드>` (코드는 탭 세션에만 유지, 주소창에서 즉시 제거)
+- 관리자 로그인 상태면 코드 없이 결제 가능합니다.
+- 코드가 없는 일반 방문자에게는 "현재 결제 기능을 준비하고 있습니다" + 상담 안내가 표시되고,
+  서버 prepare API 도 403 으로 차단합니다 (클라이언트 우회 불가).
+- 테스트가 끝나면 변수를 **삭제하거나 값을 변경**하세요. `PORTONE_ENV=live` 에서는 이 게이트가 적용되지 않습니다.
 
 ## 4. 테스트 결제 검증
 

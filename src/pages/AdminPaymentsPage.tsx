@@ -36,7 +36,7 @@ type AdminPaymentRow = {
   service_order: { order_number: string; status: string; intake_status: string } | null
 }
 
-type Summary = { todayAmount: number; monthAmount: number; paidCount: number; needsReview: number; cancelledCount: number }
+type Summary = { environment: 'test' | 'live'; todayAmount: number; monthAmount: number; paidCount: number; needsReview: number; cancelledCount: number }
 
 const STATUS_LABEL: Record<string, { label: string; tone: string }> = {
   pending: { label: '결제 대기', tone: 'bg-slate-100 text-slate-600' },
@@ -80,6 +80,7 @@ export default function AdminPaymentsPage() {
   const [detail, setDetail] = useState<{ payment: Record<string, unknown>; serviceOrder: Record<string, unknown> | null; events: Array<{ event_type: string; source: string; created_at: string }> } | null>(null)
   const [fStatus, setFStatus] = useState('')
   const [fSlug, setFSlug] = useState('')
+  const [fEnv, setFEnv] = useState('')
   const [fFrom, setFFrom] = useState('')
   const [fTo, setFTo] = useState('')
   const [search, setSearch] = useState('')
@@ -91,6 +92,7 @@ export default function AdminPaymentsPage() {
         action: 'admin_list',
         status: fStatus || undefined,
         productSlug: fSlug || undefined,
+        environment: fEnv || undefined,
         from: fFrom ? `${fFrom}T00:00:00+09:00` : undefined,
         to: fTo ? `${fTo}T23:59:59+09:00` : undefined,
       })
@@ -106,7 +108,7 @@ export default function AdminPaymentsPage() {
     document.title = '결제관리 | 미래 AI 랩 관리자'
     if (user && isAdmin) void reload()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isAdmin, fStatus, fSlug, fFrom, fTo])
+  }, [user, isAdmin, fStatus, fSlug, fEnv, fFrom, fTo])
 
   const filtered = useMemo(() => {
     if (!rows) return []
@@ -135,7 +137,12 @@ export default function AdminPaymentsPage() {
       </header>
 
       <main className="mx-auto w-full max-w-[1200px] px-5 pb-24 pt-6">
-        {/* 요약 */}
+        {/* 요약 — 현재 서버 환경 주문만 집계 (test/live 미합산) */}
+        {summary && (
+          <p className="mb-2 text-xs font-bold text-slate-400">
+            아래 통계는 <span className={summary.environment === 'live' ? 'text-emerald-600' : 'text-amber-600'}>{summary.environment === 'live' ? '실결제(live)' : '테스트(test)'}</span> 주문만 집계합니다. 전액취소·금액불일치 건은 매출에 포함되지 않습니다.
+          </p>
+        )}
         <div className="grid gap-3 sm:grid-cols-5">
           {[
             { label: '오늘 결제금액', value: summary ? won(summary.todayAmount) : '—' },
@@ -165,6 +172,11 @@ export default function AdminPaymentsPage() {
           <select value={fSlug} onChange={(e) => setFSlug(e.target.value)} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold">
             <option value="">전체 상품</option>
             {businessPackages.filter((p) => p.priceType !== 'consult').map((p) => <option key={p.slug} value={p.slug}>{p.name}</option>)}
+          </select>
+          <select value={fEnv} onChange={(e) => setFEnv(e.target.value)} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold">
+            <option value="">테스트+실결제</option>
+            <option value="live">실결제만</option>
+            <option value="test">테스트만</option>
           </select>
           <input type="date" value={fFrom} onChange={(e) => setFFrom(e.target.value)} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" />
           <span className="text-slate-400">~</span>

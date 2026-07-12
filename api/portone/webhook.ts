@@ -71,11 +71,15 @@ export default async function handler(req: VercelReq, res: VercelRes) {
     return res.status(400).json({ ok: false, debugCode: 'raw_body_unavailable' })
   }
 
-  // ── 서명 검증 ──
+  // ── 서명 검증 (fail-closed: SDK 검증 성공한 요청만 처리) ──
   const verified = await verifyWebhookSignature(secret, rawBody, req.headers)
   if (!verified.ok) {
     if (admin) await logPaymentEvent(admin, 'payment_webhook_rejected', null, 'webhook', { reason: verified.debugCode })
-    return res.status(401).json({ ok: false, debugCode: verified.debugCode ?? 'signature_invalid' })
+    if (verified.debugCode === 'sdk_unavailable') {
+      // 검증 수단 자체가 없음 — 검증 생략 금지, 설정 오류로 5xx (PortOne 재시도 대상)
+      return res.status(500).json({ ok: false, debugCode: 'webhook_verifier_unavailable' })
+    }
+    return res.status(401).json({ ok: false, debugCode: verified.debugCode })
   }
 
   let event: { type?: string; timestamp?: string; data?: { paymentId?: string; storeId?: string; transactionId?: string } }

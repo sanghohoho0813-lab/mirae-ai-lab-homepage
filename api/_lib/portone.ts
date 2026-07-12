@@ -1,7 +1,6 @@
 // PortOne V2 서버 연동 — 결제 단건조회 + 웹훅 서명 검증.
 // 결제 상태·금액의 최종 신뢰는 항상 GET https://api.portone.io/payments/{paymentId} 재조회 결과입니다.
 // (웹훅 body 의 상태·금액은 서명이 검증되어도 그대로 신뢰하지 않습니다)
-import crypto from 'node:crypto'
 
 export type PortOnePayment = {
   status: string
@@ -64,15 +63,16 @@ export function mapPortOneStatus(portoneStatus: string): string {
 }
 
 /**
- * 웹훅 서명 검증 — @portone/server-sdk(Webhook.verify) 우선, 로드 실패 시
- * Standard Webhooks 규격(HMAC-SHA256) 수동 검증으로 폴백.
- * rawBody 는 반드시 원문 문자열이어야 합니다.
+ * 웹훅 서명 검증 — 공식 @portone/server-sdk 의 Webhook.verify 만 사용 (fail-closed).
+ * - 검증 성공한 요청만 처리, 실패는 signature_invalid(→ 401)
+ * - SDK 를 로드할 수 없으면 sdk_unavailable(→ 5xx 설정 오류) — 검증 생략·수동 대체 없음
+ * - rawBody 는 반드시 요청 원문 문자열이어야 합니다.
  */
 export async function verifyWebhookSignature(
   secret: string,
   rawBody: string,
   headers: Record<string, string | string[] | undefined>,
-): Promise<{ ok: boolean; debugCode?: string }> {
+): Promise<{ ok: true } | { ok: false; debugCode: 'missing_webhook_headers' | 'signature_invalid' | 'sdk_unavailable' }> {
   const h = (k: string) => {
     const v = headers[k] ?? headers[k.toLowerCase()]
     return Array.isArray(v) ? v[0] : v
@@ -86,39 +86,16 @@ export async function verifyWebhookSignature(
     return { ok: false, debugCode: 'missing_webhook_headers' }
   }
 
-  // 1) 공식 SDK
+  let Webhook: typeof import('@portone/server-sdk/webhook')
   try {
-    const Webhook = await import('@portone/server-sdk/webhook')
-    try {
-      await Webhook.verify(secret, rawBody, webhookHeaders)
-      return { ok: true }
-    } catch {
-      return { ok: false, debugCode: 'signature_invalid' }
-    }
+    Webhook = await import('@portone/server-sdk/webhook')
   } catch {
-    // SDK 로드 실패 → 수동 검증 폴백
+    return { ok: false, debugCode: 'sdk_unavailable' }
   }
-
-  // 2) Standard Webhooks 수동 검증
   try {
-    const ts = Number(webhookHeaders['webhook-timestamp'])
-    if (!Number.isFinite(ts) || Math.abs(Date.now() / 1000 - ts) > 300) {
-      return { ok: false, debugCode: 'timestamp_out_of_tolerance' }
-    }
-    const secretBytes = new Uint8Array(Buffer.from(secret.startsWith('whsec_') ? secret.slice(6) : secret, 'base64'))
-    const signedContent = `${webhookHeaders['webhook-id']}.${webhookHeaders['webhook-timestamp']}.${rawBody}`
-    const expected = crypto.createHmac('sha256', secretBytes).update(signedContent, 'utf8').digest('base64')
-    const provided = String(webhookHeaders['webhook-signature'])
-      .split(' ')
-      .map((s) => (s.includes(',') ? s.split(',')[1] : s))
-      .filter(Boolean)
-    for (const sig of provided) {
-      const a = new Uint8Array(Buffer.from(expected))
-      const b = new Uint8Array(Buffer.from(sig))
-      if (a.length === b.length && crypto.timingSafeEqual(a, b)) return { ok: true }
-    }
-    return { ok: false, debugCode: 'signature_invalid' }
+    await Webhook.verify(secret, rawBody, webhookHeaders)
+    return { ok: true }
   } catch {
-    return { ok: false, debugCode: 'verify_error' }
+    return { ok: false, debugCode: 'signature_invalid' }
   }
 }
