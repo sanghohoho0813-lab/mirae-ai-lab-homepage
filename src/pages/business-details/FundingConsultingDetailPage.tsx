@@ -2,13 +2,11 @@
 // /business-services/funding-consulting 라우트에서 렌더됩니다.
 // 상단 구매영역(카페24형) + 긴 세로 배너 상세 + 예시 사례(추후 실제 데이터로 교체).
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import BusinessInquiryForm from '../../components/BusinessInquiryForm'
-import CheckoutModal from '../../components/CheckoutModal'
 import PublicMenuDrawer from '../../components/PublicMenuDrawer'
 import FundingCasesSection from '../../components/FundingCasesSection'
 import { getPackageBySlug } from '../../data/businessPackages'
-import { completePayment } from '../../lib/checkout'
 
 const pkg = getPackageBySlug('funding-consulting')!
 const IMG = '/assets/business-services/funding-consulting.png'
@@ -16,8 +14,8 @@ const EBOOK_IMG = '/assets/business-services/ebook-3set.webp'
 
 // 할인 표기 (정가 100만원 → 판매가 50만원)
 const LIST_PRICE = '100만원'
-const SALE_PRICE = pkg.price // '50만원'
-const DISCOUNT_RATE = '50%'
+const SALE_PRICE = pkg.price // '55만원'
+const DISCOUNT_RATE = '45%'
 
 const band = 'px-5 py-16 sm:py-24'
 const inner = 'mx-auto max-w-[720px]'
@@ -57,13 +55,11 @@ function CartIcon() {
 }
 
 export default function FundingConsultingDetailPage() {
+  const navigate = useNavigate()
   const [showBar, setShowBar] = useState(false)
-  const [checkoutOpen, setCheckoutOpen] = useState(false)
-  const [returnMsg, setReturnMsg] = useState<{ ok: boolean; text: string } | null>(null)
 
   function handleBuy() {
-    setReturnMsg(null)
-    setCheckoutOpen(true)
+    navigate(`/checkout/${pkg.slug}`)
   }
 
   useEffect(() => {
@@ -71,30 +67,11 @@ export default function FundingConsultingDetailPage() {
     window.scrollTo(0, 0)
   }, [])
 
-  // ?buy=1 자동 결제창 + 모바일 리디렉션 결제 복귀 처리
+  // (구버전 호환) ?buy=1 링크 → 체크아웃 페이지
   useEffect(() => {
     const q = new URLSearchParams(window.location.search)
-    const pid = q.get('paymentId')
-    if (pid) {
-      const errCode = q.get('code')
-      window.history.replaceState(null, '', window.location.pathname)
-      if (errCode) {
-        setReturnMsg({ ok: false, text: q.get('message') ?? '결제가 완료되지 않았습니다. 다시 시도해주세요.' })
-        return
-      }
-      void completePayment({ paymentId: pid, slug: pkg.slug, variantIdx: 0 }).then((r) =>
-        setReturnMsg(
-          r.ok
-            ? { ok: true, text: `결제가 완료되었습니다 (주문번호 ${r.orderNo}). 담당자가 확인 후 진행 안내를 드립니다.` }
-            : { ok: false, text: r.message },
-        ),
-      )
-      return
-    }
-    if (q.get('buy') === '1') {
-      window.history.replaceState(null, '', window.location.pathname)
-      setCheckoutOpen(true)
-    }
+    if (q.get('buy') === '1') navigate(`/checkout/${pkg.slug}`, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -112,7 +89,7 @@ export default function FundingConsultingDetailPage() {
           onClick={handleBuy}
           className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
         >
-          <CartIcon /> 결제하기
+          <CartIcon /> 바로 결제하기
         </button>
       </div>
       <button
@@ -122,7 +99,7 @@ export default function FundingConsultingDetailPage() {
           variant === 'dark' ? 'text-slate-300 hover:text-white' : 'text-slate-500 hover:text-slate-900'
         }`}
       >
-        결제 전에 상담을 먼저 받고 싶다면 →
+        결제 전 상담하기 →
       </button>
     </>
   )
@@ -142,7 +119,7 @@ export default function FundingConsultingDetailPage() {
           <div className="flex items-center gap-4">
             <Link to="/business-services" className="hidden text-[0.95rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
             <button type="button" onClick={handleBuy} className="rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">
-              결제하기
+              바로 결제하기
             </button>
             <PublicMenuDrawer />
           </div>
@@ -159,20 +136,6 @@ export default function FundingConsultingDetailPage() {
           <span className="font-semibold text-slate-700">정책자금 컨설팅</span>
         </div>
       </div>
-
-      {/* 모바일 리디렉션 결제 복귀 결과 배너 */}
-      {returnMsg && (
-        <div className="mx-auto max-w-[900px] px-5 pt-4">
-          <div
-            role="status"
-            className={`rounded-2xl px-5 py-4 text-[0.95rem] font-semibold leading-relaxed ${
-              returnMsg.ok ? 'border border-emerald-200 bg-emerald-50 text-emerald-800' : 'border border-red-200 bg-red-50 text-red-700'
-            }`}
-          >
-            {returnMsg.text}
-          </div>
-        </div>
-      )}
 
       {/* ── 상단 구매영역 (카페24형) ───────────────────────────── */}
       <section className="border-b border-slate-200 bg-white">
@@ -542,22 +505,11 @@ export default function FundingConsultingDetailPage() {
             <span className="text-lg font-black text-slate-900">{SALE_PRICE}</span>
           </span>
           <button type="button" onClick={handleBuy} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white">
-            <CartIcon /> 결제하기
+            <CartIcon /> 바로 결제하기
           </button>
         </div>
       )}
 
-      {/* 카드결제 모달 */}
-      {checkoutOpen && (
-        <CheckoutModal
-          pkg={pkg}
-          onClose={() => setCheckoutOpen(false)}
-          onConsultInstead={() => {
-            setCheckoutOpen(false)
-            scrollToId('apply')
-          }}
-        />
-      )}
     </div>
   )
 }

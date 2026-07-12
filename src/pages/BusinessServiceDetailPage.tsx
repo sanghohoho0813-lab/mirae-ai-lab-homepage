@@ -3,15 +3,13 @@
 // 상단 구매영역(카페24형) + 후킹 → 고민 공감 → 왜 필요한가(네이비) → 믿을 수 있는 이유
 // → 진행/결과 예시 카드(알림톡형·문서형, '예시' 명시) → 진행 과정 → 결과물 → 추천 대상
 // → 재구매 CTA(네이비) → FAQ → 유의사항 → 상담 폼.
-// 결제: PortOne V2 카드결제 (CheckoutModal). consult 상품만 상담 폼으로 안내.
+// 결제: /checkout/:slug 별도 페이지 (PortOne V2). consult 상품만 상담 폼으로 안내.
 import { useEffect, useState } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
-import CheckoutModal from '../components/CheckoutModal'
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
 import { getDetailContent, type DetailCase } from '../data/businessDetailContent'
-import { completePayment } from '../lib/checkout'
 
 const band = 'px-5 py-16 sm:py-24'
 const inner = 'mx-auto max-w-[720px]'
@@ -87,46 +85,25 @@ function CaseCard({ c, accent }: { c: DetailCase; accent: string }) {
 
 export default function BusinessServiceDetailPage() {
   const { slug } = useParams()
+  const navigate = useNavigate()
   const pkg = getPackageBySlug(slug)
   const [variantIdx, setVariantIdx] = useState(0)
   const [showBar, setShowBar] = useState(false)
-  const [checkoutOpen, setCheckoutOpen] = useState(false)
-  const [returnMsg, setReturnMsg] = useState<{ ok: boolean; text: string } | null>(null)
 
   useEffect(() => {
     if (pkg) document.title = `${pkg.name} | 미래 AI 랩 서비스몰`
     window.scrollTo(0, 0)
     setVariantIdx(0)
-    setCheckoutOpen(false)
   }, [pkg])
 
-  // ?buy=1 진입 시 결제창 자동 오픈 + 모바일 리디렉션 결제 복귀(paymentId 쿼리) 처리
+  // (구버전 호환) ?buy=1 링크 → 체크아웃 페이지로 이동
   useEffect(() => {
     if (!pkg) return
     const q = new URLSearchParams(window.location.search)
-    const pid = q.get('paymentId')
-    if (pid) {
-      const errCode = q.get('code')
-      const vIdx = Number(q.get('variantIdx') ?? '0') || 0
-      window.history.replaceState(null, '', window.location.pathname)
-      if (errCode) {
-        setReturnMsg({ ok: false, text: q.get('message') ?? '결제가 완료되지 않았습니다. 다시 시도해주세요.' })
-        return
-      }
-      void completePayment({ paymentId: pid, slug: pkg.slug, variantIdx: vIdx }).then((r) =>
-        setReturnMsg(
-          r.ok
-            ? { ok: true, text: `결제가 완료되었습니다 (주문번호 ${r.orderNo}). 담당자가 확인 후 진행 안내를 드립니다.` }
-            : { ok: false, text: r.message },
-        ),
-      )
-      return
+    if (q.get('buy') === '1' && pkg.priceType !== 'consult') {
+      navigate(`/checkout/${pkg.slug}`, { replace: true })
     }
-    if (q.get('buy') === '1') {
-      window.history.replaceState(null, '', window.location.pathname)
-      if (pkg.priceType !== 'consult') setCheckoutOpen(true)
-    }
-  }, [pkg])
+  }, [pkg, navigate])
 
   useEffect(() => {
     const onScroll = () => setShowBar(window.scrollY > 560)
@@ -150,11 +127,12 @@ export default function BusinessServiceDetailPage() {
   const kicker = `text-center text-sm font-black uppercase tracking-widest ${accentText}`
 
   function handleBuy() {
-    setReturnMsg(null)
-    setCheckoutOpen(true)
+    if (!pkg) return
+    const opt = pkg.variants?.[Math.min(variantIdx, (pkg.variants?.length ?? 1) - 1)]
+    navigate(`/checkout/${pkg.slug}${opt ? `?option=${encodeURIComponent(opt.optionId)}` : ''}`)
   }
 
-  // 구매/상담 버튼 묶음 — 가격이 있는 상품은 카드결제, consult 상품만 상담
+  // 구매/상담 버튼 묶음 — 가격이 있는 상품은 카드결제(체크아웃 페이지), consult 상품만 상담
   const BuyButtons = () =>
     consult ? (
       <div className="flex flex-col gap-2.5">
@@ -165,7 +143,7 @@ export default function BusinessServiceDetailPage() {
             flagship ? 'bg-amber-400 text-slate-900 shadow-amber-500/20' : 'bg-slate-900 text-white shadow-slate-900/20'
           }`}
         >
-          무료 상담 신청하기
+          상담 신청하기
         </button>
         <p className="text-center text-xs font-medium text-slate-400">기업 상황에 따라 맞춤 안내드립니다</p>
       </div>
@@ -177,7 +155,7 @@ export default function BusinessServiceDetailPage() {
             onClick={handleBuy}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
           >
-            <CartIcon /> 결제하기
+            <CartIcon /> 바로 결제하기
           </button>
         </div>
         <button
@@ -185,7 +163,7 @@ export default function BusinessServiceDetailPage() {
           onClick={() => scrollToId('apply')}
           className="mt-3 w-full text-center text-sm font-semibold text-slate-500 underline underline-offset-4 transition-colors hover:text-slate-900"
         >
-          결제 전에 상담을 먼저 받고 싶다면 →
+          결제 전 상담하기 →
         </button>
       </div>
     )
@@ -209,7 +187,7 @@ export default function BusinessServiceDetailPage() {
               onClick={consult ? () => scrollToId('apply') : handleBuy}
               className="rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
             >
-              {consult ? '상담 신청' : '결제하기'}
+              {consult ? '상담 신청' : '바로 결제하기'}
             </button>
             <PublicMenuDrawer />
           </div>
@@ -226,20 +204,6 @@ export default function BusinessServiceDetailPage() {
           <span className="font-semibold text-slate-700">{pkg.name}</span>
         </div>
       </div>
-
-      {/* 모바일 리디렉션 결제 복귀 결과 배너 */}
-      {returnMsg && (
-        <div className="mx-auto max-w-[900px] px-5 pt-4">
-          <div
-            role="status"
-            className={`rounded-2xl px-5 py-4 text-[0.95rem] font-semibold leading-relaxed ${
-              returnMsg.ok ? 'border border-emerald-200 bg-emerald-50 text-emerald-800' : 'border border-red-200 bg-red-50 text-red-700'
-            }`}
-          >
-            {returnMsg.text}
-          </div>
-        </div>
-      )}
 
       {/* ── 상단 구매영역 (카페24형) ───────────────────────────── */}
       <section className="border-b border-slate-200 bg-white">
@@ -630,22 +594,9 @@ export default function BusinessServiceDetailPage() {
             onClick={consult ? () => scrollToId('apply') : handleBuy}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white"
           >
-            {consult ? '무료 상담 신청하기' : <><CartIcon /> 결제하기</>}
+            {consult ? '상담 신청하기' : <><CartIcon /> 바로 결제하기</>}
           </button>
         </div>
-      )}
-
-      {/* 카드결제 모달 */}
-      {checkoutOpen && (
-        <CheckoutModal
-          pkg={pkg}
-          initialVariantIdx={variantIdx}
-          onClose={() => setCheckoutOpen(false)}
-          onConsultInstead={() => {
-            setCheckoutOpen(false)
-            scrollToId('apply')
-          }}
-        />
       )}
     </div>
   )

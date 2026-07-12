@@ -10,7 +10,8 @@ export type Faq = { q: string; a: string }
 //  - variant : 선택형(옵션에 따라 금액 변동, 예: ISO 1/2/3종)
 //  - consult : 카드결제 없이 상담 후 결정
 export type PriceType = 'fixed' | 'variant' | 'consult'
-export type PriceVariant = { label: string; amount: number; note?: string; badge?: string }
+/** optionId 는 서버 결제 카탈로그(billing_products.option_id)와 일치해야 합니다 */
+export type PriceVariant = { optionId: string; label: string; amount: number; note?: string; badge?: string }
 
 export type BusinessPackage = {
   id: string
@@ -92,8 +93,8 @@ export const businessPackages: BusinessPackage[] = [
     name: '정책자금 컨설팅',
     tagline: '운전자금·시설자금 가능성 진단부터 신청 전략까지 정리해 드립니다.',
     short: '운전자금·시설자금 가능성 진단부터 신청 전략까지',
-    price: '50만원',
-    amount: 500000,
+    price: '55만원',
+    amount: 550000,
     priceNote: '23만 7천원 상당 전자책 3종 증정',
     priceHighlight: '성공수수료 없음 (업계 평균 5~7%)',
     highlights: ['성공수수료 없음 — 업계 평균 5~7%', '23만 7천원 상당 전자책 3종 증정', '바로 신청 가능한 사업계획서 작성'],
@@ -190,8 +191,8 @@ export const businessPackages: BusinessPackage[] = [
     name: '벤처인증 패키지 (투자유형)',
     tagline: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략입니다.',
     short: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략입니다.',
-    price: '499만원',
-    amount: 4990000,
+    price: '500만원',
+    amount: 5000000,
     highlights: ['전문직·자산가 절세 전략', '소득공제 가능성 안내', '투자금 회수 구조 설명', '벤처확인(투자유형) 준비'],
     highlightNote: '연봉 1억 이상 전문직·자산가들이 많이 활용하는 절세 전략',
     recommendedFor: ['연봉 1억 이상 전문직·자산가 대표님', '투자유형으로 벤처확인과 소득공제를 함께 검토하려는 대표님'],
@@ -247,7 +248,10 @@ export const businessPackages: BusinessPackage[] = [
     price: '129만원부터',
     priceNote: '반복업무 1가지 자동화 기준 · 일회성 구축 (월 고정비 없음)',
     priceType: 'variant',
-    variants: [{ label: '기본 구축 · 반복업무 1가지 자동화', amount: 1290000, note: '풀패키지 AX 구축은 상담 후 결정' }],
+    variants: [
+      { optionId: 'ax-only', label: 'AX 시스템 구축', amount: 1290000, note: '반복업무 1가지 자동화 · 일회성 구축' },
+      { optionId: 'ax-with-homepage', label: 'AX 시스템 + 반응형 홈페이지', amount: 1490000, badge: '추천' },
+    ],
     highlights: ['반복업무 1가지 자동화 (기초 모델)', '일회성 구축 · 월 고정비 없음', '풀패키지 AX 구축은 상담 후 결정'],
     highlightNote: '본격 AX 풀패키지 구축(세팅비+월 운영비)은 상담 후 결정',
     recommendedFor: ['매일 반복되는 업무 1가지부터 자동화해보고 싶은 대표님', '큰 비용 부담 없이 AX를 시작해보려는 기업'],
@@ -304,9 +308,9 @@ export const businessPackages: BusinessPackage[] = [
     priceNote: '1·2·3종 선택 · 3종 패키지 할인',
     priceType: 'variant',
     variants: [
-      { label: '1종 · ISO 9001·14001·45001 중 택1', amount: 1490000 },
-      { label: '2종 선택', amount: 2780000 },
-      { label: '3종 패키지', amount: 3990000, badge: '할인' },
+      { optionId: 'iso-one', label: 'ISO 1종', amount: 1490000, note: '9001·14001·45001 중 택1' },
+      { optionId: 'iso-two', label: 'ISO 2종', amount: 2180000, note: '2개 규격 선택' },
+      { optionId: 'iso-three', label: 'ISO 3종 패키지', amount: 3990000, badge: '할인' },
     ],
     highlights: ['ISO 9001 품질경영', 'ISO 14001 환경경영', 'ISO 45001 안전보건경영'],
     highlightNote: '대기업 거래 · 공공입찰 · 해외수출 준비에 활용됩니다.',

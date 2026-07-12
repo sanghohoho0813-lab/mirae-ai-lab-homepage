@@ -9,6 +9,10 @@ import SignupPage from './pages/SignupPage'
 import MyToolsPage from './pages/MyToolsPage'
 import AdminPage from './pages/AdminPage'
 import AdminBusinessLeadsPage from './pages/AdminBusinessLeadsPage'
+import AdminPaymentsPage from './pages/AdminPaymentsPage'
+import CheckoutPage from './pages/CheckoutPage'
+import PaymentCompletePage from './pages/PaymentCompletePage'
+import MyOrdersPage from './pages/MyOrdersPage'
 import BusinessDiagnosisPage from './pages/BusinessDiagnosisPage'
 import BusinessDiagnosisResultsPage from './pages/BusinessDiagnosisResultsPage'
 import BusinessServicesPage from './pages/BusinessServicesPage'
@@ -30,6 +34,10 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/dashboard" element={<Navigate to="/my-tools" replace />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/business-leads" element={<AdminBusinessLeadsPage />} />
+          <Route path="/admin/payments" element={<AdminPaymentsPage />} />
+          <Route path="/checkout/:productSlug" element={<CheckoutPage />} />
+          <Route path="/payment/complete" element={<PaymentCompletePage />} />
+          <Route path="/my-orders" element={<MyOrdersPage />} />
           <Route path="/business-services" element={<BusinessServicesPage />} />
           <Route path="/business-diagnosis" element={<BusinessDiagnosisPage />} />
           <Route path="/business-diagnosis/results" element={<BusinessDiagnosisResultsPage />} />

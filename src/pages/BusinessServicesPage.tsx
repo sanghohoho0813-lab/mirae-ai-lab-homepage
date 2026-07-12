@@ -148,12 +148,12 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
             </a>
           ) : (
             <Link
-              to={`/business-services/${pkg.slug}?buy=1`}
+              to={`/checkout/${pkg.slug}`}
               className={`flex flex-1 items-center justify-center rounded-xl px-3 py-3 text-base font-bold text-white shadow-sm transition-colors ${
                 flagship ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-slate-700'
               }`}
             >
-              결제하기
+              바로 결제하기
             </Link>
           )}
           <Link

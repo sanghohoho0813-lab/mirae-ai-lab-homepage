@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
+import { loadLocalOrders } from '../lib/payments'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
@@ -109,29 +110,44 @@ export default function PublicMenuDrawer({
 }) {
   const [open, setOpen] = useState(false)
   const [historyCount, setHistoryCount] = useState(0)
+  const [orderCount, setOrderCount] = useState(0)
   const location = useLocation()
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  // 대표자 메뉴에 '내 진단 결과 N건' 동적 항목 추가 (저장된 결과가 있을 때만)
+  // 대표자 메뉴에 '내 진단 결과 N건'·'내 결제·신청내역' 동적 항목 추가
   const config = useMemo<MenuConfig>(() => {
-    if (variant !== 'business' || historyCount <= 0) return MENUS[variant]
+    if (variant !== 'business' || (historyCount <= 0 && orderCount <= 0)) return MENUS[variant]
     const base = MENUS.business
-    const resultsItem: MenuItem = {
-      label: `내 진단 결과 ${historyCount}건`,
-      desc: '저장된 진단 결과를 다시 볼 수 있어요.',
-      to: '/business-diagnosis/results',
-      match: (p) => p.startsWith('/business-diagnosis/results'),
+    const extra: MenuItem[] = []
+    if (historyCount > 0) {
+      extra.push({
+        label: `내 진단 결과 ${historyCount}건`,
+        desc: '저장된 진단 결과를 다시 볼 수 있어요.',
+        to: '/business-diagnosis/results',
+        match: (p) => p.startsWith('/business-diagnosis/results'),
+      })
     }
-    return { ...base, groups: base.groups.map((g, i) => (i === 0 ? { ...g, items: [...g.items, resultsItem] } : g)) }
-  }, [variant, historyCount])
+    if (orderCount > 0) {
+      extra.push({
+        label: `내 결제·신청내역 ${orderCount}건`,
+        desc: '결제한 주문과 진행상태를 확인해요.',
+        to: '/my-orders',
+        match: (p) => p.startsWith('/my-orders'),
+      })
+    }
+    return { ...base, groups: base.groups.map((g, i) => (i === 0 ? { ...g, items: [...g.items, ...extra] } : g)) }
+  }, [variant, historyCount, orderCount])
 
   useEffect(() => {
     setOpen(false)
   }, [location.pathname, location.search, location.hash])
 
   useEffect(() => {
-    if (open && variant === 'business') setHistoryCount(loadHistory().length)
+    if (open && variant === 'business') {
+      setHistoryCount(loadHistory().length)
+      setOrderCount(loadLocalOrders().length)
+    }
   }, [open, variant])
 
   useEffect(() => {

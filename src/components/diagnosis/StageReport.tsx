@@ -291,8 +291,8 @@ function Recommendations({
                       상담 신청
                     </Link>
                   ) : (
-                    <Link to={`/business-services/${pkg.slug}?buy=1`} onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
-                      결제하기
+                    <Link to={`/checkout/${pkg.slug}`} onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
+                      바로 결제하기
                     </Link>
                   )}
                 </div>
