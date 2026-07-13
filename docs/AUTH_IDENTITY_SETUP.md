@@ -43,16 +43,30 @@
 2. 앱 설정 → **플랫폼 → Web 플랫폼 등록** → 사이트 도메인: `https://ai-business-lab-delta.vercel.app`
 3. 제품 설정 → **카카오 로그인 → 활성화 설정 ON**
    - **Redirect URI 등록**: `https://<프로젝트ref>.supabase.co/auth/v1/callback`
-4. 제품 설정 → 카카오 로그인 → **동의항목**
-   - ⚠️ **이메일(account_email)은 요청하지 않도록 코드가 설정되어 있습니다** — 코드가 카카오에 보내는
-     scope 는 기본 `profile_nickname` 뿐이라, 이메일 권한(비즈 앱 필요)이 없어도 **KOE205 없이 로그인**됩니다.
-   - **닉네임(profile_nickname)** 이 동의항목에 있으면(카카오 로그인 활성화 시 보통 기본 포함) 그대로 두면 됩니다.
-     만약 닉네임 동의항목도 꺼져 있다면 켜거나, `VITE_KAKAO_OAUTH_SCOPES` 를 콘솔에 실제 켜진 항목으로 맞추세요.
-   - 이메일을 제공하지 않은 카카오 사용자는 사이트 **온보딩에서 이메일을 직접 입력·확인**하도록 처리되어 있습니다.
-   - (선택) 나중에 비즈 앱 전환으로 이메일 권한을 받으면 `VITE_KAKAO_OAUTH_SCOPES=profile_nickname account_email` 로
-     바꿔 이메일 자동수집을 켤 수 있습니다.
+4. 제품 설정 → 카카오 로그인 → **동의항목** — ⚠️ **KOE205 해결의 핵심 (아래를 꼭 읽으세요)**
+
+   > **왜 KOE205 가 나나요?** Supabase 의 관리형 Kakao provider(GoTrue)는 카카오에
+   > `account_email`, `profile_image`, `profile_nickname` **세 가지 scope 를 항상 강제로 요청**합니다.
+   > **프론트 코드(`options.scopes`)로는 이 기본 scope(특히 `account_email`)를 제거할 수 없습니다**(추가만 가능).
+   > 따라서 이 세 항목이 카카오 콘솔의 **동의항목으로 등록되어 있지 않으면** KOE205(요청 scope 미설정)가 발생합니다.
+   > → **해결책은 코드가 아니라, 카카오 콘솔에서 이 세 항목을 유효한 동의항목으로 만드는 것**입니다.
+
+   **KOE205 를 없애려면 아래 3개 항목을 모두 동의항목으로 설정하세요:**
+   - **닉네임(profile_nickname)** → "선택 동의" 로 설정 (비즈 앱 불필요, 카카오 로그인 활성화 시 보통 기본 포함)
+   - **프로필 사진(profile_image)** → "선택 동의" 로 설정 (비즈 앱 불필요)
+   - **카카오계정(이메일)(account_email)** → "선택 동의" 로 설정 — ⚠️ **비즈니스 앱 전환이 필요합니다.**
+     - 카카오 콘솔 → **비즈니스 → 비즈니스 앱 전환** (사업자등록번호 `657-68-00733` 로 신청·검수)
+     - 전환·검수 완료 후 account_email 을 "선택 동의" 로 추가하면 KOE205 가 사라집니다.
+     - "선택 동의"이므로 사용자가 이메일 제공을 거부해도 로그인은 되고, 이 경우 사이트 **온보딩에서 이메일을
+       직접 입력·확인**하는 폴백이 이미 구현되어 있습니다.
+
+   **비즈니스 앱 전환을 지금 할 수 없다면?** — Supabase 관리형 provider 를 쓰는 한 account_email 강제 요청을
+   막을 수 없으므로, 카카오 직접 OAuth(별도 서버리스 구현) 로 전환해야 합니다. 이는 별도 작업이 필요합니다
+   (완료 보고의 "대안" 참고). 그 전까지는 **Google·이메일 로그인**으로 안내됩니다.
+
 5. **Supabase Dashboard → Authentication → Providers → Kakao** 에서
-   **"Allow users without an email"(또는 유사 항목)을 ON** — 이메일 없는 카카오 사용자 가입 허용.
+   **"Allow users without an email"(또는 유사 항목)을 ON** — 이메일 없는(또는 이메일 미동의) 카카오 사용자 가입 허용.
+   - `VITE_KAKAO_OAUTH_SCOPES` 는 위 3개 기본 scope 를 **줄이지 못하며**, 추가 scope 가 필요할 때만 사용합니다(선택).
 6. 앱 설정 → **앱 키** 에서 **REST API 키** 확인 + 제품 설정 → 카카오 로그인 → **보안** 에서
    **Client Secret 생성 → 활성화(사용함)**
 7. **Supabase Dashboard → Authentication → Providers → Kakao**

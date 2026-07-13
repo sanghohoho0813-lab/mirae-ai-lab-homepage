@@ -61,12 +61,13 @@ type AuthValue = {
 
 const AuthContext = createContext<AuthValue | null>(null)
 
-// 카카오 OAuth scope — account_email 은 요청하지 않습니다(콘솔 미허용 시 KOE205 유발).
-// Supabase(gotrue)의 카카오 기본 scope 는 account_email 이라, 이를 덮어쓰려면 최소 1개의 유효한
-// scope 를 명시해야 합니다. profile_nickname 은 카카오 로그인 활성화 시 기본 제공되는 동의항목이라
-// 가장 안전합니다(account_email·profile_image 는 요청하지 않음).
-// 콘솔 동의항목이 다르면 VITE_KAKAO_OAUTH_SCOPES(공백 구분)로 조정하세요.
-const KAKAO_OAUTH_SCOPES = ((import.meta.env.VITE_KAKAO_OAUTH_SCOPES as string | undefined) ?? 'profile_nickname').trim()
+// 카카오 OAuth 추가 scope (공백 구분, 선택).
+// ⚠️ 중요: Supabase(GoTrue) 관리형 Kakao provider 는 account_email·profile_image·profile_nickname 을
+//    기본으로 '강제' 요청하며, 클라이언트의 options.scopes 로는 이 기본 scope(특히 account_email)를
+//    제거할 수 없습니다(추가만 가능). 따라서 KOE205(요청 scope 미설정)의 근본 해결은 코드가 아니라
+//    카카오 콘솔에서 '요청되는 동의항목을 유효하게' 만드는 것입니다(docs/AUTH_IDENTITY_SETUP.md 참고).
+//    이 값은 기본 3개 외에 '추가' scope 가 필요할 때만 사용합니다(기본값 없음 → 미전송).
+const KAKAO_OAUTH_SCOPES = ((import.meta.env.VITE_KAKAO_OAUTH_SCOPES as string | undefined) ?? '').trim()
 
 async function loadProfile(userId: string): Promise<Profile | null> {
   if (!supabase) return null
@@ -206,7 +207,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // 이미 로그인된 상태의 중복 OAuth 요청 방지
     const { data: cur } = await supabase.auth.getSession()
     if (cur.session) return { ok: true }
-    // 카카오만 최소 scope 명시(account_email 제거 → KOE205 방지). Google 은 기본값 유지(변경 금지).
+    // 카카오 '추가' scope 만 옵션으로 전달(있을 때만). account_email 제거는 코드로 불가(콘솔에서 해결).
+    // Google 은 기본값 유지(변경 금지).
     const options: { redirectTo: string; scopes?: string } = { redirectTo: oauthRedirectUrl(next) }
     if (provider === 'kakao' && KAKAO_OAUTH_SCOPES) options.scopes = KAKAO_OAUTH_SCOPES
     const { error } = await supabase.auth.signInWithOAuth({ provider, options })
