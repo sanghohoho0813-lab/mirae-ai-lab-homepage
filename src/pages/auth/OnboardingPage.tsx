@@ -15,7 +15,7 @@ import {
   type IdentityHealth, type IdentityVerified,
 } from '../../lib/identityVerification'
 import { loadHistory } from '../../lib/businessDiagnosisStorage'
-import { roleHome, sanitizeNext } from '../../lib/authRouting'
+import { roleHome, sanitizeNext, isSocialProvider, socialProviderLabel, resolveUserEmail } from '../../lib/authRouting'
 import { trackAuthEvent } from '../../lib/authAnalytics'
 import type { MemberType } from '../../lib/platform'
 
@@ -47,18 +47,26 @@ export default function OnboardingPage() {
   const identityRequired = health ? health.required : true
   const identityConfigured = health ? health.identityConfigured : true
   const identityDone = identityVerified || identity !== null
-  // 카카오 이메일 미제공 계정 — 이메일 등록·확인 필요
-  const missingEmail = Boolean(user && !user.email)
+
+  // A. 소셜 provider 판별 / B. 이메일 해석 (authRouting 순수 함수 재사용 — 단위 테스트됨)
+  const socialProvider = useMemo(() => isSocialProvider(user), [user])
+  const providerLabel = useMemo(() => socialProviderLabel(user), [user])
+  const resolvedEmail = useMemo(() => resolveUserEmail(user, profile?.email), [user, profile?.email])
+
+  // 유효 이메일이 어디에도 없을 때만 직접 입력·확인 필요 (주로 카카오 이메일 미동의)
+  const needsEmailInput = !resolvedEmail
 
   const canComplete = useMemo(() => {
-    if (busy) return false
-    if (!selected) return false
+    if (busy || !selected || !requiredConsentsAgreed(consents)) return false
+    if (socialProvider) {
+      // 소셜: 휴대폰 본인인증 불필요. provider 이메일이 있으면 확인 불필요, 없으면 입력·확인(→resolvedEmail 채워짐) 필요
+      return !!resolvedEmail
+    }
+    // 이메일/비밀번호 가입: 기존 정책 유지
     if (identityRequired && identityConfigured && !identityDone) return false
     if (identityRequired && !identityConfigured) return false // fail-closed
-    if (!requiredConsentsAgreed(consents)) return false
-    if (missingEmail) return false
-    return true
-  }, [busy, selected, identityRequired, identityConfigured, identityDone, consents, missingEmail])
+    return !!resolvedEmail
+  }, [busy, selected, consents, socialProvider, resolvedEmail, identityRequired, identityConfigured, identityDone])
 
   if (!configured) {
     return (
@@ -155,20 +163,41 @@ export default function OnboardingPage() {
           </div>
           <p className="mt-2 text-xs text-slate-400">두 번째 역할은 가입 후 내 계정에서 추가할 수 있어요.</p>
 
-          {/* 2. 본인인증 */}
-          <p className="mt-6 text-[0.95rem] font-semibold text-slate-800">휴대폰 본인인증 <span className="text-rose-500">*</span></p>
-          <div className="mt-2">
-            {identityVerified ? (
-              <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700 ring-1 ring-inset ring-emerald-200">
-                ✓ 본인인증이 이미 완료되었습니다.
-              </p>
-            ) : (
-              <IdentityVerifyCard verified={identity} onVerified={setIdentity} />
-            )}
-          </div>
+          {/* 2. 인증 상태 — 소셜은 provider 인증으로 대체(휴대폰 생략), 이메일 가입은 휴대폰 본인인증 */}
+          {socialProvider ? (
+            <div className="mt-6">
+              <p className="text-[0.95rem] font-semibold text-slate-800">계정 인증</p>
+              <div className="mt-2 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1 text-xs font-black text-white">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M20 6 9 17l-5-5" /></svg>
+                  소셜 계정 인증 완료
+                </span>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{providerLabel} 계정으로 확인되었습니다.</p>
+                {resolvedEmail && (
+                  <div className="mt-2 flex items-center justify-between rounded-xl bg-white px-4 py-2.5 text-sm ring-1 ring-inset ring-slate-200">
+                    <span className="font-semibold text-slate-500">이메일</span>
+                    <span className="min-w-0 truncate pl-3 font-bold text-slate-900">{resolvedEmail}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
+              <p className="mt-6 text-[0.95rem] font-semibold text-slate-800">휴대폰 본인인증 <span className="text-rose-500">*</span></p>
+              <div className="mt-2">
+                {identityVerified ? (
+                  <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700 ring-1 ring-inset ring-emerald-200">
+                    ✓ 본인인증이 이미 완료되었습니다.
+                  </p>
+                ) : (
+                  <IdentityVerifyCard verified={identity} onVerified={setIdentity} />
+                )}
+              </div>
+            </>
+          )}
 
-          {/* 3. 이메일 미제공(카카오 등) 처리 */}
-          {missingEmail && (
+          {/* 3. 이메일 미제공(주로 카카오 이메일 미동의) — 유효 이메일이 어디에도 없을 때만 직접 입력 */}
+          {needsEmailInput && (
             <div className="mt-6">
               <p className="text-[0.95rem] font-semibold text-slate-800">이메일 등록 <span className="text-rose-500">*</span></p>
               {emailSent ? (
@@ -178,7 +207,7 @@ export default function OnboardingPage() {
               ) : (
                 <>
                   <p className="mt-1 text-[0.85rem] leading-relaxed text-slate-500">
-                    카카오에서 이메일 정보를 제공하지 않았어요. 계정에 사용할 이메일을 입력해주세요.
+                    {providerLabel}에서 이메일 정보를 제공하지 않았어요. 계정에 사용할 이메일을 입력해주세요.
                   </p>
                   <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                     <input

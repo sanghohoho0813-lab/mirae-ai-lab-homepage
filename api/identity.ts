@@ -61,6 +61,21 @@ function normPhone(p: unknown): string {
   return String(p ?? '').replace(/[^0-9]/g, '').slice(0, 15)
 }
 
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
+/** 소셜(google/kakao) 로그인 여부 — app_metadata.provider/providers + identities[].provider */
+function detectSocial(u: any): boolean {
+  const ap = u?.app_metadata ?? {}
+  const list = [ap.provider, ...((ap.providers as string[] | undefined) ?? []), ...(((u?.identities as any[] | undefined) ?? []).map((i) => i?.provider))]
+  return list.some((p) => p === 'google' || p === 'kakao')
+}
+/** OAuth provider 가 검증한 이메일 해석 — user.email → identities.identity_data.email → user_metadata.(account_)email */
+function resolveEmail(u: any): string | null {
+  const meta = u?.user_metadata ?? {}
+  const cands = [u?.email, ...(((u?.identities as any[] | undefined) ?? []).map((i) => i?.identity_data?.email)), meta.email, meta.account_email]
+  const f = cands.find((e) => typeof e === 'string' && EMAIL_RE.test(e))
+  return typeof f === 'string' ? f : null
+}
+
 // 인스턴스 단위 레이트리밋 (보조 — DB 카운트가 1차)
 const rateBucket = new Map<string, number[]>()
 function hitRate(key: string, maxPerMin: number): boolean {
@@ -119,6 +134,13 @@ export default async function handler(req: any, res: any) {
       const { data, error } = await admin.auth.getUser(t)
       if (error || !data?.user) return null
       return { id: data.user.id }
+    }
+    async function getUserFull(token: unknown): Promise<any | null> {
+      const t = String(token ?? '')
+      if (!t) return null
+      const { data, error } = await admin.auth.getUser(t)
+      if (error || !data?.user) return null
+      return data.user
     }
     async function audit(userId: string | null, eventType: string, provider: string | null, metadata: Record<string, unknown> | null) {
       try {
@@ -311,22 +333,26 @@ export default async function handler(req: any, res: any) {
 
     // ── complete — 온보딩(가입) 완료 판정 ────────────────────────
     if (action === 'complete') {
-      const user = await getUser(body.accessToken)
-      if (!user) return res.status(401).json({ ok: false, message: '로그인이 필요합니다.', debugCode: 'no_token' })
+      const fullUser = await getUserFull(body.accessToken)
+      if (!fullUser) return res.status(401).json({ ok: false, message: '로그인이 필요합니다.', debugCode: 'no_token' })
+      const userId: string = fullUser.id
+      const isSocial = detectSocial(fullUser)
+      const resolvedEmail = resolveEmail(fullUser)
       const role = String(body.role ?? '')
       if (!(ROLES as readonly string[]).includes(role)) return res.status(400).json({ ok: false, message: '회원유형을 선택해주세요.', debugCode: 'bad_role' })
 
       // 1) 필수 동의 확인
-      const { data: consents } = await admin.from('user_consents').select('consent_key, agreed').eq('user_id', user.id).eq('agreed', true)
+      const { data: consents } = await admin.from('user_consents').select('consent_key, agreed').eq('user_id', userId).eq('agreed', true)
       const agreedKeys = new Set(((consents ?? []) as { consent_key: string }[]).map((c) => c.consent_key))
       const missing = REQUIRED_CONSENTS.filter((k) => !agreedKeys.has(k))
       if (missing.length > 0) {
         return res.status(400).json({ ok: false, message: '필수 약관 동의가 완료되지 않았습니다.', debugCode: 'consent_missing' })
       }
 
-      // 2) 본인인증 확인 — fail-closed: 필수인데 미설정이면 신규가입 완료 차단
-      const { data: prof } = await admin.from('profiles').select('identity_verified, member_type, onboarding_status').eq('id', user.id).maybeSingle()
-      if (cfg.required) {
+      // 2) 본인인증 확인 — 소셜 로그인 사용자는 provider 검증을 신뢰해 휴대폰 본인인증 면제.
+      //    이메일/비밀번호 가입만 fail-closed(필수인데 미설정이면 완료 차단).
+      const { data: prof } = await admin.from('profiles').select('identity_verified, member_type, onboarding_status, email').eq('id', userId).maybeSingle()
+      if (cfg.required && !isSocial) {
         if (!identityConfigured(cfg)) {
           return res.status(503).json({
             ok: false, notConfigured: true,
@@ -339,9 +365,17 @@ export default async function handler(req: any, res: any) {
         }
       }
 
+      // 2-1) provider 이메일을 서비스 프로필 이메일로 저장 (profiles.email 이 비어있을 때만; auth.users.email 강제 변경 안 함)
+      if (resolvedEmail) {
+        const curEmail = (prof as { email?: string } | null)?.email
+        if (!curEmail || !EMAIL_RE.test(curEmail)) {
+          try { await admin.from('profiles').update({ email: resolvedEmail }).eq('id', userId) } catch { /* unique 충돌 등은 무시 */ }
+        }
+      }
+
       // 3) 역할 + 프로필 확정 (멱등 — unique(user_id, role) / upsert)
       const { error: rErr } = await admin.from('user_roles').upsert(
-        { user_id: user.id, role }, { onConflict: 'user_id,role', ignoreDuplicates: true },
+        { user_id: userId, role }, { onConflict: 'user_id,role', ignoreDuplicates: true },
       )
       if (rErr && !/duplicate/i.test(String(rErr.message))) {
         return res.status(500).json({ ok: false, message: '역할을 저장하지 못했습니다.', debugCode: 'role_failed' })
@@ -351,10 +385,10 @@ export default async function handler(req: any, res: any) {
         role_selected_at: nowIso, onboarding_status: 'completed', signup_completed_at: nowIso,
       }
       if (!prof?.member_type) patch.member_type = role === 'ceo' ? 'business' : 'consultant'
-      await admin.from('profiles').update(patch).eq('id', user.id)
-      await audit(user.id, 'signup_completed', null, { role })
+      await admin.from('profiles').update(patch).eq('id', userId)
+      await audit(userId, 'signup_completed', isSocial ? 'social' : null, { role })
 
-      const { data: roles } = await admin.from('user_roles').select('role').eq('user_id', user.id)
+      const { data: roles } = await admin.from('user_roles').select('role').eq('user_id', userId)
       return res.status(200).json({ ok: true, roles: ((roles ?? []) as { role: string }[]).map((r) => r.role) })
     }
 
