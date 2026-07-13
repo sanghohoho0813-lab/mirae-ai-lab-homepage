@@ -61,6 +61,13 @@ type AuthValue = {
 
 const AuthContext = createContext<AuthValue | null>(null)
 
+// 카카오 OAuth scope — account_email 은 요청하지 않습니다(콘솔 미허용 시 KOE205 유발).
+// Supabase(gotrue)의 카카오 기본 scope 는 account_email 이라, 이를 덮어쓰려면 최소 1개의 유효한
+// scope 를 명시해야 합니다. profile_nickname 은 카카오 로그인 활성화 시 기본 제공되는 동의항목이라
+// 가장 안전합니다(account_email·profile_image 는 요청하지 않음).
+// 콘솔 동의항목이 다르면 VITE_KAKAO_OAUTH_SCOPES(공백 구분)로 조정하세요.
+const KAKAO_OAUTH_SCOPES = ((import.meta.env.VITE_KAKAO_OAUTH_SCOPES as string | undefined) ?? 'profile_nickname').trim()
+
 async function loadProfile(userId: string): Promise<Profile | null> {
   if (!supabase) return null
   const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
@@ -199,10 +206,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // 이미 로그인된 상태의 중복 OAuth 요청 방지
     const { data: cur } = await supabase.auth.getSession()
     if (cur.session) return { ok: true }
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: { redirectTo: oauthRedirectUrl(next) },
-    })
+    // 카카오만 최소 scope 명시(account_email 제거 → KOE205 방지). Google 은 기본값 유지(변경 금지).
+    const options: { redirectTo: string; scopes?: string } = { redirectTo: oauthRedirectUrl(next) }
+    if (provider === 'kakao' && KAKAO_OAUTH_SCOPES) options.scopes = KAKAO_OAUTH_SCOPES
+    const { error } = await supabase.auth.signInWithOAuth({ provider, options })
     if (error) return { ok: false, error: mapAuthError(error.message) }
     return { ok: true } // 브라우저가 provider 로 리다이렉트됨
   }, [])

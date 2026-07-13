@@ -44,17 +44,24 @@
 3. 제품 설정 → **카카오 로그인 → 활성화 설정 ON**
    - **Redirect URI 등록**: `https://<프로젝트ref>.supabase.co/auth/v1/callback`
 4. 제품 설정 → 카카오 로그인 → **동의항목**
-   - **카카오계정(이메일)** 을 "필수 동의" 또는 "선택 동의"로 설정 (이메일 항목은 **비즈 앱 전환** 후
-     필수 동의로 설정 가능. 전환 전에는 선택 동의만 가능 — 이메일 미제공 사용자는 사이트의
-     온보딩에서 이메일을 따로 등록·확인하도록 처리되어 있습니다)
-5. 앱 설정 → **앱 키** 에서 **REST API 키** 확인 + 제품 설정 → 카카오 로그인 → **보안** 에서
+   - ⚠️ **이메일(account_email)은 요청하지 않도록 코드가 설정되어 있습니다** — 코드가 카카오에 보내는
+     scope 는 기본 `profile_nickname` 뿐이라, 이메일 권한(비즈 앱 필요)이 없어도 **KOE205 없이 로그인**됩니다.
+   - **닉네임(profile_nickname)** 이 동의항목에 있으면(카카오 로그인 활성화 시 보통 기본 포함) 그대로 두면 됩니다.
+     만약 닉네임 동의항목도 꺼져 있다면 켜거나, `VITE_KAKAO_OAUTH_SCOPES` 를 콘솔에 실제 켜진 항목으로 맞추세요.
+   - 이메일을 제공하지 않은 카카오 사용자는 사이트 **온보딩에서 이메일을 직접 입력·확인**하도록 처리되어 있습니다.
+   - (선택) 나중에 비즈 앱 전환으로 이메일 권한을 받으면 `VITE_KAKAO_OAUTH_SCOPES=profile_nickname account_email` 로
+     바꿔 이메일 자동수집을 켤 수 있습니다.
+5. **Supabase Dashboard → Authentication → Providers → Kakao** 에서
+   **"Allow users without an email"(또는 유사 항목)을 ON** — 이메일 없는 카카오 사용자 가입 허용.
+6. 앱 설정 → **앱 키** 에서 **REST API 키** 확인 + 제품 설정 → 카카오 로그인 → **보안** 에서
    **Client Secret 생성 → 활성화(사용함)**
-6. **Supabase Dashboard → Authentication → Providers → Kakao**
+7. **Supabase Dashboard → Authentication → Providers → Kakao**
    - Enable ON
    - **Client ID = 카카오 REST API 키**
    - **Client Secret = 위에서 생성한 Client Secret**
    - Save
-7. 테스트 단계에서 카카오 앱이 "테스트" 상태면 팀원으로 등록된 카카오계정만 로그인됩니다.
+8. (선택) 카카오 scope 조정이 필요하면 Vercel 에 `VITE_KAKAO_OAUTH_SCOPES`(공백 구분) 등록 후 Redeploy.
+9. 테스트 단계에서 카카오 앱이 "테스트" 상태면 팀원으로 등록된 카카오계정만 로그인됩니다.
    전체 공개하려면 카카오 앱을 **비즈 앱**으로 전환하세요.
 
 ## C. PortOne — 본인인증(통신사 PASS) 설정

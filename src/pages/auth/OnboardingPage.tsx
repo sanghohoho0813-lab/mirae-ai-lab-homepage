@@ -31,6 +31,7 @@ export default function OnboardingPage() {
   const [health, setHealth] = useState<IdentityHealth | null>(null)
   const [emailInput, setEmailInput] = useState('')
   const [emailSent, setEmailSent] = useState(false)
+  const [emailBusy, setEmailBusy] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const startedAtRef = useRef(Date.now())
@@ -77,17 +78,27 @@ export default function OnboardingPage() {
   if (!needsOnboarding) return <Navigate to={next ?? roleHome(roles, memberType)} replace />
 
   async function handleRegisterEmail() {
+    if (emailBusy) return
     if (!supabase || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailInput)) {
       setError('이메일 주소를 확인해주세요.')
       return
     }
     setError('')
-    const { error: e } = await supabase.auth.updateUser({ email: emailInput.trim() })
+    setEmailBusy(true)
+    // 이메일 확인 후 이 온보딩 화면으로 복귀 (next 보존)
+    const redirect = `${window.location.origin}/auth/onboarding${next ? `?next=${encodeURIComponent(next)}` : ''}`
+    const { error: e } = await supabase.auth.updateUser({ email: emailInput.trim() }, { emailRedirectTo: redirect })
+    setEmailBusy(false)
     if (e) {
-      setError('이메일을 등록하지 못했습니다. 다른 주소로 시도해주세요.')
+      const m = (e.message ?? '').toLowerCase()
+      if (m.includes('already') || m.includes('registered') || m.includes('exists')) {
+        setError('이미 사용 중인 이메일입니다. 다른 이메일을 입력하거나 기존 계정으로 로그인해주세요.')
+      } else {
+        setError('이메일을 등록하지 못했습니다. 다른 주소로 다시 시도해주세요.')
+      }
       return
     }
-    setEmailSent(true)
+    setEmailSent(true) // 확인 메일 발송됨 — 확인 전에는 가입 완료(completed) 불가
   }
 
   async function handleComplete() {
@@ -161,22 +172,26 @@ export default function OnboardingPage() {
             <div className="mt-6">
               <p className="text-[0.95rem] font-semibold text-slate-800">이메일 등록 <span className="text-rose-500">*</span></p>
               {emailSent ? (
-                <p className="mt-2 rounded-xl bg-blue-50 px-4 py-3 text-sm leading-relaxed text-blue-800">
-                  확인 메일을 보냈습니다. 메일의 링크를 눌러 이메일 등록을 완료한 뒤 이 화면으로 돌아와주세요.
+                <p className="mt-2 rounded-xl bg-blue-50 px-4 py-3 text-sm leading-relaxed text-blue-800" role="status">
+                  입력하신 이메일로 확인 메일을 보냈어요. 이메일 확인 후 가입을 계속해주세요.
                 </p>
               ) : (
                 <>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
-                    소셜 계정에서 이메일 정보를 받지 못했습니다. 안내·영수증 수신을 위해 이메일을 등록해주세요.
+                  <p className="mt-1 text-[0.85rem] leading-relaxed text-slate-500">
+                    카카오에서 이메일 정보를 제공하지 않았어요. 계정에 사용할 이메일을 입력해주세요.
                   </p>
-                  <div className="mt-2 flex gap-2">
+                  <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                     <input
-                      type="email" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}
-                      placeholder="you@example.com" autoComplete="email"
+                      type="email" value={emailInput}
+                      onChange={(e) => { setEmailInput(e.target.value); if (error) setError('') }}
+                      placeholder="you@example.com" autoComplete="email" inputMode="email"
                       className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
-                    <button type="button" onClick={handleRegisterEmail} className="shrink-0 rounded-xl bg-slate-900 px-4 text-sm font-bold text-white hover:bg-slate-700">
-                      등록
+                    <button
+                      type="button" onClick={handleRegisterEmail} disabled={emailBusy}
+                      className="min-h-[48px] shrink-0 rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-700 disabled:opacity-60 sm:w-auto"
+                    >
+                      {emailBusy ? '전송 중…' : '확인 메일 받기'}
                     </button>
                   </div>
                 </>
