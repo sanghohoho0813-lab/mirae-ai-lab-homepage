@@ -6,8 +6,8 @@ import SocialAuthButtons from './auth/SocialAuthButtons'
 export default function LoginModal({
   open,
   onClose,
-  title = '로그인이 필요해요',
-  message = '결제와 계약내역 확인은 로그인 후 이용할 수 있습니다.',
+  title = '계속하려면 로그인이 필요해요',
+  message = '결제내역과 기업자료를 안전하게 보관하기 위해 회원 로그인이 필요합니다.',
   redirectTo,
 }: {
   open: boolean
@@ -20,7 +20,7 @@ export default function LoginModal({
   const location = useLocation()
   if (!open) return null
   const target = redirectTo ?? location.pathname + location.search
-  const q = `?redirect=${encodeURIComponent(target)}`
+  const q = `?next=${encodeURIComponent(target)}`
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 p-0 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={title}>
@@ -49,17 +49,23 @@ export default function LoginModal({
           <button
             type="button"
             onClick={() => navigate(`/login${q}`)}
-            className="w-full rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700"
+            className="min-h-[52px] w-full rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700"
           >
             이메일로 로그인
           </button>
           <button
             type="button"
-            onClick={() => navigate(`/signup${q}`)}
-            className="w-full rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-base font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+            onClick={() => (onClose ? onClose() : navigate(-1))}
+            className="min-h-[52px] w-full rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-base font-semibold text-slate-700 transition-colors hover:bg-slate-50"
           >
-            회원가입
+            이전 화면으로
           </button>
+          <p className="text-center text-sm text-slate-500">
+            아직 계정이 없으신가요?{' '}
+            <button type="button" onClick={() => navigate(`/signup${q}`)} className="font-semibold text-blue-600 underline underline-offset-2 hover:text-blue-700">
+              회원가입
+            </button>
+          </p>
         </div>
       </div>
     </div>

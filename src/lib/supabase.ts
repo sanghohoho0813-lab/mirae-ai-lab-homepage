@@ -10,6 +10,7 @@ export const isSupabaseConfigured = Boolean(url && anonKey)
 
 export const supabase: SupabaseClient | null = isSupabaseConfigured
   ? createClient(url as string, anonKey as string, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      // PKCE — OAuth(구글·카카오) code 교환 방식. /auth/callback 에서 세션이 확립됩니다.
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' },
     })
   : null

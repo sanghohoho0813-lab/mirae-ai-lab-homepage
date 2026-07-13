@@ -7,6 +7,8 @@ import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-r
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
 import LegalFooter from '../components/LegalFooter'
 import LoginModal from '../components/LoginModal'
+import IdentityVerifyCard from '../components/auth/IdentityVerifyCard'
+import { attachIdentityToUser, getIdentityHealth, type IdentityVerified } from '../lib/identityVerification'
 import { getPackageBySlug } from '../data/businessPackages'
 import { checkoutTerms } from '../config/checkoutTerms'
 import { useAuth } from '../lib/auth'
@@ -44,8 +46,12 @@ export default function CheckoutPage() {
   // requestId — 체크아웃 진입마다 1개 (중복 클릭·재시도 시 같은 pending 주문 재사용)
   const requestIdRef = useRef(newRequestId())
   const busyRef = useRef(false)
-  const { isAdmin, user, profile, loading: authLoading } = useAuth()
+  const { isAdmin, user, profile, identityVerified, loading: authLoading, getAccessToken, refreshProfile } = useAuth()
   const prefilledRef = useRef(false)
+  // 결제 전 본인인증 게이트 — 본인인증이 '설정 완료 + 필수' 인 환경에서만 요구 (기존 회원 점진 전환)
+  const [identityGate, setIdentityGate] = useState<{ required: boolean; configured: boolean } | null>(null)
+  const [gateIdentity, setGateIdentity] = useState<IdentityVerified | null>(null)
+  const [gateError, setGateError] = useState('')
 
   const configured = paymentConfigured()
   const consult = pkg?.priceType === 'consult'
@@ -74,6 +80,9 @@ export default function CheckoutPage() {
         setEnvironment(h.environment)
         setTestGateActive(h.testGateActive)
       }
+    })
+    void getIdentityHealth().then((h) => {
+      setIdentityGate(h ? { required: h.required, configured: h.identityConfigured } : { required: false, configured: false })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -111,10 +120,27 @@ export default function CheckoutPage() {
     })
   }
 
+  // 본인인증 게이트 — 설정 완료 + 필수 정책일 때만 결제 전 인증 요구 (미설정이면 기존 회원 결제 차단 안 함)
+  const identityBlocked = Boolean(
+    user && identityGate && identityGate.required && identityGate.configured && !identityVerified,
+  )
+
+  async function handleAttachIdentity(v: IdentityVerified | null) {
+    setGateIdentity(v)
+    setGateError('')
+    if (!v) return
+    const token = await getAccessToken()
+    if (!token) return setGateError('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
+    const r = await attachIdentityToUser(v.id, token)
+    if (!r.ok) return setGateError(r.error ?? '본인인증 연결에 실패했습니다.')
+    await refreshProfile()
+  }
+
   async function handlePay() {
     if (busyRef.current) return
     setError(null)
     if (!user) return setError('결제는 로그인 후 이용할 수 있습니다.')
+    if (identityBlocked) return setError('결제 전 휴대폰 본인인증을 완료해주세요.')
     // 검증
     if (!buyer.buyerCompanyName.trim()) return setError('회사명을 입력해주세요.')
     if (buyer.buyerName.trim().length < 2) return setError('대표자명(신청자명)을 입력해주세요.')
@@ -358,13 +384,27 @@ export default function CheckoutPage() {
           </p>
         </section>
 
+        {/* C-2. 결제 전 본인인증 (기존 미인증 회원 — 설정 완료 환경에서만) */}
+        {identityBlocked && (
+          <section className="mt-4 rounded-2xl border border-blue-200 bg-blue-50/40 p-5">
+            <p className="text-xs font-black uppercase tracking-widest text-blue-500">결제 전 본인인증</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              안전한 결제를 위해 휴대폰 본인인증이 필요합니다. 한 번만 완료하면 다음 결제부터는 묻지 않아요.
+            </p>
+            <div className="mt-3">
+              <IdentityVerifyCard verified={gateIdentity} onVerified={(v) => { void handleAttachIdentity(v) }} />
+            </div>
+            {gateError && <p role="alert" className="mt-2 rounded-lg bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700">{gateError}</p>}
+          </section>
+        )}
+
         {/* D. 결제 */}
         <section className="mt-4">
           {error && <p role="alert" className="mb-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold leading-snug text-red-700">{error}</p>}
           <button
             type="button"
             onClick={handlePay}
-            disabled={busy || !configured || gateBlocked || !user}
+            disabled={busy || !configured || gateBlocked || !user || identityBlocked}
             className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {phase === 'preparing' ? '주문을 준비하고 있어요…' : phase === 'window' ? '결제창 확인 중…' : `${formatKrw(amount)} 결제하기`}
@@ -386,11 +426,7 @@ export default function CheckoutPage() {
         </section>
       </main>
 
-      <LoginModal
-        open={!authLoading && !user}
-        onClose={() => navigate(`/business-services/${pkg.slug}`)}
-        message="결제는 로그인 후 이용할 수 있습니다. 로그인하면 신청자 정보가 자동으로 채워집니다."
-      />
+      <LoginModal open={!authLoading && !user} onClose={() => navigate(`/business-services/${pkg.slug}`)} />
 
       <LegalFooter />
     </div>

@@ -19,7 +19,11 @@ import BusinessServicesPage from './pages/BusinessServicesPage'
 import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
 import FundingConsultingDetailPage from './pages/business-details/FundingConsultingDetailPage'
 import GatewayPage from './pages/GatewayPage'
-import AccountSetupPage from './pages/AccountSetupPage'
+import AuthCallbackPage from './pages/auth/AuthCallbackPage'
+import OnboardingPage from './pages/auth/OnboardingPage'
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
+import ResetPasswordPage from './pages/auth/ResetPasswordPage'
+import AuthGuard from './components/auth/AuthGuard'
 import TermsPage from './pages/legal/TermsPage'
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage'
 import RefundPolicyPage from './pages/legal/RefundPolicyPage'
@@ -35,8 +39,19 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/for-consultants" element={<Navigate to="/consultants" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/welcome" element={<AccountSetupPage />} />
-          <Route path="/my-tools" element={<MyToolsPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          <Route path="/auth/onboarding" element={<OnboardingPage />} />
+          <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/welcome" element={<Navigate to="/auth/onboarding" replace />} />
+          <Route
+            path="/my-tools"
+            element={
+              <AuthGuard role="consultant">
+                <MyToolsPage />
+              </AuthGuard>
+            }
+          />
           <Route path="/dashboard" element={<Navigate to="/my-tools" replace />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/business-leads" element={<AdminBusinessLeadsPage />} />

@@ -20,10 +20,13 @@ function BrandMark() {
 export default function PageShell({
   title,
   subtitle,
+  compact = false,
   children,
 }: {
   title: string
   subtitle?: string
+  /** 인증 화면용 — 상단 여백 축소 + 제목 중앙 정렬(모바일 잘림 방지) */
+  compact?: boolean
   children: ReactNode
 }) {
   const { user, profile, isAdmin, signOut } = useAuth()
@@ -78,12 +81,14 @@ export default function PageShell({
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
-        <div className="max-w-3xl">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">{title}</h1>
-          {subtitle && <p className="mt-3 text-lg leading-relaxed text-slate-600">{subtitle}</p>}
+      <main className={`mx-auto max-w-6xl px-5 sm:px-6 ${compact ? 'py-8 sm:py-10' : 'py-12 sm:py-16'}`}>
+        <div className={compact ? 'mx-auto w-full max-w-[520px] text-center' : 'max-w-3xl'}>
+          <h1 className={`font-bold tracking-tight text-slate-900 [word-break:keep-all] ${compact ? 'text-[1.6rem] leading-snug sm:text-3xl' : 'text-3xl sm:text-4xl'}`}>
+            {title}
+          </h1>
+          {subtitle && <p className={`mt-3 leading-relaxed text-slate-600 ${compact ? 'text-base' : 'text-lg'}`}>{subtitle}</p>}
         </div>
-        <div className="mt-10">{children}</div>
+        <div className={compact ? 'mt-7' : 'mt-10'}>{children}</div>
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
