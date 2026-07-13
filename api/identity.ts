@@ -29,6 +29,8 @@
 
 const VERIFICATION_TTL_MIN = 30
 const CONSENT_KEYS = ['terms', 'privacy', 'age14', 'identity', 'marketing'] as const
+// ⚠️ 필수 동의 키 — 클라이언트 src/config/authConsents.ts 의 REQUIRED_CONSENT_KEYS 와 반드시 동일하게 유지.
+//    (서버리스 번들은 src 를 import 하지 않으므로 값을 미러링하며, 두 곳을 함께 수정해야 합니다.)
 const REQUIRED_CONSENTS = ['terms', 'privacy', 'age14', 'identity'] as const
 const TRACK_EVENTS = [
   'signup_page_viewed', 'signup_role_selected', 'oauth_started', 'oauth_succeeded', 'oauth_failed',
@@ -146,6 +148,29 @@ export default async function handler(req: any, res: any) {
       try {
         await admin.from('auth_audit_logs').insert({ user_id: userId, event_type: eventType, provider, metadata })
       } catch { /* 감사 실패가 본 흐름을 막지 않음 */ }
+    }
+    // 약관 동의 저장 — consent·complete 액션 공용. 저장 실패를 조용히 삼키지 않고 코드로 반환.
+    async function saveConsents(
+      userId: string, rawList: unknown,
+    ): Promise<{ ok: true } | { ok: false; code: 'empty' | 'bad_key' | 'save_failed' }> {
+      const list = Array.isArray(rawList) ? rawList.slice(0, 10) : []
+      if (list.length === 0) return { ok: false, code: 'empty' }
+      const ipHash = ipOf(); const ua = uaOf()
+      const nowIso = new Date().toISOString()
+      for (const c of list) {
+        const key = String((c as any)?.key ?? '')
+        const version = String((c as any)?.version ?? '').slice(0, 40)
+        const agreed = (c as any)?.agreed === true
+        if (!(CONSENT_KEYS as readonly string[]).includes(key) || !version) return { ok: false, code: 'bad_key' }
+        const { error } = await admin.from('user_consents').upsert(
+          { user_id: userId, consent_key: key, version, agreed, agreed_at: nowIso, ip_hash: ipHash, user_agent: ua },
+          { onConflict: 'user_id,consent_key,version' },
+        )
+        if (error) return { ok: false, code: 'save_failed' }
+        if (key === 'terms' && agreed) await admin.from('profiles').update({ terms_agreed_at: nowIso }).eq('id', userId)
+        if (key === 'privacy' && agreed) await admin.from('profiles').update({ privacy_agreed_at: nowIso }).eq('id', userId)
+      }
+      return { ok: true }
     }
 
     // ── prepare — 서버 생성 인증 요청 ID ─────────────────────────
@@ -308,24 +333,11 @@ export default async function handler(req: any, res: any) {
     if (action === 'consent') {
       const user = await getUser(body.accessToken)
       if (!user) return res.status(401).json({ ok: false, message: '로그인이 필요합니다.', debugCode: 'no_token' })
-      const list = Array.isArray(body.consents) ? body.consents.slice(0, 10) : []
-      if (list.length === 0) return res.status(400).json({ ok: false, message: '동의 내역이 없습니다.', debugCode: 'empty' })
-      const ipHash = ipOf(); const ua = uaOf()
-      const nowIso = new Date().toISOString()
-      for (const c of list) {
-        const key = String(c?.key ?? '')
-        const version = String(c?.version ?? '').slice(0, 40)
-        const agreed = c?.agreed === true
-        if (!(CONSENT_KEYS as readonly string[]).includes(key) || !version) {
-          return res.status(400).json({ ok: false, message: '알 수 없는 동의 항목입니다.', debugCode: 'bad_key' })
-        }
-        const { error } = await admin.from('user_consents').upsert(
-          { user_id: user.id, consent_key: key, version, agreed, agreed_at: nowIso, ip_hash: ipHash, user_agent: ua },
-          { onConflict: 'user_id,consent_key,version' },
-        )
-        if (error) return res.status(500).json({ ok: false, message: '동의 내역을 저장하지 못했습니다.', debugCode: 'consent_failed' })
-        if (key === 'terms' && agreed) await admin.from('profiles').update({ terms_agreed_at: nowIso }).eq('id', user.id)
-        if (key === 'privacy' && agreed) await admin.from('profiles').update({ privacy_agreed_at: nowIso }).eq('id', user.id)
+      const saved = await saveConsents(user.id, body.consents)
+      if (!saved.ok) {
+        if (saved.code === 'empty') return res.status(400).json({ ok: false, message: '동의 내역이 없습니다.', debugCode: 'empty' })
+        if (saved.code === 'bad_key') return res.status(400).json({ ok: false, message: '알 수 없는 동의 항목입니다.', debugCode: 'bad_key' })
+        return res.status(500).json({ ok: false, message: '동의 내역을 저장하지 못했습니다.', debugCode: 'consent_failed' })
       }
       await audit(user.id, 'terms_agreed', null, null)
       return res.status(200).json({ ok: true })
@@ -341,7 +353,19 @@ export default async function handler(req: any, res: any) {
       const role = String(body.role ?? '')
       if (!(ROLES as readonly string[]).includes(role)) return res.status(400).json({ ok: false, message: '회원유형을 선택해주세요.', debugCode: 'bad_role' })
 
-      // 1) 필수 동의 확인
+      // 0) 클라이언트가 함께 보낸 약관 동의를 같은 요청에서 먼저 저장 (별도 요청의 조용한 실패·경합 제거).
+      //    저장 자체가 실패하면 '필수 동의 미완료'가 아니라 '저장 실패'로 정확히 구분해 응답한다.
+      if (Array.isArray(body.consents) && body.consents.length > 0) {
+        const saved = await saveConsents(userId, body.consents)
+        if (!saved.ok) {
+          if (saved.code === 'bad_key') {
+            return res.status(400).json({ ok: false, message: '약관 동의 항목을 확인하지 못했습니다. 다시 시도해주세요.', debugCode: 'consent_bad_key' })
+          }
+          return res.status(500).json({ ok: false, message: '약관 동의를 저장하지 못했습니다. 잠시 후 다시 시도해주세요.', debugCode: 'consent_save_failed' })
+        }
+      }
+
+      // 1) 필수 동의 확인 (방금 저장분 포함, 서버 저장 결과 기준)
       const { data: consents } = await admin.from('user_consents').select('consent_key, agreed').eq('user_id', userId).eq('agreed', true)
       const agreedKeys = new Set(((consents ?? []) as { consent_key: string }[]).map((c) => c.consent_key))
       const missing = REQUIRED_CONSENTS.filter((k) => !agreedKeys.has(k))

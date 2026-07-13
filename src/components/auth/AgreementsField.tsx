@@ -1,14 +1,18 @@
 // 약관 동의 필드 — 전체 동의 + 필수/선택 개별 체크박스 + '보기' 링크.
 // "가입 시 동의 간주" 방식이 아니라 사용자가 직접 체크해야 합니다.
 import { Link } from 'react-router-dom'
-import { AUTH_CONSENTS, type ConsentKey } from '../../config/authConsents'
+import { AUTH_CONSENTS, REQUIRED_CONSENT_KEYS, type ConsentKey } from '../../config/authConsents'
 
 export type ConsentState = Record<ConsentKey, boolean>
 
 export const EMPTY_CONSENTS: ConsentState = { terms: false, privacy: false, age14: false, identity: false, marketing: false }
 
+/**
+ * 필수 약관 동의 완료 여부 — 완료 조건·서버 저장 payload 와 동일한 단일 소스(REQUIRED_CONSENT_KEYS)를 참조.
+ * 선택 약관(marketing)은 판정에서 제외되며, 선택을 해제해도 필수 판정에 영향을 주지 않는다.
+ */
 export function requiredConsentsAgreed(state: ConsentState): boolean {
-  return AUTH_CONSENTS.filter((c) => c.required).every((c) => state[c.key])
+  return REQUIRED_CONSENT_KEYS.every((key) => state[key])
 }
 
 export default function AgreementsField({

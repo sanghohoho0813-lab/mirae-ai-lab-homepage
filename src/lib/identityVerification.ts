@@ -128,12 +128,17 @@ export async function recordConsents(
   return r.ok ? { ok: true } : { ok: false, error: r.message }
 }
 
-/** 온보딩 완료 판정 요청 (역할+본인인증+필수동의 서버 검증) */
+/**
+ * 온보딩 완료 판정 요청 (역할+본인인증+필수동의 서버 검증).
+ * consents 를 함께 넘기면 서버가 같은 요청에서 동의를 먼저 저장한 뒤 필수동의를 검증한다
+ * (동의 기록과 완료 판정을 원자적으로 처리 — 별도 요청의 조용한 실패·경합 방지).
+ */
 export async function completeOnboarding(
   accessToken: string,
   role: 'ceo' | 'consultant',
+  consents?: { key: string; version: string; agreed: boolean }[],
 ): Promise<{ ok: boolean; roles?: string[]; error?: string; notConfigured?: boolean }> {
-  const r = await post<{ roles: string[] }>({ action: 'complete', accessToken, role })
+  const r = await post<{ roles: string[] }>({ action: 'complete', accessToken, role, consents })
   return r.ok ? { ok: true, roles: r.roles } : { ok: false, error: r.message, notConfigured: r.notConfigured }
 }
 

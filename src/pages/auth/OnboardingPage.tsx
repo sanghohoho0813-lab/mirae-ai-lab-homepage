@@ -11,7 +11,7 @@ import { useAuth } from '../../lib/auth'
 import { supabase } from '../../lib/supabase'
 import { AUTH_CONSENTS } from '../../config/authConsents'
 import {
-  attachIdentityToUser, completeOnboarding, getIdentityHealth, migrateGuestDiagnoses, recordConsents,
+  attachIdentityToUser, completeOnboarding, getIdentityHealth, migrateGuestDiagnoses,
   type IdentityHealth, type IdentityVerified,
 } from '../../lib/identityVerification'
 import { loadHistory } from '../../lib/businessDiagnosisStorage'
@@ -35,23 +35,36 @@ export default function OnboardingPage() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const startedAtRef = useRef(Date.now())
+  const submittingRef = useRef(false) // 이중 클릭(중복 제출) 방지 — 상태 리렌더 이전 연타 차단
+  const healthFetchedRef = useRef(false) // getIdentityHealth 중복 호출 방지(user 참조 변경으로 인한 재요청 차단)
+  const mountedRef = useRef(true)
 
   useEffect(() => {
     document.title = '가입 완료하기 | 미래 AI 랩'
-    void getIdentityHealth().then(setHealth)
   }, [])
   useEffect(() => {
     if (profile?.member_type) setSelected(profile.member_type as MemberType)
   }, [profile?.member_type])
 
-  const identityRequired = health ? health.required : true
-  const identityConfigured = health ? health.identityConfigured : true
   const identityDone = identityVerified || identity !== null
 
   // A. 소셜 provider 판별 / B. 이메일 해석 (authRouting 순수 함수 재사용 — 단위 테스트됨)
   const socialProvider = useMemo(() => isSocialProvider(user), [user])
   const providerLabel = useMemo(() => socialProviderLabel(user), [user])
   const resolvedEmail = useMemo(() => resolveUserEmail(user, profile?.email), [user, profile?.email])
+
+  useEffect(() => () => { mountedRef.current = false }, [])
+  // 본인인증 설정 조회 — 소셜 로그인은 휴대폰 본인인증이 면제되어 필요 없으므로 요청을 생략(초기 로딩 단축).
+  // 인증 컨텍스트(user/profile/roles)는 AuthProvider 가 이미 병렬 로드하므로 여기서 중복 조회하지 않으며,
+  // user 참조가 두 번(getSession→onAuthStateChange) 갱신돼도 health 는 정확히 1회만 조회한다.
+  useEffect(() => {
+    if (loading || !user || socialProvider || healthFetchedRef.current) return
+    healthFetchedRef.current = true
+    void getIdentityHealth().then((h) => { if (mountedRef.current) setHealth(h) })
+  }, [loading, user, socialProvider])
+
+  const identityRequired = health ? health.required : true
+  const identityConfigured = health ? health.identityConfigured : true
 
   // 유효 이메일이 어디에도 없을 때만 직접 입력·확인 필요 (주로 카카오 이메일 미동의)
   const needsEmailInput = !resolvedEmail
@@ -110,11 +123,13 @@ export default function OnboardingPage() {
   }
 
   async function handleComplete() {
-    if (!canComplete || !selected) return
+    if (submittingRef.current || !canComplete || !selected) return
+    submittingRef.current = true
     setBusy(true)
     setError('')
     const token = await getAccessToken()
     if (!token) {
+      submittingRef.current = false
       setBusy(false)
       setError('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
       return
@@ -122,15 +137,19 @@ export default function OnboardingPage() {
     if (identity && !identityVerified) {
       const at = await attachIdentityToUser(identity.id, token)
       if (!at.ok) {
+        submittingRef.current = false
         setBusy(false)
         setError(at.error ?? '본인인증 연결에 실패했습니다.')
         return
       }
     }
-    await recordConsents(token, AUTH_CONSENTS.map((c) => ({ key: c.key, version: c.version, agreed: consents[c.key] })))
+    // 약관 동의는 완료 요청에 함께 실어 서버가 '저장 후 검증'을 한 번에 처리(원자적).
+    // 화면에 체크된 필수 동의 상태 == 서버로 보내는 payload == 서버 저장/검증 대상 을 완전히 일치시킨다.
     const role = selected === 'business' ? 'ceo' : 'consultant'
-    const done = await completeOnboarding(token, role)
+    const consentPayload = AUTH_CONSENTS.map((c) => ({ key: c.key, version: c.version, agreed: consents[c.key] }))
+    const done = await completeOnboarding(token, role, consentPayload)
     if (!done.ok) {
+      submittingRef.current = false
       setBusy(false)
       setError(done.error ?? '회원가입은 완료되지 않았습니다. 남은 절차를 이어서 진행해주세요.')
       return
@@ -142,7 +161,7 @@ export default function OnboardingPage() {
     await refreshProfile()
     const provider = (user?.app_metadata?.provider as 'google' | 'kakao' | undefined) ?? 'email'
     trackAuthEvent('signup_completed', { provider, role, elapsedSeconds: Math.round((Date.now() - startedAtRef.current) / 1000) })
-    setBusy(false)
+    // 성공 → 곧바로 이동(언마운트). busy·submittingRef 는 리셋하지 않아 이동 전 재제출을 막는다.
     navigate(next ?? roleHome([role]), { replace: true })
   }
 
@@ -231,7 +250,14 @@ export default function OnboardingPage() {
           {/* 4. 약관 동의 */}
           <p className="mt-6 text-[0.95rem] font-semibold text-slate-800">약관 동의 <span className="text-rose-500">*</span></p>
           <div className="mt-2">
-            <AgreementsField value={consents} onChange={setConsents} />
+            <AgreementsField
+              value={consents}
+              onChange={(nextConsents) => {
+                setConsents(nextConsents)
+                // 필수 약관을 모두 체크하는 순간 남아있던(주로 필수동의 관련) 오류 문구를 즉시 제거
+                if (error && requiredConsentsAgreed(nextConsents)) setError('')
+              }}
+            />
           </div>
 
           {error && (
