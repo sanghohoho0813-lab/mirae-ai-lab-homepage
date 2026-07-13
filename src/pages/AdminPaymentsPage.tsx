@@ -77,7 +77,9 @@ export default function AdminPaymentsPage() {
   const [rows, setRows] = useState<AdminPaymentRow[] | null>(null)
   const [summary, setSummary] = useState<Summary | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [detail, setDetail] = useState<{ payment: Record<string, unknown>; serviceOrder: Record<string, unknown> | null; events: Array<{ event_type: string; source: string; created_at: string }> } | null>(null)
+  const [detail, setDetail] = useState<{ payment: Record<string, unknown>; serviceOrder: Record<string, unknown> | null; events: Array<{ event_type: string; source: string; created_at: string }>; refundRequests?: Array<Record<string, unknown>> } | null>(null)
+  const [policies, setPolicies] = useState<Array<Record<string, any>> | null>(null)
+  const [policiesOpen, setPoliciesOpen] = useState(false)
   const [fStatus, setFStatus] = useState('')
   const [fSlug, setFSlug] = useState('')
   const [fEnv, setFEnv] = useState('')
@@ -163,6 +165,56 @@ export default function AdminPaymentsPage() {
           환불·취소는 PortOne 콘솔에서 처리하면 웹훅으로 상태가 자동 반영됩니다. (사이트 내 환불 버튼은 제공하지 않습니다)
         </p>
 
+        {/* 상품 가격·환불정책 (읽기 전용) — 값 변경은 Supabase billing_prices/billing_product_policies 에서 */}
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={() => {
+              setPoliciesOpen((v) => !v)
+              if (!policies) void adminApi({ action: 'admin_policies' }).then((d) => setPolicies(d.products)).catch((e) => setError(e.message))
+            }}
+            aria-expanded={policiesOpen}
+            className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-bold text-slate-700 hover:bg-slate-50"
+          >
+            <span>상품 가격·환불정책 (읽기 전용)</span>
+            <span aria-hidden className={`text-slate-400 transition-transform ${policiesOpen ? 'rotate-180' : ''}`}>▾</span>
+          </button>
+          {policiesOpen && (
+            <div className="mt-2 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+              <table className="w-full min-w-[900px] text-left text-xs">
+                <thead>
+                  <tr className="border-b border-slate-100 font-black uppercase tracking-wide text-slate-400">
+                    {['상품', '유형', '현재 가격', '가격 버전', '시작 전 전액환불', '취소가능일수', '시작 후 처리', '부분환불', '해지 기본', '모듈추가 일할', '반올림', '가격변경 적용'].map((h) => (
+                      <th key={h} className="px-3 py-2.5">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {policies === null && <tr><td colSpan={12} className="px-3 py-6 text-center font-semibold text-slate-400">불러오는 중…</td></tr>}
+                  {policies !== null && policies.length === 0 && <tr><td colSpan={12} className="px-3 py-6 text-center font-semibold text-slate-400">billing_products 미시드 — SQL 실행 후 표시됩니다.</td></tr>}
+                  {(policies ?? []).map((p) => (
+                    <tr key={String(p.code)} className="border-b border-slate-50">
+                      <td className="whitespace-nowrap px-3 py-2 font-bold text-slate-800">{p.name}{p.optionName ? ` — ${p.optionName}` : ''}</td>
+                      <td className="px-3 py-2 text-slate-500">{p.paymentType === 'one_time' ? '일회성' : String(p.paymentType)}</td>
+                      <td className="whitespace-nowrap px-3 py-2 font-black tabular-nums">{won(Number(p.currentPrice?.amount ?? p.legacyAmount ?? 0))}</td>
+                      <td className="px-3 py-2 text-slate-500">{p.currentPrice ? `v${p.currentPrice.version}` : '(호환: amount)'}</td>
+                      <td className="px-3 py-2">{p.policy ? (p.policy.fullRefundBeforeServiceStart ? '가능' : '검토') : '기본값'}</td>
+                      <td className="px-3 py-2 text-slate-500">{p.policy?.cancellationWindowDays ?? '제한 없음'}</td>
+                      <td className="px-3 py-2 text-slate-500">{p.policy?.refundAfterServiceStart ?? 'manual_review'}</td>
+                      <td className="px-3 py-2">{p.policy ? (p.policy.partialRefundAllowed ? '허용' : '불가') : '허용'}</td>
+                      <td className="px-3 py-2 text-slate-500">{p.policy?.subscriptionCancelDefault ?? 'period_end'}</td>
+                      <td className="px-3 py-2">{p.policy ? (p.policy.moduleAddProrationEnabled ? '일할청구' : '없음') : '일할청구'}</td>
+                      <td className="px-3 py-2 text-slate-500">{p.policy?.prorationRounding ?? 'floor'}</td>
+                      <td className="px-3 py-2 text-slate-500">{p.policy?.priceChangeDefault ?? 'new_customers_only'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="px-3 py-2.5 text-[11px] text-slate-400">가격 변경: billing_prices 에 새 버전 추가 (기존 결제·구독 금액은 자동 변경되지 않음) · 정책 변경: billing_product_policies</p>
+            </div>
+          )}
+        </div>
+
         {/* 필터 */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <select value={fStatus} onChange={(e) => setFStatus(e.target.value)} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold">
@@ -213,7 +265,7 @@ export default function AdminPaymentsPage() {
                 return (
                   <tr
                     key={r.id}
-                    onClick={() => { void adminApi({ action: 'admin_detail', paymentId: r.payment_id }).then((d) => setDetail({ payment: d.payment, serviceOrder: d.serviceOrder, events: d.events })).catch((e) => setError(e.message)) }}
+                    onClick={() => { void adminApi({ action: 'admin_detail', paymentId: r.payment_id }).then((d) => setDetail({ payment: d.payment, serviceOrder: d.serviceOrder, events: d.events, refundRequests: d.refundRequests })).catch((e) => setError(e.message)) }}
                     className={`cursor-pointer border-b border-slate-50 transition-colors hover:bg-blue-50/40 ${r.needs_review || r.status === 'amount_mismatch' ? 'bg-orange-50/60' : ''}`}
                   >
                     <td className="whitespace-nowrap px-4 py-3 text-slate-500">{new Date(r.paid_at ?? r.created_at).toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
@@ -306,6 +358,24 @@ export default function AdminPaymentsPage() {
                   <p className="mt-2 text-slate-400">아직 생성되지 않았습니다 (결제 완료 시 자동 생성).</p>
                 )}
               </section>
+              {detail.refundRequests && detail.refundRequests.length > 0 && (
+                <section className="rounded-2xl border border-orange-200 bg-orange-50/50 p-4">
+                  <p className="text-xs font-black uppercase text-orange-600">환불 요청</p>
+                  <ul className="mt-2 space-y-2">
+                    {detail.refundRequests.map((r) => (
+                      <li key={String(r.id)} className="rounded-xl bg-white p-3 text-xs">
+                        <div className="flex justify-between gap-2">
+                          <span className="font-black text-slate-800">{String(r.request_type)} · {String(r.status)}</span>
+                          <span className="text-slate-400">{new Date(String(r.requested_at)).toLocaleString('ko-KR')}</span>
+                        </div>
+                        <p className="mt-1 text-slate-600">요청 {won(Number(r.requested_amount ?? 0))} / 계산 {won(Number(r.calculated_amount ?? 0))}{r.approved_amount != null ? ` / 승인 ${won(Number(r.approved_amount))}` : ''}</p>
+                        {typeof r.reason === 'string' && r.reason && <p className="mt-1 text-slate-500">사유: {r.reason}</p>}
+                        <p className="mt-1 text-[11px] text-slate-400">실제 환불 실행은 PortOne 콘솔에서 처리 후 웹훅으로 반영됩니다.</p>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
               <section className="rounded-2xl border border-slate-200 p-4">
                 <p className="text-xs font-black uppercase text-slate-400">이벤트 로그</p>
                 <ul className="mt-2 space-y-1">

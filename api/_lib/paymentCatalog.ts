@@ -14,13 +14,16 @@ export type ServerProduct = {
   paymentType: 'one_time' | 'consultation'
   vatIncluded: boolean
   source: 'db' | 'local'
+  /** 가격 버전 스냅샷 (billing_prices) — 결제 레코드에 저장해 이후 가격 변경과 분리 */
+  priceId: string | null
+  priceVersion: number | null
 }
 
 /** 상담 전용 — 결제 시도 자체를 차단 */
 export const CONSULT_ONLY_SLUGS = ['employment-subsidy', 'growth-roadmap-package']
 
 /** ⚠️ supabase/portone-one-time-payments.sql 시드와 반드시 같은 값 유지 */
-const LOCAL_CATALOG: Array<Omit<ServerProduct, 'source'>> = [
+const LOCAL_CATALOG: Array<Omit<ServerProduct, 'source' | 'priceId' | 'priceVersion'>> = [
   { productSlug: 'funding-consulting', optionId: null, name: '정책자금 컨설팅', optionName: null, amount: 550000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'venture-innovation', optionId: null, name: '벤처인증 패키지 (혁신성장형)', optionName: null, amount: 1990000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'venture-investment', optionId: null, name: '벤처인증 패키지 (투자유형)', optionName: null, amount: 5000000, paymentType: 'one_time', vatIncluded: true },
@@ -58,18 +61,45 @@ export async function getServerProduct(
   const normOption = optionId && optionId.trim() ? optionId.trim() : null
   const localExists = LOCAL_CATALOG.some((p) => p.productSlug === productSlug && p.optionId === normOption)
 
-  // 1) DB (billing_products)
+  // 1) DB (billing_products) — 금액은 billing_prices 최신 active 버전 우선, 없으면 amount(호환)
   if (admin) {
     try {
       let q = admin
         .from('billing_products')
-        .select('product_slug, option_id, name, option_name, amount, kind, active, vat_included')
+        .select('id, product_slug, option_id, name, option_name, amount, kind, active, vat_included')
         .eq('product_slug', productSlug)
         .eq('kind', 'one_time')
         .eq('active', true)
       q = normOption === null ? q.is('option_id', null) : q.eq('option_id', normOption)
       const { data, error } = await q.maybeSingle()
       if (!error && data && typeof data.amount === 'number' && data.amount > 0) {
+        // 가격 버전 조회 — effective 기간 필터는 코드에서 (신규 결제는 최신 active 가격)
+        let priceId: string | null = null
+        let priceVersion: number | null = null
+        let amount: number = data.amount
+        try {
+          const { data: prices } = await admin
+            .from('billing_prices')
+            .select('id, price_version, amount, currency, effective_from, effective_to, active')
+            .eq('billing_product_id', data.id)
+            .eq('billing_interval', 'one_time')
+            .eq('active', true)
+            .order('price_version', { ascending: false })
+            .limit(10)
+          const nowMs = Date.now()
+          const current = (prices ?? []).find((p: { effective_from?: string; effective_to?: string | null; amount?: number }) => {
+            const from = p.effective_from ? new Date(p.effective_from).getTime() : 0
+            const to = p.effective_to ? new Date(p.effective_to).getTime() : Infinity
+            return from <= nowMs && nowMs < to && typeof p.amount === 'number' && p.amount > 0
+          })
+          if (current) {
+            priceId = String(current.id)
+            priceVersion = Number(current.price_version)
+            amount = Number(current.amount)
+          }
+        } catch {
+          // billing_prices 미시드/조회 실패 → billing_products.amount 호환 경로 유지
+        }
         return {
           kind: 'ok',
           product: {
@@ -77,10 +107,12 @@ export async function getServerProduct(
             optionId: normOption,
             name: String(data.name),
             optionName: data.option_name ? String(data.option_name) : null,
-            amount: data.amount,
+            amount,
             paymentType: 'one_time',
             vatIncluded: data.vat_included !== false,
             source: 'db',
+            priceId,
+            priceVersion,
           },
         }
       }
@@ -101,6 +133,6 @@ export async function getServerProduct(
 
   // 2) 로컬 카탈로그 폴백 — test 환경 전용
   const local = LOCAL_CATALOG.find((p) => p.productSlug === productSlug && p.optionId === normOption)
-  if (local) return { kind: 'ok', product: { ...local, source: 'local' } }
+  if (local) return { kind: 'ok', product: { ...local, source: 'local', priceId: null, priceVersion: null } }
   return { kind: 'not_found' }
 }

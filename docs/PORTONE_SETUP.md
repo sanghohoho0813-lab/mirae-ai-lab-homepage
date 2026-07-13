@@ -17,11 +17,24 @@
 
 ## 1. Supabase 준비 (1회)
 
-1. Supabase SQL Editor 에서 **`supabase/portone-one-time-payments.sql`** 실행.
-   - `billing_products` 확장 + 일회성 상품 12개 시드 (재실행 안전)
+SQL Editor 에서 아래 순서대로 실행 (모두 재실행 안전):
+
+1. `supabase/schema.sql` (이미 실행했다면 생략 가능)
+2. `supabase/payments-subscriptions.sql` (〃)
+3. **`supabase/portone-one-time-payments.sql`**
+   - `billing_products` 확장 + 일회성 상품 12개 시드
    - `product_payments` / `service_orders` / `payment_events` 생성
-2. 가격을 바꾸고 싶으면 `billing_products.amount` 를 수정하면 즉시 반영됩니다.
-   (화면 표시가는 `src/data/businessPackages.ts` 에서 함께 수정)
+4. **`supabase/billing-policy-foundation.sql`** (결제정책 기반)
+   - `user_roles`(복수 역할) / `billing_prices`(가격 버전) / `billing_product_policies`(환불정책)
+   - `billing_refund_requests` / `billing_audit_logs` / 구독기간 컬럼 확장
+
+가격 변경 방법 (기존 결제·구독 금액은 자동으로 바뀌지 않습니다):
+
+- **권장**: `billing_prices` 에서 기존 버전에 `effective_to` 를 채우고, `price_version` 을 올린
+  새 행(active, effective_from=적용시점)을 추가 → 신규 결제부터 새 가격 적용
+- 호환: `billing_products.amount` 도 함께 맞춰두면 미시드 환경 폴백과 일치합니다
+- 화면 표시가는 `src/data/businessPackages.ts` 에서 함께 수정
+- 환불·취소 정책은 `billing_product_policies` 에서 상품별로 수정 (코드 수정 불필요)
 
 ## 2. PortOne 가입·채널 (테스트)
 

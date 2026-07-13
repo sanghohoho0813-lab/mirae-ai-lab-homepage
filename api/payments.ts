@@ -21,6 +21,7 @@ import {
   createAccessToken, createOrderNumber, createPaymentId, logPaymentEvent, maskEmail, maskPhone,
   normalizePhone, reconcilePayment, sanitizePaymentError, sha256, stripControl, toPublicSummary, type PaymentRow,
 } from './_lib/paymentReconcile'
+import { DEFAULT_ONE_TIME_POLICY, evaluateOneTimeRefundEligibility, policyFromRow } from './_lib/refundPolicy'
 
 type VercelReq = { method?: string; body?: unknown; query?: Record<string, string | string[]>; headers: Record<string, string | string[] | undefined>; url?: string }
 type VercelRes = { status: (code: number) => VercelRes; json: (body: unknown) => void; setHeader: (k: string, v: string) => void }
@@ -223,6 +224,8 @@ export default async function handler(req: VercelReq, res: VercelRes) {
       product_name: product.name,
       option_name: product.optionName,
       amount: product.amount, // ⚠️ 서버 카탈로그 금액만 사용
+      billing_price_id: product.priceId, // 결제 당시 가격 버전 스냅샷 (이후 가격 변경과 분리)
+      price_version: product.priceVersion,
       currency: 'KRW',
       status: 'pending',
       buyer_company_name: buyerCompanyName,
@@ -302,8 +305,126 @@ export default async function handler(req: VercelReq, res: VercelRes) {
     return res.status(200).json({ ok: true })
   }
 
+  // ── refund_request: 환불 요청 접수 + 정책 판정·계산 스냅샷 저장 ──
+  //    ⚠️ 실제 PortOne 취소 API 는 호출하지 않음 — 관리자 검토용 요청 레코드만 생성.
+  if (action === 'refund_request') {
+    const paymentId = stripControl(body.paymentId, 80)
+    const token = stripControl(body.accessToken, 120)
+    const reason = stripControl(body.reason, 500)
+    const { data: row } = await admin.from('product_payments').select('*').eq('payment_id', paymentId).maybeSingle()
+    if (!row) return res.status(404).json({ ok: false, message: '주문을 찾을 수 없습니다.', debugCode: 'order_not_found' })
+    const payment = row as PaymentRow
+    if (!tokenMatches(payment, token)) {
+      const adminCheck = await verifyAdmin(admin, req.headers['authorization'])
+      if (!adminCheck.ok) return res.status(403).json({ ok: false, message: '주문 확인 권한이 없습니다.', debugCode: 'forbidden' })
+    }
+    if (!['paid', 'partial_cancelled'].includes(payment.status)) {
+      return res.status(400).json({ ok: false, message: '결제 완료된 주문만 환불을 요청할 수 있습니다.', debugCode: 'not_paid' })
+    }
+
+    // 중복 요청 방지 — 진행 중 요청이 있으면 그대로 반환
+    const { data: existing } = await admin
+      .from('billing_refund_requests')
+      .select('id, status, calculated_amount, requested_at')
+      .eq('product_payment_id', payment.id)
+      .in('status', ['requested', 'calculating', 'pending_review', 'approved', 'processing'])
+      .maybeSingle()
+    if (existing) {
+      return res.status(200).json({
+        ok: true, duplicated: true, requestId: existing.id, status: existing.status,
+        calculatedAmount: existing.calculated_amount,
+        message: '이미 접수된 환불 요청이 검토 중입니다.',
+      })
+    }
+
+    // 정책 로드 (billing_product_policies ← billing_products.product_slug/option_id) — 미시드 시 기본 정책
+    let policyRow: Record<string, unknown> | null = null
+    try {
+      let pq = admin.from('billing_products').select('id').eq('product_slug', payment.product_slug).eq('kind', 'one_time')
+      pq = payment.option_id === null ? pq.is('option_id', null) : pq.eq('option_id', payment.option_id)
+      const { data: bp } = await pq.maybeSingle()
+      if (bp?.id) {
+        const { data: pol } = await admin
+          .from('billing_product_policies').select('*')
+          .eq('billing_product_id', bp.id).eq('active', true).maybeSingle()
+        policyRow = (pol as Record<string, unknown> | null) ?? null
+      }
+    } catch { /* 기본 정책 사용 */ }
+    const policy = policyRow ? policyFromRow(policyRow) : DEFAULT_ONE_TIME_POLICY
+
+    // 서비스 시작 여부 (service_orders)
+    const { data: so } = await admin
+      .from('service_orders').select('id, service_started_at').eq('payment_id', payment.id).maybeSingle()
+    const serviceStartedAt = (so?.service_started_at as string | undefined) ?? null
+
+    const verdict = evaluateOneTimeRefundEligibility({
+      paidAt: payment.paid_at ?? payment.created_at,
+      now: new Date(),
+      serviceStartedAt,
+      policy,
+      paidAmount: payment.amount,
+      cancelledAmount: payment.cancel_amount || 0,
+    })
+
+    if (verdict.eligibility === 'none') {
+      return res.status(200).json({
+        ok: false, eligibility: verdict.eligibility, maximumRefundAmount: 0,
+        message: verdict.reason, debugCode: 'refund_not_eligible',
+      })
+    }
+
+    const requestedAmount = Number.isInteger(body.requestedAmount) && (body.requestedAmount as number) > 0
+      ? Math.min(body.requestedAmount as number, verdict.maximumRefundAmount)
+      : verdict.maximumRefundAmount
+    const requestType = verdict.eligibility === 'full' && requestedAmount === payment.amount - (payment.cancel_amount || 0)
+      ? 'one_time_full' : 'one_time_partial'
+
+    const { data: inserted, error: insErr } = await admin
+      .from('billing_refund_requests')
+      .insert({
+        product_payment_id: payment.id,
+        request_type: requestType,
+        requested_amount: requestedAmount,
+        calculated_amount: verdict.maximumRefundAmount,
+        reason: reason || null,
+        calculation_snapshot: {
+          eligibility: verdict.eligibility, maximumRefundAmount: verdict.maximumRefundAmount,
+          requiresAdminApproval: verdict.requiresAdminApproval, reason: verdict.reason,
+          paidAmount: payment.amount, cancelledAmount: payment.cancel_amount || 0,
+          paidAt: payment.paid_at, serviceStartedAt, evaluatedAt: new Date().toISOString(),
+        },
+        policy_snapshot: { ...policy },
+        status: 'pending_review',
+      })
+      .select('id')
+      .maybeSingle()
+    if (insErr) return res.status(500).json({ ok: false, message: '요청 저장에 실패했습니다. 잠시 후 다시 시도해주세요.', debugCode: 'refund_insert_failed' })
+
+    try {
+      await admin.from('service_orders').update({ refund_eligibility: verdict.eligibility, refund_review_status: 'requested' }).eq('payment_id', payment.id)
+      await admin.from('billing_audit_logs').insert({
+        actor_type: 'customer', entity_type: 'refund_request', entity_id: String(inserted?.id ?? ''),
+        action: 'refund_requested',
+        after_data: { paymentId: payment.payment_id, eligibility: verdict.eligibility, calculatedAmount: verdict.maximumRefundAmount, requestedAmount },
+        reason: reason || null,
+      })
+    } catch { /* 로그 실패가 요청 접수를 막지 않음 */ }
+    await logPaymentEvent(admin, 'payment_verification_started', payment.payment_id, 'server', { kind: 'refund_request' })
+
+    return res.status(200).json({
+      ok: true,
+      requestId: inserted?.id ?? null,
+      status: 'pending_review',
+      eligibility: verdict.eligibility,
+      maximumRefundAmount: verdict.maximumRefundAmount,
+      requestedAmount,
+      requiresAdminApproval: verdict.requiresAdminApproval,
+      message: `환불 요청이 접수되었습니다. ${verdict.reason} 실제 환불은 담당자 확인 후 처리됩니다.`,
+    })
+  }
+
   // ── 관리자 전용 ──
-  if (action === 'admin_list' || action === 'admin_detail') {
+  if (action === 'admin_list' || action === 'admin_detail' || action === 'admin_policies') {
     const adminCheck = await verifyAdmin(admin, req.headers['authorization'])
     if (!adminCheck.ok) return res.status(adminCheck.status).json({ ok: false, message: adminCheck.message, debugCode: adminCheck.debugCode })
 
@@ -316,9 +437,57 @@ export default async function handler(req: VercelReq, res: VercelRes) {
       const { data: events } = await admin
         .from('payment_events').select('event_type, source, payload, created_at')
         .eq('payment_id', paymentId).order('created_at', { ascending: true }).limit(100)
+      const { data: refunds } = await admin
+        .from('billing_refund_requests')
+        .select('id, request_type, requested_amount, calculated_amount, approved_amount, status, reason, requested_at, reviewed_at, calculation_snapshot')
+        .eq('product_payment_id', payment.id).order('requested_at', { ascending: false }).limit(20)
       // 관리자 상세는 전체 정보(마스킹 없음) — access_token_hash 는 제외
       const { access_token_hash: _hash, ...full } = payment
-      return res.status(200).json({ ok: true, payment: full, serviceOrder: so ?? null, events: events ?? [] })
+      return res.status(200).json({ ok: true, payment: full, serviceOrder: so ?? null, events: events ?? [], refundRequests: refunds ?? [] })
+    }
+
+    // admin_policies — 상품별 현재 가격·버전·환불정책 (읽기 전용)
+    if (action === 'admin_policies') {
+      const { data: products } = await admin
+        .from('billing_products')
+        .select('id, code, name, kind, amount, active, product_slug, option_id, option_name, vat_included')
+        .eq('kind', 'one_time').eq('active', true).order('sort', { ascending: true }).limit(100)
+      const list = (products ?? []) as Array<Record<string, unknown>>
+      const out: Array<Record<string, unknown>> = []
+      for (const p of list) {
+        let price: Record<string, unknown> | null = null
+        let policy: Record<string, unknown> | null = null
+        try {
+          const { data: prices } = await admin
+            .from('billing_prices').select('id, price_version, amount, effective_from, effective_to, active')
+            .eq('billing_product_id', p.id).eq('active', true)
+            .order('price_version', { ascending: false }).limit(1)
+          price = (prices?.[0] as Record<string, unknown> | undefined) ?? null
+          const { data: pol } = await admin
+            .from('billing_product_policies').select('*').eq('billing_product_id', p.id).maybeSingle()
+          policy = (pol as Record<string, unknown> | null) ?? null
+        } catch { /* 미시드 환경 — null 로 표시 */ }
+        out.push({
+          code: p.code, name: p.name, productSlug: p.product_slug, optionId: p.option_id, optionName: p.option_name,
+          paymentType: p.kind, legacyAmount: p.amount, vatIncluded: p.vat_included,
+          currentPrice: price ? { id: price.id, version: price.price_version, amount: price.amount, effectiveFrom: price.effective_from } : null,
+          policy: policy ? {
+            fullRefundBeforeServiceStart: policy.full_refund_before_service_start,
+            cancellationWindowDays: policy.cancellation_window_days,
+            refundAfterServiceStart: policy.refund_after_service_start,
+            partialRefundAllowed: policy.partial_refund_allowed,
+            adminApprovalRequired: policy.admin_approval_required,
+            subscriptionCancelDefault: policy.subscription_cancel_default,
+            moduleAddProrationEnabled: policy.module_add_proration_enabled,
+            moduleRemovePolicy: policy.module_remove_policy,
+            prorationRounding: policy.proration_rounding,
+            minimumChargeAmount: policy.minimum_charge_amount,
+            policyVersion: policy.policy_version,
+            priceChangeDefault: 'new_customers_only',
+          } : null,
+        })
+      }
+      return res.status(200).json({ ok: true, products: out })
     }
 
     // admin_list — 필터 + 요약
