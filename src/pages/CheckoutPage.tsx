@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
 import LegalFooter from '../components/LegalFooter'
+import LoginModal from '../components/LoginModal'
 import { getPackageBySlug } from '../data/businessPackages'
 import { checkoutTerms } from '../config/checkoutTerms'
 import { useAuth } from '../lib/auth'
@@ -43,7 +44,8 @@ export default function CheckoutPage() {
   // requestId — 체크아웃 진입마다 1개 (중복 클릭·재시도 시 같은 pending 주문 재사용)
   const requestIdRef = useRef(newRequestId())
   const busyRef = useRef(false)
-  const { isAdmin } = useAuth()
+  const { isAdmin, user, profile, loading: authLoading } = useAuth()
+  const prefilledRef = useRef(false)
 
   const configured = paymentConfigured()
   const consult = pkg?.priceType === 'consult'
@@ -83,6 +85,20 @@ export default function CheckoutPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionId])
 
+  // 로그인 사용자는 신청자 정보 프리필 (프로필 기반, 1회)
+  useEffect(() => {
+    if (profile && !prefilledRef.current) {
+      prefilledRef.current = true
+      setBuyer((b) => ({
+        ...b,
+        buyerCompanyName: b.buyerCompanyName || profile.organization || '',
+        buyerName: b.buyerName || profile.name || '',
+        buyerPhone: b.buyerPhone || profile.phone || '',
+        buyerEmail: b.buyerEmail || profile.email || '',
+      }))
+    }
+  }, [profile])
+
   if (!pkg) return <Navigate to="/business-services" replace />
   if (consult) return <Navigate to={`/business-services/${pkg.slug}`} replace />
 
@@ -98,6 +114,7 @@ export default function CheckoutPage() {
   async function handlePay() {
     if (busyRef.current) return
     setError(null)
+    if (!user) return setError('결제는 로그인 후 이용할 수 있습니다.')
     // 검증
     if (!buyer.buyerCompanyName.trim()) return setError('회사명을 입력해주세요.')
     if (buyer.buyerName.trim().length < 2) return setError('대표자명(신청자명)을 입력해주세요.')
@@ -347,7 +364,7 @@ export default function CheckoutPage() {
           <button
             type="button"
             onClick={handlePay}
-            disabled={busy || !configured || gateBlocked}
+            disabled={busy || !configured || gateBlocked || !user}
             className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {phase === 'preparing' ? '주문을 준비하고 있어요…' : phase === 'window' ? '결제창 확인 중…' : `${formatKrw(amount)} 결제하기`}
@@ -365,6 +382,12 @@ export default function CheckoutPage() {
           </Link>
         </section>
       </main>
+
+      <LoginModal
+        open={!authLoading && !user}
+        onClose={() => navigate(`/business-services/${pkg.slug}`)}
+        message="결제는 로그인 후 이용할 수 있습니다. 로그인하면 신청자 정보가 자동으로 채워집니다."
+      />
 
       <LegalFooter />
     </div>

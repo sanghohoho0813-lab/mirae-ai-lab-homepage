@@ -1,18 +1,29 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import PageShell from '../components/PageShell'
+import SocialAuthButtons from '../components/auth/SocialAuthButtons'
+import MemberTypeSelect from '../components/auth/MemberTypeSelect'
+import PhoneVerifyField from '../components/auth/PhoneVerifyField'
 import { useAuth } from '../lib/auth'
-import { getTrialModules } from '../lib/platform'
+import { supabase } from '../lib/supabase'
+import { confirmPhoneVerified } from '../lib/phoneVerification'
+import type { MemberType } from '../lib/platform'
 
 const inputClass =
   'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
-
 const labelClass = 'mb-2 block text-base font-semibold text-slate-800'
 
 export default function SignupPage() {
   const { signUp, configured } = useAuth()
   const navigate = useNavigate()
-  const modules = getTrialModules()
+  const [searchParams] = useSearchParams()
+  const redirect = searchParams.get('redirect')
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [phoneVerified, setPhoneVerified] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [memberType, setMemberType] = useState<MemberType | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const [confirmMsg, setConfirmMsg] = useState('')
@@ -20,26 +31,32 @@ export default function SignupPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError('')
-    const fd = new FormData(event.currentTarget)
+    if (!name.trim()) return setError('이름을 입력해주세요.')
+    if (!phoneVerified) return setError('휴대폰 인증을 완료해주세요.')
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return setError('이메일 주소를 확인해주세요.')
+    if (password.length < 8) return setError('비밀번호는 8자 이상이어야 합니다.')
+    if (!memberType) return setError('회원유형을 선택해주세요.')
+
     setBusy(true)
-    const result = await signUp({
-      name: String(fd.get('name') ?? '').trim(),
-      email: String(fd.get('email') ?? '').trim(),
-      phone: String(fd.get('phone') ?? '').trim(),
-      password: String(fd.get('password') ?? ''),
-      organization: String(fd.get('organization') ?? '').trim(),
-      interests: fd.getAll('interests').map(String),
-    })
-    setBusy(false)
+    const result = await signUp({ name, email, phone, password, memberType })
     if (!result.ok) {
+      setBusy(false)
       setError(result.error ?? '회원가입에 실패했습니다.')
       return
     }
+    // 세션이 있으면 서버에 휴대폰 인증 확정 (phone_verified=true)
+    if (!result.needsEmailConfirm && supabase) {
+      const { data } = await supabase.auth.getSession()
+      const token = data.session?.access_token
+      if (token) await confirmPhoneVerified(phone, token)
+    }
+    setBusy(false)
     if (result.needsEmailConfirm) {
       setConfirmMsg('가입 확인 메일을 보냈습니다. 메일함에서 인증을 완료한 뒤 로그인해 주세요.')
       return
     }
-    navigate('/my-tools')
+    const fallback = memberType === 'business' ? '/business-services' : '/my-tools'
+    navigate(redirect && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : fallback)
   }
 
   if (confirmMsg) {
@@ -56,91 +73,56 @@ export default function SignupPage() {
   }
 
   return (
-    <PageShell title="회원가입" subtitle="간단한 정보만 입력하면 도구별 7일 무료 체험을 시작할 수 있습니다.">
+    <PageShell title="회원가입" subtitle="회원유형을 선택하고 간단한 정보만 입력하면 시작할 수 있습니다.">
       {!configured && (
         <div className="mx-auto mb-6 max-w-xl rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
           Supabase 환경변수가 설정되지 않았습니다. 회원가입은 환경변수 설정 후 사용할 수 있습니다.
         </div>
       )}
-      <div className="mx-auto mb-6 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-medium text-slate-600">
-        {['카드 등록 없이 시작', '신청한 시각부터 정확히 7일', '리뷰·설문 참여 시 최대 21일', '베타 참여자 우선 제공'].map(
-          (t) => (
-            <span key={t} className="inline-flex items-center gap-1.5">
-              <span className="text-emerald-500" aria-hidden>✓</span>
-              {t}
-            </span>
-          ),
-        )}
-      </div>
 
       <div className="mx-auto max-w-xl rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
+        {/* 소셜 회원가입 (카카오 > 구글) */}
+        <SocialAuthButtons />
+
+        <div className="my-6 flex items-center gap-3 text-xs text-slate-400">
+          <span className="h-px flex-1 bg-slate-200" />
+          이메일로 회원가입
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label htmlFor="name" className={labelClass}>
-                이름 <span className="text-rose-500">*</span>
-              </label>
-              <input id="name" name="name" type="text" required placeholder="예: 김대표" className={inputClass} />
-            </div>
-            <div>
-              <label htmlFor="phone" className={labelClass}>
-                휴대폰 번호 <span className="text-rose-500">*</span>
-              </label>
-              <input id="phone" name="phone" type="tel" required placeholder="010-0000-0000" className={inputClass} />
-            </div>
-            <div>
-              <label htmlFor="email" className={labelClass}>
-                이메일 <span className="text-rose-500">*</span>
-              </label>
-              <input id="email" name="email" type="email" required placeholder="you@example.com" className={inputClass} />
-            </div>
-            <div>
-              <label htmlFor="password" className={labelClass}>
-                비밀번호 <span className="text-rose-500">*</span>
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={8}
-                placeholder="8자 이상"
-                className={inputClass}
-              />
-            </div>
+          <div>
+            <span className={labelClass}>회원유형 <span className="text-rose-500">*</span></span>
+            <MemberTypeSelect value={memberType} onChange={setMemberType} />
           </div>
 
           <div>
-            <label htmlFor="organization" className={labelClass}>
-              직업/소속
+            <label htmlFor="name" className={labelClass}>
+              이름 <span className="text-rose-500">*</span>
             </label>
-            <input
-              id="organization"
-              name="organization"
-              type="text"
-              placeholder="예: 법인컨설턴트 / 중소기업 대표"
-              className={inputClass}
-            />
+            <input id="name" value={name} onChange={(e) => setName(e.target.value)} type="text" required placeholder="예: 김대표" autoComplete="name" className={inputClass} />
           </div>
 
           <div>
-            <span className={labelClass}>관심 도구</span>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {modules.map((m) => (
-                <label
-                  key={m.id}
-                  className="flex cursor-pointer items-center gap-2.5 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-700 transition hover:border-blue-300"
-                >
-                  <input type="checkbox" name="interests" value={m.id} className="h-4 w-4 accent-blue-600" />
-                  {m.title}
-                </label>
-              ))}
-            </div>
+            <span className={labelClass}>휴대폰 번호 <span className="text-rose-500">*</span></span>
+            <PhoneVerifyField phone={phone} onPhoneChange={setPhone} verified={phoneVerified} onVerifiedChange={setPhoneVerified} />
           </div>
 
-          {error && (
-            <p className="rounded-lg bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700">{error}</p>
-          )}
+          <div>
+            <label htmlFor="email" className={labelClass}>
+              이메일 <span className="text-rose-500">*</span>
+            </label>
+            <input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" required placeholder="you@example.com" autoComplete="email" className={inputClass} />
+          </div>
+
+          <div>
+            <label htmlFor="password" className={labelClass}>
+              비밀번호 <span className="text-rose-500">*</span>
+            </label>
+            <input id="password" value={password} onChange={(e) => setPassword(e.target.value)} type="password" required minLength={8} placeholder="8자 이상" autoComplete="new-password" className={inputClass} />
+          </div>
+
+          {error && <p className="rounded-lg bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700">{error}</p>}
 
           <button
             type="submit"

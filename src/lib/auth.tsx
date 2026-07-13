@@ -11,15 +11,18 @@ import {
 } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from './supabase'
-import type { Profile } from './platform'
+import type { MemberType, Profile } from './platform'
+
+export type OAuthProvider = 'google' | 'kakao'
 
 export type SignupInput = {
   name: string
   email: string
   phone: string
   password: string
-  organization: string
-  interests?: string[]
+  memberType: MemberType
+  /** 선택 — 소속/직업(미수집 시 빈 문자열) */
+  organization?: string
 }
 
 export type AuthResult = { ok: boolean; error?: string; needsEmailConfirm?: boolean }
@@ -30,8 +33,17 @@ type AuthValue = {
   user: User | null
   profile: Profile | null
   isAdmin: boolean
+  /** 회원유형 (없으면 온보딩 필요) */
+  memberType: MemberType | null
+  phoneVerified: boolean
+  identityVerified: boolean
+  /** 로그인했지만 회원유형 미선택(주로 소셜 신규) — 온보딩 필요 */
+  needsOnboarding: boolean
   signIn: (email: string, password: string) => Promise<AuthResult>
   signUp: (input: SignupInput) => Promise<AuthResult>
+  signInWithOAuth: (provider: OAuthProvider) => Promise<AuthResult>
+  /** 온보딩 — 회원유형 저장 (소셜 신규가입 후) */
+  updateMemberType: (memberType: MemberType) => Promise<AuthResult>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -117,7 +129,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         data: {
           name: input.name.trim(),
           phone: input.phone.trim(),
-          organization: input.organization.trim(),
+          organization: (input.organization ?? '').trim(),
+          member_type: input.memberType,
         },
       },
     })
@@ -127,6 +140,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (data.user) setProfile(await loadProfile(data.user.id))
     return { ok: true }
   }, [])
+
+  const signInWithOAuth = useCallback(async (provider: OAuthProvider): Promise<AuthResult> => {
+    if (!supabase) return { ok: false, error: 'Supabase 환경변수가 설정되지 않았습니다.' }
+    // 성공 후 /welcome 로 복귀 → 회원유형 미선택(소셜 신규)이면 온보딩, 아니면 자동 이동
+    const redirectTo = `${window.location.origin}/welcome`
+    const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } })
+    if (error) return { ok: false, error: mapAuthError(error.message) }
+    return { ok: true } // 브라우저가 provider 로 리다이렉트됨
+  }, [])
+
+  const updateMemberType = useCallback(async (memberType: MemberType): Promise<AuthResult> => {
+    if (!supabase) return { ok: false, error: 'Supabase 환경변수가 설정되지 않았습니다.' }
+    if (!user) return { ok: false, error: '로그인이 필요합니다.' }
+    if (memberType !== 'business' && memberType !== 'consultant') return { ok: false, error: '회원유형을 선택해주세요.' }
+    const { error } = await supabase.from('profiles').update({ member_type: memberType }).eq('id', user.id)
+    if (error) return { ok: false, error: error.message }
+    setProfile(await loadProfile(user.id))
+    return { ok: true }
+  }, [user])
 
   const signOut = useCallback(async () => {
     if (supabase) await supabase.auth.signOut()
@@ -141,12 +173,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       profile,
       isAdmin: profile?.role === 'admin',
+      memberType: (profile?.member_type as MemberType | null | undefined) ?? null,
+      phoneVerified: profile?.phone_verified === true,
+      identityVerified: profile?.identity_verified === true,
+      // 로그인 상태 + 프로필 로드됨 + 회원유형 없음 → 온보딩 필요 (관리자는 예외로 두지 않음: 필요 시 선택)
+      needsOnboarding: Boolean(user && profile && !profile.member_type),
       signIn,
       signUp,
+      signInWithOAuth,
+      updateMemberType,
       signOut,
       refreshProfile,
     }),
-    [loading, user, profile, signIn, signUp, signOut, refreshProfile],
+    [loading, user, profile, signIn, signUp, signInWithOAuth, updateMemberType, signOut, refreshProfile],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

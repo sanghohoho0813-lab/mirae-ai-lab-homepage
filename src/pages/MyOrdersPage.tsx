@@ -4,6 +4,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import LoginModal from '../components/LoginModal'
+import { useAuth } from '../lib/auth'
 import { formatKrw, getOrder, loadLocalOrders, updateLocalOrderStatus, type LocalOrder, type OrderSummary } from '../lib/payments'
 
 const STATUS_LABEL: Record<string, { label: string; tone: string }> = {
@@ -21,11 +23,13 @@ const STATUS_LABEL: Record<string, { label: string; tone: string }> = {
 type Row = { local: LocalOrder; server: OrderSummary | null; error?: string }
 
 export default function MyOrdersPage() {
+  const { user, loading: authLoading } = useAuth()
   const [rows, setRows] = useState<Row[] | null>(null)
 
   useEffect(() => {
     document.title = '내 결제·신청내역 | 미래 AI 랩'
     window.scrollTo(0, 0)
+    if (!user) return // 로그인 후에만 내역 조회
     const locals = loadLocalOrders()
     if (locals.length === 0) {
       setRows([])
@@ -41,7 +45,8 @@ export default function MyOrdersPage() {
         return { local, server: null, error: r.message }
       }),
     ).then(setRows)
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   return (
     <div className="min-h-dvh bg-slate-50 text-slate-900 antialiased [word-break:keep-all]">
@@ -108,6 +113,13 @@ export default function MyOrdersPage() {
           </ul>
         )}
       </main>
+
+      <LoginModal
+        open={!authLoading && !user}
+        onClose={() => { window.location.href = '/business-services' }}
+        title="로그인이 필요해요"
+        message="계약·결제 내역은 로그인 후 확인할 수 있습니다."
+      />
     </div>
   )
 }

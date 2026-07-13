@@ -19,6 +19,7 @@ import BusinessServicesPage from './pages/BusinessServicesPage'
 import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
 import FundingConsultingDetailPage from './pages/business-details/FundingConsultingDetailPage'
 import GatewayPage from './pages/GatewayPage'
+import AccountSetupPage from './pages/AccountSetupPage'
 import TermsPage from './pages/legal/TermsPage'
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage'
 import RefundPolicyPage from './pages/legal/RefundPolicyPage'
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/for-consultants" element={<Navigate to="/consultants" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/welcome" element={<AccountSetupPage />} />
           <Route path="/my-tools" element={<MyToolsPage />} />
           <Route path="/dashboard" element={<Navigate to="/my-tools" replace />} />
           <Route path="/admin" element={<AdminPage />} />

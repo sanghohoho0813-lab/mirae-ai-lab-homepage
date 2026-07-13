@@ -36,6 +36,14 @@ const DAY_MS = 24 * 60 * 60 * 1000
 // ── 타입 (Supabase 테이블과 1:1) ────────────────────────────────────────────
 export type Role = 'user' | 'admin'
 
+/** 회원유형 — 중소기업 대표(business) / 컨설턴트(consultant). role(권한)과 별개 축. */
+export type MemberType = 'business' | 'consultant'
+
+export const MEMBER_TYPE_LABEL: Record<MemberType, string> = {
+  business: '중소기업 대표',
+  consultant: '컨설턴트',
+}
+
 export type AccessStatus =
   | 'none'
   | 'trial_active'
@@ -57,6 +65,14 @@ export type Profile = {
   phone: string
   organization: string
   role: Role
+  /** 회원유형 (중소기업 대표 / 컨설턴트). 소셜 신규가입 직후엔 null → 온보딩에서 선택 */
+  member_type?: MemberType | null
+  /** 휴대폰 SMS 인증 완료 여부 (서버 confirm 후 true) */
+  phone_verified?: boolean
+  /** PASS 등 본인인증 완료 여부 (추후 서버에서만 세팅) */
+  identity_verified?: boolean
+  identity_provider?: string | null
+  identity_verified_at?: string | null
   interests?: string[]
   memo?: string // 관리자 메모
   last_login_at?: string | null
