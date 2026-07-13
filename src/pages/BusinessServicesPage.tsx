@@ -3,6 +3,7 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
 import BusinessServiceVisual from '../components/BusinessServiceVisual'
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import LegalFooter from '../components/LegalFooter'
 import {
   businessPackages,
   CATEGORIES,
@@ -245,22 +246,17 @@ export default function BusinessServicesPage() {
             <button type="button" onClick={() => scrollToId('faq')} className="transition-colors hover:text-slate-900">FAQ</button>
           </nav>
           <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={() => scrollToId('packages')}
-              aria-label="상품 찾기"
-              className="hidden h-9 w-9 place-items-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 sm:grid"
+            <Link
+              to="/consultants"
+              className="hidden text-[0.95rem] font-medium text-slate-500 transition-colors hover:text-slate-900 lg:inline"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3-3" />
-              </svg>
-            </button>
+              컨설턴트용 AI 도구
+            </Link>
             <Link
               to="/business-diagnosis"
               className="hidden rounded-lg bg-blue-600 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex"
             >
-              3분 무료 성장진단
+              필요한 서비스 찾기
             </Link>
             <PublicMenuDrawer variant="business" />
           </div>
@@ -287,7 +283,7 @@ export default function BusinessServicesPage() {
               to="/business-diagnosis"
               className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-7 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
             >
-              🩺 3분 무료 성장진단
+              🩺 우리 회사에 필요한 서비스 찾기
             </Link>
             <button
               type="button"
@@ -482,16 +478,7 @@ export default function BusinessServicesPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <p className="text-sm text-slate-400">
-            © {new Date().getFullYear()} 미래 AI 랩 · 미래경영지원센터 — 중소기업 대표님을 위한 경영지원
-          </p>
-          <Link to="/" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900">
-            ← 미래 AI 랩 홈으로
-          </Link>
-        </div>
-      </footer>
+      <LegalFooter />
 
       {/* Mobile sticky CTA */}
       {showBar && (

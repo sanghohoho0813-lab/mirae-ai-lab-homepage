@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import NetworkBackdrop from '../components/NetworkBackdrop'
+import LegalFooter from '../components/LegalFooter'
 
 // 루트(/) 역할 선택 게이트웨이. 기존 페이지/컴포넌트는 건드리지 않습니다.
 // 배경은 실제 이미지 대신 CSS/SVG 로만 은은한 "AI 경영지원 네트워크"를 구현합니다.
@@ -177,6 +178,10 @@ export default function GatewayPage() {
           ))}
         </div>
         <p className="mt-3 text-xs text-slate-400">미래경영지원센터 운영 기준</p>
+      </div>
+
+      <div className="relative z-10">
+        <LegalFooter />
       </div>
     </div>
   )

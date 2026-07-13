@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import HeroSlider from './components/HeroSlider'
 import InquiryForm from './components/InquiryForm'
 import PublicMenuDrawer from './components/PublicMenuDrawer'
+import LegalFooter from './components/LegalFooter'
 import { useAuth } from './lib/auth'
 import { accessTypeLabel } from './lib/platform'
 import {
@@ -306,7 +307,7 @@ function App() {
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="#top" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-base font-black tracking-tight text-sky-400">
               AI
             </span>
@@ -314,7 +315,7 @@ function App() {
               <span className="text-base font-bold tracking-tight text-slate-900">미래 AI 랩</span>
               <span className="text-xs font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</span>
             </span>
-          </a>
+          </Link>
           <nav className="hidden items-center gap-7 text-base font-medium text-slate-600 lg:flex">
             {navItems.map((item) => (
               <a key={item.href} href={item.href} className="transition-colors hover:text-slate-900">
@@ -325,9 +326,9 @@ function App() {
           <div className="flex items-center gap-3">
             <Link
               to="/business-services"
-              className="hidden text-base font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline"
+              className="hidden rounded-lg border border-slate-200 px-3 py-2 text-base font-medium text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900 sm:inline-flex"
             >
-              대표님용
+              대표님용 경영지원
             </Link>
             {user ? (
               <>
@@ -863,25 +864,14 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-14">
-          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-            <div>
-              <div className="flex items-center gap-2.5">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-base font-black text-sky-400">
-                  AI
-                </span>
-                <span className="flex flex-col leading-tight">
-                  <span className="text-base font-bold text-slate-900">미래 AI 랩</span>
-                  <span className="text-xs font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</span>
-                </span>
-              </div>
-              <p className="mt-4 max-w-sm text-base leading-relaxed text-slate-500">
-                컨설턴트의 상담·분석·제안·사후관리를 하나로 잇는 업무 OS. 반복 업무를 직접 겪은 컨설턴트
-                김팀장이 만듭니다.
-              </p>
-            </div>
+      <LegalFooter
+        topSlot={
+          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+            <p className="max-w-md text-base leading-relaxed text-slate-500">
+              컨설턴트의 상담·분석·제안·사후관리를 하나로 잇는 업무 OS. 대표님의 경영지원과 컨설턴트의 실무를 AI로 연결합니다.
+            </p>
             <nav className="flex flex-wrap gap-x-6 gap-y-2 text-base font-medium text-slate-600">
+              <Link to="/business-services" className="transition-colors hover:text-slate-900">대표님용 경영지원</Link>
               {navItems.map((item) => (
                 <a key={item.href} href={item.href} className="transition-colors hover:text-slate-900">
                   {item.label}
@@ -889,12 +879,8 @@ function App() {
               ))}
             </nav>
           </div>
-          <div className="mt-10 flex flex-col gap-2 border-t border-slate-100 pt-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-            <p>© {new Date().getFullYear()} 미래 AI 랩 · 미래경영지원센터</p>
-            <p>컨설턴트 업무 OS · Mirae AI Lab</p>
-          </div>
-        </div>
-      </footer>
+        }
+      />
     </div>
   )
 }

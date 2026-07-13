@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { loadLocalOrders } from '../lib/payments'
+import { legalLinks } from '../config/businessInfo'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
@@ -16,10 +17,18 @@ type MenuItem = {
   match?: (path: string) => boolean
 }
 
+type CrossNav = {
+  heading: string
+  label: string
+  desc: string
+  to: string
+}
+
 type MenuConfig = {
   topTitle: string
   topSub: string
   groups: { heading?: string; items: MenuItem[] }[]
+  crossNav: CrossNav
   cta: { label: string; to: string }
 }
 
@@ -60,11 +69,16 @@ const BUSINESS_MENU: MenuConfig = {
         { label: '진행 사례', to: '/business-services#cases' },
         { label: '자주 묻는 질문', to: '/business-services#faq' },
         { label: '상담 신청', to: '/business-services#apply' },
-        { label: '컨설턴트용 서비스', to: '/consultants' },
       ],
     },
   ],
-  cta: { label: '3분 무료 성장진단 시작하기', to: '/business-diagnosis' },
+  crossNav: {
+    heading: '컨설턴트이신가요?',
+    label: '컨설턴트용 AI 도구',
+    desc: '고객 진단·제안·업무 자동화를 돕는 AI 실무 도구',
+    to: '/consultants',
+  },
+  cta: { label: '우리 회사에 필요한 서비스 찾기', to: '/business-diagnosis' },
 }
 
 // 컨설턴트용 — 실제 존재하는 라우트만 (/consultants 공개 소개 + 로그인/도구함)
@@ -92,10 +106,15 @@ const CONSULTANT_MENU: MenuConfig = {
       items: [
         { label: '내 도구함', to: '/my-tools' },
         { label: '로그인 · 회원가입', to: '/login' },
-        { label: '중소기업 대표자용 서비스', to: '/business-services' },
       ],
     },
   ],
+  crossNav: {
+    heading: '중소기업 대표님이신가요?',
+    label: '대표님용 경영지원',
+    desc: '정책자금·지원금·기업인증·홈페이지·AX 경영지원 서비스',
+    to: '/business-services',
+  },
   cta: { label: '내 도구함 보기', to: '/my-tools' },
 }
 
@@ -266,6 +285,35 @@ export default function PublicMenuDrawer({
                   </ul>
                 </div>
               ))}
+
+              {/* 대표자 ↔ 컨설턴트 전환 (별도 섹션 — 메뉴와 섞지 않음) */}
+              <div className="mt-5">
+                <p className="px-3 pb-1.5 text-xs font-black uppercase tracking-wide text-slate-400">{config.crossNav.heading}</p>
+                <Link
+                  to={config.crossNav.to}
+                  className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 transition-colors hover:border-slate-300 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[0.95rem] font-bold text-slate-900">{config.crossNav.label}</span>
+                    <span className="mt-0.5 block text-xs leading-snug text-slate-500">{config.crossNav.desc}</span>
+                  </span>
+                  <span aria-hidden className="text-slate-400">→</span>
+                </Link>
+              </div>
+
+              {/* 약관·정책·사업자정보 */}
+              <div className="mt-5">
+                <p className="px-3 pb-1.5 text-xs font-black uppercase tracking-wide text-slate-400">약관 및 정책</p>
+                <ul className="flex flex-wrap gap-x-3 gap-y-1.5 px-3">
+                  {legalLinks.map((l) => (
+                    <li key={l.to}>
+                      <Link to={l.to} className="text-[0.85rem] font-medium text-slate-500 underline-offset-2 hover:text-slate-800 hover:underline">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </nav>
 
             {/* 하단 CTA (고정 + safe-area) */}

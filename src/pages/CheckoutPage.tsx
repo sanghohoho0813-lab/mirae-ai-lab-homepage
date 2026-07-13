@@ -5,6 +5,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import LegalFooter from '../components/LegalFooter'
 import { getPackageBySlug } from '../data/businessPackages'
 import { checkoutTerms } from '../config/checkoutTerms'
 import { useAuth } from '../lib/auth'
@@ -164,7 +165,7 @@ export default function CheckoutPage() {
     <div className="min-h-dvh bg-slate-50 text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <Link to={`/business-services/${pkg.slug}`} className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
@@ -302,9 +303,9 @@ export default function CheckoutPage() {
           <div className="mt-3 space-y-3">
             {(
               [
-                { key: 'privacy' as const, label: '개인정보 수집·이용 동의', desc: checkoutTerms.privacySummary },
-                { key: 'terms' as const, label: '구매 및 서비스 진행조건 확인', desc: checkoutTerms.purchaseTermsSummary },
-                { key: 'refund' as const, label: '취소·환불 안내 확인', desc: checkoutTerms.refundPolicySummary },
+                { key: 'privacy' as const, label: '개인정보 수집·이용 동의', desc: checkoutTerms.privacySummary, to: '/privacy' },
+                { key: 'terms' as const, label: '구매 및 서비스 진행조건 확인', desc: checkoutTerms.purchaseTermsSummary, to: '/terms' },
+                { key: 'refund' as const, label: '취소·환불 안내 확인', desc: checkoutTerms.refundPolicySummary, to: '/refund-policy' },
               ]
             ).map((c) => (
               <label key={c.key} className="flex cursor-pointer items-start gap-2.5">
@@ -314,13 +315,30 @@ export default function CheckoutPage() {
                   onChange={(e) => setConsents((prev) => ({ ...prev, [c.key]: e.target.checked }))}
                   className="mt-0.5 h-4.5 w-4.5 rounded border-slate-300"
                 />
-                <span className="min-w-0">
-                  <span className="block text-sm font-bold text-slate-800">{c.label} <span className="text-red-500">(필수)</span></span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-bold text-slate-800">{c.label} <span className="text-red-500">(필수)</span></span>
+                    <Link
+                      to={c.to}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="shrink-0 text-xs font-semibold text-blue-600 underline underline-offset-2 hover:text-blue-700"
+                    >
+                      보기
+                    </Link>
+                  </span>
                   <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">{c.desc}</span>
                 </span>
               </label>
             ))}
           </div>
+          <p className="mt-3 text-xs leading-relaxed text-slate-400">
+            결제를 진행하시면 위 필수 동의 항목과{' '}
+            <Link to="/terms" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-600">이용약관</Link>,{' '}
+            <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-600">개인정보처리방침</Link>,{' '}
+            <Link to="/refund-policy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-600">환불·취소 정책</Link>에 동의하는 것으로 간주됩니다.
+          </p>
         </section>
 
         {/* D. 결제 */}
@@ -347,6 +365,8 @@ export default function CheckoutPage() {
           </Link>
         </section>
       </main>
+
+      <LegalFooter />
     </div>
   )
 }

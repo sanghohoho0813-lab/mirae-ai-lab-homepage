@@ -19,6 +19,10 @@ import BusinessServicesPage from './pages/BusinessServicesPage'
 import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
 import FundingConsultingDetailPage from './pages/business-details/FundingConsultingDetailPage'
 import GatewayPage from './pages/GatewayPage'
+import TermsPage from './pages/legal/TermsPage'
+import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage'
+import RefundPolicyPage from './pages/legal/RefundPolicyPage'
+import BusinessInfoPage from './pages/legal/BusinessInfoPage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -44,6 +48,10 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/business-diagnosis/results/:resultId" element={<BusinessDiagnosisResultsPage />} />
           <Route path="/business-services/funding-consulting" element={<FundingConsultingDetailPage />} />
           <Route path="/business-services/:slug" element={<BusinessServiceDetailPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/refund-policy" element={<RefundPolicyPage />} />
+          <Route path="/business-info" element={<BusinessInfoPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

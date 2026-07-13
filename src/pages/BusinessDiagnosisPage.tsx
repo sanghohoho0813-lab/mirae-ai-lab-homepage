@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import LegalFooter from '../components/LegalFooter'
 import DiagnosisStart from '../components/diagnosis/DiagnosisStart'
 import DiagnosisQuestion from '../components/diagnosis/DiagnosisQuestion'
 import DiagnosisProgress from '../components/diagnosis/DiagnosisProgress'
@@ -385,7 +386,7 @@ export default function BusinessDiagnosisPage() {
     <div className="flex min-h-dvh flex-col bg-white text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <Link to="/business-services" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
@@ -393,6 +394,14 @@ export default function BusinessDiagnosisPage() {
             </span>
           </Link>
           <div className="flex items-center gap-1.5">
+            {screen === 'start' && (
+              <Link
+                to="/business-services"
+                className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 sm:inline"
+              >
+                서비스몰
+              </Link>
+            )}
             {screen !== 'start' && (
               <button
                 type="button"
@@ -457,6 +466,8 @@ export default function BusinessDiagnosisPage() {
           </div>
         )}
       </main>
+
+      {screen === 'start' && <LegalFooter />}
     </div>
   )
 }

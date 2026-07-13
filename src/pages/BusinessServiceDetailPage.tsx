@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
 import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import LegalFooter from '../components/LegalFooter'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
 import { getDetailContent, type DetailCase } from '../data/businessDetailContent'
 
@@ -578,12 +579,13 @@ export default function BusinessServiceDetailPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <p className="text-sm text-slate-400">© {new Date().getFullYear()} 미래 AI 랩 · 미래경영지원센터 — 중소기업 대표님을 위한 경영지원</p>
-          <Link to="/business-services" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900">← 서비스몰 홈으로</Link>
-        </div>
-      </footer>
+      <LegalFooter
+        topSlot={
+          <Link to="/business-services" className="text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900">
+            ← 서비스몰 홈으로
+          </Link>
+        }
+      />
 
       {/* Mobile sticky CTA */}
       {showBar && (

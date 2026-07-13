@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 
 // 프론트 전용 상담 신청 폼 (백엔드 미연결). 제출 시 임시 접수 안내만 표시합니다.
 // 기존 InquiryForm(/api/inquiry) 과 분리된 별도 컴포넌트입니다.
@@ -107,6 +108,11 @@ export default function BusinessInquiryForm() {
       </button>
       <p className="mt-3 text-sm text-slate-400">
         제출하신 내용은 상담 준비 용도로만 확인하며, 현재 단계에서는 별도 서버로 전송되지 않습니다.
+      </p>
+      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        신청 시{' '}
+        <Link to="/privacy" className="underline underline-offset-2 hover:text-slate-600">개인정보처리방침</Link>에 따라 상담 목적으로만 정보가 이용되며,{' '}
+        <Link to="/terms" className="underline underline-offset-2 hover:text-slate-600">이용약관</Link>이 함께 적용됩니다.
       </p>
     </form>
   )

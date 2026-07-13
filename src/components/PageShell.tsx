@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
+import { businessInfo, legalLinks } from '../config/businessInfo'
 
 function BrandMark() {
   return (
@@ -86,8 +87,20 @@ export default function PageShell({
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-8 text-sm text-slate-400">
-          © {new Date().getFullYear()} 미래 AI 랩 · 미래경영지원센터 — 컨설턴트 업무 OS (베타)
+        <div className="mx-auto max-w-6xl px-6 py-8">
+          <nav aria-label="약관 및 정책" className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-slate-600">
+            {legalLinks.map((l) => (
+              <Link key={l.to} to={l.to} className="transition-colors hover:text-slate-900">
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+          <p className="mt-4 text-sm text-slate-400">
+            {businessInfo.companyName} · 대표 {businessInfo.representative} · 사업자등록번호 {businessInfo.businessNumber}
+          </p>
+          <p className="mt-1 text-sm text-slate-400">
+            © {new Date().getFullYear()} {businessInfo.serviceName} · 미래경영지원센터
+          </p>
         </div>
       </footer>
     </div>

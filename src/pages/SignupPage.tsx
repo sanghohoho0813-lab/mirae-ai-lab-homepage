@@ -149,6 +149,11 @@ export default function SignupPage() {
           >
             {busy ? '가입 중…' : '회원가입하고 시작하기'}
           </button>
+          <p className="text-center text-xs leading-relaxed text-slate-400">
+            회원가입 시{' '}
+            <Link to="/terms" className="underline underline-offset-2 hover:text-slate-600">이용약관</Link> 및{' '}
+            <Link to="/privacy" className="underline underline-offset-2 hover:text-slate-600">개인정보처리방침</Link>에 동의하는 것으로 간주됩니다.
+          </p>
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-500">
