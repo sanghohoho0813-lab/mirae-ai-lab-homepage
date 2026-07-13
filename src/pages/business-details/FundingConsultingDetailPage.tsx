@@ -13,10 +13,10 @@ const pkg = getPackageBySlug('funding-consulting')!
 const IMG = '/assets/business-services/funding-consulting.png'
 const EBOOK_IMG = '/assets/business-services/ebook-3set.webp'
 
-// 할인 표기 (정가 100만원 → 판매가 50만원)
+// 할인 표기 (정가 100만원 → 판매가 59만원)
 const LIST_PRICE = '100만원'
-const SALE_PRICE = pkg.price // '55만원'
-const DISCOUNT_RATE = '45%'
+const SALE_PRICE = pkg.price // '59만원'
+const DISCOUNT_RATE = '41%'
 
 const band = 'px-5 py-16 sm:py-24'
 const inner = 'mx-auto max-w-[720px]'
@@ -93,6 +93,10 @@ export default function FundingConsultingDetailPage() {
           <CartIcon /> 바로 결제하기
         </button>
       </div>
+      <p className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold ${variant === 'dark' ? 'text-slate-300' : 'text-slate-500'}`}>
+        <span className="inline-flex items-center gap-1"><span className="text-emerald-400" aria-hidden>✔</span> 카드사별 할부 가능</span>
+        <span className="inline-flex items-center gap-1"><span className="text-emerald-400" aria-hidden>✔</span> 결제 단계에서 할부 개월 수 선택</span>
+      </p>
       <button
         type="button"
         onClick={() => scrollToId('apply')}
@@ -271,13 +275,13 @@ export default function FundingConsultingDetailPage() {
             <div className="rounded-2xl bg-blue-600 p-6 text-center shadow-lg shadow-blue-600/20">
               <p className="text-xs font-black uppercase tracking-wide text-blue-200">미래 AI 랩 진단·전략</p>
               <p className="mt-2 text-4xl font-black tracking-tight text-white">0원</p>
-              <p className="mt-1 text-sm font-semibold text-blue-100">비용은 50만원이 전부</p>
+              <p className="mt-1 text-sm font-semibold text-blue-100">비용은 59만원이 전부</p>
             </div>
           </div>
 
           {/* 업무 범위 */}
           <p className="mt-14 text-center text-xl font-black text-slate-900 sm:text-2xl">
-            50만원으로, <span className="text-blue-600">여기까지 해드립니다</span>
+            59만원으로, <span className="text-blue-600">여기까지 해드립니다</span>
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {[

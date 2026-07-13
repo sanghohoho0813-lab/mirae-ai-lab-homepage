@@ -19,20 +19,18 @@ export type ServerProduct = {
   priceVersion: number | null
 }
 
-/** 상담 전용 — 결제 시도 자체를 차단 */
-export const CONSULT_ONLY_SLUGS = ['employment-subsidy', 'growth-roadmap-package']
+/** 상담 전용 — 결제 시도 자체를 차단 (ai-ax-system·ax-full-package 는 상담 견적 상품) */
+export const CONSULT_ONLY_SLUGS = ['employment-subsidy', 'growth-roadmap-package', 'ai-ax-system', 'ax-full-package']
 
-/** ⚠️ supabase/portone-one-time-payments.sql 시드와 반드시 같은 값 유지 */
+/** ⚠️ supabase/portone-one-time-payments.sql 시드와 반드시 같은 값 유지 (화면가=결제가) */
 const LOCAL_CATALOG: Array<Omit<ServerProduct, 'source' | 'priceId' | 'priceVersion'>> = [
-  { productSlug: 'funding-consulting', optionId: null, name: '정책자금 컨설팅', optionName: null, amount: 550000, paymentType: 'one_time', vatIncluded: true },
+  { productSlug: 'funding-consulting', optionId: null, name: '정책자금 컨설팅', optionName: null, amount: 590000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'venture-innovation', optionId: null, name: '벤처인증 패키지 (혁신성장형)', optionName: null, amount: 1990000, paymentType: 'one_time', vatIncluded: true },
-  { productSlug: 'venture-investment', optionId: null, name: '벤처인증 패키지 (투자유형)', optionName: null, amount: 5000000, paymentType: 'one_time', vatIncluded: true },
-  { productSlug: 'responsive-homepage', optionId: null, name: '반응형 홈페이지 제작', optionName: null, amount: 490000, paymentType: 'one_time', vatIncluded: true },
+  { productSlug: 'venture-investment', optionId: null, name: '벤처인증 패키지 (투자유형)', optionName: null, amount: 4990000, paymentType: 'one_time', vatIncluded: true },
+  { productSlug: 'responsive-homepage', optionId: null, name: '반응형 홈페이지 제작', optionName: null, amount: 990000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'rnd-center', optionId: null, name: '기업부설연구소 설립', optionName: null, amount: 1490000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'mainbiz-certification', optionId: null, name: '메인비즈 인증', optionName: null, amount: 1990000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'innobiz-certification', optionId: null, name: '이노비즈 인증', optionName: null, amount: 2490000, paymentType: 'one_time', vatIncluded: true },
-  { productSlug: 'ai-ax-system', optionId: 'ax-only', name: 'AI 기반 회사 운영시스템 구축', optionName: 'AX 시스템 구축', amount: 1290000, paymentType: 'one_time', vatIncluded: true },
-  { productSlug: 'ai-ax-system', optionId: 'ax-with-homepage', name: 'AI 기반 회사 운영시스템 구축', optionName: 'AX 시스템 + 반응형 홈페이지', amount: 1490000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'iso-certification', optionId: 'iso-one', name: 'ISO 인증 패키지', optionName: 'ISO 1종', amount: 1490000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'iso-certification', optionId: 'iso-two', name: 'ISO 인증 패키지', optionName: 'ISO 2종', amount: 2180000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'iso-certification', optionId: 'iso-three', name: 'ISO 인증 패키지', optionName: 'ISO 3종 패키지', amount: 3990000, paymentType: 'one_time', vatIncluded: true },

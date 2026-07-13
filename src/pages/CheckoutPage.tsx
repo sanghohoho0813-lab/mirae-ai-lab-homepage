@@ -369,9 +369,12 @@ export default function CheckoutPage() {
           >
             {phase === 'preparing' ? '주문을 준비하고 있어요…' : phase === 'window' ? '결제창 확인 중…' : `${formatKrw(amount)} 결제하기`}
           </button>
-          <p className="mt-3 text-center text-xs leading-relaxed text-slate-400">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-slate-500">
+            <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 카드사별 할부 가능</span>
+            <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 결제 단계에서 할부 개월 수 선택</span>
+          </div>
+          <p className="mt-2 text-center text-xs leading-relaxed text-slate-400">
             결제수단 카드 · {checkoutTerms.serviceStartNotice}
-            <br />카드사 할부 가능 여부는 결제창에서 확인할 수 있습니다.
           </p>
           <Link
             to={`/business-services/${pkg.slug}#apply`}

@@ -159,6 +159,10 @@ export default function BusinessServiceDetailPage() {
             <CartIcon /> 바로 결제하기
           </button>
         </div>
+        <p className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-slate-500">
+          <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 카드사별 할부 가능</span>
+          <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 결제 단계에서 할부 개월 수 선택</span>
+        </p>
         <button
           type="button"
           onClick={() => scrollToId('apply')}

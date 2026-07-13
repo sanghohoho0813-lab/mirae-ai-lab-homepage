@@ -50,15 +50,17 @@ create unique index if not exists uq_billing_products_slug_option
 insert into public.billing_products
   (code, name, kind, audience, amount, active, sort, product_slug, option_id, option_name)
 values
-  ('funding-consulting',              '정책자금 컨설팅',                    'one_time', 'ceo',  550000, true, 10, 'funding-consulting',    null,               null),
+  ('funding-consulting',              '정책자금 컨설팅',                    'one_time', 'ceo',  590000, true, 10, 'funding-consulting',    null,               null),
   ('venture-innovation',              '벤처인증 패키지 (혁신성장형)',        'one_time', 'ceo', 1990000, true, 20, 'venture-innovation',    null,               null),
-  ('venture-investment',              '벤처인증 패키지 (투자유형)',          'one_time', 'ceo', 5000000, true, 30, 'venture-investment',    null,               null),
-  ('responsive-homepage',             '반응형 홈페이지 제작',                'one_time', 'ceo',  490000, true, 40, 'responsive-homepage',   null,               null),
+  ('venture-investment',              '벤처인증 패키지 (투자유형)',          'one_time', 'ceo', 4990000, true, 30, 'venture-investment',    null,               null),
+  ('responsive-homepage',             '반응형 홈페이지 제작',                'one_time', 'ceo',  990000, true, 40, 'responsive-homepage',   null,               null),
   ('rnd-center',                      '기업부설연구소 설립',                 'one_time', 'ceo', 1490000, true, 50, 'rnd-center',            null,               null),
   ('mainbiz-certification',           '메인비즈 인증',                       'one_time', 'ceo', 1990000, true, 60, 'mainbiz-certification', null,               null),
   ('innobiz-certification',           '이노비즈 인증',                       'one_time', 'ceo', 2490000, true, 70, 'innobiz-certification', null,               null),
-  ('ai-ax-system:ax-only',            'AI 기반 회사 운영시스템 구축',        'one_time', 'ceo', 1290000, true, 80, 'ai-ax-system',          'ax-only',          'AX 시스템 구축'),
-  ('ai-ax-system:ax-with-homepage',   'AI 기반 회사 운영시스템 구축',        'one_time', 'ceo', 1490000, true, 81, 'ai-ax-system',          'ax-with-homepage', 'AX 시스템 + 반응형 홈페이지'),
+  -- AI 업무 자동화(ai-ax-system)·AX 풀 패키지는 상담 견적 상품으로 전환 → 결제 비활성(active=false).
+  --   구 옵션 레코드는 이력 보존을 위해 남기되 비활성화. 결제 차단은 CONSULT_ONLY_SLUGS 로도 이중 보장.
+  ('ai-ax-system:ax-only',            'AI 업무 자동화 프로그램 구축',        'one_time', 'ceo', 1290000, false, 80, 'ai-ax-system',         'ax-only',          'AX 시스템 구축'),
+  ('ai-ax-system:ax-with-homepage',   'AI 업무 자동화 프로그램 구축',        'one_time', 'ceo', 1490000, false, 81, 'ai-ax-system',         'ax-with-homepage', 'AX 시스템 + 반응형 홈페이지'),
   ('iso-certification:iso-one',       'ISO 인증 패키지',                     'one_time', 'ceo', 1490000, true, 90, 'iso-certification',     'iso-one',          'ISO 1종'),
   ('iso-certification:iso-two',       'ISO 인증 패키지',                     'one_time', 'ceo', 2180000, true, 91, 'iso-certification',     'iso-two',          'ISO 2종'),
   ('iso-certification:iso-three',     'ISO 인증 패키지',                     'one_time', 'ceo', 3990000, true, 92, 'iso-certification',     'iso-three',        'ISO 3종 패키지')
