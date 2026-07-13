@@ -1,10 +1,15 @@
 // 소셜 로그인/가입 버튼 — 카카오(공식 노랑) > 구글(흰 배경+테두리) 순.
 // 실제 Supabase OAuth(PKCE, /auth/callback 복귀). Provider 미설정 시 원문 오류 대신 쉬운 한국어 안내.
-import { useState } from 'react'
+// "이동 중…" pending 은 외부 리다이렉트 직전에만 유지하고, 뒤로가기/bfcache 복원 시
+// useOAuthPendingReset 으로 즉시 해제해 버튼이 멈추지 않게 합니다.
+import { useCallback, useRef, useState } from 'react'
 import { useAuth, type OAuthProvider } from '../../lib/auth'
 import { trackAuthEvent } from '../../lib/authAnalytics'
+import { useOAuthPendingReset } from '../../lib/useOAuthPendingReset'
 
 const PROVIDER_LABEL: Record<OAuthProvider, string> = { kakao: '카카오', google: 'Google' }
+// 외부 로그인 화면이 8~10초 내 열리지 않으면 pending 을 풀어 버튼이 멈추지 않게 함
+const REDIRECT_WATCHDOG_MS = 9000
 
 export default function SocialAuthButtons({
   mode = 'login',
@@ -20,26 +25,67 @@ export default function SocialAuthButtons({
   const { signInWithOAuth, configured } = useAuth()
   const [busy, setBusy] = useState<OAuthProvider | null>(null)
   const [notice, setNotice] = useState('')
+  const busyRef = useRef<OAuthProvider | null>(null)
+  const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const suffix = mode === 'signup' ? '시작하기' : '계속하기'
 
+  const clearWatchdog = useCallback(() => {
+    if (watchdogRef.current) {
+      clearTimeout(watchdogRef.current)
+      watchdogRef.current = null
+    }
+  }, [])
+
+  // pending(이동 중) 해제 — busy 초기화 + watchdog 정리 (임시 상태만; next 등 실제 값은 건드리지 않음)
+  const resetPending = useCallback(() => {
+    clearWatchdog()
+    if (busyRef.current !== null) {
+      busyRef.current = null
+      setBusy(null) // 두 버튼 원상복구
+    }
+  }, [clearWatchdog])
+
+  // 뒤로가기·bfcache·탭복귀·포커스·popstate 에서 pending 해제 (로그인/회원가입/모달 공통)
+  useOAuthPendingReset(resetPending)
+
   async function handle(provider: OAuthProvider) {
-    if (busy) return // 중복 클릭 방지
+    if (busyRef.current) return // 중복 클릭 방지
     setNotice('')
+    busyRef.current = provider
     setBusy(provider)
     trackAuthEvent('oauth_started', { provider })
-    const result = await signInWithOAuth(provider, next)
-    if (!result.ok) {
-      trackAuthEvent('oauth_failed', { provider, failureCategory: 'start_failed' })
-      const msg = result.error ?? ''
-      if (msg.includes('설정 중')) {
-        setNotice(`현재 ${PROVIDER_LABEL[provider]} 로그인을 설정하고 있습니다. 이메일 로그인 또는 ${provider === 'kakao' ? 'Google' : '카카오'} 로그인을 이용해주세요.`)
-      } else {
-        setNotice(msg || `${PROVIDER_LABEL[provider]} 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.`)
-      }
+
+    // watchdog — 이동이 시작되지 않으면(F/G) pending 해제 + 안내
+    clearWatchdog()
+    watchdogRef.current = setTimeout(() => {
+      watchdogRef.current = null
+      busyRef.current = null
       setBusy(null)
+      setNotice('로그인 화면을 열지 못했어요. 다시 시도해주세요.')
+    }, REDIRECT_WATCHDOG_MS)
+
+    try {
+      const result = await signInWithOAuth(provider, next)
+      if (!result.ok) {
+        // D/E: 이동 요청 실패·Supabase error → 즉시 pending 해제
+        resetPending()
+        trackAuthEvent('oauth_failed', { provider, failureCategory: 'start_failed' })
+        const msg = result.error ?? ''
+        if (msg.includes('설정 중')) {
+          setNotice(`현재 ${PROVIDER_LABEL[provider]} 로그인을 설정하고 있습니다. 이메일 로그인 또는 ${provider === 'kakao' ? 'Google' : '카카오'} 로그인을 이용해주세요.`)
+        } else {
+          setNotice(msg || `${PROVIDER_LABEL[provider]} 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.`)
+        }
+      }
+      // 성공 시엔 브라우저가 외부로 리다이렉트되므로 pending 유지(깜빡임 방지).
+      // 사용자가 외부에서 뒤로가기로 복귀하면 useOAuthPendingReset(pageshow)가 해제합니다.
+    } catch {
+      // 예외에서도 반드시 pending 해제
+      resetPending()
+      trackAuthEvent('oauth_failed', { provider, failureCategory: 'exception' })
+      setNotice(`${PROVIDER_LABEL[provider]} 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.`)
     }
-    // 성공 시 브라우저가 provider 로 리다이렉트되므로 busy 유지
   }
 
   const off = disabled || !configured
