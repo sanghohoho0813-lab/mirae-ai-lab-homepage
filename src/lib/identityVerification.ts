@@ -137,9 +137,16 @@ export async function completeOnboarding(
   accessToken: string,
   role: 'ceo' | 'consultant',
   consents?: { key: string; version: string; agreed: boolean }[],
-): Promise<{ ok: boolean; roles?: string[]; error?: string; notConfigured?: boolean }> {
-  const r = await post<{ roles: string[] }>({ action: 'complete', accessToken, role, consents })
-  return r.ok ? { ok: true, roles: r.roles } : { ok: false, error: r.message, notConfigured: r.notConfigured }
+): Promise<{ ok: boolean; roles?: string[]; error?: string; notConfigured?: boolean; debugCode?: string }> {
+  const r = await post<{ roles: string[]; debugCode?: string }>({ action: 'complete', accessToken, role, consents })
+  return r.ok
+    ? { ok: true, roles: r.roles }
+    : { ok: false, error: r.message, notConfigured: r.notConfigured, debugCode: r.debugCode }
+}
+
+/** 서버가 반환한 debugCode 가 '약관 동의' 관련 오류인지 — 클라이언트/서버 오류를 분리해 표시하기 위함 */
+export function isConsentServerError(debugCode?: string): boolean {
+  return debugCode === 'consent_missing' || debugCode === 'consent_save_failed' || debugCode === 'consent_bad_key'
 }
 
 /** 두 번째 역할 추가 (내 계정) */

@@ -11,7 +11,7 @@ import { useAuth } from '../../lib/auth'
 import { supabase } from '../../lib/supabase'
 import { AUTH_CONSENTS } from '../../config/authConsents'
 import {
-  attachIdentityToUser, completeOnboarding, getIdentityHealth, migrateGuestDiagnoses,
+  attachIdentityToUser, completeOnboarding, getIdentityHealth, isConsentServerError, migrateGuestDiagnoses,
   type IdentityHealth, type IdentityVerified,
 } from '../../lib/identityVerification'
 import { loadHistory } from '../../lib/businessDiagnosisStorage'
@@ -151,7 +151,13 @@ export default function OnboardingPage() {
     if (!done.ok) {
       submittingRef.current = false
       setBusy(false)
-      setError(done.error ?? '회원가입은 완료되지 않았습니다. 남은 절차를 이어서 진행해주세요.')
+      // 클라이언트 검증상 필수 동의가 모두 완료됐는데 서버가 '동의' 관련 오류를 반환하면,
+      // 사용자의 '미동의'가 아니라 서버 저장/처리 문제이므로 그렇게 안내(사용자 탓 오판 방지·클라이언트/서버 오류 분리).
+      if (isConsentServerError(done.debugCode) && requiredConsentsAgreed(consents)) {
+        setError('약관 동의를 저장하는 중 문제가 발생했어요. 잠시 후 다시 시도해주세요. 계속되면 고객센터로 문의해주세요.')
+      } else {
+        setError(done.error ?? '회원가입은 완료되지 않았습니다. 남은 절차를 이어서 진행해주세요.')
+      }
       return
     }
     try {
