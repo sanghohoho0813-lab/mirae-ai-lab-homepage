@@ -118,7 +118,7 @@ export default function FundingConsultingDetailPage() {
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.7rem] font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</span>
+              <span className="text-[0.8rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></span>
             </span>
           </Link>
           <div className="flex items-center gap-4">

@@ -6,7 +6,7 @@ export default function BusinessInfoPage() {
   const b = businessInfo
 
   const rows: React.ReactNode[][] = [
-    ['상호', b.companyName],
+    ['상호', `${b.companyName} (${b.brandName})`],
     ['서비스명', `${b.serviceName} (${b.serviceNameEn})`],
     ['대표자', b.representative],
     ['사업자등록번호', b.businessNumber],

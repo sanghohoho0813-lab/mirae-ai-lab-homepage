@@ -112,7 +112,7 @@ export default function GatewayPage() {
           </span>
           <div className="leading-tight">
             <p className="text-lg font-bold tracking-tight text-slate-900">미래 AI 랩</p>
-            <p className="text-xs font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</p>
+            <p className="text-[0.82rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></p>
           </div>
         </div>
 

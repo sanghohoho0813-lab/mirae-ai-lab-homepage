@@ -231,7 +231,7 @@ export default function BusinessServicesPage() {
             </span>
             <span className="flex flex-col leading-tight">
               <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.7rem] font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</span>
+              <span className="text-[0.82rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></span>
             </span>
           </Link>
           <nav className="hidden items-center gap-5 text-[0.95rem] font-medium text-slate-600 lg:flex">
@@ -313,12 +313,25 @@ export default function BusinessServicesPage() {
               <p className="text-[1.1rem] font-semibold leading-relaxed text-slate-100">
                 정책자금부터 정부지원사업, 법인컨설팅, AX 구축까지 기업의 성장 과정을 한 흐름으로 설계합니다.
               </p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.95rem] font-medium text-slate-300">
+              <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-2 text-[0.95rem] font-medium text-slate-300">
                 <span className="font-bold text-white">미래 AI 랩 대표</span>
                 <span className="text-slate-600">·</span>
                 <span>미래경영지원센터</span>
                 <span className="text-slate-600">·</span>
-                <span>유튜브 ‘김팀장의 경영노트’ 운영</span>
+                <a
+                  href="https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 font-bold text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+                  aria-label="유튜브 김팀장의 경영노트 채널 (새 탭에서 열림)"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4.5 w-4.5 shrink-0" aria-hidden>
+                    <rect x="1.5" y="5" width="21" height="14" rx="3.5" fill="#FF0000" />
+                    <path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="#fff" />
+                  </svg>
+                  김팀장의 경영노트
+                  <span aria-hidden className="text-slate-300">↗</span>
+                </a>
               </div>
               <div className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
                 {trustAwards.map((a) => (

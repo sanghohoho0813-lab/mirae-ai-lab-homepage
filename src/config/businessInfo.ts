@@ -7,6 +7,8 @@ export const businessInfo = {
   /** 서비스/브랜드 표기명 */
   serviceName: '미래 AI 랩',
   serviceNameEn: 'Mirae AI Lab',
+  /** 브랜드명 (상호 병기용) */
+  brandName: '미래경영지원센터',
   /** 사업자등록증상 상호 */
   companyName: '미래에이아이랩',
   /** 대표자 성명 (생년월일 등은 절대 표기하지 않음) */
@@ -17,7 +19,7 @@ export const businessInfo = {
   businessCategory: '정보통신업',
   businessItem: '응용 소프트웨어 개발 및 공급업',
   /** 사업장 주소 */
-  address: '경기도 남양주시 별내중앙로 26, 5층 504호 엠15호',
+  address: '경기도 남양주시 별내중앙로 26, 5층 504호',
 
   /** 고객 문의 이메일 (개인 휴대전화 번호는 공개하지 않음) */
   contactEmail: 'sanghohoho0813@gmail.com',

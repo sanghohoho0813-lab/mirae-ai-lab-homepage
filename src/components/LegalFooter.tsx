@@ -19,7 +19,7 @@ export default function LegalFooter({
   const year = new Date().getFullYear()
 
   const infoRows: string[] = [
-    `상호 ${b.companyName}`,
+    `상호 ${b.companyName} (${b.brandName})`,
     `대표자 ${b.representative}`,
     `사업자등록번호 ${b.businessNumber}`,
   ]
@@ -40,7 +40,7 @@ export default function LegalFooter({
             </span>
             <span className="flex flex-col leading-tight">
               <span className={`text-[0.95rem] font-bold tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>{b.serviceName}</span>
-              <span className={`text-xs font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · 미래경영지원센터</span>
+              <span className={`text-xs font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · <b className={`font-bold ${dark ? 'text-slate-200' : 'text-slate-700'}`}>미래경영지원센터</b></span>
             </span>
           </Link>
 

@@ -19,6 +19,8 @@ type MenuItem = {
   label: string
   to: string
   desc?: string
+  /** 항목 넘버링 (예: '1') — 상황형 목차 표시용 */
+  no?: string
   match?: (path: string) => boolean
 }
 
@@ -62,10 +64,11 @@ const BUSINESS_MENU: MenuConfig = {
       accent: 'blue',
       items: [
         { label: '전체 상품 보기', to: '/business-services#packages', match: (p) => p === '/business-services' },
-        { label: '저금리 자금조달', to: '/business-services/funding-consulting' },
-        { label: '고용지원금', to: '/business-services/employment-subsidy' },
-        { label: '정책자금·지원사업 가점', to: '/business-services?category=certification' },
-        { label: '홈페이지·업무시스템', to: '/business-services?category=digital' },
+        { no: '1', label: '저금리로 자금 조달이 필요하다면', to: '/business-services/funding-consulting' },
+        { no: '2', label: '정부 지원금, 놓치지 않고 받고 싶다면', to: '/business-services/employment-subsidy' },
+        { no: '3', label: '대외 신뢰도·가점·세금 혜택까지 챙기고 싶다면', to: '/business-services?category=certification' },
+        { no: '4', label: 'AI 시대에 뒤처지지 않는 회사로 만들고 싶다면', to: '/business-services?category=digital' },
+        { no: '5', label: '믿을 만한 파트너가 늘 함께했으면 한다면', to: '/business-services?category=full' },
       ],
     },
     {
@@ -79,15 +82,6 @@ const BUSINESS_MENU: MenuConfig = {
     },
     {
       no: '03',
-      heading: '컨설턴트',
-      accent: 'violet',
-      items: [
-        { label: '컨설턴트 AI 도구', to: '/consultants', match: (p) => p.startsWith('/consultants') },
-        { label: '내 도구함', to: '/my-tools', match: (p) => p.startsWith('/my-tools') },
-      ],
-    },
-    {
-      no: '04',
       heading: '고객지원',
       accent: 'slate',
       items: [
@@ -382,9 +376,12 @@ export default function PublicMenuDrawer({
                                 active ? `${acc.activeBg} ${acc.activeText}` : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                               }`}
                             >
-                              <span className="min-w-0">
-                                <span className="block text-[0.95rem] font-semibold leading-snug">{m.label}</span>
-                                {m.desc && <span className="mt-0.5 block text-xs leading-snug text-slate-400">{m.desc}</span>}
+                              <span className="flex min-w-0 items-start gap-2">
+                                {m.no && <span className={`mt-0.5 shrink-0 text-[0.85rem] font-black tabular-nums ${acc.no}`}>{m.no}.</span>}
+                                <span className="min-w-0">
+                                  <span className="block text-[0.95rem] font-semibold leading-snug">{m.label}</span>
+                                  {m.desc && <span className="mt-0.5 block text-xs leading-snug text-slate-400">{m.desc}</span>}
+                                </span>
                               </span>
                               {active && <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-black text-white ${acc.badge}`}>현재</span>}
                             </Link>

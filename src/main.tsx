@@ -26,6 +26,7 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 import MyPage from './pages/MyPage'
 import AuthGuard from './components/auth/AuthGuard'
 import GuestOnly from './components/auth/GuestOnly'
+import ScrollToTop from './components/ScrollToTop'
 import TermsPage from './pages/legal/TermsPage'
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage'
 import RefundPolicyPage from './pages/legal/RefundPolicyPage'
@@ -35,6 +36,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<GatewayPage />} />
           <Route path="/consultants" element={<App />} />

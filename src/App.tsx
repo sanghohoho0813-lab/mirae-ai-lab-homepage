@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import HeroSlider from './components/HeroSlider'
 import InquiryForm from './components/InquiryForm'
 import HeaderAccount from './components/account/HeaderAccount'
 import LegalFooter from './components/LegalFooter'
@@ -99,8 +98,9 @@ function ToolBanner({ tool, compact = false }: { tool: Tool; compact?: boolean }
       <div aria-hidden className="absolute -right-8 -top-10 h-28 w-28 rounded-full bg-teal-500/20 blur-2xl" />
       <div aria-hidden className="absolute -bottom-10 -left-8 h-28 w-28 rounded-full bg-blue-600/20 blur-2xl" />
       <div className="relative flex h-full flex-col justify-between p-4 sm:p-5">
+        {/* 좌상단 카테고리 — 위치 유지, 글자만 살짝 크게 */}
         <div className="flex items-start justify-between gap-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2.5 py-1 text-[0.85rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25">
+          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-3 py-1 text-[0.95rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25">
             {tool.category}
           </span>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-teal-300/50" aria-hidden>
@@ -108,15 +108,17 @@ function ToolBanner({ tool, compact = false }: { tool: Tool; compact?: boolean }
             <path d="M3.5 9.5h17M7 20.5h10M12 17.5v3" />
           </svg>
         </div>
-        <div>
-          <p className="text-[0.85rem] font-medium tracking-wide text-slate-400">{tool.stage}</p>
-          <h3 className={`mt-1 font-black leading-tight tracking-tight text-white ${compact ? 'text-lg' : 'text-xl sm:text-2xl'}`}>{tool.title}</h3>
-          {!compact && <p className="mt-1.5 line-clamp-1 text-[0.98rem] text-slate-300">{tool.outcome}</p>}
+        {/* 도구명 — 가운데 정렬 · 크게 */}
+        <div className="px-2 text-center">
+          <p className="text-[0.95rem] font-medium tracking-wide text-slate-400">{tool.stage}</p>
+          <h3 className={`mt-1.5 font-black leading-tight tracking-tight text-white ${compact ? 'text-2xl sm:text-[1.7rem]' : 'text-3xl sm:text-4xl'}`}>{tool.title}</h3>
+          {!compact && <p className="mt-2 line-clamp-1 text-[1.05rem] text-slate-300">{tool.outcome}</p>}
         </div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className={`rounded-full px-2.5 py-1 text-[0.8rem] font-bold ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
+        {/* 상태 배지 — 가운데 정렬 */}
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className={`rounded-full px-2.5 py-1 text-[0.85rem] font-bold ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
           <span
-            className={`rounded-full px-2.5 py-1 text-[0.8rem] font-bold ${
+            className={`rounded-full px-2.5 py-1 text-[0.85rem] font-bold ${
               tool.isPublic ? 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/25' : 'bg-slate-400/15 text-slate-300 ring-1 ring-inset ring-slate-300/20'
             }`}
           >
@@ -215,7 +217,7 @@ function App() {
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-base font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-base font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-xs font-medium text-slate-500">Mirae AI Lab · 미래경영지원센터</span>
+              <span className="text-[0.85rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></span>
             </span>
           </Link>
           <nav className="hidden items-center gap-7 text-base font-medium text-slate-600 lg:flex">
@@ -244,7 +246,7 @@ function App() {
         <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 h-[26rem] w-[26rem] rounded-full bg-sky-500/20 blur-3xl" />
 
         <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-16 lg:pb-20 lg:pt-20">
-          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="max-w-3xl">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-sky-400" />
@@ -294,8 +296,6 @@ function App() {
               </dl>
               <p className="mt-4 text-sm text-slate-400">제가 직접 쓰지 않는 도구는 만들지 않습니다. 현업에서 검증한 도구만 공개합니다.</p>
             </div>
-
-            <HeroSlider />
           </div>
         </div>
       </section>
