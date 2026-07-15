@@ -5,7 +5,7 @@
 //  - 새로고침해도 중복 주문 없이 기존 결과를 다시 보여줍니다 (서버 멱등)
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import HeaderAccount from '../components/account/HeaderAccount'
 import {
   completePayment, findLocalOrder, formatKrw, recheckPayment, submitIntake,
   trackPaymentEvent, updateLocalOrderStatus, type OrderSummary,
@@ -188,7 +188,7 @@ export default function PaymentCompletePage() {
               <span className="text-[0.7rem] font-medium text-slate-500">결제 결과</span>
             </span>
           </Link>
-          <PublicMenuDrawer variant="business" />
+          <HeaderAccount variant="business" />
         </div>
       </header>
 

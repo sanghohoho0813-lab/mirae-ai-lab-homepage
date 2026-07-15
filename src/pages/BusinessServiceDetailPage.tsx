@@ -7,7 +7,7 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
-import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
 import { getDetailContent, type DetailCase } from '../data/businessDetailContent'
@@ -194,7 +194,7 @@ export default function BusinessServiceDetailPage() {
             >
               {consult ? '상담 신청' : '바로 결제하기'}
             </button>
-            <PublicMenuDrawer />
+            <HeaderAccount />
           </div>
         </div>
       </header>

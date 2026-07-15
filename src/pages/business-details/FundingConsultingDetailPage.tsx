@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import BusinessInquiryForm from '../../components/BusinessInquiryForm'
-import PublicMenuDrawer from '../../components/PublicMenuDrawer'
+import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import FundingCasesSection from '../../components/FundingCasesSection'
 import { getPackageBySlug } from '../../data/businessPackages'
@@ -126,7 +126,7 @@ export default function FundingConsultingDetailPage() {
             <button type="button" onClick={handleBuy} className="rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">
               바로 결제하기
             </button>
-            <PublicMenuDrawer />
+            <HeaderAccount />
           </div>
         </div>
       </header>

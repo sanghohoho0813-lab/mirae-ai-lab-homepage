@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import HeroSlider from './components/HeroSlider'
 import InquiryForm from './components/InquiryForm'
-import PublicMenuDrawer from './components/PublicMenuDrawer'
+import HeaderAccount from './components/account/HeaderAccount'
 import LegalFooter from './components/LegalFooter'
 import { useAuth } from './lib/auth'
 import { accessTypeLabel } from './lib/platform'
@@ -355,7 +355,7 @@ function App() {
                 로그인
               </Link>
             )}
-            <PublicMenuDrawer variant="consultant" />
+            <HeaderAccount variant="consultant" />
           </div>
         </div>
       </header>

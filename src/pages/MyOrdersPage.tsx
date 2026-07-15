@@ -3,7 +3,7 @@
 // paymentId + orderAccessToken 으로 서버에서 최신 상태를 검증해 보여줍니다 (마스킹 반환).
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import HeaderAccount from '../components/account/HeaderAccount'
 import LoginModal from '../components/LoginModal'
 import { useAuth } from '../lib/auth'
 import { formatKrw, getOrder, loadLocalOrders, updateLocalOrderStatus, type LocalOrder, type OrderSummary } from '../lib/payments'
@@ -59,7 +59,7 @@ export default function MyOrdersPage() {
               <span className="text-[0.7rem] font-medium text-slate-500">내 결제·신청내역</span>
             </span>
           </Link>
-          <PublicMenuDrawer variant="business" />
+          <HeaderAccount variant="business" />
         </div>
       </header>
 

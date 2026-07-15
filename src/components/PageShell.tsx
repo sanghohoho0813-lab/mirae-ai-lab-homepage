@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../lib/auth'
+import { Link } from 'react-router-dom'
 import { businessInfo, legalLinks } from '../config/businessInfo'
+import AccountMenu from './account/AccountMenu'
 
 function BrandMark() {
   return (
@@ -29,54 +29,16 @@ export default function PageShell({
   compact?: boolean
   children: ReactNode
 }) {
-  const { user, profile, isAdmin, signOut } = useAuth()
-  const navigate = useNavigate()
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <BrandMark />
-          <nav className="flex items-center gap-2 text-sm font-medium sm:gap-4">
+          <nav className="flex items-center gap-2 text-sm font-medium sm:gap-3">
             <Link to="/" className="hidden text-slate-600 transition-colors hover:text-slate-900 sm:inline">
               홈
             </Link>
-            {user ? (
-              <>
-                <Link to="/my-tools" className="text-slate-600 transition-colors hover:text-slate-900">
-                  내 도구함
-                </Link>
-                {isAdmin && (
-                  <Link to="/admin" className="text-slate-600 transition-colors hover:text-slate-900">
-                    관리자
-                  </Link>
-                )}
-                <span className="hidden text-slate-400 md:inline">·</span>
-                <span className="hidden text-slate-500 md:inline">{profile?.name ?? user.email}님</span>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await signOut()
-                    navigate('/')
-                  }}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-slate-700 transition-colors hover:bg-slate-100"
-                >
-                  로그아웃
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="text-slate-600 transition-colors hover:text-slate-900">
-                  로그인
-                </Link>
-                <Link
-                  to="/signup"
-                  className="rounded-lg bg-slate-900 px-3.5 py-1.5 text-white transition-colors hover:bg-slate-700"
-                >
-                  회원가입
-                </Link>
-              </>
-            )}
+            <AccountMenu />
           </nav>
         </div>
       </header>

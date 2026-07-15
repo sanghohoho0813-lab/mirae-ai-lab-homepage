@@ -19,6 +19,15 @@ import { roleHome, sanitizeNext, isSocialProvider, socialProviderLabel, resolveU
 import { trackAuthEvent } from '../../lib/authAnalytics'
 import type { MemberType } from '../../lib/platform'
 
+// 단계형 완료 로딩 문구 (0 대기 · 1 계정 · 2 약관 · 3 도구함 · 4 완료)
+const STEP_LABELS = [
+  '가입 완료하고 시작하기',
+  '계정을 설정하고 있어요…',
+  '약관 정보를 저장하고 있어요…',
+  '내 도구함을 준비하고 있어요…',
+  '준비가 완료됐어요!',
+] as const
+
 export default function OnboardingPage() {
   const { loading, user, profile, roles, memberType, identityVerified, needsOnboarding, configured, getAccessToken, refreshProfile } = useAuth()
   const navigate = useNavigate()
@@ -34,10 +43,13 @@ export default function OnboardingPage() {
   const [emailBusy, setEmailBusy] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [step, setStep] = useState(0) // 0 대기 · 1 계정 · 2 약관 · 3 도구함 · 4 완료
+  const [slow, setSlow] = useState(false) // 15초 초과 시 재시도 안내
   const startedAtRef = useRef(Date.now())
   const submittingRef = useRef(false) // 이중 클릭(중복 제출) 방지 — 상태 리렌더 이전 연타 차단
   const healthFetchedRef = useRef(false) // getIdentityHealth 중복 호출 방지(user 참조 변경으로 인한 재요청 차단)
   const mountedRef = useRef(true)
+  const slowTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     document.title = '가입 완료하기 | 미래 AI 랩'
@@ -53,7 +65,7 @@ export default function OnboardingPage() {
   const providerLabel = useMemo(() => socialProviderLabel(user), [user])
   const resolvedEmail = useMemo(() => resolveUserEmail(user, profile?.email), [user, profile?.email])
 
-  useEffect(() => () => { mountedRef.current = false }, [])
+  useEffect(() => () => { mountedRef.current = false; if (slowTimerRef.current) clearTimeout(slowTimerRef.current) }, [])
   // 본인인증 설정 조회 — 소셜 로그인은 휴대폰 본인인증이 면제되어 필요 없으므로 요청을 생략(초기 로딩 단축).
   // 인증 컨텍스트(user/profile/roles)는 AuthProvider 가 이미 병렬 로드하므로 여기서 중복 조회하지 않으며,
   // user 참조가 두 번(getSession→onAuthStateChange) 갱신돼도 health 는 정확히 1회만 조회한다.
@@ -122,37 +134,49 @@ export default function OnboardingPage() {
     setEmailSent(true) // 확인 메일 발송됨 — 확인 전에는 가입 완료(completed) 불가
   }
 
+  function stopBusy() {
+    submittingRef.current = false
+    setBusy(false)
+    setStep(0)
+    setSlow(false)
+    if (slowTimerRef.current) { clearTimeout(slowTimerRef.current); slowTimerRef.current = null }
+  }
+
   async function handleComplete() {
     if (submittingRef.current || !canComplete || !selected) return
     submittingRef.current = true
     setBusy(true)
     setError('')
+    setSlow(false)
+    setStep(1) // 계정을 설정하고 있어요
+    const submitStart = Date.now()
+    // 15초 초과 시 재시도 안내 (요청은 계속 진행)
+    if (slowTimerRef.current) clearTimeout(slowTimerRef.current)
+    slowTimerRef.current = setTimeout(() => { if (mountedRef.current) setSlow(true) }, 15_000)
+
     const token = await getAccessToken()
     if (!token) {
-      submittingRef.current = false
-      setBusy(false)
+      stopBusy()
       setError('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
       return
     }
+    // 본인인증 결과 연결(이메일 가입 경로) — 데이터 정합성상 완료 판정 전에 선행
     if (identity && !identityVerified) {
       const at = await attachIdentityToUser(identity.id, token)
       if (!at.ok) {
-        submittingRef.current = false
-        setBusy(false)
+        stopBusy()
         setError(at.error ?? '본인인증 연결에 실패했습니다.')
         return
       }
     }
-    // 약관 동의는 완료 요청에 함께 실어 서버가 '저장 후 검증'을 한 번에 처리(원자적).
-    // 화면에 체크된 필수 동의 상태 == 서버로 보내는 payload == 서버 저장/검증 대상 을 완전히 일치시킨다.
+    // 약관 동의는 완료 요청에 함께 실어 서버가 '저장 후 검증 → 역할 → onboarding_status=completed' 를 원자적으로 처리.
+    setStep(2) // 약관 정보를 저장하고 있어요
     const role = selected === 'business' ? 'ceo' : 'consultant'
     const consentPayload = AUTH_CONSENTS.map((c) => ({ key: c.key, version: c.version, agreed: consents[c.key] }))
     const done = await completeOnboarding(token, role, consentPayload)
     if (!done.ok) {
-      submittingRef.current = false
-      setBusy(false)
-      // 클라이언트 검증상 필수 동의가 모두 완료됐는데 서버가 '동의' 관련 오류를 반환하면,
-      // 사용자의 '미동의'가 아니라 서버 저장/처리 문제이므로 그렇게 안내(사용자 탓 오판 방지·클라이언트/서버 오류 분리).
+      stopBusy()
+      // 클라이언트 검증상 필수 동의가 완료됐는데 서버가 '동의' 관련 오류를 반환하면 서버 저장 문제로 안내(오판 방지).
       if (isConsentServerError(done.debugCode) && requiredConsentsAgreed(consents)) {
         setError('약관 동의를 저장하는 중 문제가 발생했어요. 잠시 후 다시 시도해주세요. 계속되면 고객센터로 문의해주세요.')
       } else {
@@ -160,14 +184,19 @@ export default function OnboardingPage() {
       }
       return
     }
-    try {
-      const tokens = loadHistory().map((r) => r.sessionId).filter(Boolean)
-      if (tokens.length > 0) await migrateGuestDiagnoses(token, tokens)
-    } catch { /* 선택 기능 */ }
-    await refreshProfile()
+    // 완료 후: 진단기록 이관(선택)과 프로필 새로고침은 서로 독립 → 병렬 처리로 대기시간 단축
+    setStep(3) // 내 도구함을 준비하고 있어요
+    const tokens = (() => { try { return loadHistory().map((r) => r.sessionId).filter(Boolean) } catch { return [] } })()
+    await Promise.all([
+      tokens.length > 0 ? migrateGuestDiagnoses(token, tokens).catch(() => 0) : Promise.resolve(0),
+      refreshProfile(),
+    ])
     const provider = (user?.app_metadata?.provider as 'google' | 'kakao' | undefined) ?? 'email'
     trackAuthEvent('signup_completed', { provider, role, elapsedSeconds: Math.round((Date.now() - startedAtRef.current) / 1000) })
-    // 성공 → 곧바로 이동(언마운트). busy·submittingRef 는 리셋하지 않아 이동 전 재제출을 막는다.
+    // 실제 서버 완료 응답을 받은 뒤에만 성공 표시 → 이동(언마운트). busy·submittingRef 유지로 재제출 방지.
+    setStep(4) // 준비가 완료됐어요
+    if (slowTimerRef.current) { clearTimeout(slowTimerRef.current); slowTimerRef.current = null }
+    if (import.meta.env.DEV) console.info(`[onboarding] complete in ${Date.now() - submitStart}ms`)
     navigate(next ?? roleHome([role]), { replace: true })
   }
 
@@ -274,11 +303,26 @@ export default function OnboardingPage() {
             type="button"
             onClick={handleComplete}
             disabled={!canComplete}
+            aria-live="polite"
             className="mt-6 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {busy && <span aria-hidden className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />}
-            {busy ? '저장 중…' : '가입 완료하고 시작하기'}
+            {busy ? STEP_LABELS[step] : '가입 완료하고 시작하기'}
           </button>
+          {busy && (
+            <div className="mt-3" aria-hidden>
+              <div className="flex gap-1.5">
+                {[1, 2, 3, 4].map((s) => (
+                  <span key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${step >= s ? 'bg-slate-900' : 'bg-slate-200'}`} />
+                ))}
+              </div>
+            </div>
+          )}
+          {slow && busy && (
+            <p role="status" className="mt-3 rounded-lg bg-amber-50 px-4 py-2.5 text-sm font-medium leading-relaxed text-amber-800">
+              처리가 평소보다 오래 걸리고 있어요. 잠시만 더 기다려주세요. 계속 진행되지 않으면 새로고침 후 다시 시도해주세요.
+            </p>
+          )}
         </section>
       </div>
     </PageShell>

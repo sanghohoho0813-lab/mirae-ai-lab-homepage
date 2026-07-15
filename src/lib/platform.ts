@@ -77,6 +77,11 @@ export type Profile = {
   memo?: string // 관리자 메모
   last_login_at?: string | null
   created_at: string
+  // ── 온보딩·가입경로 (auth-identity-foundation.sql; select('*') 로 함께 조회됨) ──
+  onboarding_status?: 'pending' | 'identity_required' | 'email_verification_required' | 'completed' | null
+  initial_signup_provider?: string | null
+  last_login_provider?: string | null
+  signup_completed_at?: string | null
 }
 
 export type ToolAccess = {

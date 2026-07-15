@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import BusinessInquiryForm from '../components/BusinessInquiryForm'
 import BusinessServiceVisual from '../components/BusinessServiceVisual'
-import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import {
   businessPackages,
@@ -258,7 +258,7 @@ export default function BusinessServicesPage() {
             >
               필요한 서비스 찾기
             </Link>
-            <PublicMenuDrawer variant="business" />
+            <HeaderAccount variant="business" />
           </div>
         </div>
       </header>

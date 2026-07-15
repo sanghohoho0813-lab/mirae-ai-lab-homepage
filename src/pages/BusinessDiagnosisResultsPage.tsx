@@ -3,7 +3,7 @@
 // /business-diagnosis/results/:resultId → 저장된 스냅샷을 그대로 다시 보기
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import HeaderAccount from '../components/account/HeaderAccount'
 import StageReport from '../components/diagnosis/StageReport'
 import { deleteResult, getResultById, loadHistory } from '../lib/businessDiagnosisStorage'
 import { trackEvent } from '../lib/businessDiagnosisApi'
@@ -35,7 +35,7 @@ function Header() {
             <span className="text-[0.7rem] font-medium text-slate-500">내 진단 결과</span>
           </span>
         </Link>
-        <PublicMenuDrawer variant="business" />
+        <HeaderAccount variant="business" />
       </div>
     </header>
   )

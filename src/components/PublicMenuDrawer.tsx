@@ -2,10 +2,14 @@
 // 공통 shell(overlay·ESC·focus·body scroll lock·safe-area)만 재사용하고, 메뉴·CTA는 variant 로 나눕니다.
 // drawer 레이아웃: 100dvh, 상단 헤더 고정 / 중간 메뉴 스크롤 / 하단 CTA 고정.
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { loadLocalOrders } from '../lib/payments'
 import { legalLinks } from '../config/businessInfo'
+import { useAuth } from '../lib/auth'
+import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
+import { loginPathWithNext } from '../lib/authRouting'
+import Avatar from './account/Avatar'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
@@ -105,7 +109,7 @@ const CONSULTANT_MENU: MenuConfig = {
       heading: '내 계정',
       items: [
         { label: '내 도구함', to: '/my-tools' },
-        { label: '로그인 · 회원가입', to: '/login' },
+        { label: '마이페이지', to: '/mypage' },
       ],
     },
   ],
@@ -131,8 +135,15 @@ export default function PublicMenuDrawer({
   const [historyCount, setHistoryCount] = useState(0)
   const [orderCount, setOrderCount] = useState(0)
   const location = useLocation()
+  const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const { user, profile, roles, memberType, needsOnboarding, isAdmin, signOut } = useAuth()
+
+  const acctName = displayName(user, profile)
+  const acctEmail = accountEmail(user, profile)
+  const acctType = memberTypeLabel({ roles, memberType, needsOnboarding })
+  const acctAvatar = resolveAvatarUrl(user)
 
   // 대표자 메뉴에 '내 진단 결과 N건'·'내 결제·신청내역' 동적 항목 추가
   const config = useMemo<MenuConfig>(() => {
@@ -238,6 +249,48 @@ export default function PublicMenuDrawer({
 
             {/* 메뉴 (독립 스크롤) */}
             <nav className="flex-1 overflow-y-auto px-3 py-3" aria-label="사이트 메뉴">
+              {/* 계정 영역 — 로그인 상태를 모바일에서도 명확히 노출 */}
+              {user ? (
+                <div className="mb-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar name={acctName} imageUrl={acctAvatar} size={44} />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[0.95rem] font-black text-slate-900">{acctName}</p>
+                      {acctEmail && <p className="truncate text-xs font-medium text-slate-500">{acctEmail}</p>}
+                      {acctType && (
+                        <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-black ${needsOnboarding ? 'bg-amber-100 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
+                          {acctType}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-1.5">
+                    {needsOnboarding && (
+                      <Link to="/auth/onboarding" className="col-span-2 flex items-center justify-center gap-1.5 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-bold text-white hover:bg-amber-600">
+                        가입 완료하기 →
+                      </Link>
+                    )}
+                    <Link to="/mypage" className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">마이페이지</Link>
+                    <Link to="/my-tools" className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">내 도구함</Link>
+                    {isAdmin && (
+                      <Link to="/admin" className="col-span-2 flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">관리자</Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={async () => { setOpen(false); await signOut(); navigate('/') }}
+                      className="col-span-2 flex items-center justify-center rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-100"
+                    >
+                      로그아웃
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-3 grid grid-cols-2 gap-2">
+                  <Link to={loginPathWithNext(location.pathname + location.search)} className="flex items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50">로그인</Link>
+                  <Link to="/signup" className="flex items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-700">회원가입</Link>
+                </div>
+              )}
+
               {config.groups.map((group, gi) => (
                 <div key={gi} className={gi > 0 ? 'mt-4' : ''}>
                   {group.heading && <p className="px-3 pb-1.5 text-xs font-black uppercase tracking-wide text-slate-400">{group.heading}</p>}

@@ -23,7 +23,9 @@ import AuthCallbackPage from './pages/auth/AuthCallbackPage'
 import OnboardingPage from './pages/auth/OnboardingPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
+import MyPage from './pages/MyPage'
 import AuthGuard from './components/auth/AuthGuard'
+import GuestOnly from './components/auth/GuestOnly'
 import TermsPage from './pages/legal/TermsPage'
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage'
 import RefundPolicyPage from './pages/legal/RefundPolicyPage'
@@ -37,13 +39,15 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/" element={<GatewayPage />} />
           <Route path="/consultants" element={<App />} />
           <Route path="/for-consultants" element={<Navigate to="/consultants" replace />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<GuestOnly><LoginPage /></GuestOnly>} />
+          <Route path="/signup" element={<GuestOnly><SignupPage /></GuestOnly>} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/auth/onboarding" element={<OnboardingPage />} />
           <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
           <Route path="/welcome" element={<Navigate to="/auth/onboarding" replace />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/account" element={<Navigate to="/mypage" replace />} />
           <Route
             path="/my-tools"
             element={

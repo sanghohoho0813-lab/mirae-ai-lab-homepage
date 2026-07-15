@@ -3,7 +3,7 @@
 // 빠른 전환(가짜 로딩 제거), 인라인 혜택 패널(질문 유지), 단계별 즉시 리포트.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import DiagnosisStart from '../components/diagnosis/DiagnosisStart'
 import DiagnosisQuestion from '../components/diagnosis/DiagnosisQuestion'
@@ -411,7 +411,7 @@ export default function BusinessDiagnosisPage() {
                 처음부터
               </button>
             )}
-            <PublicMenuDrawer variant="business" />
+            <HeaderAccount variant="business" />
           </div>
         </div>
       </header>

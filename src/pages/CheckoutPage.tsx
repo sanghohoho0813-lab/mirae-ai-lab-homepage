@@ -4,7 +4,7 @@
 // 결제창 결과가 돌아와도 완료 표시하지 않고 /payment/complete 에서 서버 재검증합니다.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import PublicMenuDrawer from '../components/PublicMenuDrawer'
+import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import LoginModal from '../components/LoginModal'
 import IdentityVerifyCard from '../components/auth/IdentityVerifyCard'
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
             {environment === 'test' && (
               <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-black text-amber-700 ring-1 ring-inset ring-amber-300">테스트 결제</span>
             )}
-            <PublicMenuDrawer variant="business" />
+            <HeaderAccount variant="business" />
           </div>
         </div>
       </header>
