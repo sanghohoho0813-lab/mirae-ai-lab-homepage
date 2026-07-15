@@ -14,6 +14,7 @@ import { addRole } from '../lib/identityVerification'
 import { evaluateAccess, formatDate, formatDateTime, type ToolAccess } from '../lib/platform'
 import { fetchMyAccess, fetchTrialTools, type DbTool } from '../lib/portal'
 import { formatKrw, getOrder, loadLocalOrders, type LocalOrder, type OrderSummary } from '../lib/payments'
+import { EmptyOrders, StatusBadge } from '../components/payment/PaymentUX'
 
 type Tab = 'profile' | 'security' | 'products' | 'orders' | 'roles'
 const TABS: { key: Tab; label: string }[] = [
@@ -23,15 +24,6 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'orders', label: '결제 내역' },
   { key: 'roles', label: '역할' },
 ]
-
-const ORDER_STATUS: Record<string, { label: string; tone: string }> = {
-  pending: { label: '결제 대기', tone: 'bg-slate-100 text-slate-600' },
-  payment_requested: { label: '결제 확인 중', tone: 'bg-blue-50 text-blue-700' },
-  paid: { label: '결제 완료', tone: 'bg-emerald-100 text-emerald-800' },
-  failed: { label: '결제 실패', tone: 'bg-red-100 text-red-700' },
-  cancelled: { label: '취소됨', tone: 'bg-slate-200 text-slate-600' },
-  partial_cancelled: { label: '부분취소', tone: 'bg-amber-100 text-amber-800' },
-}
 
 function InfoRow({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -373,25 +365,17 @@ function OrdersTab({ hasUser }: { hasUser: boolean }) {
   }, [hasUser])
 
   if (rows === null) return <Card><p className="text-sm text-slate-500">결제 내역을 확인하는 중…</p></Card>
-  if (rows.length === 0) {
-    return (
-      <Card className="text-center">
-        <p className="text-base font-bold text-slate-700">아직 결제 내역이 없습니다.</p>
-        <Link to="/business-services" className="mt-4 inline-flex items-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-700">상품 둘러보기 →</Link>
-      </Card>
-    )
-  }
+  if (rows.length === 0) return <EmptyOrders />
 
   return (
     <div className="space-y-3">
       {rows.map(({ local, server }) => {
         const status = server?.status ?? local.status
-        const st = ORDER_STATUS[status] ?? { label: status, tone: 'bg-slate-100 text-slate-600' }
         const paidAt = server?.paidAt ?? null
         return (
           <Card key={local.paymentId}>
             <div className="flex flex-wrap items-center gap-2">
-              <span className={`rounded-full px-2.5 py-0.5 text-xs font-black ${st.tone}`}>{st.label}</span>
+              <StatusBadge status={status} />
               {server?.environment === 'test' && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-black text-amber-700">테스트</span>}
               <span className="ml-auto text-xs font-semibold text-slate-400">{new Date(local.createdAt).toLocaleDateString('ko-KR')}</span>
             </div>

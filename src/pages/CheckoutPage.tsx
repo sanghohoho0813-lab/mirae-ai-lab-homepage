@@ -16,6 +16,7 @@ import {
   formatKrw, getPaymentHealth, getTestAccessCode, newRequestId, openPortOnePayment, paymentConfigured,
   preparePayment, rememberTestAccessCode, saveLocalOrder, trackPaymentEvent, type BuyerInput,
 } from '../lib/payments'
+import { BenefitCards, PaymentProgressOverlay, RefundAccordion, ServiceTimeline } from '../components/payment/PaymentUX'
 
 const ISO_STANDARDS = ['ISO9001', 'ISO14001', 'ISO45001'] as const
 
@@ -60,6 +61,9 @@ export default function CheckoutPage() {
 
   const selected = useMemo(() => variants?.find((v) => v.optionId === optionId) ?? null, [variants, optionId])
   const amount = selected ? selected.amount : (pkg?.amount ?? 0)
+  // VAT 표시용 분해 (금액은 VAT 포함가 — 서버로 보내는 결제금액 amount 는 그대로, 화면 표기만 계산)
+  const vatSupply = Math.round(amount / 1.1)
+  const vatAmount = amount - vatSupply
   const isIso = pkg?.slug === 'iso-certification'
   const isoRequired = isIso ? (optionId === 'iso-one' ? 1 : optionId === 'iso-two' ? 2 : 3) : 0
 
@@ -224,7 +228,7 @@ export default function CheckoutPage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[640px] px-5 pb-24 pt-6">
+      <main className="mx-auto w-full max-w-[640px] px-5 pb-48 pt-6">
         <button type="button" onClick={() => navigate(-1)} className="mb-3 text-sm font-semibold text-slate-500 hover:text-slate-900">
           ← 상품으로 돌아가기
         </button>
@@ -248,9 +252,9 @@ export default function CheckoutPage() {
           </div>
         )}
 
-        {/* A. 주문 상품 */}
+        {/* ① 상품 정보 */}
         <section className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400">주문 상품</p>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400">상품 정보</p>
           <div className="mt-3 flex gap-4">
             {pkg.imageSrc && (
               <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
@@ -263,6 +267,14 @@ export default function CheckoutPage() {
               <p className="mt-1 text-xs text-slate-400">수량 1개 · 금액은 수정할 수 없습니다</p>
             </div>
           </div>
+
+          {/* 서비스 개요 — 플랫폼 공통 운영 방식(상품별 가격·정책 아님) */}
+          <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl bg-slate-50 p-4">
+            <div><dt className="text-[0.7rem] font-bold uppercase tracking-wide text-slate-400">예상 소요기간</dt><dd className="mt-0.5 text-sm font-bold text-slate-800">상담 후 안내</dd></div>
+            <div><dt className="text-[0.7rem] font-bold uppercase tracking-wide text-slate-400">서비스 방식</dt><dd className="mt-0.5 text-sm font-bold text-slate-800">1:1 컨설팅</dd></div>
+            <div><dt className="text-[0.7rem] font-bold uppercase tracking-wide text-slate-400">담당자 배정</dt><dd className="mt-0.5 text-sm font-bold text-slate-800">결제 후 배정</dd></div>
+            <div><dt className="text-[0.7rem] font-bold uppercase tracking-wide text-slate-400">진행 확인</dt><dd className="mt-0.5 text-sm font-bold text-slate-800">마이페이지</dd></div>
+          </dl>
 
           {variants && variants.length > 1 && (
             <div className="mt-4">
@@ -324,6 +336,28 @@ export default function CheckoutPage() {
           </div>
           {checkoutTerms.priceTaxNote && <p className="text-right text-xs text-slate-400">{checkoutTerms.priceTaxNote}</p>}
         </section>
+
+        {/* ② 서비스 진행 과정 */}
+        <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400">서비스 진행 과정</p>
+          <p className="mt-1 text-sm text-slate-500">결제가 끝이 아니라, 계약부터 완료까지 담당 컨설턴트가 함께합니다.</p>
+          <div className="mt-4">
+            <ServiceTimeline currentStep={-1} />
+          </div>
+        </section>
+
+        {/* ③ 구매 혜택 */}
+        <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400">구매 혜택</p>
+          <div className="mt-3">
+            <BenefitCards />
+          </div>
+        </section>
+
+        {/* ④ 환불 안내 (아코디언) */}
+        <div className="mt-4">
+          <RefundAccordion summary={checkoutTerms.refundPolicySummary} href="/refund-policy" />
+        </div>
 
         {/* B. 신청자 정보 */}
         <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
@@ -398,18 +432,9 @@ export default function CheckoutPage() {
           </section>
         )}
 
-        {/* D. 결제 */}
+        {/* 결제 안내 (버튼은 하단 고정 바로 이동) */}
         <section className="mt-4">
-          {error && <p role="alert" className="mb-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold leading-snug text-red-700">{error}</p>}
-          <button
-            type="button"
-            onClick={handlePay}
-            disabled={busy || !configured || gateBlocked || !user || identityBlocked}
-            className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {phase === 'preparing' ? '주문을 준비하고 있어요…' : phase === 'window' ? '결제창 확인 중…' : `${formatKrw(amount)} 결제하기`}
-          </button>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-slate-500">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-slate-500">
             <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 카드사별 할부 가능</span>
             <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 결제 단계에서 할부 개월 수 선택</span>
           </div>
@@ -425,6 +450,32 @@ export default function CheckoutPage() {
           </Link>
         </section>
       </main>
+
+      {/* ⑤ 최종 결제 영역 — 하단 고정(sticky) */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-md pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto w-full max-w-[640px] px-5 pt-3">
+          {error && <p role="alert" className="mb-2.5 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-semibold leading-snug text-red-700">{error}</p>}
+          <div className="mb-2.5 rounded-xl bg-slate-50 px-4 py-2.5">
+            <div className="flex items-center justify-between text-xs text-slate-500"><span>공급가액</span><span className="tabular-nums">{formatKrw(vatSupply)}</span></div>
+            <div className="mt-0.5 flex items-center justify-between text-xs text-slate-500"><span>부가세(VAT)</span><span className="tabular-nums">{formatKrw(vatAmount)}</span></div>
+            <div className="mt-1.5 flex items-baseline justify-between border-t border-slate-200 pt-1.5">
+              <span className="text-sm font-black text-slate-700">총 결제금액</span>
+              <span className="text-xl font-black tabular-nums tracking-tight text-slate-900">{formatKrw(amount)}</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handlePay}
+            disabled={busy || !configured || gateBlocked || !user || identityBlocked}
+            className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {phase === 'preparing' ? '주문을 준비하고 있어요…' : phase === 'window' ? '결제창 확인 중…' : `${formatKrw(amount)} 결제하기`}
+          </button>
+        </div>
+      </div>
+
+      {/* 결제 중 단계별 오버레이 (단순 spinner 대신) */}
+      {(phase === 'preparing' || phase === 'window') && <PaymentProgressOverlay phase={phase} />}
 
       <LoginModal open={!authLoading && !user} onClose={() => navigate(`/business-services/${pkg.slug}`)} />
 

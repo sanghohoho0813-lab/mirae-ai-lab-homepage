@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
+import { ServiceTimeline, StatusBadge } from '../components/payment/PaymentUX'
 import {
   completePayment, findLocalOrder, formatKrw, recheckPayment, submitIntake,
   trackPaymentEvent, updateLocalOrderStatus, type OrderSummary,
@@ -43,6 +44,7 @@ function OrderCard({ order }: { order: OrderSummary }) {
         ...(order.optionName ? ([['옵션', order.optionName]] as [string, string][]) : []),
         ['결제금액', formatKrw(order.amount)],
         ...(order.cancelAmount > 0 ? ([['취소금액', formatKrw(order.cancelAmount)]] as [string, string][]) : []),
+        ...(order.paidAt ? ([['결제수단', '신용·체크카드']] as [string, string][]) : []),
         ['주문번호', order.orderNumber],
         ['신청자', `${order.buyerCompanyName} · ${order.buyerName}`],
         ...(order.paidAt ? ([['결제일시', new Date(order.paidAt).toLocaleString('ko-KR')]] as [string, string][]) : []),
@@ -203,9 +205,12 @@ export default function PaymentCompletePage() {
 
         {view.kind === 'paid' && (
           <>
-            <StatusIcon tone="ok" />
-            <h1 className="mt-4 text-2xl font-black">결제가 완료되었습니다</h1>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">결제가 정상적으로 확인되었습니다.<br />담당자가 영업일 기준으로 신청내용을 확인해 안내드립니다.</p>
+            {/* 프리미엄 완료 헤더 */}
+            <div aria-hidden className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/30">
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5 10 17.5 19 7" /></svg>
+            </div>
+            <h1 className="mt-5 text-2xl font-black tracking-tight">결제가 완료되었습니다</h1>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">계약이 시작되었어요. 담당 컨설턴트가 신청내용을 확인해 안내드립니다.</p>
             {view.order.environment === 'test' && (
               <p className="mt-2"><span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-black text-amber-700 ring-1 ring-inset ring-amber-300">테스트 결제</span></p>
             )}
@@ -213,9 +218,23 @@ export default function PaymentCompletePage() {
               <p className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">이 주문에는 부분취소 내역이 있습니다. 자세한 내용은 담당자가 안내드립니다.</p>
             )}
             <OrderCard order={view.order} />
+
+            {/* 진행 현황 카드 (결제 → 계약 → 진행 → 완료) */}
+            <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 text-left">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-black text-slate-900">진행 현황</p>
+                <StatusBadge status={view.order.status} />
+              </div>
+              <div className="mt-4"><ServiceTimeline currentStep={1} /></div>
+              <div className="mt-1 rounded-xl bg-blue-50/70 p-3.5">
+                <p className="text-sm font-bold text-blue-800">담당 컨설턴트 배정 예정</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-blue-700/80">영업일 기준 1~2일 이내에 담당자가 연락드려요. 진행 상태는 마이페이지에서 확인할 수 있어요.</p>
+              </div>
+            </section>
+
             <IntakeForm order={view.order} />
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <Link to="/my-orders" className="flex min-h-12 flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50">내 주문 확인하기</Link>
+              <Link to="/mypage" className="flex min-h-12 flex-1 items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-base font-bold text-white hover:bg-slate-700">마이페이지에서 진행 보기</Link>
               <Link to="/business-services" className="flex min-h-12 flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50">상품몰로 돌아가기</Link>
             </div>
           </>
