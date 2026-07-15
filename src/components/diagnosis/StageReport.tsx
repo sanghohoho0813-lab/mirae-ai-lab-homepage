@@ -1,7 +1,8 @@
-// 단계별 결과 리포트 — 짧은 완료 체크 → 즉시 결과.
-// 1·2단계: 간단 요약(강점/확인할 점). 3단계: 5개 섹션 종합 보고서.
-//   ① 한눈에 보기  ② 지금 먼저 확인할 3가지  ③ 놓치고 있을 혜택  ④ 성장 로드맵  ⑤ 맞춤 서비스(제출 후)
-//   + 영역별 상세 준비도(접힘). 추천 상품은 게이트(연락처) 제출 후 공개.
+// 단계별 결과 리포트 — 짧은 완료 체크 → 즉시 결과. 모바일(세로 스크롤) 우선.
+// 1·2단계: 간단 요약(강점/확인할 점). 3단계: 종합 보고서.
+//   ① 한눈에 보기  ② 맞춤 서비스(제출 후 공개, 썸네일 카드 — 우선 확인 항목보다 먼저)
+//   + 함께 준비하면 좋은 것들(AI 자동화·홈페이지·AX 소프트 추천)
+//   ③ 지금 먼저 확인할 3가지  ④ 놓치고 있을 혜택  ⑤ 성장 로드맵  + 활용 기반·영역별 상세(접힘)
 import { useEffect, useState } from 'react'
 import { consultLinks } from '../../config/businessInfo'
 import { Link } from 'react-router-dom'
@@ -16,6 +17,7 @@ import type {
 import { getPackageBySlug } from '../../data/businessPackages'
 import { ADVANTAGE_DISCLAIMER, ADVANTAGE_GROUP_LABELS, EXPERT_REFERRAL_NOTE } from '../../data/policyAdvantageFactors'
 import ScoreCard from './ScoreCard'
+import { formatKoreanMoney } from '../ProductCard'
 
 type Props = {
   report: StageReportData
@@ -70,10 +72,10 @@ const CONF_TONE: Record<string, string> = {
   '낮음': 'bg-orange-100 text-orange-800',
 }
 
-function SectionHeading({ step, title, sub }: { step: string; title: string; sub?: string }) {
+function SectionHeading({ step, title, sub }: { step?: string; title: string; sub?: string }) {
   return (
     <div className="flex items-baseline gap-2.5">
-      <span className="text-sm font-black text-blue-600">{step}</span>
+      {step && <span className="text-sm font-black text-blue-600">{step}</span>}
       <div>
         <h3 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">{title}</h3>
         {sub && <p className="mt-0.5 text-sm text-slate-500">{sub}</p>}
@@ -82,12 +84,12 @@ function SectionHeading({ step, title, sub }: { step: string; title: string; sub
   )
 }
 
-// ── ② 지금 먼저 확인할 3가지 ──
-function TopPrioritiesSection({ items }: { items: TopPriority[] }) {
+// ── 지금 먼저 확인할 3가지 ──
+function TopPrioritiesSection({ step, items }: { step: string; items: TopPriority[] }) {
   if (!items.length) return null
   return (
-    <section className="mt-9">
-      <SectionHeading step="②" title="지금 먼저 확인할 3가지" sub="점수를 낮추려는 게 아니라, 순서를 잡기 위한 안내예요." />
+    <section className="mt-7 sm:mt-9">
+      <SectionHeading step={step} title="지금 먼저 확인할 3가지" sub="점수를 낮추려는 게 아니라, 순서를 잡기 위한 안내예요." />
       <div className="mt-4 space-y-3">
         {items.map((p) => {
           const tone = PRIO_TONE[p.tone]
@@ -124,12 +126,12 @@ function TopPrioritiesSection({ items }: { items: TopPriority[] }) {
   )
 }
 
-// ── ③ 지금 놓치고 있을 수 있는 혜택 ──
-function MissedBenefitsSection({ items }: { items: MissedBenefit[] }) {
+// ── 지금 놓치고 있을 수 있는 혜택 ──
+function MissedBenefitsSection({ step, items }: { step: string; items: MissedBenefit[] }) {
   if (!items.length) return null
   return (
-    <section className="mt-9">
-      <SectionHeading step="③" title="지금 놓치고 있을 수 있는 혜택" sub="조건과 출처를 함께 확인하고, 자동으로 적용되는 것은 아니에요." />
+    <section className="mt-7 sm:mt-9">
+      <SectionHeading step={step} title="지금 놓치고 있을 수 있는 혜택" sub="조건과 출처를 함께 확인하고, 자동으로 적용되는 것은 아니에요." />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {items.map((m) => {
           const pkg = m.linkedProductSlug ? getPackageBySlug(m.linkedProductSlug) : null
@@ -175,8 +177,8 @@ function MissedBenefitsSection({ items }: { items: MissedBenefit[] }) {
   )
 }
 
-// ── ④ 성장 로드맵 ──
-function RoadmapSection({ roadmap }: { roadmap: NonNullable<StageReportData['roadmap']> }) {
+// ── 성장 로드맵 ──
+function RoadmapSection({ step, roadmap }: { step: string; roadmap: NonNullable<StageReportData['roadmap']> }) {
   const cols = [
     { key: 'now30', label: '지금 ~ 30일', tone: 'bg-blue-600', items: roadmap.now30 },
     { key: 'm1to3', label: '1 ~ 3개월', tone: 'bg-indigo-500', items: roadmap.m1to3 },
@@ -184,8 +186,8 @@ function RoadmapSection({ roadmap }: { roadmap: NonNullable<StageReportData['roa
   ].filter((c) => c.items.length > 0)
   if (!cols.length) return null
   return (
-    <section className="mt-9">
-      <SectionHeading step="④" title="성장 로드맵" sub="무엇을 언제 하면 좋을지 기간별로 정리했어요." />
+    <section className="mt-7 sm:mt-9">
+      <SectionHeading step={step} title="성장 로드맵" sub="무엇을 언제 하면 좋을지 기간별로 정리했어요." />
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         {cols.map((c) => (
           <div key={c.key} className="rounded-2xl border border-slate-200 bg-white p-4">
@@ -205,57 +207,76 @@ function RoadmapSection({ roadmap }: { roadmap: NonNullable<StageReportData['roa
   )
 }
 
+// 정책자금·지원사업 활용 기반 — 기본 접힘(모바일 스크롤 절약), 인쇄 시에는 항상 펼침
 function AdvantageBlock({ report }: { report: StageReportData }) {
+  const [open, setOpen] = useState(false)
   if (!report.advantages || report.advantages.length === 0) return null
   const groups = (['technology', 'management', 'credibility', 'expert'] as const)
     .map((g) => ({ key: g, items: report.advantages!.filter((a) => a.group === g) }))
     .filter((g) => g.items.length > 0)
   return (
-    <section className="mt-9">
-      <h3 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">정책자금·지원사업 활용 기반</h3>
-      <p className="mt-1 text-sm leading-relaxed text-slate-500">
-        {report.ownedAdvantageCount
-          ? `평가에 참고될 수 있는 기반 요소를 ${report.ownedAdvantageCount}개 확인했어요.`
-          : '지금부터 준비하면 도움이 될 요소들을 정리했어요.'}
-      </p>
-      <div className="mt-3 space-y-3">
-        {groups.map((g) => (
-          <div key={g.key} className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs font-black uppercase tracking-wide text-slate-400">{ADVANTAGE_GROUP_LABELS[g.key]}</p>
-            <ul className="mt-2.5 space-y-2">
-              {g.items.map((item) => (
-                <li key={item.id} className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[0.95rem] font-bold text-slate-800">{item.label}</p>
-                    <p className="mt-0.5 text-xs leading-snug text-slate-500">{item.expertReferralOnly ? EXPERT_REFERRAL_NOTE : item.description}</p>
-                  </div>
-                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-black ${ADV_STATUS_TONE[item.status]}`}>{item.status}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+    <section className="mt-7 sm:mt-9">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-left transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 print:hidden"
+      >
+        <span>
+          <span className="text-base font-extrabold text-slate-900">정책자금·지원사업 활용 기반</span>
+          <span className="ml-2 text-sm font-semibold text-slate-400">
+            {report.ownedAdvantageCount ? `보유 요소 ${report.ownedAdvantageCount}개` : '준비하면 좋은 요소'}
+          </span>
+        </span>
+        <span aria-hidden className={`text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
+      </button>
+      <div className={`${open ? '' : 'hidden'} print:block`}>
+        <p className="mt-3 text-sm leading-relaxed text-slate-500">
+          {report.ownedAdvantageCount
+            ? `평가에 참고될 수 있는 기반 요소를 ${report.ownedAdvantageCount}개 확인했어요.`
+            : '지금부터 준비하면 도움이 될 요소들을 정리했어요.'}
+        </p>
+        <div className="mt-3 space-y-3">
+          {groups.map((g) => (
+            <div key={g.key} className="rounded-2xl border border-slate-200 bg-white p-4">
+              <p className="text-xs font-black uppercase tracking-wide text-slate-400">{ADVANTAGE_GROUP_LABELS[g.key]}</p>
+              <ul className="mt-2.5 space-y-2">
+                {g.items.map((item) => (
+                  <li key={item.id} className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[0.95rem] font-bold text-slate-800">{item.label}</p>
+                      <p className="mt-0.5 text-xs leading-snug text-slate-500">{item.expertReferralOnly ? EXPERT_REFERRAL_NOTE : item.description}</p>
+                    </div>
+                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-black ${ADV_STATUS_TONE[item.status]}`}>{item.status}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 text-xs leading-relaxed text-slate-400">{ADVANTAGE_DISCLAIMER}</p>
       </div>
-      <p className="mt-2 text-xs leading-relaxed text-slate-400">{ADVANTAGE_DISCLAIMER}</p>
     </section>
   )
 }
 
-// ── ⑤ 맞춤 서비스 (제출 후 공개) ──
+// ── 맞춤 서비스 (제출 후 공개) — 최종 보고서에서는 우선 확인 항목보다 먼저 노출 ──
 function Recommendations({
+  step,
   recs,
   onProductClick,
   onConsultClick,
 }: {
+  step?: string
   recs: ProductRecommendation[]
   onProductClick: Props['onProductClick']
   onConsultClick: Props['onConsultClick']
 }) {
   if (recs.length === 0) return null
   return (
-    <section className="mt-9 print:break-inside-avoid">
-      <SectionHeading step="⑤" title="대표님께 맞는 서비스" sub="진단 답변을 바탕으로 우선순위를 정리했어요." />
-      <div className="mt-4 grid gap-4 lg:grid-cols-3">
+    <section className="mt-7 sm:mt-9 print:break-inside-avoid">
+      <SectionHeading step={step} title="대표님께 맞는 서비스" sub="진단 답변을 바탕으로 우선순위를 정리했어요." />
+      <div className="mt-4 grid gap-3.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
         {recs.map((rec, idx) => {
           const pkg = getPackageBySlug(rec.slug)
           if (!pkg) return null
@@ -284,7 +305,7 @@ function Recommendations({
                     </ul>
                   </div>
                 )}
-                <p className="mt-3 flex-1 text-xl font-black tracking-tight text-slate-900">{pkg.price}</p>
+                <p className="mt-3 flex-1 text-xl font-black tracking-tight text-slate-900">{formatKoreanMoney(pkg.price)}</p>
                 <div className="mt-3 flex gap-2 print:hidden">
                   <Link to={`/business-services/${pkg.slug}`} onClick={() => onProductClick(rec.slug, rec.rank, position)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-slate-700">
                     자세히 보기
@@ -301,6 +322,55 @@ function Recommendations({
                 </div>
               </div>
             </article>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+// ── 함께 준비하면 좋은 것들 — AI 자동화·홈페이지·AX 소프트 추천(고정, 이미 추천된 상품은 제외) ──
+const GROWTH_PICKS: { slug: string; nudge: string }[] = [
+  {
+    slug: 'ai-ax-system',
+    nudge: '반복 업무에 들어가는 시간·인건비는 줄이지 않는 한 매년 그대로 나갑니다. 규모와 상관없이, 먼저 도입한 회사부터 격차가 벌어지는 영역이에요.',
+  },
+  {
+    slug: 'responsive-homepage',
+    nudge: '거래처도 지원사업 심사역도 계약 전에 회사부터 검색해 봅니다. 모바일에서 제대로 열리는 홈페이지는 이제 신뢰의 기본값에 가까워요.',
+  },
+  {
+    slug: 'ax-full-package',
+    nudge: '디지털 전환을 미리 준비한 회사는 정부지원사업·정책자금 평가에서도 준비된 회사로 읽히는 경우가 많아요. 지속가능한 성장의 기반이기도 하고요.',
+  },
+]
+
+function GrowthPicksSection({ excludeSlugs, onProductClick }: { excludeSlugs: string[]; onProductClick: Props['onProductClick'] }) {
+  const picks = GROWTH_PICKS.filter((p) => !excludeSlugs.includes(p.slug))
+  if (!picks.length) return null
+  return (
+    <section className="mt-6 rounded-2xl border border-slate-200 bg-gradient-to-b from-sky-50/70 to-white p-4 sm:mt-7 sm:p-5 print:break-inside-avoid">
+      <h3 className="text-base font-extrabold tracking-tight text-slate-900 sm:text-lg">요즘 대표님들이 함께 준비하는 것들</h3>
+      <p className="mt-1 text-sm leading-relaxed text-slate-500">당장 필수는 아니지만, 미뤄둘수록 시간과 비용이 새기 쉬운 영역이라 함께 보시면 좋아요.</p>
+      <div className="mt-3.5 space-y-2.5">
+        {picks.map((p) => {
+          const pkg = getPackageBySlug(p.slug)
+          if (!pkg) return null
+          return (
+            <Link
+              key={p.slug}
+              to={`/business-services/${pkg.slug}`}
+              onClick={() => onProductClick(p.slug, '함께 준비', 'result_growth_pick')}
+              className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-blue-300 hover:bg-blue-50/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+            >
+              {pkg.imageSrc && <img src={pkg.imageSrc} alt="" loading="lazy" className="h-14 w-[84px] shrink-0 rounded-lg bg-slate-100 object-cover" />}
+              <div className="min-w-0 flex-1">
+                <p className="text-[0.95rem] font-extrabold leading-tight text-slate-900">{pkg.name}</p>
+                <p className="mt-1 text-[0.84rem] leading-snug text-slate-500">{p.nudge}</p>
+                <p className="mt-1 text-[0.92rem] font-black text-slate-800">{formatKoreanMoney(pkg.price)}</p>
+              </div>
+              <span aria-hidden className="shrink-0 font-black text-slate-300">→</span>
+            </Link>
           )
         })}
       </div>
@@ -346,6 +416,11 @@ export default function StageReport({
   const stageWord = report.depth === 1 ? '1단계' : report.depth === 2 ? '2단계' : '종합진단'
   const canContinue = report.depth < 3
   const isFinal = report.depth === 3
+  // 최종 보고서 섹션 번호 — 추천 상품(제출 후)이 ②로 먼저 나오고, 나머지가 한 칸씩 밀림
+  const hasRecsSection = submitted && report.recommendations.length > 0
+  const stepPrio = hasRecsSection ? '③' : '②'
+  const stepBenefit = hasRecsSection ? '④' : '③'
+  const stepRoadmap = hasRecsSection ? '⑤' : '④'
 
   function handlePrint() {
     onPrint?.()
@@ -378,11 +453,11 @@ export default function StageReport({
           <section className="mt-6">
             <SectionHeading step="①" title="한눈에 보기" />
             <p className="animate-rise-in mt-2.5 text-[0.98rem] font-semibold leading-relaxed text-slate-700">{report.summary}</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-3">
               {report.metricCards.map((c) => (
-                <div key={c.label} className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
+                <div key={c.label} className="rounded-2xl border border-slate-200 bg-white p-3.5 text-center sm:p-5">
                   <p className="text-xs font-black uppercase tracking-wide text-slate-400">{c.label}</p>
-                  <p className={`mt-1.5 text-3xl font-black tabular-nums tracking-tight ${TONE[c.tone ?? 'slate']}`}>
+                  <p className={`mt-1.5 text-[1.55rem] font-black tabular-nums tracking-tight sm:text-3xl ${TONE[c.tone ?? 'slate']}`}>
                     {(c.label === '종합 준비도' || c.label === '기초체력 점수') && c.value.endsWith('점') ? `${count}점` : c.value}
                   </p>
                   {c.sub && <p className="mt-0.5 text-xs font-semibold text-slate-400">{c.sub}</p>}
@@ -415,12 +490,15 @@ export default function StageReport({
             </div>
           )}
 
-          {report.topPriorities && <TopPrioritiesSection items={report.topPriorities} />}
-          {report.missedBenefits && <MissedBenefitsSection items={report.missedBenefits} />}
-          {report.roadmap && <RoadmapSection roadmap={report.roadmap} />}
+          {/* ② 맞춤 서비스 — 제출 후 공개, 우선 확인 항목보다 먼저(썸네일 카드) */}
+          {hasRecsSection && <Recommendations step="②" recs={report.recommendations} onProductClick={onProductClick} onConsultClick={onConsultClick} />}
 
-          {/* ⑤ 맞춤 서비스 — 제출 후 공개 */}
-          {submitted && <Recommendations recs={report.recommendations} onProductClick={onProductClick} onConsultClick={onConsultClick} />}
+          {/* 함께 준비하면 좋은 것들 — AI 자동화·홈페이지·AX (이미 추천된 상품은 제외) */}
+          <GrowthPicksSection excludeSlugs={hasRecsSection ? report.recommendations.map((r) => r.slug) : []} onProductClick={onProductClick} />
+
+          {report.topPriorities && <TopPrioritiesSection step={stepPrio} items={report.topPriorities} />}
+          {report.missedBenefits && <MissedBenefitsSection step={stepBenefit} items={report.missedBenefits} />}
+          {report.roadmap && <RoadmapSection step={stepRoadmap} roadmap={report.roadmap} />}
 
           <AdvantageBlock report={report} />
 
@@ -454,11 +532,11 @@ export default function StageReport({
         <>
           <p className="animate-rise-in mt-3 text-[0.95rem] leading-relaxed text-slate-600 [animation-delay:60ms]">{report.summary}</p>
 
-          <div className="animate-rise-in mt-5 grid gap-3 sm:grid-cols-2 [animation-delay:120ms]">
+          <div className="animate-rise-in mt-5 grid grid-cols-2 gap-2.5 sm:gap-3 [animation-delay:120ms]">
             {report.metricCards.map((c) => (
-              <div key={c.label} className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
+              <div key={c.label} className="rounded-2xl border border-slate-200 bg-white p-3.5 text-center sm:p-5">
                 <p className="text-xs font-black uppercase tracking-wide text-slate-400">{c.label}</p>
-                <p className={`mt-1.5 text-3xl font-black tabular-nums tracking-tight ${TONE[c.tone ?? 'slate']}`}>
+                <p className={`mt-1.5 text-[1.55rem] font-black tabular-nums tracking-tight sm:text-3xl ${TONE[c.tone ?? 'slate']}`}>
                   {(c.label === '종합 준비도' || c.label === '기초체력 점수') && c.value.endsWith('점') ? `${count}점` : c.value}
                 </p>
                 {c.sub && <p className="mt-0.5 text-xs font-semibold text-slate-400">{c.sub}</p>}

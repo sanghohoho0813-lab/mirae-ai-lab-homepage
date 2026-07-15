@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard'
 import LegalFooter from '../components/LegalFooter'
 import { consultLinks } from '../config/businessInfo'
 import { useSavedItems } from '../lib/savedItems'
+import { loadHistory } from '../lib/businessDiagnosisStorage'
 import {
   businessPackages,
   CATEGORIES,
@@ -62,6 +63,7 @@ export default function BusinessServicesPage() {
   const [activeCat, setActiveCat] = useState('전체')
   const { likes, cart } = useSavedItems()
   const savedCount = likes.length + cart.length
+  const [historyCount] = useState(() => loadHistory().length)
   const [showBar, setShowBar] = useState(false)
   const [searchParams] = useSearchParams()
   const location = useLocation()
@@ -122,7 +124,6 @@ export default function BusinessServicesPage() {
             </span>
           </Link>
           <nav className="hidden items-center gap-5 text-[0.95rem] font-medium text-slate-600 lg:flex">
-            <button type="button" onClick={() => scrollToId('trust')} className="transition-colors hover:text-slate-900">전문성</button>
             <button type="button" onClick={() => scrollToId('top3')} className="transition-colors hover:text-slate-900">대표상품</button>
             <button type="button" onClick={() => scrollToId('packages')} className="transition-colors hover:text-slate-900">전체상품</button>
             <button type="button" onClick={() => scrollToId('faq')} className="transition-colors hover:text-slate-900">FAQ</button>
@@ -134,6 +135,17 @@ export default function BusinessServicesPage() {
             >
               컨설턴트용 AI 도구
             </Link>
+            {historyCount > 0 && (
+              <Link
+                to="/business-diagnosis/results"
+                className="inline-flex items-center gap-1.5 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-[0.85rem] font-bold text-cyan-800 transition-colors hover:bg-cyan-100"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M8 3h8l2 2v15a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5z" /><path d="M9 9h6M9 13h6M9 17h4" />
+                </svg>
+                내 진단 결과 <b>{historyCount}</b>
+              </Link>
+            )}
             <Link
               to="/saved"
               aria-label={`찜한 상품·장바구니 ${savedCount}개 보기`}

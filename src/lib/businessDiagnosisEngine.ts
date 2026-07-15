@@ -117,21 +117,21 @@ function scoreArea(area: ScoreArea, answers: DiagnosisAnswers, interestBonus: nu
   return clamp(s)
 }
 
-// 5구간 통일 (점수↔색상↔라벨 1:1): 81+ 파랑 / 60~80 초록 / 40~59 노랑 / 20~39 주황 / 20 미만 빨강
+// 5구간 통일(촘촘): 91+ 파랑 / 81~90 초록 / 65~80 노랑 / 50~64 주황 / 50 미만 빨강
 const statusOf = (score: number): AreaResult['status'] =>
-  score < 20 ? '먼저 준비 필요' : score < 40 ? '기본 준비 부족' : score < 60 ? '보완하면 활용 가능' : score < 81 ? '활용 준비 양호' : '자료·증빙까지 우수'
+  score < 50 ? '먼저 준비 필요' : score < 65 ? '기본 준비 부족' : score < 81 ? '보완하면 활용 가능' : score < 91 ? '활용 준비 양호' : '자료·증빙까지 우수'
 
 function toneOf(score: number, priority: AreaResult['priority']): AreaResult['tone'] {
   if (priority === '먼저 해결할 선결과제') return 'red'
-  if (score >= 81) return 'blue'
-  if (score >= 60) return 'green'
-  if (score >= 40) return 'amber'
-  if (score >= 20) return 'orange'
+  if (score >= 91) return 'blue'
+  if (score >= 81) return 'green'
+  if (score >= 65) return 'amber'
+  if (score >= 50) return 'orange'
   return 'red'
 }
 
 /** 지표 카드 색상 — 영역 카드와 동일한 5구간 */
-const metricTone = (score: number) => (score >= 81 ? 'blue' : score >= 60 ? 'emerald' : score >= 40 ? 'amber' : score >= 20 ? 'orange' : 'red')
+const metricTone = (score: number) => (score >= 91 ? 'blue' : score >= 81 ? 'emerald' : score >= 65 ? 'amber' : score >= 50 ? 'orange' : 'red')
 
 // 각 영역의 '자료 확인 필요'(불확실) 답변 존재 여부 → 85점 이상 남발 방지
 const AREA_UNSURE_QS: Record<ScoreArea, string[]> = {

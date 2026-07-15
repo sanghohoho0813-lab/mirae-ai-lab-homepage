@@ -42,11 +42,11 @@ type MenuConfig = {
 }
 
 // 넘버·라인·배지 수준으로만 색을 쓰고, 본문 텍스트는 통일된 네이비 계열을 유지합니다.
-const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; activeBg: string; activeText: string; badge: string }> = {
-  blue: { no: 'text-blue-600', dot: 'bg-blue-500', line: 'bg-blue-100', activeBg: 'bg-blue-50', activeText: 'text-blue-700', badge: 'bg-blue-600' },
-  cyan: { no: 'text-cyan-600', dot: 'bg-cyan-500', line: 'bg-cyan-100', activeBg: 'bg-cyan-50', activeText: 'text-cyan-700', badge: 'bg-cyan-600' },
-  violet: { no: 'text-violet-600', dot: 'bg-violet-500', line: 'bg-violet-100', activeBg: 'bg-violet-50', activeText: 'text-violet-700', badge: 'bg-violet-600' },
-  slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-100', activeBg: 'bg-slate-100', activeText: 'text-slate-800', badge: 'bg-slate-600' },
+const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; activeBg: string; activeText: string; badge: string; groupBg: string }> = {
+  blue: { no: 'text-blue-600', dot: 'bg-blue-500', line: 'bg-blue-200', activeBg: 'bg-blue-100', activeText: 'text-blue-800', badge: 'bg-blue-600', groupBg: 'bg-blue-50' },
+  cyan: { no: 'text-cyan-600', dot: 'bg-cyan-500', line: 'bg-cyan-200', activeBg: 'bg-cyan-100', activeText: 'text-cyan-800', badge: 'bg-cyan-600', groupBg: 'bg-cyan-50' },
+  violet: { no: 'text-violet-600', dot: 'bg-violet-500', line: 'bg-violet-200', activeBg: 'bg-violet-100', activeText: 'text-violet-800', badge: 'bg-violet-600', groupBg: 'bg-violet-50' },
+  slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-200', activeBg: 'bg-slate-200', activeText: 'text-slate-900', badge: 'bg-slate-600', groupBg: 'bg-slate-100' },
 }
 
 // 대표자용 — 실제 존재하는 상품 slug·라우트만 사용
@@ -370,11 +370,11 @@ export default function PublicMenuDrawer({
               {config.groups.map((group) => {
                 const acc = ACCENT[group.accent]
                 return (
-                  <div key={group.no} className="mt-4 first:mt-0">
-                    <div className="mb-1.5 flex items-center gap-2 px-3">
-                      <span className={`text-[0.72rem] font-black tracking-widest ${acc.no}`}>{group.no}</span>
-                      <span className="text-[0.82rem] font-black tracking-tight text-slate-900">{group.heading}</span>
-                      <span className={`ml-1 h-px flex-1 rounded-full ${acc.line}`} />
+                  <div key={group.no} className={`mt-4 rounded-2xl p-2.5 first:mt-0 ${acc.groupBg}`}>
+                    <div className="mb-2 flex items-center gap-2.5 px-2">
+                      <span className={`text-[1.2rem] font-black tracking-widest ${acc.no}`}>{group.no}</span>
+                      <span className="text-[1.65rem] font-black leading-tight tracking-tight text-slate-900">{group.heading}</span>
+                      <span className={`ml-1 h-[3px] flex-1 rounded-full ${acc.line}`} />
                     </div>
                     <ul className="space-y-0.5">
                       {group.items.map((m) => {
@@ -404,7 +404,7 @@ export default function PublicMenuDrawer({
                               to={m.to}
                               aria-current={active ? 'page' : undefined}
                               className={`flex min-h-11 items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 ${
-                                active ? `${acc.activeBg} ${acc.activeText}` : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                                active ? `${acc.activeBg} ${acc.activeText}` : 'text-slate-700 hover:bg-white/70 hover:text-slate-900'
                               }`}
                             >
                               <span className="flex min-w-0 items-start gap-2">

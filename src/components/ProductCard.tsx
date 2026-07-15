@@ -55,7 +55,7 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
         <BusinessServiceVisual type={pkg.visualType} title={b.title} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="cover" minimal />
 
         {/* 찜·장바구니 — 썸네일 우하단 미니 버튼 */}
-        <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5">
+        <div className="absolute bottom-2.5 right-2.5 flex flex-col items-center gap-1.5">
           <button
             type="button"
             onClick={onLike}
