@@ -1,11 +1,11 @@
 // 공개 페이지 공용 햄버거 메뉴 — 대표자용/컨설턴트용 variant 분리.
 // 공통 shell(overlay·ESC·focus·body scroll lock·safe-area)만 재사용하고, 메뉴·CTA는 variant 로 나눕니다.
-// drawer 레이아웃: 100dvh, 상단 헤더 고정 / 중간 메뉴 스크롤 / 하단 CTA 고정.
+// 목차형 구조: 상단 계정 → 대표 CTA → 넘버링·색상 구분 그룹(01~04) → 하단 고정 CTA.
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { loadLocalOrders } from '../lib/payments'
-import { legalLinks } from '../config/businessInfo'
 import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
 import { loginPathWithNext } from '../lib/authRouting'
@@ -13,112 +13,148 @@ import Avatar from './account/Avatar'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
+type MenuAccent = 'blue' | 'cyan' | 'violet' | 'slate'
+
 type MenuItem = {
   label: string
   to: string
   desc?: string
-  highlight?: boolean
   match?: (path: string) => boolean
 }
 
-type CrossNav = {
+type MenuGroup = {
+  no: string
   heading: string
-  label: string
-  desc: string
-  to: string
+  accent: MenuAccent
+  items: MenuItem[]
 }
 
 type MenuConfig = {
   topTitle: string
   topSub: string
-  groups: { heading?: string; items: MenuItem[] }[]
-  crossNav: CrossNav
+  lead: MenuItem
+  groups: MenuGroup[]
   cta: { label: string; to: string }
 }
 
-// 대표자용 상품 slug 는 실제 존재하는 값만 사용
+// 넘버·라인·배지 수준으로만 색을 쓰고, 본문 텍스트는 통일된 네이비 계열을 유지합니다.
+const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; activeBg: string; activeText: string; badge: string }> = {
+  blue: { no: 'text-blue-600', dot: 'bg-blue-500', line: 'bg-blue-100', activeBg: 'bg-blue-50', activeText: 'text-blue-700', badge: 'bg-blue-600' },
+  cyan: { no: 'text-cyan-600', dot: 'bg-cyan-500', line: 'bg-cyan-100', activeBg: 'bg-cyan-50', activeText: 'text-cyan-700', badge: 'bg-cyan-600' },
+  violet: { no: 'text-violet-600', dot: 'bg-violet-500', line: 'bg-violet-100', activeBg: 'bg-violet-50', activeText: 'text-violet-700', badge: 'bg-violet-600' },
+  slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-100', activeBg: 'bg-slate-100', activeText: 'text-slate-800', badge: 'bg-slate-600' },
+}
+
+// 대표자용 — 실제 존재하는 상품 slug·라우트만 사용
 const BUSINESS_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
   topSub: '중소기업 대표님을 위한 경영지원 서비스',
+  lead: {
+    label: '3분 무료 기업 성장진단',
+    desc: '우리 회사에 지금 필요한 자금·지원금·인증을 확인해보세요.',
+    to: '/business-diagnosis',
+    match: (p) => p.startsWith('/business-diagnosis'),
+  },
   groups: [
     {
+      no: '01',
+      heading: '대표 서비스',
+      accent: 'blue',
       items: [
-        {
-          label: '3분 무료 기업 성장진단',
-          desc: '우리 회사에 지금 필요한 자금·지원금·인증을 확인해보세요.',
-          to: '/business-diagnosis',
-          highlight: true,
-          match: (p) => p.startsWith('/business-diagnosis'),
-        },
-        {
-          label: '전체 상품 보기',
-          desc: '정책자금부터 기업인증·홈페이지·AI 시스템까지',
-          to: '/business-services#products',
-          match: (p) => p === '/business-services',
-        },
+        { label: '전체 상품 보기', to: '/business-services#packages', match: (p) => p === '/business-services' },
+        { label: '저금리 자금조달', to: '/business-services/funding-consulting' },
+        { label: '고용지원금', to: '/business-services/employment-subsidy' },
+        { label: '정책자금·지원사업 가점', to: '/business-services?category=certification' },
+        { label: '홈페이지·업무시스템', to: '/business-services?category=digital' },
       ],
     },
     {
-      heading: '필요한 상황부터 찾기',
+      no: '02',
+      heading: '기업 성장',
+      accent: 'cyan',
       items: [
-        { label: '저금리 자금조달이 필요하다면', to: '/business-services/funding-consulting' },
-        { label: '고용지원금을 확인하고 싶다면', to: '/business-services/employment-subsidy' },
-        { label: '정책자금·지원사업 가점을 준비하려면', to: '/business-services?category=certification' },
-        { label: '홈페이지와 업무시스템이 필요하다면', to: '/business-services?category=digital' },
-      ],
-    },
-    {
-      heading: '더 알아보기',
-      items: [
-        { label: '진행 사례', to: '/business-services#cases' },
-        { label: '자주 묻는 질문', to: '/business-services#faq' },
+        { label: '기업 진단', to: '/business-diagnosis', match: (p) => p.startsWith('/business-diagnosis') },
         { label: '상담 신청', to: '/business-services#apply' },
       ],
     },
+    {
+      no: '03',
+      heading: '컨설턴트',
+      accent: 'violet',
+      items: [
+        { label: '컨설턴트 AI 도구', to: '/consultants', match: (p) => p.startsWith('/consultants') },
+        { label: '내 도구함', to: '/my-tools', match: (p) => p.startsWith('/my-tools') },
+      ],
+    },
+    {
+      no: '04',
+      heading: '고객지원',
+      accent: 'slate',
+      items: [
+        { label: '자주 묻는 질문', to: '/business-services#faq' },
+        { label: '이용약관', to: '/terms', match: (p) => p === '/terms' },
+        { label: '개인정보처리방침', to: '/privacy', match: (p) => p === '/privacy' },
+        { label: '환불·취소 정책', to: '/refund-policy', match: (p) => p === '/refund-policy' },
+        { label: '사업자정보', to: '/business-info', match: (p) => p === '/business-info' },
+      ],
+    },
   ],
-  crossNav: {
-    heading: '컨설턴트이신가요?',
-    label: '컨설턴트용 AI 도구',
-    desc: '고객 진단·제안·업무 자동화를 돕는 AI 실무 도구',
-    to: '/consultants',
-  },
   cta: { label: '우리 회사에 필요한 서비스 찾기', to: '/business-diagnosis' },
 }
 
-// 컨설턴트용 — 실제 존재하는 라우트만 (/consultants 공개 소개 + 로그인/도구함)
+// 컨설턴트용 — /consultants 공개 소개 + 로그인/도구함
 const CONSULTANT_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
   topSub: '컨설턴트의 진단·제안·고객관리를 돕는 AI 업무도구',
+  lead: {
+    label: '7일 무료 체험 시작',
+    desc: '카드 등록 없이, 신청한 시각부터 정확히 7일 체험할 수 있어요.',
+    to: '/signup',
+    match: (p) => p === '/signup',
+  },
   groups: [
     {
+      no: '01',
+      heading: '컨설턴트 OS',
+      accent: 'violet',
       items: [
-        { label: '컨설턴트 AI OS 소개', to: '/consultants#top', highlight: true, match: (p) => p.startsWith('/consultants') },
-        { label: '전체 AI 도구', to: '/consultants#tools' },
-        { label: '무료 체험', to: '/consultants#trial' },
+        { label: 'AI 도구 전체', to: '/consultants#tools', match: (p) => p.startsWith('/consultants') },
+        { label: '핵심 가치', to: '/consultants#value' },
+        { label: '이용 방식', to: '/consultants#pricing' },
       ],
     },
     {
-      heading: '이용 안내',
-      items: [
-        { label: '요금제·구독 안내', to: '/consultants#pricing' },
-        { label: '고객 진단·제안 기능', to: '/consultants#features' },
-        { label: '문의하기', to: '/consultants#inquiry' },
-      ],
-    },
-    {
+      no: '02',
       heading: '내 계정',
+      accent: 'blue',
       items: [
-        { label: '내 도구함', to: '/my-tools' },
-        { label: '마이페이지', to: '/mypage' },
+        { label: '내 도구함', to: '/my-tools', match: (p) => p.startsWith('/my-tools') },
+        { label: '마이페이지', to: '/mypage', match: (p) => p.startsWith('/mypage') },
+      ],
+    },
+    {
+      no: '03',
+      heading: '대표님 경영지원',
+      accent: 'cyan',
+      items: [
+        { label: '경영지원 서비스', to: '/business-services' },
+        { label: '무료 기업 성장진단', to: '/business-diagnosis' },
+      ],
+    },
+    {
+      no: '04',
+      heading: '고객지원',
+      accent: 'slate',
+      items: [
+        { label: '자주 묻는 질문', to: '/consultants#faq' },
+        { label: '문의하기', to: '/consultants#inquiry' },
+        { label: '이용약관', to: '/terms', match: (p) => p === '/terms' },
+        { label: '개인정보처리방침', to: '/privacy', match: (p) => p === '/privacy' },
+        { label: '환불·취소 정책', to: '/refund-policy', match: (p) => p === '/refund-policy' },
+        { label: '사업자정보', to: '/business-info', match: (p) => p === '/business-info' },
       ],
     },
   ],
-  crossNav: {
-    heading: '중소기업 대표님이신가요?',
-    label: '대표님용 경영지원',
-    desc: '정책자금·지원금·기업인증·홈페이지·AX 경영지원 서비스',
-    to: '/business-services',
-  },
   cta: { label: '내 도구함 보기', to: '/my-tools' },
 }
 
@@ -145,7 +181,7 @@ export default function PublicMenuDrawer({
   const acctType = memberTypeLabel({ roles, memberType, needsOnboarding })
   const acctAvatar = resolveAvatarUrl(user)
 
-  // 대표자 메뉴에 '내 진단 결과 N건'·'내 결제·신청내역' 동적 항목 추가
+  // 대표자 메뉴의 '기업 성장' 그룹에 '내 진단 결과 N건'·'내 결제·신청내역 N건' 동적 추가
   const config = useMemo<MenuConfig>(() => {
     if (variant !== 'business' || (historyCount <= 0 && orderCount <= 0)) return MENUS[variant]
     const base = MENUS.business
@@ -153,7 +189,6 @@ export default function PublicMenuDrawer({
     if (historyCount > 0) {
       extra.push({
         label: `내 진단 결과 ${historyCount}건`,
-        desc: '저장된 진단 결과를 다시 볼 수 있어요.',
         to: '/business-diagnosis/results',
         match: (p) => p.startsWith('/business-diagnosis/results'),
       })
@@ -161,12 +196,14 @@ export default function PublicMenuDrawer({
     if (orderCount > 0) {
       extra.push({
         label: `내 결제·신청내역 ${orderCount}건`,
-        desc: '결제한 주문과 진행상태를 확인해요.',
         to: '/my-orders',
         match: (p) => p.startsWith('/my-orders'),
       })
     }
-    return { ...base, groups: base.groups.map((g, i) => (i === 0 ? { ...g, items: [...g.items, ...extra] } : g)) }
+    return {
+      ...base,
+      groups: base.groups.map((g) => (g.heading === '기업 성장' ? { ...g, items: [...g.items, ...extra] } : g)),
+    }
   }, [variant, historyCount, orderCount])
 
   useEffect(() => {
@@ -182,13 +219,31 @@ export default function PublicMenuDrawer({
 
   useEffect(() => {
     if (!open) return
+    const panel = panelRef.current
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') {
+        setOpen(false)
+        return
+      }
+      // 포커스 트랩 — Tab 이 drawer 밖으로 나가지 않도록
+      if (e.key === 'Tab' && panel) {
+        const nodes = panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
+        if (nodes.length === 0) return
+        const first = nodes[0]
+        const last = nodes[nodes.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
     }
     document.addEventListener('keydown', onKey)
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    panelRef.current?.querySelector<HTMLElement>('a, button')?.focus()
+    panel?.querySelector<HTMLElement>('a, button')?.focus()
     return () => {
       document.removeEventListener('keydown', onKey)
       document.body.style.overflow = prevOverflow
@@ -197,6 +252,7 @@ export default function PublicMenuDrawer({
   }, [open])
 
   const path = location.pathname
+  const leadActive = config.lead.match ? config.lead.match(path) : false
 
   return (
     <>
@@ -213,7 +269,7 @@ export default function PublicMenuDrawer({
         </svg>
       </button>
 
-      {open && (
+      {open && createPortal(
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="전체 메뉴">
           <button
             type="button"
@@ -286,87 +342,59 @@ export default function PublicMenuDrawer({
                 </div>
               ) : (
                 <div className="mb-3 grid grid-cols-2 gap-2">
-                  <Link to={loginPathWithNext(location.pathname + location.search)} className="flex items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50">로그인</Link>
-                  <Link to="/signup" className="flex items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-700">회원가입</Link>
+                  <Link to={loginPathWithNext(location.pathname + location.search)} className="flex min-h-11 items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50">로그인</Link>
+                  <Link to="/signup" className="flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-700">회원가입</Link>
                 </div>
               )}
 
-              {config.groups.map((group, gi) => (
-                <div key={gi} className={gi > 0 ? 'mt-4' : ''}>
-                  {group.heading && <p className="px-3 pb-1.5 text-xs font-black uppercase tracking-wide text-slate-400">{group.heading}</p>}
-                  <ul className="space-y-1">
-                    {group.items.map((m) => {
-                      const active = m.match ? m.match(path) : false
-                      if (m.highlight) {
+              {/* 대표 CTA (넘버 그룹 위) */}
+              <Link
+                to={config.lead.to}
+                aria-current={leadActive ? 'page' : undefined}
+                className="mb-4 flex min-h-[52px] items-center gap-3 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-3.5 text-white shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="block text-base font-black">{config.lead.label}</span>
+                  {config.lead.desc && <span className="mt-0.5 block text-[0.8rem] font-medium leading-snug text-blue-50">{config.lead.desc}</span>}
+                </span>
+                <span aria-hidden className="text-lg">→</span>
+              </Link>
+
+              {/* 넘버링·색상 그룹 (목차형) */}
+              {config.groups.map((group) => {
+                const acc = ACCENT[group.accent]
+                return (
+                  <div key={group.no} className="mt-4 first:mt-0">
+                    <div className="mb-1.5 flex items-center gap-2 px-3">
+                      <span className={`text-[0.72rem] font-black tracking-widest ${acc.no}`}>{group.no}</span>
+                      <span className="text-[0.82rem] font-black tracking-tight text-slate-900">{group.heading}</span>
+                      <span className={`ml-1 h-px flex-1 rounded-full ${acc.line}`} />
+                    </div>
+                    <ul className="space-y-0.5">
+                      {group.items.map((m) => {
+                        const active = m.match ? m.match(path) : false
                         return (
                           <li key={m.label}>
                             <Link
                               to={m.to}
-                              className="flex items-center gap-3 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-3.5 text-white shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                              aria-current={active ? 'page' : undefined}
+                              className={`flex min-h-11 items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 ${
+                                active ? `${acc.activeBg} ${acc.activeText}` : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                              }`}
                             >
-                              <span className="min-w-0 flex-1">
-                                <span className="block text-base font-black">{m.label}</span>
-                                {m.desc && <span className="mt-0.5 block text-[0.8rem] font-medium leading-snug text-blue-50">{m.desc}</span>}
+                              <span className="min-w-0">
+                                <span className="block text-[0.95rem] font-semibold leading-snug">{m.label}</span>
+                                {m.desc && <span className="mt-0.5 block text-xs leading-snug text-slate-400">{m.desc}</span>}
                               </span>
-                              <span aria-hidden className="text-lg">→</span>
+                              {active && <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-black text-white ${acc.badge}`}>현재</span>}
                             </Link>
                           </li>
                         )
-                      }
-                      return (
-                        <li key={m.label}>
-                          <Link
-                            to={m.to}
-                            aria-current={active ? 'page' : undefined}
-                            className={`flex min-h-11 items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 ${
-                              active ? 'bg-blue-50 text-blue-700' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
-                            }`}
-                          >
-                            <span className="min-w-0">
-                              <span className="block text-[0.95rem] font-semibold leading-snug">{m.label}</span>
-                              {m.desc && <span className="mt-0.5 block text-xs leading-snug text-slate-400">{m.desc}</span>}
-                            </span>
-                            {active ? (
-                              <span className="shrink-0 rounded-md bg-blue-600 px-1.5 py-0.5 text-[10px] font-black text-white">현재</span>
-                            ) : (
-                              <span aria-hidden className="shrink-0 text-slate-300">›</span>
-                            )}
-                          </Link>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              ))}
-
-              {/* 대표자 ↔ 컨설턴트 전환 (별도 섹션 — 메뉴와 섞지 않음) */}
-              <div className="mt-5">
-                <p className="px-3 pb-1.5 text-xs font-black uppercase tracking-wide text-slate-400">{config.crossNav.heading}</p>
-                <Link
-                  to={config.crossNav.to}
-                  className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 transition-colors hover:border-slate-300 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
-                >
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[0.95rem] font-bold text-slate-900">{config.crossNav.label}</span>
-                    <span className="mt-0.5 block text-xs leading-snug text-slate-500">{config.crossNav.desc}</span>
-                  </span>
-                  <span aria-hidden className="text-slate-400">→</span>
-                </Link>
-              </div>
-
-              {/* 약관·정책·사업자정보 */}
-              <div className="mt-5">
-                <p className="px-3 pb-1.5 text-xs font-black uppercase tracking-wide text-slate-400">약관 및 정책</p>
-                <ul className="flex flex-wrap gap-x-3 gap-y-1.5 px-3">
-                  {legalLinks.map((l) => (
-                    <li key={l.to}>
-                      <Link to={l.to} className="text-[0.85rem] font-medium text-slate-500 underline-offset-2 hover:text-slate-800 hover:underline">
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                      })}
+                    </ul>
+                  </div>
+                )
+              })}
             </nav>
 
             {/* 하단 CTA (고정 + safe-area) */}
@@ -382,7 +410,8 @@ export default function PublicMenuDrawer({
               </Link>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   )

@@ -18,39 +18,17 @@ import {
 // 중소기업 대표님을 위한 공개 경영지원 서비스몰 홈 (서비스몰형 상품 UI).
 // 상품 데이터는 ../data/businessPackages 공유. 기존 기능 로직은 건드리지 않습니다.
 
-const compareCards = [
-  { title: '단순 대행', points: ['신청서 작성 중심', '단건 처리로 끝'], primary: false },
-  { title: '개별 발주', points: ['자금·인증·홈페이지 따로 진행', '흐름이 끊기고 시간 소요'], primary: false },
-  { title: '미래 AI 랩', points: ['자금·인증·홈페이지·AI를 하나로 설계', '상담 후 상황에 맞게 제안'], primary: true },
+// 대표자 신뢰도 영역 — 실제 확인된 정보만 사용(승인율·고객수 등 임의 수치 금지).
+const trustStats = [
+  { value: '100억원+', label: '누적 자금조달 지원' },
+  { value: '9년', label: '세무·노무·법무·자금 현장 경험' },
+  { value: 'ISO 3종', label: '9001·14001·45001 심사원' },
+  { value: '2개 수상', label: '경영컨설팅·벤처 부문' },
 ]
 
-const processSteps = ['기본 진단', '업종·재무 분석', '방향 설계', '결과물 제작', '진행 관리']
-
-const cases = [
-  {
-    type: '정책자금',
-    title: '운전자금 방향 정리',
-    before: '어떤 자금부터 볼지 막막',
-    after: '가능성 진단 후 우선 검토 자금 방향 정리',
-    tags: ['가능성 진단', '신청 전략'],
-    comment: '무엇부터 준비할지 정리됐습니다.',
-  },
-  {
-    type: '벤처·인증',
-    title: '기술성 스토리 재구성',
-    before: '일반 사업으로만 보이던 회사',
-    after: '기술성·성장성 중심 벤처확인 준비 방향 정리',
-    tags: ['기술성 스토리', '특허 연계'],
-    comment: '우리 사업을 다르게 설명할 수 있게 됐습니다.',
-  },
-  {
-    type: '홈페이지·AI',
-    title: '운영시스템 구축',
-    before: '반복업무를 수기로 처리',
-    after: 'PC·모바일 통합관리·자동화 구조 설계',
-    tags: ['업무 자동화', '데이터 관리'],
-    comment: '관리가 훨씬 수월해졌습니다.',
-  },
+const trustAwards = [
+  { year: '2024', title: 'ESG 골든리더스 브랜드대상', detail: '경영컨설팅 부문 1위' },
+  { year: '2025', title: '대한민국을 빛낸 사회공헌 K-컬처 나눔봉사공헌대상', detail: '벤처부문' },
 ]
 
 const homeFaqs = [
@@ -257,9 +235,9 @@ export default function BusinessServicesPage() {
             </span>
           </Link>
           <nav className="hidden items-center gap-5 text-[0.95rem] font-medium text-slate-600 lg:flex">
-            <button type="button" onClick={() => scrollToId('packages')} className="transition-colors hover:text-slate-900">전체상품</button>
+            <button type="button" onClick={() => scrollToId('trust')} className="transition-colors hover:text-slate-900">전문성</button>
             <button type="button" onClick={() => scrollToId('top3')} className="transition-colors hover:text-slate-900">대표상품</button>
-            <button type="button" onClick={() => scrollToId('cases')} className="transition-colors hover:text-slate-900">진행사례</button>
+            <button type="button" onClick={() => scrollToId('packages')} className="transition-colors hover:text-slate-900">전체상품</button>
             <button type="button" onClick={() => scrollToId('faq')} className="transition-colors hover:text-slate-900">FAQ</button>
           </nav>
           <div className="flex items-center gap-2.5">
@@ -329,12 +307,57 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
+      {/* 신뢰도·전문성 — 상품보다 먼저 신뢰를 형성 (Hero 다음) */}
+      <section id="trust" className="scroll-mt-16 border-b border-slate-200 bg-white">
+        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
+          <p className={eyebrow}>믿고 맡기는 이유</p>
+          <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[2rem]">현장에서 검증된 경영지원 파트너</h2>
+
+          {/* 핵심 숫자 4 — 크게 */}
+          <dl className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {trustStats.map((s) => (
+              <div key={s.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+                <dd className="text-[1.7rem] font-black tracking-tight text-slate-900 sm:text-[2rem]">{s.value}</dd>
+                <dt className="mt-1 text-[0.8rem] font-medium leading-snug text-slate-500">{s.label}</dt>
+              </div>
+            ))}
+          </dl>
+
+          {/* 대표 소개 + 수상/인증 */}
+          <div className="mt-4 grid gap-3 lg:grid-cols-[1.25fr_1fr]">
+            <div className="flex flex-col justify-center rounded-2xl border border-slate-200 bg-white p-5">
+              <p className="text-[0.98rem] font-semibold leading-relaxed text-slate-700">
+                정책자금부터 정부지원사업, 법인컨설팅, AX 구축까지 기업의 성장 과정을 한 흐름으로 설계합니다.
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8rem] font-medium text-slate-500">
+                <span className="font-bold text-slate-800">미래 AI 랩 대표</span>
+                <span className="text-slate-300">·</span>
+                <span>미래경영지원센터</span>
+                <span className="text-slate-300">·</span>
+                <span>유튜브 ‘김팀장의 경영노트’ 운영</span>
+              </div>
+            </div>
+            <ul className="grid gap-2">
+              {trustAwards.map((a) => (
+                <li key={a.title} className="flex items-start gap-2.5 rounded-2xl border border-slate-200 bg-white p-3.5">
+                  <span className="mt-0.5 shrink-0 rounded-md bg-slate-900 px-2 py-1 text-[0.7rem] font-black text-amber-300">{a.year}</span>
+                  <span className="min-w-0">
+                    <span className="block text-[0.83rem] font-bold leading-snug text-slate-900">{a.title}</span>
+                    <span className="mt-0.5 block text-[0.75rem] font-medium text-slate-500">{a.detail}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       {/* 대표 상품 TOP 5 */}
       <section id="top3" className="scroll-mt-16 border-b border-slate-200">
-        <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>대표 상품 TOP 5</p>
           <h2 className={h2Class}>대표님들이 가장 많이 찾는 서비스</h2>
-          <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((pkg) => (
               <ProductCard key={pkg.id} pkg={pkg} />
             ))}
@@ -343,8 +366,8 @@ export default function BusinessServicesPage() {
       </section>
 
       {/* 전체 상품 + 카테고리 탭 */}
-      <section id="packages" className="scroll-mt-16 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
+      <section id="packages" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>전체 상품</p>
           <h2 className={h2Class}>기업 상황에 맞는 서비스를 고르세요</h2>
 
@@ -369,7 +392,7 @@ export default function BusinessServicesPage() {
           </div>
 
           {/* 상황별 시나리오 그룹 */}
-          <div className="mt-9 space-y-12">
+          <div className="mt-8 space-y-10">
             {groups.map((g) => (
               <div key={g.cat}>
                 <h3 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{g.scenario}</h3>
@@ -388,80 +411,9 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 진행사례 (review-style) */}
-      <section id="cases" className="scroll-mt-16 border-t border-slate-200">
-        <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
-          <p className={eyebrow}>진행 사례</p>
-          <h2 className={h2Class}>이렇게 정리했습니다</h2>
-          <p className="mt-2 text-sm text-slate-500">이해를 돕기 위한 비식별 예시입니다. (실제 업체명이 아닙니다.)</p>
-
-          <div className="mt-7 grid gap-4 md:grid-cols-3">
-            {cases.map((c) => (
-              <article key={c.title} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">{c.type}</span>
-                  <span className="text-xs font-semibold text-slate-400">진행 사례</span>
-                </div>
-                <p className="mt-3 text-base font-bold text-slate-900">{c.title}</p>
-                <div className="mt-3 flex items-stretch gap-2">
-                  <div className="flex-1 rounded-xl border border-slate-200 bg-slate-50 p-2.5">
-                    <p className="text-[11px] font-bold text-slate-400">기존</p>
-                    <p className="mt-1 text-xs font-semibold leading-snug text-slate-600">{c.before}</p>
-                  </div>
-                  <div className="flex items-center text-slate-300" aria-hidden>→</div>
-                  <div className="flex-1 rounded-xl border border-blue-200 bg-blue-50/60 p-2.5">
-                    <p className="text-[11px] font-bold text-blue-500">정리 후</p>
-                    <p className="mt-1 text-xs font-bold leading-snug text-slate-900">{c.after}</p>
-                  </div>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {c.tags.map((t) => (
-                    <span key={t} className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">{t}</span>
-                  ))}
-                </div>
-                <p className="mt-3 border-t border-slate-100 pt-3 text-sm text-slate-600">“{c.comment}”</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Compact why/process band */}
-      <section className="border-y border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
-          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2">
-            <span className="mr-2 text-sm font-bold text-slate-900">진행 과정</span>
-            {processSteps.map((step, i) => (
-              <span key={step} className="inline-flex items-center gap-1.5">
-                <span className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-sm">
-                  <span className="mr-1 text-xs font-extrabold text-blue-600">{`0${i + 1}`}</span>
-                  {step}
-                </span>
-                {i < processSteps.length - 1 && <span aria-hidden className="text-slate-300">→</span>}
-              </span>
-            ))}
-          </div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            {compareCards.map((c) => (
-              <div key={c.title} className={`rounded-2xl p-4 ${c.primary ? 'border-2 border-slate-900 bg-white' : 'border border-slate-200 bg-white'}`}>
-                <p className={`text-sm font-bold ${c.primary ? 'text-slate-900' : 'text-slate-500'}`}>{c.title}</p>
-                <ul className="mt-2 space-y-1">
-                  {c.points.map((p) => (
-                    <li key={p} className="flex items-start gap-2 text-xs text-slate-600">
-                      <span className={`mt-0.5 ${c.primary ? 'text-blue-500' : 'text-slate-300'}`} aria-hidden>{c.primary ? '✓' : '·'}</span>
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
-      <section id="faq" className="scroll-mt-16">
-        <div className="mx-auto max-w-3xl px-5 py-11 sm:px-6 sm:py-14">
+      <section id="faq" className="scroll-mt-16 border-t border-slate-200">
+        <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>자주 묻는 질문</p>
           <h2 className={h2Class}>대표님들이 자주 묻는 질문</h2>
           <div className="mt-7 space-y-3">
@@ -477,7 +429,7 @@ export default function BusinessServicesPage() {
 
       {/* Apply form */}
       <section id="apply" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6 sm:py-16">
+        <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-14">
           <div className="text-center">
             <p className={eyebrow}>무료 진단 신청</p>
             <h2 className={h2Class}>먼저, 대표님 상황부터 진단해보세요</h2>
