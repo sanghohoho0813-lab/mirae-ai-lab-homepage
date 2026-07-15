@@ -77,7 +77,7 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
       ? 'bg-blue-600 text-white hover:bg-blue-700 focus-visible:outline-blue-600 shadow-blue-600/15'
       : 'bg-slate-900 text-white hover:bg-slate-700 focus-visible:outline-slate-600 shadow-slate-900/10'
   const primaryBtn =
-    `group/btn inline-flex h-11 flex-1 items-center justify-center gap-1 rounded-xl px-3.5 text-[0.9rem] font-bold shadow-sm transition-all duration-150 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 ${ctaTheme}`
+    `group/btn inline-flex h-[3.25rem] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl px-3 text-[1.05rem] font-bold shadow-sm transition-all duration-150 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 ${ctaTheme}`
 
   return (
     <article
@@ -99,41 +99,41 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
       <div className="flex flex-1 flex-col p-4 sm:p-5">
         {/* 카테고리 ↔ 대표상품/배지 */}
         <div className="flex items-center justify-between gap-2">
-          <span className={`rounded-full px-2 py-0.5 text-[0.68rem] font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.category}</span>
+          <span className={`rounded-full px-2.5 py-1 text-[0.82rem] font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.category}</span>
           {flagship ? (
-            <span className="shrink-0 rounded-full bg-amber-400 px-2 py-0.5 text-[0.68rem] font-black text-slate-900">★ 대표 상품</span>
+            <span className="shrink-0 rounded-full bg-amber-400 px-2.5 py-1 text-[0.82rem] font-black text-slate-900">★ 대표 상품</span>
           ) : (
-            pkg.badge && <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[0.68rem] font-semibold text-slate-500">{pkg.badge}</span>
+            pkg.badge && <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[0.82rem] font-semibold text-slate-500">{pkg.badge}</span>
           )}
         </div>
 
         {/* 상품명 + 한줄 소개 */}
-        <h3 className="mt-2.5 line-clamp-1 text-[1.05rem] font-extrabold leading-snug tracking-tight text-slate-900">{pkg.name}</h3>
-        <p className="mt-1 line-clamp-1 text-[0.8rem] leading-relaxed text-slate-500">{pkg.short}</p>
+        <h3 className="mt-3 line-clamp-1 text-[1.35rem] font-extrabold leading-snug tracking-tight text-slate-900">{pkg.name}</h3>
+        <p className="mt-1.5 line-clamp-2 text-[0.98rem] leading-relaxed text-slate-500">{pkg.short}</p>
 
         {/* 가격 존 — 결제/상담 구분 배지 + 가격 강조 */}
-        <div className="mt-3">
+        <div className="mt-3.5">
           {consult ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[0.66rem] font-bold text-amber-700 ring-1 ring-inset ring-amber-500/20">
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-[0.82rem] font-bold text-amber-700 ring-1 ring-inset ring-amber-500/20">
               <span aria-hidden>💬</span> 상담 후 견적
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[0.66rem] font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[0.82rem] font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
               <span aria-hidden>⚡</span> 바로 결제 가능
             </span>
           )}
-          <div className="mt-1.5 flex items-baseline gap-1.5">
-            <span className={`font-black tracking-tight ${consult ? 'text-[1.35rem] text-slate-700' : flagship ? 'text-2xl text-amber-600' : 'text-2xl text-slate-900'}`}>{priceText}</span>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <span className={`font-black tracking-tight ${consult ? 'text-[1.6rem] text-slate-700' : flagship ? 'text-[1.85rem] text-amber-600' : 'text-[1.85rem] text-slate-900'}`}>{priceText}</span>
           </div>
-          {pkg.priceHighlight && <p className="mt-1 line-clamp-1 text-[0.72rem] font-bold text-rose-600">{formatKoreanMoney(pkg.priceHighlight)}</p>}
+          {pkg.priceHighlight && <p className="mt-1.5 line-clamp-1 text-[0.9rem] font-bold text-rose-600">{formatKoreanMoney(pkg.priceHighlight)}</p>}
         </div>
 
         {/* 대표 혜택 3가지 — SaaS 체크 리스트(스캔형) */}
-        <ul className="mt-3.5 space-y-2 border-t border-slate-100 pt-3.5">
+        <ul className="mt-4 space-y-2.5 border-t border-slate-100 pt-4">
           {pkg.highlights.slice(0, 3).map((h) => (
-            <li key={h} className="flex items-center gap-2 text-[0.8rem] font-semibold text-slate-700">
-              <span className={`grid h-4 w-4 shrink-0 place-items-center rounded-full ${flagship ? 'bg-amber-100 text-amber-600' : 'bg-blue-50 text-blue-600'}`} aria-hidden>
-                <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <li key={h} className="flex items-center gap-2.5 text-[0.98rem] font-semibold text-slate-700">
+              <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${flagship ? 'bg-amber-100 text-amber-600' : 'bg-blue-50 text-blue-600'}`} aria-hidden>
+                <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2.5 6.4l2.4 2.4L9 3.2" />
                 </svg>
               </span>
@@ -148,13 +148,13 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
             <a href="#apply" className={primaryBtn}>상담 신청</a>
           ) : (
             <Link to={`/checkout/${pkg.slug}`} className={primaryBtn}>
-              바로 결제하기
+              결제하기
               <span aria-hidden className="transition-transform duration-150 group-hover/btn:translate-x-0.5">→</span>
             </Link>
           )}
           <Link
             to={`/business-services/${pkg.slug}`}
-            className="inline-flex h-11 flex-1 items-center justify-center rounded-xl border border-slate-300 px-3.5 text-[0.9rem] font-semibold text-slate-700 transition-all duration-150 hover:border-slate-400 hover:bg-slate-50 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+            className="inline-flex h-[3.25rem] flex-1 items-center justify-center whitespace-nowrap rounded-xl border border-slate-300 px-3 text-[1.05rem] font-semibold text-slate-700 transition-all duration-150 hover:border-slate-400 hover:bg-slate-50 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
           >
             자세히 보기
           </Link>
@@ -270,7 +270,7 @@ export default function BusinessServicesPage() {
           <h1 className="mt-4 max-w-3xl text-[1.75rem] font-extrabold leading-[1.25] tracking-tight text-white sm:text-[2.6rem] sm:leading-[1.18]">
             대표님에게 필요한 <span className="text-amber-300">경영지원 서비스</span>를 골라보세요
           </h1>
-          <p className="mt-4 max-w-2xl text-[1rem] leading-relaxed text-slate-300 sm:text-lg">
+          <p className="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-slate-300 sm:text-xl">
             정책자금·고용지원금·기업인증·홈페이지·AI 시스템까지, 기업 상황에 맞는 패키지를 상담 후 제안드립니다.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -294,39 +294,39 @@ export default function BusinessServicesPage() {
               상담 신청하기
             </a>
           </div>
-          <p className="mt-3 text-[0.8rem] font-medium text-slate-400">
+          <p className="mt-3.5 text-[0.98rem] font-medium text-slate-400">
             <b className="text-slate-200">성장진단</b>은 로그인 없이 바로 · <b className="text-slate-200">상담 신청</b>은 담당자가 직접 연락드립니다.
           </p>
 
           {/* 신뢰 지표 — 서비스 찾기 CTA 바로 아래, 상품보다 먼저 눈에 띄게 */}
-          <div id="trust" className="mt-7 max-w-4xl scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur sm:p-5">
-            <p className="text-[0.72rem] font-bold uppercase tracking-widest text-amber-300">믿고 맡기는 이유</p>
-            <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
+          <div id="trust" className="mt-7 max-w-4xl scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur sm:p-6">
+            <p className="text-[0.9rem] font-bold uppercase tracking-widest text-amber-300">믿고 맡기는 이유</p>
+            <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4">
               {trustStats.map((s) => (
-                <div key={s.label} className="border-l-2 border-amber-400/60 pl-3">
-                  <dd className="text-[1.55rem] font-black leading-none tracking-tight text-white sm:text-[1.8rem]">{s.value}</dd>
-                  <dt className="mt-1.5 text-[0.74rem] font-medium leading-snug text-slate-400">{s.label}</dt>
+                <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
+                  <dd className="text-[1.85rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
+                  <dt className="mt-2 text-[0.92rem] font-medium leading-snug text-slate-300">{s.label}</dt>
                 </div>
               ))}
             </dl>
-            <div className="mt-4 border-t border-white/10 pt-4">
-              <p className="text-[0.9rem] font-semibold leading-relaxed text-slate-100">
+            <div className="mt-5 border-t border-white/10 pt-5">
+              <p className="text-[1.1rem] font-semibold leading-relaxed text-slate-100">
                 정책자금부터 정부지원사업, 법인컨설팅, AX 구축까지 기업의 성장 과정을 한 흐름으로 설계합니다.
               </p>
-              <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.76rem] font-medium text-slate-400">
-                <span className="font-bold text-slate-200">미래 AI 랩 대표</span>
+              <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.95rem] font-medium text-slate-300">
+                <span className="font-bold text-white">미래 AI 랩 대표</span>
                 <span className="text-slate-600">·</span>
                 <span>미래경영지원센터</span>
                 <span className="text-slate-600">·</span>
                 <span>유튜브 ‘김팀장의 경영노트’ 운영</span>
               </div>
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <div className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
                 {trustAwards.map((a) => (
-                  <div key={a.title} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
-                    <span className="mt-0.5 shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.66rem] font-black text-slate-900">{a.year}</span>
+                  <div key={a.title} className="flex items-start gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3.5 py-2.5">
+                    <span className="mt-0.5 shrink-0 rounded bg-amber-400 px-2 py-0.5 text-[0.8rem] font-black text-slate-900">{a.year}</span>
                     <span className="min-w-0">
-                      <span className="block text-[0.76rem] font-bold leading-snug text-slate-100">{a.title}</span>
-                      <span className="text-[0.7rem] text-slate-400">{a.detail}</span>
+                      <span className="block text-[0.98rem] font-bold leading-snug text-slate-100">{a.title}</span>
+                      <span className="text-[0.85rem] text-slate-400">{a.detail}</span>
                     </span>
                   </div>
                 ))}
