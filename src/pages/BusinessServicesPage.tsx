@@ -303,9 +303,15 @@ export default function BusinessServicesPage() {
         <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6 sm:py-12">
           <p className={eyebrow}>대표 상품 TOP 5</p>
           <h2 className={h2Class}>대표님들이 가장 많이 찾는 서비스</h2>
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-5 lg:grid-cols-3">
+          <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-4 sm:mt-6 sm:gap-5 lg:grid-cols-3">
             {featured.map((pkg, i) => (
-              <ProductCard key={pkg.id} pkg={pkg} rank={i + 1} />
+              // TOP 순위는 썸네일을 가리지 않게 카드 위에 별도 표시
+              <div key={pkg.id} className="grid grid-rows-[auto_1fr]">
+                <span className="mb-1.5 inline-flex w-fit items-center gap-1 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 px-2 py-0.5 text-[0.72rem] font-black leading-none text-slate-900 shadow-sm sm:text-[0.82rem]">
+                  <span aria-hidden>★</span> TOP {i + 1}
+                </span>
+                <ProductCard pkg={pkg} />
+              </div>
             ))}
           </div>
         </div>

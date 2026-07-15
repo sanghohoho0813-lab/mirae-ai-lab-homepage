@@ -24,6 +24,8 @@ type Props = {
   fit?: 'cover' | 'contain'
   /** 카드 썸네일 단순화 — 부제·모티프 그래픽 숨기고 태그+대표카피만 (첫인상 전용) */
   minimal?: boolean
+  /** 모바일 썸네일 확대 — 좁은 화면에서 배너 문구가 작아 보이지 않도록 약 18% 확대(상단 기준), sm 이상 원본 */
+  thumbZoom?: boolean
 }
 
 const accentMap: Record<VisualAccent, { glow: string; chip: string; bar: string; motif: string }> = {
@@ -108,7 +110,7 @@ function Motif({ type }: { type: BusinessVisualType }) {
   }
 }
 
-export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, tag = '서비스 패키지', size = 'card', fit = 'cover', minimal = false }: Props) {
+export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, tag = '서비스 패키지', size = 'card', fit = 'cover', minimal = false, thumbZoom = false }: Props) {
   const [imgFailed, setImgFailed] = useState(false)
 
   if (imageSrc && !imgFailed) {
@@ -119,7 +121,7 @@ export default function BusinessServiceVisual({ type, title, subtitle, accent = 
           alt={alt ?? title ?? ''}
           loading="lazy"
           onError={() => setImgFailed(true)}
-          className={`h-full w-full object-top ${fit === 'contain' ? 'object-contain' : 'object-cover'}`}
+          className={`h-full w-full object-top ${fit === 'contain' ? 'object-contain' : 'object-cover'} ${thumbZoom ? 'origin-top scale-[1.18] sm:scale-100' : ''}`}
         />
       </div>
     )
