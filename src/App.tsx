@@ -100,23 +100,23 @@ function ToolBanner({ tool, compact = false }: { tool: Tool; compact?: boolean }
       <div aria-hidden className="absolute -bottom-10 -left-8 h-28 w-28 rounded-full bg-blue-600/20 blur-2xl" />
       <div className="relative flex h-full flex-col justify-between p-4 sm:p-5">
         <div className="flex items-start justify-between gap-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.7rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25">
+          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2.5 py-1 text-[0.85rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25">
             {tool.category}
           </span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-teal-300/50" aria-hidden>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-teal-300/50" aria-hidden>
             <rect x="3.5" y="4.5" width="17" height="13" rx="2" />
             <path d="M3.5 9.5h17M7 20.5h10M12 17.5v3" />
           </svg>
         </div>
         <div>
-          <p className="text-[0.7rem] font-medium tracking-wide text-slate-400">{tool.stage}</p>
-          <h3 className={`mt-0.5 font-black leading-tight tracking-tight text-white ${compact ? 'text-base' : 'text-lg sm:text-xl'}`}>{tool.title}</h3>
-          {!compact && <p className="mt-1 line-clamp-1 text-[0.8rem] text-slate-300">{tool.outcome}</p>}
+          <p className="text-[0.85rem] font-medium tracking-wide text-slate-400">{tool.stage}</p>
+          <h3 className={`mt-1 font-black leading-tight tracking-tight text-white ${compact ? 'text-lg' : 'text-xl sm:text-2xl'}`}>{tool.title}</h3>
+          {!compact && <p className="mt-1.5 line-clamp-1 text-[0.98rem] text-slate-300">{tool.outcome}</p>}
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className={`rounded-full px-2 py-0.5 text-[0.66rem] font-bold ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
+          <span className={`rounded-full px-2.5 py-1 text-[0.8rem] font-bold ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
           <span
-            className={`rounded-full px-2 py-0.5 text-[0.66rem] font-bold ${
+            className={`rounded-full px-2.5 py-1 text-[0.8rem] font-bold ${
               tool.isPublic ? 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/25' : 'bg-slate-400/15 text-slate-300 ring-1 ring-inset ring-slate-300/20'
             }`}
           >
@@ -135,24 +135,24 @@ function ToolCard({ tool }: { tool: Tool }) {
     <>
       <ToolBanner tool={tool} />
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="line-clamp-2 text-base leading-relaxed text-slate-600">{tool.description}</p>
-        <div className="mt-4 flex flex-wrap gap-1.5">
+        <p className="line-clamp-2 text-[1.05rem] leading-relaxed text-slate-600">{tool.description}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
           {tool.features.slice(0, 3).map((feature) => (
-            <span key={feature} className="rounded-lg bg-slate-50 px-2.5 py-1 text-[0.8rem] font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
+            <span key={feature} className="rounded-lg bg-slate-50 px-3 py-1.5 text-[0.9rem] font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
               {feature}
             </span>
           ))}
         </div>
-        <p className="mt-4 text-[0.8rem] font-medium text-slate-400">추천 대상 · {tool.target}</p>
+        <p className="mt-4 text-[0.9rem] font-medium text-slate-400">추천 대상 · {tool.target}</p>
         <div className="mt-auto pt-4">
-          <p className="line-clamp-1 rounded-xl bg-blue-50 px-4 py-2.5 text-[0.9rem] font-semibold text-blue-700">“{tool.valueLine}”</p>
+          <p className="line-clamp-1 rounded-xl bg-blue-50 px-4 py-3 text-[1rem] font-semibold text-blue-700">“{tool.valueLine}”</p>
           {tool.isPublic ? (
-            <span className="mt-3 inline-flex items-center gap-1.5 text-[0.95rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700">
+            <span className="mt-3.5 inline-flex items-center gap-1.5 text-[1.05rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700">
               {accessTypeLabel[tool.accessType]}
               <span aria-hidden className="transition-transform group-hover:translate-x-0.5">↗</span>
             </span>
           ) : (
-            <button type="button" disabled className="mt-3 inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-4 py-2 text-[0.9rem] font-semibold text-slate-400">
+            <button type="button" disabled className="mt-3.5 inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-4 py-2.5 text-[1rem] font-semibold text-slate-400">
               🔒 {accessTypeLabel[tool.accessType]}
             </button>
           )}
@@ -176,16 +176,16 @@ function ToolCardSmall({ tool }: { tool: Tool }) {
   const body = (
     <>
       <ToolBanner tool={tool} compact />
-      <div className="flex flex-1 flex-col p-4">
-        <p className="line-clamp-2 text-[0.85rem] leading-relaxed text-slate-600">{tool.description}</p>
-        <div className="mt-auto pt-3">
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <p className="line-clamp-2 text-[0.98rem] leading-relaxed text-slate-600">{tool.description}</p>
+        <div className="mt-auto pt-3.5">
           {tool.isPublic ? (
-            <span className="inline-flex items-center gap-1 text-[0.85rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700">
+            <span className="inline-flex items-center gap-1 text-[1rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700">
               {accessTypeLabel[tool.accessType]}
               <span aria-hidden className="transition-transform group-hover:translate-x-0.5">↗</span>
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 text-[0.85rem] font-semibold text-slate-400">🔒 {accessTypeLabel[tool.accessType]}</span>
+            <span className="inline-flex items-center gap-1 text-[1rem] font-semibold text-slate-400">🔒 {accessTypeLabel[tool.accessType]}</span>
           )}
         </div>
       </div>
@@ -312,7 +312,7 @@ function App() {
             <article key={v.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md motion-reduce:hover:translate-y-0 sm:p-7">
               <div className="grid h-12 w-12 place-items-center rounded-xl bg-slate-900 text-sky-300 [&_svg]:h-6 [&_svg]:w-6">{v.icon}</div>
               <h3 className="mt-5 text-xl font-bold text-slate-900">{v.title}</h3>
-              <p className="mt-2 text-base leading-relaxed text-slate-600">{v.desc}</p>
+              <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{v.desc}</p>
             </article>
           ))}
         </div>
@@ -337,7 +337,7 @@ function App() {
           {/* 보조 도구 */}
           {secondaryTools.length > 0 && (
             <>
-              <p className="mt-12 text-sm font-bold uppercase tracking-widest text-slate-500">진단·보조 도구</p>
+              <p className="mt-12 text-[0.95rem] font-bold uppercase tracking-widest text-slate-500">진단·보조 도구</p>
               <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {secondaryTools.map((tool) => (
                   <ToolCardSmall key={tool.id} tool={tool} />
@@ -354,7 +354,7 @@ function App() {
                 곧 추가될 도구
               </span>
               {upcomingTools.map((t) => (
-                <span key={t.id} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-600">
+                <span key={t.id} className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-[0.95rem] font-medium text-slate-600">
                   {t.title}
                 </span>
               ))}
@@ -376,7 +376,7 @@ function App() {
             <li key={s.no} className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <span className="text-base font-extrabold tracking-widest text-blue-600">{s.no}</span>
               <h3 className="mt-2 text-xl font-bold text-slate-900">{s.title}</h3>
-              <p className="mt-2 text-base leading-relaxed text-slate-600">{s.desc}</p>
+              <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{s.desc}</p>
               {i < useSteps.length - 1 && (
                 <span aria-hidden className="absolute right-0 top-1/2 hidden -translate-y-1/2 translate-x-1/2 text-lg font-bold text-slate-300 sm:block">
                   →
