@@ -297,63 +297,47 @@ export default function BusinessServicesPage() {
           <p className="mt-3 text-[0.8rem] font-medium text-slate-400">
             <b className="text-slate-200">성장진단</b>은 로그인 없이 바로 · <b className="text-slate-200">상담 신청</b>은 담당자가 직접 연락드립니다.
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[0.78rem] font-medium text-slate-400">
-            <span>누적 자금조달 100억+</span>
-            <span className="text-slate-600">·</span>
-            <span>ISO 인증 심사원</span>
-            <span className="text-slate-600">·</span>
-            <span>정책자금·인증·홈페이지·AI 실무 경험</span>
-          </div>
-        </div>
-      </section>
 
-      {/* 신뢰도·전문성 — 상품보다 먼저 신뢰를 형성 (Hero 다음) */}
-      <section id="trust" className="scroll-mt-16 border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
-          <p className={eyebrow}>믿고 맡기는 이유</p>
-          <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[2rem]">현장에서 검증된 경영지원 파트너</h2>
-
-          {/* 핵심 숫자 4 — 크게 */}
-          <dl className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            {trustStats.map((s) => (
-              <div key={s.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
-                <dd className="text-[1.7rem] font-black tracking-tight text-slate-900 sm:text-[2rem]">{s.value}</dd>
-                <dt className="mt-1 text-[0.8rem] font-medium leading-snug text-slate-500">{s.label}</dt>
-              </div>
-            ))}
-          </dl>
-
-          {/* 대표 소개 + 수상/인증 */}
-          <div className="mt-4 grid gap-3 lg:grid-cols-[1.25fr_1fr]">
-            <div className="flex flex-col justify-center rounded-2xl border border-slate-200 bg-white p-5">
-              <p className="text-[0.98rem] font-semibold leading-relaxed text-slate-700">
+          {/* 신뢰 지표 — 서비스 찾기 CTA 바로 아래, 상품보다 먼저 눈에 띄게 */}
+          <div id="trust" className="mt-7 max-w-4xl scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur sm:p-5">
+            <p className="text-[0.72rem] font-bold uppercase tracking-widest text-amber-300">믿고 맡기는 이유</p>
+            <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
+              {trustStats.map((s) => (
+                <div key={s.label} className="border-l-2 border-amber-400/60 pl-3">
+                  <dd className="text-[1.55rem] font-black leading-none tracking-tight text-white sm:text-[1.8rem]">{s.value}</dd>
+                  <dt className="mt-1.5 text-[0.74rem] font-medium leading-snug text-slate-400">{s.label}</dt>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <p className="text-[0.9rem] font-semibold leading-relaxed text-slate-100">
                 정책자금부터 정부지원사업, 법인컨설팅, AX 구축까지 기업의 성장 과정을 한 흐름으로 설계합니다.
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8rem] font-medium text-slate-500">
-                <span className="font-bold text-slate-800">미래 AI 랩 대표</span>
-                <span className="text-slate-300">·</span>
+              <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.76rem] font-medium text-slate-400">
+                <span className="font-bold text-slate-200">미래 AI 랩 대표</span>
+                <span className="text-slate-600">·</span>
                 <span>미래경영지원센터</span>
-                <span className="text-slate-300">·</span>
+                <span className="text-slate-600">·</span>
                 <span>유튜브 ‘김팀장의 경영노트’ 운영</span>
               </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {trustAwards.map((a) => (
+                  <div key={a.title} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+                    <span className="mt-0.5 shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.66rem] font-black text-slate-900">{a.year}</span>
+                    <span className="min-w-0">
+                      <span className="block text-[0.76rem] font-bold leading-snug text-slate-100">{a.title}</span>
+                      <span className="text-[0.7rem] text-slate-400">{a.detail}</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <ul className="grid gap-2">
-              {trustAwards.map((a) => (
-                <li key={a.title} className="flex items-start gap-2.5 rounded-2xl border border-slate-200 bg-white p-3.5">
-                  <span className="mt-0.5 shrink-0 rounded-md bg-slate-900 px-2 py-1 text-[0.7rem] font-black text-amber-300">{a.year}</span>
-                  <span className="min-w-0">
-                    <span className="block text-[0.83rem] font-bold leading-snug text-slate-900">{a.title}</span>
-                    <span className="mt-0.5 block text-[0.75rem] font-medium text-slate-500">{a.detail}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </section>
 
       {/* 대표 상품 TOP 5 */}
-      <section id="top3" className="scroll-mt-16 border-b border-slate-200">
+      <section id="top3" className="scroll-mt-16 border-t border-slate-200">
         <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>대표 상품 TOP 5</p>
           <h2 className={h2Class}>대표님들이 가장 많이 찾는 서비스</h2>
