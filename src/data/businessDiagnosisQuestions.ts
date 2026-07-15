@@ -9,12 +9,11 @@ export const DIAGNOSIS_VERSION = 4
 
 export const STAGE_INFO: Record<DiagnosisStage, { name: string; copy: string }> = {
   1: { name: '기업 기초체력', copy: '먼저 우리 회사의 현재 상태를 1분 만에 확인해볼게요.' },
-  2: { name: '자금·지원제도', copy: '받을 수 있는 자금과 지원제도를 더 자세히 살펴볼게요.' },
+  2: { name: '자금·지원제도', copy: '지금 더 급한 목표를 골라주시면, 딱 필요한 질문만 여쭤볼게요.' },
   3: { name: '인증·성장 인프라', copy: '인증과 홈페이지·업무시스템까지 회사의 성장 기반을 점검해볼게요.' },
 }
 
 const one = (a: DiagnosisAnswers, id: string) => (typeof a[id] === 'string' ? (a[id] as string) : undefined)
-const many = (a: DiagnosisAnswers, id: string) => (Array.isArray(a[id]) ? (a[id] as string[]) : [])
 
 export const isFounderToBe = (a: DiagnosisAnswers) => one(a, 'bizType') === 'pre'
 export const isIndividual = (a: DiagnosisAnswers) => one(a, 'bizType') === 'individual'
@@ -22,6 +21,9 @@ export const isCorp = (a: DiagnosisAnswers) => one(a, 'bizType') === 'corp'
 export const noFundingNeed = (a: DiagnosisAnswers) => one(a, 'fundingWhen') === 'none'
 export const hasArrears = (a: DiagnosisAnswers) => one(a, 'taxArrears') === 'yes'
 const isMature = (a: DiagnosisAnswers) => ['y3to7', 'y7plus'].includes(one(a, 'years') ?? '')
+/** 2단계 투트랙: 돈 받기(fund/both) / 나가는 돈 줄이기(save/both) */
+export const wantsMoneyIn = (a: DiagnosisAnswers) => one(a, 'goal') !== 'save'
+export const wantsMoneyOut = (a: DiagnosisAnswers) => ['save', 'both'].includes(one(a, 'goal') ?? '')
 
 export const questions: DiagnosisQuestion[] = [
   // ── 1단계: 기업 기초체력 (약 1분) ─────────────────────────────
@@ -156,11 +158,54 @@ export const questions: DiagnosisQuestion[] = [
     ],
   },
 
-  // ── 2단계: 자금·지원제도 정밀진단 ─────────────────────────────
+  // ── 2단계: 목표 투트랙 — 돈 받기 / 나가는 돈 줄이기 / 둘 다 ──────
+  {
+    id: 'goal',
+    stage: 2,
+    type: 'single',
+    title: '대표님, 지금 회사에 더 급한 쪽은 어디인가요?',
+    desc: '선택에 따라 꼭 필요한 질문만 여쭤볼게요.',
+    options: [
+      { value: 'fund', label: '💰 돈을 받고 싶어요', desc: '정책자금 대출 · 고용지원금 · 정부지원사업' },
+      { value: 'save', label: '📉 나가는 돈을 줄이고 싶어요', desc: '세금 · 인건비 · 반복업무 비용' },
+      { value: 'both', label: '🙌 둘 다 원해요', desc: '받을 건 받고, 줄일 건 줄이고' },
+    ],
+  },
+  // 절세 트랙 (save/both)
+  {
+    id: 'taxBurden',
+    stage: 2,
+    type: 'single',
+    title: '요즘 세금 부담은 어느 정도로 느끼세요?',
+    showIf: (a) => wantsMoneyOut(a),
+    options: [
+      { value: 'heavy', label: '너무 많이 나가서 부담돼요' },
+      { value: 'some', label: '줄일 수 있으면 줄이고 싶어요' },
+      { value: 'unsure', label: '얼마나 줄일 수 있는지 잘 모르겠어요' },
+      { value: 'ok', label: '지금은 크게 부담되지 않아요' },
+    ],
+  },
+  {
+    id: 'taxSaveInterest',
+    stage: 2,
+    type: 'multi',
+    title: '들어봤거나 관심 있는 절세 방법이 있나요?',
+    desc: '해당하는 것을 모두 골라주세요.',
+    showIf: (a) => wantsMoneyOut(a),
+    exclusiveValues: ['none'],
+    options: [
+      { value: 'rnd', label: '기업부설연구소 R&D 세액공제' },
+      { value: 'ventureDeduct', label: '벤처투자 소득공제' },
+      { value: 'certBenefit', label: '기업인증 세제·우대 혜택' },
+      { value: 'none', label: '아직 잘 몰라요 — 그래서 진단이 필요해요' },
+    ],
+  },
+  // 자금 트랙 (fund/both)
   {
     id: 'fundingWhen',
     stage: 2,
     type: 'single',
+    showIf: (a) => wantsMoneyIn(a),
     title: '자금이 언제쯤 필요하신가요?',
     options: [
       { value: 'm1', label: '당장 1개월 이내' },
@@ -176,7 +221,7 @@ export const questions: DiagnosisQuestion[] = [
     type: 'multi',
     title: '자금이 필요한 이유는 무엇인가요?',
     desc: '해당하는 것을 모두 골라주세요.',
-    showIf: (a) => !noFundingNeed(a),
+    showIf: (a) => wantsMoneyIn(a) && !noFundingNeed(a),
     exclusiveValues: ['unknown'],
     options: [
       { value: 'working', label: '인건비·임차료 등 운영비' },
@@ -194,7 +239,7 @@ export const questions: DiagnosisQuestion[] = [
     type: 'single',
     title: '어느 정도 규모의 자금을 생각하세요?',
     desc: '정확하지 않아도 괜찮아요. 대략적인 범위로 골라주세요.',
-    showIf: (a) => !noFundingNeed(a),
+    showIf: (a) => wantsMoneyIn(a) && !noFundingNeed(a),
     options: [
       { value: 'lt50', label: '5천만원 미만' },
       { value: 's50to100', label: '5천만원 ~ 1억원' },
@@ -205,6 +250,7 @@ export const questions: DiagnosisQuestion[] = [
   },
   {
     id: 'existingLoans',
+    showIf: (a) => wantsMoneyIn(a),
     stage: 2,
     type: 'single',
     title: '지금 이용 중인 대출이나 정책자금이 있으신가요?',
@@ -267,6 +313,7 @@ export const questions: DiagnosisQuestion[] = [
   },
   {
     id: 'govExperience',
+    showIf: (a) => wantsMoneyIn(a),
     stage: 2,
     type: 'single',
     title: '정부지원사업을 신청해본 적 있으신가요?',
@@ -279,6 +326,7 @@ export const questions: DiagnosisQuestion[] = [
   },
   {
     id: 'hiring',
+    showIf: (a) => wantsMoneyIn(a),
     stage: 2,
     type: 'single',
     title: '채용과 관련해 지금 상황은 어떠신가요?',
@@ -345,33 +393,6 @@ export const questions: DiagnosisQuestion[] = [
       { value: 'h1to2', label: '하루 1~2시간' },
       { value: 'h2plus', label: '하루 2시간 이상' },
       { value: 'unsure', label: '잘 모르겠어요' },
-    ],
-  },
-  {
-    id: 'remoteAccess',
-    stage: 3,
-    type: 'single',
-    title: '외부에서도 휴대전화로 회사 데이터를 확인할 수 있나요?',
-    showIf: (a) => ['excel', 'kakao', 'paper', 'scattered'].includes(one(a, 'workflow') ?? ''),
-    options: [
-      { value: 'most', label: '대부분 가능해요' },
-      { value: 'some', label: '일부만 가능해요' },
-      { value: 'hard', label: '거의 어려워요' },
-      { value: 'ask', label: '직원에게 물어봐야 해요' },
-    ],
-  },
-  {
-    id: 'aiUsage',
-    stage: 3,
-    type: 'single',
-    title: '최근 1년 안에 AI나 자동화 도구를 업무에 써보셨나요?',
-    showIf: (a) => ['excel', 'kakao', 'paper', 'scattered'].includes(one(a, 'workflow') ?? '') || many(a, 'concerns').includes('manualWork'),
-    options: [
-      { value: 'using', label: '실제 업무에 쓰고 있어요' },
-      { value: 'partial', label: '일부 직원만 써요' },
-      { value: 'tested', label: '테스트만 해봤어요' },
-      { value: 'none', label: '쓰지 않아요' },
-      { value: 'unknown', label: '무엇을 써야 할지 모르겠어요' },
     ],
   },
   {

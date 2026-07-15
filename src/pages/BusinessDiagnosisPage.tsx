@@ -8,30 +8,22 @@ import LegalFooter from '../components/LegalFooter'
 import DiagnosisStart from '../components/diagnosis/DiagnosisStart'
 import DiagnosisQuestion from '../components/diagnosis/DiagnosisQuestion'
 import DiagnosisProgress from '../components/diagnosis/DiagnosisProgress'
-import InlineBenefitPanel from '../components/diagnosis/InlineBenefitPanel'
-import InlineAdvantagePanel from '../components/diagnosis/InlineAdvantagePanel'
-import LiveDiagnosisStatus from '../components/diagnosis/LiveDiagnosisStatus'
 import StageReport from '../components/diagnosis/StageReport'
 import LeadGate from '../components/diagnosis/LeadGate'
-import { getBenefitAfter } from '../data/businessDiagnosisBenefits'
 import { getInlineFeedback, STAGE_INFO, stageQuestions } from '../data/businessDiagnosisQuestions'
-import { factorById, ownedAdvantageIdsFor } from '../data/policyAdvantageFactors'
-import { computeLiveStatus, computeStageResult } from '../lib/businessDiagnosisEngine'
+import { ownedAdvantageIdsFor } from '../data/policyAdvantageFactors'
+import { computeStageResult } from '../lib/businessDiagnosisEngine'
 import { submitLead, syncSession, trackEvent } from '../lib/businessDiagnosisApi'
 import { captureUtmOnce, clearSession, loadSession, newSession, saveResultToHistory, saveSession } from '../lib/businessDiagnosisStorage'
 import type {
-  BenefitCard,
   DiagnosisSession,
   DiagnosisStage,
   InlineFeedback,
   LeadFormData,
-  PolicyAdvantageFactor,
   StageReportData,
 } from '../types/businessDiagnosis'
 
 type Screen = 'start' | 'question' | 'stageReport' | 'gate'
-type Pending = { kind: 'benefit'; card: BenefitCard } | { kind: 'advantage'; factor: PolicyAdvantageFactor } | null
-
 const AUTO_MS = 180 // 단일선택 자동 전환 (빠르게)
 
 export default function BusinessDiagnosisPage() {
@@ -39,7 +31,6 @@ export default function BusinessDiagnosisPage() {
   const [screen, setScreen] = useState<Screen>('start')
   const [stage, setStage] = useState<DiagnosisStage>(1)
   const [qIdx, setQIdx] = useState(0) // 현재 단계 내 질문 인덱스
-  const [pending, setPending] = useState<Pending>(null)
   const [feedback, setFeedback] = useState<InlineFeedback | null>(null)
   const [report, setReport] = useState<StageReportData | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -67,6 +58,12 @@ export default function BusinessDiagnosisPage() {
     }
   }, [])
 
+  // 저장된 진행 상태가 있으면 시작 화면 없이 바로 이어하기 (이탈 후 복귀 시 처음부터 다시 시작 방지)
+  useEffect(() => {
+    if (hasSaved) handleResume()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const persist = useCallback((next: DiagnosisSession) => {
     sRef.current = next
     setSession(next)
@@ -82,18 +79,15 @@ export default function BusinessDiagnosisPage() {
 
   const visibleQs = useMemo(() => stageQuestions(stage, session.answers), [stage, session.answers])
   const current = visibleQs[qIdx]
-  const liveStatus = useMemo(() => computeLiveStatus(session.answers, session.interests), [session.answers, session.interests])
-  const answeredCount = Object.keys(session.answers).length
-  // 진행률: 완료 단계 + 현재 단계 진행 (전체 3단계 기준 대략치)
+  // 진행률: 현재 단계 기준 — 1단계 9문항이면 답변마다 1/9씩 차오름 (단계 전환 시 리셋)
   const stageProgress = visibleQs.length ? qIdx / visibleQs.length : 0
-  const percent = Math.min(100, ((stage - 1 + stageProgress) / 3) * 100)
+  const percent = Math.min(100, stageProgress * 100)
 
   // ── 시작/이어하기/다시하기 ──
   function enterStage(st: DiagnosisStage, sess: DiagnosisSession) {
     const startedAt = { ...sess.stageStartedAt, [st]: Date.now() }
     persist({ ...sess, currentStage: st, currentQuestionId: stageQuestions(st, sess.answers)[0]?.id ?? null, stageStartedAt: startedAt })
     setStageIdx(st, 0)
-    setPending(null)
     setFeedback(null)
     setReport(null)
     setScreen('question')
@@ -116,7 +110,6 @@ export default function BusinessDiagnosisPage() {
     const idx = saved.currentQuestionId ? qs.findIndex((q) => q.id === saved.currentQuestionId) : 0
     persist(saved)
     setStageIdx(st, idx < 0 ? 0 : idx)
-    setPending(null)
     setFeedback(null)
     setScreen('question')
     window.scrollTo(0, 0)
@@ -128,7 +121,6 @@ export default function BusinessDiagnosisPage() {
     const fresh = newSession()
     persist(fresh)
     setStageIdx(1, 0)
-    setPending(null)
     setFeedback(null)
     setReport(null)
     setHasSaved(false)
@@ -151,31 +143,15 @@ export default function BusinessDiagnosisPage() {
     }
   }
 
-  // 답변 직후 처리: 우대요소 발견 → 혜택 패널 → 전진
+  // 답변 직후 처리: 흐름을 끊는 중간 패널 없이 우대요소만 기록하고 즉시 전진
   const decide = useCallback(() => {
     const s = sRef.current
     const qs = stageQuestions(stageRef.current, s.answers)
     const cur = qs[qRef.current]
     if (!cur) return
-
-    // 1) '보유' 답변 → 우대요소 발견 (아직 발견 안 한 것만)
+    // '보유' 답변은 우대요소로 기록만 (단계 리포트에 반영)
     const owned = ownedAdvantageIdsFor(cur.id, s.answers).filter((id) => !s.foundAdvantages.includes(id))
-    if (owned.length > 0) {
-      persist({ ...s, foundAdvantages: [...s.foundAdvantages, ...owned] })
-      const f = factorById(owned[0])
-      if (f) {
-        trackEvent(s.sessionId, 'benefit_revealed', `advantage:${f.id}`)
-        setPending({ kind: 'advantage', factor: f })
-        return
-      }
-    }
-    // 2) 미보유 답변 → 혜택 패널
-    const b = getBenefitAfter(cur.id, s.answers)
-    if (b) {
-      trackEvent(s.sessionId, 'benefit_revealed', b.id)
-      setPending({ kind: 'benefit', card: b })
-      return
-    }
+    if (owned.length > 0) persist({ ...s, foundAdvantages: [...s.foundAdvantages, ...owned] })
     advance()
   }, [persist])
 
@@ -183,7 +159,6 @@ export default function BusinessDiagnosisPage() {
   const advance = useCallback(() => {
     if (advancingRef.current) return
     advancingRef.current = true
-    setPending(null)
     const s = sRef.current
     const st = stageRef.current
     const qs = stageQuestions(st, s.answers)
@@ -236,50 +211,7 @@ export default function BusinessDiagnosisPage() {
     setTimeout(() => (advancingRef.current = false), 60)
   }, [persist, setStageIdx])
 
-  // 인라인 패널 액션 — 담기는 화면 유지, 넘어가기는 별도 버튼
-  function handleBenefitAdd() {
-    const s = sRef.current
-    if (pending?.kind === 'benefit') {
-      const key = pending.card.interestKey
-      trackEvent(s.sessionId, 'benefit_added_to_recommendations', pending.card.id)
-      const skipped = s.skippedBenefits.filter((id) => id !== pending!.card.id)
-      if (!s.interests.includes(key)) persist({ ...s, interests: [...s.interests, key], skippedBenefits: skipped })
-    }
-  }
-  function handleBenefitRemove() {
-    const s = sRef.current
-    if (pending?.kind === 'benefit') {
-      const key = pending.card.interestKey
-      trackEvent(s.sessionId, 'benefit_removed_from_recommendations', pending.card.id)
-      persist({ ...s, interests: s.interests.filter((k) => k !== key) })
-    }
-  }
-  function handleBenefitConfirm() {
-    const s = sRef.current
-    if (pending?.kind === 'benefit') {
-      const key = pending.card.interestKey
-      // 담지 않고 넘어가면 '건너뜀'으로 기록
-      if (!s.interests.includes(key) && !s.skippedBenefits.includes(pending.card.id)) {
-        trackEvent(s.sessionId, 'benefit_skipped', pending.card.id)
-        persist({ ...s, skippedBenefits: [...s.skippedBenefits, pending.card.id] })
-      }
-    }
-    advance()
-  }
-  function handleBenefitSkip() {
-    const s = sRef.current
-    if (pending?.kind === 'benefit') {
-      trackEvent(s.sessionId, 'benefit_skipped', pending.card.id)
-      if (!s.skippedBenefits.includes(pending.card.id)) persist({ ...s, skippedBenefits: [...s.skippedBenefits, pending.card.id] })
-    }
-    advance()
-  }
-
   function handlePrev() {
-    if (pending) {
-      setPending(null)
-      return
-    }
     if (qRef.current > 0) {
       setStageIdx(stageRef.current, qRef.current - 1)
       setFeedback(null)
@@ -367,21 +299,6 @@ export default function BusinessDiagnosisPage() {
   }
 
   const submitted = Boolean(session.leadId)
-  const pendingPanel =
-    pending?.kind === 'benefit' ? (
-      <InlineBenefitPanel
-        card={pending.card}
-        added={session.interests.includes(pending.card.interestKey)}
-        listCount={session.interests.length}
-        onAdd={handleBenefitAdd}
-        onRemove={handleBenefitRemove}
-        onConfirm={handleBenefitConfirm}
-        onSkip={handleBenefitSkip}
-      />
-    ) : pending?.kind === 'advantage' ? (
-      <InlineAdvantagePanel factor={pending.factor} totalFound={session.foundAdvantages.length} onContinue={advance} />
-    ) : undefined
-
   return (
     <div className="flex min-h-dvh flex-col bg-white text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
@@ -425,15 +342,13 @@ export default function BusinessDiagnosisPage() {
 
         {screen === 'question' && current && (
           <>
-            {answeredCount > 0 && <LiveDiagnosisStatus status={liveStatus} />}
-            {qIdx === 0 && !pending && (
+            {qIdx === 0 && (
               <p className="animate-rise-in mx-auto mt-6 w-full max-w-[720px] px-5 text-sm font-bold text-blue-600">{STAGE_INFO[current.stage].copy}</p>
             )}
             <DiagnosisQuestion
               question={current}
               value={session.answers[current.id]}
               feedback={feedback}
-              inlinePanel={pendingPanel}
               onSelect={handleSelect}
               onNext={decide}
               onPrev={handlePrev}
