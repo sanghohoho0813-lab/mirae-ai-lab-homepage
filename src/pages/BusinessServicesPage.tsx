@@ -177,23 +177,24 @@ export default function BusinessServicesPage() {
       <section className="relative overflow-hidden bg-slate-900">
         <div aria-hidden className="pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl" />
-        <div className="relative mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
+        <div className="relative mx-auto max-w-6xl px-5 py-8 sm:px-6 sm:py-14">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.8rem] font-semibold text-slate-200 backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-amber-400" />
             미래경영지원센터 · 경영지원 서비스몰
           </span>
-          <h1 className="mt-4 max-w-3xl text-[1.75rem] font-extrabold leading-[1.25] tracking-tight text-white sm:text-[2.6rem] sm:leading-[1.18]">
+          <h1 className="mt-3.5 max-w-3xl text-[1.75rem] font-extrabold leading-[1.25] tracking-tight text-white sm:text-[2.6rem] sm:leading-[1.18]">
             대표님에게 필요한 <span className="text-amber-300">경영지원 서비스</span>를 골라보세요
           </h1>
-          <p className="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-slate-300 sm:text-xl">
+          <p className="mt-3.5 max-w-2xl text-[1.02rem] leading-relaxed text-slate-300 sm:text-xl">
             정책자금·고용지원금·기업인증·홈페이지·AI 시스템까지, 기업 상황에 맞는 패키지를 상담 후 제안드립니다.
           </p>
-          <div className="mt-7 max-w-3xl">
+          <div className="mt-6 max-w-3xl">
             <Link
               to="/business-diagnosis"
-              className="flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-7 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 sm:inline-flex"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-center text-[1.12rem] font-black leading-snug text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 sm:w-auto sm:text-lg"
             >
-              🩺 우리 회사에 필요한 서비스 직접 체크해보기
+              <span aria-hidden className="text-xl">🩺</span>
+              <span className="text-balance">우리 회사에 필요한 서비스 직접 체크하기</span>
             </Link>
             <p className="mt-2 text-[0.9rem] font-bold text-amber-200/90">✓ 비회원도 체크 가능</p>
 
@@ -235,17 +236,17 @@ export default function BusinessServicesPage() {
           </div>
 
           {/* 신뢰 지표 — 서비스 찾기 CTA 바로 아래, 상품보다 먼저 눈에 띄게 */}
-          <div id="trust" className="mt-7 max-w-4xl scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur sm:p-6">
+          <div id="trust" className="mt-6 max-w-4xl scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur sm:p-6">
             <p className="text-[0.9rem] font-bold uppercase tracking-widest text-amber-300">믿고 맡기는 이유</p>
-            <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4">
+            <dl className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
               {trustStats.map((s) => (
                 <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
-                  <dd className="text-[1.85rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
-                  <dt className="mt-2 text-[0.92rem] font-medium leading-snug text-slate-300">{s.label}</dt>
+                  <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
+                  <dt className="mt-1.5 text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
                 </div>
               ))}
             </dl>
-            <div className="mt-5 flex items-start gap-3.5 border-t border-white/10 pt-5">
+            <div className="mt-4 flex items-start gap-3 border-t border-white/10 pt-4 sm:gap-3.5">
               <img
                 src="/assets/profile/ceo-avatar.webp"
                 alt="미래 AI 랩 대표 프로필 사진"
@@ -253,13 +254,13 @@ export default function BusinessServicesPage() {
                 decoding="async"
                 width={200}
                 height={200}
-                className="h-20 w-20 shrink-0 rounded-full object-cover shadow-lg shadow-black/30 ring-[3px] ring-amber-400/60 sm:h-24 sm:w-24"
+                className="h-16 w-16 shrink-0 rounded-full object-cover shadow-lg shadow-black/30 ring-[3px] ring-amber-400/60 sm:h-24 sm:w-24"
               />
               <div className="min-w-0">
-              <p className="text-[1.1rem] font-semibold leading-relaxed text-slate-100">
+              <p className="text-[0.98rem] font-semibold leading-relaxed text-slate-100 sm:text-[1.1rem]">
                 정책자금부터 정부지원사업, 법인컨설팅, AX 구축까지 기업의 성장 과정을 한 흐름으로 설계합니다.
               </p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-2 text-[0.95rem] font-medium text-slate-300">
+              <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[0.9rem] font-medium text-slate-300 sm:mt-2.5 sm:text-[0.95rem]">
                 <span className="font-bold text-white">미래 AI 랩 대표</span>
                 <span className="text-slate-600">·</span>
                 <span>미래경영지원센터</span>
@@ -279,15 +280,15 @@ export default function BusinessServicesPage() {
                   <span aria-hidden className="text-slate-300">↗</span>
                 </a>
               </div>
-              {/* 수상 — 모바일에서도 2열 병렬, 소형 */}
-              <div className="mt-3 grid grid-cols-2 gap-2">
+              {/* 수상 — 전폭 단일 열(연도 칩 + 제목·부문 인라인), 세로 길이 최소화 */}
+              <div className="mt-3 space-y-1.5">
                 {trustAwards.map((a) => (
-                  <div key={a.title} className="flex items-start gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
-                    <span className="mt-0.5 shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.68rem] font-black text-slate-900">{a.year}</span>
-                    <span className="min-w-0">
-                      <span className="block text-[0.78rem] font-bold leading-snug text-slate-100">{a.title}</span>
-                      <span className="text-[0.7rem] text-slate-400">{a.detail}</span>
-                    </span>
+                  <div key={a.title} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
+                    <span className="mt-px shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.7rem] font-black text-slate-900">{a.year}</span>
+                    <p className="min-w-0 text-[0.82rem] font-semibold leading-snug text-slate-100">
+                      {a.title}
+                      <span className="font-normal text-slate-400"> · {a.detail}</span>
+                    </p>
                   </div>
                 ))}
               </div>
@@ -299,12 +300,12 @@ export default function BusinessServicesPage() {
 
       {/* 대표 상품 TOP 5 */}
       <section id="top3" className="scroll-mt-16 border-t border-slate-200">
-        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6 sm:py-12">
           <p className={eyebrow}>대표 상품 TOP 5</p>
           <h2 className={h2Class}>대표님들이 가장 많이 찾는 서비스</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((pkg) => (
-              <ProductCard key={pkg.id} pkg={pkg} />
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-5 lg:grid-cols-3">
+            {featured.map((pkg, i) => (
+              <ProductCard key={pkg.id} pkg={pkg} rank={i + 1} />
             ))}
           </div>
         </div>
@@ -341,7 +342,7 @@ export default function BusinessServicesPage() {
             {groups.map((g) => (
               <div key={g.cat}>
                 <h3 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{g.scenario}</h3>
-                <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
                   {g.items.map((pkg) => (
                     <ProductCard key={pkg.id} pkg={pkg} />
                   ))}

@@ -79,7 +79,7 @@ export default function SavedItemsPage() {
           {cartItems.length === 0 ? (
             <div className="mt-4"><EmptyBox label="장바구니가 비어 있어요. 마음에 드는 서비스를 담아보세요." /></div>
           ) : (
-            <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
               {cartItems.map((pkg) => (
                 <ProductCard key={pkg.id} pkg={pkg} />
               ))}
@@ -100,7 +100,7 @@ export default function SavedItemsPage() {
           {likedItems.length === 0 ? (
             <div className="mt-4"><EmptyBox label="아직 좋아요한 상품이 없어요." /></div>
           ) : (
-            <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
               {likedItems.map((pkg) => (
                 <ProductCard key={pkg.id} pkg={pkg} />
               ))}
