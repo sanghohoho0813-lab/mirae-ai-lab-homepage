@@ -73,93 +73,110 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-// 서비스몰형 상품 카드 (실제 썸네일 · 카테고리 배지 · 가격 · 핵심 혜택 · CTA)
+// 카드 가격 표기 전용 — '59만원', '23만 7천원' 같은 한국어 축약 표기를 '590,000원' 콤마 표기로 변환.
+// ⚠️ 표시(문자열) 변환일 뿐, 실제 결제 금액(pkg.amount / variants[].amount / 서버 카탈로그)과는 무관합니다.
+function formatKoreanMoney(text: string): string {
+  return text
+    .replace(/(\d[\d,]*)\s*만(?:\s*(\d+)\s*천)?\s*원/g, (_m, man: string, cheon?: string) => {
+      const won = parseInt(man.replace(/,/g, ''), 10) * 10000 + (cheon ? parseInt(cheon, 10) * 1000 : 0)
+      return `${won.toLocaleString('ko-KR')}원`
+    })
+    .replace(/(?<![\d,])(\d+)\s*천\s*원/g, (_m, cheon: string) => `${(parseInt(cheon, 10) * 1000).toLocaleString('ko-KR')}원`)
+}
+
+// 서비스몰형 상품 카드(2차 고도화) — SaaS 미니멀. 카드는 '판매'(사고 싶게), 상세페이지는 '설명' 역할.
+// 상품명 → 가격(강조) → 대표 혜택 3 → 버튼 2. 결제/상담 상품을 시각적으로 구분.
 function ProductCard({ pkg }: { pkg: BusinessPackage }) {
   const b = packageBanner[pkg.id]
   const flagship = pkg.flagship
+  const consult = pkg.priceType === 'consult'
+  const priceText = formatKoreanMoney(pkg.price)
+
+  // 기본 CTA 테마 — 대표상품(amber) → 상담(blue, "문의") → 결제(slate-900, "구매")
+  const ctaTheme = flagship
+    ? 'bg-amber-500 text-white hover:bg-amber-600 focus-visible:outline-amber-500 shadow-amber-500/20'
+    : consult
+      ? 'bg-blue-600 text-white hover:bg-blue-700 focus-visible:outline-blue-600 shadow-blue-600/15'
+      : 'bg-slate-900 text-white hover:bg-slate-700 focus-visible:outline-slate-600 shadow-slate-900/10'
+  const primaryBtn =
+    `group/btn inline-flex h-11 flex-1 items-center justify-center gap-1 rounded-xl px-3.5 text-[0.9rem] font-bold shadow-sm transition-all duration-150 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 ${ctaTheme}`
+
   return (
     <article
-      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white transition-transform duration-200 hover:-translate-y-1 ${
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${
         flagship
-          ? 'border-2 border-amber-400 shadow-lg shadow-amber-500/10 ring-1 ring-amber-300/40'
-          : 'border border-slate-200 shadow-sm hover:shadow-lg'
+          ? 'border border-amber-300 shadow-sm shadow-amber-500/10 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/15'
+          : 'border border-slate-200 shadow-sm hover:border-slate-300 hover:shadow-lg'
       }`}
     >
-      {/* 썸네일 (3:2 원본 비율 그대로 — 하단 문구 잘림 방지) */}
-      <Link to={`/business-services/${pkg.slug}`} className="relative block aspect-[3/2] bg-slate-100">
-        <BusinessServiceVisual type={pkg.visualType} title={b.title} subtitle={b.subtitle} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="contain" />
+      {/* 썸네일 — 첫인상 전용(대표 카피·이미지). 16:10 컴팩트, 상단 고정 크롭 */}
+      <Link
+        to={`/business-services/${pkg.slug}`}
+        aria-label={`${pkg.name} 자세히 보기`}
+        className="relative block aspect-[16/10] overflow-hidden bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+      >
+        <BusinessServiceVisual type={pkg.visualType} title={b.title} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="cover" minimal />
       </Link>
 
-      <div className="flex flex-1 flex-col p-5">
-        {/* 카테고리 배지 + 하이라이트 */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>
-            {pkg.category}
-          </span>
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        {/* 카테고리 ↔ 대표상품/배지 */}
+        <div className="flex items-center justify-between gap-2">
+          <span className={`rounded-full px-2 py-0.5 text-[0.68rem] font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.category}</span>
           {flagship ? (
-            <span className="rounded-full bg-amber-400 px-2.5 py-1 text-xs font-black text-slate-900">★ 대표 상품</span>
+            <span className="shrink-0 rounded-full bg-amber-400 px-2 py-0.5 text-[0.68rem] font-black text-slate-900">★ 대표 상품</span>
           ) : (
-            pkg.badge && <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{pkg.badge}</span>
+            pkg.badge && <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[0.68rem] font-semibold text-slate-500">{pkg.badge}</span>
           )}
         </div>
 
-        {/* 상품명 (크게) */}
-        <h3 className="mt-2.5 text-[1.35rem] font-extrabold leading-snug tracking-tight text-slate-900">{pkg.name}</h3>
-        {/* 짧은 설명 */}
-        <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-slate-500">{pkg.short}</p>
+        {/* 상품명 + 한줄 소개 */}
+        <h3 className="mt-2.5 line-clamp-1 text-[1.05rem] font-extrabold leading-snug tracking-tight text-slate-900">{pkg.name}</h3>
+        <p className="mt-1 line-clamp-1 text-[0.8rem] leading-relaxed text-slate-500">{pkg.short}</p>
 
-        {/* 가격 (크게) — consult 는 톤다운, variant 는 '~' 시작가 */}
-        <div className="mt-3.5">
-          <p
-            className={`font-black tracking-tight ${pkg.priceType === 'consult' ? 'text-[1.35rem]' : 'text-[1.65rem]'} ${
-              flagship ? 'text-amber-600' : pkg.priceType === 'consult' ? 'text-slate-700' : 'text-slate-900'
-            }`}
-          >
-            {pkg.price}
-          </p>
-          {pkg.priceHighlight && <p className="mt-0.5 text-[0.95rem] font-black leading-snug text-red-600">{pkg.priceHighlight}</p>}
-          {pkg.priceNote && <p className="mt-0.5 text-xs font-medium text-slate-400">{pkg.priceNote}</p>}
-        </div>
-
-        {/* 핵심 혜택 (썸네일 하단 밴드에 있던 문구를 텍스트로 노출) */}
-        <div className="mt-3.5 border-t border-slate-100 pt-3.5">
-          <ul className="space-y-2">
-            {pkg.highlights.slice(0, 3).map((h) => (
-              <li key={h} className="flex items-start gap-1.5 text-[1.05rem] font-bold leading-snug text-slate-700">
-                <span className={`mt-0.5 shrink-0 font-black ${flagship ? 'text-amber-500' : 'text-blue-500'}`} aria-hidden>✓</span>
-                <span>{h}</span>
-              </li>
-            ))}
-          </ul>
-          {pkg.highlightNote && (
-            <p className="mt-2 line-clamp-2 text-[0.78rem] font-medium leading-snug text-slate-400">{pkg.highlightNote}</p>
-          )}
-        </div>
-
-        {/* 버튼 2개 (결제하기·상담 신청 / 자세히 보기) — consult 상품만 상담, 나머지는 카드결제 */}
-        <div className="mt-auto flex gap-2 pt-5">
-          {pkg.priceType === 'consult' ? (
-            <a
-              href="#apply"
-              className={`flex flex-1 items-center justify-center rounded-xl px-3 py-3 text-base font-bold text-white shadow-sm transition-colors ${
-                flagship ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-slate-700'
-              }`}
-            >
-              상담 신청
-            </a>
+        {/* 가격 존 — 결제/상담 구분 배지 + 가격 강조 */}
+        <div className="mt-3">
+          {consult ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[0.66rem] font-bold text-amber-700 ring-1 ring-inset ring-amber-500/20">
+              <span aria-hidden>💬</span> 상담 후 견적
+            </span>
           ) : (
-            <Link
-              to={`/checkout/${pkg.slug}`}
-              className={`flex flex-1 items-center justify-center rounded-xl px-3 py-3 text-base font-bold text-white shadow-sm transition-colors ${
-                flagship ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-slate-700'
-              }`}
-            >
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[0.66rem] font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
+              <span aria-hidden>⚡</span> 바로 결제 가능
+            </span>
+          )}
+          <div className="mt-1.5 flex items-baseline gap-1.5">
+            <span className={`font-black tracking-tight ${consult ? 'text-[1.35rem] text-slate-700' : flagship ? 'text-2xl text-amber-600' : 'text-2xl text-slate-900'}`}>{priceText}</span>
+          </div>
+          {pkg.priceHighlight && <p className="mt-1 line-clamp-1 text-[0.72rem] font-bold text-rose-600">{formatKoreanMoney(pkg.priceHighlight)}</p>}
+        </div>
+
+        {/* 대표 혜택 3가지 — SaaS 체크 리스트(스캔형) */}
+        <ul className="mt-3.5 space-y-2 border-t border-slate-100 pt-3.5">
+          {pkg.highlights.slice(0, 3).map((h) => (
+            <li key={h} className="flex items-center gap-2 text-[0.8rem] font-semibold text-slate-700">
+              <span className={`grid h-4 w-4 shrink-0 place-items-center rounded-full ${flagship ? 'bg-amber-100 text-amber-600' : 'bg-blue-50 text-blue-600'}`} aria-hidden>
+                <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2.5 6.4l2.4 2.4L9 3.2" />
+                </svg>
+              </span>
+              <span className="line-clamp-1">{formatKoreanMoney(h)}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* 버튼 2개 — 결제/상담(primary) · 자세히 보기(secondary) */}
+        <div className="mt-auto flex gap-2 pt-4">
+          {consult ? (
+            <a href="#apply" className={primaryBtn}>상담 신청</a>
+          ) : (
+            <Link to={`/checkout/${pkg.slug}`} className={primaryBtn}>
               바로 결제하기
+              <span aria-hidden className="transition-transform duration-150 group-hover/btn:translate-x-0.5">→</span>
             </Link>
           )}
           <Link
             to={`/business-services/${pkg.slug}`}
-            className="flex flex-1 items-center justify-center rounded-xl border border-slate-300 px-3 py-3 text-base font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+            className="inline-flex h-11 flex-1 items-center justify-center rounded-xl border border-slate-300 px-3.5 text-[0.9rem] font-semibold text-slate-700 transition-all duration-150 hover:border-slate-400 hover:bg-slate-50 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
           >
             자세히 보기
           </Link>

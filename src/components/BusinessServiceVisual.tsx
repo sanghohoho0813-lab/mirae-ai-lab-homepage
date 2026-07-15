@@ -22,6 +22,8 @@ type Props = {
   size?: 'card' | 'hero'
   /** 이미지 맞춤: cover=상단 고정 크롭(카드), contain=전체 표시(상세) */
   fit?: 'cover' | 'contain'
+  /** 카드 썸네일 단순화 — 부제·모티프 그래픽 숨기고 태그+대표카피만 (첫인상 전용) */
+  minimal?: boolean
 }
 
 const accentMap: Record<VisualAccent, { glow: string; chip: string; bar: string; motif: string }> = {
@@ -106,7 +108,7 @@ function Motif({ type }: { type: BusinessVisualType }) {
   }
 }
 
-export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, tag = '서비스 패키지', size = 'card', fit = 'cover' }: Props) {
+export default function BusinessServiceVisual({ type, title, subtitle, accent = 'blue', imageSrc, alt, tag = '서비스 패키지', size = 'card', fit = 'cover', minimal = false }: Props) {
   const [imgFailed, setImgFailed] = useState(false)
 
   if (imageSrc && !imgFailed) {
@@ -132,14 +134,16 @@ export default function BusinessServiceVisual({ type, title, subtitle, accent = 
       <div aria-hidden className={`absolute -right-10 -top-12 h-40 w-40 rounded-full blur-2xl ${a.glow}`} />
       <div aria-hidden className="absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-white/5 blur-2xl" />
       {/* motif */}
-      <div className={`absolute right-4 top-4 ${a.motif}`}>
-        <Motif type={type} />
-      </div>
+      {!minimal && (
+        <div className={`absolute right-4 top-4 ${a.motif}`}>
+          <Motif type={type} />
+        </div>
+      )}
       {/* text */}
       <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
         <span className={`inline-block rounded-md px-2 py-0.5 text-[11px] font-bold ${a.chip}`}>{tag}</span>
         <p className={`mt-2 font-black leading-tight tracking-tight text-white ${titleSize}`}>{title}</p>
-        {subtitle && <p className="mt-1.5 text-xs font-medium text-slate-300 sm:text-[0.8rem]">{subtitle}</p>}
+        {!minimal && subtitle && <p className="mt-1.5 text-xs font-medium text-slate-300 sm:text-[0.8rem]">{subtitle}</p>}
       </div>
       <div aria-hidden className={`absolute inset-x-0 bottom-0 h-1 ${a.bar}`} />
     </div>
