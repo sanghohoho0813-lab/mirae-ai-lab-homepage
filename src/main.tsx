@@ -24,6 +24,7 @@ import OnboardingPage from './pages/auth/OnboardingPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 import MyPage from './pages/MyPage'
+import SavedItemsPage from './pages/SavedItemsPage'
 import AuthGuard from './components/auth/AuthGuard'
 import GuestOnly from './components/auth/GuestOnly'
 import ScrollToTop from './components/ScrollToTop'
@@ -66,6 +67,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/payment/complete" element={<PaymentCompletePage />} />
           <Route path="/my-orders" element={<MyOrdersPage />} />
           <Route path="/business-services" element={<BusinessServicesPage />} />
+          <Route path="/saved" element={<SavedItemsPage />} />
           <Route path="/business-diagnosis" element={<BusinessDiagnosisPage />} />
           <Route path="/business-diagnosis/results" element={<BusinessDiagnosisResultsPage />} />
           <Route path="/business-diagnosis/results/:resultId" element={<BusinessDiagnosisResultsPage />} />

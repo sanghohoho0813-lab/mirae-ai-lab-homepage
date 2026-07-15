@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { loadLocalOrders } from '../lib/payments'
+import { getCart, getLikes } from '../lib/savedItems'
 import { consultLinks } from '../config/businessInfo'
 import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
@@ -166,6 +167,7 @@ export default function PublicMenuDrawer({
   const [open, setOpen] = useState(false)
   const [historyCount, setHistoryCount] = useState(0)
   const [orderCount, setOrderCount] = useState(0)
+  const [savedCount, setSavedCount] = useState(0)
   const location = useLocation()
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
@@ -179,9 +181,16 @@ export default function PublicMenuDrawer({
 
   // 대표자 메뉴의 '기업 성장' 그룹에 '내 진단 결과 N건'·'내 결제·신청내역 N건' 동적 추가
   const config = useMemo<MenuConfig>(() => {
-    if (variant !== 'business' || (historyCount <= 0 && orderCount <= 0)) return MENUS[variant]
+    if (variant !== 'business' || (historyCount <= 0 && orderCount <= 0 && savedCount <= 0)) return MENUS[variant]
     const base = MENUS.business
     const extra: MenuItem[] = []
+    if (savedCount > 0) {
+      extra.push({
+        label: `찜·장바구니 ${savedCount}개`,
+        to: '/saved',
+        match: (p) => p === '/saved',
+      })
+    }
     if (historyCount > 0) {
       extra.push({
         label: `내 진단 결과 ${historyCount}건`,
@@ -200,7 +209,7 @@ export default function PublicMenuDrawer({
       ...base,
       groups: base.groups.map((g) => (g.heading === '기업 성장' ? { ...g, items: [...g.items, ...extra] } : g)),
     }
-  }, [variant, historyCount, orderCount])
+  }, [variant, historyCount, orderCount, savedCount])
 
   useEffect(() => {
     setOpen(false)
@@ -210,6 +219,7 @@ export default function PublicMenuDrawer({
     if (open && variant === 'business') {
       setHistoryCount(loadHistory().length)
       setOrderCount(loadLocalOrders().length)
+      setSavedCount(getLikes().length + getCart().length)
     }
   }, [open, variant])
 

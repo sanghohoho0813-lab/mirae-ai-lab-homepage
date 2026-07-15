@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import BusinessServiceVisual from '../components/BusinessServiceVisual'
 import HeaderAccount from '../components/account/HeaderAccount'
+import ProductCard from '../components/ProductCard'
 import LegalFooter from '../components/LegalFooter'
 import { consultLinks } from '../config/businessInfo'
+import { useSavedItems } from '../lib/savedItems'
 import {
   businessPackages,
   CATEGORIES,
   CATEGORY_SCENARIOS,
-  categoryToneClass,
   FEATURED_IDS,
-  packageBanner,
   type BusinessPackage,
 } from '../data/businessPackages'
 
@@ -50,91 +49,6 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-// 카드 가격 표기 전용 — '59만원', '23만 7천원' 같은 한국어 축약 표기를 '590,000원' 콤마 표기로 변환.
-// ⚠️ 표시(문자열) 변환일 뿐, 실제 결제 금액(pkg.amount / variants[].amount / 서버 카탈로그)과는 무관합니다.
-function formatKoreanMoney(text: string): string {
-  return text
-    .replace(/(\d[\d,]*)\s*만(?:\s*(\d+)\s*천)?\s*원/g, (_m, man: string, cheon?: string) => {
-      const won = parseInt(man.replace(/,/g, ''), 10) * 10000 + (cheon ? parseInt(cheon, 10) * 1000 : 0)
-      return `${won.toLocaleString('ko-KR')}원`
-    })
-    .replace(/(?<![\d,])(\d+)\s*천\s*원/g, (_m, cheon: string) => `${(parseInt(cheon, 10) * 1000).toLocaleString('ko-KR')}원`)
-}
-
-// 서비스몰형 상품 카드(3차) — 버튼 없이 카드 전체가 상세페이지 링크.
-// 상품명 → 가격(강조) → 대표 혜택 3. 결제/상담은 상세페이지 상단 CTA 에서 진행.
-function ProductCard({ pkg }: { pkg: BusinessPackage }) {
-  const b = packageBanner[pkg.id]
-  const flagship = pkg.flagship
-  const consult = pkg.priceType === 'consult'
-  const priceText = formatKoreanMoney(pkg.price)
-
-  return (
-    <Link
-      to={`/business-services/${pkg.slug}`}
-      aria-label={`${pkg.name} 자세히 보기`}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-200 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${
-        flagship
-          ? 'border border-amber-300 shadow-sm shadow-amber-500/10 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/15'
-          : 'border border-slate-200 shadow-sm hover:border-slate-300 hover:shadow-lg'
-      }`}
-    >
-      {/* 썸네일 — 첫인상 전용(대표 카피·이미지). 16:10 컴팩트, 상단 고정 크롭 */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
-        <BusinessServiceVisual type={pkg.visualType} title={b.title} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="cover" minimal />
-      </div>
-
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-        {/* 카테고리 ↔ 대표상품/배지 */}
-        <div className="flex items-center justify-between gap-2">
-          <span className={`rounded-full px-2.5 py-1 text-[0.82rem] font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.category}</span>
-          {flagship ? (
-            <span className="shrink-0 rounded-full bg-amber-400 px-2.5 py-1 text-[0.82rem] font-black text-slate-900">★ 대표 상품</span>
-          ) : (
-            pkg.badge && <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[0.82rem] font-semibold text-slate-500">{pkg.badge}</span>
-          )}
-        </div>
-
-        {/* 상품명 + 한줄 소개 */}
-        <h3 className="mt-3 line-clamp-1 text-[1.35rem] font-extrabold leading-snug tracking-tight text-slate-900">{pkg.name}</h3>
-        <p className="mt-1.5 line-clamp-2 text-[0.98rem] leading-relaxed text-slate-500">{pkg.short}</p>
-
-        {/* 가격 존 — 결제/상담 구분 배지 + 가격 강조 */}
-        <div className="mt-3.5">
-          {consult ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-[0.82rem] font-bold text-amber-700 ring-1 ring-inset ring-amber-500/20">
-              <span aria-hidden>💬</span> 상담 후 견적
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[0.82rem] font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
-              <span aria-hidden>⚡</span> 바로 결제 가능
-            </span>
-          )}
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className={`font-black tracking-tight ${consult ? 'text-[1.6rem] text-slate-700' : flagship ? 'text-[1.85rem] text-amber-600' : 'text-[1.85rem] text-slate-900'}`}>{priceText}</span>
-          </div>
-          {pkg.priceHighlight && <p className="mt-1.5 line-clamp-1 text-[0.9rem] font-bold text-rose-600">{formatKoreanMoney(pkg.priceHighlight)}</p>}
-        </div>
-
-        {/* 대표 혜택 3가지 — SaaS 체크 리스트(스캔형) */}
-        <ul className="mt-4 space-y-2.5 border-t border-slate-100 pt-4">
-          {pkg.highlights.slice(0, 3).map((h) => (
-            <li key={h} className="flex items-center gap-2.5 text-[0.98rem] font-semibold text-slate-700">
-              <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${flagship ? 'bg-amber-100 text-amber-600' : 'bg-blue-50 text-blue-600'}`} aria-hidden>
-                <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M2.5 6.4l2.4 2.4L9 3.2" />
-                </svg>
-              </span>
-              <span className="line-clamp-1">{formatKoreanMoney(h)}</span>
-            </li>
-          ))}
-        </ul>
-
-      </div>
-    </Link>
-  )
-}
-
 // 햄버거 메뉴 등 외부 링크용 카테고리 쿼리 (?category=funding 등)
 const CATEGORY_QUERY_MAP: Record<string, string> = {
   funding: '자금조달',
@@ -146,6 +60,8 @@ const CATEGORY_QUERY_MAP: Record<string, string> = {
 
 export default function BusinessServicesPage() {
   const [activeCat, setActiveCat] = useState('전체')
+  const { likes, cart } = useSavedItems()
+  const savedCount = likes.length + cart.length
   const [showBar, setShowBar] = useState(false)
   const [searchParams] = useSearchParams()
   const location = useLocation()
@@ -217,6 +133,22 @@ export default function BusinessServicesPage() {
               className="hidden text-[0.95rem] font-medium text-slate-500 transition-colors hover:text-slate-900 lg:inline"
             >
               컨설턴트용 AI 도구
+            </Link>
+            <Link
+              to="/saved"
+              aria-label={`찜한 상품·장바구니 ${savedCount}개 보기`}
+              className="relative grid h-10 w-10 place-items-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+            >
+              <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <circle cx="9" cy="20" r="1.4" />
+                <circle cx="17.5" cy="20" r="1.4" />
+                <path d="M2.5 3.5h2.5l2.6 12h10.7l2.2-8.5H6" />
+              </svg>
+              {savedCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white">
+                  {savedCount > 99 ? '99+' : savedCount}
+                </span>
+              )}
             </Link>
             <Link
               to="/business-diagnosis"
