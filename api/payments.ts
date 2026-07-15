@@ -14,14 +14,14 @@
 //  - 상담 전용 상품(prepare) 422 차단. 비활성 상품 차단.
 //  - 응답에 secret·service key·타 고객 정보 절대 미포함. 조회 응답은 전화·이메일 마스킹.
 //  - 브라우저 응답만으로 paid 처리하지 않음 (PortOne 재조회 필수).
-import { getSupabaseAdmin, supabaseConfigured, verifyAdmin, type SupabaseAdmin } from './_lib/supabaseAdmin'
-import { CONSULT_ONLY_SLUGS, getServerProduct } from './_lib/paymentCatalog'
-import { portoneConfigured, portoneEnvironment } from './_lib/portone'
+import { getSupabaseAdmin, supabaseConfigured, verifyAdmin, type SupabaseAdmin } from './_lib/supabaseAdmin.js'
+import { CONSULT_ONLY_SLUGS, getServerProduct } from './_lib/paymentCatalog.js'
+import { portoneConfigured, portoneEnvironment } from './_lib/portone.js'
 import {
   createAccessToken, createOrderNumber, createPaymentId, logPaymentEvent, maskEmail, maskPhone,
   normalizePhone, reconcilePayment, sanitizePaymentError, sha256, stripControl, toPublicSummary, type PaymentRow,
-} from './_lib/paymentReconcile'
-import { DEFAULT_ONE_TIME_POLICY, evaluateOneTimeRefundEligibility, policyFromRow } from './_lib/refundPolicy'
+} from './_lib/paymentReconcile.js'
+import { DEFAULT_ONE_TIME_POLICY, evaluateOneTimeRefundEligibility, policyFromRow } from './_lib/refundPolicy.js'
 
 type VercelReq = { method?: string; body?: unknown; query?: Record<string, string | string[]>; headers: Record<string, string | string[] | undefined>; url?: string }
 type VercelRes = { status: (code: number) => VercelRes; json: (body: unknown) => void; setHeader: (k: string, v: string) => void }
@@ -54,7 +54,7 @@ function tokenMatches(row: PaymentRow, token: string): boolean {
   return Boolean(token && row.access_token_hash && sha256(token) === row.access_token_hash)
 }
 
-export default async function handler(req: VercelReq, res: VercelRes) {
+async function handlerImpl(req: VercelReq, res: VercelRes) {
   res.setHeader('Cache-Control', 'no-store')
 
   const admin = await getSupabaseAdmin()
@@ -554,4 +554,16 @@ export default async function handler(req: VercelReq, res: VercelRes) {
   }
 
   return res.status(400).json({ ok: false, message: '알 수 없는 요청입니다.', debugCode: 'unknown_action' })
+}
+
+// 부팅/런타임 예외를 FUNCTION_INVOCATION_FAILED(빈 500) 대신 구조화 JSON 으로 반환한다.
+// 실제 원인은 서버 로그(console.error)에만 남기고 응답에는 secret·내부 스택을 노출하지 않는다.
+export default async function handler(req: VercelReq, res: VercelRes) {
+  try {
+    return await handlerImpl(req, res)
+  } catch (e) {
+    console.error('[api/payments] unhandled error:', e instanceof Error ? `${e.name}: ${e.message}` : String(e))
+    try { res.setHeader('Cache-Control', 'no-store') } catch { /* noop */ }
+    return res.status(500).json({ ok: false, message: '결제 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', debugCode: 'internal_error' })
+  }
 }

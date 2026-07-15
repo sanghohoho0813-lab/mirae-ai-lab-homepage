@@ -6,9 +6,9 @@
 //  4) ⚠️ 웹훅 body 의 상태·금액은 신뢰하지 않음 → PortOne 단건조회 재호출(reconcilePayment)
 //  5) complete API 와 같은 reconcile 로직 → 순서가 뒤바뀌거나 중복 수신돼도 결과 동일
 // 로그에는 이벤트 타입·paymentId 일부·처리결과만 남기고 구매자 개인정보·전체 body 는 남기지 않음.
-import { getSupabaseAdmin } from '../_lib/supabaseAdmin'
-import { verifyWebhookSignature, portoneConfigured } from '../_lib/portone'
-import { logPaymentEvent, reconcilePayment, stripControl } from '../_lib/paymentReconcile'
+import { getSupabaseAdmin } from '../_lib/supabaseAdmin.js'
+import { verifyWebhookSignature, portoneConfigured } from '../_lib/portone.js'
+import { logPaymentEvent, reconcilePayment, stripControl } from '../_lib/paymentReconcile.js'
 
 export const config = { api: { bodyParser: false } }
 
@@ -43,7 +43,7 @@ async function readRawBody(req: VercelReq): Promise<string | null> {
 /** 처리 대상 트랜잭션 이벤트 (그 외 신규 이벤트는 안전하게 무시) */
 const HANDLED_PREFIX = 'Transaction.'
 
-export default async function handler(req: VercelReq, res: VercelRes) {
+async function handlerImpl(req: VercelReq, res: VercelRes) {
   res.setHeader('Cache-Control', 'no-store')
   if (req.method === 'GET') {
     return res.status(200).json({
@@ -133,4 +133,16 @@ export default async function handler(req: VercelReq, res: VercelRes) {
   }
 
   return res.status(200).json({ ok: true, status: result.row.status })
+}
+
+// 부팅/런타임 예외를 FUNCTION_INVOCATION_FAILED(빈 500) 대신 구조화 JSON 으로 반환.
+// PortOne 재시도가 필요한 서버측 오류는 5xx 로, 원인은 로그에만 남긴다(secret 미노출).
+export default async function handler(req: VercelReq, res: VercelRes) {
+  try {
+    return await handlerImpl(req, res)
+  } catch (e) {
+    console.error('[api/portone/webhook] unhandled error:', e instanceof Error ? `${e.name}: ${e.message}` : String(e))
+    try { res.setHeader('Cache-Control', 'no-store') } catch { /* noop */ }
+    return res.status(500).json({ ok: false, debugCode: 'internal_error' })
+  }
 }

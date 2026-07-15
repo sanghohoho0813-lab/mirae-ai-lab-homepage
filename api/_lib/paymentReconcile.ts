@@ -6,8 +6,8 @@
 //  - paid → cancelled / partial_cancelled 전이는 허용 (PortOne 콘솔 취소 동기화)
 //  - paid 를 pending/failed 로 되돌리지 않음
 import crypto from 'node:crypto'
-import type { SupabaseAdmin } from './supabaseAdmin'
-import { getPortOnePayment, mapPortOneStatus, type PortOnePayment } from './portone'
+import type { SupabaseAdmin } from './supabaseAdmin.js'
+import { getPortOnePayment, mapPortOneStatus, type PortOnePayment } from './portone.js'
 
 export const sha256 = (s: string) => crypto.createHash('sha256').update(s, 'utf8').digest('hex')
 

@@ -3,7 +3,7 @@
 // 2순위: 아래 LOCAL_CATALOG — ⚠️ PORTONE_ENV=test 에서만 허용되는 개발 편의 폴백.
 //        live 에서는 billing_products 에 active 레코드가 없으면 결제를 차단합니다(코드 가격으로 진행 금지).
 // ⚠️ 클라이언트가 보낸 금액은 어떤 경우에도 사용하지 않습니다. (businessPackages 화면가도 불신)
-import type { SupabaseAdmin } from './supabaseAdmin'
+import type { SupabaseAdmin } from './supabaseAdmin.js'
 
 export type ServerProduct = {
   productSlug: string
