@@ -223,12 +223,29 @@ export default function PublicMenuDrawer({
     }
   }, [open, variant])
 
+  // 뒤로가기(하드웨어/브라우저)로 드로어만 닫히도록 히스토리 센티넬을 push.
+  // 열릴 때 항목을 하나 쌓고, 뒤로가기(popstate) 시 페이지 이탈 대신 드로어를 닫는다.
+  useEffect(() => {
+    if (!open) return
+    // 라우터가 관리하는 기존 state(usr·key·idx)를 보존하고 miraeDrawer 플래그만 추가
+    window.history.pushState({ ...(window.history.state ?? {}), miraeDrawer: true }, '')
+    const onPop = () => setOpen(false)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [open])
+
+  // 닫기 요청 — 센티넬을 소비하도록 히스토리 back 호출(→ popstate → setOpen(false))
+  const requestClose = () => {
+    if ((window.history.state as { miraeDrawer?: boolean } | null)?.miraeDrawer) window.history.back()
+    else setOpen(false)
+  }
+
   useEffect(() => {
     if (!open) return
     const panel = panelRef.current
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setOpen(false)
+        requestClose()
         return
       }
       // 포커스 트랩 — Tab 이 drawer 밖으로 나가지 않도록
@@ -280,7 +297,7 @@ export default function PublicMenuDrawer({
           <button
             type="button"
             aria-label="메뉴 닫기"
-            onClick={() => setOpen(false)}
+            onClick={requestClose}
             className="animate-overlay-in absolute inset-0 h-full w-full cursor-default bg-slate-900/45 backdrop-blur-[2px]"
           />
           {/* drawer — 100dvh 3분할: 헤더 고정 / 메뉴 스크롤 / CTA 고정 */}
@@ -299,7 +316,7 @@ export default function PublicMenuDrawer({
               </div>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={requestClose}
                 aria-label="메뉴 닫기"
                 className="grid h-11 w-11 place-items-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
               >

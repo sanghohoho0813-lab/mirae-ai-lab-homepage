@@ -134,7 +134,7 @@ export const businessPackages: BusinessPackage[] = [
     price: '상담 후 안내',
     priceNote: '기업 상황·지원 범위에 따라 맞춤 안내',
     priceType: 'consult',
-    highlights: ['신규채용 지원 — 인건비 부담 완화 · 최대 2년', '기존직원 지원 — 고용유지 장려금 · 기업 안정', '육아지원금 — 육아휴직·대체인력 지원'],
+    highlights: ['신규채용 — 최대 1,440만원 지원', '기존직원 고용유지 지원', '육아휴직·대체인력 지원'],
     highlightNote: '기업의 인건비 부담을 줄이고, 고용 안정을 지원합니다.',
     recommendedFor: ['채용 계획이 있어 고용지원금을 활용하고 싶은 대표님', '신청부터 사후관리까지 맡기고 싶은 기업'],
     deliverables: ['지원금 가능성 검토', '신청 대상 제도 정리', '신청 및 사후관리 안내'],

@@ -343,11 +343,14 @@ export default function BusinessServicesPage() {
             })}
           </div>
 
-          {/* 상황별 시나리오 그룹 */}
+          {/* 상황별 시나리오 그룹 — 목차형 넘버링 */}
           <div className="mt-8 space-y-10">
-            {groups.map((g) => (
+            {groups.map((g, gi) => (
               <div key={g.cat}>
-                <h3 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{g.scenario}</h3>
+                <div className="flex items-baseline gap-2.5">
+                  <span className="text-lg font-black tabular-nums tracking-widest text-blue-600 sm:text-xl">{String(gi + 1).padStart(2, '0')}</span>
+                  <h3 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{g.scenario}</h3>
+                </div>
                 <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
                   {g.items.map((pkg) => (
                     <ProductCard key={pkg.id} pkg={pkg} />

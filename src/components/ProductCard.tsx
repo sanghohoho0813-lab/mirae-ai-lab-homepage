@@ -1,6 +1,7 @@
 // 서비스몰형 상품 카드 — 카드 전체가 상세페이지 링크. 찜·장바구니는 상품명 위(우측),
 // 결제/상담은 상세페이지 상단 CTA 에서 진행. 썸네일은 문구가 가려지지 않게 오버레이 없이 깨끗하게.
 // 모바일 2열(2x2) 그리드 우선 — 좁은 폭에서도 글자가 잘리지 않게 기본 크기를 작게, sm 이상에서 확대.
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import BusinessServiceVisual from './BusinessServiceVisual'
 import { categoryToneClass, packageBanner, type BusinessPackage } from '../data/businessPackages'
@@ -17,29 +18,46 @@ export function formatKoreanMoney(text: string): string {
     .replace(/(?<![\d,])(\d+)\s*천\s*원/g, (_m, cheon: string) => `${(parseInt(cheon, 10) * 1000).toLocaleString('ko-KR')}원`)
 }
 
+const prefersReduce = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
 export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
   const b = packageBanner[pkg.id]
   const flagship = pkg.flagship
-  const consult = pkg.priceType === 'consult'
   const priceText = formatKoreanMoney(pkg.price)
   const { likes, cart } = useSavedItems()
   const liked = likes.includes(pkg.slug)
   const inCart = cart.includes(pkg.slug)
+  const [likePulse, setLikePulse] = useState(false)
+  const [cartPulse, setCartPulse] = useState(false)
+
+  // 활성화(담기/좋아요 켜짐) 순간에만 짧은 팝 모션 재생. 애니메이션 종료 안전망으로 타이머 리셋.
+  useEffect(() => {
+    if (!likePulse) return
+    const t = setTimeout(() => setLikePulse(false), 480)
+    return () => clearTimeout(t)
+  }, [likePulse])
+  useEffect(() => {
+    if (!cartPulse) return
+    const t = setTimeout(() => setCartPulse(false), 480)
+    return () => clearTimeout(t)
+  }, [cartPulse])
 
   // 카드 전체가 Link 이므로 버튼은 내비게이션을 막고 토글만 수행
   const onLike = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    if (!liked && !prefersReduce()) setLikePulse(true)
     toggleLike(pkg.slug)
   }
   const onCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    if (!inCart && !prefersReduce()) setCartPulse(true)
     toggleCart(pkg.slug)
   }
 
   const miniBtn =
-    'grid h-8 w-8 place-items-center rounded-full transition-colors duration-150 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-500'
+    'relative grid h-8 w-8 place-items-center rounded-full transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-500'
 
   return (
     <Link
@@ -51,9 +69,9 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
           : 'border border-slate-200 shadow-sm hover:border-slate-300 hover:shadow-lg'
       }`}
     >
-      {/* 썸네일 — 오버레이 없이 배너 문구가 온전히 보이도록. 모바일은 문구가 작아 약 18% 확대 */}
+      {/* 썸네일 — 오버레이 없이 배너 문구가 온전히 보이도록(확대·크롭 없음) */}
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
-        <BusinessServiceVisual type={pkg.visualType} title={b.title} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="cover" minimal thumbZoom />
+        <BusinessServiceVisual type={pkg.visualType} title={b.title} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="cover" minimal />
       </div>
 
       <div className="flex flex-1 flex-col p-3 sm:p-5">
@@ -72,7 +90,8 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
               title={liked ? '좋아요 해제' : '좋아요'}
               className={`${miniBtn} ${liked ? 'bg-rose-50 text-rose-500' : 'text-slate-400 hover:bg-slate-100 hover:text-rose-500'}`}
             >
-              <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              {likePulse && <span aria-hidden className="animate-save-burst pointer-events-none absolute inset-0 rounded-full bg-rose-400/40" />}
+              <svg viewBox="0 0 24 24" className={`h-[18px] w-[18px] ${likePulse ? 'animate-icon-pop' : ''}`} fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M19 14c1.5-1.5 3-3.2 3-5.5A4.5 4.5 0 0 0 17.5 4c-1.7 0-3 .8-4 2.1a5.5 5.5 0 0 0-1-1.1A4.6 4.6 0 0 0 9.5 4 4.5 4.5 0 0 0 5 8.5c0 2.3 1.5 4 3 5.5l4 4 3.5-3.5z" transform="translate(0 .5)" />
               </svg>
             </button>
@@ -84,8 +103,9 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
               title={inCart ? '장바구니에서 빼기' : '장바구니에 담기'}
               className={`${miniBtn} ${inCart ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-100 hover:text-blue-600'}`}
             >
+              {cartPulse && <span aria-hidden className="animate-save-burst pointer-events-none absolute inset-0 rounded-full bg-blue-400/40" />}
               {inCart ? (
-                <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <svg viewBox="0 0 24 24" className={`h-[18px] w-[18px] ${cartPulse ? 'animate-icon-pop' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M4.5 12.5l5 5 10-11" />
                 </svg>
               ) : (
@@ -111,33 +131,24 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
         <h3 className={`line-clamp-2 text-[1.02rem] font-extrabold leading-snug tracking-tight text-slate-900 sm:line-clamp-1 sm:text-[1.35rem] ${flagship ? 'mt-1' : 'mt-2 sm:mt-3'}`}>{pkg.name}</h3>
         <p className="mt-1 line-clamp-2 text-[0.82rem] leading-relaxed text-slate-500 sm:mt-1.5 sm:text-[0.98rem]">{pkg.short}</p>
 
-        {/* 가격 존 — 결제/상담 구분 배지 + 가격 강조 */}
+        {/* 가격 존 — 가격 강조 (결제/상담 구분 배지는 노출하지 않음) */}
         <div className="mt-2.5 sm:mt-3.5">
-          {consult ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[0.72rem] font-bold text-amber-700 ring-1 ring-inset ring-amber-500/20 sm:px-2.5 sm:py-1 sm:text-[0.82rem]">
-              <span aria-hidden>💬</span> 상담 후 견적
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[0.72rem] font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/15 sm:px-2.5 sm:py-1 sm:text-[0.82rem]">
-              <span aria-hidden>⚡</span> 바로 결제
-            </span>
-          )}
-          <div className="mt-1.5 flex items-baseline gap-1.5 sm:mt-2">
-            <span className={`font-black tracking-tight ${consult ? 'text-[1.2rem] text-slate-700 sm:text-[1.6rem]' : flagship ? 'text-[1.35rem] text-amber-600 sm:text-[1.85rem]' : 'text-[1.35rem] text-slate-900 sm:text-[1.85rem]'}`}>{priceText}</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className={`font-black tracking-tight ${pkg.priceType === 'consult' ? 'text-[1.2rem] text-slate-700 sm:text-[1.6rem]' : flagship ? 'text-[1.35rem] text-amber-600 sm:text-[1.85rem]' : 'text-[1.35rem] text-slate-900 sm:text-[1.85rem]'}`}>{priceText}</span>
           </div>
-          {pkg.priceHighlight && <p className="mt-1 line-clamp-1 text-[0.8rem] font-bold text-rose-600 sm:mt-1.5 sm:text-[0.9rem]">{formatKoreanMoney(pkg.priceHighlight)}</p>}
+          {pkg.priceHighlight && <p className="mt-1 text-[0.8rem] font-bold leading-snug text-rose-600 sm:mt-1.5 sm:text-[0.9rem]">{formatKoreanMoney(pkg.priceHighlight)}</p>}
         </div>
 
-        {/* 대표 혜택 — 스캔형 체크 리스트. 모바일 2개, sm 이상 3개 */}
+        {/* 대표 혜택 3가지 — 스캔형 체크 리스트(잘림 없이 최대 2줄까지 표시) */}
         <ul className="mt-3 space-y-2 border-t border-slate-100 pt-3 sm:mt-4 sm:space-y-2.5 sm:pt-4">
-          {pkg.highlights.slice(0, 3).map((h, i) => (
-            <li key={h} className={`flex items-center gap-2 text-[0.82rem] font-semibold text-slate-700 sm:gap-2.5 sm:text-[0.98rem] ${i === 2 ? 'hidden sm:flex' : ''}`}>
-              <span className={`grid h-4 w-4 shrink-0 place-items-center rounded-full sm:h-5 sm:w-5 ${flagship ? 'bg-amber-100 text-amber-600' : 'bg-blue-50 text-blue-600'}`} aria-hidden>
+          {pkg.highlights.slice(0, 3).map((h) => (
+            <li key={h} className="flex items-start gap-2 text-[0.82rem] font-semibold leading-snug text-slate-700 sm:gap-2.5 sm:text-[0.98rem]">
+              <span className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full sm:h-5 sm:w-5 ${flagship ? 'bg-amber-100 text-amber-600' : 'bg-blue-50 text-blue-600'}`} aria-hidden>
                 <svg viewBox="0 0 12 12" className="h-2.5 w-2.5 sm:h-3 sm:w-3" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2.5 6.4l2.4 2.4L9 3.2" />
                 </svg>
               </span>
-              <span className="line-clamp-1">{formatKoreanMoney(h)}</span>
+              <span>{formatKoreanMoney(h)}</span>
             </li>
           ))}
         </ul>
