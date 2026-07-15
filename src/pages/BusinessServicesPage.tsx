@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import BusinessInquiryForm from '../components/BusinessInquiryForm'
 import BusinessServiceVisual from '../components/BusinessServiceVisual'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
+import { consultLinks } from '../config/businessInfo'
 import {
   businessPackages,
   CATEGORIES,
   CATEGORY_SCENARIOS,
   categoryToneClass,
-  DISCLAIMER,
   FEATURED_IDS,
   packageBanner,
   type BusinessPackage,
@@ -62,39 +61,28 @@ function formatKoreanMoney(text: string): string {
     .replace(/(?<![\d,])(\d+)\s*천\s*원/g, (_m, cheon: string) => `${(parseInt(cheon, 10) * 1000).toLocaleString('ko-KR')}원`)
 }
 
-// 서비스몰형 상품 카드(2차 고도화) — SaaS 미니멀. 카드는 '판매'(사고 싶게), 상세페이지는 '설명' 역할.
-// 상품명 → 가격(강조) → 대표 혜택 3 → 버튼 2. 결제/상담 상품을 시각적으로 구분.
+// 서비스몰형 상품 카드(3차) — 버튼 없이 카드 전체가 상세페이지 링크.
+// 상품명 → 가격(강조) → 대표 혜택 3. 결제/상담은 상세페이지 상단 CTA 에서 진행.
 function ProductCard({ pkg }: { pkg: BusinessPackage }) {
   const b = packageBanner[pkg.id]
   const flagship = pkg.flagship
   const consult = pkg.priceType === 'consult'
   const priceText = formatKoreanMoney(pkg.price)
 
-  // 기본 CTA 테마 — 대표상품(amber) → 상담(blue, "문의") → 결제(slate-900, "구매")
-  const ctaTheme = flagship
-    ? 'bg-amber-500 text-white hover:bg-amber-600 focus-visible:outline-amber-500 shadow-amber-500/20'
-    : consult
-      ? 'bg-blue-600 text-white hover:bg-blue-700 focus-visible:outline-blue-600 shadow-blue-600/15'
-      : 'bg-slate-900 text-white hover:bg-slate-700 focus-visible:outline-slate-600 shadow-slate-900/10'
-  const primaryBtn =
-    `group/btn inline-flex h-[3.25rem] flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-xl px-3 text-[1.05rem] font-bold shadow-sm transition-all duration-150 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 ${ctaTheme}`
-
   return (
-    <article
-      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${
+    <Link
+      to={`/business-services/${pkg.slug}`}
+      aria-label={`${pkg.name} 자세히 보기`}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-200 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${
         flagship
           ? 'border border-amber-300 shadow-sm shadow-amber-500/10 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/15'
           : 'border border-slate-200 shadow-sm hover:border-slate-300 hover:shadow-lg'
       }`}
     >
       {/* 썸네일 — 첫인상 전용(대표 카피·이미지). 16:10 컴팩트, 상단 고정 크롭 */}
-      <Link
-        to={`/business-services/${pkg.slug}`}
-        aria-label={`${pkg.name} 자세히 보기`}
-        className="relative block aspect-[16/10] overflow-hidden bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-      >
+      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
         <BusinessServiceVisual type={pkg.visualType} title={b.title} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="cover" minimal />
-      </Link>
+      </div>
 
       <div className="flex flex-1 flex-col p-4 sm:p-5">
         {/* 카테고리 ↔ 대표상품/배지 */}
@@ -142,25 +130,8 @@ function ProductCard({ pkg }: { pkg: BusinessPackage }) {
           ))}
         </ul>
 
-        {/* 버튼 2개 — 결제/상담(primary) · 자세히 보기(secondary) */}
-        <div className="mt-auto flex gap-2 pt-4">
-          {consult ? (
-            <a href="#apply" className={primaryBtn}>상담 신청</a>
-          ) : (
-            <Link to={`/checkout/${pkg.slug}`} className={primaryBtn}>
-              결제하기
-              <span aria-hidden className="transition-transform duration-150 group-hover/btn:translate-x-0.5">→</span>
-            </Link>
-          )}
-          <Link
-            to={`/business-services/${pkg.slug}`}
-            className="inline-flex h-[3.25rem] flex-1 items-center justify-center whitespace-nowrap rounded-xl border border-slate-300 px-3 text-[1.05rem] font-semibold text-slate-700 transition-all duration-150 hover:border-slate-400 hover:bg-slate-50 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-          >
-            자세히 보기
-          </Link>
-        </div>
       </div>
-    </article>
+    </Link>
   )
 }
 
@@ -273,30 +244,51 @@ export default function BusinessServicesPage() {
           <p className="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-slate-300 sm:text-xl">
             정책자금·고용지원금·기업인증·홈페이지·AI 시스템까지, 기업 상황에 맞는 패키지를 상담 후 제안드립니다.
           </p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-7 max-w-3xl">
             <Link
               to="/business-diagnosis"
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-7 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
+              className="flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-7 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 sm:inline-flex"
             >
-              🩺 우리 회사에 필요한 서비스 찾기
+              🩺 우리 회사에 필요한 서비스 직접 체크해보기
             </Link>
-            <button
-              type="button"
-              onClick={() => scrollToId('packages')}
-              className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-lg font-bold text-white transition-colors hover:bg-white/10"
-            >
-              전체 상품 보기
-            </button>
-            <a
-              href="#apply"
-              className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-lg font-bold text-white transition-colors hover:bg-white/10"
-            >
-              상담 신청하기
-            </a>
+            <p className="mt-2 text-[0.9rem] font-bold text-amber-200/90">✓ 비회원도 체크 가능</p>
+
+            <div className="mt-4 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">
+              <button
+                type="button"
+                onClick={() => scrollToId('top3')}
+                className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3.5 text-base font-bold text-white shadow-lg shadow-blue-600/25 transition-colors hover:bg-blue-500 sm:px-6"
+              >
+                대표 상품 TOP 5 보기
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToId('packages')}
+                className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 py-3.5 text-base font-bold text-white transition-colors hover:bg-white/10 sm:px-6"
+              >
+                전체 상품 보기
+              </button>
+              <a
+                href={consultLinks.kakaoChat}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#FEE500] px-5 py-3.5 text-base font-bold text-[#191919] transition-transform hover:-translate-y-0.5 sm:px-6"
+              >
+                <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" aria-hidden>
+                  <path fill="#191919" d="M12 3C6.75 3 2.5 6.36 2.5 10.5c0 2.64 1.73 4.96 4.34 6.29l-.9 3.33c-.08.3.26.54.52.37l3.96-2.63c.51.07 1.04.14 1.58.14 5.25 0 9.5-3.36 9.5-7.5S17.25 3 12 3z" />
+                </svg>
+                카톡 상담하기
+              </a>
+              <a
+                href={consultLinks.googleForm}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 py-3.5 text-base font-bold text-white transition-colors hover:bg-white/10 sm:px-6"
+              >
+                대면 상담 신청하기
+              </a>
+            </div>
           </div>
-          <p className="mt-3.5 text-[0.98rem] font-medium text-slate-400">
-            <b className="text-slate-200">성장진단</b>은 로그인 없이 바로 · <b className="text-slate-200">상담 신청</b>은 담당자가 직접 연락드립니다.
-          </p>
 
           {/* 신뢰 지표 — 서비스 찾기 CTA 바로 아래, 상품보다 먼저 눈에 띄게 */}
           <div id="trust" className="mt-7 max-w-4xl scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur sm:p-6">
@@ -343,13 +335,14 @@ export default function BusinessServicesPage() {
                   <span aria-hidden className="text-slate-300">↗</span>
                 </a>
               </div>
-              <div className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
+              {/* 수상 — 모바일에서도 2열 병렬, 소형 */}
+              <div className="mt-3 grid grid-cols-2 gap-2">
                 {trustAwards.map((a) => (
-                  <div key={a.title} className="flex items-start gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3.5 py-2.5">
-                    <span className="mt-0.5 shrink-0 rounded bg-amber-400 px-2 py-0.5 text-[0.8rem] font-black text-slate-900">{a.year}</span>
+                  <div key={a.title} className="flex items-start gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
+                    <span className="mt-0.5 shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.68rem] font-black text-slate-900">{a.year}</span>
                     <span className="min-w-0">
-                      <span className="block text-[0.98rem] font-bold leading-snug text-slate-100">{a.title}</span>
-                      <span className="text-[0.85rem] text-slate-400">{a.detail}</span>
+                      <span className="block text-[0.78rem] font-bold leading-snug text-slate-100">{a.title}</span>
+                      <span className="text-[0.7rem] text-slate-400">{a.detail}</span>
                     </span>
                   </div>
                 ))}
@@ -435,22 +428,39 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* Apply form */}
-      <section id="apply" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-14">
+      {/* 활동·신뢰 — 유튜브 채널 (SNS 활동 결과물, 추후 확장) */}
+      <section id="channel" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
           <div className="text-center">
-            <p className={eyebrow}>무료 진단 신청</p>
-            <h2 className={h2Class}>먼저, 대표님 상황부터 진단해보세요</h2>
+            <p className={eyebrow}>믿을 수 있는 활동</p>
+            <h2 className={h2Class}>유튜브 ‘김팀장의 경영노트’</h2>
             <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
-              간단히 남겨주시면 어떤 준비부터 시작하면 좋을지 방향을 정리해 안내드립니다.
+              정책자금·정부지원금·절세 실무를 영상으로 직접 공개하고 있습니다.
             </p>
           </div>
-          <p className="mx-auto mt-6 max-w-xl rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-500">
-            {DISCLAIMER}
-          </p>
-          <div className="mt-6">
-            <BusinessInquiryForm />
-          </div>
+          <a
+            href={consultLinks.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="유튜브 김팀장의 경영노트 채널 (새 탭에서 열림)"
+            className="group mt-7 block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg motion-reduce:transition-none"
+          >
+            <img
+              src="/assets/profile/youtube-channel.webp"
+              alt="유튜브 김팀장의 경영노트 채널 화면 — 정책자금·지원금·절세 실무 영상"
+              loading="lazy"
+              decoding="async"
+              className="w-full"
+            />
+            <span className="flex items-center justify-center gap-2 border-t border-slate-100 px-4 py-4 text-[1.05rem] font-bold text-slate-800">
+              <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden>
+                <rect x="1.5" y="5" width="21" height="14" rx="3.5" fill="#FF0000" />
+                <path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="#fff" />
+              </svg>
+              채널 바로가기
+              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">↗</span>
+            </span>
+          </a>
         </div>
       </section>
 
@@ -464,13 +474,15 @@ export default function BusinessServicesPage() {
             to="/business-diagnosis"
             className="flex flex-1 items-center justify-center rounded-xl bg-blue-600 px-4 py-3.5 text-base font-bold text-white"
           >
-            3분 무료 성장진단
+            서비스 직접 체크해보기
           </Link>
           <a
-            href="#apply"
-            className="flex flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base font-bold text-slate-700"
+            href={consultLinks.kakaoChat}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-[#FEE500] px-4 py-3.5 text-base font-bold text-[#191919]"
           >
-            상담 신청
+            카톡 상담
           </a>
         </div>
       )}

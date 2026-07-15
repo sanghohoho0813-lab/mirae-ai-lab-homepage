@@ -35,6 +35,13 @@ export const businessInfo = {
   legalLastUpdated: '2026-07-13',
 } as const
 
+/** 상담 채널 — 카카오톡 채널 채팅 · 대면 상담 구글폼 (상담 CTA 공용) */
+export const consultLinks = {
+  kakaoChat: 'http://pf.kakao.com/_xovbyn/chat',
+  googleForm: 'https://docs.google.com/forms/d/e/1FAIpQLSeEMgsFlQxIDfPriHqJZgUFIYZ3WldKUKe0kYm-6vbgJSMFzA/viewform',
+  youtube: 'https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA',
+} as const
+
 /** 법적 페이지 라우트 (푸터·크로스링크 공용) */
 export const legalLinks = [
   { to: '/terms', label: '이용약관' },

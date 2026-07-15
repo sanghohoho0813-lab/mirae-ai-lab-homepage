@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { loadLocalOrders } from '../lib/payments'
+import { consultLinks } from '../config/businessInfo'
 import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
 import { loginPathWithNext } from '../lib/authRouting'
@@ -77,7 +78,8 @@ const BUSINESS_MENU: MenuConfig = {
       accent: 'cyan',
       items: [
         { label: '기업 진단', to: '/business-diagnosis', match: (p) => p.startsWith('/business-diagnosis') },
-        { label: '상담 신청', to: '/business-services#apply' },
+        { label: '카톡 상담하기', to: consultLinks.kakaoChat },
+        { label: '대면 상담 신청', to: consultLinks.googleForm },
       ],
     },
     {
@@ -367,6 +369,25 @@ export default function PublicMenuDrawer({
                     <ul className="space-y-0.5">
                       {group.items.map((m) => {
                         const active = m.match ? m.match(path) : false
+                        // 외부 링크(카톡·구글폼 등)는 <a> 로 새 탭 오픈
+                        if (m.to.startsWith('http')) {
+                          return (
+                            <li key={m.label}>
+                              <a
+                                href={m.to}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex min-h-11 items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                              >
+                                <span className="flex min-w-0 items-start gap-2">
+                                  {m.no && <span className={`mt-0.5 shrink-0 text-[0.85rem] font-black tabular-nums ${acc.no}`}>{m.no}.</span>}
+                                  <span className="block text-[0.95rem] font-semibold leading-snug">{m.label}</span>
+                                </span>
+                                <span aria-hidden className="shrink-0 text-slate-400">↗</span>
+                              </a>
+                            </li>
+                          )
+                        }
                         return (
                           <li key={m.label}>
                             <Link

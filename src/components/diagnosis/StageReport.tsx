@@ -3,6 +3,7 @@
 //   ① 한눈에 보기  ② 지금 먼저 확인할 3가지  ③ 놓치고 있을 혜택  ④ 성장 로드맵  ⑤ 맞춤 서비스(제출 후)
 //   + 영역별 상세 준비도(접힘). 추천 상품은 게이트(연락처) 제출 후 공개.
 import { useEffect, useState } from 'react'
+import { consultLinks } from '../../config/businessInfo'
 import { Link } from 'react-router-dom'
 import type {
   AdvantageResultItem,
@@ -287,9 +288,9 @@ function Recommendations({
                     자세히 보기
                   </Link>
                   {pkg.priceType === 'consult' ? (
-                    <Link to="/business-services#apply" onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl border border-slate-300 px-3 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50">
+                    <a href={consultLinks.googleForm} target="_blank" rel="noopener noreferrer" onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl border border-slate-300 px-3 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50">
                       상담 신청
-                    </Link>
+                    </a>
                   ) : (
                     <Link to={`/checkout/${pkg.slug}`} onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
                       바로 결제하기

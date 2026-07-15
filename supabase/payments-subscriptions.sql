@@ -201,7 +201,7 @@ insert into public.billing_products (code, name, kind, audience, amount, sort) v
   ('ai-ax-system',           'AI 기반 회사 운영시스템 구축','one_time', 'ceo', 1290000, 50),
   ('rnd-center',             '기업부설연구소 설립',        'one_time', 'ceo', 1490000, 60),
   ('mainbiz-certification',  '메인비즈 인증',              'one_time', 'ceo', 1990000, 70),
-  ('innobiz-certification',  '이노비즈 인증',              'one_time', 'ceo', 2490000, 80),
+  ('innobiz-certification',  '이노비즈 인증',              'one_time', 'ceo', 1990000, 80),
   ('iso-1',                  'ISO 인증 1종',              'one_time', 'ceo', 1490000, 91),
   ('iso-2',                  'ISO 인증 2종',              'one_time', 'ceo', 2780000, 92),
   ('iso-3',                  'ISO 인증 3종 패키지',        'one_time', 'ceo', 3990000, 93)

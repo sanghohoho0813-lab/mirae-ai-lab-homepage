@@ -56,7 +56,7 @@ values
   ('responsive-homepage',             '반응형 홈페이지 제작',                'one_time', 'ceo',  990000, true, 40, 'responsive-homepage',   null,               null),
   ('rnd-center',                      '기업부설연구소 설립',                 'one_time', 'ceo', 1490000, true, 50, 'rnd-center',            null,               null),
   ('mainbiz-certification',           '메인비즈 인증',                       'one_time', 'ceo', 1990000, true, 60, 'mainbiz-certification', null,               null),
-  ('innobiz-certification',           '이노비즈 인증',                       'one_time', 'ceo', 2490000, true, 70, 'innobiz-certification', null,               null),
+  ('innobiz-certification',           '이노비즈 인증',                       'one_time', 'ceo', 1990000, true, 70, 'innobiz-certification', null,               null),
   -- AI 업무 자동화(ai-ax-system)·AX 풀 패키지는 상담 견적 상품으로 전환 → 결제 비활성(active=false).
   --   구 옵션 레코드는 이력 보존을 위해 남기되 비활성화. 결제 차단은 CONSULT_ONLY_SLUGS 로도 이중 보장.
   ('ai-ax-system:ax-only',            'AI 업무 자동화 프로그램 구축',        'one_time', 'ceo', 1290000, false, 80, 'ai-ax-system',         'ax-only',          'AX 시스템 구축'),

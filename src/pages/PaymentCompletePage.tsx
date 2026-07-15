@@ -4,6 +4,7 @@
 //  - code/message 쿼리가 있으면 실패·취소 상태로 표시
 //  - 새로고침해도 중복 주문 없이 기존 결과를 다시 보여줍니다 (서버 멱등)
 import { useCallback, useEffect, useState } from 'react'
+import { consultLinks } from '../config/businessInfo'
 import { Link, useSearchParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import { ServiceTimeline, StatusBadge } from '../components/payment/PaymentUX'
@@ -274,9 +275,9 @@ export default function PaymentCompletePage() {
                   다시 결제하기
                 </Link>
               )}
-              <Link to="/business-services#apply" onClick={() => trackPaymentEvent('payment_consultation_clicked', paymentId)} className="flex min-h-12 flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50">
+              <a href={consultLinks.googleForm} target="_blank" rel="noopener noreferrer" onClick={() => trackPaymentEvent('payment_consultation_clicked', paymentId)} className="flex min-h-12 flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50">
                 상담 신청하기
-              </Link>
+              </a>
             </div>
           </>
         )}
@@ -295,9 +296,9 @@ export default function PaymentCompletePage() {
               >
                 다시 결제하기
               </Link>
-              <Link to="/business-services#apply" onClick={() => trackPaymentEvent('payment_consultation_clicked', paymentId || null)} className="flex min-h-12 flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50">
+              <a href={consultLinks.googleForm} target="_blank" rel="noopener noreferrer" onClick={() => trackPaymentEvent('payment_consultation_clicked', paymentId || null)} className="flex min-h-12 flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50">
                 상담 신청하기
-              </Link>
+              </a>
             </div>
           </>
         )}
@@ -309,9 +310,9 @@ export default function PaymentCompletePage() {
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
               추가 결제를 시도하지 말고 고객센터로 문의해주세요. 담당자가 결제 내역을 확인해 처리해드립니다.
             </p>
-            <Link to="/business-services#apply" className="mt-5 flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-base font-bold text-white hover:bg-slate-700">
+            <a href={consultLinks.googleForm} target="_blank" rel="noopener noreferrer" className="mt-5 flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-base font-bold text-white hover:bg-slate-700">
               고객센터 문의하기
-            </Link>
+            </a>
           </>
         )}
       </main>

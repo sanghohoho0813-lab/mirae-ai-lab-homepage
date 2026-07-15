@@ -30,7 +30,7 @@ const LOCAL_CATALOG: Array<Omit<ServerProduct, 'source' | 'priceId' | 'priceVers
   { productSlug: 'responsive-homepage', optionId: null, name: '반응형 홈페이지 제작', optionName: null, amount: 990000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'rnd-center', optionId: null, name: '기업부설연구소 설립', optionName: null, amount: 1490000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'mainbiz-certification', optionId: null, name: '메인비즈 인증', optionName: null, amount: 1990000, paymentType: 'one_time', vatIncluded: true },
-  { productSlug: 'innobiz-certification', optionId: null, name: '이노비즈 인증', optionName: null, amount: 2490000, paymentType: 'one_time', vatIncluded: true },
+  { productSlug: 'innobiz-certification', optionId: null, name: '이노비즈 인증', optionName: null, amount: 1990000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'iso-certification', optionId: 'iso-one', name: 'ISO 인증 패키지', optionName: 'ISO 1종', amount: 1490000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'iso-certification', optionId: 'iso-two', name: 'ISO 인증 패키지', optionName: 'ISO 2종', amount: 2180000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'iso-certification', optionId: 'iso-three', name: 'ISO 인증 패키지', optionName: 'ISO 3종 패키지', amount: 3990000, paymentType: 'one_time', vatIncluded: true },
