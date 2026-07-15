@@ -33,7 +33,9 @@ type Props = {
 const TONE: Record<string, string> = {
   blue: 'text-blue-600',
   emerald: 'text-emerald-600',
-  amber: 'text-amber-600',
+  amber: 'text-amber-500',
+  orange: 'text-orange-600',
+  red: 'text-red-600',
   slate: 'text-slate-900',
 }
 const RANK_TONE: Record<string, string> = {
@@ -377,11 +379,11 @@ export default function StageReport({
             <SectionHeading step="①" title="한눈에 보기" />
             <p className="animate-rise-in mt-2.5 text-[0.98rem] font-semibold leading-relaxed text-slate-700">{report.summary}</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {report.metricCards.map((c, i) => (
+              {report.metricCards.map((c) => (
                 <div key={c.label} className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
                   <p className="text-xs font-black uppercase tracking-wide text-slate-400">{c.label}</p>
                   <p className={`mt-1.5 text-3xl font-black tabular-nums tracking-tight ${TONE[c.tone ?? 'slate']}`}>
-                    {i === 0 && c.value.endsWith('점') ? `${count}점` : c.value}
+                    {(c.label === '종합 준비도' || c.label === '기초체력 점수') && c.value.endsWith('점') ? `${count}점` : c.value}
                   </p>
                   {c.sub && <p className="mt-0.5 text-xs font-semibold text-slate-400">{c.sub}</p>}
                 </div>
@@ -453,11 +455,11 @@ export default function StageReport({
           <p className="animate-rise-in mt-3 text-[0.95rem] leading-relaxed text-slate-600 [animation-delay:60ms]">{report.summary}</p>
 
           <div className="animate-rise-in mt-5 grid gap-3 sm:grid-cols-2 [animation-delay:120ms]">
-            {report.metricCards.map((c, i) => (
+            {report.metricCards.map((c) => (
               <div key={c.label} className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
                 <p className="text-xs font-black uppercase tracking-wide text-slate-400">{c.label}</p>
                 <p className={`mt-1.5 text-3xl font-black tabular-nums tracking-tight ${TONE[c.tone ?? 'slate']}`}>
-                  {i === 0 && c.value.endsWith('점') ? `${count}점` : c.value}
+                  {(c.label === '종합 준비도' || c.label === '기초체력 점수') && c.value.endsWith('점') ? `${count}점` : c.value}
                 </p>
                 {c.sub && <p className="mt-0.5 text-xs font-semibold text-slate-400">{c.sub}</p>}
               </div>

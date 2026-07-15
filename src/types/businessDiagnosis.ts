@@ -254,7 +254,7 @@ export type StageReportData = {
   headline: string
   summary: string
   /** 단계 상단 지표 카드 (라벨/값/보조문구) */
-  metricCards: { label: string; value: string; sub?: string; tone?: 'blue' | 'emerald' | 'amber' | 'slate' }[]
+  metricCards: { label: string; value: string; sub?: string; tone?: 'blue' | 'emerald' | 'amber' | 'orange' | 'red' | 'slate' }[]
   strengths: string[]
   improvements: string[]
   prerequisites: string[]

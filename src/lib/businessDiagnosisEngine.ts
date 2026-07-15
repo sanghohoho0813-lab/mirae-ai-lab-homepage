@@ -117,18 +117,21 @@ function scoreArea(area: ScoreArea, answers: DiagnosisAnswers, interestBonus: nu
   return clamp(s)
 }
 
-// 보수적 5구간 상태 (section 10)
+// 5구간 통일 (점수↔색상↔라벨 1:1): 81+ 파랑 / 60~80 초록 / 40~59 노랑 / 20~39 주황 / 20 미만 빨강
 const statusOf = (score: number): AreaResult['status'] =>
-  score < 35 ? '먼저 준비 필요' : score < 55 ? '기본 준비 부족' : score < 70 ? '보완하면 활용 가능' : score < 85 ? '활용 준비 양호' : '자료·증빙까지 우수'
+  score < 20 ? '먼저 준비 필요' : score < 40 ? '기본 준비 부족' : score < 60 ? '보완하면 활용 가능' : score < 81 ? '활용 준비 양호' : '자료·증빙까지 우수'
 
-// 색상 톤 (초록=양호 / 파랑=중립 / 앰버=보완 / 주황=우선확인)
 function toneOf(score: number, priority: AreaResult['priority']): AreaResult['tone'] {
-  if (priority === '먼저 해결할 선결과제') return 'orange'
-  if (score < 35) return 'orange'
-  if (score < 55) return 'amber'
-  if (score < 70) return 'blue'
-  return 'green'
+  if (priority === '먼저 해결할 선결과제') return 'red'
+  if (score >= 81) return 'blue'
+  if (score >= 60) return 'green'
+  if (score >= 40) return 'amber'
+  if (score >= 20) return 'orange'
+  return 'red'
 }
+
+/** 지표 카드 색상 — 영역 카드와 동일한 5구간 */
+const metricTone = (score: number) => (score >= 81 ? 'blue' : score >= 60 ? 'emerald' : score >= 40 ? 'amber' : score >= 20 ? 'orange' : 'red')
 
 // 각 영역의 '자료 확인 필요'(불확실) 답변 존재 여부 → 85점 이상 남발 방지
 const AREA_UNSURE_QS: Record<ScoreArea, string[]> = {
@@ -637,7 +640,7 @@ export function computeStageResult(depth: DiagnosisStage, answers: DiagnosisAnsw
           : '기본 상태를 확인했어요. 받을 수 있는 자금과 지원제도는 2단계에서 더 자세히 살펴볼 수 있어요.',
       metricCards: [
         { label: '현재 회사 단계', value: stageName, tone: 'blue' },
-        { label: '기초체력 점수', value: `${score}점`, sub: '내부 진단 지표', tone: score >= 60 ? 'emerald' : 'amber' },
+        { label: '기초체력 점수', value: `${score}점`, sub: '내부 진단 지표', tone: metricTone(score) },
       ],
       strengths: strengths.slice(0, 3),
       improvements: checks.slice(0, 3),
@@ -666,7 +669,7 @@ export function computeStageResult(depth: DiagnosisStage, answers: DiagnosisAnsw
         label: a.label,
         value: `${a.score}점`,
         sub: a.status,
-        tone: a.score >= 70 ? 'emerald' : a.score >= 40 ? 'blue' : 'amber',
+        tone: metricTone(a.score),
       })),
       strengths: usable.length ? usable.map((l) => `${l}는 지금도 활용을 검토할 수 있어요.`) : ['조금씩 준비하면 활용할 수 있는 영역이 있어요.'],
       improvements: improve.length ? improve.map((l) => `${l}는 자료를 보완하면 검토 범위가 넓어져요.`) : ['큰 공백 없이 준비되어 있어요.'],
@@ -684,7 +687,7 @@ export function computeStageResult(depth: DiagnosisStage, answers: DiagnosisAnsw
     headline: '종합 성장진단이 완료되었습니다.',
     summary: full.summary,
     metricCards: [
-      { label: '종합 준비도', value: `${full.overallScore}점`, sub: '내부 진단 지표', tone: 'blue' },
+      { label: '종합 준비도', value: `${full.overallScore}점`, sub: '내부 진단 지표', tone: metricTone(full.overallScore) },
       { label: '평가 참고요소 발견', value: `${full.ownedAdvantageCount}개`, sub: '보유 우대요소', tone: 'emerald' },
     ],
     strengths: full.strengths,
