@@ -262,15 +262,6 @@ export default function BusinessServicesPage() {
       <section className="relative overflow-hidden bg-slate-900">
         <div aria-hidden className="pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl" />
-        {/* 대표 프로필 — 우측 하단에 은은하게 (장식용, 텍스트 뒤 레이어) */}
-        <img
-          src="/assets/profile/ceo-portrait.webp"
-          alt=""
-          aria-hidden
-          loading="lazy"
-          decoding="async"
-          className="pointer-events-none absolute bottom-0 right-3 hidden w-[17rem] select-none opacity-80 saturate-[.92] [mask-image:linear-gradient(to_top,transparent_0,black_20%)] xl:block 2xl:right-10 2xl:w-[19rem]"
-        />
         <div className="relative mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.8rem] font-semibold text-slate-200 backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-amber-400" />
@@ -326,7 +317,7 @@ export default function BusinessServicesPage() {
                 decoding="async"
                 width={200}
                 height={200}
-                className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-amber-400/50 sm:h-16 sm:w-16"
+                className="h-20 w-20 shrink-0 rounded-full object-cover shadow-lg shadow-black/30 ring-[3px] ring-amber-400/60 sm:h-24 sm:w-24"
               />
               <div className="min-w-0">
               <p className="text-[1.1rem] font-semibold leading-relaxed text-slate-100">

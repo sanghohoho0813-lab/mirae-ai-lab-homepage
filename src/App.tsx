@@ -244,16 +244,6 @@ function App() {
         <div aria-hidden className="pointer-events-none absolute inset-0" style={gridBackground} />
         <div aria-hidden className="pointer-events-none absolute -left-32 -top-40 h-96 w-96 rounded-full bg-blue-600/25 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 h-[26rem] w-[26rem] rounded-full bg-sky-500/20 blur-3xl" />
-        {/* 제작자 프로필 — 우측에 은은하게 (장식용, 텍스트 뒤 레이어) */}
-        <img
-          src="/assets/profile/ceo-portrait.webp"
-          alt=""
-          aria-hidden
-          loading="lazy"
-          decoding="async"
-          className="pointer-events-none absolute bottom-0 right-4 hidden w-[16rem] select-none opacity-80 saturate-[.92] [mask-image:linear-gradient(to_top,transparent_0,black_20%)] lg:block xl:right-14 xl:w-[20rem]"
-        />
-
         <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-16 lg:pb-20 lg:pt-20">
           <div className="max-w-3xl">
             <div>
@@ -303,7 +293,21 @@ function App() {
                   </div>
                 ))}
               </dl>
-              <p className="mt-4 text-sm text-slate-400">제가 직접 쓰지 않는 도구는 만들지 않습니다. 현업에서 검증한 도구만 공개합니다.</p>
+              <div className="mt-5 flex items-center gap-3.5">
+                <img
+                  src="/assets/profile/ceo-avatar.webp"
+                  alt="미래 AI 랩 대표 프로필 사진"
+                  loading="lazy"
+                  decoding="async"
+                  width={200}
+                  height={200}
+                  className="h-16 w-16 shrink-0 rounded-full object-cover shadow-lg shadow-black/40 ring-[3px] ring-sky-400/50 sm:h-20 sm:w-20"
+                />
+                <div className="min-w-0">
+                  <p className="text-sm leading-relaxed text-slate-400 sm:text-base">제가 직접 쓰지 않는 도구는 만들지 않습니다. 현업에서 검증한 도구만 공개합니다.</p>
+                  <p className="mt-1 text-sm font-bold text-slate-200">미래 AI 랩 대표 · 김팀장의 경영노트</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
