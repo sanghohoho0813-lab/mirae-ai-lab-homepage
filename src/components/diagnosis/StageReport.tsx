@@ -5,6 +5,7 @@
 //   ③ 지금 먼저 확인할 3가지  ④ 놓치고 있을 혜택  ⑤ 성장 로드맵  + 활용 기반·영역별 상세(접힘)
 import { useEffect, useState } from 'react'
 import { consultLinks } from '../../config/businessInfo'
+import { paymentsEnabled } from '../../config/commerce'
 import { Link } from 'react-router-dom'
 import type {
   AdvantageResultItem,
@@ -310,7 +311,7 @@ function Recommendations({
                   <Link to={`/business-services/${pkg.slug}`} onClick={() => onProductClick(rec.slug, rec.rank, position)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-slate-700">
                     자세히 보기
                   </Link>
-                  {pkg.priceType === 'consult' ? (
+                  {pkg.priceType === 'consult' || !paymentsEnabled ? (
                     <a href={consultLinks.googleForm} target="_blank" rel="noopener noreferrer" onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl border border-slate-300 px-3 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50">
                       상담 신청
                     </a>

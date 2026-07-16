@@ -11,6 +11,7 @@ import IdentityVerifyCard from '../components/auth/IdentityVerifyCard'
 import { attachIdentityToUser, getIdentityHealth, type IdentityVerified } from '../lib/identityVerification'
 import { getPackageBySlug } from '../data/businessPackages'
 import { businessInfo } from '../config/businessInfo'
+import { paymentsEnabled, inquiryUrl } from '../config/commerce'
 import { checkoutTerms } from '../config/checkoutTerms'
 import { useAuth } from '../lib/auth'
 import {
@@ -235,7 +236,16 @@ export default function CheckoutPage() {
         </button>
         <h1 className="text-2xl font-black tracking-tight">결제하기</h1>
 
-        {!configured && (
+        {!paymentsEnabled && (
+          <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-[0.95rem] leading-relaxed text-amber-800">
+            현재 카드 결제 시스템을 준비 중입니다. 상담을 신청해 주시면 계좌이체 등으로 빠르게 안내해 드립니다.
+            <a href={inquiryUrl} target="_blank" rel="noopener noreferrer" className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
+              상담 신청하기 →
+            </a>
+          </div>
+        )}
+
+        {paymentsEnabled && !configured && (
           <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-[0.95rem] leading-relaxed text-amber-800">
             결제 설정이 아직 완료되지 않았습니다. 아래 상담 신청을 남겨주시면 결제와 진행을 함께 안내드리겠습니다.
             <Link to={`/business-services/${pkg.slug}#apply`} className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
@@ -494,7 +504,7 @@ export default function CheckoutPage() {
           <button
             type="button"
             onClick={handlePay}
-            disabled={busy || !configured || gateBlocked || !user || identityBlocked}
+            disabled={busy || !paymentsEnabled || !configured || gateBlocked || !user || identityBlocked}
             className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {phase === 'preparing' ? '주문을 준비하고 있어요…' : phase === 'window' ? '결제창 확인 중…' : `${formatKrw(amount)} 결제하기`}

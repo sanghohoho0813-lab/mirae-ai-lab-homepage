@@ -10,6 +10,7 @@ import BusinessInquiryForm from '../components/BusinessInquiryForm'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
+import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../config/commerce'
 import { getDetailContent, type DetailCase } from '../data/businessDetailContent'
 
 const band = 'px-5 py-16 sm:py-24'
@@ -127,26 +128,33 @@ export default function BusinessServiceDetailPage() {
   const accentText = flagship ? 'text-amber-600' : 'text-blue-600'
   const kicker = `text-center text-sm font-black uppercase tracking-widest ${accentText}`
 
+  // 결제 대신 상담(구글폼) — consult 상품이거나 결제 시스템 준비 중(paymentsEnabled=false)일 때
+  const inquiryOnly = consult || !paymentsEnabled
+  function handleInquiry() {
+    window.open(inquiryUrl, '_blank', 'noopener,noreferrer')
+  }
+
   function handleBuy() {
     if (!pkg) return
     const opt = pkg.variants?.[Math.min(variantIdx, (pkg.variants?.length ?? 1) - 1)]
     navigate(`/checkout/${pkg.slug}${opt ? `?option=${encodeURIComponent(opt.optionId)}` : ''}`)
   }
 
-  // 구매/상담 버튼 묶음 — 가격이 있는 상품은 카드결제(체크아웃 페이지), consult 상품만 상담
+  // 구매/상담 버튼 묶음 — 결제 가능 시 카드결제(체크아웃), 그 외에는 상담(구글폼)
   const BuyButtons = () =>
-    consult ? (
+    inquiryOnly ? (
       <div className="flex flex-col gap-2.5">
-        <button
-          type="button"
-          onClick={() => scrollToId('apply')}
+        <a
+          href={inquiryUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           className={`flex w-full items-center justify-center rounded-xl px-6 py-4 text-lg font-black shadow-lg transition-transform hover:-translate-y-0.5 ${
             flagship ? 'bg-amber-400 text-slate-900 shadow-amber-500/20' : 'bg-slate-900 text-white shadow-slate-900/20'
           }`}
         >
           상담 신청하기
-        </button>
-        <p className="text-center text-xs font-medium text-slate-400">기업 상황에 따라 맞춤 안내드립니다</p>
+        </a>
+        <p className="text-center text-xs font-medium text-slate-400">{consult ? '기업 상황에 따라 맞춤 안내드립니다' : paymentsPreparingNotice}</p>
       </div>
     ) : (
       <div>
@@ -189,10 +197,10 @@ export default function BusinessServiceDetailPage() {
             <Link to="/business-services" className="hidden text-[0.95rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
             <button
               type="button"
-              onClick={consult ? () => scrollToId('apply') : handleBuy}
+              onClick={inquiryOnly ? handleInquiry : handleBuy}
               className="rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
             >
-              {consult ? '상담 신청' : '바로 결제하기'}
+              {inquiryOnly ? '상담 신청' : '바로 결제하기'}
             </button>
             <HeaderAccount />
           </div>
@@ -594,13 +602,13 @@ export default function BusinessServiceDetailPage() {
       {/* Mobile sticky CTA */}
       {showBar && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
-          <span className="shrink-0 text-lg font-black text-slate-900">{displayPrice}</span>
+          <span className="shrink-0 text-lg font-black text-slate-900">{inquiryOnly ? '상담 후 안내' : displayPrice}</span>
           <button
             type="button"
-            onClick={consult ? () => scrollToId('apply') : handleBuy}
+            onClick={inquiryOnly ? handleInquiry : handleBuy}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white"
           >
-            {consult ? '상담 신청하기' : <><CartIcon /> 바로 결제하기</>}
+            {inquiryOnly ? '상담 신청하기' : <><CartIcon /> 바로 결제하기</>}
           </button>
         </div>
       )}

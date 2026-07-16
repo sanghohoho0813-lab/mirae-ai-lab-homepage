@@ -8,6 +8,7 @@ import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import FundingCasesSection from '../../components/FundingCasesSection'
 import { getPackageBySlug } from '../../data/businessPackages'
+import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../../config/commerce'
 
 const pkg = getPackageBySlug('funding-consulting')!
 const IMG = '/assets/business-services/funding-consulting.png'
@@ -84,7 +85,10 @@ export default function FundingConsultingDetailPage() {
   const navigate = useNavigate()
   const [showBar, setShowBar] = useState(false)
 
+  // 결제 시스템 준비 중이면 카드결제 대신 상담(구글폼)으로 우회
+  const inquiryOnly = !paymentsEnabled
   function handleBuy() {
+    if (inquiryOnly) { window.open(inquiryUrl, '_blank', 'noopener,noreferrer'); return }
     navigate(`/checkout/${pkg.slug}`)
   }
 
@@ -107,32 +111,45 @@ export default function FundingConsultingDetailPage() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const BuyButtons = ({ variant = 'light' }: { variant?: 'light' | 'dark' }) => (
-    <>
-      <div className="flex gap-2.5">
+  const BuyButtons = ({ variant = 'light' }: { variant?: 'light' | 'dark' }) =>
+    inquiryOnly ? (
+      <>
+        <a
+          href={inquiryUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
+        >
+          상담 신청하기
+        </a>
+        <p className={`mt-2 text-xs font-medium leading-relaxed ${variant === 'dark' ? 'text-slate-300' : 'text-slate-500'}`}>{paymentsPreparingNotice}</p>
+      </>
+    ) : (
+      <>
+        <div className="flex gap-2.5">
+          <button
+            type="button"
+            onClick={handleBuy}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
+          >
+            <CartIcon /> 바로 결제하기
+          </button>
+        </div>
+        <p className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold ${variant === 'dark' ? 'text-slate-300' : 'text-slate-500'}`}>
+          <span className="inline-flex items-center gap-1"><span className="text-emerald-400" aria-hidden>✔</span> 카드사별 할부 가능</span>
+          <span className="inline-flex items-center gap-1"><span className="text-emerald-400" aria-hidden>✔</span> 결제 단계에서 할부 개월 수 선택</span>
+        </p>
         <button
           type="button"
-          onClick={handleBuy}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
+          onClick={() => scrollToId('apply')}
+          className={`mt-3 text-sm font-semibold underline underline-offset-4 transition-colors ${
+            variant === 'dark' ? 'text-slate-300 hover:text-white' : 'text-slate-500 hover:text-slate-900'
+          }`}
         >
-          <CartIcon /> 바로 결제하기
+          결제 전 상담하기 →
         </button>
-      </div>
-      <p className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold ${variant === 'dark' ? 'text-slate-300' : 'text-slate-500'}`}>
-        <span className="inline-flex items-center gap-1"><span className="text-emerald-400" aria-hidden>✔</span> 카드사별 할부 가능</span>
-        <span className="inline-flex items-center gap-1"><span className="text-emerald-400" aria-hidden>✔</span> 결제 단계에서 할부 개월 수 선택</span>
-      </p>
-      <button
-        type="button"
-        onClick={() => scrollToId('apply')}
-        className={`mt-3 text-sm font-semibold underline underline-offset-4 transition-colors ${
-          variant === 'dark' ? 'text-slate-300 hover:text-white' : 'text-slate-500 hover:text-slate-900'
-        }`}
-      >
-        결제 전 상담하기 →
-      </button>
-    </>
-  )
+      </>
+    )
 
   return (
     <div className="min-h-screen bg-white pb-24 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
@@ -149,7 +166,7 @@ export default function FundingConsultingDetailPage() {
           <div className="flex items-center gap-4">
             <Link to="/business-services" className="hidden text-[0.95rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
             <button type="button" onClick={handleBuy} className="rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">
-              바로 결제하기
+              {inquiryOnly ? '상담 신청하기' : '바로 결제하기'}
             </button>
             <HeaderAccount />
           </div>
@@ -624,7 +641,7 @@ export default function FundingConsultingDetailPage() {
             <span className="text-lg font-black text-slate-900">{SALE_PRICE}</span>
           </span>
           <button type="button" onClick={handleBuy} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white">
-            <CartIcon /> 바로 결제하기
+            {inquiryOnly ? '상담 신청하기' : <><CartIcon /> 바로 결제하기</>}
           </button>
         </div>
       )}
