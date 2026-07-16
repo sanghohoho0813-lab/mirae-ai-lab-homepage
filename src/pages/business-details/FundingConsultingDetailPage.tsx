@@ -14,10 +14,10 @@ const pkg = getPackageBySlug('funding-consulting')!
 const IMG = '/assets/business-services/funding-consulting.png'
 const EBOOK_IMG = '/assets/business-services/ebook-3set.webp'
 
-// 할인 표기 (정가 100만원 → 판매가 59만원)
+// 할인 표기 (정가 100만원 → 판매가 50만원)
 const LIST_PRICE = '100만원'
-const SALE_PRICE = pkg.price // '59만원'
-const DISCOUNT_RATE = '41%'
+const SALE_PRICE = pkg.price // '50만원'
+const DISCOUNT_RATE = '50%'
 
 const band = 'px-5 py-16 sm:py-24'
 const inner = 'mx-auto max-w-[720px]'
@@ -210,7 +210,7 @@ export default function FundingConsultingDetailPage() {
             <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
             <ul className="mt-3 space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-base font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
               <li className="flex items-center gap-1.5 font-black text-red-600"><span aria-hidden>🚫</span> 성공수수료 없음 — 업계 평균 5~7%</li>
-              <li className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 23만 7천원 상당 전자책 3종 증정</li>
+              <li className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 컨설팅 종료 후 정가 237,000원 상당 전자책 3종 증정 (리뷰 작성 시)</li>
             </ul>
 
             <div className="mt-5">
@@ -344,13 +344,13 @@ export default function FundingConsultingDetailPage() {
             <div className="rounded-2xl bg-blue-600 p-6 text-center shadow-lg shadow-blue-600/20">
               <p className="text-xs font-black uppercase tracking-wide text-blue-200">미래 AI 랩 진단·전략</p>
               <p className="mt-2 text-4xl font-black tracking-tight text-white">0원</p>
-              <p className="mt-1 text-sm font-semibold text-blue-100">비용은 59만원이 전부</p>
+              <p className="mt-1 text-sm font-semibold text-blue-100">비용은 50만원이 전부</p>
             </div>
           </div>
 
           {/* 업무 범위 */}
           <p className="mt-14 text-center text-xl font-black text-slate-900 sm:text-2xl">
-            59만원으로, <span className="text-blue-600">여기까지 해드립니다</span>
+            50만원으로, <span className="text-blue-600">여기까지 해드립니다</span>
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {[
@@ -447,11 +447,11 @@ export default function FundingConsultingDetailPage() {
             23만 7천 원에 판매 중인 전자책 3종,<br /><span className="text-blue-600">그대로 드립니다</span>
           </h2>
           <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-            현재 <b className="text-slate-900">23만 7천 원에 판매 중인 정책자금 셀프 진행 전자책 3종</b>을 무료로 드립니다.
+            현재 <b className="text-slate-900">정가 237,000원에 판매 중인 정책자금 셀프 진행 전자책 3종</b>을, 컨설팅을 마치고 리뷰를 남겨주시면 무료로 드립니다.
             이번에는 저희와 함께, <b className="text-slate-900">다음번에는 대표님이 직접</b> 하실 수 있습니다.
           </p>
           <div className="relative mx-auto mt-10 max-w-lg">
-            <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-400 px-3.5 py-1.5 text-sm font-black text-slate-900 shadow">구매 시 무료 증정</span>
+            <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-400 px-3.5 py-1.5 text-sm font-black text-slate-900 shadow">컨설팅 종료 후 · 리뷰 작성 시</span>
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
               <img src={EBOOK_IMG} alt="정책자금·지원금 전자책 3종" loading="lazy" className="w-full" />
               <div className="flex items-center justify-center gap-2.5 border-t border-slate-100 px-6 py-4">
@@ -550,7 +550,7 @@ export default function FundingConsultingDetailPage() {
             <p className="mt-2 flex items-center justify-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
             <div className="mx-auto mt-4 max-w-xs space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
               <p className="flex items-center gap-1.5 font-black text-red-600"><span aria-hidden>🚫</span> 성공수수료 없음 — 업계 평균 5~7%</p>
-              <p className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 23만 7천원 상당 전자책 3종 증정</p>
+              <p className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 컨설팅 종료 후 정가 237,000원 상당 전자책 3종 증정 (리뷰 작성 시)</p>
             </div>
             <ul className="mx-auto mt-5 max-w-xs space-y-2.5 border-t border-slate-100 pt-5">
               {pkg.deliverables.map((d) => (

@@ -24,7 +24,7 @@ export const CONSULT_ONLY_SLUGS = ['employment-subsidy', 'growth-roadmap-package
 
 /** ⚠️ supabase/portone-one-time-payments.sql 시드와 반드시 같은 값 유지 (화면가=결제가) */
 const LOCAL_CATALOG: Array<Omit<ServerProduct, 'source' | 'priceId' | 'priceVersion'>> = [
-  { productSlug: 'funding-consulting', optionId: null, name: '정책자금 컨설팅', optionName: null, amount: 590000, paymentType: 'one_time', vatIncluded: true },
+  { productSlug: 'funding-consulting', optionId: null, name: '정책자금 컨설팅', optionName: null, amount: 500000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'venture-innovation', optionId: null, name: '벤처인증 패키지 (혁신성장형)', optionName: null, amount: 1990000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'venture-investment', optionId: null, name: '벤처인증 패키지 (투자유형)', optionName: null, amount: 4990000, paymentType: 'one_time', vatIncluded: true },
   { productSlug: 'responsive-homepage', optionId: null, name: '반응형 홈페이지 제작', optionName: null, amount: 990000, paymentType: 'one_time', vatIncluded: true },
