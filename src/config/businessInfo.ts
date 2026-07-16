@@ -32,7 +32,7 @@ export const businessInfo = {
 
   /** 법적 문서 시행/개정일 (개정 시 함께 갱신) */
   legalEffectiveDate: '2026-07-13',
-  legalLastUpdated: '2026-07-13',
+  legalLastUpdated: '2026-07-16',
 } as const
 
 /** 상담 채널 — 카카오톡 채널 채팅 · 대면 상담 구글폼 (상담 CTA 공용) */
