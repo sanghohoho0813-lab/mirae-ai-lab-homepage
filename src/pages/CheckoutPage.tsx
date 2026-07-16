@@ -10,6 +10,7 @@ import LoginModal from '../components/LoginModal'
 import IdentityVerifyCard from '../components/auth/IdentityVerifyCard'
 import { attachIdentityToUser, getIdentityHealth, type IdentityVerified } from '../lib/identityVerification'
 import { getPackageBySlug } from '../data/businessPackages'
+import { businessInfo } from '../config/businessInfo'
 import { checkoutTerms } from '../config/checkoutTerms'
 import { useAuth } from '../lib/auth'
 import {
@@ -448,6 +449,33 @@ export default function CheckoutPage() {
           >
             결제 전 상담을 먼저 받고 싶어요
           </Link>
+        </section>
+
+        {/* ⑥ 판매자 정보 — 전자상거래법 표시(결제 전 노출) */}
+        <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400">판매자 정보</p>
+          <dl className="mt-3 space-y-1.5 text-sm text-slate-600">
+            <div className="flex gap-2"><dt className="w-[6.5rem] shrink-0 font-semibold text-slate-500">상호</dt><dd className="min-w-0">{businessInfo.companyName} ({businessInfo.brandName})</dd></div>
+            <div className="flex gap-2"><dt className="w-[6.5rem] shrink-0 font-semibold text-slate-500">대표자</dt><dd className="min-w-0">{businessInfo.representative}</dd></div>
+            <div className="flex gap-2"><dt className="w-[6.5rem] shrink-0 font-semibold text-slate-500">사업자등록번호</dt><dd className="min-w-0 tabular-nums">{businessInfo.businessNumber}</dd></div>
+            {businessInfo.mailOrderSalesNumber && (
+              <div className="flex gap-2"><dt className="w-[6.5rem] shrink-0 font-semibold text-slate-500">통신판매업</dt><dd className="min-w-0">{businessInfo.mailOrderSalesNumber}</dd></div>
+            )}
+            <div className="flex gap-2"><dt className="w-[6.5rem] shrink-0 font-semibold text-slate-500">사업장 주소</dt><dd className="min-w-0">{businessInfo.address}</dd></div>
+            <div className="flex gap-2">
+              <dt className="w-[6.5rem] shrink-0 font-semibold text-slate-500">고객 문의</dt>
+              <dd className="min-w-0">
+                <a href={`mailto:${businessInfo.contactEmail}`} className="font-medium text-blue-700 underline underline-offset-2">{businessInfo.contactEmail}</a>
+                {businessInfo.contactPhone && <span> · 전화 {businessInfo.contactPhone}</span>}
+              </dd>
+            </div>
+          </dl>
+          <p className="mt-3 border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-400">
+            결제·환불 문의는{' '}
+            <Link to="/refund-policy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-600">환불·취소 정책</Link>,{' '}
+            판매자 상세 정보는{' '}
+            <Link to="/business-info" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-600">사업자정보</Link>에서 확인하실 수 있습니다.
+          </p>
         </section>
       </main>
 

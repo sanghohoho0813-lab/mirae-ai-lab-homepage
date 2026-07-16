@@ -17,5 +17,5 @@ export const checkoutTerms = {
     '결제 완료 후 담당자가 영업일 기준으로 신청내용을 확인해 안내드립니다.',
 
   /** 가격·세금 표기 정책 — 운영자가 필요 시 수정 (화면 표시가 = 최종 카드 승인금액) */
-  priceTaxNote: '',
+  priceTaxNote: '표시된 금액은 부가세(VAT)가 포함된 최종 결제금액입니다.',
 } as const
