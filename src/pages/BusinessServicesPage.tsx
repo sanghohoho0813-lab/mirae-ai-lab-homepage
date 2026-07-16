@@ -125,22 +125,16 @@ export default function BusinessServicesPage() {
               <span className="text-[0.82rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></span>
             </span>
           </Link>
-          <nav className="hidden items-center gap-5 text-[0.95rem] font-medium text-slate-600 lg:flex">
+          <nav className="hidden items-center gap-5 text-[0.95rem] font-medium text-slate-600 xl:flex">
             <button type="button" onClick={() => scrollToId('top3')} className="transition-colors hover:text-slate-900">대표상품</button>
             <button type="button" onClick={() => scrollToId('packages')} className="transition-colors hover:text-slate-900">전체상품</button>
             <button type="button" onClick={() => scrollToId('faq')} className="transition-colors hover:text-slate-900">FAQ</button>
           </nav>
-          <div className="flex items-center gap-2.5">
-            <Link
-              to="/consultants"
-              className="hidden text-[0.95rem] font-medium text-slate-500 transition-colors hover:text-slate-900 lg:inline"
-            >
-              컨설턴트용 AI 도구
-            </Link>
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {historyCount > 0 && (
               <Link
                 to="/business-diagnosis/results"
-                className="inline-flex items-center gap-1.5 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-[0.85rem] font-bold text-cyan-800 transition-colors hover:bg-cyan-100"
+                className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-[0.85rem] font-bold text-cyan-800 transition-colors hover:bg-cyan-100 lg:inline-flex"
               >
                 <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M8 3h8l2 2v15a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5z" /><path d="M9 9h6M9 13h6M9 17h4" />
@@ -166,7 +160,7 @@ export default function BusinessServicesPage() {
             </Link>
             <Link
               to="/business-diagnosis"
-              className="hidden rounded-lg bg-blue-600 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex"
+              className="hidden whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex"
             >
               필요한 서비스 찾기
             </Link>
