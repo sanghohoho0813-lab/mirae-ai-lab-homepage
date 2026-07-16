@@ -180,17 +180,20 @@ export default function BusinessServicesPage() {
         <div aria-hidden className="pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-5 py-8 sm:px-6 sm:py-14">
+          <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-x-10">
+          {/* 왼쪽 — 메시지·CTA (데스크톱 2단 좌측) */}
+          <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.8rem] font-semibold text-slate-200 backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-amber-400" />
             미래경영지원센터 · 경영지원 서비스몰
           </span>
-          <h1 className="mt-3.5 max-w-3xl text-[1.75rem] font-extrabold leading-[1.25] tracking-tight text-white sm:text-[2.6rem] sm:leading-[1.18]">
+          <h1 className="mt-3.5 text-[1.75rem] font-extrabold leading-[1.25] tracking-tight text-white sm:text-[2.6rem] sm:leading-[1.18]">
             대표님에게 필요한 <span className="text-amber-300">경영지원 서비스</span>를 골라보세요
           </h1>
-          <p className="mt-3.5 max-w-2xl text-[1.02rem] leading-relaxed text-slate-300 sm:text-xl">
+          <p className="mt-3.5 text-[1.02rem] leading-relaxed text-slate-300 sm:text-xl">
             정책자금·고용지원금·기업인증·홈페이지·AI 시스템까지, 기업 상황에 맞는 패키지를 상담 후 제안드립니다.
           </p>
-          <div className="mt-6 max-w-3xl">
+          <div className="mt-6">
             <Link
               to="/business-diagnosis"
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-center text-[1.12rem] font-black leading-snug text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 sm:w-auto sm:text-lg"
@@ -236,11 +239,12 @@ export default function BusinessServicesPage() {
               </a>
             </div>
           </div>
+          </div>{/* /왼쪽 컬럼 */}
 
-          {/* 신뢰 지표 — 서비스 찾기 CTA 바로 아래, 상품보다 먼저 눈에 띄게 */}
-          <div id="trust" className="mt-6 max-w-4xl scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur sm:p-6">
+          {/* 신뢰 지표 — 데스크톱에서는 오른쪽 컬럼, 모바일에서는 CTA 아래 */}
+          <div id="trust" className="mt-8 scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur sm:p-6 lg:mt-0">
             <p className="text-[0.9rem] font-bold uppercase tracking-widest text-amber-300">믿고 맡기는 이유</p>
-            <dl className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
+            <dl className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4 lg:grid-cols-2">
               {trustStats.map((s) => (
                 <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
                   <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
@@ -297,6 +301,7 @@ export default function BusinessServicesPage() {
               </div>
             </div>
           </div>
+          </div>{/* /2단 grid */}
         </div>
       </section>
 
