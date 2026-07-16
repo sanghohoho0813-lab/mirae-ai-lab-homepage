@@ -9,6 +9,7 @@ import SignupPage from './pages/SignupPage'
 import MyToolsPage from './pages/MyToolsPage'
 import AdminPage from './pages/AdminPage'
 import AdminBusinessLeadsPage from './pages/AdminBusinessLeadsPage'
+import AdminMembersPage from './pages/AdminMembersPage'
 import AdminPaymentsPage from './pages/AdminPaymentsPage'
 import CheckoutPage from './pages/CheckoutPage'
 import PaymentCompletePage from './pages/PaymentCompletePage'
@@ -62,6 +63,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/dashboard" element={<Navigate to="/my-tools" replace />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/business-leads" element={<AdminBusinessLeadsPage />} />
+          <Route path="/admin/members" element={<AdminMembersPage />} />
           <Route path="/admin/payments" element={<AdminPaymentsPage />} />
           <Route path="/checkout/:productSlug" element={<CheckoutPage />} />
           <Route path="/payment/complete" element={<PaymentCompletePage />} />

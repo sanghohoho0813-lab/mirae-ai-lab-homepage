@@ -276,10 +276,16 @@ export default function AdminPage() {
     <PageShell title="관리자" subtitle="사용자별 도구 이용 기간, 체험 상태, 리뷰·설문 참여 여부, 결제 상태를 관리할 수 있습니다.">
       {err && <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700">{err}</div>}
 
-      <div className="mb-6">
+      <div className="mb-6 flex flex-wrap gap-2.5">
+        <Link
+          to="/admin/members"
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-700"
+        >
+          👥 가입 회원 관리 →
+        </Link>
         <Link
           to="/admin/business-leads"
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-700"
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition-colors hover:bg-slate-100"
         >
           📋 기업 성장진단 DB 관리 →
         </Link>
