@@ -3,7 +3,6 @@
 // 승인 완료 사례만 게시. 모바일 1열 스택.
 // ⚠️ 대화는 개인정보 보호를 위해 회사명·세부 상황을 바꿔 정리(고지문 표기).
 import {
-  caseStats,
   fundingCases,
   moreFundingCases,
   CASES_DISCLAIMER,
@@ -58,20 +57,8 @@ export default function FundingCasesSection() {
           매출 증빙이 부족한 초기기업부터 연매출 20억 원대 기업까지, 제조·외식·플랫폼·광고·도소매 등 다양한 업종의 자금 전략을 설계했습니다.
         </p>
 
-        {/* 숫자 요약 카드 4개 (숫자 우선) */}
-        <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {caseStats.map((s) => (
-            <div key={s.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
-              <p className={`font-black tracking-tight text-slate-900 ${s.big ? 'text-2xl sm:text-3xl' : 'text-[1.1rem] leading-snug sm:text-lg'}`}>
-                {s.value}
-              </p>
-              <p className="mt-2 text-[0.8rem] font-medium leading-snug text-slate-500 sm:text-sm">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
         {/* 대표 사례 — 카톡 승인 공유 */}
-        <div className="mt-16">
+        <div className="mt-12">
           <div className="flex items-center justify-center gap-2">
             <h3 className={subHead}>대표 사례</h3>
             <span className="rounded-full bg-[#fee500] px-2.5 py-1 text-[11px] font-black text-[#3c1e1e]">카톡 승인 공유</span>
