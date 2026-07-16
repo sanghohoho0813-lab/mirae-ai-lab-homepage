@@ -204,7 +204,7 @@ export default function BusinessServiceDetailPage() {
         <div className="mx-auto max-w-6xl px-5 py-3 text-sm text-slate-500 sm:px-6">
           <Link to="/business-services" className="font-medium hover:text-slate-900">서비스몰</Link>
           <span className="mx-1.5 text-slate-300">/</span>
-          <span className="font-semibold text-slate-700">{pkg.category}</span>
+          <span className="font-semibold text-slate-700">{pkg.categoryLabel ?? pkg.category}</span>
           <span className="mx-1.5 text-slate-300">/</span>
           <span className="font-semibold text-slate-700">{pkg.name}</span>
         </div>
@@ -218,7 +218,7 @@ export default function BusinessServiceDetailPage() {
           </div>
           <div className="flex flex-col">
             <div className="flex flex-wrap items-center gap-2">
-              <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.category}</span>
+              <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.categoryLabel ?? pkg.category}</span>
               {flagship ? (
                 <span className="rounded-full bg-amber-400 px-2.5 py-1 text-xs font-black text-slate-900">★ 대표 상품</span>
               ) : (

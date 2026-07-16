@@ -71,14 +71,14 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
     >
       {/* 썸네일 — 오버레이 없이 배너 문구가 온전히 보이도록(확대·크롭 없음) */}
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
-        <BusinessServiceVisual type={pkg.visualType} title={b.title} accent={b.accent} tag={pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="cover" minimal />
+        <BusinessServiceVisual type={pkg.visualType} title={b.title} accent={b.accent} tag={pkg.categoryLabel ?? pkg.category} imageSrc={pkg.imageSrc} alt={pkg.name} fit="cover" minimal />
       </div>
 
       <div className="flex flex-1 flex-col p-3 sm:p-5">
         {/* 카테고리(좌) ↔ 찜·장바구니(우, 상품명 위) */}
         <div className="flex items-start justify-between gap-1.5">
           <div className="flex min-w-0 flex-wrap items-center gap-1.5">
-            <span className={`rounded-full px-2 py-0.5 text-[0.72rem] font-bold sm:px-2.5 sm:py-1 sm:text-[0.82rem] ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.category}</span>
+            <span className={`rounded-full px-2 py-0.5 text-[0.72rem] font-bold sm:px-2.5 sm:py-1 sm:text-[0.82rem] ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.categoryLabel ?? pkg.category}</span>
             {!flagship && pkg.badge && <span className="hidden shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[0.82rem] font-semibold text-slate-500 sm:inline">{pkg.badge}</span>}
           </div>
           <div className="-mr-1 -mt-0.5 flex shrink-0 items-center gap-0.5">

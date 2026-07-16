@@ -17,6 +17,8 @@ export type BusinessPackage = {
   id: string
   slug: string
   category: string
+  /** 카드·상세 표시용 카테고리 라벨 (그룹핑은 category, 표기만 다르게 할 때) */
+  categoryLabel?: string
   badge: string
   badgeTone: BadgeTone
   name: string
@@ -302,6 +304,36 @@ export const businessPackages: BusinessPackage[] = [
       'AX 풀 패키지의 구축 범위·산출물·비용은 기업 상황에 따라 달라지며, 상담을 통해 확정됩니다.',
   },
   {
+    id: 'welfare-fund',
+    slug: 'welfare-fund',
+    category: 'AX 컨설팅',
+    categoryLabel: '직원 복지·절세',
+    badge: '전문가 협업',
+    badgeTone: 'slate',
+    name: '사내·공동 근로복지기금 설립',
+    tagline: '회사 세금도, 직원에게 나가는 세금도 함께 줄이면서 직원들이 오래오래 다니고 싶은 회사를 만드는 제도 — 기금 설립부터 운영까지 설계합니다.',
+    short: '회사 세금도 직원 세금도 줄이고, 오래 다니고 싶은 회사로',
+    price: '협의 후 결정',
+    priceNote: '기업 규모·출연 계획에 따라 협의 후 결정',
+    priceType: 'consult',
+    highlights: ['출연금 손금 인정 — 법인세 부담 절감', '직원 복지 혜택, 소득세·4대보험 부담 없이(요건 충족 시)', '장기 재직을 부르는 복지 체계'],
+    highlightNote: '복지는 늘리고, 회사·직원 세금 부담은 함께 줄입니다.',
+    recommendedFor: ['직원 복지를 강화하면서 세부담도 줄이고 싶은 대표님', '채용·이직이 잦아 오래 다니는 회사를 만들고 싶은 기업'],
+    deliverables: ['사내·공동 기금 적합성 진단', '출연 규모·복지 항목 설계(학자금·경조사·주택자금 등)', '기금법인 설립 절차·인가 진행 안내', '운영 규정·사후관리 안내'],
+    process: '적합성 진단 → 출연·복지 설계 → 설립·인가 진행 → 운영 안내',
+    expectation: '우리 회사에 맞는 기금 형태(사내/공동)와 출연 규모, 복지 항목이 정리되고, 설립부터 운영까지의 일정이 잡힙니다.',
+    why: '근로복지기금에 출연한 금액은 법인 비용으로 인정되고, 기금에서 직원에게 지급하는 복지 혜택은 요건 충족 시 근로소득으로 보지 않아 직원 부담 없이 실질 혜택이 커집니다. 복지가 좋아지면 직원들이 오래 다니고 채용 경쟁력도 함께 올라갑니다. 중소기업은 여러 회사가 함께하는 공동기금으로 정부 지원 연계도 검토할 수 있습니다.',
+    faqs: [
+      { q: '사내기금과 공동기금은 뭐가 다른가요?', a: '사내기금은 한 회사가 단독으로, 공동기금은 여러 중소기업이 함께 설립합니다. 공동기금은 정부 지원사업 연계를 검토할 수 있어 규모가 작은 기업에 유리한 경우가 많습니다.' },
+      { q: '정말 세금이 줄어드나요?', a: '출연금 손금 인정, 복지 혜택 비과세 등은 관련 법령의 요건 충족을 전제로 합니다. 기업 상황에 따라 달라질 수 있어 사전 검토 후 안내드립니다.' },
+      { q: '설립이 어렵지 않나요?', a: '정관 작성, 고용노동부 인가 등 절차가 있어 처음엔 복잡하게 느껴질 수 있습니다. 설립부터 운영 규정까지 순서대로 함께 진행합니다.' },
+    ],
+    visualType: 'gov',
+    imageSrc: '/assets/business-services/welfare-fund.png',
+    notice:
+      '기금 설립·운영과 세제 혜택은 근로복지기본법 등 관련 법령의 요건 충족을 전제로 하며, 기업 상황에 따라 달라질 수 있습니다. 노무·세무 판단이 필요한 부분은 관련 분야 전문 자격사와 협업하여 진행합니다.',
+  },
+  {
     id: 'rnd-center',
     slug: 'rnd-center',
     category: '인증·절세',
@@ -572,6 +604,7 @@ export const packageBanner: Record<string, { title: string; subtitle: string; ac
   'responsive-homepage': { title: '반응형 홈페이지', subtitle: '24시간 일하는 온라인 영업사원', accent: 'cyan' },
   'ai-ax-system': { title: 'AI 업무 자동화 프로그램', subtitle: '반복업무 자동화 · 상담 후 최종 견적', accent: 'cyan' },
   'ax-full-package': { title: 'AX 풀 패키지', subtitle: '회사의 모든 것, PC·폰에서 한눈에', accent: 'cyan' },
+  'welfare-fund': { title: '근로복지기금', subtitle: '회사·직원 세금은 줄이고 복지는 늘리고', accent: 'cyan' },
   'rnd-center': { title: '기업부설연구소 설립', subtitle: '정부지원·정책자금 가점 확보', accent: 'slate' },
   'iso-certification': { title: 'ISO 인증 패키지', subtitle: '거래·입찰·수출 준비', accent: 'slate' },
   'mainbiz-certification': { title: '메인비즈 인증', subtitle: '경영혁신형 가점 확보', accent: 'slate' },
