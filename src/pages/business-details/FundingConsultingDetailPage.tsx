@@ -46,6 +46,31 @@ const losses = [
   { icon: '🚪', t: '경쟁사는 이미 활용하고 있습니다', d: '비슷한 조건의 회사가 정책자금으로 설비와 인력에 투자하는 동안, 격차는 매달 벌어집니다.' },
 ]
 
+// 정책자금 vs 일반 대출 — 확정적 표현 대신 "~인 경우가 많습니다" 톤 유지(기관·상품마다 다를 수 있음)
+const fundFeatures = [
+  { icon: '📉', t: '시중은행보다 낮은 금리대인 경우가 많습니다', d: '정부·지자체 재원이나 보증기관을 통해 진행되어, 일반 신용대출보다 낮은 금리대로 설계된 상품이 많습니다.' },
+  { icon: '🤝', t: '신용점수 외의 요소도 함께 봅니다', d: '보증기관의 보증을 통해 진행되는 경우, 기술력·사업성 등을 함께 평가해 신용점수만으로 판단하지 않는 경우가 있습니다.' },
+  { icon: '🎯', t: '목적에 따라 종류가 다양합니다', d: '운전자금·시설자금·창업자금 등 목적과 기업 상황에 따라 적합한 기관·상품이 달라, 방향을 먼저 잡는 것이 중요합니다.' },
+]
+
+// 진행 절차 — 막막함 해소용 6단계 플로우
+const processSteps = [
+  { t: '상담 신청', d: '홈페이지나 카톡으로 편하게 문의를 남겨주세요.' },
+  { t: '기초 현황 확인', d: '사업 현황과 자금이 필요한 목적을 간단히 확인합니다.' },
+  { t: '가능성 진단', d: '어떤 자금·기관이 적합한지 검토하고 결과를 안내해 드립니다.' },
+  { t: '방향 결정', d: '진단 결과를 보고 진행 여부는 대표님이 직접 결정하십니다.' },
+  { t: '서류 준비', d: '사업계획서 등 신청에 필요한 서류 작성을 지원합니다.' },
+  { t: '신청 · 사후 안내', d: '신청부터 결과 확인, 다음 절차까지 안내해 드립니다.' },
+]
+
+// 신청 전 자가진단 — 배제가 아니라 "확인해두면 좋은 것" 톤(해당 안 돼도 상담 가능함을 명시)
+const readinessChecks = [
+  '최근 연체 이력이 없는지',
+  '국세·지방세 체납이 없는지',
+  '4대보험이 완납 상태인지',
+  '현재 진행 중인 다른 대출이 있는지',
+]
+
 function CartIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -227,6 +252,33 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
+      {/* 정책자금이 낯선 분들을 위한 기초 설명 */}
+      <section className={`bg-blue-50/50 ${band}`}>
+        <div className={inner}>
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-white text-4xl shadow-sm">📘</div>
+          <p className={kicker}>정책자금이 처음이라면</p>
+          <h2 className={bigHead}>
+            정책자금, <span className="text-blue-600">일반 대출과 뭐가 다른가요?</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+            용어부터 낯설어 시작하기 어려우셨다면, 여기서부터 천천히 짚어보시죠.
+          </p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-3">
+            {fundFeatures.map((f) => (
+              <div key={f.t} className="flex flex-col rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{f.icon}</span>
+                <p className="mt-3 text-[1.1rem] font-extrabold leading-snug text-slate-900">{f.t}</p>
+                <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{f.d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-lg text-center text-sm leading-relaxed text-slate-500">
+            다만 정책자금도 심사 절차를 거치며, 모든 기업의 승인을 보장하지는 않습니다.
+            그래서 먼저 <b className="text-slate-700">우리 회사에 맞는 방향인지 확인하는 것</b>이 첫 단계입니다.
+          </p>
+        </div>
+      </section>
+
       {/* 손실 환기 — 미루면 잃는 것 */}
       <section className={`bg-rose-50/60 ${band}`}>
         <div className={inner}>
@@ -319,8 +371,56 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
+      {/* 진행 절차 — 막막함을 없애는 6단계 플로우 */}
+      <section className={`bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>진행 절차</p>
+          <h2 className={bigHead}>
+            정책자금 컨설팅,<br /><span className="text-blue-600">이렇게 진행됩니다</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+            무엇부터 해야 할지 몰라도 괜찮습니다. 상담 신청부터 순서대로 안내해 드립니다.
+          </p>
+          <ol className="mx-auto mt-10 max-w-xl space-y-3">
+            {processSteps.map((s, i) => (
+              <li key={s.t} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-blue-600 text-base font-black text-white" aria-hidden>
+                  {i + 1}
+                </span>
+                <div className="min-w-0 pt-0.5">
+                  <p className="text-[1.1rem] font-extrabold leading-snug text-slate-900">{s.t}</p>
+                  <p className="mt-1 text-[0.98rem] leading-relaxed text-slate-600">{s.d}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       {/* 정책자금·보증부 자금 실제 사례 (카톡 승인 공유) */}
       <FundingCasesSection />
+
+      {/* 신청 전 자가진단 — 확인해두면 좋은 것들(배제가 아니라 안내) */}
+      <section className={`bg-white ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>신청 전 자가진단</p>
+          <h2 className={bigHead}>
+            미리 확인해두면<br /><span className="text-blue-600">진행이 한결 수월합니다</span>
+          </h2>
+          <div className="mx-auto mt-9 max-w-lg space-y-2.5">
+            {readinessChecks.map((c) => (
+              <div key={c} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-5 py-4">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-blue-100 text-sm font-black text-blue-600" aria-hidden>✓</span>
+                <p className="text-[1.05rem] font-semibold text-slate-800">{c}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-6 max-w-lg text-center text-sm leading-relaxed text-slate-500">
+            위 항목에 해당되지 않는 부분이 있어도 상담은 가능합니다.
+            진단 과정에서 대표님 상황에 맞는 방향을 함께 찾아드립니다.
+          </p>
+        </div>
+      </section>
 
       {/* 혜택 2 — 전자책 3종 증정 */}
       <section className={`bg-slate-50 ${band}`}>
@@ -472,11 +572,24 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 유의사항 */}
+      {/* 유의사항 — 항목별로 투명하게 */}
       <section className="bg-white px-5 pb-4">
         <div className={`${inner} rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6`}>
           <p className="text-sm font-bold text-slate-700">안내 및 유의사항</p>
-          <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-500">{pkg.notice}</p>
+          <ul className="mt-3 space-y-2">
+            <li className="flex items-start gap-2 text-[0.98rem] leading-relaxed text-slate-500">
+              <span aria-hidden className="mt-0.5 shrink-0 text-slate-400">·</span>
+              정책자금 승인, 대출 실행, 금리, 한도는 보장하지 않습니다. 기업의 업종·재무상태·신청 시점·기관 심사 기준에 따라 결과는 달라질 수 있습니다.
+            </li>
+            <li className="flex items-start gap-2 text-[0.98rem] leading-relaxed text-slate-500">
+              <span aria-hidden className="mt-0.5 shrink-0 text-slate-400">·</span>
+              증정 전자책을 다운로드하신 후에는 결제 환불이 불가합니다.
+            </li>
+            <li className="flex items-start gap-2 text-[0.98rem] leading-relaxed text-slate-500">
+              <span aria-hidden className="mt-0.5 shrink-0 text-slate-400">·</span>
+              신청 서류에는 정확한 정보를 제공해 주셔야 하며, 사실과 다른 정보로 인한 불이익은 책임지지 않습니다.
+            </li>
+          </ul>
         </div>
       </section>
 
