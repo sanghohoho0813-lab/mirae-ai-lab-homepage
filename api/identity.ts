@@ -412,6 +412,14 @@ export default async function handler(req: any, res: any) {
       await admin.from('profiles').update(patch).eq('id', userId)
       await audit(userId, 'signup_completed', isSocial ? 'social' : null, { role })
 
+      // 가입 축하 쿠폰 자동 발급 (1인 1장, 멱등 — 발급 실패해도 온보딩 완료엔 영향 없음)
+      try {
+        const { data: existingCoupon } = await admin.from('user_coupons').select('id').eq('user_id', userId).eq('kind', 'signup').maybeSingle()
+        if (!existingCoupon) {
+          await admin.from('user_coupons').insert({ user_id: userId, kind: 'signup', amount: 5000, code: 'WELCOME5000' })
+        }
+      } catch { /* user_coupons 테이블 미설정 등은 무시 (가입 완료를 막지 않음) */ }
+
       const { data: roles } = await admin.from('user_roles').select('role').eq('user_id', userId)
       return res.status(200).json({ ok: true, roles: ((roles ?? []) as { role: string }[]).map((r) => r.role) })
     }

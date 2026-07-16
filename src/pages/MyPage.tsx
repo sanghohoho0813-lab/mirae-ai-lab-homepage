@@ -14,6 +14,7 @@ import { addRole } from '../lib/identityVerification'
 import { evaluateAccess, formatDate, formatDateTime, type ToolAccess } from '../lib/platform'
 import { fetchMyAccess, fetchTrialTools, type DbTool } from '../lib/portal'
 import { formatKrw, getOrder, loadLocalOrders, type LocalOrder, type OrderSummary } from '../lib/payments'
+import { activeCouponAmount, formatWon, loadMyCoupons, type UserCoupon } from '../lib/coupons'
 import { EmptyOrders, StatusBadge } from '../components/payment/PaymentUX'
 
 type Tab = 'profile' | 'security' | 'products' | 'orders' | 'roles'
@@ -138,6 +139,9 @@ function ProfileTab({
   const [value, setValue] = useState(currentName)
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
+  const [coupons, setCoupons] = useState<UserCoupon[]>([])
+  useEffect(() => { void loadMyCoupons().then(setCoupons) }, [])
+  const couponTotal = activeCouponAmount(coupons)
 
   async function save() {
     if (busy || !supabase) return
@@ -182,6 +186,15 @@ function ProfileTab({
         <InfoRow label="가입일">{formatDate(createdAt)}</InfoRow>
         <InfoRow label="마지막 로그인">{lastLoginAt ? formatDateTime(lastLoginAt) : '-'}</InfoRow>
       </div>
+      {couponTotal > 0 && (
+        <div className="mt-4 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <span className="flex items-center gap-2 text-sm font-bold text-amber-800"><span aria-hidden>🎁</span> 보유 쿠폰</span>
+          <span className="text-right">
+            <span className="text-base font-black text-amber-700">{formatWon(couponTotal)}</span>
+            <span className="ml-2 text-[0.72rem] font-medium text-amber-600/80">결제 오픈 시 사용 가능</span>
+          </span>
+        </div>
+      )}
       {msg && <p className={`mt-3 rounded-lg px-3 py-2 text-sm font-medium ${msg.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>{msg.text}</p>}
     </Card>
   )

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import ProductCard from '../components/ProductCard'
+import CouponSignupBanner from '../components/CouponSignupBanner'
 import LegalFooter from '../components/LegalFooter'
 import { consultLinks } from '../config/businessInfo'
 import { useSavedItems } from '../lib/savedItems'
@@ -168,6 +169,9 @@ export default function BusinessServicesPage() {
           </div>
         </div>
       </header>
+
+      {/* 회원가입 유도 — 비로그인 방문자에게만 노출되는 쿠폰 띠배너 */}
+      <CouponSignupBanner />
 
       {/* Hero (navy) */}
       <section className="relative overflow-hidden bg-slate-900">
