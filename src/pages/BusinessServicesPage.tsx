@@ -9,6 +9,7 @@ import { loadHistory } from '../lib/businessDiagnosisStorage'
 import {
   businessPackages,
   CATEGORIES,
+  CATEGORY_NOTES,
   CATEGORY_SCENARIOS,
   FEATURED_IDS,
   type BusinessPackage,
@@ -57,6 +58,7 @@ const CATEGORY_QUERY_MAP: Record<string, string> = {
   certification: '인증·절세',
   digital: 'AX 컨설팅',
   full: '풀패키지',
+  corporate: '법인 컨설팅',
 }
 
 export default function BusinessServicesPage() {
@@ -351,6 +353,12 @@ export default function BusinessServicesPage() {
                   <span className="text-lg font-black tabular-nums tracking-widest text-blue-600 sm:text-xl">{String(gi + 1).padStart(2, '0')}</span>
                   <h3 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{g.scenario}</h3>
                 </div>
+                {CATEGORY_NOTES[g.cat] && (
+                  <p className="mt-1.5 flex items-start gap-1.5 text-[0.9rem] font-semibold leading-snug text-slate-500">
+                    <span aria-hidden className="mt-0.5 shrink-0 text-blue-500">✓</span>
+                    {CATEGORY_NOTES[g.cat]}
+                  </p>
+                )}
                 <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
                   {g.items.map((pkg) => (
                     <ProductCard key={pkg.id} pkg={pkg} />

@@ -58,7 +58,7 @@ export type BusinessPackage = {
 }
 
 // 카테고리 탭
-export const CATEGORIES = ['전체', '자금조달', '지원금', '인증·절세', 'AX 컨설팅', '풀패키지']
+export const CATEGORIES = ['전체', '자금조달', '지원금', '인증·절세', 'AX 컨설팅', '풀패키지', '법인 컨설팅']
 
 // 카테고리별 상황 헤드라인 (서비스몰 홈 섹션 제목 + 카테고리 탭 라벨)
 export const CATEGORY_SCENARIOS: Record<string, string> = {
@@ -67,6 +67,12 @@ export const CATEGORY_SCENARIOS: Record<string, string> = {
   '인증·절세': '대외 신뢰도·가점·세금 혜택까지 챙기고 싶다면',
   'AX 컨설팅': 'AI 시대에 뒤처지지 않는 회사로 만들고 싶다면',
   '풀패키지': '믿을 만한 파트너가 늘 함께했으면 한다면',
+  '법인 컨설팅': '세금은 줄이고, 회사의 부를 제대로 옮기고 싶다면',
+}
+
+// 카테고리별 보조 안내 — 섹션 제목 아래 노출 (전문성 신뢰 확보용)
+export const CATEGORY_NOTES: Record<string, string> = {
+  '법인 컨설팅': '가지급금·이익잉여금·가업승계 같은 세무 사안은 세무사 등 관련 분야 전문 자격사와 함께 진행합니다.',
 }
 
 // 대표 상품 TOP 5 노출 순서
@@ -270,23 +276,23 @@ export const businessPackages: BusinessPackage[] = [
     id: 'ax-full-package',
     slug: 'ax-full-package',
     category: 'AX 컨설팅',
-    badge: '전사 AX',
+    badge: '한눈에 관리',
     badgeTone: 'slate',
     name: 'AX 풀 패키지',
-    tagline: 'AI 자동화부터 전사 업무 프로세스·CRM·ERP·AI Agent·사내 업무 체계까지 기업 상황에 맞춰 설계합니다.',
-    short: '전사 업무 프로세스·CRM·ERP·AI Agent까지 설계',
+    tagline: '회사의 모든 정보를 대표님 PC와 스마트폰에서 한눈에 보고 관리할 수 있게 만듭니다. 직원 관리(HR)·고객 관리(CRM)·재고·정산(ERP)·회의 아카이빙까지, 흩어진 업무를 하나로 연결합니다.',
+    short: '회사 돌아가는 모든 것, 내 PC·스마트폰에서 한눈에',
     price: '상담 후 안내',
     priceNote: '기업 상황에 맞춰 범위·견적을 상담 후 안내드립니다.',
     priceType: 'consult',
-    highlights: ['AI 자동화 + 전사 업무 프로세스 설계', 'CRM·ERP·AI Agent·자동화 플랫폼', '사내 업무 체계까지 통합 설계'],
-    highlightNote: '기업 상황에 맞춰 설계하는 전사 AX 구축',
-    recommendedFor: ['단순 자동화를 넘어 전사 업무 체계를 바꾸려는 대표님', 'CRM·ERP·AI Agent까지 통합 설계가 필요한 기업'],
-    deliverables: ['전사 업무 프로세스 진단·설계', 'CRM·ERP·AI Agent·자동화 플랫폼 설계', '사내 업무 체계 재정비', '단계별 구축·운영 로드맵'],
+    highlights: ['HR·CRM·ERP·회의기록까지 하나로 연결', '언제 어디서든 PC·스마트폰으로 확인', '필요한 것부터 단계적으로 구축'],
+    highlightNote: '흩어진 회사 정보를 한 화면에서 보고 관리합니다.',
+    recommendedFor: ['회사 돌아가는 상황을 언제 어디서든 한눈에 보고 싶은 대표님', '엑셀·메신저·수기로 흩어진 업무를 하나로 모으고 싶은 기업'],
+    deliverables: ['회사 업무·정보 흐름 진단', 'HR·CRM·ERP·회의 아카이빙 통합 설계', 'PC·스마트폰 어디서든 보는 관리 화면 구축', '단계별 구축·운영 로드맵'],
     process: '종합 진단 → 범위·견적 상담 → 단계별 설계·구축 → 운영 안내',
-    expectation: 'AI 자동화부터 전사 프로세스·CRM·ERP·AI Agent·사내 업무 체계까지 하나의 AX 구조로 설계됩니다. 범위와 견적은 상담에서 확정합니다.',
-    why: '자동화 프로그램 하나로는 회사 전체가 바뀌지 않습니다. 업무 프로세스·데이터·시스템을 함께 설계해야 전사 차원의 효율이 만들어집니다. 기업 상황에 맞춰 필요한 만큼 단계적으로 구축합니다.',
+    expectation: '직원 관리(HR), 고객 관리(CRM), 재고·정산(ERP), 회의 기록까지 흩어져 있던 회사 정보가 하나로 연결되어, 대표님 PC와 스마트폰에서 한눈에 확인하고 관리할 수 있게 됩니다.',
+    why: '업무가 엑셀, 메신저, 종이 문서에 흩어져 있으면 회사 상황을 파악하는 데만 하루가 갑니다. 회사의 정보를 한 곳에 모아 PC와 스마트폰 어디서든 볼 수 있게 만들면, 자리에 없어도 회사가 어떻게 돌아가는지 바로 보입니다.',
     faqs: [
-      { q: '무엇까지 포함되나요?', a: 'AI 자동화, 전사 업무 프로세스, CRM, ERP, AI Agent, 자동화 플랫폼, 사내 업무 체계까지 기업 상황에 맞춰 설계합니다. 범위는 상담에서 정합니다.' },
+      { q: '무엇까지 포함되나요?', a: '직원 관리(HR), 고객 관리(CRM), 재고·매출·정산 관리(ERP), 회의 아카이빙 등 회사 운영에 필요한 것들을 기업 상황에 맞춰 하나로 연결합니다. 범위는 상담에서 정합니다.' },
       { q: '비용은 어떻게 되나요?', a: '기업 규모와 구축 범위에 따라 달라, 상담 후 견적을 안내드립니다.' },
       { q: '한 번에 다 구축하나요?', a: '우선순위를 정해 단계적으로 진행합니다. 무엇부터 할지는 종합 진단에서 함께 정합니다.' },
     ],
@@ -435,6 +441,123 @@ export const businessPackages: BusinessPackage[] = [
     featured: true,
     flagship: true,
   },
+  // ── 법인 컨설팅 (전통 법인 컨설팅 — 세무사 등 전문 자격사 협업, 전부 협의 후 결정) ──
+  {
+    id: 'provisional-payment',
+    slug: 'provisional-payment',
+    category: '법인 컨설팅',
+    badge: '전문 자격사 협업',
+    badgeTone: 'slate',
+    name: '가지급금 정리 컨설팅',
+    tagline: '세무사 등 관련 분야 전문 자격사와 함께, 쌓여 있는 가지급금의 원인을 분석하고 계획적으로 정리합니다.',
+    short: '쌓인 가지급금, 세금 부담이 커지기 전에 계획적으로 정리',
+    price: '협의 후 결정',
+    priceNote: '가지급금 규모·발생 원인에 따라 협의 후 결정',
+    priceType: 'consult',
+    highlights: ['가지급금 원인 분석 · 정리 플랜 설계', '인정이자·상여처분 부담 사전 점검', '세무사 등 전문 자격사와 협업 진행'],
+    highlightNote: '방치할수록 커지는 가지급금 부담을 계획적으로 줄여갑니다.',
+    recommendedFor: ['가지급금이 쌓여 세금 부담이 걱정되는 법인', '법인 자금 흐름을 깨끗하게 정리하고 싶은 대표님'],
+    deliverables: ['가지급금 현황·발생 원인 분석', '정리 방안 비교 검토(급여·배당·퇴직금 등)', '실행 순서·일정 정리', '재발 방지 관리 방안 안내'],
+    process: '현황 진단 → 정리 방안 설계 → 전문 자격사 협업 실행 → 사후 관리',
+    expectation: '가지급금이 왜 쌓였는지 파악되고, 우리 회사 상황에 맞는 정리 순서와 실행 계획이 정리됩니다.',
+    why: '가지급금을 방치하면 인정이자 부담이 계속 쌓이고, 정리 시점에 대표 상여로 처분되어 세금 부담이 커질 수 있습니다. 원인을 파악하고 계획을 세워 순서대로 정리하는 것이 부담을 가장 줄이는 방법입니다.',
+    faqs: [
+      { q: '직접 진행하나요?', a: '세무 판단이 필요한 부분은 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 저희는 전체 과정을 설계하고 관리합니다.' },
+      { q: '비용은 어떻게 되나요?', a: '가지급금 규모와 발생 원인, 정리 범위에 따라 달라 협의 후 결정됩니다.' },
+      { q: '정리하면 세금이 무조건 줄어드나요?', a: '아니요. 기업 상황과 관련 법령에 따라 달라질 수 있어, 사전 검토 후 가능한 범위를 안내드립니다.' },
+    ],
+    visualType: 'funding',
+    imageSrc: '/assets/business-services/provisional-payment.png',
+    notice:
+      '본 서비스는 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 절세 효과와 적용 가능 여부는 기업 상황과 관련 법령·과세관청 해석에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.',
+  },
+  {
+    id: 'retained-earnings',
+    slug: 'retained-earnings',
+    category: '법인 컨설팅',
+    badge: '전문 자격사 협업',
+    badgeTone: 'slate',
+    name: '이익잉여금 처분 컨설팅',
+    tagline: '세무사 등 관련 분야 전문 자격사와 함께, 법인에 쌓인 이익잉여금을 배당·급여·퇴직금 조합으로 계획성 있게 처분합니다.',
+    short: '법인에 쌓인 이익잉여금, 배당·급여·퇴직금 조합으로 계획 있게',
+    price: '협의 후 결정',
+    priceNote: '이익잉여금 규모·주주 구성에 따라 협의 후 결정',
+    priceType: 'consult',
+    highlights: ['이익잉여금 현황·세부담 시뮬레이션', '배당·급여·퇴직금 조합 설계', '세무사 등 전문 자격사와 협업 진행'],
+    highlightNote: '쌓아두기만 한 이익잉여금을 계획적으로 움직입니다.',
+    recommendedFor: ['이익잉여금이 쌓여 있는데 어떻게 가져올지 막막한 대표님', '배당·급여·퇴직금을 조합해 세부담을 관리하고 싶은 법인'],
+    deliverables: ['이익잉여금 현황 진단', '처분 방안별 세부담 비교(배당·급여·퇴직금 등)', '연도별 실행 플랜 설계', '실행 관리·사후 안내'],
+    process: '현황 진단 → 처분 조합 설계 → 전문 자격사 협업 실행 → 사후 관리',
+    expectation: '이익잉여금을 언제, 어떤 방식으로, 얼마나 가져올지 연도별 계획이 정리됩니다.',
+    why: '이익잉여금을 쌓아두기만 하면 나중에 한 번에 가져올 때 세부담이 커지고, 비상장주식 가치가 올라 승계·양도 부담도 함께 커질 수 있습니다. 미리 조합을 설계해 나눠서 움직이는 것이 유리한 경우가 많습니다.',
+    faqs: [
+      { q: '어떤 방식들을 검토하나요?', a: '배당, 급여·상여, 임원 퇴직금 등 처분 방식을 기업 상황에 맞춰 조합하고, 방식별 세부담을 비교해 안내드립니다.' },
+      { q: '직접 진행하나요?', a: '세무 판단이 필요한 부분은 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다.' },
+      { q: '비용은 어떻게 되나요?', a: '이익잉여금 규모와 설계 범위에 따라 달라 협의 후 결정됩니다.' },
+    ],
+    visualType: 'venture',
+    imageSrc: '/assets/business-services/retained-earnings.png',
+    notice:
+      '본 서비스는 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 절세 효과와 적용 가능 여부는 기업 상황과 관련 법령·과세관청 해석에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.',
+  },
+  {
+    id: 'business-succession',
+    slug: 'business-succession',
+    category: '법인 컨설팅',
+    badge: '전문 자격사 협업',
+    badgeTone: 'slate',
+    name: '가업승계 증여특례 컨설팅',
+    tagline: '세무사 등 관련 분야 전문 자격사와 함께, 가업승계 증여세 과세특례 요건을 검토하고 승계 플랜을 설계합니다.',
+    short: '자녀에게 물려줄 회사, 증여세 과세특례로 계획적으로 준비',
+    price: '협의 후 결정',
+    priceNote: '기업 규모·지분 구조에 따라 협의 후 결정',
+    priceType: 'consult',
+    highlights: ['증여특례 요건·적용 가능성 검토', '승계 일정·지분 이전 플랜 설계', '세무사 등 전문 자격사와 협업 진행'],
+    highlightNote: '준비 기간이 길수록 유리한 것이 가업승계입니다.',
+    recommendedFor: ['자녀에게 회사를 물려줄 계획이 있는 대표님', '증여세 부담 때문에 승계를 미루고 있는 법인'],
+    deliverables: ['가업승계 증여특례 요건 검토', '지분 구조·승계 일정 설계', '특례 적용 후 사후관리 요건 정리', '실행 관리·사후 안내'],
+    process: '요건 검토 → 승계 플랜 설계 → 전문 자격사 협업 실행 → 사후관리 안내',
+    expectation: '우리 회사가 증여특례를 적용받을 수 있는지, 언제 어떤 순서로 지분을 넘길지 승계 로드맵이 정리됩니다.',
+    why: '가업승계는 준비 없이 진행하면 증여세·상속세 부담이 매우 커질 수 있습니다. 과세특례는 요건과 사후관리 의무가 까다로워, 미리 요건을 맞추고 일정을 설계할수록 세부담과 리스크를 줄일 수 있습니다.',
+    faqs: [
+      { q: '특례를 적용하면 세금이 얼마나 줄어드나요?', a: '기업 규모·지분 가치·요건 충족 여부에 따라 달라집니다. 사전 검토에서 예상 범위를 함께 확인합니다.' },
+      { q: '사후관리 요건이 있다고 들었어요.', a: '네. 특례 적용 후 일정 기간 업종·고용 등 유지 의무가 있어, 사후관리까지 함께 설계합니다.' },
+      { q: '직접 진행하나요?', a: '세무 판단이 필요한 부분은 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다.' },
+    ],
+    visualType: 'full',
+    imageSrc: '/assets/business-services/business-succession.png',
+    notice:
+      '본 서비스는 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 특례 적용 여부와 절세 효과는 기업 상황과 관련 법령·과세관청 해석에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.',
+  },
+  {
+    id: 'spouse-stock-retirement',
+    slug: 'spouse-stock-retirement',
+    category: '법인 컨설팅',
+    badge: '전문 자격사 협업',
+    badgeTone: 'slate',
+    name: '배우자 증여 이익소각 설계',
+    tagline: '세무사 등 관련 분야 전문 자격사와 함께, 배우자 증여재산공제를 활용한 이익소각 구조의 적용 가능성을 검토하고 설계합니다.',
+    short: '배우자 증여공제를 활용한 법인 자금 회수 구조 설계',
+    price: '협의 후 결정',
+    priceNote: '지분 구조·주식 가치에 따라 협의 후 결정',
+    priceType: 'consult',
+    highlights: ['배우자 증여공제 활용 구조 검토', '자기주식 취득·소각 절차 설계', '세무사 등 전문 자격사와 협업 진행'],
+    highlightNote: '요건과 절차가 까다로운 만큼, 사전 검토가 필수입니다.',
+    recommendedFor: ['법인 자금을 회수하고 싶은데 세부담이 걱정되는 대표님', '지분 구조를 정리하면서 자금 회수를 함께 설계하고 싶은 법인'],
+    deliverables: ['적용 가능성·리스크 사전 검토', '주식 가치 평가·증여 플랜 설계', '자기주식 취득·소각 절차 설계', '실행 관리·사후 안내'],
+    process: '사전 검토 → 구조 설계 → 전문 자격사 협업 실행 → 사후 관리',
+    expectation: '우리 회사 상황에서 이익소각 구조가 적용 가능한지, 어떤 절차와 일정으로 진행할지 검토 결과가 정리됩니다.',
+    why: '이익소각은 절차와 요건이 까다롭고, 관련 법령·과세관청 해석에 따라 결과가 달라질 수 있는 영역입니다. 실행 전에 전문 자격사와 함께 적용 가능성과 리스크를 충분히 검토하는 것이 중요합니다.',
+    faqs: [
+      { q: '누구나 활용할 수 있나요?', a: '아니요. 지분 구조·주식 가치·자금 흐름에 따라 적용이 어려운 경우도 있어, 사전 검토가 먼저입니다.' },
+      { q: '세무 리스크는 없나요?', a: '관련 법령과 과세관청 해석에 따라 달라질 수 있어, 전문 자격사와 함께 리스크를 검토한 후 진행 여부를 결정합니다.' },
+      { q: '비용은 어떻게 되나요?', a: '지분 구조와 설계 범위에 따라 협의 후 결정됩니다.' },
+    ],
+    visualType: 'lab',
+    imageSrc: '/assets/business-services/spouse-stock-retirement.png',
+    notice:
+      '본 서비스는 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 절세 효과와 적용 가능 여부는 기업 상황과 관련 법령·과세관청 해석에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.',
+  },
 ]
 
 // ── 상품 배너(썸네일) 폴백 메타 ─────────────────────────────────────────────
@@ -448,12 +571,16 @@ export const packageBanner: Record<string, { title: string; subtitle: string; ac
   'venture-investment': { title: '벤처인증 · 투자유형', subtitle: '절세 전략으로 많이 활용', accent: 'indigo' },
   'responsive-homepage': { title: '반응형 홈페이지', subtitle: '24시간 일하는 온라인 영업사원', accent: 'cyan' },
   'ai-ax-system': { title: 'AI 업무 자동화 프로그램', subtitle: '반복업무 자동화 · 상담 후 최종 견적', accent: 'cyan' },
-  'ax-full-package': { title: 'AX 풀 패키지', subtitle: '전사 프로세스·CRM·ERP·AI Agent 설계', accent: 'cyan' },
+  'ax-full-package': { title: 'AX 풀 패키지', subtitle: '회사의 모든 것, PC·폰에서 한눈에', accent: 'cyan' },
   'rnd-center': { title: '기업부설연구소 설립', subtitle: '정부지원·정책자금 가점 확보', accent: 'slate' },
   'iso-certification': { title: 'ISO 인증 패키지', subtitle: '거래·입찰·수출 준비', accent: 'slate' },
   'mainbiz-certification': { title: '메인비즈 인증', subtitle: '경영혁신형 가점 확보', accent: 'slate' },
   'innobiz-certification': { title: '이노비즈 인증', subtitle: '기술혁신형 우대 확보', accent: 'slate' },
   'growth-roadmap-package': { title: '성장 로드맵 풀패키지', subtitle: '자금·인증·홈페이지·AI 한 번에', accent: 'blue' },
+  'provisional-payment': { title: '가지급금 정리', subtitle: '원인 분석부터 계획적 정리까지', accent: 'indigo' },
+  'retained-earnings': { title: '이익잉여금 처분 설계', subtitle: '배당·급여·퇴직금 조합 설계', accent: 'indigo' },
+  'business-succession': { title: '가업승계 증여특례', subtitle: '요건 검토부터 지분 이전 플랜까지', accent: 'indigo' },
+  'spouse-stock-retirement': { title: '배우자 증여 이익소각 설계', subtitle: '법인 자금 회수 구조 설계', accent: 'indigo' },
 }
 
 export function getPackageBySlug(slug: string | undefined): BusinessPackage | undefined {
@@ -473,4 +600,5 @@ export const categoryToneClass: Record<string, string> = {
   '인증·절세': 'bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/15',
   'AX 컨설팅': 'bg-cyan-50 text-cyan-700 ring-1 ring-inset ring-cyan-600/15',
   '풀패키지': 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-500/20',
+  '법인 컨설팅': 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/15',
 }

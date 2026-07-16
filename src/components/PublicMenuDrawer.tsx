@@ -71,6 +71,7 @@ const BUSINESS_MENU: MenuConfig = {
         { no: '3', label: '대외 신뢰도·가점·세금 혜택까지 챙기고 싶다면', to: '/business-services?category=certification' },
         { no: '4', label: 'AI 시대에 뒤처지지 않는 회사로 만들고 싶다면', to: '/business-services?category=digital' },
         { no: '5', label: '믿을 만한 파트너가 늘 함께했으면 한다면', to: '/business-services?category=full' },
+        { no: '6', label: '세금은 줄이고, 회사의 부를 제대로 옮기고 싶다면', to: '/business-services?category=corporate' },
       ],
     },
     {
