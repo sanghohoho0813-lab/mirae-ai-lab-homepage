@@ -320,7 +320,7 @@ export default function BusinessServiceDetailPage() {
             ))}
           </div>
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            그런데 이 고민들, <span className="text-red-600">미룰수록 비싸집니다.</span>
+            그런데 이 고민들, <span className="text-red-600">미뤄둘수록 나중에 더 큰 손해로 돌아옵니다.</span>
           </p>
         </div>
       </section>
