@@ -173,7 +173,7 @@ export default function GatewayPage() {
             </span>
           ))}
         </div>
-        <p className="mt-3 text-xs text-slate-400">미래경영지원센터 운영 기준</p>
+        <p className="mt-3 text-xs text-slate-400">미래경영지원센터가 직접 운영합니다</p>
       </div>
 
       <div className="relative z-10">

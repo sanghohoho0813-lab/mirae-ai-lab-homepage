@@ -134,7 +134,7 @@ export const productRules: ProductRule[] = [
   {
     slug: 'iso-certification',
     recommendWeight: (a) => (!isFounder(a) && wantsBig(a) && !hasIso(a) ? 84 : 0),
-    reason: () => '대기업 납품·공공입찰·수출 계획이 있지만 ISO 인증이 없어 대외신인도 보완 우선순위가 높습니다.',
+    reason: () => '대기업 납품·공공입찰·수출 계획이 있지만 ISO 인증이 없어 대외 신뢰도 보완 우선순위가 높습니다.',
     problems: () => ['입찰·거래처 요구 인증 부족', '관리체계 설명자료 부족'],
   },
   {

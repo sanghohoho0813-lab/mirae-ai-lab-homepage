@@ -31,7 +31,7 @@ export const AREA_LABELS: Record<ScoreArea, string> = {
   employment: '고용지원금 활용 가능성',
   govSupport: '정부지원사업 준비도',
   certification: '기업인증·연구개발 기반',
-  credibility: '대외신인도·입찰 경쟁력',
+  credibility: '대외 신뢰도·입찰 경쟁력',
   digital: '홈페이지·AX 운영체계',
 }
 
@@ -195,7 +195,7 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
           : (byAreaScore.funding ?? 0) < 55
             ? '돈이 필요한 이유는 있지만, 심사자에게 보여줄 자료가 아직 부족해요.'
             : '자금을 검토할 기본 자료가 어느 정도 준비되어 있어요.',
-        missText: '인증이 없어도 신청할 수는 있지만, 매출·재무·업종 경쟁력만으로 설명해야 하는 비중이 커질 수 있어요.',
+        missText: '인증이 없어도 신청은 할 수 있지만, 매출·재무·업종 경쟁력만으로 회사를 설명해야 해서 부담이 커질 수 있어요.',
         smallAction: arrears
           ? '체납·분납 상태와 신청 가능 시점을 먼저 확인하세요.'
           : bizPlan !== 'recent'
@@ -247,7 +247,7 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
     }
     if (area === 'credibility') {
       return {
-        statusSentence: wantsBig && !hasIso ? '입찰·거래처 요구에 대응할 인증이 부족할 수 있어요.' : '대외신인도 자료가 어느 정도 준비되어 있어요.',
+        statusSentence: wantsBig && !hasIso ? '입찰·거래처 요구에 대응할 인증이 부족할 수 있어요.' : '대외 신뢰도 자료가 어느 정도 준비되어 있어요.',
         missText: '입찰이나 대기업 거래를 시작한 뒤 인증을 준비하면 일정이 촉박할 수 있어요.',
         smallAction: wantsBig && !hasIso ? '계획에 맞는 ISO 규격부터 확인하세요.' : '거래처 요구조건을 미리 확인하세요.',
         linkedProductSlug: wantsBig && !hasIso ? 'iso-certification' : ['y3to7', 'y7plus'].includes(years ?? '') && one(answers, 'mainbiz') !== 'have' ? 'mainbiz-certification' : undefined,
@@ -425,7 +425,7 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
   for (const a of sortedWeak.slice(0, 3)) {
     if (a.score < 70) improvements.push(`${a.label} — ${a.note}`)
   }
-  if (improvements.length === 0) improvements.push('큰 공백 없이 고르게 준비되어 있어요. 유지가 곧 전략입니다.')
+  if (improvements.length === 0) improvements.push('큰 공백 없이 고르게 준비돼 있어요. 지금 상태를 잘 유지하시는 것이 가장 좋습니다.')
 
   const prerequisites: string[] = []
   if (arrears) prerequisites.push('국세·지방세 체납 정리 — 대부분의 정책자금·지원사업 검토 전에 먼저 확인해야 합니다.')
@@ -434,7 +434,7 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
   // ── 종합 메시지 ──
   const top2 = sortedWeak.slice(0, 2).map((a) => a.label.replace(/ (준비도|활용 가능성|운영체계)$/, ''))
   const summary = arrears
-    ? '자금 검토보다 체납 정리라는 선결과제가 먼저입니다. 정리 후 준비하면 순서가 훨씬 깔끔해집니다.'
+    ? '자금을 알아보기 전에 밀린 세금·보험료부터 정리하는 것이 먼저입니다. 정리하고 나면 이후 준비가 훨씬 수월해집니다.'
     : top2.length >= 2
       ? `현재는 ${withWa(top2[0])} ${top2[1]} 보완이 가장 먼저 필요합니다.`
       : '전반적으로 고르게 준비되어 있습니다. 계획에 맞춰 활용 단계로 넘어가세요.'
@@ -554,7 +554,7 @@ function buildMissedBenefits(
       status: young ? '조건 확인 필요' : '현재는 대상 가능성 낮음',
       note: young
         ? '창업 후 3년 이내 벤처확인 등 요건을 충족하면 소득세·법인세 50% 감면을 검토할 수 있어요. 자동 적용은 아닙니다.'
-        : '창업 3년 이상이라 이 세제혜택보다 기술성·대외신인도 중심으로 검토하는 편이 맞아요.',
+        : '창업 3년 이상이라 이 세제혜택보다 기술성·대외 신뢰도 중심으로 검토하는 편이 맞아요.',
       linkedProductSlug: 'venture-innovation',
     })
   }
@@ -671,8 +671,8 @@ export function computeStageResult(depth: DiagnosisStage, answers: DiagnosisAnsw
         sub: a.status,
         tone: metricTone(a.score),
       })),
-      strengths: usable.length ? usable.map((l) => `${l}는 지금도 활용을 검토할 수 있어요.`) : ['조금씩 준비하면 활용할 수 있는 영역이 있어요.'],
-      improvements: improve.length ? improve.map((l) => `${l}는 자료를 보완하면 검토 범위가 넓어져요.`) : ['큰 공백 없이 준비되어 있어요.'],
+      strengths: usable.length ? usable.map((l) => `${l} 영역은 지금 상태로도 활용을 검토해볼 만해요.`) : ['조금씩 준비하면 활용할 수 있는 영역이 있어요.'],
+      improvements: improve.length ? improve.map((l) => `${l} 영역은 자료를 보완하면 검토할 수 있는 범위가 넓어져요.`) : ['큰 공백 없이 준비되어 있어요.'],
       prerequisites: full.prerequisites,
       areas,
       recommendations: full.recommendations.slice(0, 2),
@@ -869,7 +869,7 @@ function recommend(answers: DiagnosisAnswers, ctx: RecContext): ProductRecommend
     cand.push({
       slug: 'iso-certification',
       w: 84,
-      reason: '대기업 납품·공공입찰·수출 계획이 있지만 ISO 인증이 없어 대외신인도 보완 우선순위가 높습니다.',
+      reason: '대기업 납품·공공입찰·수출 계획이 있지만 ISO 인증이 없어 대외 신뢰도 보완 우선순위가 높습니다.',
     })
   }
 

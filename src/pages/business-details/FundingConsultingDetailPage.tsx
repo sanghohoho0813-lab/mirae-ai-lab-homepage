@@ -264,7 +264,7 @@ export default function FundingConsultingDetailPage() {
             ))}
           </div>
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            그런데 결론을 미루는 동안에도, <span className="text-red-600">비용은 계속 나가고 있습니다.</span>
+            그런데 결정을 미루는 동안에도, <span className="text-red-600">비용은 계속 나가고 있습니다.</span>
           </p>
         </div>
       </section>
@@ -326,12 +326,12 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className={kicker}>미래 AI 랩의 방식</p>
           <h2 className={bigHead}>
-            “전부 대신 해주는” 컨설팅,<br /><span className="text-blue-600">그 시대는 저물고 있습니다</span>
+            “전부 대신 해드립니다”식 컨설팅,<br /><span className="text-blue-600">이제는 맞지 않는 방식입니다</span>
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
             사업의 주인은 대표님입니다. 그래서 저희는 <b className="text-slate-900">반드시 필요한 부분만</b> 돕고,
             신청 같은 나머지는 <b className="text-slate-900">대표님이 직접 하실 수 있도록</b> 만들어 드립니다.
-            실행액의 5~7%를 성공수수료로 떼는 방식이 아니라요.
+            실행 금액의 5~7%를 성공수수료로 떼는 방식과는 다릅니다.
           </p>
 
           {/* 성공수수료 0원 비교 */}
@@ -383,7 +383,7 @@ export default function FundingConsultingDetailPage() {
             <p className="text-lg font-black leading-snug text-white sm:text-xl">
               저희의 목적은 대표님이 <span className="text-amber-300">스스로 하실 수 있게</span> 만드는 것입니다.
             </p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">정책 환경도 점점 그 방향으로 바뀌어 가고 있습니다.</p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">정책 환경도 대표님이 직접 챙길 수 있는 방향으로 점점 바뀌고 있습니다.</p>
           </div>
         </div>
       </section>
@@ -471,7 +471,7 @@ export default function FundingConsultingDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>함께하면 좋은 이유</p>
-          <h2 className={bigHead}>미래 AI 랩과 함께하시면<br /><span className="text-blue-600">좋은 이유들</span></h2>
+          <h2 className={bigHead}>미래 AI 랩과 함께하시면<br /><span className="text-blue-600">이런 점이 다릅니다</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -483,7 +483,7 @@ export default function FundingConsultingDetailPage() {
           {/* 데이터 기반 진단 — 자체 개발 SaaS */}
           <div className="mt-6 rounded-2xl border-2 border-slate-900 bg-white p-6 sm:p-7">
             <p className="text-center text-lg font-black text-slate-900 sm:text-xl">
-              감(感)으로 하는 컨설팅과는 <span className="text-blue-600">다릅니다</span>
+              경험과 감에만 기대는 컨설팅과는 <span className="text-blue-600">다릅니다</span>
             </p>
             <p className="mx-auto mt-3 max-w-lg text-center text-[1.05rem] leading-relaxed text-slate-600 sm:text-[1.1rem]">
               직접 개발하고 전문가 검증을 거친 <b className="text-slate-900">자체 SaaS 프로그램</b>이

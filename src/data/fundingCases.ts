@@ -54,7 +54,7 @@ export const fundingCases: FundingCase[] = [
   {
     industry: '퓨전 한식 프랜차이즈 본사',
     size: '연매출 약 7억 ~ 8억 원',
-    summary: '대출 이력으로 거절되던 상황이라, 운영 데이터를 혁신 역량으로 재구성해 진행했습니다.',
+    summary: '대출 이력 때문에 계속 거절되던 상황이라, 운영 실적을 혁신성 관점으로 다시 정리해 진행했습니다.',
     amount: '6,000만 원',
     amountLabel: '소상공인 혁신성장촉진자금',
     chat: [

@@ -132,7 +132,7 @@ function MissedBenefitsSection({ step, items }: { step: string; items: MissedBen
   if (!items.length) return null
   return (
     <section className="mt-7 sm:mt-9">
-      <SectionHeading step={step} title="지금 놓치고 있을 수 있는 혜택" sub="조건과 출처를 함께 확인하고, 자동으로 적용되는 것은 아니에요." />
+      <SectionHeading step={step} title="지금 놓치고 있을 수 있는 혜택" sub="신청해야 받을 수 있는 것들이에요. 조건과 출처를 함께 확인해 보세요." />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {items.map((m) => {
           const pkg = m.linkedProductSlug ? getPackageBySlug(m.linkedProductSlug) : null
@@ -334,15 +334,15 @@ function Recommendations({
 const GROWTH_PICKS: { slug: string; nudge: string }[] = [
   {
     slug: 'ai-ax-system',
-    nudge: '반복 업무에 들어가는 시간·인건비는 줄이지 않는 한 매년 그대로 나갑니다. 규모와 상관없이, 먼저 도입한 회사부터 격차가 벌어지는 영역이에요.',
+    nudge: '반복 업무에 들어가는 시간과 인건비는 줄이지 않는 한 매년 그대로 나갑니다. 회사 규모와 상관없이, 먼저 도입한 회사와의 격차가 점점 벌어지는 영역이에요.',
   },
   {
     slug: 'responsive-homepage',
-    nudge: '거래처도 지원사업 심사역도 계약 전에 회사부터 검색해 봅니다. 모바일에서 제대로 열리는 홈페이지는 이제 신뢰의 기본값에 가까워요.',
+    nudge: '거래처도 지원사업 담당자도 계약 전에 회사부터 검색해 봅니다. 모바일에서 깔끔하게 열리는 홈페이지가 없으면, 그 단계에서 신뢰를 잃기 쉬워요.',
   },
   {
     slug: 'ax-full-package',
-    nudge: '디지털 전환을 미리 준비한 회사는 정부지원사업·정책자금 평가에서도 준비된 회사로 읽히는 경우가 많아요. 지속가능한 성장의 기반이기도 하고요.',
+    nudge: '디지털 전환을 미리 준비해 두면 정부지원사업·정책자금 평가에서도 준비된 회사라는 인상을 줄 수 있어요. 회사가 오래 성장하기 위한 기반이 되기도 하고요.',
   },
 ]
 
@@ -352,7 +352,7 @@ function GrowthPicksSection({ excludeSlugs, onProductClick }: { excludeSlugs: st
   return (
     <section className="mt-6 rounded-2xl border border-slate-200 bg-gradient-to-b from-sky-50/70 to-white p-4 sm:mt-7 sm:p-5 print:break-inside-avoid">
       <h3 className="text-base font-extrabold tracking-tight text-slate-900 sm:text-lg">요즘 대표님들이 함께 준비하는 것들</h3>
-      <p className="mt-1 text-sm leading-relaxed text-slate-500">당장 필수는 아니지만, 미뤄둘수록 시간과 비용이 새기 쉬운 영역이라 함께 보시면 좋아요.</p>
+      <p className="mt-1 text-sm leading-relaxed text-slate-500">당장 급하지는 않지만, 미룰수록 시간과 비용이 더 들어가는 영역이라 함께 보시면 좋아요.</p>
       <div className="mt-3.5 space-y-2.5">
         {picks.map((p) => {
           const pkg = getPackageBySlug(p.slug)

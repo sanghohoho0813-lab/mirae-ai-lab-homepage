@@ -229,7 +229,7 @@ export const benefitCards: BenefitCard[] = [
       '거래처가 요구하는 인증 조건에 미리 대응할 수 있어요.',
     ],
     disclaimer: '모든 입찰에서 가점이 부여되는 것은 아니며, 실제 공고와 거래처 요구조건을 확인해야 합니다.',
-    feedbackLabel: '대외신인도 +9',
+    feedbackLabel: '대외 신뢰도 +9',
     feedbackArea: 'credibility',
     feedbackPoints: 9,
     continueCta: '내 추천 목록에 담기',

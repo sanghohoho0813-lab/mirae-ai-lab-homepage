@@ -13,7 +13,7 @@ const VERIFY_NOTE = '실제 인정 여부와 평가기준은 신청 사업의 �
 export const ADVANTAGE_GROUP_LABELS: Record<string, string> = {
   technology: '기술·연구개발 기반',
   management: '경영혁신 기반',
-  credibility: '거래·대외신인도 기반',
+  credibility: '거래·대외 신뢰도 기반',
   expert: '업종별 전문 인증 (전문가 연결 검토)',
 }
 
@@ -91,7 +91,7 @@ export const policyAdvantageFactors: PolicyAdvantageFactor[] = [
     benefits: [
       '기술성과 성장성을 설명할 근거가 보강됩니다.',
       '일부 정책자금·정부지원사업에서 우대요소로 활용될 수 있습니다.',
-      '기업의 대외신인도를 설명할 자료가 추가됩니다.',
+      '기업의 대외 신뢰도를 설명할 자료가 추가됩니다.',
     ],
     relevantProductSlugs: ['venture-innovation', 'venture-investment'],
     claimType: 'qualitative',
@@ -179,7 +179,7 @@ export const policyAdvantageFactors: PolicyAdvantageFactor[] = [
     benefits: [
       '경영혁신 활동을 객관적인 인증으로 정리할 수 있습니다.',
       '일부 정책자금·정부지원사업에서 평가 참고요소로 활용될 수 있습니다.',
-      '기업의 대외신인도를 설명할 자료가 추가됩니다.',
+      '기업의 대외 신뢰도를 설명할 자료가 추가됩니다.',
     ],
     relevantProductSlugs: ['mainbiz-certification'],
     claimType: 'qualitative',
@@ -210,7 +210,7 @@ export const policyAdvantageFactors: PolicyAdvantageFactor[] = [
     expertReferralOnly: false,
   },
 
-  // ── C. 거래·대외신인도 기반 ───────────────────────
+  // ── C. 거래·대외 신뢰도 기반 ───────────────────────
   {
     id: 'iso-cert',
     label: 'ISO 인증 (품질·환경·안전보건)',

@@ -397,7 +397,7 @@ export default function BusinessServicesPage() {
       <section id="channel" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
           <div className="text-center">
-            <p className={eyebrow}>믿을 수 있는 활동</p>
+            <p className={eyebrow}>꾸준히 이어온 활동</p>
             <h2 className={h2Class}>유튜브 ‘김팀장의 경영노트’</h2>
             <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
               정책자금·정부지원금·절세 실무를 영상으로 직접 공개하고 있습니다.
