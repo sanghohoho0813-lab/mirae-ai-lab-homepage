@@ -55,7 +55,6 @@ export default function ProductReviews({ slug }: { slug: string }) {
   const [reviews, setReviews] = useState<PublicReview[]>([])
   const [stats, setStats] = useState<ReviewStats>({ count: 0, avg: 0 })
   const [loading, setLoading] = useState(true)
-  const [open, setOpen] = useState(false)
 
   // 폼 상태
   const [name, setName] = useState('')
@@ -91,7 +90,6 @@ export default function ProductReviews({ slug }: { slug: string }) {
       const msg = await submitReview({ slug, authorName: name.trim(), company: company.trim(), rating, content: content.trim(), email: email.trim(), phone: phone.trim() })
       setDone(msg)
       setName(''); setCompany(''); setRating(0); setContent(''); setEmail(''); setPhone(''); setAgree(false)
-      setOpen(false)
     } catch (e2) {
       setErr(e2 instanceof Error ? e2.message : '접수에 실패했습니다. 잠시 후 다시 시도해 주세요.')
     } finally {
@@ -127,19 +125,6 @@ export default function ProductReviews({ slug }: { slug: string }) {
           </div>
         )}
 
-        {/* 작성 토글 */}
-        {!open && (
-          <div className="mt-8 text-center">
-            <button
-              type="button"
-              onClick={() => { setOpen(true); setDone(null) }}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white shadow-sm transition-transform hover:-translate-y-0.5"
-            >
-              ✍️ 후기 작성하고 전자책 받기
-            </button>
-          </div>
-        )}
-
         {/* 완료 안내 */}
         {done && (
           <div role="status" className="mx-auto mt-6 max-w-lg rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-center text-[1.02rem] font-semibold text-emerald-800">
@@ -147,9 +132,9 @@ export default function ProductReviews({ slug }: { slug: string }) {
           </div>
         )}
 
-        {/* 작성 폼 */}
-        {open && (
-          <form onSubmit={handleSubmit} className="mx-auto mt-8 max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        {/* 작성 폼 — 항상 노출 */}
+        <form id="review-form" onSubmit={handleSubmit} className="mx-auto mt-8 max-w-lg rounded-3xl border-2 border-amber-300 bg-white p-6 shadow-sm sm:p-8">
+          <p className="mb-5 text-center text-[1.2rem] font-black text-slate-900">✍️ 후기 작성하고 전자책 3종 받기</p>
             <div className="mb-5">
               <span className={labelClass}>별점 <span className="text-rose-500">*</span></span>
               <StarInput value={rating} onChange={setRating} />
@@ -201,25 +186,15 @@ export default function ProductReviews({ slug }: { slug: string }) {
 
             {err && <p className="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">{err}</p>}
 
-            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row-reverse">
-              <button
-                type="submit"
-                disabled={busy}
-                className="inline-flex flex-1 items-center justify-center rounded-xl bg-amber-400 px-6 py-3.5 text-base font-black text-slate-900 shadow-sm transition-transform hover:-translate-y-0.5 disabled:opacity-60"
-              >
-                {busy ? '접수 중…' : '후기 등록하기'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setOpen(false); setErr(null) }}
-                className="inline-flex items-center justify-center rounded-xl border border-slate-300 px-6 py-3.5 text-base font-bold text-slate-600 hover:bg-slate-50"
-              >
-                취소
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={busy}
+              className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-amber-400 px-6 py-3.5 text-base font-black text-slate-900 shadow-sm transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+            >
+              {busy ? '접수 중…' : '후기 등록하고 전자책 받기'}
+            </button>
             <p className="mt-3 text-xs leading-relaxed text-slate-400">등록하신 후기는 검토 후 게시됩니다. 광고성·비방·허위 내용은 게시되지 않을 수 있습니다.</p>
-          </form>
-        )}
+        </form>
 
         {/* 후기 목록 */}
         <div className="mx-auto mt-10 max-w-lg space-y-3">
