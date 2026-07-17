@@ -7,6 +7,7 @@ import BusinessInquiryForm from '../../components/BusinessInquiryForm'
 import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import FundingCasesSection from '../../components/FundingCasesSection'
+import ProductReviews from '../../components/ProductReviews'
 import { getPackageBySlug } from '../../data/businessPackages'
 import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../../config/commerce'
 
@@ -193,7 +194,7 @@ export default function FundingConsultingDetailPage() {
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-600/15">자금·지원금</span>
-              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">리뷰 준비중</span>
+              <button type="button" onClick={() => scrollToId('reviews')} className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 ring-1 ring-inset ring-amber-500/20 transition-colors hover:bg-amber-100">🎁 후기 쓰고 전자책 받기 →</button>
             </div>
             <h1 className="mt-2.5 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">정책자금 컨설팅</h1>
             <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-600">운전자금·시설자금 가능성 진단부터 신청 전략·준비서류까지</p>
@@ -466,6 +467,11 @@ export default function FundingConsultingDetailPage() {
           </p>
         </div>
       </section>
+
+      {/* 고객 후기 — 작성 시 전자책 3종 증정 */}
+      <div id="reviews">
+        <ProductReviews slug="funding-consulting" />
+      </div>
 
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>

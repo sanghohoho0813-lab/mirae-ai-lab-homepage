@@ -289,6 +289,12 @@ export default function AdminPage() {
         >
           📋 기업 성장진단 DB 관리 →
         </Link>
+        <Link
+          to="/admin/reviews"
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition-colors hover:bg-slate-100"
+        >
+          ⭐ 상품 후기 관리 →
+        </Link>
       </div>
 
       <div className="mb-6 grid grid-cols-3 gap-3">
