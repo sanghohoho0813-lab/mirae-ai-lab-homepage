@@ -152,9 +152,9 @@ export default function BusinessServiceDetailPage() {
             flagship ? 'bg-amber-400 text-slate-900 shadow-amber-500/20' : 'bg-slate-900 text-white shadow-slate-900/20'
           }`}
         >
-          상담 신청하기
+          무료 상담 신청하기
         </a>
-        <p className="text-center text-xs font-medium text-slate-400">{consult ? '기업 상황에 따라 맞춤 안내드립니다' : paymentsPreparingNotice}</p>
+        <p className="text-center text-xs font-medium text-slate-400">{consult ? '상담은 무료이고, 신청은 1~2분이면 끝납니다. 진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' : paymentsPreparingNotice}</p>
       </div>
     ) : (
       <div>
@@ -608,7 +608,7 @@ export default function BusinessServiceDetailPage() {
             onClick={inquiryOnly ? handleInquiry : handleBuy}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white"
           >
-            {inquiryOnly ? '상담 신청하기' : <><CartIcon /> 바로 결제하기</>}
+            {inquiryOnly ? '무료 상담 신청하기' : <><CartIcon /> 바로 결제하기</>}
           </button>
         </div>
       )}

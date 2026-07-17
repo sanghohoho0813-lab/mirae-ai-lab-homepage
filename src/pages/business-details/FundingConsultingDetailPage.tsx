@@ -120,7 +120,7 @@ export default function FundingConsultingDetailPage() {
           rel="noopener noreferrer"
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
         >
-          상담 신청하기
+          무료 상담 신청하기
         </a>
         <p className={`mt-2 text-xs font-medium leading-relaxed ${variant === 'dark' ? 'text-slate-300' : 'text-slate-500'}`}>{paymentsPreparingNotice}</p>
       </>
