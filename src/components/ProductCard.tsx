@@ -139,7 +139,9 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
           {pkg.priceHighlight && <p className="mt-1 text-[0.8rem] font-bold leading-snug text-rose-600 sm:mt-1.5 sm:text-[0.9rem]">{formatKoreanMoney(pkg.priceHighlight)}</p>}
         </div>
 
-        {/* 대표 혜택 3가지 — 스캔형 체크 리스트(잘림 없이 최대 2줄까지 표시) */}
+        {/* 대표 혜택 3가지 — 스캔형 체크 리스트(잘림 없이 최대 2줄까지 표시)
+            ※ highlights 는 저자가 쓴 표기('1,440만원' 등)를 그대로 노출. formatKoreanMoney 는
+              가격(pkg.price/priceHighlight) 전용이라 여기서는 적용하지 않습니다(만원 표기 유지). */}
         <ul className="mt-3 space-y-2 border-t border-slate-100 pt-3 sm:mt-4 sm:space-y-2.5 sm:pt-4">
           {pkg.highlights.slice(0, 3).map((h) => (
             <li key={h} className="flex items-start gap-2 text-[0.82rem] font-semibold leading-snug text-slate-700 sm:gap-2.5 sm:text-[0.98rem]">
@@ -148,7 +150,7 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
                   <path d="M2.5 6.4l2.4 2.4L9 3.2" />
                 </svg>
               </span>
-              <span>{formatKoreanMoney(h)}</span>
+              <span>{h}</span>
             </li>
           ))}
         </ul>
