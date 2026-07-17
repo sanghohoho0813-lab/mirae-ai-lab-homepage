@@ -72,11 +72,12 @@ export async function fetchMyAccess(userId: string): Promise<ToolAccess[]> {
   return (data ?? []) as ToolAccess[]
 }
 
-export const startTrial = (toolId: string) => post('/api/trial/start', { toolId })
+// 통합 엔드포인트(/api/trial) — Vercel 서버리스 함수 개수 제한 대응. action 으로 분기.
+export const startTrial = (toolId: string) => post('/api/trial', { action: 'start', toolId })
 export const submitReview = (toolId: string, content: string) =>
-  post('/api/trial/review', { toolId, content })
+  post('/api/trial', { action: 'review', toolId, content })
 export const submitSurvey = (toolId: string, answers: Record<string, string>) =>
-  post('/api/trial/survey', { toolId, answers })
+  post('/api/trial', { action: 'survey', toolId, answers })
 
 // ── 관리자 ──────────────────────────────────────────────────────────────────
 export async function fetchAllProfiles(): Promise<Profile[]> {
