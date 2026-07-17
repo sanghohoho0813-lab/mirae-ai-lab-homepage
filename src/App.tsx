@@ -259,10 +259,10 @@ function App() {
               </h1>
 
               <p className="mt-6 text-lg font-semibold leading-relaxed text-white sm:text-xl">
-                놓치는 제안을 줄이고, 계약으로 이어지는 상담을 만들기 위해 직접 만들었습니다.
+                놓치는 제안을 줄이고, 상담이 계약으로 이어지도록 직접 만들었습니다.
               </p>
               <p className="mt-3 text-base leading-relaxed text-slate-300 sm:text-lg">
-                상담·분석·제안·사후관리까지, 흩어진 컨설팅 업무를 하나로 잇는 <span className="font-semibold text-white">컨설턴트 OS</span>. 9년 현장의 방식을 그대로 담았습니다.
+                상담·분석·제안·사후관리까지, 흩어진 컨설팅 업무를 하나로 잇는 <span className="font-semibold text-white">컨설턴트 OS</span>. 9년간 현장에서 쌓은 방식을 그대로 담았습니다.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -304,7 +304,7 @@ function App() {
                   className="h-16 w-16 shrink-0 rounded-full object-cover shadow-lg shadow-black/40 ring-[3px] ring-sky-400/50 sm:h-20 sm:w-20"
                 />
                 <div className="min-w-0">
-                  <p className="text-sm leading-relaxed text-slate-400 sm:text-base">제가 직접 쓰지 않는 도구는 만들지 않습니다. 현업에서 검증한 도구만 공개합니다.</p>
+                  <p className="text-sm leading-relaxed text-slate-400 sm:text-base">제가 실제 업무에서 직접 써 보고, 도움이 됐다고 확인한 도구만 공개합니다.</p>
                   <p className="mt-1 text-sm font-bold text-slate-200">미래 AI 랩 대표 · 김팀장의 경영노트</p>
                 </div>
               </div>
@@ -380,7 +380,7 @@ function App() {
       <section id="pricing" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
         <div className="max-w-3xl">
           <p className="text-base font-bold uppercase tracking-widest text-blue-600">이용 방식</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">베타는 지금, 정식은 곧</h2>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">지금은 무료 베타 기간입니다</h2>
           <p className="mt-4 text-lg leading-relaxed text-slate-600">정식 출시 전, 피드백을 주시는 분들께 먼저 열어드립니다. 지금은 베타로 무료 체험할 수 있습니다.</p>
         </div>
 
@@ -475,7 +475,7 @@ function App() {
               <p className="text-base font-bold uppercase tracking-widest text-blue-600">문의</p>
               <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">업무 자동화 제작 문의</h2>
               <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
-                AI는 엔진일 뿐, 주인공은 컨설턴트입니다. 자동화하고 싶은 업무를 남겨주시면 김팀장이 직접 검토해 답해드립니다.
+                반복 업무는 AI가 대신하고, 상담과 판단은 컨설턴트가 직접 합니다. 자동화하고 싶은 업무를 남겨주시면 김팀장이 직접 검토해 답해드립니다.
               </p>
             </div>
             <div className="mx-auto mt-8 max-w-3xl">

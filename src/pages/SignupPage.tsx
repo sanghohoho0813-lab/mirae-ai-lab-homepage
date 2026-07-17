@@ -177,7 +177,7 @@ export default function SignupPage() {
 
         {signupBlocked && (
           <div role="status" className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
-            현재 휴대폰 본인인증 설정을 준비하고 있어 이메일 회원가입을 잠시 쉬어갑니다. 잠시 후 다시 이용해주세요.
+            현재 휴대폰 본인인증 설정을 준비하고 있어 이메일 회원가입을 잠시 중단하고 있습니다. 잠시 후 다시 이용해주세요.
             <span className="mt-1 block">이미 가입하신 회원은 정상적으로 로그인하실 수 있습니다.</span>
           </div>
         )}

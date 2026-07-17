@@ -411,11 +411,11 @@ export default function BusinessServiceDetailPage() {
           {/* 데이터 기반 진단 — 자체 개발 SaaS */}
           <div className="mt-6 rounded-2xl border-2 border-slate-900 bg-white p-6 sm:p-7">
             <p className="text-center text-lg font-black text-slate-900 sm:text-xl">
-              감(感)으로 하는 컨설팅과는 <span className={accentText}>다릅니다</span>
+              경험과 감에만 기대는 컨설팅과는 <span className={accentText}>다릅니다</span>
             </p>
             <p className="mx-auto mt-3 max-w-lg text-center text-[1.05rem] leading-relaxed text-slate-600 sm:text-[1.1rem]">
               직접 개발하고 전문가 검증을 거친 <b className="text-slate-900">자체 SaaS 프로그램</b>이
-              인증·자금 심사 데이터를 계속 학습하고 최적화합니다.
+              인증·자금 심사 데이터를 반영해 진단 기준을 계속 다듬어 갑니다.
               그래서 저희는 감이 아니라 <b className="text-slate-900">수치와 데이터를 근거로</b> 진단하고 방향을 제시합니다.
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
