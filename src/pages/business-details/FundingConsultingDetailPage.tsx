@@ -38,8 +38,34 @@ const pains = [
   '운전자금이 급한데, 어디서부터 봐야 할지 모르겠어요',
 ]
 
-// 믿을 수 있는 이유 (과장 없는 정성 표현)
-const reasons = ['정책자금·인증 실무 경험 5년 이상', '기업 상황에 맞춘 맞춤 진단', '신청 전략·준비서류까지 안내']
+// 믿을 수 있는 이유 (블로그 공개 실적 기준)
+const reasons = ['누적 자금조달 100억 원+', '기업성장컨설팅 실무 경력 8년+', '진단·전략·서류·실사 동행까지']
+
+// 신뢰 스탯 밴드 — 블로그(공개 성공사례)에서 확인되는 실적만 사용
+const trustStats = [
+  { value: '100억+', label: '누적 자금조달' },
+  { value: '8년+', label: '실무 경력' },
+  { value: '0원', label: '성공수수료' },
+]
+
+// "이런 상황에서도 승인됐습니다" — 실제 블로그 성공사례 기반 (상황 → 결과)
+const BLOG_URL = 'https://blog.naver.com/ksh90813'
+const barrierCases = [
+  { barrier: '연매출 4,000만 원이라 은행에서 거절', industry: '커피 원두 제조(청년창업)', result: '기술보증기금 1억 원', note: '5주 만에 승인 · 연 4%대' },
+  { barrier: '신용점수 600점대 + 2금융권 대출', industry: '맞춤형 가구 제조', result: '정책자금 5,000만 원', note: '잠재력·재구매율로 어필' },
+  { barrier: '기존 대출이 많아 추가 대출 거절', industry: '외식 프랜차이즈 본사', result: '정책자금 6,000만 원', note: '기록상 금리 연 2.99%' },
+  { barrier: '창업 초기라 매출 증빙이 없음', industry: '간판 디자인·제조(창업 1년 차)', result: '보증재단 3,000만 원', note: '이후 1년 내 총 2억 3,000만 원' },
+  { barrier: '가지급금 7억 원이 발목', industry: '토목·특수필터 시공', result: '신보 2억 + 소진공 3,000만 원', note: '재무 정리 후 승인 · 연 4%대' },
+  { barrier: '노후 매장, 목돈이 없음', industry: '분식 프랜차이즈 매장', result: '정책자금 9,000만 원', note: '세금 환급 957만 원부터 시작' },
+]
+
+// "정책자금만 받고 끝나지 않습니다" — 자금 이후까지 잇는 통합 관리
+const beyondFunding = [
+  { icon: '💰', t: '숨은 세금부터 돌려받고 시작', d: '경정청구로 더 낸 세금이 없는지 먼저 확인합니다. 실제로 다른 곳에서 놓친 957만 원을 추가 환급받고 시작한 사례도 있습니다.' },
+  { icon: '🏃', t: '실사·기관 방문, 함께 갑니다', d: '보증기관 실사와 은행 방문에 동행하고, 예상 질문과 답변까지 미리 준비해 드립니다. 서류 심부름이 필요하면 위임받아 직접 처리합니다.' },
+  { icon: '🏅', t: '자금 다음은 인증으로', d: '메인비즈·벤처인증 등으로 대외 신뢰도를 높여, 다음 자금과 지원사업까지 유리한 기반을 만듭니다.' },
+  { icon: '🤝', t: '세무·노무까지 이어지는 관리', d: '협업하는 세무사·법무사·노무사와 함께, 자금 이후의 세금·직원 문제까지 계속 챙깁니다.' },
+]
 
 // 미루면 잃는 것 (적당한 긴장 — 조작 통계·과도한 협박 금지)
 const losses = [
@@ -212,6 +238,7 @@ export default function FundingConsultingDetailPage() {
             <ul className="mt-3 space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-base font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
               <li className="flex items-center gap-1.5 font-black text-red-600"><span aria-hidden>🚫</span> 성공수수료 없음 — 업계 평균 5~7%</li>
               <li className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 컨설팅 종료 후 정가 237,000원 상당 전자책 3종 증정 (리뷰 작성 시)</li>
+              <li className="flex items-center gap-1.5"><span aria-hidden>🏆</span> 누적 자금조달 100억 원+ · 실무 경력 8년+</li>
             </ul>
 
             <div className="mt-5">
@@ -247,6 +274,16 @@ export default function FundingConsultingDetailPage() {
             </div>
             <p className="mt-2 text-base font-black text-red-600">+ 성공수수료 없음 (업계 평균 5~7%)</p>
           </div>
+
+          {/* 신뢰 스탯 밴드 — 블로그 공개 실적 기반 */}
+          <div className="mx-auto mt-8 grid max-w-lg grid-cols-3 divide-x divide-slate-200 rounded-2xl bg-slate-900 py-5 shadow-lg">
+            {trustStats.map((s) => (
+              <div key={s.label} className="px-2 text-center">
+                <p className="text-2xl font-black tracking-tight text-amber-300 sm:text-3xl">{s.value}</p>
+                <p className="mt-1 text-xs font-semibold text-slate-300 sm:text-sm">{s.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -267,6 +304,48 @@ export default function FundingConsultingDetailPage() {
           <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
             그런데 결정을 미루는 동안에도, <span className="text-red-600">비용은 계속 나가고 있습니다.</span>
           </p>
+        </div>
+      </section>
+
+      {/* "안 될 것 같은" 상황에서 승인된 실제 사례 — 장벽 해소 */}
+      <section className={`bg-slate-900 ${band}`}>
+        <div className={inner}>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">진짜 궁금하신 건 이거죠</p>
+          <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
+            “우리 회사도 될까요?”<br /><span className="text-amber-300">이런 상황에서도 승인됐습니다</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-300 sm:text-lg">
+            은행에서 거절당했거나, 매출이 작거나, 신용이 낮아도 — 기업마다 <b className="text-white">막힌 이유를 찾아 푸는 방법</b>이 달랐을 뿐입니다.
+          </p>
+          <div className="mt-10 grid gap-3.5 sm:grid-cols-2">
+            {barrierCases.map((c) => (
+              <div key={c.barrier} className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+                <p className="text-[0.95rem] font-bold leading-snug text-rose-300">🚫 {c.barrier}</p>
+                <p className="mt-1 text-xs font-medium text-slate-400">{c.industry}</p>
+                <div className="mt-3 flex items-center gap-2" aria-hidden>
+                  <span className="text-lg font-black text-amber-300">↓</span>
+                  <span className="h-px flex-1 bg-white/10" />
+                </div>
+                <p className="mt-2 text-xl font-black tracking-tight text-white">{c.result}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-300">{c.note}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-6 max-w-lg text-center text-xs leading-relaxed text-slate-400">
+            ※ 위 사례는 실제 진행 결과를 개인정보 보호를 위해 업종·규모 중심으로 정리한 것으로, 모든 기업의 승인·금액·금리를 보장하지 않습니다.
+          </p>
+          <div className="mt-7 text-center">
+            <a
+              href={BLOG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#03c75a] px-6 py-3.5 text-base font-bold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+            >
+              <span className="grid h-5 w-5 place-items-center rounded bg-white text-xs font-black text-[#03c75a]" aria-hidden>N</span>
+              네이버 블로그에서 성공사례 전체 보기 →
+            </a>
+            <p className="mt-2.5 text-xs font-medium text-slate-400">진행 과정·승인 결과를 블로그에 상세히 공개하고 있습니다.</p>
+          </div>
         </div>
       </section>
 
@@ -385,6 +464,29 @@ export default function FundingConsultingDetailPage() {
               저희의 목적은 대표님이 <span className="text-amber-300">스스로 하실 수 있게</span> 만드는 것입니다.
             </p>
             <p className="mt-2 text-sm font-semibold text-slate-400">정책 환경도 대표님이 직접 챙길 수 있는 방향으로 점점 바뀌고 있습니다.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 차별화 — 정책자금만 받고 끝나지 않습니다 */}
+      <section className={`bg-blue-50/50 ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>다른 컨설팅과 다른 점</p>
+          <h2 className={bigHead}>
+            정책자금만 받고<br /><span className="text-blue-600">끝나지 않습니다</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+            일회성으로 자금만 받고 끝나는 컨설팅은 의미가 없다고 생각합니다.
+            <b className="text-slate-900"> 자금 이전의 세금 환급부터, 자금 이후의 인증·세무·노무까지</b> 사업의 흐름 전체를 잇습니다.
+          </p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+            {beyondFunding.map((b) => (
+              <div key={b.t} className="flex flex-col rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{b.icon}</span>
+                <p className="mt-3 text-[1.15rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
+                <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{b.d}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
