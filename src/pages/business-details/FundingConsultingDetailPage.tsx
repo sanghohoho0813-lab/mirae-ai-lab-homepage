@@ -59,6 +59,20 @@ const barrierCases = [
   { barrier: '노후 매장, 목돈이 없음', industry: '분식 프랜차이즈 매장', result: '정책자금 9,000만 원', note: '세금 환급 957만 원부터 시작' },
 ]
 
+// 정직한 진행 원칙 3가지 — '아무나 받지 않는' 셀렉티브 포지셔닝 (과장 없이)
+const principles = [
+  { n: '01', t: '무리한 진행을 권하지 않습니다', d: '진단 결과 지금은 가능성이 낮다면, 낮다고 그대로 말씀드립니다. 성공수수료가 없어서 무리하게 계약을 권할 이유도 없습니다. 상담이 무료인 이유입니다.' },
+  { n: '02', t: '급한 돌려막기용 자금은 말립니다', d: '정책자금은 성장을 위한 자금입니다. 사용 계획이 정리되지 않았다면, 자금보다 계획부터 함께 잡는 것이 맞다고 말씀드립니다.' },
+  { n: '03', t: '거절도 전략으로 만듭니다', d: '기관 거절에는 반드시 사유가 있습니다. 사유를 정확히 파악해 기관·시점·서류를 바꿔 다시 도전합니다. 실제로 한 기관 거절 후 다른 기관에서 승인된 사례가 여럿입니다.' },
+]
+
+// 무료 상담에서 벌어지는 일 3단계 — 상담 신청의 심리 문턱 낮추기
+const consultSteps = [
+  { t: '현재 상태 진단', d: '재무·업력·필요 자금을 기준으로 지금 위치를 확인합니다.' },
+  { t: '가능 경로 정리', d: '우리 회사 조건에 맞는 기관·자금·우선순위를 정리합니다.' },
+  { t: '방향 제안', d: '먼저 할 것과 나중에 해도 되는 것을 구분해 드립니다.' },
+]
+
 // 타사 비교 VS 테이블 — 확정 비방 없이 '일반적인 방식' 대비로 표현
 const vsRows = [
   { k: '성공수수료', other: '실행액의 5~7%', ours: '0원 (전액대행도 3%)' },
@@ -588,6 +602,32 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
+      {/* 정직한 진행 원칙 — 셀렉티브 포지셔닝 */}
+      <section className={`bg-slate-900 ${band}`}>
+        <div className={inner}>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">저희가 지키는 원칙</p>
+          <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
+            저희도 모든 상담을<br /><span className="text-amber-300">계약으로 이어가지 않습니다</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-300 sm:text-lg">
+            책임지지 못할 결과라면 시작하지 않는 것이, 서로에게 <b className="text-white">정직한 선택</b>이라고 믿습니다.
+          </p>
+          <div className="mt-10 space-y-4">
+            {principles.map((p) => (
+              <div key={p.n} className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur sm:p-7">
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl font-black text-amber-300 sm:text-4xl">{p.n}</span>
+                  <div className="min-w-0 pt-1">
+                    <p className="text-lg font-black leading-snug text-white sm:text-xl">{p.t}</p>
+                    <p className="mt-2 text-[1rem] leading-relaxed text-slate-300">{p.d}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 혜택 2 — 전자책 3종 증정 */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
@@ -772,6 +812,21 @@ export default function FundingConsultingDetailPage() {
           <p className="mx-auto mt-4 max-w-md text-center text-base leading-relaxed text-slate-600">
             간단히 남겨주시면 어떤 자금부터 검토하면 좋을지 방향을 정리해 안내드립니다.
           </p>
+
+          {/* 상담에서 벌어지는 일 3단계 — 신청 전 미리보기 */}
+          <div className="mx-auto mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
+            {consultSteps.map((s, i) => (
+              <div key={s.t} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <span className="text-xs font-black uppercase tracking-wide text-blue-600">STEP {`0${i + 1}`}</span>
+                <p className="mt-1.5 text-[1.05rem] font-extrabold text-slate-900">{s.t}</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-600">{s.d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-4 max-w-md text-center text-sm font-medium text-slate-500">
+            상담은 여기까지가 전부입니다. <b className="text-slate-700">진행 여부는 방향을 들어보신 뒤, 대표님이 정하시면 됩니다.</b>
+          </p>
+
           <div className="mt-8">
             <BusinessInquiryForm />
           </div>
