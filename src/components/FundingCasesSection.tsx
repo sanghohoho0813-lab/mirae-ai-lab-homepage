@@ -12,6 +12,7 @@ import {
 } from '../data/fundingCases'
 
 const band = 'px-5 py-16 sm:py-24'
+const BLOG_URL = 'https://blog.naver.com/ksh90813'
 
 function scrollToApply() {
   document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -132,6 +133,20 @@ export default function FundingCasesSection() {
           {fundingCases.map((c) => (
             <PhoneCase key={`${c.pill}-${c.amount}`} c={c} />
           ))}
+        </div>
+
+        {/* 네이버 블로그 전체 사례 */}
+        <div className="mt-12 text-center">
+          <a
+            href={BLOG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#03c75a] px-6 py-3.5 text-base font-bold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+          >
+            <span className="grid h-5 w-5 place-items-center rounded bg-white text-xs font-black text-[#03c75a]" aria-hidden>N</span>
+            네이버 블로그에서 성공사례 전체 보기 →
+          </a>
+          <p className="mt-2.5 text-xs font-medium text-slate-400">진행 과정·승인 결과를 블로그에 상세히 공개하고 있습니다.</p>
         </div>
 
         {/* 더 다양한 사례 — 승인 공유방 */}
