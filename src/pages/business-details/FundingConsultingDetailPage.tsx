@@ -59,6 +59,16 @@ const barrierCases = [
   { barrier: '노후 매장, 목돈이 없음', industry: '분식 프랜차이즈 매장', result: '정책자금 9,000만 원', note: '세금 환급 957만 원부터 시작' },
 ]
 
+// 타사 비교 VS 테이블 — 확정 비방 없이 '일반적인 방식' 대비로 표현
+const vsRows = [
+  { k: '성공수수료', other: '실행액의 5~7%', ours: '0원 (전액대행도 3%)' },
+  { k: '비용 구조', other: '결과 따라 커지는 수수료', ours: '50만원 정찰제' },
+  { k: '진행 방식', other: '전부 대행 → 계속 의존', ours: '자립형 — 다음엔 직접' },
+  { k: '세금 환급 검토', other: '별도 진행', ours: '경정청구 함께 검토' },
+  { k: '자금 이후', other: '1회성 종료', ours: '인증·세무·노무 연계' },
+  { k: '진단 근거', other: '경험과 감', ours: '자체 SaaS 데이터 진단' },
+]
+
 // "정책자금만 받고 끝나지 않습니다" — 자금 이후까지 잇는 통합 관리
 const beyondFunding = [
   { icon: '💰', t: '숨은 세금부터 돌려받고 시작', d: '경정청구로 더 낸 세금이 없는지 먼저 확인합니다. 실제로 다른 곳에서 놓친 957만 원을 추가 환급받고 시작한 사례도 있습니다.' },
@@ -488,6 +498,42 @@ export default function FundingConsultingDetailPage() {
               </div>
             ))}
           </div>
+
+          {/* VS 비교표 — 일반적인 컨설팅 방식과 직접 비교 */}
+          <p className="mt-14 text-center text-xl font-black text-slate-900 sm:text-2xl">
+            비슷해 보인다면, <span className="text-blue-600">직접 비교해 보세요</span>
+          </p>
+          <div className="mx-auto mt-6 max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
+            {/* 헤더 */}
+            <div className="grid grid-cols-[1fr_auto_1.2fr]">
+              <div className="bg-slate-800 px-3 py-4 text-center">
+                <p className="text-sm font-black text-slate-300 sm:text-base">일반 컨설팅</p>
+              </div>
+              <div className="grid place-items-center bg-white px-2">
+                <span className="text-sm font-black italic text-slate-400">VS</span>
+              </div>
+              <div className="bg-blue-600 px-3 py-4 text-center">
+                <p className="text-sm font-black text-white sm:text-base">미래 AI 랩</p>
+              </div>
+            </div>
+            {/* 행 */}
+            {vsRows.map((r, i) => (
+              <div key={r.k} className={`grid grid-cols-[1fr_auto_1.2fr] ${i % 2 ? 'bg-slate-50/60' : 'bg-white'}`}>
+                <div className="flex items-center justify-center px-3 py-3.5 text-center">
+                  <p className="text-[0.88rem] font-medium leading-snug text-slate-400 sm:text-[0.95rem]">{r.other}</p>
+                </div>
+                <div className="flex w-[4.5rem] items-center justify-center border-x border-slate-100 px-1 text-center sm:w-[5.5rem]">
+                  <p className="text-[0.72rem] font-black leading-tight text-slate-500 sm:text-[0.78rem]">{r.k}</p>
+                </div>
+                <div className="flex items-center justify-center bg-blue-50/50 px-3 py-3.5 text-center">
+                  <p className="text-[0.9rem] font-extrabold leading-snug text-blue-700 sm:text-[0.98rem]">{r.ours}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-4 max-w-md text-center text-xs leading-relaxed text-slate-400">
+            ※ ‘일반 컨설팅’은 특정 업체가 아닌, 업계에서 일반적으로 통용되는 성공수수료형 진행 방식을 말합니다.
+          </p>
         </div>
       </section>
 
@@ -741,15 +787,22 @@ export default function FundingConsultingDetailPage() {
         }
       />
 
-      {/* Mobile sticky CTA */}
+      {/* Mobile sticky CTA — 상담 모드에선 '가능 여부 확인' 진단형 프레이밍 */}
       {showBar && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
-          <span className="flex shrink-0 items-baseline gap-1">
-            <span className="text-xs font-medium text-slate-400 line-through">{LIST_PRICE}</span>
-            <span className="text-lg font-black text-slate-900">{SALE_PRICE}</span>
-          </span>
-          <button type="button" onClick={handleBuy} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white">
-            {inquiryOnly ? '상담 신청하기' : <><CartIcon /> 바로 결제하기</>}
+          {inquiryOnly ? (
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[0.92rem] font-black text-slate-900">우리 회사, 가능 여부 확인</span>
+              <span className="block truncate text-xs font-medium text-slate-500">무료 상담 · 신청 1~2분</span>
+            </span>
+          ) : (
+            <span className="flex shrink-0 items-baseline gap-1">
+              <span className="text-xs font-medium text-slate-400 line-through">{LIST_PRICE}</span>
+              <span className="text-lg font-black text-slate-900">{SALE_PRICE}</span>
+            </span>
+          )}
+          <button type="button" onClick={handleBuy} className={`flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white ${inquiryOnly ? 'shrink-0' : 'flex-1'}`}>
+            {inquiryOnly ? '상담 신청' : <><CartIcon /> 바로 결제하기</>}
           </button>
         </div>
       )}
