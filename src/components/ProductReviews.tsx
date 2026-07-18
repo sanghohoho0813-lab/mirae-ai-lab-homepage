@@ -57,6 +57,7 @@ export default function ProductReviews({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(true)
 
   // 폼 상태
+  const [open, setOpen] = useState(false) // 기본 접힘 — '펼쳐보기'로 열기
   const [name, setName] = useState('')
   const [company, setCompany] = useState('')
   const [rating, setRating] = useState(0)
@@ -90,6 +91,7 @@ export default function ProductReviews({ slug }: { slug: string }) {
       const msg = await submitReview({ slug, authorName: name.trim(), company: company.trim(), rating, content: content.trim(), email: email.trim(), phone: phone.trim() })
       setDone(msg)
       setName(''); setCompany(''); setRating(0); setContent(''); setEmail(''); setPhone(''); setAgree(false)
+      setOpen(false)
     } catch (e2) {
       setErr(e2 instanceof Error ? e2.message : '접수에 실패했습니다. 잠시 후 다시 시도해 주세요.')
     } finally {
@@ -132,9 +134,26 @@ export default function ProductReviews({ slug }: { slug: string }) {
           </div>
         )}
 
-        {/* 작성 폼 — 항상 노출 */}
+        {/* 작성 폼 토글 — 기본 접힘(스크롤 절약), '펼쳐보기'로 열기 */}
+        {!open && (
+          <div className="mt-8 text-center">
+            <button
+              type="button"
+              onClick={() => { setOpen(true); setDone(null) }}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-7 py-4 text-base font-black text-slate-900 shadow-sm transition-transform hover:-translate-y-0.5"
+            >
+              ✍️ 후기 작성하고 전자책 받기 <span aria-hidden className="text-slate-700">▾</span>
+            </button>
+          </div>
+        )}
+
+        {/* 작성 폼 */}
+        {open && (
         <form id="review-form" onSubmit={handleSubmit} className="mx-auto mt-8 max-w-lg rounded-3xl border-2 border-amber-300 bg-white p-6 shadow-sm sm:p-8">
-          <p className="mb-5 text-center text-[1.2rem] font-black text-slate-900">✍️ 후기 작성하고 전자책 3종 받기</p>
+          <div className="mb-5 flex items-center justify-between">
+            <p className="text-[1.2rem] font-black text-slate-900">✍️ 후기 작성하고 전자책 3종 받기</p>
+            <button type="button" onClick={() => { setOpen(false); setErr(null) }} className="shrink-0 rounded-lg px-2 py-1 text-sm font-bold text-slate-400 hover:bg-slate-100 hover:text-slate-600">접기 ✕</button>
+          </div>
             <div className="mb-5">
               <span className={labelClass}>별점 <span className="text-rose-500">*</span></span>
               <StarInput value={rating} onChange={setRating} />
@@ -195,6 +214,7 @@ export default function ProductReviews({ slug }: { slug: string }) {
             </button>
             <p className="mt-3 text-xs leading-relaxed text-slate-400">등록하신 후기는 검토 후 게시됩니다. 광고성·비방·허위 내용은 게시되지 않을 수 있습니다.</p>
         </form>
+        )}
 
         {/* 후기 목록 */}
         <div className="mx-auto mt-10 max-w-lg space-y-3">

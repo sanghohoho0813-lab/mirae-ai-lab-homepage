@@ -10,13 +10,10 @@ import {
   type ChatLine,
   type FundingCase,
 } from '../data/fundingCases'
+import { inquiryUrl } from '../config/commerce'
 
 const band = 'px-5 py-16 sm:py-24'
 const BLOG_URL = 'https://blog.naver.com/ksh90813'
-
-function scrollToApply() {
-  document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
 
 // [[금액]] → 빨간 강조 박스
 function renderText(text: string) {
@@ -179,14 +176,15 @@ export default function FundingCasesSection() {
         <div className="mt-12 rounded-3xl bg-white/5 p-8 text-center ring-1 ring-white/10 sm:p-10">
           <h3 className="text-xl font-black tracking-tight text-white sm:text-2xl">{CASES_CTA.title}</h3>
           <p className="mx-auto mt-3 max-w-lg text-base leading-relaxed text-slate-400">{CASES_CTA.desc}</p>
-          <button
-            type="button"
-            onClick={scrollToApply}
+          <a
+            href={inquiryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="mt-6 inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-7 py-4 text-base font-black text-slate-900 shadow-lg transition-transform hover:-translate-y-0.5"
           >
             {CASES_CTA.button}
             <span aria-hidden>→</span>
-          </button>
+          </a>
         </div>
       </div>
     </section>

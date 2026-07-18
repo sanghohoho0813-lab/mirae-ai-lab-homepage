@@ -3,7 +3,6 @@
 // 상단 구매영역(카페24형) + 긴 세로 배너 상세 + 예시 사례(추후 실제 데이터로 교체).
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import BusinessInquiryForm from '../../components/BusinessInquiryForm'
 import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import FundingCasesSection from '../../components/FundingCasesSection'
@@ -53,13 +52,6 @@ const principles = [
   { n: '01', t: '무리한 진행을 권하지 않습니다', d: '가능성이 낮으면 낮다고 그대로 말씀드립니다. 성공수수료가 없으니 무리하게 권할 이유도 없습니다.' },
   { n: '02', t: '급한 돌려막기용 자금은 말립니다', d: '사용 계획이 없다면, 자금보다 계획부터 함께 잡는 것이 맞다고 봅니다.' },
   { n: '03', t: '거절도 전략으로 만듭니다', d: '거절 사유를 정확히 파악해 기관·시점·서류를 바꿔 다시 도전합니다.' },
-]
-
-// 무료 상담에서 벌어지는 일 3단계 — 상담 신청의 심리 문턱 낮추기
-const consultSteps = [
-  { t: '현재 상태 진단', d: '재무·업력·필요 자금을 기준으로 지금 위치를 확인합니다.' },
-  { t: '가능 경로 정리', d: '우리 회사 조건에 맞는 기관·자금·우선순위를 정리합니다.' },
-  { t: '방향 제안', d: '먼저 할 것과 나중에 해도 되는 것을 구분해 드립니다.' },
 ]
 
 // 타사 비교 VS 테이블 — 확정 비방 없이 '일반적인 방식' 대비로 표현
@@ -181,7 +173,7 @@ export default function FundingConsultingDetailPage() {
         </p>
         <button
           type="button"
-          onClick={() => scrollToId('apply')}
+          onClick={() => window.open(inquiryUrl, '_blank', 'noopener,noreferrer')}
           className={`mt-3 text-sm font-semibold underline underline-offset-4 transition-colors ${
             variant === 'dark' ? 'text-slate-300 hover:text-white' : 'text-slate-500 hover:text-slate-900'
           }`}
@@ -748,35 +740,6 @@ export default function FundingConsultingDetailPage() {
               신청 서류에는 정확한 정보를 제공해 주셔야 하며, 사실과 다른 정보로 인한 불이익은 책임지지 않습니다.
             </li>
           </ul>
-        </div>
-      </section>
-
-      {/* 상담 폼 */}
-      <section id="apply" className={`bg-white ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>무료 진단 신청</p>
-          <h2 className={bigHead}>먼저, 대표님 상황부터<br />같이 살펴보시죠</h2>
-          <p className="mx-auto mt-4 max-w-md text-center text-base leading-relaxed text-slate-600">
-            간단히 남겨주시면 어떤 자금부터 검토하면 좋을지 방향을 정리해 안내드립니다.
-          </p>
-
-          {/* 상담에서 벌어지는 일 3단계 — 신청 전 미리보기 */}
-          <div className="mx-auto mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
-            {consultSteps.map((s, i) => (
-              <div key={s.t} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <span className="text-xs font-black uppercase tracking-wide text-blue-600">STEP {`0${i + 1}`}</span>
-                <p className="mt-1.5 text-[1.05rem] font-extrabold text-slate-900">{s.t}</p>
-                <p className="mt-1 text-sm leading-relaxed text-slate-600">{s.d}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mx-auto mt-4 max-w-md text-center text-sm font-medium text-slate-500">
-            상담은 여기까지가 전부입니다. <b className="text-slate-700">진행 여부는 방향을 들어보신 뒤, 대표님이 정하시면 됩니다.</b>
-          </p>
-
-          <div className="mt-8">
-            <BusinessInquiryForm />
-          </div>
         </div>
       </section>
 
