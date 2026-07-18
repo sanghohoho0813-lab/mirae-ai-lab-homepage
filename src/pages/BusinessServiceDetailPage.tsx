@@ -2,11 +2,11 @@
 // /business-services/:slug 전 상품에 적용 (정책자금은 전용 페이지가 우선 매칭).
 // 상단 구매영역(카페24형) + 후킹 → 고민 공감 → 왜 필요한가(네이비) → 믿을 수 있는 이유
 // → 진행/결과 예시 카드(알림톡형·문서형, '예시' 명시) → 진행 과정 → 결과물 → 추천 대상
-// → 재구매 CTA(네이비) → FAQ → 유의사항 → 상담 폼.
-// 결제: /checkout/:slug 별도 페이지 (PortOne V2). consult 상품만 상담 폼으로 안내.
+// → 재구매 CTA(네이비) → FAQ → 유의사항 → 다른 상품 링크.
+// 하단 상담 폼은 제거 — 상담은 모든 CTA에서 구글폼으로 연결(모바일은 하단 고정바가 따라다님).
+// 결제: /checkout/:slug 별도 페이지 (PortOne V2).
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
-import BusinessInquiryForm from '../components/BusinessInquiryForm'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
@@ -26,9 +26,8 @@ const STEPS = [
   { t: '이후 진행 협의', d: '진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' },
 ]
 
-function scrollToId(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
+// 신뢰 라인(누적 자금조달 실적) 미노출 상품 — 자금과 무관한 순수 구축형(IT) 상품만 제외
+const NO_TRUST_IDS = new Set(['responsive-homepage', 'ai-ax-system', 'ax-full-package'])
 
 function CartIcon() {
   return (
@@ -173,7 +172,7 @@ export default function BusinessServiceDetailPage() {
         </p>
         <button
           type="button"
-          onClick={() => scrollToId('apply')}
+          onClick={handleInquiry}
           className="mt-3 w-full text-center text-sm font-semibold text-slate-500 underline underline-offset-4 transition-colors hover:text-slate-900"
         >
           결제 전 상담하기 →
@@ -272,6 +271,11 @@ export default function BusinessServiceDetailPage() {
             {pkg.priceNote && <p className="mt-1 text-sm font-medium text-slate-500">{pkg.priceNote}</p>}
             {!consult && (
               <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
+            )}
+            {!NO_TRUST_IDS.has(pkg.id) && (
+              <p className="mt-3 flex items-center gap-1.5 rounded-xl bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
+                <span aria-hidden>🏆</span> 누적 자금조달 100억 원+ · 실무 경력 8년+
+              </p>
             )}
 
             <div className="mt-5">
@@ -453,12 +457,14 @@ export default function BusinessServiceDetailPage() {
         <div className={inner}>
           <p className={kicker}>진행 과정</p>
           <h2 className={bigHead}>이렇게 진행됩니다</h2>
-          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <ol className="mx-auto mt-10 max-w-xl space-y-3">
             {STEPS.map((s, i) => (
-              <li key={s.t} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <span className="grid h-11 w-11 place-items-center rounded-full bg-slate-900 text-lg font-black text-white">{i + 1}</span>
-                <p className="mt-3 text-[1.2rem] font-bold text-slate-900">{s.t}</p>
-                <p className="mt-1 text-[1.05rem] leading-relaxed text-slate-500">{s.d}</p>
+              <li key={s.t} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-base font-black text-white" aria-hidden>{i + 1}</span>
+                <div className="min-w-0 pt-0.5">
+                  <p className="text-[1.1rem] font-extrabold leading-snug text-slate-900">{s.t}</p>
+                  <p className="mt-1 text-[0.98rem] leading-relaxed text-slate-500">{s.d}</p>
+                </div>
               </li>
             ))}
           </ol>
@@ -553,39 +559,24 @@ export default function BusinessServiceDetailPage() {
         </div>
       </section>
 
-      {/* 유의사항 */}
-      <section className="bg-white px-5 pb-4">
+      {/* 유의사항 + 다른 상품 */}
+      <section className="bg-white px-5 pb-16">
         <div className={`${inner} rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6`}>
           <p className="text-sm font-bold text-slate-700">안내 및 유의사항</p>
           <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-500">{pkg.notice ?? DISCLAIMER}</p>
         </div>
-      </section>
-
-      {/* 상담 폼 */}
-      <section id="apply" className={`bg-white ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>무료 상담 신청</p>
-          <h2 className={bigHead}>먼저, 대표님 상황부터<br />같이 살펴보시죠</h2>
-          <p className="mx-auto mt-4 max-w-md text-center text-base leading-relaxed text-slate-600">
-            간단히 남겨주시면, {pkg.name} 기준으로 무엇부터 하면 좋을지 정리해 안내드립니다.
-          </p>
-          <div className="mt-8">
-            <BusinessInquiryForm />
-          </div>
-
-          <div className="mt-12">
-            <p className="text-sm font-bold text-slate-700">다른 상품도 살펴보세요</p>
-            <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
-              {others.map((o) => (
-                <Link
-                  key={o.id}
-                  to={`/business-services/${o.slug}`}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50"
-                >
-                  {o.name}
-                </Link>
-              ))}
-            </div>
+        <div className={`${inner} mt-8`}>
+          <p className="text-sm font-bold text-slate-700">다른 상품도 살펴보세요</p>
+          <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
+            {others.map((o) => (
+              <Link
+                key={o.id}
+                to={`/business-services/${o.slug}`}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50"
+              >
+                {o.name}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -599,16 +590,23 @@ export default function BusinessServiceDetailPage() {
         }
       />
 
-      {/* Mobile sticky CTA */}
+      {/* Mobile sticky CTA — 상담 모드에선 '가능 여부 확인' 진단형 프레이밍 */}
       {showBar && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
-          <span className="shrink-0 text-lg font-black text-slate-900">{inquiryOnly ? '상담 후 안내' : displayPrice}</span>
+          {inquiryOnly ? (
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[0.92rem] font-black text-slate-900">우리 회사, 가능 여부 확인</span>
+              <span className="block truncate text-xs font-medium text-slate-500">무료 상담 · 신청 1~2분</span>
+            </span>
+          ) : (
+            <span className="shrink-0 text-lg font-black text-slate-900">{displayPrice}</span>
+          )}
           <button
             type="button"
             onClick={inquiryOnly ? handleInquiry : handleBuy}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white"
+            className={`flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white ${inquiryOnly ? 'shrink-0' : 'flex-1'}`}
           >
-            {inquiryOnly ? '무료 상담 신청하기' : <><CartIcon /> 바로 결제하기</>}
+            {inquiryOnly ? '상담 신청' : <><CartIcon /> 바로 결제하기</>}
           </button>
         </div>
       )}
