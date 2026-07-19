@@ -368,7 +368,7 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 공감 (이런 고민) */}
+      {/* 문제제기 + 문제심화 — 하나로 합본(고민 → 미루면 손해 → 기초설명으로 자연스럽게 연결) */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🤔</div>
@@ -376,15 +376,34 @@ export default function FundingConsultingDetailPage() {
           <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막하죠</span></h2>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {pains.map((p) => (
-              <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
+              <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>?</span>
                 <p className="mt-3 text-[1.2rem] font-bold leading-snug text-slate-800 sm:text-[1.35rem]">“{p}”</p>
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            그런데 결정을 미루는 동안에도, <span className="text-red-600">비용은 계속 나가고 있습니다.</span>
+
+          {/* 전환 — 고민이 손해로 이어짐 */}
+          <p className="mt-12 text-center text-xl font-black leading-snug text-slate-900 sm:text-2xl">
+            그런데 결정을 미루는 동안에도, <span className="text-red-600">이자는 불어나고 기회는 사라지고 있습니다.</span>
           </p>
+
+          {/* 문제심화 — 미루면 잃는 것 */}
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {losses.map((l) => (
+              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-rose-50/40 p-6">
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-2xl shadow-sm" aria-hidden>{l.icon}</span>
+                <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
+                <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
+            <p className="text-lg font-black leading-snug text-white sm:text-xl">
+              막막하게 느껴지는 건, <span className="text-amber-300">아직 정책자금이 낯설기 때문</span>입니다.
+            </p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">그래서 먼저, 정책자금이 일반 대출과 어떻게 다른지부터 쉽게 짚어보겠습니다.</p>
+          </div>
         </div>
       </section>
 
@@ -411,31 +430,6 @@ export default function FundingConsultingDetailPage() {
           <p className="mx-auto mt-8 max-w-lg text-center text-sm leading-relaxed text-slate-500">
             정책자금도 심사 절차를 거치기 때문에, 먼저 <b className="text-slate-700">우리 회사에 맞는 방향인지 확인하는 것</b>이 첫 단계입니다.
           </p>
-        </div>
-      </section>
-
-      {/* 손실 환기 — 미루면 잃는 것 */}
-      <section className={`bg-rose-50/60 ${band}`}>
-        <div className={inner}>
-          <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
-          <h2 className={bigHead}>
-            미루는 동안에도 <span className="text-red-600">이자는 불어나고,</span><br /><span className="text-red-600">기회는 사라지고 있습니다</span>
-          </h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {losses.map((l) => (
-              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-2xl" aria-hidden>{l.icon}</span>
-                <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
-                <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
-            <p className="text-lg font-black leading-snug text-white sm:text-xl">
-              컨설팅은 받아야겠는데, <span className="text-amber-300">어디를 골라야 할지</span> 막막하시죠?
-            </p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">그래서 저희는 일하는 방식부터 다르게 잡았습니다.</p>
-          </div>
         </div>
       </section>
 

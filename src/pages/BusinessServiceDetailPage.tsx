@@ -29,6 +29,23 @@ const STEPS = [
 // 신뢰 라인(누적 자금조달 실적) 미노출 상품 — 자금과 무관한 순수 구축형(IT) 상품만 제외
 const NO_TRUST_IDS = new Set(['responsive-homepage', 'ai-ax-system', 'ax-full-package'])
 
+// ─────────────────────────────────────────────────────────────────────────────
+// 상세페이지 "보완중(teaser)" 모드
+//  · 정책자금(전용 페이지)에 집중하는 동안, 나머지 상품 상세는 핵심 섹션만 노출합니다.
+//  · 노출 유지: 문제제기+문제심화(합본) · 핵심 혜택 · 미래 AI 랩과 함께하는 변화 · 상담 마무리
+//  · 숨김(코드는 그대로 보존 — 삭제 아님): 히어로 후킹 · 왜 필요한가 · 믿을 수 있는 이유 ·
+//    진행/결과 예시 · 진행 과정 · 제공 결과물 · 추천 대상 · 재CTA · FAQ
+//
+//  ▶ 전체 복원 방법 (둘 중 하나)
+//    1) DETAIL_TEASER_MODE = false      → 전 상품 전체 노출로 되돌림
+//    2) FULL_DETAIL_SLUGS 에 slug 추가   → 그 상품만 전체 노출 (예: new Set(['iso-certification']))
+//
+//  ▶ 복원 사인(대표님과의 약속): 채팅으로 "상세페이지 풀오픈" 이라고 요청하시면
+//    위 1) 로 되돌립니다. (숨긴 섹션은 아무것도 지우지 않았으므로 그대로 복구됩니다.)
+// ─────────────────────────────────────────────────────────────────────────────
+const DETAIL_TEASER_MODE = true
+const FULL_DETAIL_SLUGS = new Set<string>([]) // 여기에 slug 를 넣으면 그 상품만 전체 노출
+
 function CartIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -140,6 +157,9 @@ export default function BusinessServiceDetailPage() {
 
   // 결제 대신 상담(구글폼) — consult 상품이거나 결제 시스템 준비 중(paymentsEnabled=false)일 때
   const inquiryOnly = consult || !paymentsEnabled
+
+  // 보완중(teaser) 모드 — 핵심 섹션만 노출(위 DETAIL_TEASER_MODE 주석 참고)
+  const trimmed = DETAIL_TEASER_MODE && !FULL_DETAIL_SLUGS.has(pkg.slug)
   function handleInquiry() {
     window.open(inquiryUrl, '_blank', 'noopener,noreferrer')
   }
@@ -298,7 +318,8 @@ export default function BusinessServiceDetailPage() {
 
       {/* ── 긴 세로 상세 ───────────────────────────────────────── */}
 
-      {/* Hero hook */}
+      {/* Hero hook (보완중 모드에서는 숨김) */}
+      {!trimmed && (
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
           <p className={kicker}>{pkg.name}</p>
@@ -335,8 +356,9 @@ export default function BusinessServiceDetailPage() {
           )}
         </div>
       </section>
+      )}
 
-      {/* 공감 (이런 고민) */}
+      {/* 문제제기 + 문제심화 — 하나로 합본(고민 → 손해로 자연스럽게 이어짐) */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">{content.emoji}</div>
@@ -350,23 +372,17 @@ export default function BusinessServiceDetailPage() {
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            그런데 이 고민들, <span className="text-red-600">미뤄둘수록 나중에 더 큰 손해로 돌아옵니다.</span>
-          </p>
-        </div>
-      </section>
 
-      {/* 손실 환기 — 미루면 잃는 것 (적당한 긴장) */}
-      <section className={`bg-rose-50/60 ${band}`}>
-        <div className={inner}>
-          <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
-          <h2 className={bigHead}>
-            {content.lossLine}<br /><span className="text-red-600">{content.lossAccent}</span>
-          </h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          {/* 전환 — 고민이 손해로 이어짐 */}
+          <p className="mt-12 text-center text-xl font-black leading-snug text-slate-900 sm:text-2xl">
+            그런데 이 고민들, <span className="text-red-600">미뤄둘수록 더 큰 손해로 돌아옵니다.</span>
+          </p>
+
+          {/* 문제심화 — 미루면 잃는 것 */}
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {content.losses.map((l) => (
-              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-2xl" aria-hidden>{l.icon}</span>
+              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-rose-50/40 p-6">
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-2xl shadow-sm" aria-hidden>{l.icon}</span>
                 <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
                 <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
               </div>
@@ -379,7 +395,8 @@ export default function BusinessServiceDetailPage() {
         </div>
       </section>
 
-      {/* 왜 필요한가 (네이비) */}
+      {/* 왜 필요한가 (네이비) — 보완중 모드에서는 숨김 */}
+      {!trimmed && (
       <section className={`bg-slate-900 ${band}`}>
         <div className={inner}>
           <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">그래서, 저희가 이렇게 합니다</p>
@@ -400,6 +417,7 @@ export default function BusinessServiceDetailPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 핵심 혜택 — 취득/진행 시 얻는 실질 혜택(초중반 · 와닿게 나열) */}
       <section className={`bg-white ${band}`}>
@@ -423,10 +441,10 @@ export default function BusinessServiceDetailPage() {
         </div>
       </section>
 
-      {/* 변화 — 진행 후 달라지는 것 (Before → After) */}
+      {/* 변화 — 미래 AI 랩과 함께하면 달라지는 것 (Before → After) */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>얻게 되는 결과</p>
+          <p className={kicker}>미래 AI 랩과 함께라면</p>
           <h2 className={bigHead}>
             {content.afterLine}<br /><span className={accentText}>{content.afterAccent}</span>
           </h2>
@@ -448,6 +466,36 @@ export default function BusinessServiceDetailPage() {
         </div>
       </section>
 
+      {/* 보완중 안내 — 상세 보완 기간 동안 상담 유도(보완중 모드에서만 노출) */}
+      {trimmed && (
+        <section className={`bg-slate-900 ${band}`}>
+          <div className="mx-auto max-w-[560px] px-1 text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-black text-amber-300">🛠️ 상세페이지 보완 중</span>
+            <h2 className="mt-4 text-[1.7rem] font-black leading-[1.3] tracking-tight text-white sm:text-[2.2rem]">
+              더 자세한 내용은<br /><span className="text-amber-300">상담으로 안내드립니다</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-slate-300 sm:text-lg">
+              현재 이 서비스의 상세페이지를 보완하고 있습니다. 상담을 신청해 주시면
+              <b className="text-white"> 담당 팀장이 직접 연락드려</b> 대표님 상황에 맞게 자세히 안내드리겠습니다.
+            </p>
+            <div className="mx-auto mt-8 max-w-sm">
+              <a
+                href={inquiryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
+              >
+                무료 상담 신청하기 <span aria-hidden>→</span>
+              </a>
+              <p className="mt-3 text-xs font-medium text-slate-400">상담은 무료이며 신청은 1~2분이면 끝납니다. 진행 여부는 상담 후 정하셔도 됩니다.</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ↓↓↓ 아래 섹션은 보완중 모드에서 숨김(코드 그대로 보존 · "상세페이지 풀오픈" 시 복원) ↓↓↓ */}
+      {!trimmed && (
+        <>
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
@@ -607,6 +655,8 @@ export default function BusinessServiceDetailPage() {
           </div>
         </div>
       </section>
+        </>
+      )}
 
       {/* 유의사항 + 다른 상품 */}
       <section className="bg-white px-5 pb-16">
