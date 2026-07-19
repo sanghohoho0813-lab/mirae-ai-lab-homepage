@@ -38,6 +38,17 @@ function CartIcon() {
   )
 }
 
+// **강조** → 볼드(숫자·핵심 수치를 눈에 띄게)
+function renderEmphasis(text: string) {
+  return text.split(/\*\*/).map((seg, i) =>
+    i % 2 === 1 ? (
+      <b key={i} className="font-bold text-slate-900">{seg}</b>
+    ) : (
+      <span key={i}>{seg}</span>
+    ),
+  )
+}
+
 // 진행/결과 예시 카드 (talk = 카톡 알림톡형 / doc = 문서형)
 function CaseCard({ c, accent }: { c: DetailCase; accent: string }) {
   return (
@@ -401,13 +412,13 @@ export default function BusinessServiceDetailPage() {
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white text-2xl shadow-sm ring-1 ring-slate-200" aria-hidden>{b.icon}</span>
                 <div className="min-w-0">
                   <p className="text-[1.15rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
-                  <p className="mt-1.5 text-[1rem] leading-relaxed text-slate-600">{b.d}</p>
+                  <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{renderEmphasis(b.d)}</p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="mx-auto mt-6 max-w-lg text-center text-sm leading-relaxed text-slate-400">
-            ※ 위 혜택은 기업 상황·요건 충족·기관 심사에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.
+          <p className="mx-auto mt-6 max-w-xl text-center text-sm leading-relaxed text-slate-400">
+            ※ 위 혜택과 수치(지원금·공제·세율 등)는 제도·시점·기업별 요건 충족과 기관 심사에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다. 예시로 든 금액은 이해를 돕기 위한 것입니다.
           </p>
         </div>
       </section>
