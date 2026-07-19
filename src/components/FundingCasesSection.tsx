@@ -2,6 +2,7 @@
 // 다크 프리미엄 스타일: 필 배지(업종·대표님) + 초대형 "N억 확보" + 폰 목업 안 다크모드 카톡 대화.
 // 금액은 [[..]] 토큰 → 빨간 강조 박스로 렌더. 승인 완료 사례만 게시.
 // ⚠️ 대화는 개인정보 보호를 위해 회사명·세부 상황을 바꿔 정리(고지문 표기).
+import { useState } from 'react'
 import {
   fundingCases,
   moreFundingCases,
@@ -111,7 +112,12 @@ function PhoneCase({ c }: { c: FundingCase }) {
   )
 }
 
+const INITIAL_CASES = 3
+
 export default function FundingCasesSection() {
+  const [expanded, setExpanded] = useState(false)
+  const shown = expanded ? fundingCases : fundingCases.slice(0, INITIAL_CASES)
+  const hiddenCount = fundingCases.length - INITIAL_CASES
   return (
     <section className={`bg-[#060b16] ${band}`}>
       <div className="mx-auto max-w-5xl">
@@ -125,12 +131,24 @@ export default function FundingCasesSection() {
           제조·외식·플랫폼·광고·도소매 등 다양한 업종의 자금 전략을 설계했습니다.
         </p>
 
-        {/* 대표 사례 — 폰 목업 카톡 */}
+        {/* 대표 사례 — 폰 목업 카톡 (처음엔 3개, '사례 더 보기'로 펼침) */}
         <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2">
-          {fundingCases.map((c) => (
+          {shown.map((c) => (
             <PhoneCase key={`${c.pill}-${c.amount}`} c={c} />
           ))}
         </div>
+
+        {!expanded && hiddenCount > 0 && (
+          <div className="mt-10 text-center">
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-white/10"
+            >
+              사례 {hiddenCount}개 더 보기 <span aria-hidden>▾</span>
+            </button>
+          </div>
+        )}
 
         {/* 네이버 블로그 전체 사례 */}
         <div className="mt-12 text-center">

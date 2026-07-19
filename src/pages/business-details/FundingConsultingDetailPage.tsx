@@ -45,6 +45,54 @@ const trustStats = [
   { value: '0원', label: '성공수수료' },
 ]
 
+// 3가지 진행 방식 — 상품 A/B/C. 금액은 화면 표시용(A 실결제 금액은 서버 카탈로그가 최종 결정).
+// ⚠️ 승인/승인금액 보장 표현 금지. 3%·5% 는 '실제 조달금액' 기준 성과보수(결과 보장 아님).
+type PlanCta = 'buy' | 'inquiry'
+type Plan = {
+  key: 'A' | 'B' | 'C'
+  name: string
+  target: string
+  priceMain: string
+  priceSub: string
+  points: string[]
+  cta: PlanCta
+  ctaLabel: string
+  featured?: boolean
+}
+const plans: Plan[] = [
+  {
+    key: 'A',
+    name: '기업진단·자금전략 1회 컨설팅',
+    target: '방향만 정리하고 직접 진행하실 대표님',
+    priceMain: '500,000원',
+    priceSub: '1회 · 성과보수 없음',
+    points: ['자금 가능성·전략 진단', '기관·시점·서류 방향 정리', '이후엔 대표님이 직접 진행'],
+    cta: 'buy',
+    ctaLabel: '1회 컨설팅 결제하기',
+  },
+  {
+    key: 'B',
+    name: '자금조달 전부 위임형',
+    target: '처음부터 끝까지 맡기고 싶은 대표님',
+    priceMain: '착수금 500,000원',
+    priceSub: '+ 실제 조달금액의 3%',
+    points: ['신청·서류·진행 전부 대행', '업계 성공수수료 5~7% 대비 절반', 'AX 프로그램 구축은 미포함'],
+    cta: 'inquiry',
+    ctaLabel: '전부 위임형 진행 가능성 확인',
+  },
+  {
+    key: 'C',
+    name: 'AX 결합 성장자금형',
+    target: '자금조달과 업무혁신을 함께 준비할 기업',
+    priceMain: '착수금 500,000원',
+    priceSub: '+ 실제 조달금액의 5% (성과보수 최대 1,500만원)',
+    points: ['기업진단 · 업종별 비효율 분석', '프로토타입 · 핵심 MVP 구축', '선택적 AI 기능 · 현장 테스트 · 성과 측정'],
+    cta: 'inquiry',
+    ctaLabel: 'AX 결합형 적합성 확인',
+    featured: true,
+  },
+]
+
 // 정직한 진행 원칙 3가지 — '아무나 받지 않는' 셀렉티브 포지셔닝 (과장 없이)
 const principles = [
   { n: '01', t: '무리한 진행을 권하지 않습니다', d: '가능성이 낮으면 낮다고 그대로 말씀드립니다. 성공수수료가 없으니 무리하게 권할 이유도 없습니다.' },
@@ -289,8 +337,90 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 공감 (이런 고민) */}
+      {/* ── 3가지 진행 방식 (상품 A/B/C) — 신뢰 밴드 직후 배치 ─────── */}
       <section className={`bg-white ${band}`}>
+        <div className="mx-auto max-w-[1000px]">
+          <p className={kicker}>진행 방식 선택</p>
+          <h2 className={bigHead}>필요한 만큼만,<br /><span className="text-blue-600">3가지 중에서 고르세요</span></h2>
+          <p className="mx-auto mt-4 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600">
+            직접 진행하실지, 전부 맡기실지, 자금과 업무혁신을 함께 준비하실지 — 상황에 맞게 고르시면 됩니다.
+          </p>
+
+          <div className="mt-10 grid items-stretch gap-4 sm:grid-cols-3">
+            {plans.map((p) => (
+              <div
+                key={p.key}
+                className={`flex flex-col rounded-3xl border-2 bg-white p-5 sm:p-6 ${
+                  p.featured ? 'border-blue-600 shadow-xl shadow-blue-600/10' : 'border-slate-200 shadow-sm'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={`grid h-8 w-8 place-items-center rounded-lg text-sm font-black ${p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}>{p.key}</span>
+                  {p.featured && <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700">성장 결합형</span>}
+                </div>
+                <h3 className="mt-4 text-[1.25rem] font-black leading-snug tracking-tight text-slate-900">{p.name}</h3>
+                <p className="mt-1 text-sm font-medium text-slate-500">{p.target}</p>
+
+                <div className="mt-5 border-y border-slate-100 py-4">
+                  <p className={`text-2xl font-black tracking-tight ${p.featured ? 'text-blue-700' : 'text-slate-900'}`}>{p.priceMain}</p>
+                  <p className="mt-1 text-sm font-bold text-slate-600">{p.priceSub}</p>
+                </div>
+
+                <ul className="mt-4 flex-1 space-y-2">
+                  {p.points.map((pt) => (
+                    <li key={pt} className="flex items-start gap-2 text-[0.95rem] leading-snug text-slate-700">
+                      <span className={`mt-0.5 shrink-0 font-black ${p.featured ? 'text-blue-600' : 'text-slate-400'}`} aria-hidden>✓</span>
+                      {pt}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-6">
+                  {p.cta === 'buy' && !inquiryOnly ? (
+                    <button
+                      type="button"
+                      onClick={handleBuy}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3.5 text-[0.95rem] font-black text-slate-900 shadow-sm transition-transform hover:-translate-y-0.5"
+                    >
+                      <CartIcon /> {p.ctaLabel}
+                    </button>
+                  ) : p.cta === 'buy' ? (
+                    // 결제 준비 중(paymentsEnabled=false): A 도 상담 신청으로 우회
+                    <>
+                      <a
+                        href={inquiryUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex w-full items-center justify-center rounded-xl bg-amber-400 px-5 py-3.5 text-[0.95rem] font-black text-slate-900 shadow-sm transition-transform hover:-translate-y-0.5"
+                      >
+                        1회 컨설팅 신청하기
+                      </a>
+                      <p className="mt-1.5 text-center text-[0.72rem] font-medium text-slate-400">카드결제 준비 중 · 신청 시 결제 방법 안내</p>
+                    </>
+                  ) : (
+                    <a
+                      href={inquiryUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex w-full items-center justify-center rounded-xl px-5 py-3.5 text-[0.95rem] font-black shadow-sm transition-transform hover:-translate-y-0.5 ${
+                        p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'
+                      }`}
+                    >
+                      {p.ctaLabel}
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-5 max-w-2xl text-center text-xs leading-relaxed text-slate-400">
+            ※ 3%·5% 성과보수는 <b className="text-slate-500">실제 조달된 금액</b>을 기준으로 하며, 조달 성공이나 특정 금액을 보장하지 않습니다. 진행 범위·성과보수 상한은 계약 시 협의합니다.
+          </p>
+        </div>
+      </section>
+
+      {/* 공감 (이런 고민) */}
+      <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🤔</div>
           <p className={kicker}>이런 고민, 있으셨죠?</p>
@@ -388,7 +518,7 @@ export default function FundingConsultingDetailPage() {
           </div>
 
           {/* 업무 범위 */}
-          <p className="mt-14 text-center text-xl font-black text-slate-900 sm:text-2xl">
+          <p className="mt-12 text-center text-xl font-black text-slate-900 sm:text-2xl">
             50만원으로, <span className="text-blue-600">여기까지 해드립니다</span>
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -404,17 +534,6 @@ export default function FundingConsultingDetailPage() {
                 <p className="mt-1.5 text-[1.05rem] leading-relaxed text-slate-600">{it.d}</p>
               </div>
             ))}
-          </div>
-
-          {/* 3% 전액대행 옵션 */}
-          <div className="mt-8 rounded-3xl border-2 border-slate-900 bg-slate-50 p-6 sm:p-7">
-            <p className="text-sm font-black text-blue-600">그래도 정말 손댈 여유가 없으시다면</p>
-            <p className="mt-2 text-lg font-black leading-snug text-slate-900 sm:text-xl">
-              신청까지 전부 대행 — 업계 5~7%가 아닌 <span className="text-blue-600">3%</span>로 진행해 드립니다
-            </p>
-            <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">
-              아무것도 손대기 어려운 상황이라면, 처음부터 끝까지 저희가 맡아 진행합니다. 그래도 업계 절반 수준입니다.
-            </p>
           </div>
         </div>
       </section>
