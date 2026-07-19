@@ -19,7 +19,7 @@ const LIST_PRICE = '100만원'
 const SALE_PRICE = pkg.price // '50만원'
 const DISCOUNT_RATE = '50%'
 
-const band = 'px-5 py-16 sm:py-24'
+const band = 'px-5 py-10 sm:py-14'
 const inner = 'mx-auto max-w-[720px]'
 const kicker = 'text-center text-sm font-black uppercase tracking-widest text-blue-600'
 const bigHead = 'mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-slate-900 sm:text-[2.7rem]'
@@ -32,13 +32,11 @@ const pains = [
   '은행에서는 거절당했는데, 정책자금은 가능할 수도 있다던데… 어디서부터 봐야 하죠?',
   '믿을 만한 업체가 어디인지 모르겠어요',
   '수수료가 너무 비싸요. 조금만 도움받으면 스스로 할 수 있을 것 같은데…',
-  '정책자금 종류가 너무 많아서 뭐가 뭔지 모르겠어요',
-  '대출 금리를 조금이라도 낮추고 싶어요',
-  '운전자금이 급한데, 어디서부터 봐야 할지 모르겠어요',
+  '정책자금 종류가 너무 많고, 운전자금은 급한데 뭐부터 봐야 할지 모르겠어요',
 ]
 
 // 믿을 수 있는 이유 (블로그 공개 실적 기준)
-const reasons = ['누적 자금조달 100억 원+', '기업성장컨설팅 실무 경력 8년+', '진단·전략·서류·실사 동행까지']
+const reasons = ['누적 자금조달 100억 원+', '기업성장컨설팅 실무 경력 8년+', '진단·전략·서류 준비까지']
 
 // 신뢰 스탯 밴드 — 블로그(공개 성공사례)에서 확인되는 실적만 사용
 const trustStats = [
@@ -67,7 +65,6 @@ const vsRows = [
 // "정책자금만 받고 끝나지 않습니다" — 자금 이후까지 잇는 통합 관리
 const beyondFunding = [
   { icon: '💰', t: '숨은 세금부터 돌려받고 시작', d: '경정청구로 더 낸 세금을 먼저 확인합니다. 957만 원을 추가 환급받고 시작한 사례도 있습니다.' },
-  { icon: '🏃', t: '실사·기관 방문, 함께 갑니다', d: '보증기관 실사와 은행 방문에 동행하고, 예상 질문까지 미리 준비해 드립니다.' },
   { icon: '🏅', t: '자금 다음은 인증으로', d: '메인비즈·벤처인증으로 다음 자금과 지원사업 기반을 만듭니다.' },
   { icon: '🤝', t: '세무·노무까지 이어지는 관리', d: '세무사·법무사·노무사와 함께 자금 이후 문제까지 챙깁니다.' },
 ]
@@ -333,8 +330,7 @@ export default function FundingConsultingDetailPage() {
             ))}
           </div>
           <p className="mx-auto mt-8 max-w-lg text-center text-sm leading-relaxed text-slate-500">
-            다만 정책자금도 심사 절차를 거치며, 모든 기업의 승인을 보장하지는 않습니다.
-            그래서 먼저 <b className="text-slate-700">우리 회사에 맞는 방향인지 확인하는 것</b>이 첫 단계입니다.
+            정책자금도 심사 절차를 거치기 때문에, 먼저 <b className="text-slate-700">우리 회사에 맞는 방향인지 확인하는 것</b>이 첫 단계입니다.
           </p>
         </div>
       </section>
@@ -420,14 +416,6 @@ export default function FundingConsultingDetailPage() {
               아무것도 손대기 어려운 상황이라면, 처음부터 끝까지 저희가 맡아 진행합니다. 그래도 업계 절반 수준입니다.
             </p>
           </div>
-
-          {/* 철학 마무리 */}
-          <div className="mt-6 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
-            <p className="text-lg font-black leading-snug text-white sm:text-xl">
-              저희의 목적은 대표님이 <span className="text-amber-300">스스로 하실 수 있게</span> 만드는 것입니다.
-            </p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">정책 환경도 대표님이 직접 챙길 수 있는 방향으로 점점 바뀌고 있습니다.</p>
-          </div>
         </div>
       </section>
 
@@ -442,7 +430,7 @@ export default function FundingConsultingDetailPage() {
             일회성으로 자금만 받고 끝나는 컨설팅은 의미가 없다고 생각합니다.
             <b className="text-slate-900"> 자금 이전의 세금 환급부터, 자금 이후의 인증·세무·노무까지</b> 사업의 흐름 전체를 잇습니다.
           </p>
-          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+          <div className="mt-9 grid gap-4 sm:grid-cols-3">
             {beyondFunding.map((b) => (
               <div key={b.t} className="flex flex-col rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{b.icon}</span>
@@ -453,7 +441,7 @@ export default function FundingConsultingDetailPage() {
           </div>
 
           {/* VS 비교표 — 일반적인 컨설팅 방식과 직접 비교 */}
-          <p className="mt-14 text-center text-xl font-black text-slate-900 sm:text-2xl">
+          <p className="mt-12 text-center text-xl font-black text-slate-900 sm:text-2xl">
             비슷해 보인다면, <span className="text-blue-600">직접 비교해 보세요</span>
           </p>
           <div className="mx-auto mt-6 max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
@@ -648,22 +636,6 @@ export default function FundingConsultingDetailPage() {
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             {pkg.highlights.map((hi) => (
               <span key={hi} className="rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">{hi}</span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 추천 대상 */}
-      <section className={`bg-slate-50 ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>추천 대상</p>
-          <h2 className={bigHead}>이런 대표님이라면<br /><span className="text-blue-600">잘 맞습니다</span></h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {pkg.recommendedFor.map((r) => (
-              <div key={r} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>✓</span>
-                <p className="mt-3 text-[1.2rem] font-semibold leading-snug text-slate-800">{r}</p>
-              </div>
             ))}
           </div>
         </div>

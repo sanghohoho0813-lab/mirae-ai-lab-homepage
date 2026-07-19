@@ -43,7 +43,7 @@ export const fundingCases: FundingCase[] = [
     chat: [
       { from: 'client', text: '팀장님, 신보 [[2억]] 실행 확인했습니다. 1년 넘게 정말 고생 많으셨어요.', time: '오전 10:22' },
       { from: 'me', text: '대표님이 잘 버텨주신 덕분입니다. 가지급금부터 잡은 보람이 있네요 😊', time: '오전 10:23' },
-      { from: 'client', text: '은행마다 거절이었는데… 실사·은행 방문까지 동행해주셔서 든든했습니다.', time: '오전 10:25' },
+      { from: 'client', text: '은행마다 거절이었는데… 서류랑 제출 준비까지 끝까지 챙겨주셔서 든든했습니다.', time: '오전 10:25' },
     ],
   },
   {

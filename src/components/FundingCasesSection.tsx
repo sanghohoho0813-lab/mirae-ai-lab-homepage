@@ -12,7 +12,7 @@ import {
 } from '../data/fundingCases'
 import { inquiryUrl } from '../config/commerce'
 
-const band = 'px-5 py-16 sm:py-24'
+const band = 'px-5 py-10 sm:py-14'
 const BLOG_URL = 'https://blog.naver.com/ksh90813'
 
 // [[금액]] → 빨간 강조 박스
