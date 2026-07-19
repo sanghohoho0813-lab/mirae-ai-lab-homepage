@@ -13,7 +13,7 @@ import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } fro
 import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../config/commerce'
 import { getDetailContent, type DetailCase } from '../data/businessDetailContent'
 
-const band = 'px-5 py-16 sm:py-24'
+const band = 'px-5 py-12 sm:py-16'
 const inner = 'mx-auto max-w-[720px]'
 const bigHead = 'mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-slate-900 sm:text-[2.7rem]'
 
@@ -231,7 +231,7 @@ export default function BusinessServiceDetailPage() {
               ) : (
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{pkg.badge}</span>
               )}
-              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">리뷰 준비중</span>
+              <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">가능성 진단 상담 무료</span>
             </div>
             <h1 className="mt-2.5 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">{pkg.name}</h1>
             <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-600">{pkg.short}</p>
@@ -306,6 +306,22 @@ export default function BusinessServiceDetailPage() {
             <span className="text-3xl font-black tracking-tight text-slate-900">{displayPrice}</span>
             {pkg.priceNote && <span className="text-xs font-medium text-slate-400">{pkg.priceNote}</span>}
           </div>
+
+          {/* 신뢰 스탯 밴드 — 공개 실적 기반(자금 무관 IT 상품은 제외) */}
+          {!NO_TRUST_IDS.has(pkg.id) && (
+            <div className="mx-auto mt-8 grid max-w-lg grid-cols-3 divide-x divide-slate-700/60 rounded-2xl bg-slate-900 py-5 shadow-lg">
+              {[
+                { value: '100억+', label: '누적 자금조달' },
+                { value: '8년+', label: '실무 경력' },
+                { value: '무료', label: '가능성 진단 상담' },
+              ].map((s) => (
+                <div key={s.label} className="px-2 text-center">
+                  <p className={`text-2xl font-black tracking-tight sm:text-3xl ${flagship ? 'text-amber-300' : 'text-sky-300'}`}>{s.value}</p>
+                  <p className="mt-1 text-xs font-semibold text-slate-300 sm:text-sm">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
