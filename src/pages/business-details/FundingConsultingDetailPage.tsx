@@ -92,7 +92,7 @@ const plans: Plan[] = [
     name: 'AX 결합 성장자금형',
     label: '선별 진행',
     priceMain: '착수금 500,000원',
-    priceSub: '+ 조달액의 5% · 최대 1,500만원 (선택 시)',
+    priceSub: '+ 조달액의 5% · 최대 1,500만원 한도 (선택 시)',
     points: ['기업진단 · 업종별 비효율 분석', '프로토타입 · 핵심 MVP 구축', '선택적 AI 기능 · 현장 테스트 · 성과 측정'],
     recommend: '자금조달과 실제 업무혁신을 함께 추진하려는 경우',
     cta: 'inquiry',
@@ -116,7 +116,7 @@ const compareRows: { label: string; cells: CompareCell[] }[] = [
     cells: [
       { main: '없음', sub: '500,000원으로 종료 가능' },
       { main: '조달액의 3%', sub: '전체 진행 시' },
-      { main: '조달액의 5%', sub: 'AX 포함 · 최대 1,500만원' },
+      { main: '조달액의 5%', sub: '최대 1,500만원 한도' },
     ],
   },
   { label: '맡기는 범위', cells: ['방향·순서 정리', '신청·서류 전체 대행', '전체 진행 + AX 구축'] },
@@ -368,7 +368,126 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* ── 3가지 진행 방식 (상품 A/B/C) — 신뢰 밴드 직후 배치 ─────── */}
+      {/* 공감 (이런 고민) */}
+      <section className={`bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🤔</div>
+          <p className={kicker}>이런 고민, 있으셨죠?</p>
+          <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막하죠</span></h2>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+            {pains.map((p) => (
+              <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>?</span>
+                <p className="mt-3 text-[1.2rem] font-bold leading-snug text-slate-800 sm:text-[1.35rem]">“{p}”</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
+            그런데 결정을 미루는 동안에도, <span className="text-red-600">비용은 계속 나가고 있습니다.</span>
+          </p>
+        </div>
+      </section>
+
+      {/* 정책자금이 낯선 분들을 위한 기초 설명 */}
+      <section className={`bg-blue-50/50 ${band}`}>
+        <div className={inner}>
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-white text-4xl shadow-sm">📘</div>
+          <p className={kicker}>정책자금이 처음이라면</p>
+          <h2 className={bigHead}>
+            정책자금, <span className="text-blue-600">일반 대출과 뭐가 다른가요?</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+            용어부터 낯설어 시작하기 어려우셨다면, 여기서부터 천천히 짚어보시죠.
+          </p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-3">
+            {fundFeatures.map((f) => (
+              <div key={f.t} className="flex flex-col rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{f.icon}</span>
+                <p className="mt-3 text-[1.1rem] font-extrabold leading-snug text-slate-900">{f.t}</p>
+                <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{f.d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-lg text-center text-sm leading-relaxed text-slate-500">
+            정책자금도 심사 절차를 거치기 때문에, 먼저 <b className="text-slate-700">우리 회사에 맞는 방향인지 확인하는 것</b>이 첫 단계입니다.
+          </p>
+        </div>
+      </section>
+
+      {/* 손실 환기 — 미루면 잃는 것 */}
+      <section className={`bg-rose-50/60 ${band}`}>
+        <div className={inner}>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
+          <h2 className={bigHead}>
+            미루는 동안에도 <span className="text-red-600">이자는 불어나고,</span><br /><span className="text-red-600">기회는 사라지고 있습니다</span>
+          </h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {losses.map((l) => (
+              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-2xl" aria-hidden>{l.icon}</span>
+                <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
+                <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
+            <p className="text-lg font-black leading-snug text-white sm:text-xl">
+              컨설팅은 받아야겠는데, <span className="text-amber-300">어디를 골라야 할지</span> 막막하시죠?
+            </p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">그래서 저희는 일하는 방식부터 다르게 잡았습니다.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 혜택 1 — 성공수수료 0원 */}
+      <section className={`bg-white ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>미래 AI 랩의 방식</p>
+          <h2 className={bigHead}>
+            “전부 대신 해드립니다”식 컨설팅,<br /><span className="text-blue-600">이제는 맞지 않는 방식입니다</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+            사업의 주인은 대표님입니다. 그래서 저희는 <b className="text-slate-900">반드시 필요한 부분만</b> 돕고,
+            신청 같은 나머지는 <b className="text-slate-900">대표님이 직접 하실 수 있도록</b> 만들어 드립니다.
+            실행 금액의 5~7%를 성공수수료로 떼는 방식과는 다릅니다.
+          </p>
+
+          {/* 성공수수료 0원 비교 */}
+          <div className="mx-auto mt-9 grid max-w-lg gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
+              <p className="text-xs font-black uppercase tracking-wide text-slate-400">업계 평균 성공수수료</p>
+              <p className="mt-2 text-3xl font-black tracking-tight text-slate-400 line-through decoration-red-400/70">5~7%</p>
+              <p className="mt-1 text-sm font-semibold text-slate-500">1억 실행 시 500~700만원</p>
+            </div>
+            <div className="rounded-2xl bg-blue-600 p-6 text-center shadow-lg shadow-blue-600/20">
+              <p className="text-xs font-black uppercase tracking-wide text-blue-200">미래 AI 랩 진단·전략</p>
+              <p className="mt-2 text-4xl font-black tracking-tight text-white">0원</p>
+              <p className="mt-1 text-sm font-semibold text-blue-100">비용은 50만원이 전부</p>
+            </div>
+          </div>
+
+          {/* 업무 범위 */}
+          <p className="mt-12 text-center text-xl font-black text-slate-900 sm:text-2xl">
+            50만원으로, <span className="text-blue-600">여기까지 해드립니다</span>
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {[
+              { icon: '🎯', t: '가장 적합한 기관·자금 판단', d: '어떤 자금이 가장 효율적인지, 승인 가능성이 높은 방향은 무엇인지 짚어드립니다.' },
+              { icon: '📄', t: '필요 서류 안내', d: '무엇을 어떻게 준비해야 하는지 빠짐없이 안내해 드립니다.' },
+              { icon: '📝', t: '사업계획서 작성', d: '대표님이 바로 신청만 하면 되는, “신청 가능한 상태”까지 만들어 드립니다.' },
+              { icon: '🔁', t: '다음엔 직접 하실 수 있게', d: '이후에는 대표님이 스스로 진행하실 수 있도록 방법까지 알려드립니다.' },
+            ].map((it) => (
+              <div key={it.t} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{it.icon}</span>
+                <p className="mt-3 text-[1.2rem] font-extrabold text-slate-900">{it.t}</p>
+                <p className="mt-1.5 text-[1.05rem] leading-relaxed text-slate-600">{it.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 3가지 진행 방식 (상품 A/B/C) + 비교표 — '왜 미래 AI 랩' 바로 앞 배치 ─────── */}
       <section className={`bg-white ${band}`}>
         <div className="mx-auto max-w-[1000px]">
           <p className={kicker}>진행 방식</p>
@@ -509,125 +628,6 @@ export default function FundingConsultingDetailPage() {
             ※ 성과보수(B 3%·C 5%)는 <b className="text-slate-500">추가 진행을 선택</b>하고 <b className="text-slate-500">실제로 자금이 조달된 경우에만</b> 발생하며, 기본 1회 컨설팅(500,000원)에는 자동으로 붙지 않습니다.
             조달 성공이나 특정 금액을 보장하지 않으며, 성과보수 발생 시점·조달금액 정의·상한 등 세부 기준은 개별 계약서에서 확정합니다.
           </p>
-        </div>
-      </section>
-
-      {/* 공감 (이런 고민) */}
-      <section className={`bg-slate-50 ${band}`}>
-        <div className={inner}>
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🤔</div>
-          <p className={kicker}>이런 고민, 있으셨죠?</p>
-          <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막하죠</span></h2>
-          <div className="mt-9 grid gap-4 sm:grid-cols-2">
-            {pains.map((p) => (
-              <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>?</span>
-                <p className="mt-3 text-[1.2rem] font-bold leading-snug text-slate-800 sm:text-[1.35rem]">“{p}”</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">
-            그런데 결정을 미루는 동안에도, <span className="text-red-600">비용은 계속 나가고 있습니다.</span>
-          </p>
-        </div>
-      </section>
-
-      {/* 정책자금이 낯선 분들을 위한 기초 설명 */}
-      <section className={`bg-blue-50/50 ${band}`}>
-        <div className={inner}>
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-white text-4xl shadow-sm">📘</div>
-          <p className={kicker}>정책자금이 처음이라면</p>
-          <h2 className={bigHead}>
-            정책자금, <span className="text-blue-600">일반 대출과 뭐가 다른가요?</span>
-          </h2>
-          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-            용어부터 낯설어 시작하기 어려우셨다면, 여기서부터 천천히 짚어보시죠.
-          </p>
-          <div className="mt-9 grid gap-4 sm:grid-cols-3">
-            {fundFeatures.map((f) => (
-              <div key={f.t} className="flex flex-col rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{f.icon}</span>
-                <p className="mt-3 text-[1.1rem] font-extrabold leading-snug text-slate-900">{f.t}</p>
-                <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{f.d}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mx-auto mt-8 max-w-lg text-center text-sm leading-relaxed text-slate-500">
-            정책자금도 심사 절차를 거치기 때문에, 먼저 <b className="text-slate-700">우리 회사에 맞는 방향인지 확인하는 것</b>이 첫 단계입니다.
-          </p>
-        </div>
-      </section>
-
-      {/* 손실 환기 — 미루면 잃는 것 */}
-      <section className={`bg-rose-50/60 ${band}`}>
-        <div className={inner}>
-          <p className="text-center text-sm font-black uppercase tracking-widest text-red-600">미루면 어떻게 될까요</p>
-          <h2 className={bigHead}>
-            미루는 동안에도 <span className="text-red-600">이자는 불어나고,</span><br /><span className="text-red-600">기회는 사라지고 있습니다</span>
-          </h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {losses.map((l) => (
-              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-2xl" aria-hidden>{l.icon}</span>
-                <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
-                <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
-            <p className="text-lg font-black leading-snug text-white sm:text-xl">
-              컨설팅은 받아야겠는데, <span className="text-amber-300">어디를 골라야 할지</span> 막막하시죠?
-            </p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">그래서 저희는 일하는 방식부터 다르게 잡았습니다.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 혜택 1 — 성공수수료 0원 */}
-      <section className={`bg-white ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>미래 AI 랩의 방식</p>
-          <h2 className={bigHead}>
-            “전부 대신 해드립니다”식 컨설팅,<br /><span className="text-blue-600">이제는 맞지 않는 방식입니다</span>
-          </h2>
-          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-            사업의 주인은 대표님입니다. 그래서 저희는 <b className="text-slate-900">반드시 필요한 부분만</b> 돕고,
-            신청 같은 나머지는 <b className="text-slate-900">대표님이 직접 하실 수 있도록</b> 만들어 드립니다.
-            실행 금액의 5~7%를 성공수수료로 떼는 방식과는 다릅니다.
-          </p>
-
-          {/* 성공수수료 0원 비교 */}
-          <div className="mx-auto mt-9 grid max-w-lg gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
-              <p className="text-xs font-black uppercase tracking-wide text-slate-400">업계 평균 성공수수료</p>
-              <p className="mt-2 text-3xl font-black tracking-tight text-slate-400 line-through decoration-red-400/70">5~7%</p>
-              <p className="mt-1 text-sm font-semibold text-slate-500">1억 실행 시 500~700만원</p>
-            </div>
-            <div className="rounded-2xl bg-blue-600 p-6 text-center shadow-lg shadow-blue-600/20">
-              <p className="text-xs font-black uppercase tracking-wide text-blue-200">미래 AI 랩 진단·전략</p>
-              <p className="mt-2 text-4xl font-black tracking-tight text-white">0원</p>
-              <p className="mt-1 text-sm font-semibold text-blue-100">비용은 50만원이 전부</p>
-            </div>
-          </div>
-
-          {/* 업무 범위 */}
-          <p className="mt-12 text-center text-xl font-black text-slate-900 sm:text-2xl">
-            50만원으로, <span className="text-blue-600">여기까지 해드립니다</span>
-          </p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {[
-              { icon: '🎯', t: '가장 적합한 기관·자금 판단', d: '어떤 자금이 가장 효율적인지, 승인 가능성이 높은 방향은 무엇인지 짚어드립니다.' },
-              { icon: '📄', t: '필요 서류 안내', d: '무엇을 어떻게 준비해야 하는지 빠짐없이 안내해 드립니다.' },
-              { icon: '📝', t: '사업계획서 작성', d: '대표님이 바로 신청만 하면 되는, “신청 가능한 상태”까지 만들어 드립니다.' },
-              { icon: '🔁', t: '다음엔 직접 하실 수 있게', d: '이후에는 대표님이 스스로 진행하실 수 있도록 방법까지 알려드립니다.' },
-            ].map((it) => (
-              <div key={it.t} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{it.icon}</span>
-                <p className="mt-3 text-[1.2rem] font-extrabold text-slate-900">{it.t}</p>
-                <p className="mt-1.5 text-[1.05rem] leading-relaxed text-slate-600">{it.d}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
