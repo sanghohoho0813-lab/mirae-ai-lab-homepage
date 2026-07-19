@@ -2,7 +2,6 @@
 // 다크 프리미엄 스타일: 필 배지(업종·대표님) + 초대형 "N억 확보" + 폰 목업 안 다크모드 카톡 대화.
 // 금액은 [[..]] 토큰 → 빨간 강조 박스로 렌더. 승인 완료 사례만 게시.
 // ⚠️ 대화는 개인정보 보호를 위해 회사명·세부 상황을 바꿔 정리(고지문 표기).
-import { useState } from 'react'
 import {
   fundingCases,
   moreFundingCases,
@@ -56,38 +55,39 @@ function DarkBubble({ line, ownerLabel, first }: { line: ChatLine; ownerLabel: s
   )
 }
 
-// 폰 목업 카드 하나
+// 폰 목업 + 설명란 카드 하나 (전체 기본 노출 · 카드 높이 압축)
 function PhoneCase({ c }: { c: FundingCase }) {
   const roomName = `${c.pill} ${c.owner.replace('님', '')}님`
   let firstClientSeen = false
   return (
-    <article className="flex flex-col items-center">
-      {/* 필 배지 */}
-      <span className="rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm font-bold text-slate-200">
-        {c.pill} {c.owner}
-      </span>
-      {/* 초대형 확보 금액 */}
-      <p className="mt-3 text-center text-5xl font-black tracking-tight text-white sm:text-6xl">
-        <span className="text-sky-400">{c.bigAmount}</span> 확보
-      </p>
-      <p className="mt-1.5 text-sm font-semibold text-slate-400">{c.amountLabel}</p>
+    <article className="flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+      {/* 상단: 업종 + 확보 금액 */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <span className="inline-block rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-bold text-slate-200">
+            {c.pill} {c.owner}
+          </span>
+          <p className="mt-2 text-sm font-medium text-slate-400">{c.size}</p>
+        </div>
+        <div className="shrink-0 text-right">
+          <p className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+            <span className="text-sky-400">{c.bigAmount}</span> 확보
+          </p>
+          <p className="mt-0.5 text-[11px] font-semibold text-slate-400">{c.amountLabel}</p>
+        </div>
+      </div>
 
-      {/* 폰 목업 */}
-      <div className="mt-5 w-full max-w-[300px] rounded-[2.2rem] bg-[#17181d] p-2 shadow-2xl ring-1 ring-white/10">
-        <div className="overflow-hidden rounded-[1.7rem] bg-[#0e0f13]">
-          {/* 채팅방 헤더 */}
-          <div className="flex items-center gap-2 border-b border-white/5 bg-[#17181d] px-3.5 py-3">
-            <span className="text-base text-slate-300" aria-hidden>‹</span>
-            <p className="min-w-0 flex-1 truncate text-[13px] font-bold text-white">{roomName}</p>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5" aria-hidden>
-              <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
-            </svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5" aria-hidden>
+      {/* 폰 목업 (압축 · 고객 결과 메시지) */}
+      <div className="mt-4 w-full max-w-[280px] self-center rounded-[1.8rem] bg-[#17181d] p-1.5 shadow-xl ring-1 ring-white/10">
+        <div className="overflow-hidden rounded-[1.4rem] bg-[#0e0f13]">
+          <div className="flex items-center gap-2 border-b border-white/5 bg-[#17181d] px-3 py-2.5">
+            <span className="text-sm text-slate-300" aria-hidden>‹</span>
+            <p className="min-w-0 flex-1 truncate text-[12px] font-bold text-white">{roomName}</p>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5" aria-hidden>
               <path d="M3 6h18M3 12h18M3 18h18" />
             </svg>
           </div>
-          {/* 대화 */}
-          <div className="space-y-2.5 px-3 py-4">
+          <div className="space-y-2 px-3 py-3.5">
             {c.chat.map((line, i) => {
               const first = line.from === 'client' && !firstClientSeen
               if (first) firstClientSeen = true
@@ -97,14 +97,12 @@ function PhoneCase({ c }: { c: FundingCase }) {
         </div>
       </div>
 
-      {/* 요약 캡션 */}
-      <p className="mt-4 max-w-[300px] text-center text-xs leading-relaxed text-slate-400">
-        <b className="text-slate-300">{c.size}</b> · {c.summary}
-      </p>
+      {/* 설명란 (진행 상황·검토 방향·결과) */}
+      <p className="mt-4 text-[13.5px] leading-relaxed text-slate-300">{c.summary}</p>
       {c.meta && c.meta.length > 0 && (
-        <div className="mt-2 flex flex-wrap justify-center gap-1.5">
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
           {c.meta.map((m) => (
-            <span key={m} className="rounded-md bg-white/10 px-2 py-1 text-[11px] font-semibold text-slate-300">{m}</span>
+            <span key={m} className="rounded-md bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-slate-300">{m}</span>
           ))}
         </div>
       )}
@@ -112,12 +110,7 @@ function PhoneCase({ c }: { c: FundingCase }) {
   )
 }
 
-const INITIAL_CASES = 3
-
 export default function FundingCasesSection() {
-  const [expanded, setExpanded] = useState(false)
-  const shown = expanded ? fundingCases : fundingCases.slice(0, INITIAL_CASES)
-  const hiddenCount = fundingCases.length - INITIAL_CASES
   return (
     <section className={`bg-[#060b16] ${band}`}>
       <div className="mx-auto max-w-5xl">
@@ -131,27 +124,15 @@ export default function FundingCasesSection() {
           제조·외식·플랫폼·광고·도소매 등 다양한 업종의 자금 전략을 설계했습니다.
         </p>
 
-        {/* 대표 사례 — 폰 목업 카톡 (처음엔 3개, '사례 더 보기'로 펼침) */}
-        <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2">
-          {shown.map((c) => (
+        {/* 대표 사례 — 폰 목업 + 설명란 (전체 기본 노출, 접기 없음) */}
+        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {fundingCases.map((c) => (
             <PhoneCase key={`${c.pill}-${c.amount}`} c={c} />
           ))}
         </div>
 
-        {!expanded && hiddenCount > 0 && (
-          <div className="mt-10 text-center">
-            <button
-              type="button"
-              onClick={() => setExpanded(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-white/10"
-            >
-              사례 {hiddenCount}개 더 보기 <span aria-hidden>▾</span>
-            </button>
-          </div>
-        )}
-
-        {/* 네이버 블로그 전체 사례 */}
-        <div className="mt-12 text-center">
+        {/* 네이버 블로그 전체 사례 (유지) */}
+        <div className="mt-10 text-center">
           <a
             href={BLOG_URL}
             target="_blank"

@@ -63,29 +63,34 @@ const plans: Plan[] = [
   {
     key: 'A',
     name: '기업진단·자금전략 1회 컨설팅',
-    target: '방향만 정리하고 직접 진행하실 대표님',
+    target: '이 단계만으로도 직접 준비할 수 있습니다',
     priceMain: '500,000원',
-    priceSub: '1회 · 성과보수 없음',
-    points: ['자금 가능성·전략 진단', '기관·시점·서류 방향 정리', '이후엔 대표님이 직접 진행'],
+    priceSub: '성과보수 없음 · 이 금액으로 종료 가능',
+    points: [
+      '기업 현황·자금 가능성 진단',
+      '우선 검토 기관·자금과 실행 순서 정리',
+      '보완 항목 + 준비자료·체크리스트 안내',
+      '직접 진행하셔도 추가 성과보수 없음',
+    ],
     cta: 'buy',
     ctaLabel: '1회 컨설팅 결제하기',
   },
   {
     key: 'B',
     name: '자금조달 전부 위임형',
-    target: '처음부터 끝까지 맡기고 싶은 대표님',
+    target: '자료 구성과 전체 진행까지 맡기고 싶을 때 선택',
     priceMain: '착수금 500,000원',
-    priceSub: '+ 실제 조달금액의 3%',
-    points: ['신청·서류·진행 전부 대행', '업계 성공수수료 5~7% 대비 절반', 'AX 프로그램 구축은 미포함'],
+    priceSub: '+ 실제 조달금액의 3% (선택 시)',
+    points: ['신청·서류·진행 전부 대행', '업계 성공수수료 5~7% 대비 낮은 편', 'AX 프로그램 구축은 미포함'],
     cta: 'inquiry',
     ctaLabel: '전부 위임형 진행 가능성 확인',
   },
   {
     key: 'C',
     name: 'AX 결합 성장자금형',
-    target: '자금조달과 업무혁신을 함께 준비할 기업',
+    target: '업무자동화·AI 시스템 도입까지 원할 때 선택',
     priceMain: '착수금 500,000원',
-    priceSub: '+ 실제 조달금액의 5% (성과보수 최대 1,500만원)',
+    priceSub: '+ 실제 조달금액의 5% · 성과보수 최대 1,500만원 (선택 시)',
     points: ['기업진단 · 업종별 비효율 분석', '프로토타입 · 핵심 MVP 구축', '선택적 AI 기능 · 현장 테스트 · 성과 측정'],
     cta: 'inquiry',
     ctaLabel: 'AX 결합형 적합성 확인',
@@ -102,8 +107,8 @@ const principles = [
 
 // 타사 비교 VS 테이블 — 확정 비방 없이 '일반적인 방식' 대비로 표현
 const vsRows = [
-  { k: '성공수수료', other: '실행액의 5~7%', ours: '0원 (전액대행도 3%)' },
-  { k: '비용 구조', other: '결과 따라 커지는 수수료', ours: '50만원 정찰제' },
+  { k: '성과보수', other: '실행액의 5~7% 고정', ours: '1회 진단은 없음 (위임 3%·AX 5% 선택)' },
+  { k: '기본 비용', other: '결과 따라 커지는 수수료', ours: '500,000원 정찰제' },
   { k: '진행 방식', other: '전부 대행 → 계속 의존', ours: '자립형 — 다음엔 직접' },
   { k: '세금 환급 검토', other: '별도 진행', ours: '경정청구 함께 검토' },
   { k: '자금 이후', other: '1회성 종료', ours: '인증·세무·노무 연계' },
@@ -115,6 +120,16 @@ const beyondFunding = [
   { icon: '💰', t: '숨은 세금부터 돌려받고 시작', d: '경정청구로 더 낸 세금을 먼저 확인합니다. 957만 원을 추가 환급받고 시작한 사례도 있습니다.' },
   { icon: '🏅', t: '자금 다음은 인증으로', d: '메인비즈·벤처인증으로 다음 자금과 지원사업 기반을 만듭니다.' },
   { icon: '🤝', t: '세무·노무까지 이어지는 관리', d: '세무사·법무사·노무사와 함께 자금 이후 문제까지 챙깁니다.' },
+]
+
+// 1회 컨설팅 후 남는 결과물 (기능명 나열이 아니라 고객이 받는 결과 중심)
+const resultItems = [
+  '기업 현황 진단 요약',
+  '우선 검토 자금·기관',
+  '준비자료 목록',
+  '보완해야 할 항목',
+  '실행 순서 정리',
+  '예상 질문과 대응 준비',
 ]
 
 // 미루면 잃는 것 (적당한 긴장 — 조작 통계·과도한 협박 금지)
@@ -283,7 +298,8 @@ export default function FundingConsultingDetailPage() {
               <span className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{SALE_PRICE}</span>
               <span className="pb-1 text-xl font-black leading-tight text-red-600 sm:pb-1.5 sm:text-2xl">+ 성공수수료 없음</span>
             </div>
-            <p className="mt-1.5 text-base font-black text-red-600">업계 평균 성공수수료 5~7% → 미래 AI 랩은 0원</p>
+            <p className="mt-1.5 text-base font-black text-red-600">업계 평균 성공수수료 5~7%, 저희는 받지 않습니다</p>
+            <p className="mt-1 text-sm font-semibold text-slate-500">이 1회 컨설팅만 이용하고 직접 진행하셔도 됩니다. 전체 대행·AX 구축은 선택사항입니다.</p>
             <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
             <ul className="mt-3 space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-base font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
               <li className="flex items-center gap-1.5 font-black text-red-600"><span aria-hidden>🚫</span> 성공수수료 없음 — 업계 평균 5~7%</li>
@@ -340,13 +356,21 @@ export default function FundingConsultingDetailPage() {
       {/* ── 3가지 진행 방식 (상품 A/B/C) — 신뢰 밴드 직후 배치 ─────── */}
       <section className={`bg-white ${band}`}>
         <div className="mx-auto max-w-[1000px]">
-          <p className={kicker}>진행 방식 선택</p>
-          <h2 className={bigHead}>필요한 만큼만,<br /><span className="text-blue-600">3가지 중에서 고르세요</span></h2>
-          <p className="mx-auto mt-4 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600">
-            직접 진행하실지, 전부 맡기실지, 자금과 업무혁신을 함께 준비하실지 — 상황에 맞게 고르시면 됩니다.
+          <p className={kicker}>진행 방식</p>
+          <h2 className={bigHead}>
+            우선 500,000원으로<br /><span className="text-blue-600">방향부터 정확히 정리합니다</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-center text-base font-medium leading-relaxed text-slate-600">
+            기업 현황과 자금 가능성을 점검하고, 어떤 기관·자금을 어떤 순서로 준비해야 하는지 정리합니다.
+            <b className="text-slate-900"> 이 단계만 이용하고 직접 진행하셔도 성과보수는 없습니다.</b>
+          </p>
+          {/* 오해 방지 — 3%·5% 는 선택형 확장 */}
+          <p className="mx-auto mt-3 max-w-xl rounded-xl bg-blue-50 px-4 py-2.5 text-center text-sm font-semibold text-blue-800">
+            전체 진행을 맡기거나 AX 시스템 구축까지 필요할 때만, 아래 성과보수형(B·C)을 <b>선택</b>하실 수 있습니다.
           </p>
 
-          <div className="mt-10 grid items-stretch gap-4 sm:grid-cols-3">
+          <p className="mt-10 text-center text-sm font-black uppercase tracking-widest text-slate-400">진단 후, 필요한 범위까지만 선택하세요</p>
+          <div className="mt-5 grid items-stretch gap-4 sm:grid-cols-3">
             {plans.map((p) => (
               <div
                 key={p.key}
@@ -414,7 +438,8 @@ export default function FundingConsultingDetailPage() {
             ))}
           </div>
           <p className="mx-auto mt-5 max-w-2xl text-center text-xs leading-relaxed text-slate-400">
-            ※ 3%·5% 성과보수는 <b className="text-slate-500">실제 조달된 금액</b>을 기준으로 하며, 조달 성공이나 특정 금액을 보장하지 않습니다. 진행 범위·성과보수 상한은 계약 시 협의합니다.
+            ※ 성과보수(B 3%·C 5%)는 <b className="text-slate-500">추가 진행을 선택</b>하고 <b className="text-slate-500">실제로 자금이 조달된 경우에만</b> 발생하며, 기본 1회 컨설팅(500,000원)에는 자동으로 붙지 않습니다.
+            조달 성공이나 특정 금액을 보장하지 않으며, 성과보수 발생 시점·조달금액 정의·상한 등 세부 기준은 개별 계약서에서 확정합니다.
           </p>
         </div>
       </section>
@@ -559,9 +584,9 @@ export default function FundingConsultingDetailPage() {
             ))}
           </div>
 
-          {/* VS 비교표 — 일반적인 컨설팅 방식과 직접 비교 */}
+          {/* 비교표 — 일반적인 컨설팅 방식과의 차이 */}
           <p className="mt-12 text-center text-xl font-black text-slate-900 sm:text-2xl">
-            비슷해 보인다면, <span className="text-blue-600">직접 비교해 보세요</span>
+            어디까지 맡길지에 따라<br className="sm:hidden" /> <span className="text-blue-600">진행 방식이 달라집니다</span>
           </p>
           <div className="mx-auto mt-6 max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
             {/* 헤더 */}
@@ -710,8 +735,8 @@ export default function FundingConsultingDetailPage() {
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>함께하면 좋은 이유</p>
-          <h2 className={bigHead}>미래 AI 랩과 함께하시면<br /><span className="text-blue-600">이런 점이 다릅니다</span></h2>
+          <p className={kicker}>단순 신청 지원과 다른 점</p>
+          <h2 className={bigHead}>신청서 작성보다<br /><span className="text-blue-600">넓게 봅니다</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -742,19 +767,17 @@ export default function FundingConsultingDetailPage() {
       {/* 제공 결과물 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>제공 항목</p>
-          <h2 className={bigHead}>이 상품으로 대표님이<br /><span className="text-blue-600">얻으시는 것들입니다</span></h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {pkg.deliverables.map((d, i) => (
-              <div key={d} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <span className="text-2xl font-black text-blue-600 sm:text-3xl">{`0${i + 1}`}</span>
-                <p className="mt-3 text-lg font-extrabold leading-snug text-slate-900">{d}</p>
+          <p className={kicker}>컨설팅 후 남는 결과물</p>
+          <h2 className={bigHead}>상담만 받고 끝나지 않고,<br /><span className="text-blue-600">정리된 자료로 남습니다</span></h2>
+          <p className="mx-auto mt-4 max-w-lg text-center text-base leading-relaxed text-slate-600">
+            대표님이 이후에 직접 실행하거나 내부에서 공유할 수 있도록, 현황부터 자금 방향과 실행 순서까지 정리해 드립니다.
+          </p>
+          <div className="mx-auto mt-9 grid max-w-2xl gap-3 sm:grid-cols-2">
+            {resultItems.map((d, i) => (
+              <div key={d} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-5 py-4">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-blue-600 text-xs font-black text-white">{`0${i + 1}`}</span>
+                <p className="text-[1.05rem] font-bold leading-snug text-slate-800">{d}</p>
               </div>
-            ))}
-          </div>
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {pkg.highlights.map((hi) => (
-              <span key={hi} className="rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">{hi}</span>
             ))}
           </div>
         </div>
