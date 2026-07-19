@@ -24,6 +24,7 @@ export type DetailCase = {
 
 export type DetailLoss = { icon: string; t: string; d: string }
 export type DetailAfter = { before: string; after: string }
+export type DetailBenefit = { icon: string; t: string; d: string }
 
 export type DetailContent = {
   emoji: string
@@ -46,6 +47,8 @@ export type DetailContent = {
   afters: DetailAfter[]
   /** 변화 섹션 마무리 한 줄 */
   afterClosing: string
+  /** 취득/진행 시 얻는 실질 혜택 — 초중반에 '와닿게' 나열 */
+  benefits: DetailBenefit[]
   reasons: string[]
   casesKicker: string
   casesTitle: string
@@ -88,6 +91,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '환수될까 봐 조마조마하던 사후관리', after: '요건까지 챙겨주니 마음이 편해진 사후관리' },
     ],
     afterClosing: '다음 채용부터는 지원금을 놓치지 않고, 인건비 부담을 확실히 줄일 수 있습니다.',
+    benefits: [
+      { icon: '💰', t: '신규채용 인건비 지원', d: '요건 충족 시 신규 채용 1인당 최대 1,440만원까지 인건비 부담을 덜 수 있습니다.' },
+      { icon: '🔁', t: '기존직원 고용유지 지원', d: '지금 함께하는 직원에 대해서도 최대 1,440만원 수준의 유지 지원을 검토합니다.' },
+      { icon: '👶', t: '육아·대체인력 지원', d: '육아휴직·대체인력 활용 시 최대 2,100만원까지 지원 가능성이 있습니다.' },
+      { icon: '🧾', t: '사후관리까지 관리', d: '지급 이후 요건 관리로 환수 위험을 줄여드립니다.' },
+    ],
     reasons: ['고용지원금 실무 경험', '기업마다 되는 제도만 매칭', '신청부터 사후관리까지 한 번에'],
     casesKicker: '실제로 이렇게 진행됩니다',
     casesTitle: '지원금, 놓치지 않고',
@@ -155,6 +164,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '뭘 내야 할지 몰라 쌓아두던 서류', after: '체크리스트 따라 하나씩 채우면 되는 준비' },
     ],
     afterClosing: '준비된 회사는 기회가 왔을 때 바로 움직입니다.',
+    benefits: [
+      { icon: '🏦', t: '정책자금 우대', d: '벤처확인 기업은 정책자금 심사에서 우대 대상이 되는 경우가 많습니다.' },
+      { icon: '➕', t: '정부지원사업 가점', d: '지원사업 서류심사에서 가점 요소로 활용될 수 있습니다.' },
+      { icon: '🧾', t: '세제 혜택 검토', d: '요건 충족 시 법인세 감면 등 세제 혜택 대상이 될 수 있습니다.' },
+      { icon: '📄', t: '특허출원 포함', d: '50만원 상당 특허출원이 패키지에 함께 포함됩니다.' },
+    ],
     reasons: ['벤처확인 실무 경험', '스토리 설계가 강점', '특허출원까지 원스톱'],
     casesKicker: '이런 결과물로 이어집니다',
     casesTitle: '벤처확인,',
@@ -221,6 +236,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '“돈 묶이면 어쩌지” 하던 막연한 불안', after: '회수 구조까지 보고 내리는 결정' },
     ],
     afterClosing: '올해 미리 검토해 두시면, 내년 세금 신고가 훨씬 가벼워집니다.',
+    benefits: [
+      { icon: '💸', t: '소득공제 가능성', d: '요건 충족 시 투자금에 대해 최대 4,400만원 규모의 소득공제 가능성이 있습니다.' },
+      { icon: '🔄', t: '투자금 회수 구조', d: '약 3년 후 투자금 회수 구조를 함께 설계하고 설명드립니다.' },
+      { icon: '📉', t: '종합소득세 절감', d: '소득 구간이 높을수록 공제로 인한 절감 효과가 커집니다.' },
+      { icon: '🏅', t: '벤처확인(투자유형)', d: '투자유형 벤처기업확인을 함께 준비합니다.' },
+    ],
     reasons: ['투자유형 구조 검토 경험', '내 소득 기준 맞춤 검토', '회수 구조까지 투명하게'],
     casesKicker: '구조를 이렇게 검토합니다',
     casesTitle: '소득공제,',
@@ -288,6 +309,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '검색해도 아무것도 없던 회사', after: '검색하면 믿음이 가는 회사' },
     ],
     afterClosing: '오늘 만든 홈페이지가 내일부터 대신 영업합니다.',
+    benefits: [
+      { icon: '🔎', t: '검색되는 회사', d: '회사명을 검색하면 나오는, 믿음이 가는 첫 화면을 만듭니다.' },
+      { icon: '📱', t: '모바일까지 완벽 대응', d: 'PC·태블릿·스마트폰 어디서 봐도 깨지지 않습니다.' },
+      { icon: '✉️', t: '24시간 문의 창구', d: '자는 동안에도 문의가 들어오는 동선을 설계합니다.' },
+      { icon: '🤝', t: '거래·심사 신뢰도', d: '거래처·지원자·심사자에게 주는 첫인상이 달라집니다.' },
+    ],
     reasons: ['반응형 제작 실무 경험', '소개 구조까지 같이 설계', '문의 동선 중심 구성'],
     casesKicker: '이렇게 만들어 드립니다',
     casesTitle: '홈페이지,',
@@ -341,6 +368,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '감으로 내리던 결정', after: '숫자 보고 내리는 결정' },
     ],
     afterClosing: '매일 반복하던 정리 업무가 사라지면, 대표님의 퇴근 시간이 실제로 빨라집니다.',
+    benefits: [
+      { icon: '⏱️', t: '반복업무 시간 절감', d: '매일 하던 입력·정리·보고를 시스템이 대신 처리합니다.' },
+      { icon: '💸', t: '인건비·실수 감소', d: '누락·오타·중복 입력을 줄여 그만큼 비용을 아낍니다.' },
+      { icon: '📱', t: '어디서든 확인', d: 'PC·모바일로 회사 현황을 바로 확인할 수 있습니다.' },
+      { icon: '🎯', t: '데이터 기반 결정', d: '감이 아니라 정리된 숫자를 보고 결정하게 됩니다.' },
+    ],
     reasons: ['AI·자동화 구축 경험', '업무를 직접 보고 설계', '회사 상황에 맞춘 자동화 범위'],
     casesKicker: '이렇게 바뀝니다',
     casesTitle: '회사 운영,',
@@ -394,6 +427,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '취소될까 봐 불안하던 관리', after: '월 2만원으로 챙겨지는 사후관리' },
     ],
     afterClosing: '다음 공고가 떴을 때는, 이미 준비된 회사가 되어 있을 겁니다.',
+    benefits: [
+      { icon: '🧾', t: 'R&D 세액공제', d: '요건 충족 시 연구개발비에 대한 세액공제 대상이 될 수 있습니다.' },
+      { icon: '➕', t: '정부지원사업 가점', d: '지원사업 심사에서 가점 요소로 활용될 수 있습니다.' },
+      { icon: '🏦', t: '정책자금 우대', d: '정책자금 심사에서 우대 가능성이 생깁니다.' },
+      { icon: '🔬', t: '연구개발 체계화', d: '흩어진 연구 활동을 조직 체계로 정리합니다.' },
+    ],
     reasons: ['연구소 설립 실무 경험', '요건·인력 기준 점검', '사후관리까지 운영'],
     casesKicker: '이런 결과물로 이어집니다',
     casesTitle: '연구소 설립,',
@@ -460,6 +499,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '엄두가 안 나던 문서화', after: '심사까지 같이 준비된 문서' },
     ],
     afterClosing: '다음 입찰에선, 서류 때문에 밀리지 않도록 준비해 두세요.',
+    benefits: [
+      { icon: '🏢', t: '대기업 협력사 등록', d: '협력사 등록에서 요구되는 인증 요건에 대응합니다.' },
+      { icon: '🏛️', t: '공공입찰 대응', d: '입찰 서류의 가점·요건 항목에 활용됩니다.' },
+      { icon: '🌏', t: '수출·바이어 요구', d: '해외 바이어가 요구하는 인증에 대응합니다.' },
+      { icon: '✅', t: '사내 시스템 정비', d: '품질·환경·안전 경영 체계를 함께 정비합니다.' },
+    ],
     reasons: ['ISO 심사원 실무 경험', '요구사항 기반 문서화', '1·2·3종 골라서 진행'],
     casesKicker: '이런 결과물로 이어집니다',
     casesTitle: 'ISO 인증,',
@@ -526,6 +571,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '혼자 헤매던 신청 준비', after: '절차대로 안내받는 준비' },
     ],
     afterClosing: '다음 심사는 가점 요소를 갖춘 상태로 시작하세요. 출발점부터 달라집니다.',
+    benefits: [
+      { icon: '🏦', t: '정책자금 우대평가', d: '경영혁신형 인증으로 우대평가 가능성이 생깁니다.' },
+      { icon: '➕', t: '지원사업 선정 가점', d: '정부지원사업 심사에서 가점 요소로 활용됩니다.' },
+      { icon: '🤝', t: '기업 신뢰도 상승', d: '대외적으로 검증된 경영혁신 기업으로 인정받습니다.' },
+      { icon: '🔗', t: '이노비즈 병행 검토', d: '기술혁신형(이노비즈)과 함께 검토할 수 있습니다.' },
+    ],
     reasons: ['기업인증 실무 경험', '평가 항목 기반 정리', '이노비즈 병행 검토 가능'],
     casesKicker: '이런 결과물로 이어집니다',
     casesTitle: '메인비즈,',
@@ -579,6 +630,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '막막하던 평가 항목', after: '보완점이 정리된 준비' },
     ],
     afterClosing: '확인서 한 장이 생기면, 거래처·심사기관과의 대화가 훨씬 수월해집니다.',
+    benefits: [
+      { icon: '🏦', t: '정책자금 우대', d: '기술혁신형 인증으로 정책자금 우대 가능성이 생깁니다.' },
+      { icon: '➕', t: '지원사업 선정 가점', d: '정부지원사업 심사에서 가점 요소로 활용됩니다.' },
+      { icon: '🔬', t: '기술력 증명', d: '말로만 설명하던 기술력을 서류 위에서 증명합니다.' },
+      { icon: '🔗', t: '메인비즈 병행 검토', d: '경영혁신형(메인비즈)과 함께 검토할 수 있습니다.' },
+    ],
     reasons: ['기업인증 실무 경험', '기술혁신 항목 정리', '메인비즈 병행 검토 가능'],
     casesKicker: '이런 결과물로 이어집니다',
     casesTitle: '이노비즈,',
@@ -632,6 +689,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '사업 밖 일에 뺏기던 에너지', after: '사업에만 쓰는 대표님의 시간' },
     ],
     afterClosing: '복잡한 준비는 저희가 맡습니다. 대표님은 아낀 시간을 온전히 사업에만 쓰시면 됩니다.',
+    benefits: [
+      { icon: '🗺️', t: '통합 성장 설계', d: '자금·인증·홈페이지·AI를 하나의 로드맵으로 묶습니다.' },
+      { icon: '⏱️', t: '대표님 시간 확보', d: '흩어진 일을 전담이 맡아, 사업에만 집중하실 수 있습니다.' },
+      { icon: '📱', t: '회사를 한눈에', d: '업무 자동화로 회사를 스마트폰에서 관리합니다.' },
+      { icon: '🏦', t: '법인 자금·절세 구조', d: '세금 부담은 줄이며 자금을 합법적으로 정리합니다(전문 자격사 협업).' },
+    ],
     reasons: ['자금·인증·시스템 통합 설계', '회사 맞춤 우선순위', '전담 원스톱 관리'],
     casesKicker: '이렇게 설계됩니다',
     casesTitle: '성장 로드맵,',
@@ -687,6 +750,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '기억에 의존하던 회의 결정', after: '기록으로 남아 실행되는 회의' },
     ],
     afterClosing: '어디에 있든 회사가 손안에 보이면, 대표님의 결정이 훨씬 빨라집니다.',
+    benefits: [
+      { icon: '📱', t: '회사를 손안에', d: 'HR·CRM·ERP·회의 기록을 한 화면으로 모읍니다.' },
+      { icon: '⏱️', t: '자료 찾는 시간 제거', d: '흩어져 있던 회사 정보를 하나로 연결합니다.' },
+      { icon: '⚡', t: '빠른 의사결정', d: '실시간 현황을 보고 바로 결정할 수 있습니다.' },
+      { icon: '🧩', t: '단계적 구축', d: '급한 것부터 순서대로 필요한 만큼 구축합니다.' },
+    ],
     reasons: ['자체 시스템 구축·운영 경험', '업무 흐름 기반 설계', '필요한 것부터 단계 구축'],
     casesKicker: '이렇게 연결됩니다',
     casesTitle: '회사 전체를',
@@ -740,6 +809,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '이직 얘기에 늘 불안하던 마음', after: '오래 다닐 이유가 생긴 직원들' },
     ],
     afterClosing: '회사 세금도 직원 세금도 줄이면서, 직원이 오래 다니고 싶은 회사가 됩니다.',
+    benefits: [
+      { icon: '🧾', t: '법인세 절감', d: '출연금이 손금으로 인정되어 법인세 부담이 줄어듭니다(요건 충족 시).' },
+      { icon: '🎁', t: '직원 비과세 복지', d: '요건 충족 시 근로소득으로 보지 않는 복지 혜택을 제공합니다.' },
+      { icon: '🤝', t: '장기 재직 유도', d: '오래 다니고 싶은 복지 체계로 이탈을 줄입니다.' },
+      { icon: '🏛️', t: '공동기금 정부 연계', d: '중소기업 공동기금은 정부 지원 연계를 검토할 수 있습니다.' },
+    ],
     reasons: ['기금 설립 절차 실무 지원', '노무·세무 전문 자격사 협업', '설립 후 운영까지 안내'],
     casesKicker: '이렇게 설계됩니다',
     casesTitle: '근로복지기금,',
@@ -794,6 +869,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '심사 때마다 걸리던 재무제표', after: '깨끗하게 정리되어 가는 장부' },
     ],
     afterClosing: '정리 계획이 서면, 결산과 대출 심사가 더 이상 두렵지 않습니다.',
+    benefits: [
+      { icon: '📉', t: '인정이자 부담 완화', d: '방치 시 매년 쌓이는 인정이자 부담을 줄여갑니다.' },
+      { icon: '🧾', t: '세금 분산 정리', d: '한 번에 몰리는 상여처분 세부담을 나눠서 정리합니다.' },
+      { icon: '🏦', t: '재무 신뢰도 개선', d: '대출·정책자금 심사에 유리한 장부로 정리합니다.' },
+      { icon: '🔁', t: '재발 방지', d: '발생 원인을 잡아 다시 쌓이지 않게 관리합니다.' },
+    ],
     reasons: ['가지급금 정리 설계 경험', '세무 전문 자격사 협업', '실행부터 재발 방지까지'],
     casesKicker: '이렇게 정리됩니다',
     casesTitle: '가지급금,',
@@ -847,6 +928,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '해마다 커지던 승계 걱정', after: '관리되기 시작한 주식 가치' },
     ],
     afterClosing: '연도별 계획이 생기면, 법인에 쌓인 돈이 대표님의 계획된 자산이 됩니다.',
+    benefits: [
+      { icon: '🧾', t: '세부담 시뮬레이션', d: '배당·급여·퇴직금별 세금을 우리 회사 숫자로 비교합니다.' },
+      { icon: '📅', t: '연도별 분산', d: '나눠서 가져와 높은 세율 구간을 피합니다.' },
+      { icon: '📉', t: '주식가치 관리', d: '승계·양도 부담까지 함께 관리합니다.' },
+      { icon: '🤝', t: '전문 자격사 협업', d: '세무사 등과 함께 안전하게 진행합니다.' },
+    ],
     reasons: ['처분 조합 설계 경험', '세무 전문 자격사 협업', '연도별 실행 관리'],
     casesKicker: '이렇게 설계됩니다',
     casesTitle: '이익잉여금,',
@@ -900,6 +987,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '사후관리 의무에 대한 불안', after: '의무사항까지 관리되는 진행' },
     ],
     afterClosing: '승계 계획이 서면, 물려주는 분도 물려받는 분도 마음이 놓입니다.',
+    benefits: [
+      { icon: '🧾', t: '증여세 과세특례', d: '요건 충족 시 증여세 부담을 크게 줄일 수 있습니다.' },
+      { icon: '📅', t: '계획적 지분 이전', d: '누구에게 언제 넘길지 승계 일정을 미리 설계합니다.' },
+      { icon: '🛡️', t: '사후관리 요건 관리', d: '특례 유지에 필요한 업종·고용 요건까지 관리합니다.' },
+      { icon: '🤝', t: '전문 자격사 협업', d: '세무사 등과 함께 진행합니다.' },
+    ],
     reasons: ['승계 구조 설계 경험', '세무 전문 자격사 협업', '사후관리 요건까지 관리'],
     casesKicker: '이렇게 준비됩니다',
     casesTitle: '가업승계,',
@@ -953,6 +1046,12 @@ export const detailContent: Record<string, DetailContent> = {
       { before: '막연하던 세무 리스크 불안', after: '전문가 검토를 거친 실행 결정' },
     ],
     afterClosing: '적용 여부를 확인하는 것만으로도, 법인 자금 회수의 선택지가 정리됩니다.',
+    benefits: [
+      { icon: '💸', t: '배우자 증여공제 활용', d: '증여재산공제를 활용한 자금 회수 구조를 검토합니다.' },
+      { icon: '🔄', t: '자기주식 소각 설계', d: '자기주식 취득·소각 절차를 설계합니다.' },
+      { icon: '🛡️', t: '리스크 사전 검토', d: '적용 가능성과 세무 리스크를 먼저 확인합니다.' },
+      { icon: '🤝', t: '전문 자격사 협업', d: '세무사 등과 함께 안전하게 진행합니다.' },
+    ],
     reasons: ['회수 구조 설계 경험', '세무 전문 자격사 협업', '사전 검토 후 진행 결정'],
     casesKicker: '이렇게 검토됩니다',
     casesTitle: '이익소각,',
@@ -1005,6 +1104,11 @@ export function getDetailContent(id: string, name: string): DetailContent {
       afterLine: '진행하고 나면',
       afterAccent: '이런 결과를 얻게 됩니다',
       afterClosing: '방향이 정해지면 준비 속도는 훨씬 빨라집니다.',
+    benefits: [
+      { icon: '🎯', t: '우리 회사 맞춤 방향', d: '회사 상황에 맞는 준비 방향을 먼저 정리해 드립니다.' },
+      { icon: '🗂️', t: '순서가 잡힌 준비', d: '무엇부터 해야 할지 우선순위를 정해드립니다.' },
+      { icon: '🤝', t: '전문가와 함께', d: '필요한 자료와 절차를 함께 준비합니다.' },
+    ],
       reasons: DEFAULT_REASONS,
       casesKicker: '이렇게 진행됩니다',
       casesTitle: '진행 방식을',

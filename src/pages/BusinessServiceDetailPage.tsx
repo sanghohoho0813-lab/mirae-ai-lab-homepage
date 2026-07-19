@@ -390,6 +390,28 @@ export default function BusinessServiceDetailPage() {
         </div>
       </section>
 
+      {/* 핵심 혜택 — 취득/진행 시 얻는 실질 혜택(초중반 · 와닿게 나열) */}
+      <section className={`bg-white ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>핵심 혜택</p>
+          <h2 className={bigHead}>정리하면,<br /><span className={accentText}>이런 혜택이 있습니다</span></h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {content.benefits.map((b) => (
+              <div key={b.t} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white text-2xl shadow-sm ring-1 ring-slate-200" aria-hidden>{b.icon}</span>
+                <div className="min-w-0">
+                  <p className="text-[1.15rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
+                  <p className="mt-1.5 text-[1rem] leading-relaxed text-slate-600">{b.d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-6 max-w-lg text-center text-sm leading-relaxed text-slate-400">
+            ※ 위 혜택은 기업 상황·요건 충족·기관 심사에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.
+          </p>
+        </div>
+      </section>
+
       {/* 변화 — 진행 후 달라지는 것 (Before → After) */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
