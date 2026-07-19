@@ -100,6 +100,19 @@ export const fundingCases: FundingCase[] = [
     meta: ['진행 약 5주', '기록상 금리 연 4%대'],
   },
   {
+    pill: '배달 플랫폼',
+    owner: '김대표님',
+    size: '창업 초기 스타트업 · 신용보증 거절 이력',
+    summary: '신용보증기금에서 한 차례 거절된 뒤라 추가 조달이 막막한 상황이었습니다. 거절 사유를 다시 정리하고 기관을 전환해, 지역신용보증재단으로 방향을 바꿔 진행했습니다.',
+    bigAmount: '1억',
+    amount: '1억 원',
+    amountLabel: '지역신용보증재단 승인',
+    chat: [
+      { from: 'client', text: '신보에서 거절돼 반쯤 포기했는데, 재단에서 [[1억]] 승인 나왔습니다!', time: '오후 2:30' },
+      { from: 'client', text: '기관을 바꿔 다시 도전한 게 통했네요. 감사합니다.', time: '오후 2:33' },
+    ],
+  },
+  {
     pill: '분식 프랜차이즈',
     owner: '정대표님',
     size: '5년 운영 매장 · 노후 시설 리모델링 필요',
@@ -112,6 +125,19 @@ export const fundingCases: FundingCase[] = [
       { from: 'client', text: '꼼꼼히 챙겨주셔서 감사합니다.', time: '오후 1:42' },
     ],
     meta: ['숨은 세금 957만 원 환급부터 시작'],
+  },
+  {
+    pill: '드라이아이스 도소매·임가공',
+    owner: '윤대표님',
+    size: '연매출 약 20억 · 도소매·임가공 병행',
+    summary: '보증부 자금 조달과 함께 고용 구조까지 정비가 필요한 상황이었습니다. 자금 방향을 먼저 잡고, 고용지원금을 함께 활용할 수 있게 구조를 정리해 진행했습니다.',
+    bigAmount: '7천만',
+    amount: '7,000만 원',
+    amountLabel: '보증부 자금 + 고용지원금 구조 정비',
+    chat: [
+      { from: 'client', text: '보증부 자금 [[7,000만]] 나왔고, 고용지원금 구조도 정리됐습니다!', time: '오전 11:20' },
+      { from: 'client', text: '자금이랑 고용까지 같이 봐주셔서 감사해요.', time: '오전 11:22' },
+    ],
   },
   {
     pill: '외식 프랜차이즈',
@@ -140,14 +166,6 @@ export const fundingCases: FundingCase[] = [
       { from: 'client', text: '현장까지 직접 와주셔서 감사했습니다.', time: '오후 6:23' },
     ],
   },
-]
-
-export type MoreCase = { industry: string; result: string }
-
-// 폰 목업으로 다 담기 어려운 나머지 업종 — 승인 공유방 리스트로 breadth 표현
-export const moreFundingCases: MoreCase[] = [
-  { industry: '배달 플랫폼 스타트업', result: '신보 거절 후 기관 전환, 지역신용보증재단 1억 원' },
-  { industry: '드라이아이스 도소매·임가공 (연매출 20억 원)', result: '보증부 자금 7,000만 원 + 고용지원금 구조 정비' },
 ]
 
 export const CASES_DISCLAIMER =

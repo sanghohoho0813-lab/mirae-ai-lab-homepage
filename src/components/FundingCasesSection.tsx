@@ -4,7 +4,6 @@
 // ⚠️ 대화는 개인정보 보호를 위해 회사명·세부 상황을 바꿔 정리(고지문 표기).
 import {
   fundingCases,
-  moreFundingCases,
   CASES_DISCLAIMER,
   type ChatLine,
   type FundingCase,
@@ -118,7 +117,7 @@ export default function FundingCasesSection() {
           기업마다 막힌 이유가 달랐고,<br />해결 순서도 달랐습니다
         </h2>
         <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-slate-400 sm:text-lg">
-          매출 증빙이 부족한 초기기업부터 연매출 20억 원대 기업까지,
+          매출 증빙이 부족한 초기기업부터 매출 수십억 원대 기업까지,
           제조·외식·플랫폼·광고·도소매 등 다양한 업종의 자금 전략을 설계했습니다.
         </p>
 
@@ -141,27 +140,6 @@ export default function FundingCasesSection() {
             네이버 블로그에서 성공사례 전체 보기 →
           </a>
           <p className="mt-2.5 text-xs font-medium text-slate-400">진행 과정·승인 결과를 블로그에 상세히 공개하고 있습니다.</p>
-        </div>
-
-        {/* 더 다양한 사례 — 승인 공유방 */}
-        <div className="mt-16">
-          <h3 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">더 다양한 사례</h3>
-          <div className="mt-5 rounded-3xl bg-white/5 p-4 ring-1 ring-white/10 sm:p-6">
-            <p className="mb-4 text-center text-xs font-bold text-slate-400"># 정책자금 승인 공유방</p>
-            <div className="space-y-4">
-              {moreFundingCases.map((m) => (
-                <div key={m.industry} className="flex items-start gap-2">
-                  <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-[12px] bg-[#2c2e36] text-base" aria-hidden>🏢</span>
-                  <div className="min-w-0">
-                    <p className="mb-1 text-xs font-semibold text-slate-400">{m.industry}</p>
-                    <p className="max-w-[24rem] rounded-2xl rounded-tl-md bg-[#26282e] px-3.5 py-2.5 text-[15px] font-semibold leading-relaxed text-slate-100 shadow-sm">
-                      <span className="text-sky-400">{m.result}</span> 승인됐어요!
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* 고지문 */}
