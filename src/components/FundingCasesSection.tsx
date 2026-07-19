@@ -6,11 +6,9 @@ import {
   fundingCases,
   moreFundingCases,
   CASES_DISCLAIMER,
-  CASES_CTA,
   type ChatLine,
   type FundingCase,
 } from '../data/fundingCases'
-import { inquiryUrl } from '../config/commerce'
 
 const band = 'px-5 py-10 sm:py-14'
 const BLOG_URL = 'https://blog.naver.com/ksh90813'
@@ -60,7 +58,7 @@ function PhoneCase({ c }: { c: FundingCase }) {
   const roomName = `${c.pill} ${c.owner.replace('님', '')}님`
   let firstClientSeen = false
   return (
-    <article className="flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+    <article className="flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
       {/* 상단: 업종 + 확보 금액 */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
@@ -87,7 +85,7 @@ function PhoneCase({ c }: { c: FundingCase }) {
               <path d="M3 6h18M3 12h18M3 18h18" />
             </svg>
           </div>
-          <div className="space-y-2 px-3 py-3.5">
+          <div className="space-y-1.5 px-3 py-3">
             {c.chat.map((line, i) => {
               const first = line.from === 'client' && !firstClientSeen
               if (first) firstClientSeen = true
@@ -125,7 +123,7 @@ export default function FundingCasesSection() {
         </p>
 
         {/* 대표 사례 — 폰 목업 + 설명란 (전체 기본 노출, 접기 없음) */}
-        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
           {fundingCases.map((c) => (
             <PhoneCase key={`${c.pill}-${c.amount}`} c={c} />
           ))}
@@ -170,21 +168,6 @@ export default function FundingCasesSection() {
         <p className="mt-10 rounded-2xl bg-white/5 p-5 text-sm leading-relaxed text-slate-400 ring-1 ring-white/10">
           {CASES_DISCLAIMER}
         </p>
-
-        {/* 상담 CTA */}
-        <div className="mt-12 rounded-3xl bg-white/5 p-8 text-center ring-1 ring-white/10 sm:p-10">
-          <h3 className="text-xl font-black tracking-tight text-white sm:text-2xl">{CASES_CTA.title}</h3>
-          <p className="mx-auto mt-3 max-w-lg text-base leading-relaxed text-slate-400">{CASES_CTA.desc}</p>
-          <a
-            href={inquiryUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-7 py-4 text-base font-black text-slate-900 shadow-lg transition-transform hover:-translate-y-0.5"
-          >
-            {CASES_CTA.button}
-            <span aria-hidden>→</span>
-          </a>
-        </div>
       </div>
     </section>
   )

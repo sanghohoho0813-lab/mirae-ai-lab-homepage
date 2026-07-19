@@ -152,9 +152,3 @@ export const moreFundingCases: MoreCase[] = [
 
 export const CASES_DISCLAIMER =
   '상담 내용은 개인정보 보호를 위해 회사명·지역·세부 상황 일부를 바꿔 정리했습니다. 정책자금의 승인 여부와 한도는 기업의 재무상태, 신용, 업력, 자금 용도 및 신청 시점의 제도에 따라 달라질 수 있습니다.'
-
-export const CASES_CTA = {
-  title: '우리 회사는 어느 기관부터 봐야 할까요?',
-  desc: '매출만 보는 것이 아니라 업력, 신용, 기존 대출, 자금 용도와 성장계획을 함께 확인합니다.',
-  button: '정책자금 가능성 상담하기',
-}

@@ -51,10 +51,11 @@ type PlanCta = 'buy' | 'inquiry'
 type Plan = {
   key: 'A' | 'B' | 'C'
   name: string
-  target: string
+  label: string // 카드 상단 배지 (성과보수 없음 / 선택형 / 선별 진행)
   priceMain: string
   priceSub: string
-  points: string[]
+  points: string[] // 핵심 포함범위 (최대 5개)
+  recommend: string // 카드 하단 추천 대상 한 줄
   cta: PlanCta
   ctaLabel: string
   featured?: boolean
@@ -63,39 +64,63 @@ const plans: Plan[] = [
   {
     key: 'A',
     name: '기업진단·자금전략 1회 컨설팅',
-    target: '이 단계만으로도 직접 준비할 수 있습니다',
+    label: '성과보수 없음',
     priceMain: '500,000원',
-    priceSub: '성과보수 없음 · 이 금액으로 종료 가능',
+    priceSub: '이 금액으로 종료 가능',
     points: [
       '기업 현황·자금 가능성 진단',
       '우선 검토 기관·자금과 실행 순서 정리',
       '보완 항목 + 준비자료·체크리스트 안내',
-      '직접 진행하셔도 추가 성과보수 없음',
     ],
+    recommend: '방향만 정리하고 직접 진행하려는 경우',
     cta: 'buy',
     ctaLabel: '1회 컨설팅 결제하기',
   },
   {
     key: 'B',
     name: '자금조달 전부 위임형',
-    target: '자료 구성과 전체 진행까지 맡기고 싶을 때 선택',
+    label: '선택형',
     priceMain: '착수금 500,000원',
-    priceSub: '+ 실제 조달금액의 3% (선택 시)',
+    priceSub: '+ 조달액의 3% (선택 시)',
     points: ['신청·서류·진행 전부 대행', '업계 성공수수료 5~7% 대비 낮은 편', 'AX 프로그램 구축은 미포함'],
+    recommend: '자료 준비와 전체 진행을 맡기려는 경우',
     cta: 'inquiry',
-    ctaLabel: '전부 위임형 진행 가능성 확인',
+    ctaLabel: '전부 위임형 가능성 확인',
   },
   {
     key: 'C',
     name: 'AX 결합 성장자금형',
-    target: '업무자동화·AI 시스템 도입까지 원할 때 선택',
+    label: '선별 진행',
     priceMain: '착수금 500,000원',
-    priceSub: '+ 실제 조달금액의 5% · 성과보수 최대 1,500만원 (선택 시)',
+    priceSub: '+ 조달액의 5% · 최대 1,500만원 (선택 시)',
     points: ['기업진단 · 업종별 비효율 분석', '프로토타입 · 핵심 MVP 구축', '선택적 AI 기능 · 현장 테스트 · 성과 측정'],
+    recommend: '자금조달과 실제 업무혁신을 함께 추진하려는 경우',
     cta: 'inquiry',
     ctaLabel: 'AX 결합형 적합성 확인',
     featured: true,
   },
+]
+
+// A/B/C 빠른 비교표 — 카드(대상·가격·포함범위)와 역할 분리, 상품 차이만 압축.
+// 시각 우선순위: 1) 500,000원 기본 진단 2) 맡기는 범위 3) 선택형 성과보수 조건. (표 안에는 CTA 없음)
+type CompareCell = string | { main: string; sub: string }
+const compareCols: { key: 'A' | 'B' | 'C'; name: string; badge: string; featured?: boolean }[] = [
+  { key: 'A', name: '기본 진단', badge: '성과보수 없음', featured: true },
+  { key: 'B', name: '전부 위임형', badge: '선택형' },
+  { key: 'C', name: 'AX 결합형', badge: '선별 진행' },
+]
+const compareRows: { label: string; cells: CompareCell[] }[] = [
+  { label: '기본 비용', cells: ['500,000원', '착수금 500,000원', '착수금 500,000원'] },
+  {
+    label: '성과보수',
+    cells: [
+      { main: '없음', sub: '500,000원으로 종료 가능' },
+      { main: '조달액의 3%', sub: '전체 진행 시' },
+      { main: '조달액의 5%', sub: 'AX 포함 · 최대 1,500만원' },
+    ],
+  },
+  { label: '맡기는 범위', cells: ['방향·순서 정리', '신청·서류 전체 대행', '전체 진행 + AX 구축'] },
+  { label: '업무자동화·AI', cells: ['—', '미포함', '포함'] },
 ]
 
 // 정직한 진행 원칙 3가지 — '아무나 받지 않는' 셀렉티브 포지셔닝 (과장 없이)
@@ -105,21 +130,11 @@ const principles = [
   { n: '03', t: '거절도 전략으로 만듭니다', d: '거절 사유를 정확히 파악해 기관·시점·서류를 바꿔 다시 도전합니다.' },
 ]
 
-// 타사 비교 VS 테이블 — 확정 비방 없이 '일반적인 방식' 대비로 표현
-const vsRows = [
-  { k: '성과보수', other: '실행액의 5~7% 고정', ours: '1회 진단은 없음 (위임 3%·AX 5% 선택)' },
-  { k: '기본 비용', other: '결과 따라 커지는 수수료', ours: '500,000원 정찰제' },
-  { k: '진행 방식', other: '전부 대행 → 계속 의존', ours: '자립형 — 다음엔 직접' },
-  { k: '세금 환급 검토', other: '별도 진행', ours: '경정청구 함께 검토' },
-  { k: '자금 이후', other: '1회성 종료', ours: '인증·세무·노무 연계' },
-  { k: '진단 근거', other: '경험과 감', ours: '자체 SaaS 데이터 진단' },
-]
-
-// "정책자금만 받고 끝나지 않습니다" — 자금 이후까지 잇는 통합 관리
+// "단순 신청 지원과 다른 점" — 담백한 3가지 (과장 표현 없이)
 const beyondFunding = [
-  { icon: '💰', t: '숨은 세금부터 돌려받고 시작', d: '경정청구로 더 낸 세금을 먼저 확인합니다. 957만 원을 추가 환급받고 시작한 사례도 있습니다.' },
-  { icon: '🏅', t: '자금 다음은 인증으로', d: '메인비즈·벤처인증으로 다음 자금과 지원사업 기반을 만듭니다.' },
-  { icon: '🤝', t: '세무·노무까지 이어지는 관리', d: '세무사·법무사·노무사와 함께 자금 이후 문제까지 챙깁니다.' },
+  { icon: '🔍', t: '자금 가능성만 보지 않습니다', d: '현재 재무·매출 현황과 보완이 필요한 부분을 함께 정리해, 이번 자금뿐 아니라 다음 준비까지 이어지도록 합니다.' },
+  { icon: '🌱', t: '필요하면 성장 요소로 연결합니다', d: '상황에 따라 인증·특허·세금 환급·AX(업무자동화) 등 성장에 필요한 요소를 함께 검토합니다.' },
+  { icon: '🔁', t: '결과 이후까지 이어갑니다', d: '자금 조달 이후의 운영·유지관리와 다음 자금 시점까지 함께 관리합니다.' },
 ]
 
 // 1회 컨설팅 후 남는 결과물 (기능명 나열이 아니라 고객이 받는 결과 중심)
@@ -380,12 +395,17 @@ export default function FundingConsultingDetailPage() {
               >
                 <div className="flex items-center justify-between">
                   <span className={`grid h-8 w-8 place-items-center rounded-lg text-sm font-black ${p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}>{p.key}</span>
-                  {p.featured && <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700">성장 결합형</span>}
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-black ${
+                      p.key === 'A' ? 'bg-emerald-50 text-emerald-700' : p.featured ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {p.label}
+                  </span>
                 </div>
                 <h3 className="mt-4 text-[1.25rem] font-black leading-snug tracking-tight text-slate-900">{p.name}</h3>
-                <p className="mt-1 text-sm font-medium text-slate-500">{p.target}</p>
 
-                <div className="mt-5 border-y border-slate-100 py-4">
+                <div className="mt-4 border-y border-slate-100 py-4">
                   <p className={`text-2xl font-black tracking-tight ${p.featured ? 'text-blue-700' : 'text-slate-900'}`}>{p.priceMain}</p>
                   <p className="mt-1 text-sm font-bold text-slate-600">{p.priceSub}</p>
                 </div>
@@ -399,7 +419,11 @@ export default function FundingConsultingDetailPage() {
                   ))}
                 </ul>
 
-                <div className="mt-6">
+                <p className="mt-5 rounded-lg bg-slate-50 px-3 py-2 text-[0.82rem] font-semibold leading-snug text-slate-600">
+                  <span className="text-slate-400">추천</span> · {p.recommend}
+                </p>
+
+                <div className="mt-4">
                   {p.cta === 'buy' && !inquiryOnly ? (
                     <button
                       type="button"
@@ -437,6 +461,50 @@ export default function FundingConsultingDetailPage() {
               </div>
             ))}
           </div>
+
+          {/* ── 세 방식 빠른 비교표 (카드 바로 다음 · 짧은 연결문장만) ─────── */}
+          <p className="mx-auto mt-10 max-w-xl text-center text-[0.95rem] font-semibold text-slate-500">
+            세 가지 방식의 차이를 한눈에 비교해 보세요.
+          </p>
+          <div className="mx-auto mt-5 max-w-3xl overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
+            {/* 헤더 */}
+            <div className="grid grid-cols-[minmax(56px,0.7fr)_1fr_1fr_1fr]">
+              <div className="bg-slate-100" />
+              {compareCols.map((c) => (
+                <div key={c.key} className={`px-1.5 py-3 text-center sm:px-2 ${c.featured ? 'bg-blue-600' : 'bg-slate-800'}`}>
+                  <p className={`text-[0.68rem] font-bold ${c.featured ? 'text-blue-200' : 'text-slate-400'}`}>{c.key}</p>
+                  <p className={`text-[0.82rem] font-black leading-tight sm:text-sm ${c.featured ? 'text-white' : 'text-slate-100'}`}>{c.name}</p>
+                  <span className={`mt-1 inline-block rounded-full px-1.5 py-0.5 text-[0.6rem] font-bold leading-none ${c.featured ? 'bg-white/20 text-white' : 'bg-white/10 text-slate-300'}`}>
+                    {c.badge}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {/* 행 */}
+            {compareRows.map((row, ri) => (
+              <div key={row.label} className={`grid grid-cols-[minmax(56px,0.7fr)_1fr_1fr_1fr] ${ri % 2 ? 'bg-slate-50/70' : 'bg-white'}`}>
+                <div className="flex items-center bg-slate-100/70 px-2 py-3">
+                  <p className="text-[0.72rem] font-black leading-tight text-slate-600 sm:text-[0.8rem]">{row.label}</p>
+                </div>
+                {row.cells.map((cell, ci) => {
+                  const feat = compareCols[ci].featured
+                  return (
+                    <div key={ci} className={`flex flex-col items-center justify-center px-1.5 py-3 text-center sm:px-2 ${feat ? 'bg-blue-50/70' : ''}`}>
+                      {typeof cell === 'string' ? (
+                        <p className={`text-[0.78rem] font-bold leading-tight sm:text-[0.86rem] ${feat ? 'text-blue-700' : 'text-slate-700'}`}>{cell}</p>
+                      ) : (
+                        <>
+                          <p className={`text-[0.78rem] font-bold leading-tight sm:text-[0.86rem] ${feat ? 'text-blue-700' : 'text-slate-700'}`}>{cell.main}</p>
+                          <p className="mt-0.5 text-[0.64rem] font-medium leading-tight text-slate-400 sm:text-[0.7rem]">{cell.sub}</p>
+                        </>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            ))}
+          </div>
+
           <p className="mx-auto mt-5 max-w-2xl text-center text-xs leading-relaxed text-slate-400">
             ※ 성과보수(B 3%·C 5%)는 <b className="text-slate-500">추가 진행을 선택</b>하고 <b className="text-slate-500">실제로 자금이 조달된 경우에만</b> 발생하며, 기본 1회 컨설팅(500,000원)에는 자동으로 붙지 않습니다.
             조달 성공이나 특정 금액을 보장하지 않으며, 성과보수 발생 시점·조달금액 정의·상한 등 세부 기준은 개별 계약서에서 확정합니다.
@@ -563,16 +631,15 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 차별화 — 정책자금만 받고 끝나지 않습니다 */}
+      {/* 왜 미래 AI 랩 — 단순 신청 지원과 다른 점(담백한 3가지) */}
       <section className={`bg-blue-50/50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>다른 컨설팅과 다른 점</p>
+          <p className={kicker}>단순 신청 지원과 다른 점</p>
           <h2 className={bigHead}>
-            정책자금만 받고<br /><span className="text-blue-600">끝나지 않습니다</span>
+            자금만 보고<br /><span className="text-blue-600">끝내지 않습니다</span>
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-            일회성으로 자금만 받고 끝나는 컨설팅은 의미가 없다고 생각합니다.
-            <b className="text-slate-900"> 자금 이전의 세금 환급부터, 자금 이후의 인증·세무·노무까지</b> 사업의 흐름 전체를 잇습니다.
+            신청서 작성을 넘어, <b className="text-slate-900">현황 정리부터 자금 이후 관리까지</b> 필요한 만큼 함께 봅니다.
           </p>
           <div className="mt-9 grid gap-4 sm:grid-cols-3">
             {beyondFunding.map((b) => (
@@ -583,42 +650,6 @@ export default function FundingConsultingDetailPage() {
               </div>
             ))}
           </div>
-
-          {/* 비교표 — 일반적인 컨설팅 방식과의 차이 */}
-          <p className="mt-12 text-center text-xl font-black text-slate-900 sm:text-2xl">
-            어디까지 맡길지에 따라<br className="sm:hidden" /> <span className="text-blue-600">진행 방식이 달라집니다</span>
-          </p>
-          <div className="mx-auto mt-6 max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
-            {/* 헤더 */}
-            <div className="grid grid-cols-[1fr_auto_1.2fr]">
-              <div className="bg-slate-800 px-3 py-4 text-center">
-                <p className="text-sm font-black text-slate-300 sm:text-base">일반 컨설팅</p>
-              </div>
-              <div className="grid place-items-center bg-white px-2">
-                <span className="text-sm font-black italic text-slate-400">VS</span>
-              </div>
-              <div className="bg-blue-600 px-3 py-4 text-center">
-                <p className="text-sm font-black text-white sm:text-base">미래 AI 랩</p>
-              </div>
-            </div>
-            {/* 행 */}
-            {vsRows.map((r, i) => (
-              <div key={r.k} className={`grid grid-cols-[1fr_auto_1.2fr] ${i % 2 ? 'bg-slate-50/60' : 'bg-white'}`}>
-                <div className="flex items-center justify-center px-3 py-3.5 text-center">
-                  <p className="text-[0.88rem] font-medium leading-snug text-slate-400 sm:text-[0.95rem]">{r.other}</p>
-                </div>
-                <div className="flex w-[4.5rem] items-center justify-center border-x border-slate-100 px-1 text-center sm:w-[5.5rem]">
-                  <p className="text-[0.72rem] font-black leading-tight text-slate-500 sm:text-[0.78rem]">{r.k}</p>
-                </div>
-                <div className="flex items-center justify-center bg-blue-50/50 px-3 py-3.5 text-center">
-                  <p className="text-[0.9rem] font-extrabold leading-snug text-blue-700 sm:text-[0.98rem]">{r.ours}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="mx-auto mt-4 max-w-md text-center text-xs leading-relaxed text-slate-400">
-            ※ ‘일반 컨설팅’은 특정 업체가 아닌, 업계에서 일반적으로 통용되는 성공수수료형 진행 방식을 말합니다.
-          </p>
         </div>
       </section>
 
@@ -735,8 +766,8 @@ export default function FundingConsultingDetailPage() {
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>단순 신청 지원과 다른 점</p>
-          <h2 className={bigHead}>신청서 작성보다<br /><span className="text-blue-600">넓게 봅니다</span></h2>
+          <p className={kicker}>믿을 수 있는 이유</p>
+          <h2 className={bigHead}>경험과 실적,<br /><span className="text-blue-600">데이터로 뒷받침합니다</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {reasons.map((r) => (
               <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
