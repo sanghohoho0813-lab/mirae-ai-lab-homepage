@@ -104,9 +104,9 @@ const plans: Plan[] = [
 // 시각 우선순위: 1) 500,000원 기본 진단 2) 맡기는 범위 3) 선택형 성과보수 조건. (표 안에는 CTA 없음)
 type CompareCell = string | { main: string; sub: string }
 const compareCols: { key: string; name: string; badge: string; featured?: boolean }[] = [
-  { key: '1', name: '기본 진단', badge: '성과보수 없음', featured: true },
-  { key: '2', name: '전부 위임형', badge: '선택형' },
-  { key: '3', name: 'AX 결합형', badge: '선별 진행' },
+  { key: 'A', name: '기본 진단', badge: '성과보수 없음', featured: true },
+  { key: 'B', name: '전부 위임형', badge: '선택형' },
+  { key: 'C', name: 'AX 결합형', badge: '선별 진행' },
 ]
 const compareRows: { label: string; cells: CompareCell[] }[] = [
   { label: '기본 비용', cells: ['500,000원', '착수금 500,000원', '착수금 500,000원'] },
@@ -176,12 +176,17 @@ const processSteps = [
 ]
 
 // 신청 전 자가진단 — 배제가 아니라 "확인해두면 좋은 것" 톤(해당 안 돼도 상담 가능함을 명시)
+// 간단 체크리스트(갖춰두면 좋은 것)
 const readinessChecks = [
-  '최근 연체 이력이 없는지',
-  '국세·지방세 체납이 없는지',
-  '4대보험이 완납 상태인지',
-  '현재 진행 중인 다른 대출이 있는지',
+  '6개월 내 30일 이상 연체 없음',
+  '국세·지방세 완납',
+  '4대 보험 완납',
+  '현재 타 대출 진행 중 아님',
 ]
+// 진행 중엔 피해야 할 것 (신용·자격에 악영향)
+const cautionsDuring = ['현금서비스 이용', '카드론 사용', '캐피탈 대출', '신용평가에 악영향을 주는 대출']
+// 이런 경우 진행이 어려울 수 있음 (자격·유의)
+const exclusions = ['최근 1년 내 연체 이력', '국세 체납 · 지방세 미납', '4대보험료 미납', '허위 정보 제공 · 사전 고지 미준수']
 
 function CartIcon() {
   return (
@@ -566,21 +571,21 @@ export default function FundingConsultingDetailPage() {
             <p className="text-center text-[1.05rem] font-black text-slate-900">👉 이렇게 골라보세요</p>
             <ul className="mt-4 space-y-3">
               <li className="flex items-start gap-3">
-                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-500 text-xs font-black text-white">1</span>
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-500 text-xs font-black text-white">A</span>
                 <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-slate-900">AI·서류가 익숙하고 흐름을 아신다면</b> — 기본 진단(500,000원)만으로 충분합니다.</p>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-slate-900 text-xs font-black text-white">2</span>
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-slate-900 text-xs font-black text-white">B</span>
                 <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-slate-900">사업이 바빠 직접 하기 어렵거나 서류가 부담이면</b> — 전부 위임형으로 맡기세요.</p>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-blue-600 text-xs font-black text-white">3</span>
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-blue-600 text-xs font-black text-white">C</span>
                 <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-blue-700">혼자서는 어렵고, 동종 업계보다 앞서가며 자금 그 이상까지 원하시면</b> — AX 결합 성장자금형이 좋습니다.</p>
               </li>
             </ul>
           </div>
           <div className="mt-6 grid items-stretch gap-4 sm:grid-cols-3">
-            {plans.map((p, i) => (
+            {plans.map((p) => (
               <div
                 key={p.key}
                 className={`flex flex-col rounded-3xl border-2 bg-white p-5 sm:p-6 ${
@@ -588,7 +593,7 @@ export default function FundingConsultingDetailPage() {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className={`grid h-9 w-9 place-items-center rounded-xl text-base font-black ${p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}>{i + 1}</span>
+                  <span className={`grid h-9 w-9 place-items-center rounded-xl text-base font-black ${p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}>{p.key}</span>
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-black ${
                       p.key === 'A' ? 'bg-emerald-50 text-emerald-700' : p.featured ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'
@@ -737,7 +742,7 @@ export default function FundingConsultingDetailPage() {
             </div>
 
             <p className="mx-auto mt-6 max-w-md text-center text-[0.92rem] leading-relaxed text-slate-500">
-              정책자금으로 자금을 마련하면서, 그 자금이 <b className="text-slate-700">회사를 실제로 성장시키는 시스템</b>까지 이어지도록 함께 설계하는 것이 <b className="text-blue-700">3번 AX 결합형</b>입니다.
+              정책자금으로 자금을 마련하면서, 그 자금이 <b className="text-slate-700">회사를 실제로 성장시키는 시스템</b>까지 이어지도록 함께 설계하는 것이 <b className="text-blue-700">C형 AX 결합형</b>입니다.
             </p>
           </div>
         </div>
@@ -791,24 +796,51 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 신청 전 자가진단 — 확인해두면 좋은 것들(배제가 아니라 안내) */}
+      {/* 신청 전 자가진단 — 체크리스트 + 유의/제외(첨부 벤치마킹 · 순서 재구성) */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>✅ 신청 전 자가진단</p>
+          <p className={kicker}>✅ 신청 전 체크</p>
           <h2 className={bigHead}>
             미리 확인해두면<br /><span className="text-blue-600">진행이 한결 수월합니다</span>
           </h2>
-          <div className="mx-auto mt-9 max-w-lg space-y-2.5">
-            {readinessChecks.map((c) => (
-              <div key={c} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-5 py-4">
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-blue-100 text-sm font-black text-blue-600" aria-hidden>✓</span>
-                <p className="text-[1.05rem] font-semibold text-slate-800">{c}</p>
-              </div>
-            ))}
+
+          {/* 간단 체크리스트 (갖춰두면 좋은 것) */}
+          <div className="mx-auto mt-9 max-w-lg rounded-3xl bg-blue-600 p-6 shadow-lg shadow-blue-600/20 sm:p-7">
+            <p className="flex items-center justify-center gap-2 text-lg font-black text-white sm:text-xl">
+              <span aria-hidden>💡</span> 간단 체크리스트
+            </p>
+            <div className="mt-5 space-y-3 rounded-2xl bg-white p-5 sm:p-6">
+              {readinessChecks.map((c) => (
+                <div key={c} className="flex items-center gap-3">
+                  <span className="shrink-0 text-xl" aria-hidden>✅</span>
+                  <p className="text-[1.02rem] font-bold text-slate-800">{c}</p>
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* 진행 중 피해야 할 것 + 진행이 어려울 수 있는 경우 (첨부 벤치마킹) */}
+          <div className="mx-auto mt-5 grid max-w-lg gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-rose-100 bg-rose-50/40 p-5">
+              <p className="flex items-center gap-1.5 text-[0.98rem] font-black text-rose-600"><span aria-hidden>🚫</span> 진행 중엔 이런 걸 피해주세요</p>
+              <ul className="mt-3 space-y-1.5">
+                {cautionsDuring.map((c) => (
+                  <li key={c} className="flex items-start gap-1.5 text-[0.92rem] leading-snug text-slate-600"><span className="mt-0.5 shrink-0 text-slate-300" aria-hidden>·</span>{c}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <p className="flex items-center gap-1.5 text-[0.98rem] font-black text-slate-700"><span aria-hidden>⚠️</span> 이런 경우 진행이 어려울 수 있어요</p>
+              <ul className="mt-3 space-y-1.5">
+                {exclusions.map((c) => (
+                  <li key={c} className="flex items-start gap-1.5 text-[0.92rem] leading-snug text-slate-600"><span className="mt-0.5 shrink-0 text-slate-300" aria-hidden>·</span>{c}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
           <p className="mx-auto mt-6 max-w-lg text-center text-sm leading-relaxed text-slate-500">
-            위 항목에 해당되지 않는 부분이 있어도 상담은 가능합니다.
-            진단 과정에서 대표님 상황에 맞는 방향을 함께 찾아드립니다.
+            위에 해당되는 부분이 있어도 상담은 가능합니다. 진단 과정에서 대표님 상황에 맞는 방향을 함께 찾아드립니다.
           </p>
         </div>
       </section>
