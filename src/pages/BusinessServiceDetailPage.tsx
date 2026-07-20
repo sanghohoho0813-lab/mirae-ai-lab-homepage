@@ -318,6 +318,33 @@ export default function BusinessServiceDetailPage() {
 
       {/* ── 긴 세로 상세 ───────────────────────────────────────── */}
 
+      {/* 보완중 안내 (맨 위) — 상세 보완 기간 동안 상담 유도(보완중 모드에서만 노출) */}
+      {trimmed && (
+        <section className={`bg-slate-900 ${band}`}>
+          <div className="mx-auto max-w-[560px] px-1 text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-black text-amber-300">🛠️ 상세페이지 보완 중</span>
+            <h2 className="mt-4 text-[1.7rem] font-black leading-[1.3] tracking-tight text-white sm:text-[2.2rem]">
+              더 자세한 내용은<br /><span className="text-amber-300">상담으로 안내드립니다</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-slate-300 sm:text-lg">
+              현재 이 서비스의 상세페이지를 보완하고 있습니다. 상담을 신청해 주시면
+              <b className="text-white"> 담당 팀장이 직접 연락드려</b> 대표님 상황에 맞게 자세히 안내드리겠습니다.
+            </p>
+            <div className="mx-auto mt-8 max-w-sm">
+              <a
+                href={inquiryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
+              >
+                무료 상담 신청하기 <span aria-hidden>→</span>
+              </a>
+              <p className="mt-3 text-xs font-medium text-slate-400">상담은 무료이며 신청은 1~2분이면 끝납니다. 진행 여부는 상담 후 정하셔도 됩니다.</p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Hero hook (보완중 모드에서는 숨김) */}
       {!trimmed && (
       <section className={`bg-slate-50 ${band}`}>
@@ -362,8 +389,8 @@ export default function BusinessServiceDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">{content.emoji}</div>
-          <p className={kicker}>이런 고민, 있으시죠?</p>
-          <h2 className={bigHead}>대표님만 <span className={accentText}>그런 게 아닙니다</span></h2>
+          <p className={kicker}>상담을 하다 보면</p>
+          <h2 className={bigHead}>제가 대표님들과 상담하다 보면,<br /><span className={accentText}>이런 점들을 불편해하시는 분이 많으세요</span></h2>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {content.pains.map((p) => (
               <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
@@ -375,7 +402,7 @@ export default function BusinessServiceDetailPage() {
 
           {/* 전환 — 고민이 손해로 이어짐 */}
           <p className="mt-12 text-center text-xl font-black leading-snug text-slate-900 sm:text-2xl">
-            그런데 이 고민들, <span className="text-red-600">미뤄둘수록 더 큰 손해로 돌아옵니다.</span>
+            이 문제들을 그냥 내버려두시면 안 됩니다. <span className="text-red-600">왜냐하면,</span>
           </p>
 
           {/* 문제심화 — 미루면 잃는 것 */}
@@ -423,7 +450,7 @@ export default function BusinessServiceDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>핵심 혜택</p>
-          <h2 className={bigHead}>정리하면,<br /><span className={accentText}>이런 혜택이 있습니다</span></h2>
+          <h2 className={bigHead}>정리하면,<br /><span className={accentText}>이런 혜택들이 있습니다</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {content.benefits.map((b) => (
               <div key={b.t} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
@@ -466,17 +493,15 @@ export default function BusinessServiceDetailPage() {
         </div>
       </section>
 
-      {/* 보완중 안내 — 상세 보완 기간 동안 상담 유도(보완중 모드에서만 노출) */}
+      {/* 마무리 — 유선/카톡 안내로 담백하게(보완중 모드에서만 노출) */}
       {trimmed && (
         <section className={`bg-slate-900 ${band}`}>
           <div className="mx-auto max-w-[560px] px-1 text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-black text-amber-300">🛠️ 상세페이지 보완 중</span>
-            <h2 className="mt-4 text-[1.7rem] font-black leading-[1.3] tracking-tight text-white sm:text-[2.2rem]">
-              더 자세한 내용은<br /><span className="text-amber-300">상담으로 안내드립니다</span>
+            <h2 className="text-[1.7rem] font-black leading-[1.3] tracking-tight text-white sm:text-[2.2rem]">
+              더 궁금한 점이<br /><span className="text-amber-300">있으신가요?</span>
             </h2>
             <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-slate-300 sm:text-lg">
-              현재 이 서비스의 상세페이지를 보완하고 있습니다. 상담을 신청해 주시면
-              <b className="text-white"> 담당 팀장이 직접 연락드려</b> 대표님 상황에 맞게 자세히 안내드리겠습니다.
+              자세한 내용은 <b className="text-amber-300">유선이나 카톡으로</b> 안내해 드리겠습니다. 편하게 상담 남겨주세요.
             </p>
             <div className="mx-auto mt-8 max-w-sm">
               <a
@@ -487,7 +512,7 @@ export default function BusinessServiceDetailPage() {
               >
                 무료 상담 신청하기 <span aria-hidden>→</span>
               </a>
-              <p className="mt-3 text-xs font-medium text-slate-400">상담은 무료이며 신청은 1~2분이면 끝납니다. 진행 여부는 상담 후 정하셔도 됩니다.</p>
+              <p className="mt-3 text-xs font-medium text-slate-400">상담은 무료이며 신청은 1~2분이면 끝납니다.</p>
             </div>
           </div>
         </section>
