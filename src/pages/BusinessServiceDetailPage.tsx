@@ -1,11 +1,11 @@
-// 서비스몰 공용 상품 상세페이지 — 한국형 이커머스 "긴 세로 상세" 템플릿.
+// 서비스몰 공용 상품 상세페이지 — 한국형 "랜딩형" 상세 템플릿(슈가 컴퍼니류 리듬).
 // /business-services/:slug 전 상품에 적용 (정책자금은 전용 페이지가 우선 매칭).
-// 상단 구매영역(카페24형) + 후킹 → 고민 공감 → 왜 필요한가(네이비) → 핵심 혜택 → 변화
-// → 믿을 수 있는 이유 → 추천 대상 + 제공 결과물(합본) → 재구매 CTA(네이비) → FAQ
-// → 유의사항 → 다른 상품 링크. (진행/결과 예시 카드·진행 과정 섹션은 제거)
+// 흐름: 히어로(구매+후킹 합본) → 고민 공감 → 핵심 혜택 → 우리 방식(네이비) → 변화
+//       → 추천 대상+결과물 → 왜 미래 AI 랩(신뢰) → FAQ → 최종 CTA(네이비) → 유의사항.
+// 섹션마다 컬러 칩 아이브로우 + 큰 가운데 제목 + 리듬(배경/레이아웃) 변화로 술술 읽히게.
 // 하단 상담 폼은 제거 — 상담은 모든 CTA에서 구글폼으로 연결(모바일은 하단 고정바가 따라다님).
-// 결제: /checkout/:slug 별도 페이지 (PortOne V2).
-import { useEffect, useState } from 'react'
+// 결제: /checkout/:slug 별도 페이지 (PortOne V2). ⚠️ 결제/PortOne/API/slug/amount 로직은 미변경.
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
@@ -13,26 +13,27 @@ import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } fro
 import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../config/commerce'
 import { getDetailContent } from '../data/businessDetailContent'
 
-const band = 'px-5 py-12 sm:py-16'
+const band = 'px-5 py-16 sm:py-24'
 const inner = 'mx-auto max-w-[720px]'
-const bigHead = 'mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-slate-900 sm:text-[2.7rem]'
+
+// 섹션별 컬러 칩(아이브로우) 톤 — 리듬용 포인트 컬러
+const CHIP = {
+  blue: 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/15',
+  rose: 'bg-rose-50 text-rose-600 ring-1 ring-inset ring-rose-500/15',
+  emerald: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/15',
+  violet: 'bg-violet-50 text-violet-700 ring-1 ring-inset ring-violet-600/15',
+  sky: 'bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-600/15',
+  slate: 'bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-300/50',
+  dark: 'bg-white/10 text-amber-300',
+}
 
 // 신뢰 라인(누적 자금조달 실적) 미노출 상품 — 자금과 무관한 순수 구축형(IT) 상품만 제외
 const NO_TRUST_IDS = new Set(['responsive-homepage', 'ai-ax-system', 'ax-full-package'])
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 상세페이지 "보완중(teaser)" 모드
-//  · 정책자금(전용 페이지)에 집중하는 동안, 나머지 상품 상세는 핵심 섹션만 노출합니다.
-//  · 노출 유지: 문제제기+문제심화(합본) · 핵심 혜택 · 미래 AI 랩과 함께하는 변화 · 상담 마무리
-//  · 숨김(코드는 그대로 보존 — 삭제 아님): 히어로 후킹 · 왜 필요한가 · 믿을 수 있는 이유 ·
-//    진행/결과 예시 · 진행 과정 · 제공 결과물 · 추천 대상 · 재CTA · FAQ
-//
-//  ▶ 전체 복원 방법 (둘 중 하나)
-//    1) DETAIL_TEASER_MODE = false      → 전 상품 전체 노출로 되돌림
-//    2) FULL_DETAIL_SLUGS 에 slug 추가   → 그 상품만 전체 노출 (예: new Set(['iso-certification']))
-//
-//  ▶ 복원 사인(대표님과의 약속): 채팅으로 "상세페이지 풀오픈" 이라고 요청하시면
-//    위 1) 로 되돌립니다. (숨긴 섹션은 아무것도 지우지 않았으므로 그대로 복구됩니다.)
+// 상세페이지 "보완중(teaser)" 모드 (기본 꺼짐)
+//  · 켜면(true): 히어로+보완중 안내 + 고민/혜택/변화 + 마무리만 노출, 나머지 숨김.
+//  ▶ 복원 사인: 채팅 "보완중" → true / "상세페이지 풀오픈" → false. (코드는 그대로 보존)
 // ─────────────────────────────────────────────────────────────────────────────
 const DETAIL_TEASER_MODE = false
 const FULL_DETAIL_SLUGS = new Set<string>([]) // 여기에 slug 를 넣으면 그 상품만 전체 노출
@@ -54,6 +55,27 @@ function renderEmphasis(text: string) {
     ) : (
       <span key={i}>{seg}</span>
     ),
+  )
+}
+
+// 컬러 칩(아이브로우)
+function Chip({ tone, children }: { tone: string; children: ReactNode }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-black ${tone}`}>
+      {children}
+    </span>
+  )
+}
+
+// 공용 섹션 헤더 — 가운데 정렬 칩 + 큰 제목
+function SectionTitle({ chip, tone, dark, children }: { chip: ReactNode; tone: string; dark?: boolean; children: ReactNode }) {
+  return (
+    <div className="text-center">
+      <Chip tone={tone}>{chip}</Chip>
+      <h2 className={`mt-4 text-[2.05rem] font-black leading-[1.16] tracking-tight sm:text-[3rem] ${dark ? 'text-white' : 'text-slate-900'}`}>
+        {children}
+      </h2>
+    </div>
   )
 }
 
@@ -98,7 +120,8 @@ export default function BusinessServiceDetailPage() {
 
   // 강조 색 (대표 상품은 골드)
   const accentText = flagship ? 'text-amber-600' : 'text-blue-600'
-  const kicker = `text-center text-sm font-black uppercase tracking-widest ${accentText}`
+  const checkBg = flagship ? 'bg-amber-500' : 'bg-blue-600'
+  const priceColor = consult ? 'text-slate-800' : flagship ? 'text-amber-600' : 'text-slate-900'
 
   // 결제 대신 상담(구글폼) — consult 상품이거나 결제 시스템 준비 중(paymentsEnabled=false)일 때
   const inquiryOnly = consult || !paymentsEnabled
@@ -123,28 +146,26 @@ export default function BusinessServiceDetailPage() {
           href={inquiryUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={`flex w-full items-center justify-center rounded-xl px-6 py-4 text-lg font-black shadow-lg transition-transform hover:-translate-y-0.5 ${
-            flagship ? 'bg-amber-400 text-slate-900 shadow-amber-500/20' : 'bg-slate-900 text-white shadow-slate-900/20'
+          className={`flex w-full items-center justify-center rounded-2xl px-6 py-4 text-lg font-black shadow-lg transition-transform hover:-translate-y-0.5 ${
+            flagship ? 'bg-amber-400 text-slate-900 shadow-amber-500/25' : 'bg-slate-900 text-white shadow-slate-900/20'
           }`}
         >
-          가능성 진단 신청하기
+          가능성 진단 신청하기 →
         </a>
-        <p className="text-center text-xs font-medium text-slate-400">{consult ? '가능성 진단은 무료이고, 신청은 1~2분이면 끝납니다. 진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' : paymentsPreparingNotice}</p>
+        <p className="text-center text-xs font-medium text-slate-400">{consult ? '무료 · 신청 1~2분 · 진행 여부는 상담 후 결정' : paymentsPreparingNotice}</p>
       </div>
     ) : (
       <div>
-        <div className="flex gap-2.5">
-          <button
-            type="button"
-            onClick={handleBuy}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
-          >
-            <CartIcon /> 바로 결제하기
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleBuy}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/25 transition-transform hover:-translate-y-0.5"
+        >
+          <CartIcon /> 바로 결제하기
+        </button>
         <p className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-slate-500">
-          <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 카드사별 할부 가능</span>
-          <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 결제 단계에서 할부 개월 수 선택</span>
+          <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 카드 할부 가능</span>
+          <span className="inline-flex items-center gap-1"><span className="text-emerald-500" aria-hidden>✔</span> 결제 단계에서 개월 수 선택</span>
         </p>
         <button
           type="button"
@@ -155,6 +176,43 @@ export default function BusinessServiceDetailPage() {
         </button>
       </div>
     )
+
+  // 가격 + 옵션 + CTA 카드 (히어로 / 최종 CTA 공용 코어)
+  const PriceCTACard = () => (
+    <>
+      {variants && (
+        <div className="mb-5 flex flex-wrap justify-center gap-2">
+          {variants.map((v, i) => {
+            const active = i === Math.min(variantIdx, variants.length - 1)
+            return (
+              <button
+                key={v.label}
+                type="button"
+                onClick={() => setVariantIdx(i)}
+                aria-pressed={active}
+                className={`rounded-xl px-3 py-2 text-sm font-bold transition-colors ${
+                  active ? 'bg-slate-900 text-white' : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {v.label}
+                {v.badge && (
+                  <span className={`ml-1.5 rounded px-1.5 py-0.5 text-[11px] font-black ${active ? 'bg-amber-400 text-slate-900' : 'bg-amber-100 text-amber-700'}`}>
+                    {v.badge}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+      <p className={`text-center text-4xl font-black tracking-tight sm:text-5xl ${priceColor}`}>{displayPrice}</p>
+      {pkg.priceNote && <p className="mt-1.5 text-center text-sm font-medium text-slate-500">{pkg.priceNote}</p>}
+      {!consult && <p className="mt-1.5 text-center text-sm font-semibold text-blue-600">💳 카드 무이자 할부 가능</p>}
+      <div className="mt-5">
+        <BuyButtons />
+      </div>
+    </>
+  )
 
   return (
     <div className="min-h-screen bg-white pb-24 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
@@ -193,413 +251,337 @@ export default function BusinessServiceDetailPage() {
         </div>
       </div>
 
-      {/* ── 상단 구매영역 (카페24형) ───────────────────────────── */}
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-[900px] gap-7 px-5 py-8 sm:grid-cols-[minmax(0,340px)_1fr] sm:py-10">
-          <div className={`relative aspect-[3/2] self-start overflow-hidden rounded-2xl border bg-slate-100 ${flagship ? 'border-amber-400 ring-1 ring-amber-300/40' : 'border-slate-200'}`}>
-            {pkg.imageSrc && <img src={pkg.imageSrc} alt={pkg.name} className="absolute inset-0 h-full w-full object-cover" />}
+      {/* ── 히어로 (구매 + 후킹 합본) ─────────────────────────────── */}
+      <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white">
+        <div className="mx-auto max-w-[760px] px-5 py-12 text-center sm:py-16">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.categoryLabel ?? pkg.category}</span>
+            {flagship ? (
+              <span className="rounded-full bg-amber-400 px-2.5 py-1 text-xs font-black text-slate-900">★ 대표 상품</span>
+            ) : (
+              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{pkg.badge}</span>
+            )}
+            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">가능성 진단 무료</span>
           </div>
-          <div className="flex flex-col">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${categoryToneClass[pkg.category] ?? 'bg-slate-100 text-slate-600'}`}>{pkg.categoryLabel ?? pkg.category}</span>
-              {flagship ? (
-                <span className="rounded-full bg-amber-400 px-2.5 py-1 text-xs font-black text-slate-900">★ 대표 상품</span>
-              ) : (
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{pkg.badge}</span>
-              )}
-              <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">가능성 진단 상담 무료</span>
-            </div>
-            <h1 className="mt-2.5 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">{pkg.name}</h1>
-            <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-600">{pkg.short}</p>
 
-            {/* 옵션 선택 (ISO 등 variant 상품) */}
-            {variants && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {variants.map((v, i) => {
-                  const active = i === Math.min(variantIdx, variants.length - 1)
-                  return (
-                    <button
-                      key={v.label}
-                      type="button"
-                      onClick={() => setVariantIdx(i)}
-                      aria-pressed={active}
-                      className={`rounded-xl px-3 py-2 text-sm font-bold transition-colors ${
-                        active ? 'bg-slate-900 text-white' : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
-                      }`}
-                    >
-                      {v.label}
-                      {v.badge && (
-                        <span className={`ml-1.5 rounded px-1.5 py-0.5 text-[11px] font-black ${active ? 'bg-amber-400 text-slate-900' : 'bg-amber-100 text-amber-700'}`}>
-                          {v.badge}
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
+          <p className={`mt-6 text-sm font-black tracking-wide ${accentText}`}>{pkg.name}</p>
+          <h1 className="mt-2 text-[2.2rem] font-black leading-[1.13] tracking-tight text-slate-900 sm:text-[3.3rem]">
+            {content.hookLine}<br /><span className={accentText}>{content.hookAccent}</span>
+          </h1>
+          <p className="mx-auto mt-5 max-w-md text-[1.05rem] font-medium leading-relaxed text-slate-500 sm:text-lg">{content.hookSub}</p>
+
+          {pkg.imageSrc && (
+            <div className={`mx-auto mt-9 max-w-sm overflow-hidden rounded-3xl border bg-white shadow-xl ${flagship ? 'border-amber-300' : 'border-slate-200'}`}>
+              <div className="relative aspect-[3/2]">
+                <img src={pkg.imageSrc} alt={pkg.name} className="absolute inset-0 h-full w-full object-cover" />
               </div>
-            )}
-
-            <div className="mt-4 flex items-end gap-2">
-              <span className={`font-black tracking-tight ${consult ? 'text-3xl text-slate-700 sm:text-4xl' : `text-4xl sm:text-5xl ${flagship ? 'text-amber-600' : 'text-slate-900'}`}`}>
-                {displayPrice}
-              </span>
             </div>
-            {pkg.priceNote && <p className="mt-1 text-sm font-medium text-slate-500">{pkg.priceNote}</p>}
-            {!consult && (
-              <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
-            )}
-            {!NO_TRUST_IDS.has(pkg.id) && (
-              <p className="mt-3 flex items-center gap-1.5 rounded-xl bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
-                <span aria-hidden>🏆</span> 누적 자금조달 100억 원+ · 실무 경력 8년+
-              </p>
-            )}
+          )}
 
-            <div className="mt-5">
-              <BuyButtons />
-            </div>
+          <div className="mx-auto mt-8 w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_50px_-20px_rgba(15,23,42,0.35)]">
+            <PriceCTACard />
           </div>
+
+          {!NO_TRUST_IDS.has(pkg.id) && (
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-sm font-bold text-slate-500">
+              <span className="inline-flex items-center gap-1.5"><span aria-hidden>🏆</span> 누적 자금조달 100억+</span>
+              <span className="text-slate-300" aria-hidden>·</span>
+              <span>실무 경력 8년+</span>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* ── 긴 세로 상세 ───────────────────────────────────────── */}
-
-      {/* 보완중 안내 (맨 위) — 상세 보완 기간 동안 상담 유도(보완중 모드에서만 노출) */}
+      {/* 보완중 안내 (보완중 모드에서만) */}
       {trimmed && (
         <section className={`bg-slate-900 ${band}`}>
           <div className="mx-auto max-w-[560px] px-1 text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-black text-amber-300">🛠️ 상세페이지 보완 중</span>
-            <h2 className="mt-4 text-[1.7rem] font-black leading-[1.3] tracking-tight text-white sm:text-[2.2rem]">
-              더 자세한 내용은<br /><span className="text-amber-300">상담으로 안내드립니다</span>
+            <Chip tone={CHIP.dark}>🛠️ 상세페이지 보완 중</Chip>
+            <h2 className="mt-4 text-[1.9rem] font-black leading-[1.25] tracking-tight text-white sm:text-[2.4rem]">
+              더 자세한 내용은<br /><span className="text-amber-300">상담으로 안내드려요</span>
             </h2>
             <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-slate-300 sm:text-lg">
-              현재 이 서비스의 상세페이지를 보완하고 있습니다. 상담을 신청해 주시면
-              <b className="text-white"> 담당 팀장이 직접 연락드려</b> 대표님 상황에 맞게 자세히 안내드리겠습니다.
+              상담을 신청해 주시면 <b className="text-white">담당 팀장이 직접 연락</b>드려 대표님 상황에 맞게 안내드리겠습니다.
             </p>
             <div className="mx-auto mt-8 max-w-sm">
-              <a
-                href={inquiryUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
-              >
-                가능성 진단 신청하기 <span aria-hidden>→</span>
-              </a>
-              <p className="mt-3 text-xs font-medium text-slate-400">상담은 무료이며 신청은 1~2분이면 끝납니다. 진행 여부는 상담 후 정하셔도 됩니다.</p>
+              <BuyButtons />
             </div>
           </div>
         </section>
       )}
 
-      {/* Hero hook (보완중 모드에서는 숨김) */}
-      {!trimmed && (
-      <section className={`bg-slate-50 ${band}`}>
+      {/* ── 고민 공감 (문제 + 손해) ───────────────────────────────── */}
+      <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>{pkg.name}</p>
-          <h2 className={bigHead}>
-            {content.hookLine}<br /><span className={accentText}>{content.hookAccent}</span>
-          </h2>
-          <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">{content.hookSub}</p>
-          {pkg.imageSrc && (
-            <div className="mx-auto mt-10 max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-              <div className="relative aspect-[3/2]">
-                <img src={pkg.imageSrc} alt={pkg.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+          <SectionTitle chip="🤔 자주 듣는 고민" tone={CHIP.rose}>
+            혹시 이런 고민,<br /><span className={accentText}>하고 계신가요?</span>
+          </SectionTitle>
+          <div className="mt-10 grid gap-3 sm:grid-cols-2">
+            {content.pains.map((p) => (
+              <div key={p} className="flex items-start gap-3 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100">
+                <span className="mt-0.5 shrink-0 text-lg" aria-hidden>💬</span>
+                <p className="text-[1.05rem] font-bold leading-snug text-slate-700">“{p}”</p>
               </div>
-            </div>
-          )}
-          <div className="mx-auto mt-8 flex max-w-sm items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
-            <span className="text-3xl font-black tracking-tight text-slate-900">{displayPrice}</span>
-            {pkg.priceNote && <span className="text-xs font-medium text-slate-400">{pkg.priceNote}</span>}
+            ))}
           </div>
 
-          {/* 신뢰 스탯 밴드 — 공개 실적 기반(자금 무관 IT 상품은 제외) */}
-          {!NO_TRUST_IDS.has(pkg.id) && (
-            <div className="mx-auto mt-8 grid max-w-lg grid-cols-3 divide-x divide-slate-700/60 rounded-2xl bg-slate-900 py-5 shadow-lg">
-              {[
-                { value: '100억+', label: '누적 자금조달' },
-                { value: '8년+', label: '실무 경력' },
-                { value: '무료', label: '가능성 진단 상담' },
-              ].map((s) => (
-                <div key={s.label} className="px-2 text-center">
-                  <p className={`text-2xl font-black tracking-tight sm:text-3xl ${flagship ? 'text-amber-300' : 'text-sky-300'}`}>{s.value}</p>
-                  <p className="mt-1 text-xs font-semibold text-slate-300 sm:text-sm">{s.label}</p>
+          <p className="mt-12 text-center text-[1.35rem] font-black leading-snug text-slate-900 sm:text-2xl">
+            그런데 이 고민들, <span className="text-rose-600">그냥 두면 더 커져요.</span>
+          </p>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {content.losses.map((l) => (
+              <div key={l.t} className="rounded-3xl border border-rose-100 bg-rose-50/50 p-6">
+                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-2xl shadow-sm" aria-hidden>{l.icon}</span>
+                <p className="mt-4 text-[1.15rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
+                <p className="mt-2 text-[0.98rem] leading-relaxed text-slate-500">{l.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mx-auto mt-8 max-w-xl rounded-2xl bg-slate-900 px-6 py-5 text-center">
+            <p className="text-[1.05rem] font-black leading-snug text-white sm:text-lg">{content.lossClosing}</p>
+            <p className="mt-1.5 text-sm font-semibold text-slate-400">다행히, 지금 시작해도 늦지 않았어요.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 핵심 혜택 ─────────────────────────────────────────────── */}
+      <section className={`bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <SectionTitle chip="💡 핵심 혜택" tone={CHIP.emerald}>
+            정리하면,<br /><span className={accentText}>이런 게 좋아져요</span>
+          </SectionTitle>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {content.benefits.map((b) => (
+              <div key={b.t} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-slate-50 text-2xl ring-1 ring-slate-200" aria-hidden>{b.icon}</span>
+                  <p className="text-[1.12rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
+                </div>
+                <p className="mt-3 text-[0.98rem] leading-relaxed text-slate-600">{renderEmphasis(b.d)}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-6 max-w-md text-center text-xs leading-relaxed text-slate-400">
+            ※ 수치는 제도·시점·요건·심사에 따라 달라질 수 있고, 예시 금액은 이해를 돕기 위한 것입니다.
+          </p>
+        </div>
+      </section>
+
+      {/* ── 우리 방식 (네이비 · 리듬 전환) ────────────────────────── */}
+      {!trimmed && (
+        <section className={`bg-slate-900 ${band}`}>
+          <div className={inner}>
+            <SectionTitle chip="🧭 우리가 하는 일" tone={CHIP.dark} dark>
+              혼자 하기 어려운 일,<br /><span className="text-amber-300">저희가 정리해드려요</span>
+            </SectionTitle>
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              {content.whyPoints.map((w, i) => (
+                <div key={w.t} className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+                  <span className="text-3xl font-black text-amber-300 sm:text-4xl">{`0${i + 1}`}</span>
+                  <p className="mt-3 text-[1.1rem] font-bold text-white">{w.t}</p>
+                  <p className="mt-1.5 text-[0.98rem] leading-relaxed text-slate-300">{w.d}</p>
                 </div>
               ))}
             </div>
-          )}
-        </div>
-      </section>
+            <div className="mx-auto mt-7 max-w-xl rounded-2xl bg-amber-400 px-6 py-5 text-center">
+              <p className="text-[1.02rem] font-black leading-snug text-slate-900 sm:text-lg">{pkg.expectation}</p>
+            </div>
+          </div>
+        </section>
       )}
 
-      {/* 문제제기 + 문제심화 — 하나로 합본(고민 → 손해로 자연스럽게 이어짐) */}
+      {/* ── 변화 (Before → After) ─────────────────────────────────── */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">{content.emoji}</div>
-          <p className={kicker}>상담을 하다 보면</p>
-          <h2 className={bigHead}>제가 대표님들과 상담하다 보면,<br /><span className={accentText}>이런 점들을 불편해하시는 분이 많으세요</span></h2>
-          <div className="mt-9 grid gap-4 sm:grid-cols-2">
-            {content.pains.map((p) => (
-              <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <span className={`grid h-11 w-11 place-items-center rounded-xl text-lg font-black text-white ${flagship ? 'bg-amber-500' : 'bg-blue-600'}`} aria-hidden>?</span>
-                <p className="mt-3 text-[1.2rem] font-bold leading-snug text-slate-800 sm:text-[1.35rem]">“{p}”</p>
-              </div>
-            ))}
-          </div>
-
-          {/* 전환 — 고민이 손해로 이어짐 */}
-          <p className="mt-12 text-center text-xl font-black leading-snug text-slate-900 sm:text-2xl">
-            이 문제들을 그냥 내버려두시면 안 됩니다. <span className="text-red-600">왜냐하면,</span>
-          </p>
-
-          {/* 문제심화 — 미루면 잃는 것 */}
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {content.losses.map((l) => (
-              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-rose-50/40 p-6">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-2xl shadow-sm" aria-hidden>{l.icon}</span>
-                <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
-                <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
-            <p className="text-lg font-black leading-snug text-white sm:text-xl">{content.lossClosing}</p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">다행히, 지금 시작해도 늦지 않았습니다.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 왜 필요한가 (네이비) — 보완중 모드에서는 숨김 */}
-      {!trimmed && (
-      <section className={`bg-slate-900 ${band}`}>
-        <div className={inner}>
-          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">그래서, 저희가 이렇게 합니다</p>
-          <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
-            혼자 애쓰실 필요 없습니다<br /><span className="text-amber-300">저희가 이렇게 돕겠습니다</span>
-          </h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {content.whyPoints.map((w, i) => (
-              <div key={w.t} className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-                <span className="text-3xl font-black text-amber-300 sm:text-4xl">{`0${i + 1}`}</span>
-                <p className="mt-3 text-lg font-bold text-white">{w.t}</p>
-                <p className="mt-1.5 text-[1.05rem] leading-relaxed text-slate-300">{w.d}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 rounded-2xl bg-amber-400 p-6 text-center">
-            <p className="text-base font-black text-slate-900 sm:text-lg">{pkg.expectation}</p>
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* 핵심 혜택 — 취득/진행 시 얻는 실질 혜택(초중반 · 와닿게 나열) */}
-      <section className={`bg-white ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>핵심 혜택</p>
-          <h2 className={bigHead}>정리하면,<br /><span className={accentText}>이런 혜택들이 있습니다</span></h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {content.benefits.map((b) => (
-              <div key={b.t} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white text-2xl shadow-sm ring-1 ring-slate-200" aria-hidden>{b.icon}</span>
-                <div className="min-w-0">
-                  <p className="text-[1.15rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
-                  <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{renderEmphasis(b.d)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="mx-auto mt-6 max-w-xl text-center text-sm leading-relaxed text-slate-400">
-            ※ 위 혜택과 수치(지원금·공제·세율 등)는 제도·시점·기업별 요건 충족과 기관 심사에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다. 예시로 든 금액은 이해를 돕기 위한 것입니다.
-          </p>
-        </div>
-      </section>
-
-      {/* 변화 — 미래 AI 랩과 함께하면 달라지는 것 (Before → After) */}
-      <section className={`bg-slate-50 ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>미래 AI 랩과 함께라면</p>
-          <h2 className={bigHead}>
+          <SectionTitle chip="💫 진행 후" tone={CHIP.violet}>
             {content.afterLine}<br /><span className={accentText}>{content.afterAccent}</span>
-          </h2>
+          </SectionTitle>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {content.afters.map((a) => (
-              <div key={a.after} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div key={a.after} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
                 <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">지금</p>
-                <p className="mt-1 text-sm font-semibold leading-snug text-slate-500 line-through decoration-slate-300">{a.before}</p>
-                <div className={`my-3 flex items-center gap-2 ${accentText}`} aria-hidden>
-                  <span className="text-lg font-black">↓</span>
-                  <span className="h-px flex-1 bg-slate-200" />
-                </div>
-                <p className={`text-[11px] font-black uppercase tracking-wide ${flagship ? 'text-amber-600' : 'text-blue-500'}`}>진행 후</p>
-                <p className="mt-1 text-[1.2rem] font-extrabold leading-snug text-slate-900">{a.after}</p>
+                <p className="mt-1 text-[0.95rem] font-semibold leading-snug text-slate-400 line-through decoration-slate-300">{a.before}</p>
+                <div className="my-3 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" aria-hidden />
+                <p className={`text-[11px] font-black uppercase tracking-wide ${accentText}`}>진행 후</p>
+                <p className="mt-1 text-[1.15rem] font-extrabold leading-snug text-slate-900">{a.after}</p>
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center text-lg font-black text-slate-900 sm:text-xl">{content.afterClosing}</p>
+          <p className="mt-9 text-center text-[1.1rem] font-black text-slate-900 sm:text-xl">{content.afterClosing}</p>
         </div>
       </section>
 
-      {/* 마무리 — 유선/카톡 안내로 담백하게(보완중 모드에서만 노출) */}
+      {/* 마무리 — 유선/카톡 안내(보완중 모드에서만) */}
       {trimmed && (
         <section className={`bg-slate-900 ${band}`}>
           <div className="mx-auto max-w-[560px] px-1 text-center">
-            <h2 className="text-[1.7rem] font-black leading-[1.3] tracking-tight text-white sm:text-[2.2rem]">
+            <h2 className="text-[1.9rem] font-black leading-[1.25] tracking-tight text-white sm:text-[2.4rem]">
               더 궁금한 점이<br /><span className="text-amber-300">있으신가요?</span>
             </h2>
             <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-slate-300 sm:text-lg">
-              자세한 내용은 <b className="text-amber-300">유선이나 카톡으로</b> 안내해 드리겠습니다. 편하게 상담 남겨주세요.
+              자세한 내용은 <b className="text-amber-300">유선이나 카톡으로</b> 안내해 드릴게요. 편하게 남겨주세요.
             </p>
             <div className="mx-auto mt-8 max-w-sm">
-              <a
-                href={inquiryUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
-              >
-                가능성 진단 신청하기 <span aria-hidden>→</span>
-              </a>
-              <p className="mt-3 text-xs font-medium text-slate-400">상담은 무료이며 신청은 1~2분이면 끝납니다.</p>
+              <BuyButtons />
             </div>
           </div>
         </section>
       )}
 
-      {/* ↓↓↓ 아래 섹션은 보완중 모드에서 숨김(코드 그대로 보존 · "상세페이지 풀오픈" 시 복원) ↓↓↓ */}
+      {/* ↓↓↓ 보완중 모드에서 숨김(코드 보존 · "상세페이지 풀오픈" 시 복원) ↓↓↓ */}
       {!trimmed && (
         <>
-      {/* 믿을 수 있는 이유 */}
-      <section className={`bg-white ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>함께하면 좋은 이유</p>
-          <h2 className={bigHead}>미래 AI 랩과 함께하시면<br /><span className={accentText}>좋은 이유들</span></h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {content.reasons.map((r) => (
-              <div key={r} className="flex flex-col items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
-                <span className={`grid h-12 w-12 place-items-center rounded-full text-xl font-black text-white ${flagship ? 'bg-amber-500' : 'bg-blue-600'}`} aria-hidden>✓</span>
-                <p className="mt-3 text-[1.2rem] font-bold text-slate-900">{r}</p>
+          {/* ── 추천 대상 + 결과물 ─────────────────────────────────── */}
+          <section className={`bg-slate-50 ${band}`}>
+            <div className={inner}>
+              <SectionTitle chip="🙌 추천 대상" tone={CHIP.sky}>
+                이런 분들께<br /><span className={accentText}>추천드려요</span>
+              </SectionTitle>
+              <div className="mt-10 grid gap-3 sm:grid-cols-2">
+                {pkg.recommendedFor.map((r) => (
+                  <div key={r} className="flex items-start gap-3 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+                    <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-black text-white ${checkBg}`} aria-hidden>✓</span>
+                    <p className="text-[1.05rem] font-semibold leading-snug text-slate-700">{r}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          {/* 데이터 기반 진단 — 자체 개발 SaaS */}
-          <div className="mt-6 rounded-2xl border-2 border-slate-900 bg-white p-6 sm:p-7">
-            <p className="text-center text-lg font-black text-slate-900 sm:text-xl">
-              경험과 감에만 기대는 컨설팅과는 <span className={accentText}>다릅니다</span>
-            </p>
-            <p className="mx-auto mt-3 max-w-lg text-center text-[1.05rem] leading-relaxed text-slate-600 sm:text-[1.1rem]">
-              직접 개발하고 전문가 검증을 거친 <b className="text-slate-900">자체 SaaS 프로그램</b>이
-              인증·자금 심사 데이터를 반영해 진단 기준을 계속 다듬어 갑니다.
-              그래서 저희는 감이 아니라 <b className="text-slate-900">수치와 데이터를 근거로</b> 진단하고 방향을 제시합니다.
-            </p>
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
-              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">🧠 데이터 학습·최적화</span>
-              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">🛠️ 자체 개발 프로그램</span>
-              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">✅ 전문가 검증 완료</span>
+
+              <div className="mt-14 text-center">
+                <Chip tone={CHIP.slate}>📦 상담 후 남는 것</Chip>
+                <h3 className="mt-3 text-[1.55rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[2rem]">
+                  이런 결과물이 남아요
+                </h3>
+              </div>
+              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {pkg.deliverables.map((d, i) => (
+                  <div key={d} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <span className={`text-xl font-black ${accentText}`}>{`0${i + 1}`}</span>
+                    <p className="mt-2 text-[1.05rem] font-extrabold leading-snug text-slate-900">{d}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 flex flex-wrap justify-center gap-2">
+                {pkg.highlights.map((hi) => (
+                  <span key={hi} className="rounded-full bg-blue-50 px-3.5 py-1.5 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">{hi}</span>
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* 추천 대상 + 제공 결과물 — 자연스럽게 하나로(누가 잘 맞는지 → 무엇을 얻는지) */}
-      <section className={`bg-slate-50 ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>추천 대상</p>
-          <h2 className={bigHead}>이런 분들께<br /><span className={accentText}>추천드립니다</span></h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {pkg.recommendedFor.map((r) => (
-              <div key={r} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <span className={`grid h-11 w-11 place-items-center rounded-xl text-lg font-black text-white ${flagship ? 'bg-amber-500' : 'bg-blue-600'}`} aria-hidden>✓</span>
-                <p className="mt-3 text-[1.2rem] font-semibold leading-snug text-slate-800">{r}</p>
-              </div>
-            ))}
-          </div>
+          {/* ── 왜 미래 AI 랩 (신뢰) ───────────────────────────────── */}
+          <section className={`bg-white ${band}`}>
+            <div className={inner}>
+              <SectionTitle chip="🛡️ 왜 미래 AI 랩?" tone={CHIP.blue}>
+                그냥 대행과는<br /><span className={accentText}>다릅니다</span>
+              </SectionTitle>
 
-          {/* 그리고 이런 것들을 얻으십니다 */}
-          <div className="mt-14">
-            <h3 className="text-center text-[1.4rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.7rem]">
-              그리고 이 상품으로<br /><span className={accentText}>이런 것들을 얻으십니다</span>
-            </h3>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {pkg.deliverables.map((d, i) => (
-                <div key={d} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <span className={`text-2xl font-black sm:text-3xl ${accentText}`}>{`0${i + 1}`}</span>
-                  <p className="mt-3 text-lg font-extrabold leading-snug text-slate-900">{d}</p>
+              {!NO_TRUST_IDS.has(pkg.id) && (
+                <div className="mx-auto mt-9 grid max-w-lg grid-cols-3 gap-3">
+                  {[
+                    { v: '100억+', l: '누적 자금조달' },
+                    { v: '8년+', l: '실무 경력' },
+                    { v: '무료', l: '가능성 진단' },
+                  ].map((s) => (
+                    <div key={s.l} className="rounded-2xl bg-slate-50 p-4 text-center ring-1 ring-slate-100">
+                      <p className={`text-2xl font-black tracking-tight sm:text-3xl ${accentText}`}>{s.v}</p>
+                      <p className="mt-1 text-xs font-semibold text-slate-500">{s.l}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
-              {pkg.highlights.map((hi) => (
-                <span key={hi} className="rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">{hi}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+              )}
 
-      {/* 재CTA (네이비) */}
-      <section className={`bg-slate-900 ${band}`}>
-        <div className="mx-auto max-w-[520px] px-1">
-          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">고민은 여기까지</p>
-          <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.5rem]">{pkg.name}</h2>
-          <div className="mt-8 rounded-3xl border border-white/10 bg-white p-7 shadow-2xl">
-            <p className={`text-center text-5xl font-black tracking-tight ${consult ? 'text-4xl text-slate-700' : flagship ? 'text-amber-600' : 'text-slate-900'}`}>
-              {displayPrice}
-            </p>
-            {pkg.priceNote && <p className="mt-2 text-center text-sm font-medium text-slate-500">{pkg.priceNote}</p>}
-            {!consult && (
-              <p className="mt-2 flex items-center justify-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
-            )}
-            <ul className="mx-auto mt-6 max-w-xs space-y-2.5 border-t border-slate-100 pt-6">
-              {pkg.deliverables.map((d) => (
-                <li key={d} className="flex items-start gap-2 text-[1.05rem] text-slate-700">
-                  <span className={`mt-0.5 font-black ${flagship ? 'text-amber-500' : 'text-blue-500'}`} aria-hidden>✓</span>{d}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-7">
-              <BuyButtons />
-            </div>
-            <p className="mt-5 border-t border-slate-100 pt-4 text-center text-[1.05rem] leading-relaxed text-slate-500">
-              지금 당장 결정하지 않으셔도 괜찮습니다.<br />
-              <b className="text-slate-700">가능성 진단으로 적용 여부만 먼저 확인</b>해 두세요. 확인하는 데는 비용이 들지 않습니다.
-            </p>
-          </div>
-        </div>
-      </section>
+              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                {content.reasons.map((r) => (
+                  <div key={r} className="flex items-center gap-3 rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-100 sm:flex-col sm:text-center">
+                    <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-base font-black text-white ${checkBg}`} aria-hidden>✓</span>
+                    <p className="text-[1.05rem] font-bold text-slate-900">{r}</p>
+                  </div>
+                ))}
+              </div>
 
-      {/* FAQ */}
-      <section className={`bg-white ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>자주 묻는 질문</p>
-          <h2 className={bigHead}>{pkg.name} FAQ</h2>
-          <div className="mt-9 space-y-3">
-            {pkg.faqs.map((f) => (
-              <details key={f.q} className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 [&_summary]:cursor-pointer">
-                <summary className="flex items-center justify-between text-[1.2rem] font-bold text-slate-900 marker:content-['']">
-                  <span>Q. {f.q}</span>
-                  <span className="ml-3 text-slate-400 transition-transform group-open:rotate-45" aria-hidden>+</span>
-                </summary>
-                <p className="mt-3 text-[1.05rem] leading-relaxed text-slate-600">{f.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+              <div className="mt-6 rounded-3xl bg-slate-900 p-7 text-center">
+                <p className="text-[1.1rem] font-black text-white sm:text-xl">감이 아니라, <span className="text-sky-300">데이터로 진단합니다</span></p>
+                <p className="mx-auto mt-3 max-w-md text-[0.98rem] leading-relaxed text-slate-300">
+                  직접 개발하고 전문가 검증을 거친 <b className="text-white">자체 SaaS</b>가 인증·자금 심사 데이터를 반영해 진단 기준을 계속 다듬어 갑니다.
+                </p>
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-slate-200">🧠 데이터 학습</span>
+                  <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-slate-200">🛠️ 자체 개발</span>
+                  <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-slate-200">✅ 전문가 검증</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── FAQ ────────────────────────────────────────────────── */}
+          <section className={`bg-slate-50 ${band}`}>
+            <div className={inner}>
+              <SectionTitle chip="❓ 자주 묻는 질문" tone={CHIP.slate}>
+                궁금한 점,<br /><span className={accentText}>미리 정리했어요</span>
+              </SectionTitle>
+              <div className="mt-9 space-y-3">
+                {pkg.faqs.map((f) => (
+                  <details key={f.q} className="group rounded-2xl border border-slate-200 bg-white p-5 [&_summary]:cursor-pointer">
+                    <summary className="flex items-center justify-between gap-3 text-[1.1rem] font-bold text-slate-900 marker:content-['']">
+                      <span className="flex items-start gap-2">
+                        <span className={`font-black ${accentText}`} aria-hidden>Q</span>
+                        <span>{f.q}</span>
+                      </span>
+                      <span className="ml-2 shrink-0 text-slate-400 transition-transform group-open:rotate-45" aria-hidden>+</span>
+                    </summary>
+                    <p className="mt-3 pl-6 text-[1rem] leading-relaxed text-slate-600">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── 최종 CTA (네이비) ──────────────────────────────────── */}
+          <section className={`bg-slate-900 ${band}`}>
+            <div className="mx-auto max-w-[520px] px-1">
+              <div className="text-center">
+                <Chip tone={CHIP.dark}>🚀 지금 시작하기</Chip>
+                <h2 className="mt-4 text-[1.95rem] font-black leading-[1.18] tracking-tight text-white sm:text-[2.6rem]">
+                  고민만 하기엔,<br /><span className="text-amber-300">시간이 아깝잖아요</span>
+                </h2>
+              </div>
+              <div className="mt-8 rounded-3xl bg-white p-7 shadow-2xl">
+                <p className={`text-center text-sm font-black ${accentText}`}>{pkg.name}</p>
+                <div className="mt-3">
+                  <PriceCTACard />
+                </div>
+                <ul className="mx-auto mt-6 max-w-xs space-y-2.5 border-t border-slate-100 pt-6">
+                  {pkg.deliverables.map((d) => (
+                    <li key={d} className="flex items-start gap-2 text-[1rem] text-slate-700">
+                      <span className={`mt-0.5 font-black ${flagship ? 'text-amber-500' : 'text-blue-500'}`} aria-hidden>✓</span>{d}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-5 border-t border-slate-100 pt-4 text-center text-[0.98rem] leading-relaxed text-slate-500">
+                  지금 결정 안 하셔도 괜찮아요.<br />
+                  <b className="text-slate-700">가능성만 먼저 확인</b>해 보세요. 확인은 무료예요.
+                </p>
+              </div>
+            </div>
+          </section>
         </>
       )}
 
       {/* 유의사항 + 다른 상품 */}
-      <section className="bg-white px-5 pb-16">
+      <section className="bg-white px-5 pb-16 pt-4">
         <div className={`${inner} rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6`}>
           <p className="text-sm font-bold text-slate-700">안내 및 유의사항</p>
-          <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-500">{pkg.notice ?? DISCLAIMER}</p>
+          <p className="mt-2 text-[0.98rem] leading-relaxed text-slate-500">{pkg.notice ?? DISCLAIMER}</p>
         </div>
         <div className={`${inner} mt-8`}>
-          <p className="text-sm font-bold text-slate-700">다른 상품도 살펴보세요</p>
+          <p className="text-center text-sm font-bold text-slate-700">다른 상품도 살펴보세요</p>
           <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
             {others.map((o) => (
               <Link
                 key={o.id}
                 to={`/business-services/${o.slug}`}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50"
+                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50"
               >
                 {o.name}
               </Link>
