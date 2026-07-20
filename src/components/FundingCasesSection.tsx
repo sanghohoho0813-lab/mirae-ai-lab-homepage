@@ -2,6 +2,7 @@
 // 다크 프리미엄 스타일: 필 배지(업종·대표님) + 초대형 "N억 확보" + 폰 목업 안 다크모드 카톡 대화.
 // 금액은 [[..]] 토큰 → 빨간 강조 박스로 렌더. 승인 완료 사례만 게시.
 // ⚠️ 대화는 개인정보 보호를 위해 회사명·세부 상황을 바꿔 정리(고지문 표기).
+import { useEffect, useRef } from 'react'
 import {
   fundingCases,
   CASES_DISCLAIMER,
@@ -10,7 +11,7 @@ import {
 } from '../data/fundingCases'
 
 const band = 'px-5 py-10 sm:py-14'
-const BLOG_URL = 'https://blog.naver.com/ksh90813'
+const BLOG_URL = 'https://m.blog.naver.com/ksh90813?categoryNo=27&noTrackingCode=true&proxyReferer=&tab=1'
 
 // [[금액]] → 빨간 강조 박스
 function renderText(text: string) {
@@ -109,6 +110,49 @@ function PhoneCase({ c }: { c: FundingCase }) {
 }
 
 export default function FundingCasesSection() {
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  // 사례 카드 자동 좌우 스크롤(천천히·핑퐁). 사용자가 만지면 잠시 멈춤.
+  // ⚠️ scrollLeft 은 읽을 때 정수로 반올림되므로 0.35px씩 더하면 누적되지 않는다 →
+  //    실수 누산기(pos)에 더해서 대입해야 천천히 움직인다.
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let paused = false
+    let dir = 1
+    let raf = 0
+    let pos = el.scrollLeft
+    const speed = 0.35 // px/frame — 천천히
+    const tick = () => {
+      const max = el.scrollWidth - el.clientWidth
+      if (!paused && max > 1) {
+        pos += speed * dir
+        if (pos >= max) { pos = max; dir = -1 }
+        else if (pos <= 0) { pos = 0; dir = 1 }
+        el.scrollLeft = pos
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    const pause = () => { paused = true }
+    // 사용자가 직접 스크롤한 위치에서 이어서 움직이도록 재동기화.
+    const resume = () => { pos = el.scrollLeft; paused = false }
+    el.addEventListener('pointerdown', pause)
+    el.addEventListener('pointerenter', pause)
+    el.addEventListener('pointerleave', resume)
+    el.addEventListener('touchstart', pause, { passive: true })
+    el.addEventListener('touchend', resume)
+    return () => {
+      cancelAnimationFrame(raf)
+      el.removeEventListener('pointerdown', pause)
+      el.removeEventListener('pointerenter', pause)
+      el.removeEventListener('pointerleave', resume)
+      el.removeEventListener('touchstart', pause)
+      el.removeEventListener('touchend', resume)
+    }
+  }, [])
+
   return (
     <section className={`bg-[#060b16] ${band}`}>
       <div className="mx-auto max-w-5xl">
@@ -126,15 +170,15 @@ export default function FundingCasesSection() {
         {/* 좌우 스크롤 안내 */}
         <p className="mt-9 text-center text-sm font-bold text-slate-300">👉 좌우로 넘겨서 확인해 보세요</p>
 
-        {/* 대표 사례 — 좌우 스크롤 카드(스와이프) */}
-        <div className="mt-4 -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:thin]">
+        {/* 대표 사례 — 좌우 스크롤 카드(스와이프 · 자동 스크롤) */}
+        <div ref={scrollRef} className="mt-4 -mx-5 flex gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:thin]">
           {fundingCases.map((c) => (
-            <div key={`${c.pill}-${c.amount}`} className="w-[290px] shrink-0 snap-start sm:w-[320px]">
+            <div key={`${c.pill}-${c.amount}`} className="w-[290px] shrink-0 sm:w-[320px]">
               <PhoneCase c={c} />
             </div>
           ))}
           {/* 그 외 다수 */}
-          <div className="flex w-[190px] shrink-0 snap-start flex-col items-center justify-center rounded-2xl border border-dashed border-white/20 bg-white/[0.02] p-6 text-center">
+          <div className="flex w-[190px] shrink-0 flex-col items-center justify-center rounded-2xl border border-dashed border-white/20 bg-white/[0.02] p-6 text-center">
             <p className="text-5xl font-black leading-none text-sky-400">+</p>
             <p className="mt-3 text-lg font-black text-white">그 외 다수</p>
             <p className="mt-2 text-[13px] leading-relaxed text-slate-400">더 많은 승인 사례가<br />있습니다</p>

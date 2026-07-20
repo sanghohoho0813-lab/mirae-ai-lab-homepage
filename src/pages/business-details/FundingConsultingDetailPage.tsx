@@ -1,12 +1,11 @@
 // 정책자금 컨설팅 — 전용 상세페이지 (한국형 이커머스 "긴 세로 상세" 스타일).
 // /business-services/funding-consulting 라우트에서 렌더됩니다.
 // 상단 구매영역(카페24형) + 긴 세로 배너 상세 + 예시 사례(추후 실제 데이터로 교체).
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import FundingCasesSection from '../../components/FundingCasesSection'
-import ProductReviews from '../../components/ProductReviews'
 import { getPackageBySlug } from '../../data/businessPackages'
 import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../../config/commerce'
 
@@ -139,6 +138,7 @@ const beyondFunding = [
 
 // 1회 컨설팅 후 남는 결과물 (기능명 나열이 아니라 고객이 받는 결과 중심)
 const resultItems = [
+  '어디서나 쓸 수 있는 고퀄리티 사업계획서',
   '기업 현황 진단 요약',
   '우선 검토 자금·기관',
   '준비자료 목록',
@@ -195,6 +195,32 @@ function CartIcon() {
 export default function FundingConsultingDetailPage() {
   const navigate = useNavigate()
   const [showBar, setShowBar] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  // 스크롤 등장(리빌) — 각 섹션 콘텐츠가 화면에 들어올 때 페이드+슬라이드업(토스풍)
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            ;(e.target as HTMLElement).classList.add('reveal-in')
+            io.unobserve(e.target)
+          }
+        })
+      },
+      { threshold: 0.06, rootMargin: '0px 0px -6% 0px' },
+    )
+    Array.from(root.querySelectorAll<HTMLElement>('section > div')).forEach((el) => {
+      // 이미 화면에 보이는(상단) 요소는 그대로 노출 — 깜빡임 방지
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.92) return
+      el.classList.add('reveal-init')
+      io.observe(el)
+    })
+    return () => io.disconnect()
+  }, [])
 
   // 결제 시스템 준비 중이면 카드결제 대신 상담(구글폼)으로 우회
   const inquiryOnly = !paymentsEnabled
@@ -263,7 +289,7 @@ export default function FundingConsultingDetailPage() {
     )
 
   return (
-    <div className="min-h-screen bg-white pb-24 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
+    <div ref={rootRef} className="min-h-screen bg-white pb-24 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
@@ -317,9 +343,7 @@ export default function FundingConsultingDetailPage() {
               <span className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{SALE_PRICE}</span>
               <span className="pb-1 text-xl font-black leading-tight text-red-600 sm:pb-1.5 sm:text-2xl">+ 성공수수료 없음</span>
             </div>
-            <p className="mt-1.5 text-base font-black text-red-600">업계 평균 성공수수료 5~7%, 저희는 받지 않습니다</p>
-            <p className="mt-1 text-sm font-semibold text-slate-500">이 1회 컨설팅만 이용하고 직접 진행하셔도 됩니다. 전체 대행·AX 구축은 선택사항입니다.</p>
-            <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
+            <p className="mt-2.5 flex items-center gap-1.5 text-sm font-semibold text-blue-600"><span aria-hidden>💳</span> 카드 무이자 할부 가능</p>
             <ul className="mt-3 space-y-1.5 rounded-xl bg-slate-50 px-4 py-3 text-base font-semibold text-slate-700 ring-1 ring-inset ring-slate-100">
               <li className="flex items-center gap-1.5 font-black text-red-600"><span aria-hidden>🚫</span> 성공수수료 없음 — 업계 평균 5~7%</li>
               <li className="flex items-center gap-1.5"><span aria-hidden>🎁</span> 컨설팅 종료 후 정가 237,000원 상당 전자책 3종 증정 (리뷰 작성 시)</li>
@@ -380,7 +404,7 @@ export default function FundingConsultingDetailPage() {
           <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막하죠</span></h2>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {pains.map((p) => (
-              <div key={p} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6">
+              <div key={p} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-slate-200 bg-white p-6">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-600 text-lg font-black text-white" aria-hidden>?</span>
                 <p className="mt-3 text-[1.2rem] font-bold leading-snug text-slate-800 sm:text-[1.35rem]">“{p}”</p>
               </div>
@@ -395,7 +419,7 @@ export default function FundingConsultingDetailPage() {
           {/* 문제심화 — 미루면 잃는 것 */}
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {losses.map((l) => (
-              <div key={l.t} className="flex flex-col rounded-2xl border border-rose-100 bg-rose-50/40 p-6">
+              <div key={l.t} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-rose-100 bg-rose-50/40 p-6">
                 <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-2xl shadow-sm" aria-hidden>{l.icon}</span>
                 <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
                 <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
@@ -482,7 +506,7 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className={kicker}>✨ 미래 AI 랩의 방식</p>
           <h2 className={bigHead}>
-            “전부 대신 해드립니다”식 컨설팅,<br /><span className="text-blue-600">이제는 맞지 않는 방식입니다</span>
+            “전부 대신 해드립니다”식 컨설팅,<br /><span className="text-blue-600">저희가 추구하는 방식이 아닙니다</span>
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
             사업의 주인은 대표님입니다. 그래서 저희는 <b className="text-slate-900">반드시 필요한 부분만</b> 돕고,
@@ -515,7 +539,7 @@ export default function FundingConsultingDetailPage() {
               { icon: '📝', t: '사업계획서 작성', d: '대표님이 바로 신청만 하면 되는, “신청 가능한 상태”까지 만들어 드립니다.' },
               { icon: '🔁', t: '다음엔 직접 하실 수 있게', d: '이후에는 대표님이 스스로 진행하실 수 있도록 방법까지 알려드립니다.' },
             ].map((it) => (
-              <div key={it.t} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
+              <div key={it.t} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-slate-200 bg-slate-50 p-6">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{it.icon}</span>
                 <p className="mt-3 text-[1.2rem] font-extrabold text-slate-900">{it.t}</p>
                 <p className="mt-1.5 text-[1.05rem] leading-relaxed text-slate-600">{it.d}</p>
@@ -674,7 +698,7 @@ export default function FundingConsultingDetailPage() {
           </p>
           <div className="mt-9 grid gap-4 sm:grid-cols-3">
             {beyondFunding.map((b) => (
-              <div key={b.t} className="flex flex-col rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
+              <div key={b.t} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{b.icon}</span>
                 <p className="mt-3 text-[1.15rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
                 <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{b.d}</p>
@@ -758,8 +782,8 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 혜택 2 — 전자책 3종 증정 */}
-      <section className={`bg-slate-50 ${band}`}>
+      {/* 혜택 2 — 전자책 3종 증정 (+ 후기 안내) */}
+      <section id="reviews" className={`bg-slate-50 ${band}`}>
         <div className={inner}>
           <p className={kicker}>🎁 구매 혜택</p>
           <h2 className={bigHead}>
@@ -780,16 +804,20 @@ export default function FundingConsultingDetailPage() {
               </div>
             </div>
           </div>
+
+          {/* 후기 → 전자책 안내 (기존 후기 섹션에서 이관) */}
+          <div className="mx-auto mt-6 max-w-lg rounded-2xl border-2 border-amber-300 bg-amber-50 p-5 text-center sm:p-6">
+            <p className="text-[1.1rem] font-black text-slate-900">🎁 후기를 남겨주시면 전자책 3종을 드립니다</p>
+            <p className="mx-auto mt-2 max-w-md text-[0.98rem] leading-relaxed text-slate-600">
+              컨설팅을 받으신 뒤 후기를 작성해 주시면, 정가 <b className="text-slate-900">237,000원</b> 상당의 정책자금 셀프 진행 전자책 3종을 검토 후 이메일로 보내드립니다.
+            </p>
+          </div>
+
           <p className="mx-auto mt-6 max-w-sm text-center text-xs leading-relaxed text-slate-400">
             ※ 증정 전자책을 다운로드하신 후에는 결제 환불이 불가합니다.
           </p>
         </div>
       </section>
-
-      {/* 고객 후기 — 작성 시 전자책 3종 증정 */}
-      <div id="reviews">
-        <ProductReviews slug="funding-consulting" />
-      </div>
 
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
@@ -826,10 +854,10 @@ export default function FundingConsultingDetailPage() {
       {/* 제공 결과물 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>📄 컨설팅 후 남는 결과물</p>
-          <h2 className={bigHead}>상담만 받고 끝나지 않고,<br /><span className="text-blue-600">정리된 자료로 남습니다</span></h2>
+          <p className={kicker}>📄 컨설팅 후 남는 것</p>
+          <h2 className={bigHead}>컨설팅 후에는 대표님들이<br /><span className="text-blue-600">이런 것들을 얻게 되십니다</span></h2>
           <p className="mx-auto mt-4 max-w-lg text-center text-base leading-relaxed text-slate-600">
-            대표님이 이후에 직접 실행하거나 내부에서 공유할 수 있도록, 현황부터 자금 방향과 실행 순서까지 정리해 드립니다.
+            상담만 받고 끝나는 게 아니라, 대표님이 직접 신청하거나 내부에서 바로 쓰실 수 있도록 정리된 자료로 남습니다.
           </p>
           <div className="mx-auto mt-9 grid max-w-2xl gap-3 sm:grid-cols-2">
             {resultItems.map((d, i) => (
