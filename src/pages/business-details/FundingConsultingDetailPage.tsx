@@ -19,7 +19,7 @@ const LIST_PRICE = '100만원'
 const SALE_PRICE = pkg.price // '50만원'
 const DISCOUNT_RATE = '50%'
 
-const band = 'px-5 py-10 sm:py-14'
+const band = 'px-5 py-14 sm:py-20'
 const inner = 'mx-auto max-w-[720px]'
 const kicker = 'text-center text-sm font-black uppercase tracking-widest text-blue-600'
 const bigHead = 'mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-slate-900 sm:text-[2.7rem]'
@@ -154,22 +154,15 @@ const losses = [
   { icon: '🚪', t: '경쟁사는 이미 활용하고 있습니다', d: '비슷한 조건의 회사가 정책자금으로 설비와 인력에 투자하는 동안, 격차는 매달 벌어집니다.' },
 ]
 
-// 정책자금 vs 일반 대출 — 확정적 표현 대신 "~인 경우가 많습니다" 톤 유지(기관·상품마다 다를 수 있음)
-const fundFeatures = [
-  { icon: '📉', t: '시중은행보다 낮은 금리대인 경우가 많습니다', d: '정부·지자체 재원이나 보증기관을 통해 진행되어, 일반 신용대출보다 낮은 금리대로 설계된 상품이 많습니다.' },
-  { icon: '🤝', t: '신용점수 외의 요소도 함께 봅니다', d: '보증기관의 보증을 통해 진행되는 경우, 기술력·사업성 등을 함께 평가해 신용점수만으로 판단하지 않는 경우가 있습니다.' },
-  { icon: '🎯', t: '목적에 따라 종류가 다양합니다', d: '운전자금·시설자금·창업자금 등 목적과 기업 상황에 따라 적합한 기관·상품이 달라, 방향을 먼저 잡는 것이 중요합니다.' },
-]
-
-// 정책자금 vs 일반 대출 한눈 비교표 — 숫자 중심(전자책 비교표 참고, 일반 통용 기준).
-// ⚠️ 금리·거치·조건은 기관·상품·시점·신용에 따라 달라질 수 있어 "경우가 많음/가능" 톤 유지.
-const loanVsPolicy = [
-  { k: '금리', loan: '연 6~10%대 (신용도 따라)', policy: '연 2~4%대인 경우가 많음' },
-  { k: '평가 기준', loan: '신용점수·담보 중심', policy: '기술성·사업성도 함께 평가' },
-  { k: '상환 방식', loan: '실행 즉시 원리금 상환', policy: '1~3년 거치 후 분할상환 가능' },
-  { k: '보증', loan: '본인 신용·담보 필요', policy: '신보·기보·지역재단 보증부 가능' },
-  { k: '자금 용도', loan: '대체로 자유', policy: '운전·시설·창업 등 목적별' },
-  { k: '자금 이후', loan: '1회성 종료', policy: '인증·지원사업으로 연계 가능' },
+// 자금 종류별 비교표 (전자책 비교표 기준) — 카드론·캐피탈 / 일반 은행 대출 / 정책자금.
+// ⚠️ 연이자율·거치·한도 등은 기관·상품·시점·신용에 따라 달라질 수 있음.
+const loanCompare = [
+  { k: '연이자율', card: '12%~20%', bank: '5%~8%', policy: '2%~4% 수준' },
+  { k: '상환 기간', card: '단기 (보통 1년 이내)', bank: '3~5년 이내', policy: '5~10년 (거치 포함)' },
+  { k: '거치 기간', card: '없음', bank: '짧거나 없음', policy: '1~3년 (이자만 내는 기간)' },
+  { k: '담보 요건', card: '불필요 (대신 고금리)', bank: '부동산 담보 필요한 경우 많음', policy: '보증서로 대체 가능' },
+  { k: '한도', card: '소액 (수백~수천만 원)', bank: '신용·담보에 따라 결정', policy: '수천만 원~수억 원까지 가능' },
+  { k: '신용점수 영향', card: '사용할수록 점수 하락', bank: '대출 한도 과다 시 하락 가능', policy: '정상 이용 시 신용 관리에 유리' },
 ]
 
 // 진행 절차 — 막막함 해소용 6단계 플로우
@@ -432,48 +425,56 @@ export default function FundingConsultingDetailPage() {
           <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
             용어부터 낯설어 시작하기 어려우셨다면, 여기서부터 천천히 짚어보시죠.
           </p>
-          <div className="mt-9 grid gap-4 sm:grid-cols-3">
-            {fundFeatures.map((f) => (
-              <div key={f.t} className="flex flex-col rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{f.icon}</span>
-                <p className="mt-3 text-[1.1rem] font-extrabold leading-snug text-slate-900">{f.t}</p>
-                <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{f.d}</p>
+          {/* 자금 종류별 비교표 — 카드론·캐피탈 / 일반 은행 대출 / 정책자금 (전자책 기준) */}
+          <p className="mt-11 text-center text-lg font-black text-slate-900 sm:text-xl">
+            💰 한눈에 보면, <span className="text-blue-600">이렇게 다릅니다</span>
+          </p>
+          <div className="mx-auto mt-7 max-w-2xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
+            {/* 헤더 */}
+            <div className="grid grid-cols-[minmax(48px,0.55fr)_1fr_1fr_1.05fr]">
+              <div className="bg-slate-100" />
+              <div className="bg-slate-500 px-1 py-3.5 text-center">
+                <p className="text-[0.7rem] font-black leading-tight text-white sm:text-[0.82rem]">💳 카드론<br />·캐피탈</p>
+              </div>
+              <div className="bg-slate-700 px-1 py-3.5 text-center">
+                <p className="text-[0.7rem] font-black leading-tight text-white sm:text-[0.82rem]">🏦 일반 은행<br />대출</p>
+              </div>
+              <div className="bg-blue-600 px-1 py-3.5 text-center">
+                <p className="text-[0.7rem] font-black leading-tight text-white sm:text-[0.82rem]">🏛️ 정책자금</p>
+              </div>
+            </div>
+            {/* 행 */}
+            {loanCompare.map((r, i) => (
+              <div key={r.k} className={`grid grid-cols-[minmax(48px,0.55fr)_1fr_1fr_1.05fr] ${i % 2 ? 'bg-slate-50/70' : 'bg-white'}`}>
+                <div className="flex items-center bg-slate-100/70 px-1.5 py-4 sm:px-2.5">
+                  <p className="text-[0.66rem] font-black leading-tight text-slate-600 sm:text-[0.78rem]">{r.k}</p>
+                </div>
+                <div className="flex items-center justify-center px-1 py-4 text-center">
+                  <p className="text-[0.68rem] font-medium leading-snug text-slate-500 sm:text-[0.8rem]">{r.card}</p>
+                </div>
+                <div className="flex items-center justify-center px-1 py-4 text-center">
+                  <p className="text-[0.68rem] font-medium leading-snug text-slate-500 sm:text-[0.8rem]">{r.bank}</p>
+                </div>
+                <div className="flex items-center justify-center bg-blue-50/60 px-1 py-4 text-center">
+                  <p className="text-[0.7rem] font-bold leading-snug text-blue-700 sm:text-[0.82rem]">{r.policy}</p>
+                </div>
               </div>
             ))}
           </div>
 
-          {/* 한눈 비교표 — 일반 대출 vs 정책자금 (숫자 중심) */}
-          <p className="mt-12 text-center text-lg font-black text-slate-900 sm:text-xl">
-            한눈에 보면, <span className="text-blue-600">이렇게 다릅니다</span>
-          </p>
-          <div className="mx-auto mt-5 max-w-xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
-            {/* 헤더 */}
-            <div className="grid grid-cols-[minmax(58px,0.7fr)_1fr_1fr]">
-              <div className="bg-slate-100" />
-              <div className="bg-slate-700 px-2 py-3 text-center">
-                <p className="text-sm font-black text-slate-200 sm:text-base">일반 대출</p>
-              </div>
-              <div className="bg-blue-600 px-2 py-3 text-center">
-                <p className="text-sm font-black text-white sm:text-base">정책자금</p>
-              </div>
+          {/* 예시 콜아웃 — 이자 차이 (전자책 기준) */}
+          <div className="mx-auto mt-6 max-w-2xl rounded-2xl border border-emerald-200 bg-emerald-50 p-5 sm:p-6">
+            <div className="flex items-start gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-lg shadow-sm" aria-hidden>💡</span>
+              <p className="text-[0.98rem] leading-relaxed text-slate-700 sm:text-[1.05rem]">
+                1억 원을 <b className="text-slate-900">카드론 연 15%</b>로 빌릴 때와 <b className="text-blue-700">정책자금 연 3%</b>로 빌릴 때,
+                <b className="text-slate-900"> 1년 이자 차이만 무려 1,200만 원</b>이에요. 5년이면 <b className="text-slate-900">6,000만 원</b>이 넘습니다.
+                거치 기간 <b className="text-slate-900">1~2년</b> 동안 원금 상환 없이 이자만 내며 사업을 안정시킬 수 있는 것도, 정책자금만의 큰 장점이에요.
+              </p>
             </div>
-            {/* 행 */}
-            {loanVsPolicy.map((r, i) => (
-              <div key={r.k} className={`grid grid-cols-[minmax(58px,0.7fr)_1fr_1fr] ${i % 2 ? 'bg-slate-50/70' : 'bg-white'}`}>
-                <div className="flex items-center bg-slate-100/70 px-2.5 py-3">
-                  <p className="text-[0.72rem] font-black leading-tight text-slate-600 sm:text-[0.8rem]">{r.k}</p>
-                </div>
-                <div className="flex items-center justify-center px-2 py-3 text-center">
-                  <p className="text-[0.8rem] font-medium leading-snug text-slate-500 sm:text-[0.9rem]">{r.loan}</p>
-                </div>
-                <div className="flex items-center justify-center bg-blue-50/60 px-2 py-3 text-center">
-                  <p className="text-[0.82rem] font-bold leading-snug text-blue-700 sm:text-[0.92rem]">{r.policy}</p>
-                </div>
-              </div>
-            ))}
           </div>
-          <p className="mx-auto mt-3 max-w-xl text-center text-xs leading-relaxed text-slate-400">
-            ※ 금리·거치기간·조건은 기관·상품·신청 시점·기업 신용에 따라 달라질 수 있습니다. 위 수치는 일반적으로 통용되는 기준을 정리한 것입니다.
+          <p className="mx-auto mt-4 max-w-2xl text-center text-xs leading-relaxed text-slate-400">
+            ※ 연이자율·거치기간·한도·조건은 기관·상품·신청 시점·기업 신용에 따라 달라질 수 있습니다.
           </p>
 
           <p className="mx-auto mt-8 max-w-lg text-center text-sm leading-relaxed text-slate-500">
@@ -485,7 +486,7 @@ export default function FundingConsultingDetailPage() {
       {/* 혜택 1 — 성공수수료 0원 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>미래 AI 랩의 방식</p>
+          <p className={kicker}>✨ 미래 AI 랩의 방식</p>
           <h2 className={bigHead}>
             “전부 대신 해드립니다”식 컨설팅,<br /><span className="text-blue-600">이제는 맞지 않는 방식입니다</span>
           </h2>
@@ -533,7 +534,7 @@ export default function FundingConsultingDetailPage() {
       {/* ── 3가지 진행 방식 (상품 A/B/C) + 비교표 — '왜 미래 AI 랩' 바로 앞 배치 ─────── */}
       <section className={`bg-white ${band}`}>
         <div className="mx-auto max-w-[1000px]">
-          <p className={kicker}>진행 방식</p>
+          <p className={kicker}>🧭 진행 방식</p>
           <h2 className={bigHead}>
             우선 500,000원으로<br /><span className="text-blue-600">방향부터 정확히 정리합니다</span>
           </h2>
@@ -722,7 +723,7 @@ export default function FundingConsultingDetailPage() {
       {/* 왜 미래 AI 랩 — 단순 신청 지원과 다른 점(담백한 3가지) */}
       <section className={`bg-blue-50/50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>단순 신청 지원과 다른 점</p>
+          <p className={kicker}>🔍 단순 신청 지원과 다른 점</p>
           <h2 className={bigHead}>
             자금만 보고<br /><span className="text-blue-600">끝내지 않습니다</span>
           </h2>
@@ -744,7 +745,7 @@ export default function FundingConsultingDetailPage() {
       {/* 진행 절차 — 막막함을 없애는 6단계 플로우 */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>진행 절차</p>
+          <p className={kicker}>📋 진행 절차</p>
           <h2 className={bigHead}>
             정책자금 컨설팅,<br /><span className="text-blue-600">이렇게 진행됩니다</span>
           </h2>
@@ -770,7 +771,7 @@ export default function FundingConsultingDetailPage() {
       {/* 신청 전 자가진단 — 확인해두면 좋은 것들(배제가 아니라 안내) */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>신청 전 자가진단</p>
+          <p className={kicker}>✅ 신청 전 자가진단</p>
           <h2 className={bigHead}>
             미리 확인해두면<br /><span className="text-blue-600">진행이 한결 수월합니다</span>
           </h2>
@@ -792,7 +793,7 @@ export default function FundingConsultingDetailPage() {
       {/* 정직한 진행 원칙 — 셀렉티브 포지셔닝 */}
       <section className={`bg-slate-900 ${band}`}>
         <div className={inner}>
-          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">저희가 지키는 원칙</p>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">🤝 저희가 지키는 원칙</p>
           <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
             저희도 모든 상담을<br /><span className="text-amber-300">계약으로 이어가지 않습니다</span>
           </h2>
@@ -818,7 +819,7 @@ export default function FundingConsultingDetailPage() {
       {/* 혜택 2 — 전자책 3종 증정 */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>구매 혜택</p>
+          <p className={kicker}>🎁 구매 혜택</p>
           <h2 className={bigHead}>
             23만 7천 원에 판매 중인 전자책 3종,<br /><span className="text-blue-600">그대로 드립니다</span>
           </h2>
@@ -851,7 +852,7 @@ export default function FundingConsultingDetailPage() {
       {/* 믿을 수 있는 이유 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>믿을 수 있는 이유</p>
+          <p className={kicker}>🏅 믿을 수 있는 이유</p>
           <h2 className={bigHead}>경험과 실적,<br /><span className="text-blue-600">데이터로 뒷받침합니다</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {reasons.map((r) => (
@@ -883,7 +884,7 @@ export default function FundingConsultingDetailPage() {
       {/* 제공 결과물 */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>컨설팅 후 남는 결과물</p>
+          <p className={kicker}>📄 컨설팅 후 남는 결과물</p>
           <h2 className={bigHead}>상담만 받고 끝나지 않고,<br /><span className="text-blue-600">정리된 자료로 남습니다</span></h2>
           <p className="mx-auto mt-4 max-w-lg text-center text-base leading-relaxed text-slate-600">
             대표님이 이후에 직접 실행하거나 내부에서 공유할 수 있도록, 현황부터 자금 방향과 실행 순서까지 정리해 드립니다.
@@ -936,7 +937,7 @@ export default function FundingConsultingDetailPage() {
       {/* FAQ */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>자주 묻는 질문</p>
+          <p className={kicker}>💬 자주 묻는 질문</p>
           <h2 className={bigHead}>정책자금 컨설팅 FAQ</h2>
           <div className="mt-9 space-y-3">
             {pkg.faqs.map((f) => (
