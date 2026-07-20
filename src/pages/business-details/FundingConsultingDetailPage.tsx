@@ -161,6 +161,17 @@ const fundFeatures = [
   { icon: '🎯', t: '목적에 따라 종류가 다양합니다', d: '운전자금·시설자금·창업자금 등 목적과 기업 상황에 따라 적합한 기관·상품이 달라, 방향을 먼저 잡는 것이 중요합니다.' },
 ]
 
+// 정책자금 vs 일반 대출 한눈 비교표 — 숫자 중심(전자책 비교표 참고, 일반 통용 기준).
+// ⚠️ 금리·거치·조건은 기관·상품·시점·신용에 따라 달라질 수 있어 "경우가 많음/가능" 톤 유지.
+const loanVsPolicy = [
+  { k: '금리', loan: '연 6~10%대 (신용도 따라)', policy: '연 2~4%대인 경우가 많음' },
+  { k: '평가 기준', loan: '신용점수·담보 중심', policy: '기술성·사업성도 함께 평가' },
+  { k: '상환 방식', loan: '실행 즉시 원리금 상환', policy: '1~3년 거치 후 분할상환 가능' },
+  { k: '보증', loan: '본인 신용·담보 필요', policy: '신보·기보·지역재단 보증부 가능' },
+  { k: '자금 용도', loan: '대체로 자유', policy: '운전·시설·창업 등 목적별' },
+  { k: '자금 이후', loan: '1회성 종료', policy: '인증·지원사업으로 연계 가능' },
+]
+
 // 진행 절차 — 막막함 해소용 6단계 플로우
 const processSteps = [
   { t: '상담 신청', d: '홈페이지나 카톡으로 편하게 문의를 남겨주세요.' },
@@ -400,12 +411,15 @@ export default function FundingConsultingDetailPage() {
           </div>
           <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
             <p className="text-lg font-black leading-snug text-white sm:text-xl">
-              막막하게 느껴지는 건, <span className="text-amber-300">아직 정책자금이 낯설기 때문</span>입니다.
+              하지만 <span className="text-amber-300">막힌 이유가 달랐을 뿐, 길은 있었습니다.</span>
             </p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">그래서 먼저, 정책자금이 일반 대출과 어떻게 다른지부터 쉽게 짚어보겠습니다.</p>
+            <p className="mt-2 text-sm font-semibold text-slate-400">그래서 먼저, 실제로 정책자금을 받은 대표님들의 이야기부터 보여드리겠습니다.</p>
           </div>
         </div>
       </section>
+
+      {/* 정책자금·보증부 자금 실제 사례 (카톡 승인 공유) — 문제 공감 직후 proof 로 배치 */}
+      <FundingCasesSection />
 
       {/* 정책자금이 낯선 분들을 위한 기초 설명 */}
       <section className={`bg-blue-50/50 ${band}`}>
@@ -427,6 +441,41 @@ export default function FundingConsultingDetailPage() {
               </div>
             ))}
           </div>
+
+          {/* 한눈 비교표 — 일반 대출 vs 정책자금 (숫자 중심) */}
+          <p className="mt-12 text-center text-lg font-black text-slate-900 sm:text-xl">
+            한눈에 보면, <span className="text-blue-600">이렇게 다릅니다</span>
+          </p>
+          <div className="mx-auto mt-5 max-w-xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
+            {/* 헤더 */}
+            <div className="grid grid-cols-[minmax(58px,0.7fr)_1fr_1fr]">
+              <div className="bg-slate-100" />
+              <div className="bg-slate-700 px-2 py-3 text-center">
+                <p className="text-sm font-black text-slate-200 sm:text-base">일반 대출</p>
+              </div>
+              <div className="bg-blue-600 px-2 py-3 text-center">
+                <p className="text-sm font-black text-white sm:text-base">정책자금</p>
+              </div>
+            </div>
+            {/* 행 */}
+            {loanVsPolicy.map((r, i) => (
+              <div key={r.k} className={`grid grid-cols-[minmax(58px,0.7fr)_1fr_1fr] ${i % 2 ? 'bg-slate-50/70' : 'bg-white'}`}>
+                <div className="flex items-center bg-slate-100/70 px-2.5 py-3">
+                  <p className="text-[0.72rem] font-black leading-tight text-slate-600 sm:text-[0.8rem]">{r.k}</p>
+                </div>
+                <div className="flex items-center justify-center px-2 py-3 text-center">
+                  <p className="text-[0.8rem] font-medium leading-snug text-slate-500 sm:text-[0.9rem]">{r.loan}</p>
+                </div>
+                <div className="flex items-center justify-center bg-blue-50/60 px-2 py-3 text-center">
+                  <p className="text-[0.82rem] font-bold leading-snug text-blue-700 sm:text-[0.92rem]">{r.policy}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-3 max-w-xl text-center text-xs leading-relaxed text-slate-400">
+            ※ 금리·거치기간·조건은 기관·상품·신청 시점·기업 신용에 따라 달라질 수 있습니다. 위 수치는 일반적으로 통용되는 기준을 정리한 것입니다.
+          </p>
+
           <p className="mx-auto mt-8 max-w-lg text-center text-sm leading-relaxed text-slate-500">
             정책자금도 심사 절차를 거치기 때문에, 먼저 <b className="text-slate-700">우리 회사에 맞는 방향인지 확인하는 것</b>이 첫 단계입니다.
           </p>
@@ -717,9 +766,6 @@ export default function FundingConsultingDetailPage() {
           </ol>
         </div>
       </section>
-
-      {/* 정책자금·보증부 자금 실제 사례 (카톡 승인 공유) */}
-      <FundingCasesSection />
 
       {/* 신청 전 자가진단 — 확인해두면 좋은 것들(배제가 아니라 안내) */}
       <section className={`bg-white ${band}`}>
