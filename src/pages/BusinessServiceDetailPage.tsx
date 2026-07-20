@@ -1,8 +1,8 @@
 // 서비스몰 공용 상품 상세페이지 — 한국형 이커머스 "긴 세로 상세" 템플릿.
 // /business-services/:slug 전 상품에 적용 (정책자금은 전용 페이지가 우선 매칭).
-// 상단 구매영역(카페24형) + 후킹 → 고민 공감 → 왜 필요한가(네이비) → 믿을 수 있는 이유
-// → 진행/결과 예시 카드(알림톡형·문서형, '예시' 명시) → 진행 과정 → 결과물 → 추천 대상
-// → 재구매 CTA(네이비) → FAQ → 유의사항 → 다른 상품 링크.
+// 상단 구매영역(카페24형) + 후킹 → 고민 공감 → 왜 필요한가(네이비) → 핵심 혜택 → 변화
+// → 믿을 수 있는 이유 → 추천 대상 + 제공 결과물(합본) → 재구매 CTA(네이비) → FAQ
+// → 유의사항 → 다른 상품 링크. (진행/결과 예시 카드·진행 과정 섹션은 제거)
 // 하단 상담 폼은 제거 — 상담은 모든 CTA에서 구글폼으로 연결(모바일은 하단 고정바가 따라다님).
 // 결제: /checkout/:slug 별도 페이지 (PortOne V2).
 import { useEffect, useState } from 'react'
@@ -11,20 +11,11 @@ import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
 import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../config/commerce'
-import { getDetailContent, type DetailCase } from '../data/businessDetailContent'
+import { getDetailContent } from '../data/businessDetailContent'
 
 const band = 'px-5 py-12 sm:py-16'
 const inner = 'mx-auto max-w-[720px]'
 const bigHead = 'mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-slate-900 sm:text-[2.7rem]'
-
-// 공용 진행 과정 (상담 → 진단 → 방향 → 안내 → 협의)
-const STEPS = [
-  { t: '가능성 진단 신청', d: '편하게 남겨주세요. 담당자가 연락드립니다.' },
-  { t: '기업 현황 점검', d: '업종·업력·현재 상황을 함께 살펴봅니다.' },
-  { t: '적용 가능 여부 확인', d: '우리 회사에 무엇이 적용되는지, 무엇을 먼저 하면 좋을지 순서를 잡아드립니다.' },
-  { t: '전략·자료 안내', d: '필요한 전략과 준비 자료를 안내해 드립니다.' },
-  { t: '이후 진행 협의', d: '진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' },
-]
 
 // 신뢰 라인(누적 자금조달 실적) 미노출 상품 — 자금과 무관한 순수 구축형(IT) 상품만 제외
 const NO_TRUST_IDS = new Set(['responsive-homepage', 'ai-ax-system', 'ax-full-package'])
@@ -63,52 +54,6 @@ function renderEmphasis(text: string) {
     ) : (
       <span key={i}>{seg}</span>
     ),
-  )
-}
-
-// 진행/결과 예시 카드 (talk = 카톡 알림톡형 / doc = 문서형)
-function CaseCard({ c, accent }: { c: DetailCase; accent: string }) {
-  return (
-    <div>
-      <p className="text-center text-[1.6rem] font-black tracking-tight text-slate-900 sm:text-4xl">
-        <span className={accent}>{c.bigAccent}</span> {c.bigRest}
-      </p>
-      <div className="mx-auto mt-5 max-w-sm overflow-hidden rounded-3xl bg-slate-200/70 shadow-xl ring-1 ring-slate-200">
-        {c.style === 'talk' ? (
-          <div className="flex items-center gap-2 bg-[#FEE500] px-4 py-2.5">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-[#3C1E1E] text-[10px] font-black text-[#FEE500]">TALK</span>
-            <span className="text-sm font-black text-[#3C1E1E]">알림톡 도착</span>
-            <span className="ml-auto rounded bg-black/10 px-1.5 py-0.5 text-[10px] font-black text-[#3C1E1E]">예시</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 bg-slate-900 px-4 py-2.5">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-white/15 text-[12px]" aria-hidden>📄</span>
-            <span className="text-sm font-black text-white">진행 결과 미리보기</span>
-            <span className="ml-auto rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-black text-white">예시</span>
-          </div>
-        )}
-        <div className="p-4">
-          <div className={`rounded-2xl bg-white p-4 shadow-sm ${c.style === 'talk' ? 'rounded-tl-md' : ''}`}>
-            <p className="text-sm font-bold text-slate-900">{c.title}</p>
-            {c.sub && <p className="mt-1 text-xs text-slate-400">{c.sub}</p>}
-            <dl className="mt-3 space-y-1.5 border-t border-slate-100 pt-3 text-[13px]">
-              {c.rows.map((r) => (
-                <div key={r.k} className="flex justify-between gap-3">
-                  <dt className="shrink-0 text-slate-400">{r.k}</dt>
-                  <dd className="text-right font-semibold text-slate-700">{r.v}</dd>
-                </div>
-              ))}
-            </dl>
-            <div className="relative mt-5 rounded-xl border-2 border-blue-600 bg-blue-50 px-4 py-3 text-center">
-              <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-blue-600 px-2 py-0.5 text-[10px] font-black text-white">
-                {c.boxLabel}
-              </span>
-              <p className="mt-1 text-xl font-black tracking-tight text-slate-900 sm:text-2xl">{c.boxValue}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   )
 }
 
@@ -553,80 +498,38 @@ export default function BusinessServiceDetailPage() {
         </div>
       </section>
 
-      {/* 진행/결과 예시 */}
-      {content.cases.length > 0 && (
-        <section className={`bg-slate-50 ${band}`}>
-          <div className={inner}>
-            <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-white text-4xl shadow-sm ring-1 ring-slate-200">🙋‍♂️</div>
-            <p className={kicker}>{content.casesKicker}</p>
-            <h2 className={bigHead}>
-              {content.casesTitle}<br /><span className={accentText}>{content.casesAccent}</span>
-            </h2>
-            <div className="mt-12 space-y-14">
-              {content.cases.map((c, i) => (
-                <CaseCard key={i} c={c} accent={accentText} />
-              ))}
-            </div>
-            <p className="mt-12 rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-500">
-              ※ 위 화면은 이해를 돕기 위한 <b>예시</b>이며 실제 고객 정보가 아닙니다. 실제 결과(승인·인증·지급 여부, 금액·기간 등)는 기관 심사와 기업 상황에 따라 달라질 수 있으며 보장하지 않습니다.
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* 진행 과정 */}
-      <section id="flow" className={`bg-white ${band}`}>
-        <div className={inner}>
-          <p className={kicker}>진행 과정</p>
-          <h2 className={bigHead}>이렇게 진행됩니다</h2>
-          <ol className="mx-auto mt-10 max-w-xl space-y-3">
-            {STEPS.map((s, i) => (
-              <li key={s.t} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-900 text-base font-black text-white" aria-hidden>{i + 1}</span>
-                <div className="min-w-0 pt-0.5">
-                  <p className="text-[1.1rem] font-extrabold leading-snug text-slate-900">{s.t}</p>
-                  <p className="mt-1 text-[0.98rem] leading-relaxed text-slate-500">{s.d}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-5 text-center text-[1.05rem] text-slate-500">부담 갖지 않으셔도 됩니다. 진행 여부는 이야기 나눈 뒤 정하셔도 좋습니다.</p>
-        </div>
-      </section>
-
-      {/* 제공 결과물 */}
+      {/* 추천 대상 + 제공 결과물 — 자연스럽게 하나로(누가 잘 맞는지 → 무엇을 얻는지) */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>제공 항목</p>
-          <h2 className={bigHead}>이 상품으로 대표님이<br /><span className={accentText}>얻으시는 것들입니다</span></h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {pkg.deliverables.map((d, i) => (
-              <div key={d} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <span className={`text-2xl font-black sm:text-3xl ${accentText}`}>{`0${i + 1}`}</span>
-                <p className="mt-3 text-lg font-extrabold leading-snug text-slate-900">{d}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {pkg.highlights.map((hi) => (
-              <span key={hi} className="rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">{hi}</span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 추천 대상 */}
-      <section className={`bg-white ${band}`}>
-        <div className={inner}>
           <p className={kicker}>추천 대상</p>
-          <h2 className={bigHead}>이런 대표님이라면<br /><span className={accentText}>잘 맞습니다</span></h2>
+          <h2 className={bigHead}>이런 분들께<br /><span className={accentText}>추천드립니다</span></h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {pkg.recommendedFor.map((r) => (
-              <div key={r} className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50 p-6">
+              <div key={r} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <span className={`grid h-11 w-11 place-items-center rounded-xl text-lg font-black text-white ${flagship ? 'bg-amber-500' : 'bg-blue-600'}`} aria-hidden>✓</span>
                 <p className="mt-3 text-[1.2rem] font-semibold leading-snug text-slate-800">{r}</p>
               </div>
             ))}
+          </div>
+
+          {/* 그리고 이런 것들을 얻으십니다 */}
+          <div className="mt-14">
+            <h3 className="text-center text-[1.4rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.7rem]">
+              그리고 이 상품으로<br /><span className={accentText}>이런 것들을 얻으십니다</span>
+            </h3>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {pkg.deliverables.map((d, i) => (
+                <div key={d} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <span className={`text-2xl font-black sm:text-3xl ${accentText}`}>{`0${i + 1}`}</span>
+                  <p className="mt-3 text-lg font-extrabold leading-snug text-slate-900">{d}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {pkg.highlights.map((hi) => (
+                <span key={hi} className="rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">{hi}</span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
