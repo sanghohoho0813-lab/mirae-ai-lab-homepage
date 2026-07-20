@@ -554,15 +554,32 @@ export default function FundingConsultingDetailPage() {
         <div className="mx-auto max-w-[1000px]">
           <p className={kicker}>🧭 진행 방식</p>
           <h2 className={bigHead}>
-            우선 500,000원으로<br /><span className="text-blue-600">방향부터 정확히 정리합니다</span>
+            대표님 상황에 맞게,<br /><span className="text-blue-600">필요한 만큼만 선택하세요</span>
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-center text-base font-medium leading-relaxed text-slate-600">
-            기업 현황과 자금 가능성 진단부터 — 어떤 기관·자금을 어떤 순서로 준비할지, 필요한 서류와 보완점까지 한 번에 정리해 드립니다.
-            <b className="text-slate-900"> 실제로 많은 대표님이 이 500,000원 1회 진단만으로 방향을 잡고 직접 신청까지 진행</b>하시고, 그때도 성과보수는 없습니다.
+            기본은 <b className="text-slate-900">500,000원 1회 진단</b>이면 충분합니다. 대부분 이 진단만으로 방향을 잡고 직접 신청까지 하시고, 성과보수도 없습니다.
+            다만 더 맡기고 싶으시면, 아래에서 상황에 맞는 방식을 골라 주세요.
           </p>
 
-          <p className="mt-10 text-center text-sm font-black uppercase tracking-widest text-slate-400">진단 후, 필요한 범위까지만 선택하세요</p>
-          <div className="mt-5 grid items-stretch gap-4 sm:grid-cols-3">
+          {/* 선택 가이드 브릿지 — 상황별로 어떤 방식이 맞는지 */}
+          <div className="mx-auto mt-9 max-w-2xl rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+            <p className="text-center text-[1.05rem] font-black text-slate-900">👉 이렇게 골라보세요</p>
+            <ul className="mt-4 space-y-3">
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-500 text-xs font-black text-white">1</span>
+                <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-slate-900">AI·서류가 익숙하고 흐름을 아신다면</b> — 기본 진단(500,000원)만으로 충분합니다.</p>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-slate-900 text-xs font-black text-white">2</span>
+                <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-slate-900">사업이 바빠 직접 하기 어렵거나 서류가 부담이면</b> — 전부 위임형으로 맡기세요.</p>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-blue-600 text-xs font-black text-white">3</span>
+                <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-blue-700">혼자서는 어렵고, 동종 업계보다 앞서가며 자금 그 이상까지 원하시면</b> — AX 결합 성장자금형이 좋습니다.</p>
+              </li>
+            </ul>
+          </div>
+          <div className="mt-6 grid items-stretch gap-4 sm:grid-cols-3">
             {plans.map((p, i) => (
               <div
                 key={p.key}
@@ -683,6 +700,46 @@ export default function FundingConsultingDetailPage() {
             ※ 성과보수(B 3%·C 5%)는 <b className="text-slate-500">추가 진행을 선택</b>하고 <b className="text-slate-500">실제로 자금이 조달된 경우에만</b> 발생하며, 기본 1회 컨설팅(500,000원)에는 자동으로 붙지 않습니다.
             조달 성공이나 특정 금액을 보장하지 않으며, 성과보수 발생 시점·조달금액 정의·상한 등 세부 기준은 개별 계약서에서 확정합니다.
           </p>
+
+          {/* AX가 뭔가요 — 인포그래픽 부연 설명 (3번 AX 결합형 이해용) */}
+          <div className="mx-auto mt-12 max-w-2xl rounded-3xl border-2 border-blue-100 bg-blue-50/50 p-6 sm:p-8">
+            <p className="text-center text-sm font-black uppercase tracking-widest text-blue-600">AX가 뭔가요?</p>
+            <h3 className="mt-2 text-center text-[1.4rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.75rem]">
+              반복 업무를 <span className="text-blue-600">AI가 대신하게</span> 만드는 것
+            </h3>
+            <p className="mx-auto mt-3 max-w-md text-center text-[0.98rem] leading-relaxed text-slate-600">
+              AX(AI 전환)는 매일 손으로 하던 일을 AI·자동화로 바꿔, 시간을 아끼고 <b className="text-slate-900">회사에 프로그램이 자산으로 남게</b> 하는 것입니다.
+            </p>
+
+            {/* 흐름: 반복 수작업 → AI 자동화 → 시간 절감 + 프로그램 자산 */}
+            <div className="mt-7 grid gap-3 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-center">
+              <div className="rounded-2xl bg-white p-4 text-center shadow-sm ring-1 ring-slate-100">
+                <p className="text-3xl" aria-hidden>🗂️</p>
+                <p className="mt-2 text-sm font-black text-slate-900">매일 반복하는 수작업</p>
+                <p className="mt-0.5 text-xs leading-snug text-slate-500">엑셀 입력·정리·보고</p>
+              </div>
+              <p className="text-center text-2xl font-black text-blue-400" aria-hidden>
+                <span className="sm:hidden">↓</span><span className="hidden sm:inline">→</span>
+              </p>
+              <div className="rounded-2xl bg-white p-4 text-center shadow-sm ring-1 ring-slate-100">
+                <p className="text-3xl" aria-hidden>🤖</p>
+                <p className="mt-2 text-sm font-black text-slate-900">AI·자동화 적용</p>
+                <p className="mt-0.5 text-xs leading-snug text-slate-500">프로그램이 대신 처리</p>
+              </div>
+              <p className="text-center text-2xl font-black text-blue-400" aria-hidden>
+                <span className="sm:hidden">↓</span><span className="hidden sm:inline">→</span>
+              </p>
+              <div className="rounded-2xl bg-white p-4 text-center shadow-sm ring-1 ring-blue-100">
+                <p className="text-3xl" aria-hidden>📈</p>
+                <p className="mt-2 text-sm font-black text-slate-900">시간·비용 절감</p>
+                <p className="mt-0.5 text-xs leading-snug text-slate-500">+ 회사에 프로그램 자산</p>
+              </div>
+            </div>
+
+            <p className="mx-auto mt-6 max-w-md text-center text-[0.92rem] leading-relaxed text-slate-500">
+              정책자금으로 자금을 마련하면서, 그 자금이 <b className="text-slate-700">회사를 실제로 성장시키는 시스템</b>까지 이어지도록 함께 설계하는 것이 <b className="text-blue-700">3번 AX 결합형</b>입니다.
+            </p>
+          </div>
         </div>
       </section>
 
