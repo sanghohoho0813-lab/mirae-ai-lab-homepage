@@ -12,4 +12,4 @@ export const inquiryUrl = consultLinks.googleForm
 
 /** 결제 준비 중 안내 문구 (결제형 상품의 상담 CTA 하단 등에 노출) */
 export const paymentsPreparingNotice =
-  '현재 카드 결제 시스템을 준비 중입니다. 무료 상담을 신청해 주시면 계좌이체 등 결제 방법과 진행 순서를 바로 안내해 드립니다.'
+  '현재 카드 결제 시스템을 준비 중입니다. 가능성 진단을 신청해 주시면 계좌이체 등 결제 방법과 진행 순서를 바로 안내해 드립니다.'

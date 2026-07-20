@@ -19,9 +19,9 @@ const bigHead = 'mt-3 text-center text-[1.85rem] font-black leading-[1.28] track
 
 // 공용 진행 과정 (상담 → 진단 → 방향 → 안내 → 협의)
 const STEPS = [
-  { t: '상담 신청', d: '편하게 남겨주세요. 담당자가 연락드립니다.' },
-  { t: '기업 현황 진단', d: '업종·업력·현재 상황을 함께 살펴봅니다.' },
-  { t: '준비 방향 정리', d: '무엇을 먼저 하면 좋을지 순서를 잡아드립니다.' },
+  { t: '가능성 진단 신청', d: '편하게 남겨주세요. 담당자가 연락드립니다.' },
+  { t: '기업 현황 점검', d: '업종·업력·현재 상황을 함께 살펴봅니다.' },
+  { t: '적용 가능 여부 확인', d: '우리 회사에 무엇이 적용되는지, 무엇을 먼저 하면 좋을지 순서를 잡아드립니다.' },
   { t: '전략·자료 안내', d: '필요한 전략과 준비 자료를 안내해 드립니다.' },
   { t: '이후 진행 협의', d: '진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' },
 ]
@@ -43,7 +43,7 @@ const NO_TRUST_IDS = new Set(['responsive-homepage', 'ai-ax-system', 'ax-full-pa
 //  ▶ 복원 사인(대표님과의 약속): 채팅으로 "상세페이지 풀오픈" 이라고 요청하시면
 //    위 1) 로 되돌립니다. (숨긴 섹션은 아무것도 지우지 않았으므로 그대로 복구됩니다.)
 // ─────────────────────────────────────────────────────────────────────────────
-const DETAIL_TEASER_MODE = true
+const DETAIL_TEASER_MODE = false
 const FULL_DETAIL_SLUGS = new Set<string>([]) // 여기에 slug 를 넣으면 그 상품만 전체 노출
 
 function CartIcon() {
@@ -182,9 +182,9 @@ export default function BusinessServiceDetailPage() {
             flagship ? 'bg-amber-400 text-slate-900 shadow-amber-500/20' : 'bg-slate-900 text-white shadow-slate-900/20'
           }`}
         >
-          무료 상담 신청하기
+          가능성 진단 신청하기
         </a>
-        <p className="text-center text-xs font-medium text-slate-400">{consult ? '상담은 무료이고, 신청은 1~2분이면 끝납니다. 진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' : paymentsPreparingNotice}</p>
+        <p className="text-center text-xs font-medium text-slate-400">{consult ? '가능성 진단은 무료이고, 신청은 1~2분이면 끝납니다. 진행 여부는 이야기 나눈 뒤 정하셔도 됩니다.' : paymentsPreparingNotice}</p>
       </div>
     ) : (
       <div>
@@ -230,7 +230,7 @@ export default function BusinessServiceDetailPage() {
               onClick={inquiryOnly ? handleInquiry : handleBuy}
               className="rounded-lg bg-slate-900 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
             >
-              {inquiryOnly ? '상담 신청' : '바로 결제하기'}
+              {inquiryOnly ? '가능성 진단' : '바로 결제하기'}
             </button>
             <HeaderAccount />
           </div>
@@ -337,7 +337,7 @@ export default function BusinessServiceDetailPage() {
                 rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
               >
-                무료 상담 신청하기 <span aria-hidden>→</span>
+                가능성 진단 신청하기 <span aria-hidden>→</span>
               </a>
               <p className="mt-3 text-xs font-medium text-slate-400">상담은 무료이며 신청은 1~2분이면 끝납니다. 진행 여부는 상담 후 정하셔도 됩니다.</p>
             </div>
@@ -510,7 +510,7 @@ export default function BusinessServiceDetailPage() {
                 rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
               >
-                무료 상담 신청하기 <span aria-hidden>→</span>
+                가능성 진단 신청하기 <span aria-hidden>→</span>
               </a>
               <p className="mt-3 text-xs font-medium text-slate-400">상담은 무료이며 신청은 1~2분이면 끝납니다.</p>
             </div>
@@ -656,7 +656,7 @@ export default function BusinessServiceDetailPage() {
             </div>
             <p className="mt-5 border-t border-slate-100 pt-4 text-center text-[1.05rem] leading-relaxed text-slate-500">
               지금 당장 결정하지 않으셔도 괜찮습니다.<br />
-              <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요. 확인하는 데는 비용이 들지 않습니다.
+              <b className="text-slate-700">가능성 진단으로 적용 여부만 먼저 확인</b>해 두세요. 확인하는 데는 비용이 들지 않습니다.
             </p>
           </div>
         </div>
@@ -719,8 +719,8 @@ export default function BusinessServiceDetailPage() {
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
           {inquiryOnly ? (
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[0.92rem] font-black text-slate-900">우리 회사, 가능 여부 확인</span>
-              <span className="block truncate text-xs font-medium text-slate-500">무료 상담 · 신청 1~2분</span>
+              <span className="block truncate text-[0.92rem] font-black text-slate-900">우리 회사, 적용 가능 여부 확인</span>
+              <span className="block truncate text-xs font-medium text-slate-500">가능성 진단 · 신청 1~2분</span>
             </span>
           ) : (
             <span className="shrink-0 text-lg font-black text-slate-900">{displayPrice}</span>
@@ -730,7 +730,7 @@ export default function BusinessServiceDetailPage() {
             onClick={inquiryOnly ? handleInquiry : handleBuy}
             className={`flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white ${inquiryOnly ? 'shrink-0' : 'flex-1'}`}
           >
-            {inquiryOnly ? '상담 신청' : <><CartIcon /> 바로 결제하기</>}
+            {inquiryOnly ? '가능성 진단' : <><CartIcon /> 바로 결제하기</>}
           </button>
         </div>
       )}
