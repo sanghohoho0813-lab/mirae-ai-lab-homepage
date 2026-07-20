@@ -72,7 +72,7 @@ const plans: Plan[] = [
       '우선 검토 기관·자금과 실행 순서 정리',
       '보완 항목 + 준비자료·체크리스트 안내',
     ],
-    recommend: '방향만 정리하고 직접 진행하려는 경우',
+    recommend: 'AI·서류가 익숙하고 정책자금 흐름을 아신다면, 이 진단만으로 충분합니다.',
     cta: 'buy',
     ctaLabel: '1회 컨설팅 결제하기',
   },
@@ -83,7 +83,7 @@ const plans: Plan[] = [
     priceMain: '착수금 500,000원',
     priceSub: '+ 조달액의 3% (선택 시)',
     points: ['신청·서류·진행 전부 대행', '업계 성공수수료 5~7% 대비 낮은 편', 'AX 프로그램 구축은 미포함'],
-    recommend: '자료 준비와 전체 진행을 맡기려는 경우',
+    recommend: '사업이 바빠 직접 하기 어렵거나 AI·서류가 부담이시면, 전 과정을 맡아 드립니다.',
     cta: 'inquiry',
     ctaLabel: '전부 위임형 가능성 확인',
   },
@@ -94,7 +94,7 @@ const plans: Plan[] = [
     priceMain: '착수금 500,000원',
     priceSub: '+ 조달액의 5% · 최대 1,500만원 한도 (선택 시)',
     points: ['기업진단 · 업종별 비효율 분석', '프로토타입 · 핵심 MVP 구축', '선택적 AI 기능 · 현장 테스트 · 성과 측정'],
-    recommend: '자금조달과 실제 업무혁신을 함께 추진하려는 경우',
+    recommend: '자금을 넘어 AI 자동화까지. 정책자금만 받고 끝나지 않고, 프로그램도 함께 남습니다.',
     cta: 'inquiry',
     ctaLabel: 'AX 결합형 적합성 확인',
     featured: true,
@@ -104,10 +104,10 @@ const plans: Plan[] = [
 // A/B/C 빠른 비교표 — 카드(대상·가격·포함범위)와 역할 분리, 상품 차이만 압축.
 // 시각 우선순위: 1) 500,000원 기본 진단 2) 맡기는 범위 3) 선택형 성과보수 조건. (표 안에는 CTA 없음)
 type CompareCell = string | { main: string; sub: string }
-const compareCols: { key: 'A' | 'B' | 'C'; name: string; badge: string; featured?: boolean }[] = [
-  { key: 'A', name: '기본 진단', badge: '성과보수 없음', featured: true },
-  { key: 'B', name: '전부 위임형', badge: '선택형' },
-  { key: 'C', name: 'AX 결합형', badge: '선별 진행' },
+const compareCols: { key: string; name: string; badge: string; featured?: boolean }[] = [
+  { key: '1', name: '기본 진단', badge: '성과보수 없음', featured: true },
+  { key: '2', name: '전부 위임형', badge: '선택형' },
+  { key: '3', name: 'AX 결합형', badge: '선별 진행' },
 ]
 const compareRows: { label: string; cells: CompareCell[] }[] = [
   { label: '기본 비용', cells: ['500,000원', '착수금 500,000원', '착수금 500,000원'] },
@@ -402,12 +402,6 @@ export default function FundingConsultingDetailPage() {
               </div>
             ))}
           </div>
-          <div className="mt-8 rounded-2xl bg-slate-900 p-6 text-center sm:p-7">
-            <p className="text-lg font-black leading-snug text-white sm:text-xl">
-              하지만 <span className="text-amber-300">막힌 이유가 달랐을 뿐, 길은 있었습니다.</span>
-            </p>
-            <p className="mt-2 text-sm font-semibold text-slate-400">그래서 먼저, 실제로 정책자금을 받은 대표님들의 이야기부터 보여드리겠습니다.</p>
-          </div>
         </div>
       </section>
 
@@ -543,58 +537,9 @@ export default function FundingConsultingDetailPage() {
             <b className="text-slate-900"> 실제로 많은 대표님이 이 500,000원 1회 진단만으로 방향을 잡고 직접 신청까지 진행</b>하시고, 그때도 성과보수는 없습니다.
           </p>
 
-          {/* 밑밥 — 500,000원으로 어디까지 / 언제 3%·5%인지 단계별 안내 */}
-          <div className="mx-auto mt-8 max-w-2xl space-y-3">
-            {/* 1단계 — 기본 진단 */}
-            <div className="rounded-2xl border-2 border-blue-200 bg-blue-50/50 p-5 sm:p-6">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-blue-600 text-sm font-black text-white">1</span>
-                <span className="text-[1.05rem] font-black text-slate-900">먼저, 500,000원 기본 진단</span>
-                <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-black text-emerald-700">성과보수 없음</span>
-              </div>
-              <p className="mt-2.5 text-[0.98rem] leading-relaxed text-slate-700">
-                AI 도구를 어느 정도 다뤄보셨고 정책자금 흐름을 아시는 대표님이라면, <b className="text-slate-900">이 500,000원 진단만으로 방향을 잡고 직접 신청까지</b> 충분히 하실 수 있습니다. 여기서 끝내셔도 되고, <b className="text-slate-900">그때는 추가 비용(성과보수)이 전혀 없습니다.</b>
-              </p>
-            </div>
-            {/* 2단계 — 전부 위임형 3% */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-sm font-black text-white">2</span>
-                <span className="text-[1.05rem] font-black text-slate-900">그럼에도 너무 바쁘시다면, 전부 위임형</span>
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-black text-slate-600">조달액 3%</span>
-              </div>
-              <p className="mt-2.5 text-[0.98rem] leading-relaxed text-slate-700">
-                사업이 너무 바빠 서류 작성·기관 가입·신청까지 직접 하기 어렵거나, <b className="text-slate-900">AI·컴퓨터 다루는 게 익숙하지 않고 시간이 안 되는</b> 대표님은 — 신청·서류·진행 전 과정을 저희가 대신 맡습니다. 성과보수 3%는 <b className="text-slate-900">실제로 자금이 조달된 경우에만</b> 발생합니다.
-              </p>
-            </div>
-            {/* 3단계 — AX 결합형 5% */}
-            <div className="rounded-2xl border-2 border-blue-600 bg-blue-50/40 p-5 sm:p-6">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-blue-600 text-sm font-black text-white">3</span>
-                <span className="text-[1.05rem] font-black text-slate-900">더 나아가 AI 자동화까지, AX 결합형</span>
-                <span className="rounded-full bg-blue-600 px-2 py-0.5 text-xs font-black text-white">조달액 5%</span>
-              </div>
-              <p className="mt-2.5 text-[0.98rem] leading-relaxed text-slate-700">
-                우리 회사를 <b className="text-slate-900">AI 시대에 맞게 바꿔줄 업무 자동화 프로그램까지</b> 원하신다면 여기까지 함께합니다. <b className="text-slate-900">정책자금만 받고 끝나는 게 아니라</b>, 회사에 맞는 자동화 프로그램이 함께 남고 — 그 힘으로 <b className="text-slate-900">억 단위 자금 조달 가능성</b>도 높아집니다.
-              </p>
-              <ul className="mt-3 space-y-1.5">
-                {[
-                  '정부도 중소기업 AI 전환·디지털화를 적극 지원하는 추세입니다',
-                  '그래서 억 단위 규모로 도전하는 경우가 많습니다',
-                  '성과보수 5%는 업계 평균 5~7%보다 낮은 편이고, 최대 1,500만원 한도입니다',
-                ].map((t) => (
-                  <li key={t} className="flex items-start gap-2 text-[0.92rem] leading-relaxed text-slate-700">
-                    <span className="mt-0.5 shrink-0 font-black text-blue-600" aria-hidden>✓</span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
           <p className="mt-10 text-center text-sm font-black uppercase tracking-widest text-slate-400">진단 후, 필요한 범위까지만 선택하세요</p>
           <div className="mt-5 grid items-stretch gap-4 sm:grid-cols-3">
-            {plans.map((p) => (
+            {plans.map((p, i) => (
               <div
                 key={p.key}
                 className={`flex flex-col rounded-3xl border-2 bg-white p-5 sm:p-6 ${
@@ -602,7 +547,7 @@ export default function FundingConsultingDetailPage() {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className={`grid h-8 w-8 place-items-center rounded-lg text-sm font-black ${p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}>{p.key}</span>
+                  <span className={`grid h-9 w-9 place-items-center rounded-xl text-base font-black ${p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}>{i + 1}</span>
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-black ${
                       p.key === 'A' ? 'bg-emerald-50 text-emerald-700' : p.featured ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'
@@ -612,6 +557,7 @@ export default function FundingConsultingDetailPage() {
                   </span>
                 </div>
                 <h3 className="mt-4 text-[1.25rem] font-black leading-snug tracking-tight text-slate-900">{p.name}</h3>
+                <p className="mt-2 text-[0.92rem] leading-relaxed text-slate-600">{p.recommend}</p>
 
                 <div className="mt-4 border-y border-slate-100 py-4">
                   <p className={`text-2xl font-black tracking-tight ${p.featured ? 'text-blue-700' : 'text-slate-900'}`}>{p.priceMain}</p>
@@ -627,11 +573,7 @@ export default function FundingConsultingDetailPage() {
                   ))}
                 </ul>
 
-                <p className="mt-5 rounded-lg bg-slate-50 px-3 py-2 text-[0.82rem] font-semibold leading-snug text-slate-600">
-                  <span className="text-slate-400">추천</span> · {p.recommend}
-                </p>
-
-                <div className="mt-4">
+                <div className="mt-5">
                   {p.cta === 'buy' && !inquiryOnly ? (
                     <button
                       type="button"
@@ -904,7 +846,7 @@ export default function FundingConsultingDetailPage() {
       <section className={`bg-slate-900 ${band}`}>
         <div className="mx-auto max-w-[520px] px-1">
           <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">고민은 여기까지</p>
-          <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.5rem]">정책자금 컨설팅</h2>
+          <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.5rem]">정책자금</h2>
           <div className="mt-8 rounded-3xl border border-white/10 bg-white p-7 shadow-2xl">
             <div className="flex items-center justify-center gap-2">
               <span className="rounded-md bg-amber-400 px-2 py-0.5 text-sm font-black text-slate-900">{DISCOUNT_RATE} 할인</span>

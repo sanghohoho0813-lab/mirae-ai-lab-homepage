@@ -19,6 +19,7 @@ export type ChatLine = { from: 'client' | 'me'; text: string; time?: string }
 
 export type FundingCase = {
   pill: string // 필 배지용 짧은 업종 (예: '커피 로스터리')
+  region: string // 지역 (예: '서울 양천구') — 신뢰도용
   owner: string // 대표님 호칭 (예: '이대표님')
   size: string // 기업 규모 (연매출 등)
   summary: string // 폰 목업 하단 짧은 요약(상황+진행 기관)
@@ -35,6 +36,7 @@ export type FundingCase = {
 export const fundingCases: FundingCase[] = [
   {
     pill: '건설·특수시공',
+    region: '서울 양천구',
     owner: '박대표님',
     size: '법인 인수 직후 · 높은 부채·복합 재무 이슈',
     summary: '법인을 인수한 직후라 전 대표가 남긴 부채 등으로 추가 조달이 쉽지 않은 상황이었습니다. 재무를 먼저 정리하고, 특수필터 제조 기술성과 상환 능력을 중심으로 신용보증기금·소상공인진흥공단으로 나눠 준비했습니다.',
@@ -48,6 +50,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '광고·마케팅',
+    region: '서울 서초구',
     owner: '박대표님',
     size: '연매출 20~30억 · 광고 시장 침체기',
     summary: '광고 시장 침체로 최근 실적이 하락한 데다, 과거 주식거래에서 비롯된 세금 위험까지 겹친 상황이었습니다. 위험 요인을 먼저 정리한 뒤 중소벤처기업진흥공단으로 운영자금을 준비했습니다.',
@@ -61,6 +64,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '유리 제조',
+    region: '경기 광명',
     owner: '정대표님',
     size: '연매출 약 20억 · 업력 30년 · 높은 부채비율',
     summary: '기존 시설자금 실행 직후라 부채비율이 높아 추가 조달이 쉽지 않은 상황이었습니다. 오랜 업력과 제조 기술성·사업 지속성을 중심으로 자료를 재구성하고, 신청 시기와 자금 방향을 조정해 진행했습니다.',
@@ -74,6 +78,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '간판 제조',
+    region: '경기 남양주',
     owner: '박대표님',
     size: '창업 1년 차 · 매출 증빙이 어려운 초기기업',
     summary: '창업 1년 차라 매출 증빙이 부족한 초기기업이었습니다. 사업 모델과 시장성 자료를 정리해, 경기신용보증재단과 중소벤처기업진흥공단으로 나눠 준비했습니다.',
@@ -87,6 +92,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '커피 로스터리',
+    region: '경기 광주',
     owner: '이대표님',
     size: '연매출 약 4,000만 원 · 기존 대출 보유',
     summary: '연매출 규모는 작지만 로스팅 기술력이 뚜렷한 곳이었습니다. 매출 대신 기술성을 중심으로 기술보증기금 방향을 잡아 준비했고, 상담 시작 약 5주 만에 승인으로 이어졌습니다.',
@@ -101,6 +107,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '배달 플랫폼',
+    region: '서울 성동구',
     owner: '김대표님',
     size: '창업 초기 스타트업 · 신용보증 거절 이력',
     summary: '신용보증기금에서 한 차례 거절된 뒤라 추가 조달이 막막한 상황이었습니다. 거절 사유를 다시 정리하고 기관을 전환해, 지역신용보증재단으로 방향을 바꿔 진행했습니다.',
@@ -114,6 +121,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '분식 프랜차이즈',
+    region: '경기 하남',
     owner: '정대표님',
     size: '5년 운영 매장 · 노후 시설 리모델링 필요',
     summary: '5년 운영한 매장의 노후 시설을 개선할 자금이 필요한 상황이었습니다. 앞서 진행한 세금 환급을 계기로 이어, 스마트 시스템 리모델링 자금으로 준비했습니다.',
@@ -128,6 +136,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '드라이아이스 도소매·임가공',
+    region: '경기 광주',
     owner: '윤대표님',
     size: '연매출 약 20억 · 도소매·임가공 병행',
     summary: '보증부 자금 조달과 함께 고용 구조까지 정비가 필요한 상황이었습니다. 자금 방향을 먼저 잡고, 고용지원금을 함께 활용할 수 있게 구조를 정리해 진행했습니다.',
@@ -141,6 +150,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '외식 프랜차이즈',
+    region: '서울 강남구',
     owner: '강대표님',
     size: '연매출 약 7억~8억 · 기존 대출 다수',
     summary: '기존 대출 이력으로 추가 대출이 계속 거절되던 상황이었습니다. 2년 이상 축적된 테이블오더 운영 실적을 혁신성 관점으로 다시 정리해, 소상공인 혁신성장촉진자금으로 진행했습니다.',
@@ -155,6 +165,7 @@ export const fundingCases: FundingCase[] = [
   },
   {
     pill: '맞춤가구 제조',
+    region: '경기 화성',
     owner: '최대표님',
     size: '낮은 신용점수 · 대형 프로젝트 취소로 위기',
     summary: '신용점수가 낮고 대형 프로젝트 취소가 겹쳐 거절이 이어지던 상황이었습니다. 높은 재구매율과 2년 연속 성장세를 근거로, 저신용 기업이 이용 가능한 자금을 찾아 준비했습니다.',
@@ -169,4 +180,4 @@ export const fundingCases: FundingCase[] = [
 ]
 
 export const CASES_DISCLAIMER =
-  '상담 내용은 개인정보 보호를 위해 회사명·지역·세부 상황 일부를 바꿔 정리했습니다. 정책자금의 승인 여부와 한도는 기업의 재무상태, 신용, 업력, 자금 용도 및 신청 시점의 제도에 따라 달라질 수 있습니다.'
+  '상담 내용은 개인정보 보호를 위해 회사명·세부 상황 일부를 바꿔 정리했습니다. 정책자금의 승인 여부와 한도는 기업의 재무상태, 신용, 업력, 자금 용도 및 신청 시점의 제도에 따라 달라질 수 있습니다.'

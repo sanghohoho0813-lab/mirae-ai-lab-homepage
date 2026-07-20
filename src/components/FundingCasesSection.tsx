@@ -57,14 +57,15 @@ function PhoneCase({ c }: { c: FundingCase }) {
   const roomName = `${c.pill} ${c.owner.replace('님', '')}님`
   let firstClientSeen = false
   return (
-    <article className="flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+    <article className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
       {/* 상단: 업종 + 확보 금액 */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <span className="inline-block rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-bold text-slate-200">
-            {c.pill} {c.owner}
+            {c.pill} · {c.owner}
           </span>
-          <p className="mt-2 text-sm font-medium text-slate-400">{c.size}</p>
+          <p className="mt-1.5 flex items-center gap-1 text-xs font-bold text-sky-300"><span aria-hidden>📍</span> {c.region}</p>
+          <p className="mt-1 text-[13px] font-medium text-slate-400">{c.size}</p>
         </div>
         <div className="shrink-0 text-right">
           <p className="text-2xl font-black tracking-tight text-white sm:text-3xl">
@@ -94,8 +95,8 @@ function PhoneCase({ c }: { c: FundingCase }) {
         </div>
       </div>
 
-      {/* 설명란 (진행 상황·검토 방향·결과) */}
-      <p className="mt-4 text-[13.5px] leading-relaxed text-slate-300">{c.summary}</p>
+      {/* 설명란 (핵심만 · 3줄 클램프) */}
+      <p className="mt-4 line-clamp-3 text-[13px] leading-relaxed text-slate-300">{c.summary}</p>
       {c.meta && c.meta.length > 0 && (
         <div className="mt-2.5 flex flex-wrap gap-1.5">
           {c.meta.map((m) => (
@@ -111,21 +112,33 @@ export default function FundingCasesSection() {
   return (
     <section className={`bg-[#060b16] ${band}`}>
       <div className="mx-auto max-w-5xl">
-        {/* 상단 요약 */}
-        <p className="text-center text-sm font-black uppercase tracking-widest text-sky-400">정책자금·보증부 자금 실제 사례</p>
-        <h2 className="mt-3 text-center text-[1.7rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.4rem]">
-          기업마다 막힌 이유가 달랐고,<br />해결 순서도 달랐습니다
+        {/* 상단 요약 — 실제 사례 강조 */}
+        <div className="text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-400/10 px-3.5 py-1.5 text-xs font-black text-sky-300 ring-1 ring-sky-400/25">✅ 각색 없는 실제 승인 사례</span>
+        </div>
+        <h2 className="mt-4 text-center text-[1.9rem] font-black leading-[1.18] tracking-tight text-white sm:text-[2.8rem]">
+          말이 아니라,<br /><span className="text-sky-400">실제로 이렇게 받았습니다</span>
         </h2>
         <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-slate-400 sm:text-lg">
-          매출 증빙이 부족한 초기기업부터 매출 수십억 원대 기업까지,
-          제조·외식·플랫폼·광고·도소매 등 다양한 업종의 자금 전략을 설계했습니다.
+          초기기업부터 매출 수십억 원대까지, <b className="text-slate-200">여러 지역·업종</b>에서 실제로 승인된 사례입니다.
         </p>
 
-        {/* 대표 사례 — 폰 목업 + 설명란 (전체 기본 노출, 접기 없음) */}
-        <div className="mt-12 grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {/* 좌우 스크롤 안내 */}
+        <p className="mt-9 text-center text-sm font-bold text-slate-300">👉 좌우로 넘겨서 확인해 보세요</p>
+
+        {/* 대표 사례 — 좌우 스크롤 카드(스와이프) */}
+        <div className="mt-4 -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:thin]">
           {fundingCases.map((c) => (
-            <PhoneCase key={`${c.pill}-${c.amount}`} c={c} />
+            <div key={`${c.pill}-${c.amount}`} className="w-[290px] shrink-0 snap-start sm:w-[320px]">
+              <PhoneCase c={c} />
+            </div>
           ))}
+          {/* 그 외 다수 */}
+          <div className="flex w-[190px] shrink-0 snap-start flex-col items-center justify-center rounded-2xl border border-dashed border-white/20 bg-white/[0.02] p-6 text-center">
+            <p className="text-5xl font-black leading-none text-sky-400">+</p>
+            <p className="mt-3 text-lg font-black text-white">그 외 다수</p>
+            <p className="mt-2 text-[13px] leading-relaxed text-slate-400">더 많은 승인 사례가<br />있습니다</p>
+          </div>
         </div>
 
         {/* 네이버 블로그 전체 사례 (유지) */}
