@@ -13,6 +13,144 @@ function detailOf(e: unknown): string {
   return String(e).slice(0, 180)
 }
 
+// ── 진단 결과 알림 메일 (Resend) ──────────────────────────
+// submit 시점에 대표자에게 진단 요약을 이메일로 발송. inquiry.ts 와 동일한 env 사용.
+//   RESEND_API_KEY(필수) · INQUIRY_TO_EMAIL(기본 sanghohoho0813@gmail.com) · INQUIRY_FROM_EMAIL
+// 메일 실패가 리드 저장/응답을 깨지 않도록 호출부에서 try/catch 로 감쌈.
+function escapeHtml(v: string): string {
+  return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+// 문자열/객체 배열을 사람이 읽을 수 있는 줄 목록으로 (라벨 매핑 불필요)
+function asLines(v: unknown): string[] {
+  if (!Array.isArray(v)) return []
+  return v
+    .map((it) => {
+      if (it === null || it === undefined) return ''
+      if (typeof it === 'string') return it
+      if (typeof it === 'object') {
+        const o = it as Record<string, unknown>
+        const pick = (k: string) => (typeof o[k] === 'string' ? (o[k] as string) : '')
+        const main = pick('title') || pick('label') || pick('name') || pick('task') || pick('action') || pick('text') || pick('headline')
+        const sub = pick('reason') || pick('desc') || pick('detail') || pick('note')
+        if (main) return sub ? `${main} — ${sub}` : main
+        try { return JSON.stringify(o).slice(0, 200) } catch { return '' }
+      }
+      return String(it)
+    })
+    .filter(Boolean)
+    .slice(0, 40)
+}
+
+const bizTypeLabel = (t: string) => (t === 'corp' ? '법인' : t === 'individual' ? '개인사업자' : t === 'pre' ? '예비창업' : t || '-')
+const depthLabel = (d: string) => (d === 'comprehensive' ? '종합(3단계)' : d === 'funding' ? '자금(2단계)' : d === 'basic' ? '기본(1단계)' : d || '-')
+
+async function sendDiagnosisEmail(p: {
+  companyName: string; repName: string; phone: string; email: string
+  businessType: string; industry: string; contactMethod: string; preferredContactTime: string
+  consultationConsent: boolean; marketingConsent: boolean
+  grade: string; score: number; flags: string[]
+  completedStage?: number; stoppedAfterStage?: boolean; depth?: string
+  summary: Record<string, unknown>; interests: string[]; recProducts: unknown; answers: Record<string, unknown>
+}) {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    console.warn('[business-diagnosis] RESEND_API_KEY 미설정 — 진단 알림 메일 생략')
+    return
+  }
+  const to = process.env.INQUIRY_TO_EMAIL || 'sanghohoho0813@gmail.com'
+  const from = process.env.INQUIRY_FROM_EMAIL || 'AI Business Lab <onboarding@resend.dev>'
+  const receivedAt = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', dateStyle: 'long', timeStyle: 'short' })
+  const s = p.summary || {}
+  const str = (k: string) => (typeof s[k] === 'string' ? (s[k] as string) : '')
+  const stageTxt = p.completedStage ? `${p.completedStage}단계까지${p.stoppedAfterStage ? ' (여기서 종료)' : ''}` : '-'
+
+  const kv: Array<[string, string]> = [
+    ['회사명', p.companyName],
+    ['대표자명', p.repName],
+    ['연락처', p.phone],
+    ['이메일', p.email || '-'],
+    ['사업자 유형', bizTypeLabel(p.businessType)],
+    ['업종', p.industry || '-'],
+    ['상담 방식', p.contactMethod || '-'],
+    ['희망 시간대', p.preferredContactTime || '-'],
+    ['상담 동의', p.consultationConsent ? '동의' : '미동의'],
+    ['마케팅 동의', p.marketingConsent ? '동의' : '미동의'],
+    ['완료 단계', stageTxt],
+    ['진단 깊이', depthLabel(p.depth || '')],
+    ['리드 점수', `${p.score}점 · ${p.grade}등급`],
+    ['플래그', p.flags.length ? p.flags.join(', ') : '-'],
+    ['접수 시간', receivedAt],
+  ]
+
+  const listBlocks: Array<[string, string[]]> = [
+    ['핵심 요약', [str('headline'), str('summary'), str('topTask') ? `가장 먼저: ${str('topTask')}` : ''].filter(Boolean)],
+    ['강점', asLines(s.strengths)],
+    ['보완점', asLines(s.improvements)],
+    ['선결 과제', asLines(s.prerequisites)],
+    ['실행 플랜', asLines(s.actionPlan)],
+    ['관심 항목', (p.interests || []).slice(0, 40)],
+    ['추천 상품', asLines(p.recProducts)],
+    ['전체 응답(원본)', Object.entries(p.answers || {}).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : String(v)}`).slice(0, 60)],
+  ]
+
+  const kvHtml = kv
+    .map(
+      ([k, v]) => `<tr>
+        <td style="padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;font-weight:600;color:#334155;width:150px;vertical-align:top;font-size:13px">${escapeHtml(k)}</td>
+        <td style="padding:10px 14px;border:1px solid #e2e8f0;color:#0f172a;font-size:13px;line-height:1.6;white-space:pre-wrap">${escapeHtml(v)}</td>
+      </tr>`,
+    )
+    .join('')
+
+  const listHtml = listBlocks
+    .filter(([, lines]) => lines.length > 0)
+    .map(
+      ([title, lines]) => `
+      <div style="padding:14px 16px;border:1px solid #e2e8f0;border-top:none">
+        <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#2563eb">${escapeHtml(title)}</p>
+        <ul style="margin:0;padding-left:18px;color:#0f172a;font-size:13px;line-height:1.7">
+          ${lines.map((l) => `<li>${escapeHtml(l)}</li>`).join('')}
+        </ul>
+      </div>`,
+    )
+    .join('')
+
+  const html = `
+  <div style="font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;background:#f1f5f9;padding:24px">
+    <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden">
+      <div style="background:#0f172a;padding:20px 24px">
+        <p style="margin:0;color:#38bdf8;font-size:12px;font-weight:700;letter-spacing:1px">미래 AI 랩 · 기업 성장진단</p>
+        <p style="margin:6px 0 0;color:#ffffff;font-size:18px;font-weight:700">새 진단 접수 · ${escapeHtml(p.companyName)} (${escapeHtml(p.grade)}등급 ${p.score}점)</p>
+      </div>
+      <table style="width:100%;border-collapse:collapse">${kvHtml}</table>
+      ${listHtml}
+      <div style="padding:14px 24px;background:#f8fafc;color:#64748b;font-size:12px;line-height:1.6">
+        이 메일은 3분 기업 성장진단 제출 시 자동 발송되었습니다. ${p.email ? '회신(Reply) 시 문의자 이메일로 답장됩니다.' : '위 연락처로 직접 연락하실 수 있습니다.'}
+      </div>
+    </div>
+  </div>`
+
+  const text =
+    `미래 AI 랩 · 기업 성장진단 접수 — ${p.companyName} (${p.grade}등급 ${p.score}점)\n\n` +
+    kv.map(([k, v]) => `■ ${k}\n${v}`).join('\n\n') +
+    '\n\n' +
+    listBlocks.filter(([, l]) => l.length > 0).map(([t, l]) => `[${t}]\n` + l.map((x) => `- ${x}`).join('\n')).join('\n\n') +
+    '\n'
+
+  const mod: any = await import('resend')
+  const resend = new mod.Resend(apiKey)
+  const { error } = await resend.emails.send({
+    from,
+    to: [to],
+    subject: `[미래 AI 랩 진단] ${p.companyName} · ${p.grade}등급 ${p.score}점`,
+    html,
+    text,
+    ...(p.email && p.email.includes('@') ? { replyTo: p.email } : {}),
+  })
+  if (error) throw new Error(detailOf(error))
+}
+
 // ── 검증 헬퍼 ──────────────────────────────────────────
 const strip = (v: unknown, max = 200): string =>
   String(v ?? '')
@@ -363,6 +501,34 @@ export default async function handler(req: any, res: any) {
         event_key: leadId,
         payload: { grade: scored.grade, score: scored.total },
       })
+
+      // 진단 결과 알림 메일 (실패해도 저장/응답은 정상 처리)
+      try {
+        await sendDiagnosisEmail({
+          companyName,
+          repName,
+          phone,
+          email,
+          businessType,
+          industry,
+          contactMethod,
+          preferredContactTime,
+          consultationConsent,
+          marketingConsent,
+          grade: scored.grade,
+          score: scored.total,
+          flags: scored.flags,
+          completedStage: sm.completedStage !== undefined ? clampStage(sm.completedStage) : undefined,
+          stoppedAfterStage: sm.stoppedAfterStage === true,
+          depth: sm.diagnosisDepth !== undefined ? strip(sm.diagnosisDepth, 20) : undefined,
+          summary: body.resultSummary && typeof body.resultSummary === 'object' ? body.resultSummary : {},
+          interests,
+          recProducts: body.recommendedProducts,
+          answers,
+        })
+      } catch (mailErr) {
+        console.error('[business-diagnosis] 알림 메일 발송 실패:', detailOf(mailErr))
+      }
 
       return res.status(200).json({ ok: true, leadId })
     }

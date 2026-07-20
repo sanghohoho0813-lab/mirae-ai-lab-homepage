@@ -1,8 +1,8 @@
 // 3분 기업 성장진단 — 점진형(1단계만 해도 결과 → 원하면 2·3단계) 오케스트레이터.
 // 화면: start → question ↔ (인라인 혜택/우대요소) → stageReport → gate → stageReport(제출)
 // 빠른 전환(가짜 로딩 제거), 인라인 혜택 패널(질문 유지), 단계별 즉시 리포트.
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import DiagnosisStart from '../components/diagnosis/DiagnosisStart'
@@ -48,6 +48,22 @@ export default function BusinessDiagnosisPage() {
   const advancingRef = useRef(false)
   const gateViewedRef = useRef(false)
   const autoTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const homeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const navigate = useNavigate()
+  const [homeConfirm, setHomeConfirm] = useState(false)
+
+  // 진단 중 좌상단 로고 → 실수로 홈 이탈 방지: 첫 탭은 "한 번 더 누르면 홈으로" 안내, 두 번째 탭에 이동.
+  const handleBrandClick = (e: MouseEvent) => {
+    if (screen === 'start') return // 시작 화면에선 바로 홈으로 이동
+    e.preventDefault()
+    if (homeConfirm) {
+      navigate('/')
+      return
+    }
+    setHomeConfirm(true)
+    if (homeTimer.current) clearTimeout(homeTimer.current)
+    homeTimer.current = setTimeout(() => setHomeConfirm(false), 3000)
+  }
 
   useEffect(() => {
     document.title = '3분 기업 성장진단 | 미래AI랩'
@@ -55,6 +71,7 @@ export default function BusinessDiagnosisPage() {
     captureUtmOnce()
     return () => {
       if (autoTimer.current) clearTimeout(autoTimer.current)
+      if (homeTimer.current) clearTimeout(homeTimer.current)
     }
   }, [])
 
@@ -303,13 +320,20 @@ export default function BusinessDiagnosisPage() {
     <div className="flex min-h-dvh flex-col bg-white text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <Link to="/" className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.7rem] font-medium text-slate-500">3분 기업 성장진단</span>
-            </span>
-          </Link>
+          <div className="flex min-w-0 items-center gap-2">
+            <Link to="/" onClick={handleBrandClick} className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
+              <span className="flex flex-col leading-tight">
+                <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
+                <span className="text-[0.7rem] font-medium text-slate-500">3분 기업 성장진단</span>
+              </span>
+            </Link>
+            {homeConfirm && screen !== 'start' && (
+              <span className="animate-fade-in whitespace-nowrap text-[0.7rem] font-bold leading-tight text-amber-600">
+                한 번 더 누르면<br className="sm:hidden" /> 홈으로 이동
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-1.5">
             {screen === 'start' && (
               <Link
