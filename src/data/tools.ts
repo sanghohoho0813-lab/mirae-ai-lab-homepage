@@ -25,6 +25,8 @@ export type Tool = {
   description: string
   /** 카드 하단 한 줄 가치 메시지 */
   valueLine: string
+  /** 완성도(%) — 카드에 진행바로 표시. 없으면 미표시(비공개 검토 도구 등) */
+  completion?: number
   url: string
   isPublic: boolean
   features: string[]
@@ -58,6 +60,7 @@ export const tools: Tool[] = [
     description:
       '고객이 받을 수 있는 지원금을 놓치지 않게 챙겨, 더 많은 혜택을 제안할 수 있게 합니다. 입·퇴사와 회차 관리까지 자동으로.',
     valueLine: '놓친 지원금은, 놓친 제안입니다',
+    completion: 90,
     url: 'https://hr-subsidy-pro.vercel.app/',
     isPublic: true,
     features: ['수급 가능액 자동 산정', '회차별 누락 방지', '입·퇴사 변동 관리', '고객 보고 자료화'],
@@ -79,6 +82,7 @@ export const tools: Tool[] = [
     description:
       '사후관리·월간 알림·보고서까지 대신 챙겨, 고객이 “계속 관리받고 있다”고 느끼게 합니다. 자연스럽게 다음 제안 기회로 이어집니다.',
     valueLine: '관리받는 느낌이, 곧 재계약입니다',
+    completion: 90,
     url: 'https://labcare-rnd-os.vercel.app/dashboard',
     isPublic: true,
     features: ['설립 준비 체크', '월간 관리 알림', '종합보고서 생성', '추가 컨설팅 제안'],
@@ -100,6 +104,7 @@ export const tools: Tool[] = [
     description:
       '미팅 전략·잠재고객·후속관리·공고를 한 곳에. 흩어진 메모와 기억을 계약으로 바꾸는 컨설턴트 OS의 중심입니다.',
     valueLine: '계약률을 높이는 컨설턴트 전략 허브',
+    completion: 70,
     url: 'https://corp-sales-os.vercel.app/',
     isPublic: true,
     features: ['미팅 전략 관리', '계약 실패 고객 후속관리', '콘텐츠·교육 아이디어', '최신 법령·공고 체크'],
@@ -121,6 +126,7 @@ export const tools: Tool[] = [
     description:
       '크레탑 자료를 올리면 핵심 지표·3개년 증감·미팅 주제까지 몇 초 만에. 미팅 전, 꺼낼 무기와 놓치던 제안거리를 찾아줍니다.',
     valueLine: '미팅 전에 꺼낼 무기를 몇 초 만에',
+    completion: 90,
     url: 'https://corp-sales-os-git-claude-cretop-mini-app-ksh90813.vercel.app/mini.html',
     isPublic: true,
     features: ['3개년 증감 분석', '핵심 재무지표 정리', '추천 미팅 주제', '임시 가치평가'],
@@ -163,6 +169,7 @@ export const tools: Tool[] = [
     description:
       '창업·지역·업종·나이 요건을 1분에 점검해, 고객 앞에서 바로 절세 가능성을 보여줍니다. 상담의 설득력이 달라집니다.',
     valueLine: '고객 앞에서 바로 보여주는 절세 가능성',
+    completion: 95,
     url: 'https://startup-tax-checker.vercel.app/',
     isPublic: true,
     features: ['창업감면 1분 진단', '취등록세 절감 확인', '법령 기준 반영', '상담 즉시 활용'],

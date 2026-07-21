@@ -4,7 +4,7 @@ import InquiryForm from './components/InquiryForm'
 import HeaderAccount from './components/account/HeaderAccount'
 import LegalFooter from './components/LegalFooter'
 import { accessTypeLabel } from './lib/platform'
-import { tools, upcomingTools, type Tool, type ToolStatus } from './data/tools'
+import { tools, upcomingTools, type Tool, type ToolStatus, type UpcomingTool } from './data/tools'
 
 // 컨설턴트용 AI 도구 소개 (/consultants). 2차 개편: 13섹션 → 5섹션으로 압축.
 // 메시지는 유지하고 중복 섹션만 정리. 도구 썸네일은 브랜드 공통 코드 배너로 통일.
@@ -18,8 +18,6 @@ const navItems = [
 ]
 
 // 대표 도구(큰 카드) — 실제 tools 데이터의 id 기준
-const FEATURED_TOOL_IDS = ['hr-subsidy-pro', 'labcare-rnd-os', 'corp-sales-os', 'cretop-analyzer']
-
 // 핵심 가치 3 (기존 8개 업무 → 상담 흐름 3축으로 압축)
 const values: { title: string; desc: string; icon: ReactNode }[] = [
   {
@@ -122,7 +120,7 @@ function ToolBanner({ tool, compact = false }: { tool: Tool; compact?: boolean }
               tool.isPublic ? 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/25' : 'bg-slate-400/15 text-slate-300 ring-1 ring-inset ring-slate-300/20'
             }`}
           >
-            {tool.isPublic ? '체험 가능' : '공개 준비 중'}
+            {tool.isPublic ? '베타 체험 가능' : '공개 준비 중'}
           </span>
         </div>
       </div>
@@ -138,6 +136,17 @@ function ToolCard({ tool }: { tool: Tool }) {
       <ToolBanner tool={tool} />
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <p className="line-clamp-2 text-[1.05rem] leading-relaxed text-slate-600">{tool.description}</p>
+        {tool.completion !== undefined && (
+          <div className="mt-4">
+            <div className="flex items-center justify-between text-[0.9rem] font-bold">
+              <span className="text-slate-500">완성도</span>
+              <span className="text-blue-600">{tool.completion}%</span>
+            </div>
+            <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={tool.completion} aria-valuemin={0} aria-valuemax={100}>
+              <div className="h-full rounded-full bg-blue-600" style={{ width: `${tool.completion}%` }} />
+            </div>
+          </div>
+        )}
         <div className="mt-4 flex flex-wrap gap-2">
           {tool.features.slice(0, 3).map((feature) => (
             <span key={feature} className="rounded-lg bg-slate-50 px-3 py-1.5 text-[0.9rem] font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
@@ -172,40 +181,40 @@ function ToolCard({ tool }: { tool: Tool }) {
   return <div className={`${cardClass} opacity-95`}>{body}</div>
 }
 
-// 보조 도구 — 작은 카드
-function ToolCardSmall({ tool }: { tool: Tool }) {
-  const cardClass = 'group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 motion-reduce:transition-none'
-  const body = (
-    <>
-      <ToolBanner tool={tool} compact />
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <p className="line-clamp-2 text-[0.98rem] leading-relaxed text-slate-600">{tool.description}</p>
-        <div className="mt-auto pt-3.5">
-          {tool.isPublic ? (
-            <span className="inline-flex items-center gap-1 text-[1rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700">
-              {accessTypeLabel[tool.accessType]}
-              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">↗</span>
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 text-[1rem] font-semibold text-slate-400">🔒 {accessTypeLabel[tool.accessType]}</span>
-          )}
+// 곧 추가될 도구 — 대표 도구와 같은 크기의 카드(클릭 불가 · 공개 준비 중)
+function UpcomingCard({ tool }: { tool: UpcomingTool }) {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white opacity-95 shadow-sm">
+      <div className="relative aspect-[16/10] overflow-hidden border-b border-slate-800 bg-slate-900">
+        <div aria-hidden className="absolute inset-0 opacity-40" style={gridBackground} />
+        <div aria-hidden className="absolute -right-8 -top-10 h-28 w-28 rounded-full bg-teal-500/15 blur-2xl" />
+        <div className="relative flex h-full flex-col justify-between p-4 sm:p-5">
+          <div className="flex items-start justify-between gap-2">
+            <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-3 py-1 text-[0.95rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25">{tool.category}</span>
+          </div>
+          <div className="px-2 text-center">
+            <p className="text-[0.95rem] font-medium tracking-wide text-slate-400">개발 예정</p>
+            <h3 className="mt-1.5 text-2xl font-black leading-tight tracking-tight text-white sm:text-[2rem]">{tool.title}</h3>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="rounded-full bg-amber-400/15 px-2.5 py-1 text-[0.85rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-300/25">개발중</span>
+            <span className="rounded-full bg-slate-400/15 px-2.5 py-1 text-[0.85rem] font-bold text-slate-300 ring-1 ring-inset ring-slate-300/20">공개 준비 중</span>
+          </div>
         </div>
       </div>
-    </>
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <p className="line-clamp-2 text-[1.05rem] leading-relaxed text-slate-600">{tool.description}</p>
+        <div className="mt-auto pt-4">
+          <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-4 py-2.5 text-[1rem] font-semibold text-slate-400">
+            🔒 공개 준비 중
+          </button>
+        </div>
+      </div>
+    </div>
   )
-  if (tool.isPublic) {
-    return (
-      <a href={tool.url} {...externalLinkProps} className={`${cardClass} hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg motion-reduce:hover:translate-y-0`}>
-        {body}
-      </a>
-    )
-  }
-  return <div className={`${cardClass} opacity-95`}>{body}</div>
 }
 
 function App() {
-  const featuredTools = FEATURED_TOOL_IDS.map((id) => tools.find((t) => t.id === id)).filter((t): t is Tool => Boolean(t))
-  const secondaryTools = tools.filter((t) => !FEATURED_TOOL_IDS.includes(t.id))
   const liveCount = tools.filter((t) => t.status === 'MVP 베타').length
 
   return (
@@ -338,40 +347,23 @@ function App() {
             <p className="text-base font-bold uppercase tracking-widest text-blue-600">컨설턴트 OS</p>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">업무 흐름으로 연결되는 도구</h2>
             <p className="mt-4 text-lg leading-relaxed text-slate-600">각 도구는 따로, 또 같이 작동합니다. 카드를 누르면 실제 서비스가 새 탭에서 열립니다.</p>
+            <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" aria-hidden />
+              지속적으로 수시로 업데이트하고 있습니다
+            </p>
           </div>
 
-          {/* 대표 도구 */}
+          {/* 도구 — 전부 같은 크기의 큰 카드(운영 중 + 공개 준비 중) */}
           <div className="mt-10 grid gap-6 md:grid-cols-2">
-            {featuredTools.map((tool) => (
+            {tools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
-          </div>
-
-          {/* 보조 도구 */}
-          {secondaryTools.length > 0 && (
-            <>
-              <p className="mt-12 text-[0.95rem] font-bold uppercase tracking-widest text-slate-500">진단·보조 도구</p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {secondaryTools.map((tool) => (
-                  <ToolCardSmall key={tool.id} tool={tool} />
-                ))}
-              </div>
-            </>
-          )}
-
-          {/* 곧 추가될 도구 — 로드맵을 카드 대신 칩으로 압축 */}
-          <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <span className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-600">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                곧 추가될 도구
-              </span>
-              {upcomingTools.map((t) => (
-                <span key={t.id} className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-[0.95rem] font-medium text-slate-600">
-                  {t.title}
-                </span>
-              ))}
-            </div>
+            <p className="col-span-full mt-6 flex items-center gap-2 text-[0.95rem] font-bold uppercase tracking-widest text-amber-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden /> 곧 추가될 도구
+            </p>
+            {upcomingTools.map((t) => (
+              <UpcomingCard key={t.id} tool={t} />
+            ))}
           </div>
         </div>
       </section>
@@ -455,8 +447,20 @@ function App() {
               <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">📘 실무 전자책</span>
               <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">정책자금 · 무상지원금 · 고용지원금 실무 가이드</h3>
               <p className="mt-3 text-base leading-relaxed text-slate-600">
-                대표님들이 가장 많이 묻는 3가지 주제를 중심으로, 상담 현장에서 바로 설명하고 제안에 활용할 수 있는 실무 흐름과 핵심 포인트를 담았습니다.
+                컨설팅 현장에서 <b className="text-slate-900">고객들이 가장 관심 있어 하는 주제</b>들만 골라 담았습니다. 상담에 바로 꺼내 쓰는 실무 흐름과 노하우가 가득해, 지금 막 시작한 컨설턴트에게는 <b className="text-slate-900">든든한 실무 지침서</b>가 됩니다.
               </p>
+              <ul className="mt-4 space-y-1.5 text-[0.98rem] text-slate-600">
+                {[
+                  '현장 고객이 가장 많이 묻는 주제 중심 구성',
+                  '신입 컨설턴트를 위한 실무 지침',
+                  '상담에 바로 쓰는 실무 노하우 다수 수록',
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2">
+                    <span className="mt-0.5 shrink-0 font-black text-blue-500" aria-hidden>✓</span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
               <a
                 href="https://futureailab.crekit.io/l/deals/zy3n6rjd"
                 target="_blank"
