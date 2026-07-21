@@ -240,6 +240,8 @@ export type LeadFormData = {
   email?: string
   contactMethod?: string
   preferredContactTime?: string
+  /** 기업 규모 정보(업력·업종·연매출·직원수·지역) — 상담 폼에서 선택 시 이메일 동봉 */
+  companyProfile?: Record<string, string>
   privacyConsent: boolean
   consultationConsent: boolean
   marketingConsent: boolean

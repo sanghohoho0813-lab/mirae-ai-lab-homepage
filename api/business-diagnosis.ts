@@ -68,6 +68,7 @@ async function sendDiagnosisEmail(p: {
   completedStage?: number; stoppedAfterStage?: boolean; depth?: string
   summary: Record<string, unknown>; interests: string[]; recProducts: unknown; answers: Record<string, unknown>
   answersDisplay?: AnswersDisplayStage[]
+  companyProfile?: Record<string, string>
 }) {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
@@ -81,14 +82,19 @@ async function sendDiagnosisEmail(p: {
   const str = (k: string) => (typeof s[k] === 'string' ? (s[k] as string) : '')
   const stageTxt = p.completedStage ? `${p.completedStage}단계까지${p.stoppedAfterStage ? ' (여기서 종료)' : ''}` : '-'
 
+  // 상담 폼에서 고른 기업 정보(업력·업종·연매출·직원수·지역) — 있으면 표에 추가
+  const profileRows: Array<[string, string]> = p.companyProfile
+    ? Object.entries(p.companyProfile).filter(([, v]) => v).map(([k, v]) => [k, String(v)] as [string, string])
+    : []
+
   const kv: Array<[string, string]> = [
     ['회사명', p.companyName],
     ['대표자명', p.repName],
     ['연락처', p.phone],
     ['이메일', p.email || '-'],
     ['사업자 유형', bizTypeLabel(p.businessType)],
-    ['업종', p.industry || '-'],
     ['상담 방식', p.contactMethod || '-'],
+    ...profileRows,
     ['상담 동의', p.consultationConsent ? '동의' : '미동의'],
     ['마케팅 동의', p.marketingConsent ? '동의' : '미동의'],
     ['완료 단계', stageTxt],
@@ -558,6 +564,15 @@ export default async function handler(req: any, res: any) {
             .filter((st: any) => st.items.length)
         : undefined
 
+      // 상담 폼 기업 정보(선택) — 허용 키만, 값 정리
+      const companyProfile: Record<string, string> = {}
+      if (form.companyProfile && typeof form.companyProfile === 'object') {
+        for (const k of ['업력', '업종', '연매출', '직원 수', '지역']) {
+          const v = strip((form.companyProfile as any)[k], 60)
+          if (v) companyProfile[k] = v
+        }
+      }
+
       // 진단 결과 알림 메일 (실패해도 저장/응답은 정상 처리)
       try {
         await sendDiagnosisEmail({
@@ -582,6 +597,7 @@ export default async function handler(req: any, res: any) {
           recProducts: body.recommendedProducts,
           answers,
           answersDisplay,
+          companyProfile: Object.keys(companyProfile).length ? companyProfile : undefined,
         })
       } catch (mailErr) {
         console.error('[business-diagnosis] 알림 메일 발송 실패:', detailOf(mailErr))

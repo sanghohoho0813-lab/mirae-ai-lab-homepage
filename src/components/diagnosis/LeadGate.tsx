@@ -1,23 +1,16 @@
-// 결과 공개 전 대표자 정보 입력 게이트 — 토스풍 카드 (행정 신청서 톤 금지, 공포·마감 문구 금지).
+// 결과 공개 전 대표자 정보 입력 게이트 — 상담 신청 모달(ConsultModal)과 동일한 톤/필드로 통일.
 // 개인정보 동의(필수)와 상담/마케팅 동의(선택)는 분리, 기본 미체크.
+// ⚠️ 사업자유형·업종은 3분 설문에서 이미 받으므로 여기서 다시 묻지 않고, 답변은 제출 시 함께 넘어갑니다.
 import { useEffect, useRef, useState } from 'react'
 import type { LeadFormData } from '../../types/businessDiagnosis'
 import { PRIVACY_CONSENT, PRIVACY_CONSENT_VERSION } from '../../config/privacyConsent'
-import { questions } from '../../data/businessDiagnosisQuestions'
+import { CONSULT_METHODS, CONSULT_COMPANY_FIELDS } from '../../lib/consultApi'
 
 type Props = {
   submitting: boolean
   errorMessage: string | null
   onSubmit: (form: LeadFormData & { privacyConsentVersion: string; honeypot?: string; formElapsedMs: number }) => void
 }
-
-const CONTACT_METHODS = ['전화', '카톡·문자']
-const BIZ_TYPES = [
-  { value: 'individual', label: '개인사업자' },
-  { value: 'corp', label: '법인사업자' },
-  { value: 'pre', label: '예비창업자' },
-]
-const INDUSTRIES = questions.find((q) => q.id === 'industry')?.options ?? []
 
 const inputCls =
   'w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
@@ -26,11 +19,11 @@ const labelCls = 'block text-sm font-bold text-slate-700'
 export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) {
   const [companyName, setCompanyName] = useState('')
   const [repName, setRepName] = useState('')
-  const [phone, setPhone] = useState('')
+  const [phone, setPhone] = useState('010-')
   const [email, setEmail] = useState('')
-  const [bizType, setBizType] = useState('')
-  const [industry, setIndustry] = useState('')
   const [contactMethod, setContactMethod] = useState('')
+  const [profile, setProfile] = useState<Record<string, string>>({})
+  const [industryEtc, setIndustryEtc] = useState('')
   const [privacyOk, setPrivacyOk] = useState(false)
   const [consultOk, setConsultOk] = useState(false)
   const [marketingOk, setMarketingOk] = useState(false)
@@ -43,19 +36,30 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
     openedAtRef.current = Date.now()
   }, [])
 
+  const pickProfile = (key: string, value: string) =>
+    setProfile((cur) => ({ ...cur, [key]: cur[key] === value ? '' : value }))
+
   const phoneDigits = phone.replace(/\D/g, '')
   const phoneOk = phoneDigits.length >= 10 && phoneDigits.length <= 11 && phoneDigits.startsWith('01')
-  const canSubmit = companyName.trim() && repName.trim() && phoneOk && bizType && industry && privacyOk && !submitting
+  const canSubmit = companyName.trim() && repName.trim() && phoneOk && privacyOk && !submitting
 
   function handleSubmit() {
     setTouched(true)
     if (!canSubmit) return
+    // 기업 정보 정리 — 업종 '기타' 는 직접입력값 반영
+    const companyProfile: Record<string, string> = {}
+    for (const f of CONSULT_COMPANY_FIELDS) {
+      const v = profile[f.key]
+      if (!v) continue
+      companyProfile[f.key] = f.key === '업종' && v === '기타' && industryEtc.trim() ? `기타 - ${industryEtc.trim()}` : v
+    }
     onSubmit({
       companyName: companyName.trim().slice(0, 80),
       representativeName: repName.trim().slice(0, 40),
       phone: phoneDigits,
       email: email.trim().slice(0, 120) || undefined,
       contactMethod: contactMethod || undefined,
+      companyProfile: Object.keys(companyProfile).length ? companyProfile : undefined,
       privacyConsent: privacyOk,
       consultationConsent: consultOk,
       marketingConsent: marketingOk,
@@ -95,7 +99,7 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="lg-phone" className={labelCls}>휴대전화번호 *</label>
-            <input id="lg-phone" className={`${inputCls} mt-1.5`} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="010-0000-0000" inputMode="tel" maxLength={13} />
+            <input id="lg-phone" className={`${inputCls} mt-1.5`} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="휴대폰 번호" inputMode="tel" maxLength={13} />
             {touched && !phoneOk && <p className="mt-1 text-xs font-semibold text-red-500">올바른 휴대전화번호를 입력해주세요.</p>}
           </div>
           <div>
@@ -104,33 +108,11 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="lg-biztype" className={labelCls}>사업자 유형 *</label>
-            <select id="lg-biztype" className={`${inputCls} mt-1.5`} value={bizType} onChange={(e) => setBizType(e.target.value)}>
-              <option value="">선택해주세요</option>
-              {BIZ_TYPES.map((b) => (
-                <option key={b.value} value={b.value}>{b.label}</option>
-              ))}
-            </select>
-            {touched && !bizType && <p className="mt-1 text-xs font-semibold text-red-500">사업자 유형을 선택해주세요.</p>}
-          </div>
-          <div>
-            <label htmlFor="lg-industry" className={labelCls}>업종 *</label>
-            <select id="lg-industry" className={`${inputCls} mt-1.5`} value={industry} onChange={(e) => setIndustry(e.target.value)}>
-              <option value="">선택해주세요</option>
-              {INDUSTRIES.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            {touched && !industry && <p className="mt-1 text-xs font-semibold text-red-500">업종을 선택해주세요.</p>}
-          </div>
-        </div>
-
+        {/* 상담 희망 방식 */}
         <div>
           <label className={labelCls}>상담 희망 방식 (선택)</label>
           <div className="mt-1.5 flex flex-wrap gap-2">
-            {CONTACT_METHODS.map((m) => {
+            {CONSULT_METHODS.map((m) => {
               const on = contactMethod === m
               return (
                 <button
@@ -146,6 +128,47 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
                 </button>
               )
             })}
+          </div>
+        </div>
+
+        {/* 기업 정보 — 규모 파악용(선택). 설문 답변과 함께 상담에 활용됩니다. */}
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+          <p className="text-sm font-semibold text-slate-800">
+            기업 정보 <span className="font-normal text-slate-400">(선택 · 채워주시면 상담이 더 정확해져요)</span>
+          </p>
+          <div className="mt-3 space-y-3">
+            {CONSULT_COMPANY_FIELDS.map((f) => (
+              <div key={f.key}>
+                <p className="mb-1.5 text-[0.82rem] font-semibold text-slate-500">{f.label}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {f.options.map((opt) => {
+                    const on = profile[f.key] === opt
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => pickProfile(f.key, opt)}
+                        aria-pressed={on}
+                        className={`rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
+                          on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    )
+                  })}
+                </div>
+                {f.key === '업종' && profile['업종'] === '기타' && (
+                  <input
+                    type="text"
+                    value={industryEtc}
+                    onChange={(e) => setIndustryEtc(e.target.value)}
+                    placeholder="업종을 직접 입력해주세요 (예: 요식업)"
+                    className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-[0.85rem] text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                  />
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -199,7 +222,7 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
         >
           {submitting ? '결과를 준비하고 있어요…' : '전체 진단 결과 확인하기'}
         </button>
-        <p className="text-center text-sm font-medium text-slate-400">입력 후 전체 결과가 즉시 공개됩니다.</p>
+        <p className="text-center text-sm font-medium text-slate-400">입력 후 전체 결과가 즉시 공개됩니다. 그동안 답한 진단 내용도 함께 전달됩니다.</p>
       </div>
     </div>
   )
