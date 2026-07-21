@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { LeadFormData } from '../../types/businessDiagnosis'
 import { PRIVACY_CONSENT, PRIVACY_CONSENT_VERSION } from '../../config/privacyConsent'
-import { CONSULT_METHODS, CONSULT_COMPANY_FIELDS } from '../../lib/consultApi'
+import { CONSULT_METHODS, CONSULT_TOPIC_GROUPS } from '../../lib/consultApi'
 
 type Props = {
   submitting: boolean
@@ -22,8 +22,8 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
   const [phone, setPhone] = useState('010-')
   const [email, setEmail] = useState('')
   const [contactMethod, setContactMethod] = useState('')
-  const [profile, setProfile] = useState<Record<string, string>>({})
-  const [industryEtc, setIndustryEtc] = useState('')
+  const [topics, setTopics] = useState<string[]>([])
+  const [expanded, setExpanded] = useState<string[]>([])
   const [privacyOk, setPrivacyOk] = useState(false)
   const [consultOk, setConsultOk] = useState(false)
   const [marketingOk, setMarketingOk] = useState(false)
@@ -36,8 +36,10 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
     openedAtRef.current = Date.now()
   }, [])
 
-  const pickProfile = (key: string, value: string) =>
-    setProfile((cur) => ({ ...cur, [key]: cur[key] === value ? '' : value }))
+  const toggleTopic = (t: string) =>
+    setTopics((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]))
+  const toggleGroup = (t: string) =>
+    setExpanded((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]))
 
   const phoneDigits = phone.replace(/\D/g, '')
   const phoneOk = phoneDigits.length >= 10 && phoneDigits.length <= 11 && phoneDigits.startsWith('01')
@@ -46,13 +48,9 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
   function handleSubmit() {
     setTouched(true)
     if (!canSubmit) return
-    // 기업 정보 정리 — 업종 '기타' 는 직접입력값 반영
+    // 업종·업력·직원수·지역은 설문에서 이미 받으므로, 여기선 관심 상품만 함께 전달
     const companyProfile: Record<string, string> = {}
-    for (const f of CONSULT_COMPANY_FIELDS) {
-      const v = profile[f.key]
-      if (!v) continue
-      companyProfile[f.key] = f.key === '업종' && v === '기타' && industryEtc.trim() ? `기타 - ${industryEtc.trim()}` : v
-    }
+    if (topics.length) companyProfile['관심 상품'] = topics.join(', ')
     onSubmit({
       companyName: companyName.trim().slice(0, 80),
       representativeName: repName.trim().slice(0, 40),
@@ -131,44 +129,66 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
           </div>
         </div>
 
-        {/* 기업 정보 — 규모 파악용(선택). 설문 답변과 함께 상담에 활용됩니다. */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
-          <p className="text-sm font-semibold text-slate-800">
-            기업 정보 <span className="font-normal text-slate-400">(선택 · 채워주시면 상담이 더 정확해져요)</span>
-          </p>
-          <div className="mt-3 space-y-3">
-            {CONSULT_COMPANY_FIELDS.map((f) => (
-              <div key={f.key}>
-                <p className="mb-1.5 text-[0.82rem] font-semibold text-slate-500">{f.label}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {f.options.map((opt) => {
-                    const on = profile[f.key] === opt
-                    return (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => pickProfile(f.key, opt)}
-                        aria-pressed={on}
-                        className={`rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
-                          on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    )
-                  })}
+        {/* 관심 상품 (선택) — 업종·업력·직원수·지역은 설문에서 이미 받았으니, 여기선 상품만 */}
+        <div>
+          <label className={labelCls}>관심 상품 <span className="font-normal text-slate-400">(선택)</span></label>
+          <p className="mb-1.5 text-[0.8rem] leading-snug text-slate-400">선택하지 않으셔도 진단 결과에 맞게 알아서 추천해 드려요.</p>
+          <div className="space-y-1.5">
+            {CONSULT_TOPIC_GROUPS.map((g) => {
+              const isOpen = expanded.includes(g.title)
+              const picked = g.products.filter((pr) => topics.includes(pr.name)).length
+              return (
+                <div key={g.title} className="overflow-hidden rounded-xl border border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(g.title)}
+                    aria-expanded={isOpen}
+                    className={`flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left text-[0.9rem] font-semibold transition ${
+                      picked > 0 ? 'bg-blue-50 text-blue-700' : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    <span className="min-w-0">
+                      {g.title}
+                      {picked > 0 && <span className="ml-1.5 text-xs font-bold text-blue-600">· {picked}개 선택</span>}
+                    </span>
+                    <svg viewBox="0 0 24 24" className={`h-4 w-4 shrink-0 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                  {isOpen && (
+                    <div className="grid grid-cols-2 gap-2 border-t border-slate-100 bg-white p-2">
+                      {g.products.map((pr) => {
+                        const on = topics.includes(pr.name)
+                        return (
+                          <button
+                            key={pr.slug}
+                            type="button"
+                            onClick={() => toggleTopic(pr.name)}
+                            aria-pressed={on}
+                            className={`flex flex-col overflow-hidden rounded-xl border text-left transition ${
+                              on ? 'border-blue-500 ring-2 ring-inset ring-blue-500/30' : 'border-slate-200 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className="relative aspect-[16/10] w-full bg-slate-100">
+                              {pr.imageSrc && <img src={pr.imageSrc} alt="" loading="lazy" className="h-full w-full object-cover" />}
+                              <span
+                                className={`absolute right-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full text-[0.7rem] font-black transition ${
+                                  on ? 'bg-blue-600 text-white' : 'bg-white/85 text-transparent ring-1 ring-inset ring-slate-300'
+                                }`}
+                                aria-hidden
+                              >
+                                ✓
+                              </span>
+                            </div>
+                            <span className={`px-2.5 py-2 text-[0.82rem] font-semibold leading-snug ${on ? 'text-blue-700' : 'text-slate-700'}`}>{pr.name}</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
-                {f.key === '업종' && profile['업종'] === '기타' && (
-                  <input
-                    type="text"
-                    value={industryEtc}
-                    onChange={(e) => setIndustryEtc(e.target.value)}
-                    placeholder="업종을 직접 입력해주세요 (예: 요식업)"
-                    className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-[0.85rem] text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                  />
-                )}
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
 

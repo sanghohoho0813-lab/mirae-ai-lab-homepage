@@ -56,6 +56,21 @@ export const questions: DiagnosisQuestion[] = [
     ],
   },
   {
+    id: 'region',
+    stage: 1,
+    type: 'single',
+    title: '사업장은 어느 지역에 있나요?',
+    options: [
+      { value: 'seoul', label: '서울' },
+      { value: 'gyeonggi', label: '경기·인천' },
+      { value: 'gangwon', label: '강원' },
+      { value: 'chungcheong', label: '충청·대전·세종' },
+      { value: 'jeolla', label: '전라·광주' },
+      { value: 'gyeongsang', label: '경상·부산·대구·울산' },
+      { value: 'etc', label: '그 외 지역' },
+    ],
+  },
+  {
     id: 'years',
     stage: 1,
     type: 'single',

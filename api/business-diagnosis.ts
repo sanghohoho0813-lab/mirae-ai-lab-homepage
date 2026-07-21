@@ -567,8 +567,8 @@ export default async function handler(req: any, res: any) {
       // 상담 폼 기업 정보(선택) — 허용 키만, 값 정리
       const companyProfile: Record<string, string> = {}
       if (form.companyProfile && typeof form.companyProfile === 'object') {
-        for (const k of ['업력', '업종', '연매출', '직원 수', '지역']) {
-          const v = strip((form.companyProfile as any)[k], 60)
+        for (const k of ['관심 상품', '업력', '업종', '연매출', '직원 수', '지역']) {
+          const v = strip((form.companyProfile as any)[k], 200)
           if (v) companyProfile[k] = v
         }
       }
