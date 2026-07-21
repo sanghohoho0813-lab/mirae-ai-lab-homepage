@@ -17,12 +17,12 @@ const navItems = [
   { label: '문의', href: '#inquiry' },
 ]
 
-// 대표 도구(큰 카드) — 실제 tools 데이터의 id 기준
-// 핵심 가치 3 (기존 8개 업무 → 상담 흐름 3축으로 압축)
-const values: { title: string; desc: string; icon: ReactNode }[] = [
+// 핵심 가치 3 — 컨설턴트의 하루(상담 전·중·후) 흐름으로 재구성.
+const values: { phase: string; title: string; desc: string; icon: ReactNode }[] = [
   {
-    title: '고객 진단',
-    desc: '크레탑·기업 자료를 빠르게 분석해 상담 전에 꺼낼 핵심 포인트를 정리합니다.',
+    phase: '상담 전',
+    title: '고객을 미리 파악합니다',
+    desc: '크레탑·재무 자료를 몇 초 만에 분석해, 고객을 만나기 전에 꺼낼 이야기를 미리 준비해 둡니다.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <circle cx="11" cy="11" r="7" />
@@ -31,8 +31,9 @@ const values: { title: string; desc: string; icon: ReactNode }[] = [
     ),
   },
   {
-    title: '제안서·자료 제작',
-    desc: '검토 결과를 고객 앞에서 바로 설명하고 제안할 수 있는 자료로 정리합니다.',
+    phase: '상담 중',
+    title: '그 자리에서 제안합니다',
+    desc: '검토 결과를 고객이 바로 이해할 수 있는 자료로 정리해, 상담 자리에서 곧장 보여주고 설득합니다.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M6 3h8l4 4v14H6z" />
@@ -41,8 +42,9 @@ const values: { title: string; desc: string; icon: ReactNode }[] = [
     ),
   },
   {
-    title: '반복업무 자동화',
-    desc: '계산·문서·사후관리처럼 매번 반복되는 업무를 도구가 대신 처리합니다.',
+    phase: '상담 후',
+    title: '관리가 끊기지 않습니다',
+    desc: '계산·문서·사후관리처럼 손이 많이 가는 일은 도구가 대신 맡고, 컨설턴트는 고객에게 집중합니다.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
@@ -89,34 +91,30 @@ const bannerStatusStyles: Record<ToolStatus, string> = {
 }
 
 // 브랜드 공통 코드 배너 — 실제 스크린샷 대신 네이비+청록 텍스트 배너로 통일(완성도 편차 제거).
-function ToolBanner({ tool, compact = false }: { tool: Tool; compact?: boolean }) {
+// 3열 그리드용으로 컴팩트하게(모바일 2열까지 대응): 좁은 폭에서 글자·여백을 줄이고 sm 이상에서 확대.
+function ToolBanner({ tool }: { tool: Tool }) {
   return (
-    <div className={`relative overflow-hidden border-b border-slate-800 bg-slate-900 ${compact ? 'aspect-[16/9]' : 'aspect-[16/10]'}`}>
+    <div className="relative aspect-[16/10] overflow-hidden border-b border-slate-800 bg-slate-900">
       <div aria-hidden className="absolute inset-0 opacity-40" style={gridBackground} />
-      <div aria-hidden className="absolute -right-8 -top-10 h-28 w-28 rounded-full bg-teal-500/20 blur-2xl" />
-      <div aria-hidden className="absolute -bottom-10 -left-8 h-28 w-28 rounded-full bg-blue-600/20 blur-2xl" />
-      <div className="relative flex h-full flex-col justify-between p-4 sm:p-5">
-        {/* 좌상단 카테고리 — 위치 유지, 글자만 살짝 크게 */}
+      <div aria-hidden className="absolute -right-6 -top-8 h-24 w-24 rounded-full bg-teal-500/20 blur-2xl" />
+      <div aria-hidden className="absolute -bottom-8 -left-6 h-24 w-24 rounded-full bg-blue-600/20 blur-2xl" />
+      <div className="relative flex h-full flex-col justify-between p-3 sm:p-4">
+        {/* 좌상단 카테고리 */}
         <div className="flex items-start justify-between gap-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-3 py-1 text-[0.95rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25">
+          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.72rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25 sm:px-2.5 sm:text-[0.82rem]">
             {tool.category}
           </span>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-teal-300/50" aria-hidden>
-            <rect x="3.5" y="4.5" width="17" height="13" rx="2" />
-            <path d="M3.5 9.5h17M7 20.5h10M12 17.5v3" />
-          </svg>
         </div>
-        {/* 도구명 — 가운데 정렬 · 크게 */}
-        <div className="px-2 text-center">
-          <p className="text-[0.95rem] font-medium tracking-wide text-slate-400">{tool.stage}</p>
-          <h3 className={`mt-1.5 font-black leading-tight tracking-tight text-white ${compact ? 'text-2xl sm:text-[1.7rem]' : 'text-3xl sm:text-4xl'}`}>{tool.title}</h3>
-          {!compact && <p className="mt-2 line-clamp-1 text-[1.05rem] text-slate-300">{tool.outcome}</p>}
+        {/* 도구명 — 가운데 정렬 */}
+        <div className="px-1 text-center">
+          <p className="text-[0.72rem] font-medium tracking-wide text-slate-400 sm:text-[0.82rem]">{tool.stage}</p>
+          <h3 className="mt-1 text-lg font-black leading-tight tracking-tight text-white sm:text-xl lg:text-[1.4rem]">{tool.title}</h3>
         </div>
         {/* 상태 배지 — 가운데 정렬 */}
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className={`rounded-full px-2.5 py-1 text-[0.85rem] font-bold ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
+        <div className="flex flex-wrap items-center justify-center gap-1.5">
+          <span className={`rounded-full px-2 py-0.5 text-[0.68rem] font-bold sm:text-[0.76rem] ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
           <span
-            className={`rounded-full px-2.5 py-1 text-[0.85rem] font-bold ${
+            className={`rounded-full px-2 py-0.5 text-[0.68rem] font-bold sm:text-[0.76rem] ${
               tool.isPublic ? 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/25' : 'bg-slate-400/15 text-slate-300 ring-1 ring-inset ring-slate-300/20'
             }`}
           >
@@ -128,42 +126,43 @@ function ToolBanner({ tool, compact = false }: { tool: Tool; compact?: boolean }
   )
 }
 
-// 대표 도구 — 큰 카드
+// 대표 도구 — 컴팩트 카드(3열 그리드 · 모바일 2열). 좁은 폭에서는 features·추천대상을 숨김.
 function ToolCard({ tool }: { tool: Tool }) {
-  const cardClass = 'group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-200 motion-reduce:transition-none'
+  const cardClass = 'group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 motion-reduce:transition-none'
   const body = (
     <>
       <ToolBanner tool={tool} />
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="line-clamp-2 text-[1.05rem] leading-relaxed text-slate-600">{tool.description}</p>
+      <div className="flex flex-1 flex-col p-3 sm:p-5">
+        <p className="line-clamp-2 text-[0.82rem] leading-relaxed text-slate-600 sm:text-[0.98rem]">{tool.description}</p>
         {tool.completion !== undefined && (
-          <div className="mt-4">
-            <div className="flex items-center justify-between text-[0.9rem] font-bold">
+          <div className="mt-2.5 sm:mt-4">
+            <div className="flex items-center justify-between text-[0.76rem] font-bold sm:text-[0.9rem]">
               <span className="text-slate-500">완성도</span>
               <span className="text-blue-600">{tool.completion}%</span>
             </div>
-            <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={tool.completion} aria-valuemin={0} aria-valuemax={100}>
+            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100 sm:mt-1.5 sm:h-2" role="progressbar" aria-valuenow={tool.completion} aria-valuemin={0} aria-valuemax={100}>
               <div className="h-full rounded-full bg-blue-600" style={{ width: `${tool.completion}%` }} />
             </div>
           </div>
         )}
-        <div className="mt-4 flex flex-wrap gap-2">
+        {/* features·추천대상 — 좁은 모바일(2열)에서는 숨기고 sm 이상에서 노출 */}
+        <div className="mt-4 hidden flex-wrap gap-1.5 sm:flex">
           {tool.features.slice(0, 3).map((feature) => (
-            <span key={feature} className="rounded-lg bg-slate-50 px-3 py-1.5 text-[0.9rem] font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
+            <span key={feature} className="rounded-lg bg-slate-50 px-2.5 py-1 text-[0.82rem] font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
               {feature}
             </span>
           ))}
         </div>
-        <p className="mt-4 text-[0.9rem] font-medium text-slate-400">추천 대상 · {tool.target}</p>
-        <div className="mt-auto pt-4">
-          <p className="line-clamp-1 rounded-xl bg-blue-50 px-4 py-3 text-[1rem] font-semibold text-blue-700">“{tool.valueLine}”</p>
+        <p className="mt-3 hidden text-[0.82rem] font-medium text-slate-400 sm:block">추천 대상 · {tool.target}</p>
+        <div className="mt-auto pt-3 sm:pt-4">
+          <p className="rounded-lg bg-blue-50 px-3 py-2 text-[0.82rem] font-semibold leading-snug text-blue-700 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-[0.95rem]">“{tool.valueLine}”</p>
           {tool.isPublic ? (
-            <span className="mt-3.5 inline-flex items-center gap-1.5 text-[1.05rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700">
+            <span className="mt-3 inline-flex items-center gap-1.5 text-[0.9rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700 sm:text-[1.05rem]">
               {accessTypeLabel[tool.accessType]}
               <span aria-hidden className="transition-transform group-hover:translate-x-0.5">↗</span>
             </span>
           ) : (
-            <button type="button" disabled className="mt-3.5 inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-4 py-2.5 text-[1rem] font-semibold text-slate-400">
+            <button type="button" disabled className="mt-3 inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[0.85rem] font-semibold text-slate-400 sm:px-4 sm:py-2.5 sm:text-[1rem]">
               🔒 {accessTypeLabel[tool.accessType]}
             </button>
           )}
@@ -181,31 +180,31 @@ function ToolCard({ tool }: { tool: Tool }) {
   return <div className={`${cardClass} opacity-95`}>{body}</div>
 }
 
-// 곧 추가될 도구 — 대표 도구와 같은 크기의 카드(클릭 불가 · 공개 준비 중)
+// 곧 추가될 도구 — 대표 도구와 같은 크기의 컴팩트 카드(클릭 불가 · 공개 준비 중)
 function UpcomingCard({ tool }: { tool: UpcomingTool }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white opacity-95 shadow-sm">
+    <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white opacity-95 shadow-sm">
       <div className="relative aspect-[16/10] overflow-hidden border-b border-slate-800 bg-slate-900">
         <div aria-hidden className="absolute inset-0 opacity-40" style={gridBackground} />
-        <div aria-hidden className="absolute -right-8 -top-10 h-28 w-28 rounded-full bg-teal-500/15 blur-2xl" />
-        <div className="relative flex h-full flex-col justify-between p-4 sm:p-5">
+        <div aria-hidden className="absolute -right-6 -top-8 h-24 w-24 rounded-full bg-teal-500/15 blur-2xl" />
+        <div className="relative flex h-full flex-col justify-between p-3 sm:p-4">
           <div className="flex items-start justify-between gap-2">
-            <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-3 py-1 text-[0.95rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25">{tool.category}</span>
+            <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.72rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25 sm:px-2.5 sm:text-[0.82rem]">{tool.category}</span>
           </div>
-          <div className="px-2 text-center">
-            <p className="text-[0.95rem] font-medium tracking-wide text-slate-400">개발 예정</p>
-            <h3 className="mt-1.5 text-2xl font-black leading-tight tracking-tight text-white sm:text-[2rem]">{tool.title}</h3>
+          <div className="px-1 text-center">
+            <p className="text-[0.72rem] font-medium tracking-wide text-slate-400 sm:text-[0.82rem]">개발 예정</p>
+            <h3 className="mt-1 text-lg font-black leading-tight tracking-tight text-white sm:text-xl lg:text-[1.4rem]">{tool.title}</h3>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="rounded-full bg-amber-400/15 px-2.5 py-1 text-[0.85rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-300/25">개발중</span>
-            <span className="rounded-full bg-slate-400/15 px-2.5 py-1 text-[0.85rem] font-bold text-slate-300 ring-1 ring-inset ring-slate-300/20">공개 준비 중</span>
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
+            <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[0.68rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-300/25 sm:text-[0.76rem]">개발중</span>
+            <span className="rounded-full bg-slate-400/15 px-2 py-0.5 text-[0.68rem] font-bold text-slate-300 ring-1 ring-inset ring-slate-300/20 sm:text-[0.76rem]">공개 준비 중</span>
           </div>
         </div>
       </div>
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="line-clamp-2 text-[1.05rem] leading-relaxed text-slate-600">{tool.description}</p>
-        <div className="mt-auto pt-4">
-          <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-4 py-2.5 text-[1rem] font-semibold text-slate-400">
+      <div className="flex flex-1 flex-col p-3 sm:p-5">
+        <p className="line-clamp-2 text-[0.82rem] leading-relaxed text-slate-600 sm:text-[0.98rem]">{tool.description}</p>
+        <div className="mt-auto pt-3 sm:pt-4">
+          <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[0.85rem] font-semibold text-slate-400 sm:px-4 sm:py-2.5 sm:text-[1rem]">
             🔒 공개 준비 중
           </button>
         </div>
@@ -326,14 +325,17 @@ function App() {
       <section id="value" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
         <div className="max-w-3xl">
           <p className="text-base font-bold uppercase tracking-widest text-blue-600">핵심 가치</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">상담 흐름을 바꾸는 3가지</h2>
-          <p className="mt-4 text-lg leading-relaxed text-slate-600">진단부터 제안, 반복업무 자동화까지. 컨설턴트의 하루를 기준으로 설계했습니다.</p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">상담 전·중·후, 매 순간을 돕습니다</h2>
+          <p className="mt-4 text-lg leading-relaxed text-slate-600">고객을 만나기 전 준비부터 만난 뒤 관리까지. 매일 반복되는 상담의 흐름을 그대로 도구에 담았습니다.</p>
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-3">
           {values.map((v) => (
             <article key={v.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md motion-reduce:hover:translate-y-0 sm:p-7">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-slate-900 text-sky-300 [&_svg]:h-6 [&_svg]:w-6">{v.icon}</div>
-              <h3 className="mt-5 text-xl font-bold text-slate-900">{v.title}</h3>
+              <div className="flex items-center gap-3">
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-sky-300 [&_svg]:h-5 [&_svg]:w-5">{v.icon}</div>
+                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold tracking-wide text-blue-700">{v.phase}</span>
+              </div>
+              <h3 className="mt-4 text-xl font-bold text-slate-900">{v.title}</h3>
               <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{v.desc}</p>
             </article>
           ))}
@@ -353,12 +355,12 @@ function App() {
             </p>
           </div>
 
-          {/* 도구 — 전부 같은 크기의 큰 카드(운영 중 + 공개 준비 중) */}
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
+          {/* 도구 — 전부 같은 크기의 카드(운영 중 + 공개 준비 중) · 모바일 2열 / 데스크톱 3열 */}
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-5 lg:grid-cols-3">
             {tools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
-            <p className="col-span-full mt-6 flex items-center gap-2 text-[0.95rem] font-bold uppercase tracking-widest text-amber-600">
+            <p className="col-span-full mt-4 flex items-center gap-2 text-[0.95rem] font-bold uppercase tracking-widest text-amber-600 sm:mt-6">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden /> 곧 추가될 도구
             </p>
             {upcomingTools.map((t) => (
