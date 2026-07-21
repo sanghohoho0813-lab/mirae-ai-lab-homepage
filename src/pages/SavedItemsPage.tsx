@@ -5,7 +5,7 @@ import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import ProductCard from '../components/ProductCard'
 import ConsultModal from '../components/ConsultModal'
-import type { ConsultContextRow } from '../lib/consultApi'
+import { CONSULT_TOPIC_GROUPS, type ConsultContextRow } from '../lib/consultApi'
 import { businessPackages } from '../data/businessPackages'
 import { useSavedItems } from '../lib/savedItems'
 
@@ -139,6 +139,7 @@ export default function SavedItemsPage() {
         source="장바구니"
         heading="담은 상품 상담 신청"
         intro="담아두신 상품 목록을 그대로 담당자에게 전달합니다. 연락처만 남겨주시면 빠르게 안내드릴게요."
+        topicGroups={CONSULT_TOPIC_GROUPS}
         showContactMethod
         showCompanyFields
         contextRows={cartContext}

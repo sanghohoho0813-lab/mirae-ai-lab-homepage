@@ -13,7 +13,7 @@ import { getPackageBySlug } from '../data/businessPackages'
 import { businessInfo } from '../config/businessInfo'
 import { paymentsEnabled } from '../config/commerce'
 import ConsultModal from '../components/ConsultModal'
-import type { ConsultContextRow } from '../lib/consultApi'
+import { CONSULT_TOPIC_GROUPS, type ConsultContextRow } from '../lib/consultApi'
 import { checkoutTerms } from '../config/checkoutTerms'
 import { useAuth } from '../lib/auth'
 import {
@@ -525,6 +525,8 @@ export default function CheckoutPage() {
         onClose={() => setConsultOpen(false)}
         source={pkg.name}
         heading="상담 신청"
+        topicGroups={CONSULT_TOPIC_GROUPS}
+        preselectProduct={pkg.name}
         showContactMethod
         showCompanyFields
         contextRows={

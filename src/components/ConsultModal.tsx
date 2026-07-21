@@ -2,7 +2,7 @@
 // 함께 실어 /api/consult(→ 관리자 지메일)로 보냅니다. 카드결제 준비 중 상담 우회 CTA 공용.
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_METHODS, type ConsultContextRow } from '../lib/consultApi'
+import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_METHODS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
 
 const CONTACT_EMAIL = 'sanghohoho0813@gmail.com'
 
@@ -22,14 +22,14 @@ export type ConsultModalProps = {
   heading?: string
   intro?: string
   submitLabel?: string
-  /** 현재 페이지 주제(고정 선택으로 표시). 예: '정책자금' */
-  fixedTopic?: string
-  /** 상담 희망 분야 목록 (상황형 목차, 복수 선택) */
-  topicOptions?: string[]
+  /** 상담 희망 분야 — 6개 상황 목차, 각 목차 안에 상품(썸네일) */
+  topicGroups?: ConsultTopicGroup[]
+  /** 현재 페이지 상품명 — 자동 선택 + 해당 목차 펼침 */
+  preselectProduct?: string
   topicHeading?: string
   /** 상담 희망 방식(전화/카톡·문자) 노출 여부 */
   showContactMethod?: boolean
-  /** 기업 규모 파악용 선택 항목(업종·매출·직원수·지역) 노출 여부 */
+  /** 기업 규모 파악용 선택 항목(업력·업종·매출·직원수·지역) 노출 여부 */
   showCompanyFields?: boolean
 }
 
@@ -41,8 +41,8 @@ export default function ConsultModal({
   heading = '상담 신청',
   intro = '연락처를 남겨주시면 담당자가 확인 후 빠르게 연락드립니다. 남겨주신 상품·선택 내용은 그대로 함께 전달됩니다.',
   submitLabel = '상담 신청하기',
-  fixedTopic,
-  topicOptions = [],
+  topicGroups = [],
+  preselectProduct,
   topicHeading = '상담 희망 분야 (여러 개 선택 가능)',
   showContactMethod = false,
   showCompanyFields = false,
@@ -52,38 +52,45 @@ export default function ConsultModal({
   const [agree, setAgree] = useState(false)
   const [agreeError, setAgreeError] = useState(false)
   const [topics, setTopics] = useState<string[]>([])
+  const [expanded, setExpanded] = useState<string[]>([])
   const [method, setMethod] = useState('')
   const [company, setCompany] = useState<Record<string, string>>({})
-  const firstFieldRef = useRef<HTMLInputElement>(null)
+  const [industryEtc, setIndustryEtc] = useState('')
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const toggleTopic = (t: string) =>
     setTopics((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]))
+  const toggleGroup = (t: string) =>
+    setExpanded((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]))
   const pickCompany = (key: string, value: string) =>
     setCompany((cur) => ({ ...cur, [key]: cur[key] === value ? '' : value }))
 
-  // 열릴 때마다 상태 초기화 + 스크롤 잠금 + ESC 닫기 + 첫 필드 포커스
+  // 열릴 때마다 상태 초기화 + 스크롤 잠금 + ESC 닫기 (자동 포커스 없음 → 항상 상단부터)
   useEffect(() => {
     if (!open) return
     setStatus('idle')
     setServerMessage('')
     setAgree(false)
     setAgreeError(false)
-    setTopics([])
+    // 현재 상품은 미리 선택하고, 그 상품이 속한 목차를 펼쳐 둠
+    const preGroup = preselectProduct ? topicGroups.find((g) => g.products.some((p) => p.name === preselectProduct)) : undefined
+    setTopics(preselectProduct ? [preselectProduct] : [])
+    setExpanded(preGroup ? [preGroup.title] : topicGroups.length ? [topicGroups[0].title] : [])
     setMethod('')
     setCompany({})
+    setIndustryEtc('')
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', onKey)
-    const t = setTimeout(() => firstFieldRef.current?.focus(), 60)
     return () => {
       document.body.style.overflow = prevOverflow
       window.removeEventListener('keydown', onKey)
-      clearTimeout(t)
     }
-  }, [open, onClose])
+  }, [open, onClose, preselectProduct, topicGroups])
 
   if (!open) return null
 
@@ -101,14 +108,19 @@ export default function ConsultModal({
     const message = String(fd.get('message') ?? '').trim()
     setStatus('submitting')
     setServerMessage('')
-    // 고정 주제 + 추가로 고른 상담 분야 + 기업 정보를 이메일 컨텍스트에 합칩니다.
-    const chosenTopics = [fixedTopic, ...topics].filter(Boolean) as string[]
+    // 고른 관심 상품 + 상담 방식 + 기업 정보를 이메일 컨텍스트에 합칩니다.
     const companyRows = CONSULT_COMPANY_FIELDS
       .filter((f) => company[f.key])
-      .map((f) => ({ label: f.key, value: company[f.key] }))
+      .map((f) => ({
+        label: f.key,
+        value:
+          f.key === '업종' && company[f.key] === '기타' && industryEtc.trim()
+            ? `기타 - ${industryEtc.trim()}`
+            : company[f.key],
+      }))
     const context = [
       ...contextRows,
-      ...(chosenTopics.length ? [{ label: '상담 희망 분야', value: chosenTopics.join(', ') }] : []),
+      ...(topics.length ? [{ label: '관심 상품', value: topics.join(', ') }] : []),
       ...(method ? [{ label: '상담 희망 방식', value: method }] : []),
       ...companyRows,
     ]
@@ -134,6 +146,7 @@ export default function ConsultModal({
       onClick={onClose}
     >
       <div
+        ref={scrollRef}
         className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
@@ -190,32 +203,56 @@ export default function ConsultModal({
                 </div>
               )}
 
-              {/* 상담 희망 분야 — 현재 페이지 주제는 고정, 상황형 목차에서 복수 선택 */}
-              {(topicOptions.length > 0 || fixedTopic) && (
+              {/* 상담 희망 분야 — 6개 상황 목차, 펼치면 그 안의 상품(썸네일)을 복수 선택 */}
+              {topicGroups.length > 0 && (
                 <div className="mb-5">
                   <p className={labelClass}>{topicHeading}</p>
-                  {fixedTopic && (
-                    <span className="mb-2 inline-flex items-center gap-1.5 rounded-lg border border-blue-500 bg-blue-50 px-3 py-1.5 text-sm font-bold text-blue-700">
-                      <span aria-hidden>✓</span> {fixedTopic}
-                    </span>
-                  )}
                   <div className="space-y-1.5">
-                    {topicOptions
-                      .filter((t) => t !== fixedTopic)
-                      .map((t) => {
-                        const on = topics.includes(t)
-                        return (
-                          <label
-                            key={t}
-                            className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-[0.9rem] leading-snug transition ${
-                              on ? 'border-blue-500 bg-blue-50 font-semibold text-blue-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                    {topicGroups.map((g) => {
+                      const isOpen = expanded.includes(g.title)
+                      const picked = g.products.filter((p) => topics.includes(p.name)).length
+                      return (
+                        <div key={g.title} className="overflow-hidden rounded-xl border border-slate-200">
+                          <button
+                            type="button"
+                            onClick={() => toggleGroup(g.title)}
+                            aria-expanded={isOpen}
+                            className={`flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left text-[0.9rem] font-semibold transition ${
+                              picked > 0 ? 'bg-blue-50 text-blue-700' : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
                             }`}
                           >
-                            <input type="checkbox" checked={on} onChange={() => toggleTopic(t)} className="h-4 w-4 shrink-0 accent-blue-600" />
-                            {t}
-                          </label>
-                        )
-                      })}
+                            <span className="min-w-0">
+                              {g.title}
+                              {picked > 0 && <span className="ml-1.5 text-xs font-bold text-blue-600">· {picked}개 선택</span>}
+                            </span>
+                            <svg viewBox="0 0 24 24" className={`h-4 w-4 shrink-0 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                              <path d="M6 9l6 6 6-6" />
+                            </svg>
+                          </button>
+                          {isOpen && (
+                            <div className="space-y-1 border-t border-slate-100 bg-white p-2">
+                              {g.products.map((prod) => {
+                                const on = topics.includes(prod.name)
+                                return (
+                                  <label
+                                    key={prod.slug}
+                                    className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-2.5 py-2 text-[0.86rem] leading-snug transition ${
+                                      on ? 'border-blue-400 bg-blue-50/70 font-semibold text-blue-700' : 'border-transparent text-slate-600 hover:bg-slate-50'
+                                    }`}
+                                  >
+                                    <input type="checkbox" checked={on} onChange={() => toggleTopic(prod.name)} className="h-4 w-4 shrink-0 accent-blue-600" />
+                                    {prod.imageSrc && (
+                                      <img src={prod.imageSrc} alt="" loading="lazy" className="h-9 w-14 shrink-0 rounded-md object-cover ring-1 ring-slate-200" />
+                                    )}
+                                    <span className="min-w-0">{prod.name}</span>
+                                  </label>
+                                )
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               )}
@@ -225,13 +262,13 @@ export default function ConsultModal({
                   <label htmlFor="consult-name" className={labelClass}>
                     성함 <span className="text-rose-500">*</span>
                   </label>
-                  <input ref={firstFieldRef} id="consult-name" name="name" type="text" required placeholder="예: 김대표" className={inputClass} />
+                  <input id="consult-name" name="name" type="text" required placeholder="예: 김대표" className={inputClass} />
                 </div>
                 <div>
                   <label htmlFor="consult-contact" className={labelClass}>
                     연락처 <span className="text-rose-500">*</span>
                   </label>
-                  <input id="consult-contact" name="contact" type="text" required placeholder="휴대폰 번호 또는 이메일" className={inputClass} />
+                  <input id="consult-contact" name="contact" type="tel" required defaultValue="010-" placeholder="휴대폰 번호" inputMode="tel" className={inputClass} />
                 </div>
               </div>
 
@@ -294,6 +331,16 @@ export default function ConsultModal({
                             )
                           })}
                         </div>
+                        {/* 업종 '기타' 선택 시 직접 입력 */}
+                        {f.key === '업종' && company['업종'] === '기타' && (
+                          <input
+                            type="text"
+                            value={industryEtc}
+                            onChange={(e) => setIndustryEtc(e.target.value)}
+                            placeholder="업종을 직접 입력해주세요 (예: 요식업)"
+                            className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-[0.85rem] text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                          />
+                        )}
                       </div>
                     ))}
                   </div>
