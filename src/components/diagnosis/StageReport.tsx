@@ -1,21 +1,22 @@
 // 단계별 결과 리포트 — 짧은 완료 체크 → 즉시 결과. 모바일(세로 스크롤) 우선.
 // 1·2단계: 간단 요약(강점/확인할 점). 3단계: 종합 보고서.
-//   ① 한눈에 보기  ② 맞춤 서비스(제출 후 공개, 썸네일 카드 — 우선 확인 항목보다 먼저)
-//   + 함께 준비하면 좋은 것들(AI 자동화·홈페이지·AX 소프트 추천)
-//   ③ 지금 먼저 확인할 3가지  ④ 놓치고 있을 혜택  ⑤ 성장 로드맵  + 활용 기반·영역별 상세(접힘)
+//   ① 한눈에 보기  ② 맞춤 서비스(썸네일 카드) + 함께 준비하면 좋은 것들
+//   ③ 지금 먼저 확인할 것들  → 영역별 준비도 한눈에(막대 시각화·항상 노출)
+//   → 우대 요소(참고용·접힘)  → 마무리 상담 CTA
 import { useEffect, useState } from 'react'
 import { paymentsEnabled } from '../../config/commerce'
 import { Link } from 'react-router-dom'
 import ConsultModal from '../ConsultModal'
 import type {
   AdvantageResultItem,
+  AreaResult,
   ProductRecommendation,
   SeverityTone,
   StageReportData,
   TopPriority,
 } from '../../types/businessDiagnosis'
 import { getPackageBySlug } from '../../data/businessPackages'
-import { ADVANTAGE_DISCLAIMER, ADVANTAGE_GROUP_LABELS, EXPERT_REFERRAL_NOTE } from '../../data/policyAdvantageFactors'
+import { ADVANTAGE_DISCLAIMER } from '../../data/policyAdvantageFactors'
 import ScoreCard from './ScoreCard'
 import { formatKoreanMoney } from '../ProductCard'
 
@@ -64,6 +65,14 @@ const CONF_TONE: Record<string, string> = {
   '높음': 'bg-emerald-100 text-emerald-800',
   '보통': 'bg-amber-100 text-amber-800',
   '낮음': 'bg-orange-100 text-orange-800',
+}
+// 영역별 준비도 막대 — 톤별 막대색/상태칩
+const AREA_BAR_TONE: Record<SeverityTone, { bar: string; chip: string }> = {
+  green: { bar: 'bg-emerald-500', chip: 'bg-emerald-100 text-emerald-800' },
+  blue: { bar: 'bg-blue-500', chip: 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200' },
+  amber: { bar: 'bg-amber-400', chip: 'bg-amber-100 text-amber-800' },
+  orange: { bar: 'bg-orange-500', chip: 'bg-orange-100 text-orange-800' },
+  red: { bar: 'bg-red-500', chip: 'bg-red-100 text-red-700' },
 }
 
 function SectionHeading({ step, title, sub }: { step?: string; title: string; sub?: string }) {
@@ -120,54 +129,117 @@ function TopPrioritiesSection({ step, items }: { step: string; items: TopPriorit
   )
 }
 
-// 정책자금·지원사업 활용 기반 — 기본 접힘(모바일 스크롤 절약), 인쇄 시에는 항상 펼침
+// 정책자금·지원사업 우대 요소 — 참고용, 기본 접힘(가볍게 칩으로). 인쇄 시에는 항상 펼침
 function AdvantageBlock({ report }: { report: StageReportData }) {
   const [open, setOpen] = useState(false)
   if (!report.advantages || report.advantages.length === 0) return null
-  const groups = (['technology', 'management', 'credibility', 'expert'] as const)
-    .map((g) => ({ key: g, items: report.advantages!.filter((a) => a.group === g) }))
-    .filter((g) => g.items.length > 0)
   return (
-    <section className="mt-7 sm:mt-9">
+    <section className="mt-6 print:break-inside-avoid">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-left transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 print:hidden"
+        className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3.5 text-left transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 print:hidden"
       >
         <span>
-          <span className="text-base font-extrabold text-slate-900">정책자금·지원사업 활용 기반</span>
+          <span className="text-[0.95rem] font-extrabold text-slate-700">정책자금·지원사업 우대 요소</span>
           <span className="ml-2 text-sm font-semibold text-slate-400">
-            {report.ownedAdvantageCount ? `보유 요소 ${report.ownedAdvantageCount}개` : '준비하면 좋은 요소'}
+            {report.ownedAdvantageCount ? `보유 ${report.ownedAdvantageCount}개` : '참고용'}
           </span>
         </span>
         <span aria-hidden className={`text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
       </button>
       <div className={`${open ? '' : 'hidden'} print:block`}>
         <p className="mt-3 text-sm leading-relaxed text-slate-500">
-          {report.ownedAdvantageCount
-            ? `평가에 참고될 수 있는 기반 요소를 ${report.ownedAdvantageCount}개 확인했어요.`
-            : '지금부터 준비하면 도움이 될 요소들을 정리했어요.'}
+          평가에서 가점·우대가 될 수 있는 요소예요. 지금 다 갖추지 않아도 괜찮고, 상담 때 함께 챙겨드려요.
         </p>
-        <div className="mt-3 space-y-3">
-          {groups.map((g) => (
-            <div key={g.key} className="rounded-2xl border border-slate-200 bg-white p-4">
-              <p className="text-xs font-black uppercase tracking-wide text-slate-400">{ADVANTAGE_GROUP_LABELS[g.key]}</p>
-              <ul className="mt-2.5 space-y-2">
-                {g.items.map((item) => (
-                  <li key={item.id} className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[0.95rem] font-bold text-slate-800">{item.label}</p>
-                      <p className="mt-0.5 text-xs leading-snug text-slate-500">{item.expertReferralOnly ? EXPERT_REFERRAL_NOTE : item.description}</p>
-                    </div>
-                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-black ${ADV_STATUS_TONE[item.status]}`}>{item.status}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {report.advantages.map((item) => (
+            <span
+              key={item.id}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[0.85rem] font-bold ${ADV_STATUS_TONE[item.status]}`}
+            >
+              {item.label}
+              <span className="text-[0.72rem] font-semibold opacity-70">· {item.status}</span>
+            </span>
           ))}
         </div>
-        <p className="mt-2 text-xs leading-relaxed text-slate-400">{ADVANTAGE_DISCLAIMER}</p>
+        <p className="mt-3 text-xs leading-relaxed text-slate-400">{ADVANTAGE_DISCLAIMER}</p>
+      </div>
+    </section>
+  )
+}
+
+// 영역별 준비도 한눈에 — 6개 영역을 준비된 순서대로 막대로 시각화(항상 노출) + 근거 상세는 토글
+function AreaScoreSummary({ areas }: { areas: AreaResult[] }) {
+  const [detail, setDetail] = useState(false)
+  if (!areas.length) return null
+  const sorted = [...areas].sort((a, b) => b.score - a.score)
+  const top = sorted[0]
+  const bottom = sorted[sorted.length - 1]
+  return (
+    <section className="mt-7 sm:mt-9 print:break-inside-avoid">
+      <SectionHeading title="영역별 준비도 한눈에" sub="6개 영역을 준비된 순서대로 정리했어요. 아래로 갈수록 먼저 챙기면 좋아요." />
+      <div className="mt-3.5 grid grid-cols-2 gap-2.5">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 px-3.5 py-2.5">
+          <p className="text-[11px] font-black uppercase tracking-wide text-emerald-600">가장 잘 갖춘 영역</p>
+          <p className="mt-0.5 text-[0.98rem] font-extrabold leading-tight text-slate-900">{top.label}</p>
+        </div>
+        <div className="rounded-xl border border-orange-200 bg-orange-50/70 px-3.5 py-2.5">
+          <p className="text-[11px] font-black uppercase tracking-wide text-orange-600">먼저 챙기면 좋은 영역</p>
+          <p className="mt-0.5 text-[0.98rem] font-extrabold leading-tight text-slate-900">{bottom.label}</p>
+        </div>
+      </div>
+      <div className="mt-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+        {sorted.map((a) => {
+          const t = AREA_BAR_TONE[a.tone]
+          return (
+            <div key={a.area} className="flex items-center gap-3">
+              <span className="w-[86px] shrink-0 text-[0.88rem] font-bold leading-tight text-slate-700 sm:w-[104px] sm:text-[0.92rem]">{a.label}</span>
+              <div className="relative h-5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                <div className={`h-full rounded-full ${t.bar} transition-all duration-500`} style={{ width: `${Math.max(a.score, 6)}%` }} />
+              </div>
+              <span className="w-8 shrink-0 text-right text-[0.95rem] font-black tabular-nums text-slate-900">{a.score}</span>
+              <span className={`hidden shrink-0 rounded-full px-2 py-0.5 text-[11px] font-black sm:inline-block ${t.chip}`}>{a.status}</span>
+            </div>
+          )
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={() => setDetail((v) => !v)}
+        aria-expanded={detail}
+        className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-slate-500 hover:text-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 print:hidden"
+      >
+        영역별 근거·지금 할 일 자세히 보기
+        <span aria-hidden className={`transition-transform ${detail ? 'rotate-180' : ''}`}>▾</span>
+      </button>
+      <div className={`${detail ? 'mt-4 grid gap-3 lg:grid-cols-2' : 'hidden'} print:mt-4 print:grid print:gap-3`}>
+        {sorted.map((a, i) => (
+          <ScoreCard key={a.area} result={a} index={i} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+// 마무리 상담 CTA — 결과를 본 뒤 바로 상담으로 이어지도록(진단 상담 신청 = 설문 응답까지 함께 전달)
+function ClosingConsultCTA({ onConsult }: { onConsult: () => void }) {
+  return (
+    <section className="mt-8 print:hidden">
+      <div className="rounded-2xl border-2 border-blue-200 bg-gradient-to-b from-blue-50 to-white p-6 text-center sm:p-7">
+        <h3 className="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">어디서부터 시작할지 막막하다면</h3>
+        <p className="mx-auto mt-2 max-w-md text-[0.98rem] leading-relaxed text-slate-600">
+          진단 결과를 바탕으로 대표님 상황에 맞는 준비 순서와 활용할 수 있는 제도를 무료로 짚어드려요. 방금 답해주신 내용까지 함께 전달되니, 연락처만 남겨주시면 담당자가 확인 후 연락드립니다.
+        </p>
+        <button
+          type="button"
+          onClick={onConsult}
+          className="shine-cta mt-4 inline-flex min-h-[52px] items-center justify-center gap-1.5 rounded-2xl bg-blue-600 px-8 py-3.5 text-lg font-black text-white shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+        >
+          무료로 맞춤 상담 신청하기 <span aria-hidden>→</span>
+        </button>
+        <p className="mt-2.5 text-xs text-slate-400">상담은 무료이며, 원하지 않으면 언제든 그만두실 수 있어요.</p>
       </div>
     </section>
   )
@@ -320,7 +392,6 @@ export default function StageReport({
   onPrint,
 }: Props) {
   const [count, setCount] = useState(0)
-  const [showAreas, setShowAreas] = useState(false)
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) {
@@ -425,32 +496,14 @@ export default function StageReport({
           {/* 함께 준비하면 좋은 것들 — '지금 먼저 확인할 것들' 바로 다음에 (이미 추천된 상품은 제외) */}
           <GrowthPicksSection excludeSlugs={hasRecsSection ? report.recommendations.map((r) => r.slug) : []} onProductClick={onProductClick} />
 
+          {/* 영역별 준비도 한눈에 — 6개 영역 막대 시각화(항상 노출) */}
+          {report.areas && report.areas.length > 0 && <AreaScoreSummary areas={report.areas} />}
+
+          {/* 정책자금·지원사업 우대 요소 — 참고용(가볍게 접힘) */}
           <AdvantageBlock report={report} />
 
-          {/* 영역별 상세 준비도 — 접힘 */}
-          {report.areas && report.areas.length > 0 && (
-            <div className="mt-9 print:hidden">
-              <button
-                type="button"
-                onClick={() => setShowAreas((v) => !v)}
-                aria-expanded={showAreas}
-                className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-left transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
-              >
-                <span>
-                  <span className="text-base font-extrabold text-slate-900">영역별 상세 준비도</span>
-                  <span className="ml-2 text-sm font-semibold text-slate-400">6개 영역 점수·근거</span>
-                </span>
-                <span aria-hidden className={`text-slate-400 transition-transform ${showAreas ? 'rotate-180' : ''}`}>▾</span>
-              </button>
-              {showAreas && (
-                <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                  {report.areas.map((a, i) => (
-                    <ScoreCard key={a.area} result={a} index={i} />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          {/* 마무리 상담 CTA — 제출 전에만(제출 후엔 아래 접수 안내) */}
+          {!submitted && <ClosingConsultCTA onConsult={onWantResult} />}
         </>
       ) : (
         // ═══════════ 1·2단계 간단 요약 ═══════════
@@ -533,8 +586,9 @@ export default function StageReport({
         </>
       )}
 
-      {/* ── CTA 영역 ── */}
+      {/* ── CTA 영역 ── (최종 보고서 제출 전 CTA는 위 마무리 카드가 대신하므로 생략) */}
       {!submitted ? (
+        isFinal ? null : (
         <div className="mt-9 print:hidden">
           {report.nextHint && <p className="mb-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium leading-snug text-slate-500">📋 {report.nextHint}</p>}
           <div className="flex flex-col gap-2.5">
@@ -560,6 +614,7 @@ export default function StageReport({
           </div>
           {canContinue && <p className="mt-3 text-center text-sm text-slate-400">진단은 자동으로 저장되어 나중에 이어서 할 수 있어요.</p>}
         </div>
+        )
       ) : (
         <div className="mt-9">
           <div className="animate-pop-in mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700 ring-1 ring-inset ring-emerald-200 print:hidden">
