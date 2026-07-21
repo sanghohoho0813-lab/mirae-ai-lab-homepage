@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom'
 import ConsultModal from '../ConsultModal'
 import type {
   AdvantageResultItem,
-  MissedBenefit,
   ProductRecommendation,
   SeverityTone,
   StageReportData,
@@ -60,12 +59,6 @@ const PRIO_TONE: Record<SeverityTone, { card: string; num: string; chip: string;
   amber: { card: 'border-amber-300 bg-amber-50', num: 'bg-amber-500', chip: 'bg-amber-100 text-amber-800', label: '보완 추천' },
   blue: { card: 'border-blue-200 bg-blue-50', num: 'bg-blue-500', chip: 'bg-blue-100 text-blue-700', label: '점검' },
   green: { card: 'border-emerald-200 bg-emerald-50', num: 'bg-emerald-500', chip: 'bg-emerald-100 text-emerald-800', label: '양호' },
-}
-const MB_STATUS_TONE: Record<MissedBenefit['status'], string> = {
-  '조건 확인 필요': 'bg-amber-100 text-amber-800',
-  '현재 검토 가능': 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200',
-  '자료 확인 필요': 'bg-slate-100 text-slate-600',
-  '현재는 대상 가능성 낮음': 'bg-slate-50 text-slate-500',
 }
 const CONF_TONE: Record<string, string> = {
   '높음': 'bg-emerald-100 text-emerald-800',
@@ -122,87 +115,6 @@ function TopPrioritiesSection({ step, items }: { step: string; items: TopPriorit
             </div>
           )
         })}
-      </div>
-    </section>
-  )
-}
-
-// ── 지금 놓치고 있을 수 있는 혜택 ──
-function MissedBenefitsSection({ step, items }: { step: string; items: MissedBenefit[] }) {
-  if (!items.length) return null
-  return (
-    <section className="mt-7 sm:mt-9">
-      <SectionHeading step={step} title="지금 놓치고 있을 수 있는 혜택" sub="신청해야 받을 수 있는 것들이에요. 조건과 출처를 함께 확인해 보세요." />
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {items.map((m) => {
-          const pkg = m.linkedProductSlug ? getPackageBySlug(m.linkedProductSlug) : null
-          return (
-            <div key={m.title} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-4.5">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <p className="text-[0.95rem] font-black leading-snug text-slate-900">{m.title}</p>
-                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${MB_STATUS_TONE[m.status]}`}>{m.status}</span>
-              </div>
-              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-slate-600">{m.note}</p>
-              {m.verified?.conditions && m.verified.conditions.length > 0 && (
-                <ul className="mt-2 space-y-1">
-                  {m.verified.conditions.slice(0, 2).map((c) => (
-                    <li key={c} className="flex items-start gap-1.5 text-xs leading-snug text-amber-900/80">
-                      <span aria-hidden className="mt-0.5 font-black">·</span>
-                      {c}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {m.verified?.source && (
-                <p className="mt-2 text-[11px] text-slate-400">
-                  출처 ·{' '}
-                  {m.verified.source.url ? (
-                    <a href={m.verified.source.url} target="_blank" rel="noopener noreferrer" className="font-bold underline underline-offset-2">
-                      {m.verified.source.name}
-                    </a>
-                  ) : (
-                    m.verified.source.name
-                  )}
-                </p>
-              )}
-              {pkg && (
-                <Link to={`/business-services/${pkg.slug}`} className="mt-2.5 text-sm font-bold text-blue-600 hover:text-blue-800">
-                  관련 서비스 보기 →
-                </Link>
-              )}
-            </div>
-          )
-        })}
-      </div>
-    </section>
-  )
-}
-
-// ── 성장 로드맵 ──
-function RoadmapSection({ step, roadmap }: { step: string; roadmap: NonNullable<StageReportData['roadmap']> }) {
-  const cols = [
-    { key: 'now30', label: '지금 ~ 30일', tone: 'bg-blue-600', items: roadmap.now30 },
-    { key: 'm1to3', label: '1 ~ 3개월', tone: 'bg-indigo-500', items: roadmap.m1to3 },
-    { key: 'm3to12', label: '3 ~ 12개월', tone: 'bg-slate-500', items: roadmap.m3to12 },
-  ].filter((c) => c.items.length > 0)
-  if (!cols.length) return null
-  return (
-    <section className="mt-7 sm:mt-9">
-      <SectionHeading step={step} title="성장 로드맵" sub="무엇을 언제 하면 좋을지 기간별로 정리했어요." />
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        {cols.map((c) => (
-          <div key={c.key} className="rounded-2xl border border-slate-200 bg-white p-4">
-            <span className={`inline-block rounded-full px-2.5 py-1 text-xs font-black text-white ${c.tone}`}>{c.label}</span>
-            <ul className="mt-3 space-y-2">
-              {c.items.map((it) => (
-                <li key={it} className="flex items-start gap-2 text-sm font-semibold leading-snug text-slate-700">
-                  <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300" />
-                  {it}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
       </div>
     </section>
   )
@@ -433,11 +345,9 @@ export default function StageReport({
   const stageWord = report.depth === 1 ? '1단계' : report.depth === 2 ? '2단계' : '종합진단'
   const canContinue = report.depth < 3
   const isFinal = report.depth === 3
-  // 최종 보고서 섹션 번호 — 추천 상품(제출 후)이 ②로 먼저 나오고, 나머지가 한 칸씩 밀림
-  const hasRecsSection = submitted && report.recommendations.length > 0
+  // 최종 보고서 섹션 번호 — 맞춤 서비스(②)는 제출과 무관하게 결과 화면에서 바로 노출
+  const hasRecsSection = report.recommendations.length > 0
   const stepPrio = hasRecsSection ? '③' : '②'
-  const stepBenefit = hasRecsSection ? '④' : '③'
-  const stepRoadmap = hasRecsSection ? '⑤' : '④'
 
   function handlePrint() {
     onPrint?.()
@@ -514,9 +424,6 @@ export default function StageReport({
 
           {/* 함께 준비하면 좋은 것들 — '지금 먼저 확인할 것들' 바로 다음에 (이미 추천된 상품은 제외) */}
           <GrowthPicksSection excludeSlugs={hasRecsSection ? report.recommendations.map((r) => r.slug) : []} onProductClick={onProductClick} />
-
-          {report.missedBenefits && <MissedBenefitsSection step={stepBenefit} items={report.missedBenefits} />}
-          {report.roadmap && <RoadmapSection step={stepRoadmap} roadmap={report.roadmap} />}
 
           <AdvantageBlock report={report} />
 
