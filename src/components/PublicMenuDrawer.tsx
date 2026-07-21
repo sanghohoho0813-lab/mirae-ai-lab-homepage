@@ -12,6 +12,7 @@ import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
 import { loginPathWithNext } from '../lib/authRouting'
 import Avatar from './account/Avatar'
+import ConsultModal from './ConsultModal'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
@@ -81,7 +82,7 @@ const BUSINESS_MENU: MenuConfig = {
       items: [
         { label: '기업 진단', to: '/business-diagnosis', match: (p) => p.startsWith('/business-diagnosis') },
         { label: '카톡 상담하기', to: consultLinks.kakaoChat },
-        { label: '대면 상담 신청', to: consultLinks.googleForm },
+        { label: '상담 신청 (이메일)', to: '#consult' },
       ],
     },
     {
@@ -166,6 +167,7 @@ export default function PublicMenuDrawer({
   buttonClassName?: string
 }) {
   const [open, setOpen] = useState(false)
+  const [consultOpen, setConsultOpen] = useState(false)
   const [historyCount, setHistoryCount] = useState(0)
   const [orderCount, setOrderCount] = useState(0)
   const [savedCount, setSavedCount] = useState(0)
@@ -397,7 +399,25 @@ export default function PublicMenuDrawer({
                     <ul className="space-y-0.5">
                       {group.items.map((m) => {
                         const active = m.match ? m.match(path) : false
-                        // 외부 링크(카톡·구글폼 등)는 <a> 로 새 탭 오픈
+                        // 사이트 내 상담 폼(이메일) 모달을 여는 항목
+                        if (m.to === '#consult') {
+                          return (
+                            <li key={m.label}>
+                              <button
+                                type="button"
+                                onClick={() => { requestClose(); setConsultOpen(true) }}
+                                className="flex min-h-11 w-full items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                              >
+                                <span className="flex min-w-0 items-start gap-2">
+                                  {m.no && <span className={`mt-0.5 shrink-0 text-[0.85rem] font-black tabular-nums ${acc.no}`}>{m.no}.</span>}
+                                  <span className="block text-[0.95rem] font-semibold leading-snug">{m.label}</span>
+                                </span>
+                                <span aria-hidden className="shrink-0 text-slate-400">✉</span>
+                              </button>
+                            </li>
+                          )
+                        }
+                        // 외부 링크(카톡 등)는 <a> 로 새 탭 오픈
                         if (m.to.startsWith('http')) {
                           return (
                             <li key={m.label}>
@@ -459,6 +479,13 @@ export default function PublicMenuDrawer({
         </div>,
         document.body,
       )}
+
+      <ConsultModal
+        open={consultOpen}
+        onClose={() => setConsultOpen(false)}
+        source="메뉴 · 상담 신청"
+        heading="상담 신청"
+      />
     </>
   )
 }

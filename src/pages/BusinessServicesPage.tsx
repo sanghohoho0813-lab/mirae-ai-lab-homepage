@@ -4,6 +4,7 @@ import HeaderAccount from '../components/account/HeaderAccount'
 import ProductCard from '../components/ProductCard'
 import CouponSignupBanner from '../components/CouponSignupBanner'
 import LegalFooter from '../components/LegalFooter'
+import ConsultModal from '../components/ConsultModal'
 import { consultLinks } from '../config/businessInfo'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -68,6 +69,7 @@ export default function BusinessServicesPage() {
   const savedCount = likes.length + cart.length
   const [historyCount] = useState(() => loadHistory().length)
   const [showBar, setShowBar] = useState(false)
+  const [consultOpen, setConsultOpen] = useState(false)
   const [searchParams] = useSearchParams()
   const location = useLocation()
 
@@ -227,14 +229,13 @@ export default function BusinessServicesPage() {
                 </svg>
                 카톡 상담하기
               </a>
-              <a
-                href={consultLinks.googleForm}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setConsultOpen(true)}
                 className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 py-3.5 text-base font-bold text-white transition-colors hover:bg-white/10 sm:px-6"
               >
-                대면 상담 신청하기
-              </a>
+                상담 신청하기
+              </button>
             </div>
           </div>
           </div>{/* /왼쪽 컬럼 */}
@@ -451,6 +452,13 @@ export default function BusinessServicesPage() {
           </a>
         </div>
       )}
+
+      <ConsultModal
+        open={consultOpen}
+        onClose={() => setConsultOpen(false)}
+        source="경영지원 서비스몰"
+        heading="상담 신청"
+      />
     </div>
   )
 }

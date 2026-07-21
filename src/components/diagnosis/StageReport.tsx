@@ -4,9 +4,9 @@
 //   + 함께 준비하면 좋은 것들(AI 자동화·홈페이지·AX 소프트 추천)
 //   ③ 지금 먼저 확인할 3가지  ④ 놓치고 있을 혜택  ⑤ 성장 로드맵  + 활용 기반·영역별 상세(접힘)
 import { useEffect, useState } from 'react'
-import { consultLinks } from '../../config/businessInfo'
 import { paymentsEnabled } from '../../config/commerce'
 import { Link } from 'react-router-dom'
+import ConsultModal from '../ConsultModal'
 import type {
   AdvantageResultItem,
   MissedBenefit,
@@ -273,6 +273,7 @@ function Recommendations({
   onProductClick: Props['onProductClick']
   onConsultClick: Props['onConsultClick']
 }) {
+  const [consultPkg, setConsultPkg] = useState<{ name: string; price: string } | null>(null)
   if (recs.length === 0) return null
   return (
     <section className="mt-7 sm:mt-9 print:break-inside-avoid">
@@ -312,9 +313,9 @@ function Recommendations({
                     자세히 보기
                   </Link>
                   {pkg.priceType === 'consult' || !paymentsEnabled ? (
-                    <a href={consultLinks.googleForm} target="_blank" rel="noopener noreferrer" onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl border border-slate-300 px-3 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50">
+                    <button type="button" onClick={() => { onConsultClick(rec.slug); setConsultPkg({ name: pkg.name, price: pkg.price }) }} className="flex min-h-11 flex-1 items-center justify-center rounded-xl border border-slate-300 px-3 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50">
                       상담 신청
-                    </a>
+                    </button>
                   ) : (
                     <Link to={`/checkout/${pkg.slug}`} onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
                       바로 결제하기
@@ -326,6 +327,21 @@ function Recommendations({
           )
         })}
       </div>
+      <ConsultModal
+        open={!!consultPkg}
+        onClose={() => setConsultPkg(null)}
+        source="진단 결과 추천"
+        heading="상담 신청"
+        contextRows={
+          consultPkg
+            ? [
+                { label: '상품', value: consultPkg.name },
+                { label: '가격', value: formatKoreanMoney(consultPkg.price) },
+                { label: '신청 위치', value: '기업 성장진단 결과' },
+              ]
+            : []
+        }
+      />
     </section>
   )
 }

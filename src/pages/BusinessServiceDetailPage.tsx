@@ -9,8 +9,10 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
+import ConsultModal from '../components/ConsultModal'
+import type { ConsultContextRow } from '../lib/consultApi'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
-import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../config/commerce'
+import { paymentsEnabled, paymentsPreparingNotice } from '../config/commerce'
 import { getDetailContent } from '../data/businessDetailContent'
 
 const band = 'px-5 py-16 sm:py-24'
@@ -85,6 +87,7 @@ export default function BusinessServiceDetailPage() {
   const pkg = getPackageBySlug(slug)
   const [variantIdx, setVariantIdx] = useState(0)
   const [showBar, setShowBar] = useState(false)
+  const [consultOpen, setConsultOpen] = useState(false)
 
   useEffect(() => {
     if (pkg) document.title = `${pkg.name} | 미래 AI 랩 서비스몰`
@@ -128,8 +131,15 @@ export default function BusinessServiceDetailPage() {
 
   // 보완중(teaser) 모드 — 핵심 섹션만 노출(위 DETAIL_TEASER_MODE 주석 참고)
   const trimmed = DETAIL_TEASER_MODE && !FULL_DETAIL_SLUGS.has(pkg.slug)
+
+  // 상담 신청 시 함께 보낼 상품/선택 정보 (담긴 것 그대로 지메일로 전달)
+  const consultContext: ConsultContextRow[] = [
+    { label: '상품', value: pkg.name },
+    ...(selected ? [{ label: '옵션', value: selected.label }] : []),
+    { label: '가격', value: displayPrice },
+  ]
   function handleInquiry() {
-    window.open(inquiryUrl, '_blank', 'noopener,noreferrer')
+    setConsultOpen(true)
   }
 
   function handleBuy() {
@@ -142,16 +152,15 @@ export default function BusinessServiceDetailPage() {
   const BuyButtons = () =>
     inquiryOnly ? (
       <div className="flex flex-col gap-2.5">
-        <a
-          href={inquiryUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={handleInquiry}
           className={`flex w-full items-center justify-center rounded-2xl px-6 py-4 text-lg font-black shadow-lg transition-transform hover:-translate-y-0.5 ${
             flagship ? 'bg-amber-400 text-slate-900 shadow-amber-500/25' : 'bg-slate-900 text-white shadow-slate-900/20'
           }`}
         >
           가능성 진단 신청하기 →
-        </a>
+        </button>
         <p className="text-center text-xs font-medium text-slate-400">{consult ? '무료 · 신청 1~2분 · 진행 여부는 상담 후 결정' : paymentsPreparingNotice}</p>
       </div>
     ) : (
@@ -619,6 +628,14 @@ export default function BusinessServiceDetailPage() {
           </button>
         </div>
       )}
+
+      <ConsultModal
+        open={consultOpen}
+        onClose={() => setConsultOpen(false)}
+        source={pkg.name}
+        contextRows={consultContext}
+        heading={consult ? '가능성 진단 신청' : '상담 신청'}
+      />
     </div>
   )
 }

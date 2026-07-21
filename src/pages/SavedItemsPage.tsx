@@ -1,9 +1,11 @@
 // 찜한 상품·장바구니 모아보기 — localStorage 기반(비회원 포함). 카드의 하트/장바구니 토글로 바로 제거 가능.
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import ProductCard from '../components/ProductCard'
+import ConsultModal from '../components/ConsultModal'
+import type { ConsultContextRow } from '../lib/consultApi'
 import { businessPackages } from '../data/businessPackages'
 import { useSavedItems } from '../lib/savedItems'
 
@@ -31,6 +33,13 @@ export default function SavedItemsPage() {
   const { likes, cart } = useSavedItems()
   const likedItems = bySlugs(likes)
   const cartItems = bySlugs(cart)
+  const [consultOpen, setConsultOpen] = useState(false)
+
+  // 장바구니에 담긴 상품을 그대로 상담 신청 이메일에 실어 보냅니다.
+  const cartContext: ConsultContextRow[] = cartItems.map((pkg, i) => ({
+    label: `담은 상품 ${i + 1}`,
+    value: `${pkg.name} (${pkg.price})`,
+  }))
 
   useEffect(() => {
     document.title = '찜한 상품 · 장바구니 | 미래 AI 랩'
@@ -79,11 +88,26 @@ export default function SavedItemsPage() {
           {cartItems.length === 0 ? (
             <div className="mt-4"><EmptyBox label="장바구니가 비어 있어요. 마음에 드는 서비스를 담아보세요." /></div>
           ) : (
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-              {cartItems.map((pkg) => (
-                <ProductCard key={pkg.id} pkg={pkg} />
-              ))}
-            </div>
+            <>
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+                {cartItems.map((pkg) => (
+                  <ProductCard key={pkg.id} pkg={pkg} />
+                ))}
+              </div>
+              {/* 담은 상품 전체로 상담 신청 — 그대로 지메일 접수 */}
+              <div className="mt-5 flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-[0.98rem] font-semibold text-slate-700">
+                  담은 <span className="text-blue-600">{cartItems.length}개</span> 상품으로 한 번에 상담 신청할 수 있어요.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setConsultOpen(true)}
+                  className="inline-flex shrink-0 items-center justify-center rounded-xl bg-blue-600 px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-blue-700"
+                >
+                  담은 상품 상담 신청하기 →
+                </button>
+              </div>
+            </>
           )}
         </section>
 
@@ -108,6 +132,15 @@ export default function SavedItemsPage() {
           )}
         </section>
       </main>
+
+      <ConsultModal
+        open={consultOpen}
+        onClose={() => setConsultOpen(false)}
+        source="장바구니"
+        heading="담은 상품 상담 신청"
+        intro="담아두신 상품 목록을 그대로 담당자에게 전달합니다. 연락처만 남겨주시면 빠르게 안내드릴게요."
+        contextRows={cartContext}
+      />
 
       <LegalFooter />
     </div>

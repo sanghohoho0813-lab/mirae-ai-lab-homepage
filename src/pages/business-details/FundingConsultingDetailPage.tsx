@@ -6,8 +6,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import FundingCasesSection from '../../components/FundingCasesSection'
+import ConsultModal from '../../components/ConsultModal'
+import type { ConsultContextRow } from '../../lib/consultApi'
 import { getPackageBySlug } from '../../data/businessPackages'
-import { paymentsEnabled, inquiryUrl, paymentsPreparingNotice } from '../../config/commerce'
+import { paymentsEnabled, paymentsPreparingNotice } from '../../config/commerce'
 
 const pkg = getPackageBySlug('funding-consulting')!
 const IMG = '/assets/business-services/funding-consulting.png'
@@ -200,7 +202,9 @@ function CartIcon() {
 export default function FundingConsultingDetailPage() {
   const navigate = useNavigate()
   const [showBar, setShowBar] = useState(false)
+  const [consult, setConsult] = useState<{ open: boolean; plan: string | null }>({ open: false, plan: null })
   const rootRef = useRef<HTMLDivElement>(null)
+  const openConsult = (plan: string | null = null) => setConsult({ open: true, plan })
 
   // 스크롤 등장(리빌) — 각 섹션 콘텐츠가 화면에 들어올 때 페이드+슬라이드업(토스풍)
   useEffect(() => {
@@ -227,10 +231,10 @@ export default function FundingConsultingDetailPage() {
     return () => io.disconnect()
   }, [])
 
-  // 결제 시스템 준비 중이면 카드결제 대신 상담(구글폼)으로 우회
+  // 결제 시스템 준비 중이면 카드결제 대신 사이트 내 상담 폼(→ 지메일)으로 우회
   const inquiryOnly = !paymentsEnabled
   function handleBuy() {
-    if (inquiryOnly) { window.open(inquiryUrl, '_blank', 'noopener,noreferrer'); return }
+    if (inquiryOnly) { openConsult(); return }
     navigate(`/checkout/${pkg.slug}`)
   }
 
@@ -256,14 +260,13 @@ export default function FundingConsultingDetailPage() {
   const BuyButtons = ({ variant = 'light' }: { variant?: 'light' | 'dark' }) =>
     inquiryOnly ? (
       <>
-        <a
-          href={inquiryUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => openConsult()}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
         >
           무료 상담 신청하기
-        </a>
+        </button>
         <p className={`mt-2 text-xs font-medium leading-relaxed ${variant === 'dark' ? 'text-slate-300' : 'text-slate-500'}`}>{paymentsPreparingNotice}</p>
       </>
     ) : (
@@ -283,7 +286,7 @@ export default function FundingConsultingDetailPage() {
         </p>
         <button
           type="button"
-          onClick={() => window.open(inquiryUrl, '_blank', 'noopener,noreferrer')}
+          onClick={() => openConsult()}
           className={`mt-3 text-sm font-semibold underline underline-offset-4 transition-colors ${
             variant === 'dark' ? 'text-slate-300 hover:text-white' : 'text-slate-500 hover:text-slate-900'
           }`}
@@ -631,27 +634,25 @@ export default function FundingConsultingDetailPage() {
                   ) : p.cta === 'buy' ? (
                     // 결제 준비 중(paymentsEnabled=false): A 도 상담 신청으로 우회
                     <>
-                      <a
-                        href={inquiryUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() => openConsult(`${p.key}형 · ${p.name}`)}
                         className="flex w-full items-center justify-center rounded-xl bg-amber-400 px-5 py-3.5 text-[0.95rem] font-black text-slate-900 shadow-sm transition-transform hover:-translate-y-0.5"
                       >
                         1회 컨설팅 신청하기
-                      </a>
+                      </button>
                       <p className="mt-1.5 text-center text-[0.72rem] font-medium text-slate-400">카드결제 준비 중 · 신청 시 결제 방법 안내</p>
                     </>
                   ) : (
-                    <a
-                      href={inquiryUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => openConsult(`${p.key}형 · ${p.name}`)}
                       className={`flex w-full items-center justify-center rounded-xl px-5 py-3.5 text-[0.95rem] font-black shadow-sm transition-transform hover:-translate-y-0.5 ${
                         p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'
                       }`}
                     >
                       {p.ctaLabel}
-                    </a>
+                    </button>
                   )}
                 </div>
               </div>
@@ -1062,6 +1063,18 @@ export default function FundingConsultingDetailPage() {
         </div>
       )}
 
+      <ConsultModal
+        open={consult.open}
+        onClose={() => setConsult({ open: false, plan: null })}
+        source="정책자금 컨설팅"
+        heading="정책자금 무료 상담 신청"
+        contextRows={
+          [
+            { label: '상담 유형', value: '정책자금 컨설팅' },
+            ...(consult.plan ? [{ label: '선택 방식', value: consult.plan }] : []),
+          ] as ConsultContextRow[]
+        }
+      />
     </div>
   )
 }

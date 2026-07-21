@@ -11,7 +11,9 @@ import IdentityVerifyCard from '../components/auth/IdentityVerifyCard'
 import { attachIdentityToUser, getIdentityHealth, type IdentityVerified } from '../lib/identityVerification'
 import { getPackageBySlug } from '../data/businessPackages'
 import { businessInfo } from '../config/businessInfo'
-import { paymentsEnabled, inquiryUrl } from '../config/commerce'
+import { paymentsEnabled } from '../config/commerce'
+import ConsultModal from '../components/ConsultModal'
+import type { ConsultContextRow } from '../lib/consultApi'
 import { checkoutTerms } from '../config/checkoutTerms'
 import { useAuth } from '../lib/auth'
 import {
@@ -55,6 +57,7 @@ export default function CheckoutPage() {
   const [identityGate, setIdentityGate] = useState<{ required: boolean; configured: boolean } | null>(null)
   const [gateIdentity, setGateIdentity] = useState<IdentityVerified | null>(null)
   const [gateError, setGateError] = useState('')
+  const [consultOpen, setConsultOpen] = useState(false)
 
   const configured = paymentConfigured()
   const consult = pkg?.priceType === 'consult'
@@ -239,27 +242,27 @@ export default function CheckoutPage() {
         {!paymentsEnabled && (
           <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-[0.95rem] leading-relaxed text-amber-800">
             현재 카드 결제 시스템을 준비 중입니다. 상담을 신청해 주시면 계좌이체 등으로 빠르게 안내해 드립니다.
-            <a href={inquiryUrl} target="_blank" rel="noopener noreferrer" className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
+            <button type="button" onClick={() => setConsultOpen(true)} className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
               상담 신청하기 →
-            </a>
+            </button>
           </div>
         )}
 
         {paymentsEnabled && !configured && (
           <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-[0.95rem] leading-relaxed text-amber-800">
             결제 설정이 아직 완료되지 않았습니다. 아래 상담 신청을 남겨주시면 결제와 진행을 함께 안내드리겠습니다.
-            <Link to={`/business-services/${pkg.slug}#apply`} className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
+            <button type="button" onClick={() => setConsultOpen(true)} className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
               상담 신청하기 →
-            </Link>
+            </button>
           </div>
         )}
 
         {configured && gateBlocked && (
           <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-[0.95rem] leading-relaxed text-amber-800">
             현재 결제 기능을 준비하고 있습니다. 결제 전 상담을 이용해주세요.
-            <Link to={`/business-services/${pkg.slug}#apply`} className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
+            <button type="button" onClick={() => setConsultOpen(true)} className="mt-3 flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-base font-bold text-white hover:bg-blue-700">
               결제 전 상담하기 →
-            </Link>
+            </button>
           </div>
         )}
 
@@ -516,6 +519,20 @@ export default function CheckoutPage() {
       {(phase === 'preparing' || phase === 'window') && <PaymentProgressOverlay phase={phase} />}
 
       <LoginModal open={!authLoading && !user} onClose={() => navigate(`/business-services/${pkg.slug}`)} />
+
+      <ConsultModal
+        open={consultOpen}
+        onClose={() => setConsultOpen(false)}
+        source={pkg.name}
+        heading="상담 신청"
+        contextRows={
+          [
+            { label: '상품', value: pkg.name },
+            ...(selected ? [{ label: '옵션', value: selected.label }] : []),
+            { label: '금액', value: formatKrw(amount) },
+          ] as ConsultContextRow[]
+        }
+      />
 
       <LegalFooter />
     </div>
