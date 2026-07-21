@@ -90,29 +90,29 @@ function TopPrioritiesSection({ step, items }: { step: string; items: TopPriorit
   if (!items.length) return null
   return (
     <section className="mt-7 sm:mt-9">
-      <SectionHeading step={step} title="지금 먼저 확인할 3가지" sub="점수를 낮추려는 게 아니라, 순서를 잡기 위한 안내예요." />
-      <div className="mt-4 space-y-3">
+      <SectionHeading step={step} title={`지금 먼저 확인할 ${items.length}가지`} sub="점수를 낮추려는 게 아니라, 순서를 잡기 위한 안내예요." />
+      <div className="mt-4 space-y-3.5">
         {items.map((p) => {
           const tone = PRIO_TONE[p.tone]
           const pkg = p.linkedProductSlug ? getPackageBySlug(p.linkedProductSlug) : null
           return (
-            <div key={p.rank} className={`rounded-2xl border-2 p-4.5 sm:p-5 ${tone.card}`}>
-              <div className="flex items-start gap-3">
-                <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-base font-black text-white ${tone.num}`}>{p.rank}</span>
+            <div key={p.rank} className={`rounded-2xl border-2 p-5 sm:p-6 ${tone.card}`}>
+              <div className="flex items-start gap-3.5">
+                <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-lg font-black text-white ${tone.num}`}>{p.rank}</span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${tone.chip}`}>{tone.label}</span>
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-black ${tone.chip}`}>{tone.label}</span>
                   </div>
-                  <p className="mt-1.5 text-[1.05rem] font-black leading-snug text-slate-900">{p.problem}</p>
-                  <p className="mt-1.5 text-sm font-semibold leading-relaxed text-slate-600">{p.why}</p>
-                  <div className="mt-2.5 rounded-xl bg-white/70 px-3 py-2.5">
-                    <p className="text-xs font-black text-slate-400">그대로 두면</p>
-                    <p className="mt-0.5 text-sm leading-snug text-slate-600">{p.ifIgnored}</p>
+                  <p className="mt-2 text-[1.2rem] font-black leading-snug text-slate-900">{p.problem}</p>
+                  <p className="mt-2 text-[1rem] font-semibold leading-relaxed text-slate-700">{p.why}</p>
+                  <div className="mt-3 rounded-xl bg-white/70 px-3.5 py-3">
+                    <p className="text-[0.82rem] font-black text-slate-400">그대로 두면</p>
+                    <p className="mt-1 text-[0.98rem] leading-relaxed text-slate-600">{p.ifIgnored}</p>
                   </div>
                   {pkg && (
                     <Link
                       to={`/business-services/${pkg.slug}`}
-                      className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-sm font-bold text-white transition-colors hover:bg-slate-700"
+                      className="mt-3.5 inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2.5 text-[0.95rem] font-bold text-white transition-colors hover:bg-slate-700"
                     >
                       도움되는 서비스 · {pkg.name} →
                     </Link>
@@ -367,9 +367,9 @@ function GrowthPicksSection({ excludeSlugs, onProductClick }: { excludeSlugs: st
   if (!picks.length) return null
   return (
     <section className="mt-6 rounded-2xl border border-slate-200 bg-gradient-to-b from-sky-50/70 to-white p-4 sm:mt-7 sm:p-5 print:break-inside-avoid">
-      <h3 className="text-base font-extrabold tracking-tight text-slate-900 sm:text-lg">요즘 대표님들이 함께 준비하는 것들</h3>
-      <p className="mt-1 text-sm leading-relaxed text-slate-500">당장 급하지는 않지만, 미룰수록 시간과 비용이 더 들어가는 영역이라 함께 보시면 좋아요.</p>
-      <div className="mt-3.5 space-y-2.5">
+      <h3 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">요즘 대표님들이 함께 준비하는 것들</h3>
+      <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-500">당장 급하지는 않지만, 미룰수록 시간과 비용이 더 들어가는 영역이라 함께 보시면 좋아요.</p>
+      <div className="mt-4 space-y-3">
         {picks.map((p) => {
           const pkg = getPackageBySlug(p.slug)
           if (!pkg) return null
@@ -378,13 +378,13 @@ function GrowthPicksSection({ excludeSlugs, onProductClick }: { excludeSlugs: st
               key={p.slug}
               to={`/business-services/${pkg.slug}`}
               onClick={() => onProductClick(p.slug, '함께 준비', 'result_growth_pick')}
-              className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-blue-300 hover:bg-blue-50/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+              className="flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-3.5 transition-colors hover:border-blue-300 hover:bg-blue-50/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
             >
-              {pkg.imageSrc && <img src={pkg.imageSrc} alt="" loading="lazy" className="h-14 w-[84px] shrink-0 rounded-lg bg-slate-100 object-cover" />}
+              {pkg.imageSrc && <img src={pkg.imageSrc} alt="" loading="lazy" className="h-16 w-[96px] shrink-0 rounded-lg bg-slate-100 object-cover sm:h-[72px] sm:w-[108px]" />}
               <div className="min-w-0 flex-1">
-                <p className="text-[0.95rem] font-extrabold leading-tight text-slate-900">{pkg.name}</p>
-                <p className="mt-1 text-[0.84rem] leading-snug text-slate-500">{p.nudge}</p>
-                <p className="mt-1 text-[0.92rem] font-black text-slate-800">{formatKoreanMoney(pkg.price)}</p>
+                <p className="text-[1.05rem] font-extrabold leading-tight text-slate-900">{pkg.name}</p>
+                <p className="mt-1 text-[0.92rem] leading-relaxed text-slate-500">{p.nudge}</p>
+                <p className="mt-1.5 text-[1rem] font-black text-slate-800">{formatKoreanMoney(pkg.price)}</p>
               </div>
               <span aria-hidden className="shrink-0 font-black text-slate-300">→</span>
             </Link>
@@ -510,10 +510,11 @@ export default function StageReport({
           {/* ② 맞춤 서비스 — 제출 후 공개, 우선 확인 항목보다 먼저(썸네일 카드) */}
           {hasRecsSection && <Recommendations step="②" recs={report.recommendations} onProductClick={onProductClick} onConsultClick={onConsultClick} />}
 
-          {/* 함께 준비하면 좋은 것들 — AI 자동화·홈페이지·AX (이미 추천된 상품은 제외) */}
+          {report.topPriorities && <TopPrioritiesSection step={stepPrio} items={report.topPriorities} />}
+
+          {/* 함께 준비하면 좋은 것들 — '지금 먼저 확인할 것들' 바로 다음에 (이미 추천된 상품은 제외) */}
           <GrowthPicksSection excludeSlugs={hasRecsSection ? report.recommendations.map((r) => r.slug) : []} onProductClick={onProductClick} />
 
-          {report.topPriorities && <TopPrioritiesSection step={stepPrio} items={report.topPriorities} />}
           {report.missedBenefits && <MissedBenefitsSection step={stepBenefit} items={report.missedBenefits} />}
           {report.roadmap && <RoadmapSection step={stepRoadmap} roadmap={report.roadmap} />}
 

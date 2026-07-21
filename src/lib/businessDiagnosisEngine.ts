@@ -476,13 +476,16 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
     note: unknownCount > 0 ? `확인이 필요한 답변이 ${unknownCount}개 있어요.` : '답변이 명확해 결과 신뢰도가 높아요.',
   }
 
-  // ── 지금 먼저 확인할 3가지 (문제·행동 중심) ──
-  const prio = [...areas].filter((a) => a.priority !== '현재 우선순위 낮음').sort((x, y) => x.score - y.score)
+  // ── 지금 먼저 확인할 것들 (문제·행동 중심, 최대 5개) ──
+  // 우선순위 높은(약한) 영역 먼저, 부족하면 낮은 우선순위 영역으로 채워 범위를 5개까지 넓힘.
+  const nonLowPrio = [...areas].filter((a) => a.priority !== '현재 우선순위 낮음').sort((x, y) => x.score - y.score)
+  const lowPrio = [...areas].filter((a) => a.priority === '현재 우선순위 낮음').sort((x, y) => x.score - y.score)
+  const prio = [...nonLowPrio, ...lowPrio]
   const topPriorities = [
     ...(arrears
       ? [{ rank: 1, problem: '세금 체납 정리', why: '대부분의 정책자금은 체납 정리가 먼저 확인돼요.', ifIgnored: '정리 전에는 신청 자체가 어려울 수 있어요.', action: '체납·분납 상태와 신청 가능 시점을 확인하세요.', linkedProductSlug: 'funding-consulting', tone: 'red' as const }]
       : []),
-    ...prio.slice(0, arrears ? 2 : 3).map((a, i) => ({
+    ...prio.slice(0, arrears ? 4 : 5).map((a, i) => ({
       rank: (arrears ? 2 : 1) + i,
       problem: a.smallAction,
       why: a.statusSentence,
@@ -491,7 +494,7 @@ export function computeResult(answers: DiagnosisAnswers, interests: string[]): D
       linkedProductSlug: a.linkedProductSlug,
       tone: (i === 0 && !arrears ? 'orange' : 'amber') as 'orange' | 'amber',
     })),
-  ].slice(0, 3)
+  ].slice(0, 5)
 
   // ── 지금 놓치고 있을 수 있는 혜택 (판매 상품 연계, ≤4) ──
   const missedBenefits = buildMissedBenefits(answers, { founder, individual, corp, arrears, wantsBig, hasIso, weakSite, weakOps })
