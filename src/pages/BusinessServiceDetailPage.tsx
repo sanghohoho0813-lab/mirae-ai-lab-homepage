@@ -335,20 +335,26 @@ export default function BusinessServiceDetailPage() {
             ))}
           </div>
 
-          <p className="mt-12 text-center text-[1.35rem] font-black leading-snug text-slate-900 sm:text-2xl">
-            이 문제들 <span className="text-rose-600">해결 안 하고 내버려두면요,</span>
-          </p>
+          <div className="mt-14 text-center">
+            <Chip tone={CHIP.rose}>⚠️ 지금 미루면</Chip>
+            <h3 className="mx-auto mt-4 max-w-xl text-[1.5rem] font-black leading-[1.3] tracking-tight text-slate-900 sm:text-[1.95rem]">
+              {content.lossLine} <span className="text-rose-600">{content.lossAccent}</span>
+            </h3>
+          </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {content.losses.map((l) => (
-              <div key={l.t} className="rounded-3xl border border-rose-100 bg-rose-50/50 p-6">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-2xl shadow-sm" aria-hidden>{l.icon}</span>
-                <p className="mt-4 text-[1.15rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-3">
+            {content.losses.map((l, i) => (
+              <div key={l.t} className="rounded-3xl border border-rose-100 bg-white p-6 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-rose-500 text-xs font-black text-white" aria-hidden>{`0${i + 1}`}</span>
+                  <span className="text-[0.82rem] font-black tracking-wide text-rose-600">{l.tag}</span>
+                </div>
+                <p className="mt-3.5 text-[1.12rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
                 <p className="mt-2 text-[0.98rem] leading-relaxed text-slate-500">{l.d}</p>
               </div>
             ))}
           </div>
-          <div className="mx-auto mt-8 max-w-xl rounded-2xl border-2 border-rose-200 bg-rose-50 px-6 py-5 text-center">
+          <div className="mx-auto mt-8 max-w-2xl rounded-2xl border-2 border-slate-900 bg-slate-50 px-6 py-5 text-center">
             <p className="text-[1.05rem] font-black leading-snug text-slate-900 sm:text-lg">{content.lossClosing}</p>
           </div>
         </div>

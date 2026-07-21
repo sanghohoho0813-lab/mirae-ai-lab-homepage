@@ -150,11 +150,11 @@ const resultItems = [
   '예상 질문과 대응 준비',
 ]
 
-// 방치하면 악화되는 것 (사실 기반 — 조작 통계·허위 사례 금지)
+// 방치하면 악화되는 것 (사실 기반 — 조작 통계·허위 사례 금지). tag=손실 종류 라벨
 const losses = [
-  { icon: '⏳', t: '정책자금 예산은 소진되면 끝입니다', d: '보통 8월부터 예산이 눈에 띄게 줄고, 12월엔 거의 남지 않습니다. 회사가 급해지는 시점과 예산이 남아 있는 시점은 따로 움직입니다.' },
-  { icon: '💸', t: '고금리로 버티는 사이, 신용이 먼저 지칩니다', d: '카드론·고금리 대출로 버티는 동안 이자 부담과 신용점수 하락이 겹칩니다. 정작 정책자금을 신청할 때, 그 흔적이 심사에서 발목을 잡습니다.' },
-  { icon: '🚪', t: '재무가 나빠진 뒤에는 문이 좁아집니다', d: '매출 하락·연체·체납이 쌓인 뒤에는 검토할 수 있는 기관 자체가 줄어듭니다. 선택지가 가장 많은 때는 언제나 지금입니다.' },
+  { icon: '📅', tag: '생존 손실', t: '급여·세금·거래처 결제일은 기다려주지 않습니다', d: '매출이 조금만 늦어져도 직원 급여·부가세·원재료비·거래처 결제가 한꺼번에 겹칠 수 있습니다. 현금이 부족해진 뒤에는 좋은 조건보다 당장 실행되는 비싼 자금을 선택하게 됩니다.' },
+  { icon: '📉', tag: '신용 손실', t: '신용이 떨어진 뒤에는 받을 수 있는 자금도 줄어듭니다', d: '카드론·고금리 대출·연체가 발생하면 대표자와 법인의 신용 상태가 함께 악화될 수 있습니다. 정책자금은 가장 힘든 순간보다, 재무가 무너지기 전에 준비해야 선택지가 넓습니다.' },
+  { icon: '🧭', tag: '순서 손실', t: '기관과 순서에 따라 결과가 달라집니다', d: '중진공·소진공·신용보증기금·기술보증기금은 심사 기준과 유리한 기업이 다릅니다. 순서를 잘못 잡으면 한도와 보증 여력을 먼저 소진해, 다음 신청까지 불리해질 수 있습니다.' },
 ]
 
 // 자금 종류별 비교표 (전자책 비교표 기준) — 카드론·캐피탈 / 일반 은행 대출 / 정책자금.
@@ -420,18 +420,24 @@ export default function FundingConsultingDetailPage() {
             ))}
           </div>
 
-          {/* 전환 — 고민이 손해로 이어짐 */}
-          <p className="mt-12 text-center text-xl font-black leading-snug text-slate-900 sm:text-2xl">
-            이 문제들 <span className="text-red-600">해결 안 하고 내버려두면요,</span>
-          </p>
+          {/* 전환 — 고민이 손해로 이어짐 (상품별 날카로운 제목) */}
+          <div className="mt-14 text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-1.5 text-[13px] font-black text-rose-600 ring-1 ring-inset ring-rose-500/15">⚠️ 지금 미루면</span>
+            <h3 className="mx-auto mt-4 max-w-xl text-[1.5rem] font-black leading-[1.3] tracking-tight text-slate-900 sm:text-[1.95rem]">
+              자금이 급해진 뒤에는, <span className="text-red-600">선택할 수 있는 방법부터 줄어듭니다</span>
+            </h3>
+          </div>
 
-          {/* 문제심화 — 방치하면 악화되는 것 */}
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {losses.map((l) => (
-              <div key={l.t} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-rose-100 bg-rose-50/40 p-6">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-2xl shadow-sm" aria-hidden>{l.icon}</span>
-                <p className="mt-3 text-[1.2rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
-                <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
+          {/* 문제심화 — 방치하면 악화되는 것 (돈/신용/순서 손실) */}
+          <div className="mt-9 grid gap-4 sm:grid-cols-3">
+            {losses.map((l, i) => (
+              <div key={l.t} className="rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-rose-500 text-xs font-black text-white" aria-hidden>{`0${i + 1}`}</span>
+                  <span className="text-[0.82rem] font-black tracking-wide text-rose-600">{l.tag}</span>
+                </div>
+                <p className="mt-3.5 text-[1.12rem] font-extrabold leading-snug text-slate-900">{l.t}</p>
+                <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{l.d}</p>
               </div>
             ))}
           </div>
