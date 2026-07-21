@@ -2,7 +2,7 @@
 // 함께 실어 /api/consult(→ 관리자 지메일)로 보냅니다. 카드결제 준비 중 상담 우회 CTA 공용.
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { submitConsult, type ConsultContextRow } from '../lib/consultApi'
+import { submitConsult, CONSULT_COMPANY_FIELDS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
 
 const CONTACT_EMAIL = 'sanghohoho0813@gmail.com'
 
@@ -24,9 +24,11 @@ export type ConsultModalProps = {
   submitLabel?: string
   /** 현재 페이지 주제(고정 선택으로 표시). 예: '정책자금' */
   fixedTopic?: string
-  /** 추가로 고를 수 있는 상담 분야 체크박스 목록 */
-  topicOptions?: string[]
+  /** 목적별로 묶인 상담 분야 그룹 (그룹 안에서 복수 선택) */
+  topicGroups?: ConsultTopicGroup[]
   topicHeading?: string
+  /** 기업 규모 파악용 선택 항목(업종·매출·직원수·지역) 노출 여부 */
+  showCompanyFields?: boolean
 }
 
 export default function ConsultModal({
@@ -38,18 +40,22 @@ export default function ConsultModal({
   intro = '연락처를 남겨주시면 담당자가 확인 후 빠르게 연락드립니다. 남겨주신 상품·선택 내용은 그대로 함께 전달됩니다.',
   submitLabel = '상담 신청하기',
   fixedTopic,
-  topicOptions = [],
+  topicGroups = [],
   topicHeading = '상담 희망 분야 (여러 개 선택 가능)',
+  showCompanyFields = false,
 }: ConsultModalProps) {
   const [status, setStatus] = useState<Status>('idle')
   const [serverMessage, setServerMessage] = useState('')
   const [agree, setAgree] = useState(false)
   const [agreeError, setAgreeError] = useState(false)
   const [topics, setTopics] = useState<string[]>([])
+  const [company, setCompany] = useState<Record<string, string>>({})
   const firstFieldRef = useRef<HTMLInputElement>(null)
 
   const toggleTopic = (t: string) =>
     setTopics((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]))
+  const pickCompany = (key: string, value: string) =>
+    setCompany((cur) => ({ ...cur, [key]: cur[key] === value ? '' : value }))
 
   // 열릴 때마다 상태 초기화 + 스크롤 잠금 + ESC 닫기 + 첫 필드 포커스
   useEffect(() => {
@@ -59,6 +65,7 @@ export default function ConsultModal({
     setAgree(false)
     setAgreeError(false)
     setTopics([])
+    setCompany({})
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => {
@@ -85,18 +92,22 @@ export default function ConsultModal({
     const fd = new FormData(form)
     const name = String(fd.get('name') ?? '').trim()
     const contact = String(fd.get('contact') ?? '').trim()
-    const company = String(fd.get('company') ?? '').trim()
+    const companyName = String(fd.get('company') ?? '').trim()
     const message = String(fd.get('message') ?? '').trim()
     setStatus('submitting')
     setServerMessage('')
-    // 고정 주제 + 추가로 고른 상담 분야를 이메일 컨텍스트에 합칩니다.
+    // 고정 주제 + 추가로 고른 상담 분야 + 기업 정보를 이메일 컨텍스트에 합칩니다.
     const chosenTopics = [fixedTopic, ...topics].filter(Boolean) as string[]
+    const companyRows = CONSULT_COMPANY_FIELDS
+      .filter((f) => company[f.key])
+      .map((f) => ({ label: f.key, value: company[f.key] }))
     const context = [
       ...contextRows,
       ...(chosenTopics.length ? [{ label: '상담 희망 분야', value: chosenTopics.join(', ') }] : []),
+      ...companyRows,
     ]
     try {
-      const res = await submitConsult({ name, contact, company, message, source, context })
+      const res = await submitConsult({ name, contact, company: companyName, message, source, context })
       setServerMessage(res.message)
       setStatus('success')
       form.reset()
@@ -173,32 +184,40 @@ export default function ConsultModal({
                 </div>
               )}
 
-              {/* 상담 희망 분야 — 현재 페이지 주제는 고정, 나머지는 추가 선택 */}
-              {(topicOptions.length > 0 || fixedTopic) && (
+              {/* 상담 희망 분야 — 현재 페이지 주제는 고정, 목적별 그룹에서 복수 선택 */}
+              {(topicGroups.length > 0 || fixedTopic) && (
                 <div className="mb-5">
                   <p className={labelClass}>{topicHeading}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {fixedTopic && (
-                      <span className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700">
-                        <span aria-hidden>✓</span> {fixedTopic}
-                      </span>
-                    )}
-                    {topicOptions
-                      .filter((t) => t !== fixedTopic)
-                      .map((t) => {
-                        const on = topics.includes(t)
-                        return (
-                          <label
-                            key={t}
-                            className={`flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-sm transition ${
-                              on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
-                            }`}
-                          >
-                            <input type="checkbox" checked={on} onChange={() => toggleTopic(t)} className="h-3.5 w-3.5 accent-blue-600" />
-                            {t}
-                          </label>
-                        )
-                      })}
+                  {fixedTopic && (
+                    <span className="mb-2.5 inline-flex items-center gap-1.5 rounded-lg border border-blue-500 bg-blue-50 px-3 py-1.5 text-sm font-bold text-blue-700">
+                      <span aria-hidden>✓</span> {fixedTopic}
+                    </span>
+                  )}
+                  <div className="space-y-3">
+                    {topicGroups.map((g) => (
+                      <div key={g.title} className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+                        <p className="text-[0.9rem] font-bold text-slate-800">{g.title}</p>
+                        {g.desc && <p className="mt-0.5 text-[0.78rem] text-slate-400">{g.desc}</p>}
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {g.options
+                            .filter((t) => t !== fixedTopic)
+                            .map((t) => {
+                              const on = topics.includes(t)
+                              return (
+                                <label
+                                  key={t}
+                                  className={`flex cursor-pointer items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
+                                    on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
+                                  }`}
+                                >
+                                  <input type="checkbox" checked={on} onChange={() => toggleTopic(t)} className="h-3.5 w-3.5 accent-blue-600" />
+                                  {t}
+                                </label>
+                              )
+                            })}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -224,6 +243,40 @@ export default function ConsultModal({
                 </label>
                 <input id="consult-company" name="company" type="text" placeholder="예: (주)미래상사" className={inputClass} />
               </div>
+
+              {/* 기업 정보 — 규모 파악용(선택). 채워주시면 상담이 더 정확해집니다. */}
+              {showCompanyFields && (
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+                  <p className="text-sm font-semibold text-slate-800">
+                    기업 정보 <span className="font-normal text-slate-400">(선택 · 채워주시면 상담이 더 정확해져요)</span>
+                  </p>
+                  <div className="mt-3 space-y-3">
+                    {CONSULT_COMPANY_FIELDS.map((f) => (
+                      <div key={f.key}>
+                        <p className="mb-1.5 text-[0.82rem] font-semibold text-slate-500">{f.label}</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {f.options.map((opt) => {
+                            const on = company[f.key] === opt
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => pickCompany(f.key, opt)}
+                                aria-pressed={on}
+                                className={`rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
+                                  on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
+                                }`}
+                              >
+                                {opt}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="mt-4">
                 <label htmlFor="consult-message" className={labelClass}>

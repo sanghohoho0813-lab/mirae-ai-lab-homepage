@@ -5,7 +5,7 @@ import ProductCard from '../components/ProductCard'
 import CouponSignupBanner from '../components/CouponSignupBanner'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
-import { CONSULT_TOPICS } from '../lib/consultApi'
+import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { consultLinks } from '../config/businessInfo'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -22,8 +22,8 @@ import {
 // 상품 데이터는 ../data/businessPackages 공유. 기존 기능 로직은 건드리지 않습니다.
 
 // 대표자 신뢰도 영역 — 실제 확인된 정보만 사용(승인율·고객수 등 임의 수치 금지).
-const trustStats = [
-  { value: '100억원+', label: '누적 자금조달 지원' },
+const trustStats: { value: string; label: string; sub?: string }[] = [
+  { value: '100억원+', label: '누적 자금조달 지원', sub: '지원금·세금 환급 포함' },
   { value: '9년', label: '세무·노무·법무·자금 현장 경험' },
   { value: 'ISO 3종', label: '9001·14001·45001 심사원' },
   { value: '2개 수상', label: '경영컨설팅·벤처 부문' },
@@ -249,6 +249,7 @@ export default function BusinessServicesPage() {
                 <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
                   <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
                   <dt className="mt-1.5 text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
+                  {s.sub && <p className="mt-0.5 text-[0.72rem] font-semibold leading-snug text-amber-300/90">{s.sub}</p>}
                 </div>
               ))}
             </dl>
@@ -459,7 +460,8 @@ export default function BusinessServicesPage() {
         onClose={() => setConsultOpen(false)}
         source="경영지원 서비스몰"
         heading="상담 신청"
-        topicOptions={[...CONSULT_TOPICS]}
+        topicGroups={CONSULT_TOPIC_GROUPS}
+        showCompanyFields
       />
     </div>
   )

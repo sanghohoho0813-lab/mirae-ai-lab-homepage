@@ -13,6 +13,7 @@ import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '..
 import { loginPathWithNext } from '../lib/authRouting'
 import Avatar from './account/Avatar'
 import ConsultModal from './ConsultModal'
+import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
@@ -485,6 +486,8 @@ export default function PublicMenuDrawer({
         onClose={() => setConsultOpen(false)}
         source="메뉴 · 상담 신청"
         heading="상담 신청"
+        topicGroups={variant === 'business' ? CONSULT_TOPIC_GROUPS : undefined}
+        showCompanyFields={variant === 'business'}
       />
     </>
   )

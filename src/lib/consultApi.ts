@@ -3,16 +3,35 @@
 
 export type ConsultContextRow = { label: string; value: string }
 
-// 상담 신청 시 추가로 고를 수 있는 상담 분야 목록 (중소기업 대표용 공용).
-// 각 페이지는 자기 주제를 fixedTopic 으로 고정하고, 나머지를 추가 선택지로 노출합니다.
-export const CONSULT_TOPICS = [
-  '정책자금',
-  '정부지원금 (무상지원금·고용지원금)',
-  '기업인증 (벤처·이노비즈·ISO 등)',
-  '종합 컨설팅 (자금+인증+절세)',
-  'AX·홈페이지·업무자동화',
-  '가업승계·이익소각·자본거래',
-] as const
+// 상담 신청 시 고를 수 있는 상담 분야 — 진단 투트랙처럼 목적별로 묶고, 그 안에서 복수 선택.
+// 각 페이지는 자기 주제를 fixedTopic 으로 고정하고, 아래 그룹에서 추가로 고를 수 있습니다.
+export type ConsultTopicGroup = { title: string; desc?: string; options: string[] }
+
+export const CONSULT_TOPIC_GROUPS: ConsultTopicGroup[] = [
+  {
+    title: '💰 자금을 확보하고 싶어요',
+    desc: '정책자금·정부지원금·고용지원금',
+    options: ['정책자금 (대출)', '정부지원사업 (무상지원금)', '고용지원금'],
+  },
+  {
+    title: '📉 세금은 줄이고, 자산은 지키고 싶어요',
+    desc: '절세·가업승계·자본거래',
+    options: ['법인 절세·세무 전략', '가업승계·자산 이전', '이익소각·자사주·배당'],
+  },
+  {
+    title: '🚀 회사를 더 단단하게 키우고 싶어요',
+    desc: '인증·AX·종합 관리',
+    options: ['기업인증 (벤처·이노비즈·ISO)', 'AX·홈페이지·업무자동화', '종합 컨설팅 (자금+인증+절세)'],
+  },
+]
+
+// 기업 규모 파악용 선택 항목 (구글폼과 동일 축) — 모두 단일 선택·선택 사항.
+export const CONSULT_COMPANY_FIELDS: { key: string; label: string; options: string[] }[] = [
+  { key: '업종', label: '업종', options: ['제조', '도소매', 'IT', '서비스', '기타'] },
+  { key: '연매출', label: '연매출', options: ['1억 이하', '5억 이하', '20억 이하', '20억 이상'] },
+  { key: '직원 수', label: '직원 수(4대보험)', options: ['5명 미만', '5~10명', '10~20명', '20명 이상'] },
+  { key: '지역', label: '사업장 지역', options: ['서울', '경기', '강원', '충청', '전라', '경상', '그 외'] },
+]
 
 export type ConsultPayload = {
   name: string

@@ -54,6 +54,19 @@ const values: { phase: string; title: string; desc: string; icon: ReactNode }[] 
   },
 ]
 
+// 신뢰 지표(히어로 우측 패널) — 실제 확인된 정보만. 대표님용 서비스몰과 동일 축.
+const trustStats: { value: string; label: string; sub?: string }[] = [
+  { value: '100억원+', label: '누적 자금조달 지원', sub: '지원금·세금 환급 포함' },
+  { value: '9년', label: '세무·노무·법무·자금 현장' },
+  { value: 'ISO 3종', label: '9001·14001·45001 심사원' },
+  { value: '2개 수상', label: '경영컨설팅·벤처 부문' },
+]
+
+const trustAwards = [
+  { year: '2024', title: 'ESG 골든리더스 브랜드대상', detail: '경영컨설팅 부문 1위' },
+  { year: '2025', title: '대한민국을 빛낸 사회공헌 K-컬처 나눔봉사공헌대상', detail: '벤처부문' },
+]
+
 // 이용 방식 3단계 (기존 요금제 3플랜 → 흐름형 3단계로 압축)
 const useSteps = [
   { no: '01', title: '도구 선택', desc: '상담 흐름에 맞는 AI 도구를 고릅니다.' },
@@ -133,7 +146,7 @@ function ToolCard({ tool }: { tool: Tool }) {
     <>
       <ToolBanner tool={tool} />
       <div className="flex flex-1 flex-col p-3 sm:p-5">
-        <p className="line-clamp-2 text-[0.82rem] leading-relaxed text-slate-600 sm:text-[0.98rem]">{tool.description}</p>
+        <p className="text-[0.82rem] leading-relaxed text-slate-600 sm:text-[0.98rem]">{tool.description}</p>
         {tool.completion !== undefined && (
           <div className="mt-2.5 sm:mt-4">
             <div className="flex items-center justify-between text-[0.76rem] font-bold sm:text-[0.9rem]">
@@ -202,7 +215,7 @@ function UpcomingCard({ tool }: { tool: UpcomingTool }) {
         </div>
       </div>
       <div className="flex flex-1 flex-col p-3 sm:p-5">
-        <p className="line-clamp-2 text-[0.82rem] leading-relaxed text-slate-600 sm:text-[0.98rem]">{tool.description}</p>
+        <p className="text-[0.82rem] leading-relaxed text-slate-600 sm:text-[0.98rem]">{tool.description}</p>
         <div className="mt-auto pt-3 sm:pt-4">
           <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[0.85rem] font-semibold text-slate-400 sm:px-4 sm:py-2.5 sm:text-[1rem]">
             🔒 공개 준비 중
@@ -253,8 +266,9 @@ function App() {
         <div aria-hidden className="pointer-events-none absolute -left-32 -top-40 h-96 w-96 rounded-full bg-blue-600/25 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 h-[26rem] w-[26rem] rounded-full bg-sky-500/20 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-16 lg:pb-20 lg:pt-20">
-          <div className="max-w-3xl">
-            <div>
+          <div className="lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-start lg:gap-x-10">
+            {/* 왼쪽 — 메시지·CTA */}
+            <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-sky-400" />
                 컨설턴트 업무 OS · 정식 출시 전 베타
@@ -288,11 +302,11 @@ function App() {
                 </a>
               </div>
 
-              {/* 신뢰 스탯 — 제작자 경력을 한 줄로 압축 */}
+              {/* 신뢰 스탯 — 도구 운영 현황(경력·수상은 우측 신뢰 패널에서) */}
               <dl className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-6">
                 {[
-                  { v: '9년', l: '노무·세무·법무·자금 현장' },
                   { v: `${liveCount}개`, l: '운영 중 실무 도구' },
+                  { v: '4개+', l: '개발 중인 도구' },
                   { v: '7일', l: '카드 없이 무료 체험' },
                 ].map((s) => (
                   <div key={s.l}>
@@ -301,7 +315,25 @@ function App() {
                   </div>
                 ))}
               </dl>
-              <div className="mt-5 flex items-center gap-3.5">
+              {/* 진정성 한 줄 (얼굴은 우측 신뢰 패널에 1회만) */}
+              <p className="mt-6 border-l-2 border-sky-400/50 pl-3.5 text-sm leading-relaxed text-slate-400 sm:text-base">
+                제가 실제 업무에서 직접 써 보고, 도움이 됐다고 확인한 도구만 공개합니다.
+              </p>
+            </div>
+
+            {/* 오른쪽 — 신뢰 패널 (얼굴 사진 1회 · 모바일에서는 CTA 아래로) */}
+            <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur sm:p-6 lg:mt-0">
+              <p className="text-[0.9rem] font-bold uppercase tracking-widest text-amber-300">믿고 맡기는 이유</p>
+              <dl className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4 lg:grid-cols-2">
+                {trustStats.map((s) => (
+                  <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
+                    <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
+                    <dt className="mt-1.5 text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
+                    {s.sub && <p className="mt-0.5 text-[0.72rem] font-semibold leading-snug text-amber-300/90">{s.sub}</p>}
+                  </div>
+                ))}
+              </dl>
+              <div className="mt-4 flex items-start gap-3 border-t border-white/10 pt-4 sm:gap-3.5">
                 <img
                   src="/assets/profile/ceo-avatar.webp"
                   alt="미래 AI 랩 대표 프로필 사진"
@@ -309,11 +341,43 @@ function App() {
                   decoding="async"
                   width={200}
                   height={200}
-                  className="h-16 w-16 shrink-0 rounded-full object-cover shadow-lg shadow-black/40 ring-[3px] ring-sky-400/50 sm:h-20 sm:w-20"
+                  className="h-16 w-16 shrink-0 rounded-full object-cover shadow-lg shadow-black/30 ring-[3px] ring-amber-400/60 sm:h-24 sm:w-24"
                 />
                 <div className="min-w-0">
-                  <p className="text-sm leading-relaxed text-slate-400 sm:text-base">제가 실제 업무에서 직접 써 보고, 도움이 됐다고 확인한 도구만 공개합니다.</p>
-                  <p className="mt-1 text-sm font-bold text-slate-200">미래 AI 랩 대표 · 김팀장의 경영노트</p>
+                  <p className="text-[0.98rem] font-semibold leading-relaxed text-slate-100 sm:text-[1.1rem]">
+                    정책자금부터 정부지원사업, 법인컨설팅, AX 구축까지 기업의 성장 과정을 한 흐름으로 설계합니다.
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[0.9rem] font-medium text-slate-300 sm:mt-2.5 sm:text-[0.95rem]">
+                    <span className="font-bold text-white">미래 AI 랩 대표</span>
+                    <span className="text-slate-600">·</span>
+                    <span>미래경영지원센터</span>
+                    <span className="text-slate-600">·</span>
+                    <a
+                      href="https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 font-bold text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+                      aria-label="유튜브 김팀장의 경영노트 채널 (새 탭에서 열림)"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-4.5 w-4.5 shrink-0" aria-hidden>
+                        <rect x="1.5" y="5" width="21" height="14" rx="3.5" fill="#FF0000" />
+                        <path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="#fff" />
+                      </svg>
+                      김팀장의 경영노트
+                      <span aria-hidden className="text-slate-300">↗</span>
+                    </a>
+                  </div>
+                  <div className="mt-3 space-y-1.5">
+                    {trustAwards.map((a) => (
+                      <div key={a.title} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
+                        <span className="mt-px shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.7rem] font-black text-slate-900">{a.year}</span>
+                        <p className="min-w-0 text-[0.82rem] font-semibold leading-snug text-slate-100">
+                          {a.title}
+                          <span className="font-normal text-slate-400"> · {a.detail}</span>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
