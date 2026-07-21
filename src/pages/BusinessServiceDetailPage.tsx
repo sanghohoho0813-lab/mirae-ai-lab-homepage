@@ -10,7 +10,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
-import { CONSULT_TOPIC_GROUPS, type ConsultContextRow } from '../lib/consultApi'
+import { CONSULT_TOPICS, type ConsultContextRow } from '../lib/consultApi'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
 import { paymentsEnabled, paymentsPreparingNotice } from '../config/commerce'
 import { getDetailContent } from '../data/businessDetailContent'
@@ -636,7 +636,8 @@ export default function BusinessServiceDetailPage() {
         contextRows={consultContext}
         heading={consult ? '가능성 진단 신청' : '상담 신청'}
         fixedTopic={pkg.categoryLabel ?? pkg.category}
-        topicGroups={CONSULT_TOPIC_GROUPS}
+        topicOptions={[...CONSULT_TOPICS]}
+        showContactMethod
         showCompanyFields
       />
     </div>

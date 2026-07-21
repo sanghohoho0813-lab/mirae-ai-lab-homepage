@@ -5,7 +5,7 @@ import ProductCard from '../components/ProductCard'
 import CouponSignupBanner from '../components/CouponSignupBanner'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
-import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
+import { CONSULT_TOPICS } from '../lib/consultApi'
 import { consultLinks } from '../config/businessInfo'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -460,7 +460,8 @@ export default function BusinessServicesPage() {
         onClose={() => setConsultOpen(false)}
         source="경영지원 서비스몰"
         heading="상담 신청"
-        topicGroups={CONSULT_TOPIC_GROUPS}
+        topicOptions={[...CONSULT_TOPICS]}
+        showContactMethod
         showCompanyFields
       />
     </div>

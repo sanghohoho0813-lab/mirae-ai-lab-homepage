@@ -11,7 +11,7 @@ type Props = {
   onSubmit: (form: LeadFormData & { privacyConsentVersion: string; honeypot?: string; formElapsedMs: number }) => void
 }
 
-const CONTACT_METHODS = ['전화', '카카오톡', '문자', '대면상담', '아직 상담은 원하지 않음']
+const CONTACT_METHODS = ['전화', '카톡·문자']
 const BIZ_TYPES = [
   { value: 'individual', label: '개인사업자' },
   { value: 'corp', label: '법인사업자' },
@@ -31,7 +31,6 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
   const [bizType, setBizType] = useState('')
   const [industry, setIndustry] = useState('')
   const [contactMethod, setContactMethod] = useState('')
-  const [contactTime, setContactTime] = useState('')
   const [privacyOk, setPrivacyOk] = useState(false)
   const [consultOk, setConsultOk] = useState(false)
   const [marketingOk, setMarketingOk] = useState(false)
@@ -57,7 +56,6 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
       phone: phoneDigits,
       email: email.trim().slice(0, 120) || undefined,
       contactMethod: contactMethod || undefined,
-      preferredContactTime: contactTime.trim().slice(0, 80) || undefined,
       privacyConsent: privacyOk,
       consultationConsent: consultOk,
       marketingConsent: marketingOk,
@@ -129,19 +127,25 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="lg-method" className={labelCls}>상담 희망 방식 (선택)</label>
-            <select id="lg-method" className={`${inputCls} mt-1.5`} value={contactMethod} onChange={(e) => setContactMethod(e.target.value)}>
-              <option value="">선택해주세요</option>
-              {CONTACT_METHODS.map((m) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="lg-time" className={labelCls}>상담 희망 시간 (선택)</label>
-            <input id="lg-time" className={`${inputCls} mt-1.5`} value={contactTime} onChange={(e) => setContactTime(e.target.value)} placeholder="예: 평일 오후 2~5시" maxLength={80} />
+        <div>
+          <label className={labelCls}>상담 희망 방식 (선택)</label>
+          <div className="mt-1.5 flex flex-wrap gap-2">
+            {CONTACT_METHODS.map((m) => {
+              const on = contactMethod === m
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setContactMethod(on ? '' : m)}
+                  aria-pressed={on}
+                  className={`rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
+                    on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {m === '전화' ? '📞 전화' : '💬 카톡·문자'}
+                </button>
+              )
+            })}
           </div>
         </div>
 

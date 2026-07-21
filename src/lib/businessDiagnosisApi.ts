@@ -1,9 +1,34 @@
 // 기업 성장진단 — 서버 저장 API 클라이언트.
 // 익명 사용자는 Supabase 를 직접 쓰지 않고 이 API(/api/business-diagnosis, service_role 서버 전용)로만 저장합니다.
 // 답변은 localStorage 즉시 저장, 서버 동기화는 단계 완료·제출 시점 중심. 이벤트는 중요 행동만.
-import type { DiagnosisSession, LeadFormData, StageReportData } from '../types/businessDiagnosis'
+import type { DiagnosisAnswers, DiagnosisSession, LeadFormData, StageReportData } from '../types/businessDiagnosis'
+import { questions, STAGE_INFO } from '../data/businessDiagnosisQuestions'
 
 const API = '/api/business-diagnosis'
+
+// 답변(원본 코드값)을 단계별·한글 질문/답변으로 변환 — 이메일 본문에서 그대로 사용.
+export type AnswersDisplayStage = { stage: number; name: string; items: { q: string; a: string }[] }
+
+function answerLabel(qid: string, value: unknown): string {
+  const q = questions.find((x) => x.id === qid)
+  const toLabel = (v: string) => q?.options.find((o) => o.value === v)?.label ?? v
+  if (Array.isArray(value)) return value.map((v) => toLabel(String(v))).join(', ')
+  return toLabel(String(value))
+}
+
+export function buildAnswersDisplay(answers: DiagnosisAnswers): AnswersDisplayStage[] {
+  const out: AnswersDisplayStage[] = []
+  for (const stage of [1, 2, 3] as const) {
+    const items: { q: string; a: string }[] = []
+    for (const q of questions.filter((x) => x.stage === stage)) {
+      const v = answers[q.id]
+      if (v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0)) continue
+      items.push({ q: q.title, a: answerLabel(q.id, v) })
+    }
+    if (items.length) out.push({ stage, name: STAGE_INFO[stage].name, items })
+  }
+  return out
+}
 
 type ApiOk = { ok: true; [k: string]: unknown }
 type ApiErr = { ok: false; message?: string; debugCode?: string }
@@ -108,6 +133,7 @@ export async function submitLead(
     resultSummary: reportSnapshot(report),
     advantageFactors: report.advantages ?? null,
     recommendedProducts: report.recommendations,
+    answersDisplay: buildAnswersDisplay(session.answers),
   })
   return { leadId: String(data.leadId) }
 }

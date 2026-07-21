@@ -3,27 +3,19 @@
 
 export type ConsultContextRow = { label: string; value: string }
 
-// 상담 신청 시 고를 수 있는 상담 분야 — 진단 투트랙처럼 목적별로 묶고, 그 안에서 복수 선택.
-// 각 페이지는 자기 주제를 fixedTopic 으로 고정하고, 아래 그룹에서 추가로 고를 수 있습니다.
-export type ConsultTopicGroup = { title: string; desc?: string; options: string[] }
+// 상담 희망 분야 — 대표님 서비스몰 햄버거 메뉴와 동일한 6개 상황형 목차(복수 선택).
+// 각 페이지는 자기 주제를 fixedTopic 으로 고정하고, 아래 목록에서 추가로 고를 수 있습니다.
+export const CONSULT_TOPICS = [
+  '저금리로 자금 조달이 필요하다면',
+  '정부 지원금, 놓치지 않고 받고 싶다면',
+  '대외 신뢰도·가점·세금 혜택까지 챙기고 싶다면',
+  'AI 시대에 뒤처지지 않는 회사로 만들고 싶다면',
+  '믿을 만한 파트너가 늘 함께했으면 한다면',
+  '세금은 줄이고, 회사의 부를 제대로 옮기고 싶다면',
+] as const
 
-export const CONSULT_TOPIC_GROUPS: ConsultTopicGroup[] = [
-  {
-    title: '💰 자금을 확보하고 싶어요',
-    desc: '정책자금·정부지원금·고용지원금',
-    options: ['정책자금 (대출)', '정부지원사업 (무상지원금)', '고용지원금'],
-  },
-  {
-    title: '📉 세금은 줄이고, 자산은 지키고 싶어요',
-    desc: '절세·가업승계·자본거래',
-    options: ['법인 절세·세무 전략', '가업승계·자산 이전', '이익소각·자사주·배당'],
-  },
-  {
-    title: '🚀 회사를 더 단단하게 키우고 싶어요',
-    desc: '인증·AX·종합 관리',
-    options: ['기업인증 (벤처·이노비즈·ISO)', 'AX·홈페이지·업무자동화', '종합 컨설팅 (자금+인증+절세)'],
-  },
-]
+// 상담 희망 방식 — 전화 / 카톡·문자 두 가지만.
+export const CONSULT_METHODS = ['전화', '카톡·문자'] as const
 
 // 기업 규모 파악용 선택 항목 (구글폼과 동일 축) — 모두 단일 선택·선택 사항.
 export const CONSULT_COMPANY_FIELDS: { key: string; label: string; options: string[] }[] = [

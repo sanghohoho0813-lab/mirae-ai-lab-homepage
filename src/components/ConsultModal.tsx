@@ -2,7 +2,7 @@
 // 함께 실어 /api/consult(→ 관리자 지메일)로 보냅니다. 카드결제 준비 중 상담 우회 CTA 공용.
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { submitConsult, CONSULT_COMPANY_FIELDS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
+import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_METHODS, type ConsultContextRow } from '../lib/consultApi'
 
 const CONTACT_EMAIL = 'sanghohoho0813@gmail.com'
 
@@ -24,9 +24,11 @@ export type ConsultModalProps = {
   submitLabel?: string
   /** 현재 페이지 주제(고정 선택으로 표시). 예: '정책자금' */
   fixedTopic?: string
-  /** 목적별로 묶인 상담 분야 그룹 (그룹 안에서 복수 선택) */
-  topicGroups?: ConsultTopicGroup[]
+  /** 상담 희망 분야 목록 (상황형 목차, 복수 선택) */
+  topicOptions?: string[]
   topicHeading?: string
+  /** 상담 희망 방식(전화/카톡·문자) 노출 여부 */
+  showContactMethod?: boolean
   /** 기업 규모 파악용 선택 항목(업종·매출·직원수·지역) 노출 여부 */
   showCompanyFields?: boolean
 }
@@ -40,8 +42,9 @@ export default function ConsultModal({
   intro = '연락처를 남겨주시면 담당자가 확인 후 빠르게 연락드립니다. 남겨주신 상품·선택 내용은 그대로 함께 전달됩니다.',
   submitLabel = '상담 신청하기',
   fixedTopic,
-  topicGroups = [],
+  topicOptions = [],
   topicHeading = '상담 희망 분야 (여러 개 선택 가능)',
+  showContactMethod = false,
   showCompanyFields = false,
 }: ConsultModalProps) {
   const [status, setStatus] = useState<Status>('idle')
@@ -49,6 +52,7 @@ export default function ConsultModal({
   const [agree, setAgree] = useState(false)
   const [agreeError, setAgreeError] = useState(false)
   const [topics, setTopics] = useState<string[]>([])
+  const [method, setMethod] = useState('')
   const [company, setCompany] = useState<Record<string, string>>({})
   const firstFieldRef = useRef<HTMLInputElement>(null)
 
@@ -65,6 +69,7 @@ export default function ConsultModal({
     setAgree(false)
     setAgreeError(false)
     setTopics([])
+    setMethod('')
     setCompany({})
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -104,6 +109,7 @@ export default function ConsultModal({
     const context = [
       ...contextRows,
       ...(chosenTopics.length ? [{ label: '상담 희망 분야', value: chosenTopics.join(', ') }] : []),
+      ...(method ? [{ label: '상담 희망 방식', value: method }] : []),
       ...companyRows,
     ]
     try {
@@ -184,40 +190,32 @@ export default function ConsultModal({
                 </div>
               )}
 
-              {/* 상담 희망 분야 — 현재 페이지 주제는 고정, 목적별 그룹에서 복수 선택 */}
-              {(topicGroups.length > 0 || fixedTopic) && (
+              {/* 상담 희망 분야 — 현재 페이지 주제는 고정, 상황형 목차에서 복수 선택 */}
+              {(topicOptions.length > 0 || fixedTopic) && (
                 <div className="mb-5">
                   <p className={labelClass}>{topicHeading}</p>
                   {fixedTopic && (
-                    <span className="mb-2.5 inline-flex items-center gap-1.5 rounded-lg border border-blue-500 bg-blue-50 px-3 py-1.5 text-sm font-bold text-blue-700">
+                    <span className="mb-2 inline-flex items-center gap-1.5 rounded-lg border border-blue-500 bg-blue-50 px-3 py-1.5 text-sm font-bold text-blue-700">
                       <span aria-hidden>✓</span> {fixedTopic}
                     </span>
                   )}
-                  <div className="space-y-3">
-                    {topicGroups.map((g) => (
-                      <div key={g.title} className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
-                        <p className="text-[0.9rem] font-bold text-slate-800">{g.title}</p>
-                        {g.desc && <p className="mt-0.5 text-[0.78rem] text-slate-400">{g.desc}</p>}
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          {g.options
-                            .filter((t) => t !== fixedTopic)
-                            .map((t) => {
-                              const on = topics.includes(t)
-                              return (
-                                <label
-                                  key={t}
-                                  className={`flex cursor-pointer items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
-                                    on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
-                                  }`}
-                                >
-                                  <input type="checkbox" checked={on} onChange={() => toggleTopic(t)} className="h-3.5 w-3.5 accent-blue-600" />
-                                  {t}
-                                </label>
-                              )
-                            })}
-                        </div>
-                      </div>
-                    ))}
+                  <div className="space-y-1.5">
+                    {topicOptions
+                      .filter((t) => t !== fixedTopic)
+                      .map((t) => {
+                        const on = topics.includes(t)
+                        return (
+                          <label
+                            key={t}
+                            className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-[0.9rem] leading-snug transition ${
+                              on ? 'border-blue-500 bg-blue-50 font-semibold text-blue-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                            }`}
+                          >
+                            <input type="checkbox" checked={on} onChange={() => toggleTopic(t)} className="h-4 w-4 shrink-0 accent-blue-600" />
+                            {t}
+                          </label>
+                        )
+                      })}
                   </div>
                 </div>
               )}
@@ -236,6 +234,30 @@ export default function ConsultModal({
                   <input id="consult-contact" name="contact" type="text" required placeholder="휴대폰 번호 또는 이메일" className={inputClass} />
                 </div>
               </div>
+
+              {showContactMethod && (
+                <div className="mt-4">
+                  <p className={labelClass}>상담 희망 방식 <span className="font-normal text-slate-400">(선택)</span></p>
+                  <div className="flex flex-wrap gap-2">
+                    {CONSULT_METHODS.map((m) => {
+                      const on = method === m
+                      return (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => setMethod(on ? '' : m)}
+                          aria-pressed={on}
+                          className={`rounded-lg border px-4 py-2 text-sm transition ${
+                            on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          {m === '전화' ? '📞 전화' : '💬 카톡·문자'}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div className="mt-4">
                 <label htmlFor="consult-company" className={labelClass}>

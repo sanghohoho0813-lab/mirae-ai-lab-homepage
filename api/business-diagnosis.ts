@@ -45,6 +45,21 @@ function asLines(v: unknown): string[] {
 const bizTypeLabel = (t: string) => (t === 'corp' ? '법인' : t === 'individual' ? '개인사업자' : t === 'pre' ? '예비창업' : t || '-')
 const depthLabel = (d: string) => (d === 'comprehensive' ? '종합(3단계)' : d === 'funding' ? '자금(2단계)' : d === 'basic' ? '기본(1단계)' : d || '-')
 
+// 리드 플래그 → 한글 라벨
+const FLAG_LABELS: Record<string, string> = {
+  hot: '🔥 최우선(핫리드)',
+  funding_urgent: '자금 시급',
+  certification_interest: '인증 관심',
+  employment_interest: '고용지원금 관심',
+  digital_interest: 'AX·디지털 관심',
+  prerequisite_issue: '선결과제(체납 등) 있음',
+  consultation_opt_in: '상담 신청 동의',
+  information_only: '정보만 원함',
+}
+const flagLabel = (f: string) => FLAG_LABELS[f] || f
+
+type AnswersDisplayStage = { stage: number; name: string; items: { q: string; a: string }[] }
+
 async function sendDiagnosisEmail(p: {
   companyName: string; repName: string; phone: string; email: string
   businessType: string; industry: string; contactMethod: string; preferredContactTime: string
@@ -52,6 +67,7 @@ async function sendDiagnosisEmail(p: {
   grade: string; score: number; flags: string[]
   completedStage?: number; stoppedAfterStage?: boolean; depth?: string
   summary: Record<string, unknown>; interests: string[]; recProducts: unknown; answers: Record<string, unknown>
+  answersDisplay?: AnswersDisplayStage[]
 }) {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
@@ -73,46 +89,65 @@ async function sendDiagnosisEmail(p: {
     ['사업자 유형', bizTypeLabel(p.businessType)],
     ['업종', p.industry || '-'],
     ['상담 방식', p.contactMethod || '-'],
-    ['희망 시간대', p.preferredContactTime || '-'],
     ['상담 동의', p.consultationConsent ? '동의' : '미동의'],
     ['마케팅 동의', p.marketingConsent ? '동의' : '미동의'],
     ['완료 단계', stageTxt],
     ['진단 깊이', depthLabel(p.depth || '')],
     ['리드 점수', `${p.score}점 · ${p.grade}등급`],
-    ['플래그', p.flags.length ? p.flags.join(', ') : '-'],
+    ['분류', p.flags.length ? p.flags.map(flagLabel).join(', ') : '-'],
     ['접수 시간', receivedAt],
   ]
 
-  const listBlocks: Array<[string, string[]]> = [
+  // 고객(잠재고객)용 요약 — 관리자에겐 부차적이라 접어서 노출(지원 클라이언트 한정).
+  const foldBlocks: Array<[string, string[]]> = [
     ['핵심 요약', [str('headline'), str('summary'), str('topTask') ? `가장 먼저: ${str('topTask')}` : ''].filter(Boolean)],
     ['강점', asLines(s.strengths)],
     ['보완점', asLines(s.improvements)],
     ['선결 과제', asLines(s.prerequisites)],
     ['실행 플랜', asLines(s.actionPlan)],
-    ['관심 항목', (p.interests || []).slice(0, 40)],
     ['추천 상품', asLines(p.recProducts)],
-    ['전체 응답(원본)', Object.entries(p.answers || {}).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : String(v)}`).slice(0, 60)],
   ]
 
   const kvHtml = kv
     .map(
       ([k, v]) => `<tr>
-        <td style="padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;font-weight:600;color:#334155;width:150px;vertical-align:top;font-size:13px">${escapeHtml(k)}</td>
-        <td style="padding:10px 14px;border:1px solid #e2e8f0;color:#0f172a;font-size:13px;line-height:1.6;white-space:pre-wrap">${escapeHtml(v)}</td>
+        <td style="padding:9px 12px;background:#f8fafc;border:1px solid #e2e8f0;font-weight:600;color:#64748b;width:88px;vertical-align:top;font-size:11.5px;line-height:1.4">${escapeHtml(k)}</td>
+        <td style="padding:9px 12px;border:1px solid #e2e8f0;color:#0f172a;font-size:14px;font-weight:600;line-height:1.55;white-space:pre-wrap">${escapeHtml(v)}</td>
       </tr>`,
     )
     .join('')
 
-  const listHtml = listBlocks
+  // ── 제일 중요: 단계별 진단 응답(한글) — 크게, 접지 않고 노출 ──
+  const answersHtml = (p.answersDisplay && p.answersDisplay.length > 0)
+    ? p.answersDisplay.map((st) => `
+        <div style="padding:14px 16px 4px">
+          <p style="margin:0 0 8px;font-size:13px;font-weight:800;color:#0f172a">
+            <span style="display:inline-block;background:#2563eb;color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;margin-right:6px">${st.stage}단계</span>${escapeHtml(st.name)}
+          </p>
+          <table style="width:100%;border-collapse:collapse">
+            ${st.items.map((it) => `<tr>
+              <td style="padding:7px 10px;background:#f8fafc;border:1px solid #e2e8f0;color:#64748b;font-size:12px;width:46%;vertical-align:top;line-height:1.45">${escapeHtml(it.q)}</td>
+              <td style="padding:7px 10px;border:1px solid #e2e8f0;color:#0f172a;font-size:13px;font-weight:700;line-height:1.5">${escapeHtml(it.a)}</td>
+            </tr>`).join('')}
+          </table>
+        </div>`).join('')
+    : ''
+
+  const interestsHtml = (p.interests && p.interests.length)
+    ? `<div style="padding:10px 16px"><p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#2563eb">관심 항목</p><p style="margin:0;font-size:13px;color:#0f172a;line-height:1.6">${escapeHtml(p.interests.slice(0, 40).join(', '))}</p></div>`
+    : ''
+
+  // 접이식 고객용 요약 — details 미지원 클라이언트에선 펼쳐진 채 하단 노출
+  const foldHtml = foldBlocks
     .filter(([, lines]) => lines.length > 0)
     .map(
       ([title, lines]) => `
-      <div style="padding:14px 16px;border:1px solid #e2e8f0;border-top:none">
-        <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#2563eb">${escapeHtml(title)}</p>
-        <ul style="margin:0;padding-left:18px;color:#0f172a;font-size:13px;line-height:1.7">
+      <details style="border:1px solid #e2e8f0;border-top:none">
+        <summary style="padding:11px 16px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer;background:#fbfcfe">${escapeHtml(title)} <span style="color:#94a3b8;font-weight:500">(펼쳐보기)</span></summary>
+        <ul style="margin:0;padding:2px 16px 12px 34px;color:#334155;font-size:13px;line-height:1.7">
           ${lines.map((l) => `<li>${escapeHtml(l)}</li>`).join('')}
         </ul>
-      </div>`,
+      </details>`,
     )
     .join('')
 
@@ -124,18 +159,25 @@ async function sendDiagnosisEmail(p: {
         <p style="margin:6px 0 0;color:#ffffff;font-size:18px;font-weight:700">새 진단 접수 · ${escapeHtml(p.companyName)} (${escapeHtml(p.grade)}등급 ${p.score}점)</p>
       </div>
       <table style="width:100%;border-collapse:collapse">${kvHtml}</table>
-      ${listHtml}
+      ${answersHtml ? `<div style="padding:14px 16px 4px;border-top:8px solid #f1f5f9"><p style="margin:0;font-size:13px;font-weight:800;color:#2563eb">📋 단계별 진단 응답</p></div>${answersHtml}<div style="height:8px"></div>` : ''}
+      ${interestsHtml}
+      ${foldHtml}
       <div style="padding:14px 24px;background:#f8fafc;color:#64748b;font-size:12px;line-height:1.6">
         이 메일은 3분 기업 성장진단 제출 시 자동 발송되었습니다. ${p.email ? '회신(Reply) 시 문의자 이메일로 답장됩니다.' : '위 연락처로 직접 연락하실 수 있습니다.'}
       </div>
     </div>
   </div>`
 
+  const answersText = (p.answersDisplay && p.answersDisplay.length > 0)
+    ? '\n\n[단계별 진단 응답]\n' + p.answersDisplay.map((st) => `\n▶ ${st.stage}단계 · ${st.name}\n` + st.items.map((it) => `- ${it.q}: ${it.a}`).join('\n')).join('\n')
+    : ''
+
   const text =
     `미래 AI 랩 · 기업 성장진단 접수 — ${p.companyName} (${p.grade}등급 ${p.score}점)\n\n` +
     kv.map(([k, v]) => `■ ${k}\n${v}`).join('\n\n') +
+    answersText +
     '\n\n' +
-    listBlocks.filter(([, l]) => l.length > 0).map(([t, l]) => `[${t}]\n` + l.map((x) => `- ${x}`).join('\n')).join('\n\n') +
+    foldBlocks.filter(([, l]) => l.length > 0).map(([t, l]) => `[${t}]\n` + l.map((x) => `- ${x}`).join('\n')).join('\n\n') +
     '\n'
 
   const mod: any = await import('resend')
@@ -165,7 +207,7 @@ const isValidPhone = (p: string) => /^01[016789]\d{7,8}$/.test(p)
 const isValidEmail = (e: string) => e === '' || (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && e.length <= 120)
 
 const BIZ_TYPES = ['individual', 'corp', 'pre']
-const CONTACT_METHODS = ['전화', '카카오톡', '문자', '대면상담', '아직 상담은 원하지 않음']
+const CONTACT_METHODS = ['전화', '카톡·문자', '카카오톡', '문자', '대면상담', '아직 상담은 원하지 않음']
 const EVENT_TYPES = [
   'diagnosis_started', 'stage_completed', 'question_answered', 'benefit_revealed', 'benefit_interest_clicked',
   'benefit_added_to_recommendations', 'benefit_skipped', 'benefit_removed_from_recommendations', 'benefit_more_opened',
@@ -502,6 +544,20 @@ export default async function handler(req: any, res: any) {
         payload: { grade: scored.grade, score: scored.total },
       })
 
+      // 단계별 한글 응답(클라이언트가 라벨 변환) — HTML 제거·길이 제한
+      const answersDisplay = Array.isArray(body.answersDisplay)
+        ? body.answersDisplay
+            .slice(0, 3)
+            .map((st: any) => ({
+              stage: Math.min(3, Math.max(1, Number(st?.stage) || 1)),
+              name: strip(st?.name, 40),
+              items: Array.isArray(st?.items)
+                ? st.items.slice(0, 30).map((it: any) => ({ q: strip(it?.q, 120), a: strip(it?.a, 200) })).filter((it: any) => it.q && it.a)
+                : [],
+            }))
+            .filter((st: any) => st.items.length)
+        : undefined
+
       // 진단 결과 알림 메일 (실패해도 저장/응답은 정상 처리)
       try {
         await sendDiagnosisEmail({
@@ -525,6 +581,7 @@ export default async function handler(req: any, res: any) {
           interests,
           recProducts: body.recommendedProducts,
           answers,
+          answersDisplay,
         })
       } catch (mailErr) {
         console.error('[business-diagnosis] 알림 메일 발송 실패:', detailOf(mailErr))

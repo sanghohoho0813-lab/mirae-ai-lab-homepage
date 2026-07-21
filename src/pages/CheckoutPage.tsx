@@ -525,6 +525,7 @@ export default function CheckoutPage() {
         onClose={() => setConsultOpen(false)}
         source={pkg.name}
         heading="상담 신청"
+        showContactMethod
         showCompanyFields
         contextRows={
           [
