@@ -324,7 +324,7 @@ export default function BusinessServiceDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <SectionTitle chip="🌙 밤잠 설치는 고민" tone={CHIP.rose}>
-            밤에 문득,<br /><span className={accentText}>이런 생각 드시죠?</span>
+            이런 고민,<br /><span className={accentText}>한 번쯤 해보셨죠?</span>
           </SectionTitle>
           <div className="mt-10 grid gap-3 sm:grid-cols-2">
             {content.pains.map((p) => (
@@ -336,7 +336,7 @@ export default function BusinessServiceDetailPage() {
           </div>
 
           <p className="mt-12 text-center text-[1.35rem] font-black leading-snug text-slate-900 sm:text-2xl">
-            이 고민, 그냥 두면 <span className="text-rose-600">어떻게 될까요?</span>
+            이 문제들 <span className="text-rose-600">해결 안 하고 내버려두면요,</span>
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">

@@ -410,7 +410,7 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🌙</div>
           <p className={kicker}>밤잠 설치는 고민</p>
-          <h2 className={bigHead}>밤에 문득,<br /><span className="text-blue-600">이런 생각 드시죠?</span></h2>
+          <h2 className={bigHead}>이런 고민,<br /><span className="text-blue-600">한 번쯤 해보셨죠?</span></h2>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {pains.map((p) => (
               <div key={p} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-slate-200 bg-white p-6">
@@ -422,7 +422,7 @@ export default function FundingConsultingDetailPage() {
 
           {/* 전환 — 고민이 손해로 이어짐 */}
           <p className="mt-12 text-center text-xl font-black leading-snug text-slate-900 sm:text-2xl">
-            이 불안, <span className="text-red-600">미룰수록 선택지가 줄어듭니다.</span>
+            이 문제들 <span className="text-red-600">해결 안 하고 내버려두면요,</span>
           </p>
 
           {/* 문제심화 — 방치하면 악화되는 것 */}
