@@ -29,11 +29,12 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+// 밤잠 설치는 속마음 — 표면 요구("정책자금 되나요?")가 아니라 실제 고민(생존·신용·거절 공포)
 const pains = [
-  '은행에서는 거절당했는데, 정책자금은 가능할 수도 있다던데… 어디서부터 봐야 하죠?',
-  '믿을 만한 업체가 어디인지 모르겠어요',
-  '수수료가 너무 비싸요. 조금만 도움받으면 스스로 할 수 있을 것 같은데…',
-  '정책자금 종류가 너무 많고, 운전자금은 급한데 뭐부터 봐야 할지 모르겠어요',
+  '다음 달 직원 급여랑 세금 낼 생각만 하면 잠이 안 와요',
+  '매출이 조금만 더 빠지면 버틸 수 있을지 모르겠어요',
+  '은행 금리는 너무 높고, 거절당할까 봐 신청도 겁나요',
+  '신용이 더 떨어지기 전에 자금을 구해야 하는데, 어디서부터 봐야 하죠?',
 ]
 
 // 믿을 수 있는 이유 (블로그 공개 실적 기준)
@@ -149,11 +150,11 @@ const resultItems = [
   '예상 질문과 대응 준비',
 ]
 
-// 미루면 잃는 것 (적당한 긴장 — 조작 통계·과도한 협박 금지)
+// 방치하면 악화되는 것 (사실 기반 — 조작 통계·허위 사례 금지)
 const losses = [
-  { icon: '⏳', t: '정책자금 예산은 소진되면 끝입니다', d: '보통 8월부터 예산이 눈에 띄게 줄고, 12월엔 거의 남지 않습니다. 시기를 놓쳤다면 다음 연도 예산을 미리 준비해 두어야 합니다.' },
-  { icon: '💸', t: '높은 금리로 이자가 불어나고 있습니다', d: '방향을 몰라 고금리 대출로 버티는 동안, 금리 차이만큼의 이자가 매달 쌓여 갑니다.' },
-  { icon: '🚪', t: '경쟁사는 이미 활용하고 있습니다', d: '비슷한 조건의 회사가 정책자금으로 설비와 인력에 투자하는 동안, 격차는 매달 벌어집니다.' },
+  { icon: '⏳', t: '정책자금 예산은 소진되면 끝입니다', d: '보통 8월부터 예산이 눈에 띄게 줄고, 12월엔 거의 남지 않습니다. 회사가 급해지는 시점과 예산이 남아 있는 시점은 따로 움직입니다.' },
+  { icon: '💸', t: '고금리로 버티는 사이, 신용이 먼저 지칩니다', d: '카드론·고금리 대출로 버티는 동안 이자 부담과 신용점수 하락이 겹칩니다. 정작 정책자금을 신청할 때, 그 흔적이 심사에서 발목을 잡습니다.' },
+  { icon: '🚪', t: '재무가 나빠진 뒤에는 문이 좁아집니다', d: '매출 하락·연체·체납이 쌓인 뒤에는 검토할 수 있는 기관 자체가 줄어듭니다. 선택지가 가장 많은 때는 언제나 지금입니다.' },
 ]
 
 // 자금 종류별 비교표 (전자책 비교표 기준) — 카드론·캐피탈 / 일반 은행 대출 / 정책자금.
@@ -372,11 +373,11 @@ export default function FundingConsultingDetailPage() {
         <div className={inner}>
           <p className={kicker}>정책자금 컨설팅</p>
           <h2 className={bigHead}>
-            혼자 알아보기엔<br />정책자금은 <span className="text-slate-400">너무 복잡합니다</span>
+            자금이 필요해진 뒤에<br />준비하면 <span className="text-red-600">이미 늦습니다</span>
           </h2>
           <p className="mx-auto mt-5 max-w-md text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
             그래서 <b className="text-blue-600">가능성 진단부터</b> 시작합니다.<br />
-            운전자금·시설자금, 지금 우리 회사가 <b className="text-slate-900">뭐부터 봐야 하는지</b> 정리해 드립니다.
+            신용·재무가 더 나빠지기 전에, 지금 우리 회사가 <b className="text-slate-900">어느 기관을 어떤 순서로</b> 두드려야 하는지 정리해 드립니다.
           </p>
           <div className="mx-auto mt-10 max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
             <div className="relative aspect-[3/2]">
@@ -407,9 +408,9 @@ export default function FundingConsultingDetailPage() {
       {/* 문제제기 + 문제심화 — 하나로 합본(고민 → 미루면 손해 → 기초설명으로 자연스럽게 연결) */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🤔</div>
-          <p className={kicker}>이런 고민, 있으셨죠?</p>
-          <h2 className={bigHead}>정책자금, <span className="text-blue-600">시작이 제일 막막하죠</span></h2>
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-blue-50 text-4xl">🌙</div>
+          <p className={kicker}>밤잠 설치는 고민</p>
+          <h2 className={bigHead}>밤에 문득,<br /><span className="text-blue-600">이런 생각 드시죠?</span></h2>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {pains.map((p) => (
               <div key={p} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-slate-200 bg-white p-6">
@@ -421,10 +422,10 @@ export default function FundingConsultingDetailPage() {
 
           {/* 전환 — 고민이 손해로 이어짐 */}
           <p className="mt-12 text-center text-xl font-black leading-snug text-slate-900 sm:text-2xl">
-            그런데 결정을 미루는 동안에도, <span className="text-red-600">이자는 불어나고 기회는 사라지고 있습니다.</span>
+            이 불안, <span className="text-red-600">미룰수록 선택지가 줄어듭니다.</span>
           </p>
 
-          {/* 문제심화 — 미루면 잃는 것 */}
+          {/* 문제심화 — 방치하면 악화되는 것 */}
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {losses.map((l) => (
               <div key={l.t} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-rose-100 bg-rose-50/40 p-6">
@@ -433,6 +434,19 @@ export default function FundingConsultingDetailPage() {
                 <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{l.d}</p>
               </div>
             ))}
+          </div>
+
+          {/* 진짜 가치 리프레임 — 낮은 금리가 아니라 회사가 버틸 시간 */}
+          <div className="mx-auto mt-10 max-w-xl rounded-3xl bg-slate-900 px-6 py-8 text-center sm:px-8">
+            <p className="text-sm font-black uppercase tracking-widest text-amber-300">사실, 대표님께 필요한 건</p>
+            <p className="mt-4 text-[1.05rem] font-bold text-slate-500 line-through decoration-slate-600">낮은 금리의 대출</p>
+            <p className="mt-1 text-[1.55rem] font-black leading-snug text-white sm:text-[1.85rem]">
+              <span className="text-amber-300">회사가 버틸 시간</span>입니다
+            </p>
+            <p className="mx-auto mt-4 max-w-md text-[0.98rem] leading-relaxed text-slate-300">
+              자금이 필요해진 뒤에 준비하면 늦습니다. 신용과 재무가 더 나빠지기 전에,
+              <b className="text-white"> 가능한 기관과 순서부터</b> 찾아야 합니다.
+            </p>
           </div>
         </div>
       </section>

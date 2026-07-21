@@ -1,6 +1,7 @@
 // 서비스몰 공용 상품 상세페이지 — 한국형 "랜딩형" 상세 템플릿(슈가 컴퍼니류 리듬).
 // /business-services/:slug 전 상품에 적용 (정책자금은 전용 페이지가 우선 매칭).
-// 흐름: 히어로(구매+후킹 합본) → 고민 공감 → 핵심 혜택 → 우리 방식(네이비) → 변화
+// 흐름: 히어로(구매+후킹 합본) → 밤잠 고민 공감(속마음) → 악화 시나리오 → 진짜 가치
+//       리프레임(다크 · '사실 대표님이 사는 것') → 핵심 혜택 → 우리 방식(네이비) → 변화
 //       → 추천 대상+결과물 → 왜 미래 AI 랩(신뢰) → FAQ → 최종 CTA(네이비) → 유의사항.
 // 섹션마다 컬러 칩 아이브로우 + 큰 가운데 제목 + 리듬(배경/레이아웃) 변화로 술술 읽히게.
 // 하단 상담 폼은 제거 — 상담은 모든 CTA에서 구글폼으로 연결(모바일은 하단 고정바가 따라다님).
@@ -319,11 +320,11 @@ export default function BusinessServiceDetailPage() {
         </section>
       )}
 
-      {/* ── 고민 공감 (문제 + 손해) ───────────────────────────────── */}
+      {/* ── 밤잠 고민 공감 (속마음 → 악화 시나리오) ─────────────────── */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <SectionTitle chip="🤔 자주 듣는 고민" tone={CHIP.rose}>
-            혹시 이런 고민,<br /><span className={accentText}>하고 계신가요?</span>
+          <SectionTitle chip="🌙 밤잠 설치는 고민" tone={CHIP.rose}>
+            밤에 문득,<br /><span className={accentText}>이런 생각 드시죠?</span>
           </SectionTitle>
           <div className="mt-10 grid gap-3 sm:grid-cols-2">
             {content.pains.map((p) => (
@@ -335,7 +336,7 @@ export default function BusinessServiceDetailPage() {
           </div>
 
           <p className="mt-12 text-center text-[1.35rem] font-black leading-snug text-slate-900 sm:text-2xl">
-            그런데 이 고민들, <span className="text-rose-600">그냥 두면 더 커져요.</span>
+            이 고민, 그냥 두면 <span className="text-rose-600">어떻게 될까요?</span>
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -347,10 +348,24 @@ export default function BusinessServiceDetailPage() {
               </div>
             ))}
           </div>
-          <div className="mx-auto mt-8 max-w-xl rounded-2xl bg-slate-900 px-6 py-5 text-center">
-            <p className="text-[1.05rem] font-black leading-snug text-white sm:text-lg">{content.lossClosing}</p>
-            <p className="mt-1.5 text-sm font-semibold text-slate-400">다행히, 지금 시작해도 늦지 않았어요.</p>
+          <div className="mx-auto mt-8 max-w-xl rounded-2xl border-2 border-rose-200 bg-rose-50 px-6 py-5 text-center">
+            <p className="text-[1.05rem] font-black leading-snug text-slate-900 sm:text-lg">{content.lossClosing}</p>
           </div>
+        </div>
+      </section>
+
+      {/* ── 진짜 가치 리프레임 — 사실 대표님께 필요한 것 (다크) ────── */}
+      <section className={`bg-slate-900 ${band}`}>
+        <div className="mx-auto max-w-[640px] px-1 text-center">
+          <Chip tone={CHIP.dark}>🎯 사실, 대표님께 필요한 건</Chip>
+          <p className="mt-7 text-[1.1rem] font-bold text-slate-500 line-through decoration-slate-600 sm:text-[1.3rem]">{content.realBuyNot}</p>
+          <h2 className="mt-2.5 text-[1.9rem] font-black leading-[1.24] tracking-tight text-white sm:text-[2.5rem]">
+            <span className="text-amber-300">{content.realBuyIs}</span>입니다
+          </h2>
+          <p className="mx-auto mt-6 max-w-md text-[1.02rem] font-medium leading-relaxed text-slate-300 sm:text-[1.08rem]">{content.realBuyDesc}</p>
+          <p className="mx-auto mt-6 max-w-md border-t border-white/10 pt-5 text-sm leading-relaxed text-slate-400">
+            미래 AI 랩은 필요한 것을 팔기 전에, <b className="text-slate-200">지금 무엇부터 해야 손실을 막을 수 있는지</b>부터 진단합니다.
+          </p>
         </div>
       </section>
 
