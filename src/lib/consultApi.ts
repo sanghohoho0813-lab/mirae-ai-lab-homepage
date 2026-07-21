@@ -3,6 +3,17 @@
 
 export type ConsultContextRow = { label: string; value: string }
 
+// 상담 신청 시 추가로 고를 수 있는 상담 분야 목록 (중소기업 대표용 공용).
+// 각 페이지는 자기 주제를 fixedTopic 으로 고정하고, 나머지를 추가 선택지로 노출합니다.
+export const CONSULT_TOPICS = [
+  '정책자금',
+  '정부지원금 (무상지원금·고용지원금)',
+  '기업인증 (벤처·이노비즈·ISO 등)',
+  '종합 컨설팅 (자금+인증+절세)',
+  'AX·홈페이지·업무자동화',
+  '가업승계·이익소각·자본거래',
+] as const
+
 export type ConsultPayload = {
   name: string
   contact: string

@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard'
 import CouponSignupBanner from '../components/CouponSignupBanner'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
+import { CONSULT_TOPICS } from '../lib/consultApi'
 import { consultLinks } from '../config/businessInfo'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -196,7 +197,7 @@ export default function BusinessServicesPage() {
           <div className="mt-6">
             <Link
               to="/business-diagnosis"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-center text-[1.12rem] font-black leading-snug text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5 sm:w-auto sm:text-lg"
+              className="shine-cta flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-center text-[1.12rem] font-black leading-snug text-slate-900 shadow-lg shadow-amber-500/20 ring-1 ring-amber-300/60 transition-transform hover:-translate-y-0.5 sm:w-auto sm:text-lg"
             >
               <span aria-hidden className="text-xl">🩺</span>
               <span className="text-balance">우리 회사에 필요한 서비스 직접 체크하기</span>
@@ -458,6 +459,7 @@ export default function BusinessServicesPage() {
         onClose={() => setConsultOpen(false)}
         source="경영지원 서비스몰"
         heading="상담 신청"
+        topicOptions={[...CONSULT_TOPICS]}
       />
     </div>
   )

@@ -7,7 +7,7 @@ import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import FundingCasesSection from '../../components/FundingCasesSection'
 import ConsultModal from '../../components/ConsultModal'
-import type { ConsultContextRow } from '../../lib/consultApi'
+import { CONSULT_TOPICS, type ConsultContextRow } from '../../lib/consultApi'
 import { getPackageBySlug } from '../../data/businessPackages'
 import { paymentsEnabled, paymentsPreparingNotice } from '../../config/commerce'
 
@@ -1068,11 +1068,10 @@ export default function FundingConsultingDetailPage() {
         onClose={() => setConsult({ open: false, plan: null })}
         source="정책자금 컨설팅"
         heading="정책자금 무료 상담 신청"
+        fixedTopic="정책자금"
+        topicOptions={[...CONSULT_TOPICS]}
         contextRows={
-          [
-            { label: '상담 유형', value: '정책자금 컨설팅' },
-            ...(consult.plan ? [{ label: '선택 방식', value: consult.plan }] : []),
-          ] as ConsultContextRow[]
+          consult.plan ? ([{ label: '선택 방식', value: consult.plan }] as ConsultContextRow[]) : []
         }
       />
     </div>

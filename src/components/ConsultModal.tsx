@@ -22,6 +22,11 @@ export type ConsultModalProps = {
   heading?: string
   intro?: string
   submitLabel?: string
+  /** 현재 페이지 주제(고정 선택으로 표시). 예: '정책자금' */
+  fixedTopic?: string
+  /** 추가로 고를 수 있는 상담 분야 체크박스 목록 */
+  topicOptions?: string[]
+  topicHeading?: string
 }
 
 export default function ConsultModal({
@@ -32,12 +37,19 @@ export default function ConsultModal({
   heading = '상담 신청',
   intro = '연락처를 남겨주시면 담당자가 확인 후 빠르게 연락드립니다. 남겨주신 상품·선택 내용은 그대로 함께 전달됩니다.',
   submitLabel = '상담 신청하기',
+  fixedTopic,
+  topicOptions = [],
+  topicHeading = '상담 희망 분야 (여러 개 선택 가능)',
 }: ConsultModalProps) {
   const [status, setStatus] = useState<Status>('idle')
   const [serverMessage, setServerMessage] = useState('')
   const [agree, setAgree] = useState(false)
   const [agreeError, setAgreeError] = useState(false)
+  const [topics, setTopics] = useState<string[]>([])
   const firstFieldRef = useRef<HTMLInputElement>(null)
+
+  const toggleTopic = (t: string) =>
+    setTopics((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]))
 
   // 열릴 때마다 상태 초기화 + 스크롤 잠금 + ESC 닫기 + 첫 필드 포커스
   useEffect(() => {
@@ -46,6 +58,7 @@ export default function ConsultModal({
     setServerMessage('')
     setAgree(false)
     setAgreeError(false)
+    setTopics([])
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => {
@@ -76,8 +89,14 @@ export default function ConsultModal({
     const message = String(fd.get('message') ?? '').trim()
     setStatus('submitting')
     setServerMessage('')
+    // 고정 주제 + 추가로 고른 상담 분야를 이메일 컨텍스트에 합칩니다.
+    const chosenTopics = [fixedTopic, ...topics].filter(Boolean) as string[]
+    const context = [
+      ...contextRows,
+      ...(chosenTopics.length ? [{ label: '상담 희망 분야', value: chosenTopics.join(', ') }] : []),
+    ]
     try {
-      const res = await submitConsult({ name, contact, company, message, source, context: contextRows })
+      const res = await submitConsult({ name, contact, company, message, source, context })
       setServerMessage(res.message)
       setStatus('success')
       form.reset()
@@ -151,6 +170,36 @@ export default function ConsultModal({
                       </div>
                     ))}
                   </dl>
+                </div>
+              )}
+
+              {/* 상담 희망 분야 — 현재 페이지 주제는 고정, 나머지는 추가 선택 */}
+              {(topicOptions.length > 0 || fixedTopic) && (
+                <div className="mb-5">
+                  <p className={labelClass}>{topicHeading}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {fixedTopic && (
+                      <span className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700">
+                        <span aria-hidden>✓</span> {fixedTopic}
+                      </span>
+                    )}
+                    {topicOptions
+                      .filter((t) => t !== fixedTopic)
+                      .map((t) => {
+                        const on = topics.includes(t)
+                        return (
+                          <label
+                            key={t}
+                            className={`flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-sm transition ${
+                              on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                            }`}
+                          >
+                            <input type="checkbox" checked={on} onChange={() => toggleTopic(t)} className="h-3.5 w-3.5 accent-blue-600" />
+                            {t}
+                          </label>
+                        )
+                      })}
+                  </div>
                 </div>
               )}
 

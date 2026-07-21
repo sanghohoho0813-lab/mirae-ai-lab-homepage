@@ -36,6 +36,8 @@ export default function BusinessDiagnosisPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [consultationConsented, setConsultationConsented] = useState(false)
+  // 1·2단계에서 상담 신청을 눌렀을 때 다음 단계 진행을 권유하는 알림
+  const [stageNudge, setStageNudge] = useState(false)
   const [hasSaved, setHasSaved] = useState<boolean>(() => {
     const s = loadSession()
     return Boolean(s && !s.completed && Object.keys(s.answers).length > 0)
@@ -257,14 +259,33 @@ export default function BusinessDiagnosisPage() {
     enterStage(nextStage, sRef.current)
   }
 
-  function wantResultGate() {
+  // 실제 상담 신청 폼(게이트)으로 이동
+  function openGate() {
     gateViewedRef.current = true
     trackEvent(sRef.current.sessionId, 'lead_form_viewed')
     // 중단 지점 기록
     persist({ ...sRef.current, stoppedAfterStage: stageRef.current })
     setSubmitError(null)
+    setStageNudge(false)
     setScreen('gate')
     window.scrollTo(0, 0)
+  }
+
+  function wantResultGate() {
+    // 1·2단계에서 상담 신청을 누르면 먼저 다음 단계 진행을 한 번 권유
+    if (report && report.depth < 3) {
+      trackEvent(sRef.current.sessionId, 'stage_nudge_shown', String(report.depth))
+      setStageNudge(true)
+      return
+    }
+    openGate()
+  }
+
+  // 알림에서 "다음 단계 진행하기" 선택
+  function nudgeContinue() {
+    trackEvent(sRef.current.sessionId, 'stage_nudge_continue', String(report?.depth ?? ''))
+    setStageNudge(false)
+    continueToNextStage()
   }
 
   async function handleSubmitLead(form: LeadFormData & { privacyConsentVersion: string; honeypot?: string; formElapsedMs: number }) {
@@ -405,6 +426,51 @@ export default function BusinessDiagnosisPage() {
           </div>
         )}
       </main>
+
+      {/* 단계 유도 알림 — 1·2단계에서 상담 신청 시 다음 단계 진행 권유 */}
+      {stageNudge && report && (
+        <div
+          className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/60 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="다음 단계 진행 안내"
+          onClick={() => setStageNudge(false)}
+        >
+          <div className="w-full max-w-md rounded-t-3xl bg-white p-6 shadow-2xl sm:rounded-3xl sm:p-7" onClick={(e) => e.stopPropagation()}>
+            <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-blue-50 text-blue-600">
+              <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M12 3v13M12 21h.01M7 8l5-5 5 5" />
+              </svg>
+            </div>
+            <h3 className="mt-4 text-center text-xl font-black tracking-tight text-slate-900">
+              {report.depth === 1 ? '2·3단계까지 하면 더 정확해요' : '3단계까지 하면 더 정확해요'}
+            </h3>
+            <p className="mt-2.5 text-center text-[0.95rem] leading-relaxed text-slate-600">
+              지금 단계 정보만으로도 상담은 가능하지만,{' '}
+              <b className="font-bold text-slate-900">
+                {report.depth === 1 ? '자금·지원제도(2단계)와 인증·성장 인프라(3단계)' : '인증·성장 인프라(3단계)'}
+              </b>
+              까지 마치면 한 번에 정확한 맞춤 상담을 받을 수 있어요.
+            </p>
+            <div className="mt-6 flex flex-col gap-2.5">
+              <button
+                type="button"
+                onClick={nudgeContinue}
+                className="flex min-h-[52px] items-center justify-center gap-1.5 rounded-2xl bg-blue-600 px-6 py-3.5 text-base font-black text-white shadow-lg shadow-blue-600/20 transition-colors hover:bg-blue-700"
+              >
+                {report.depth === 1 ? '2단계 이어서 진단하기' : '3단계 이어서 진단하기'} <span aria-hidden>→</span>
+              </button>
+              <button
+                type="button"
+                onClick={openGate}
+                className="flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-600 transition-colors hover:bg-slate-50"
+              >
+                지금 단계에서 상담 신청하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {screen === 'start' && <LegalFooter />}
     </div>

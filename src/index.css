@@ -103,6 +103,25 @@
 .animate-icon-pop { animation: icon-pop 0.34s cubic-bezier(0.22, 1, 0.36, 1); }
 .animate-save-burst { animation: save-burst 0.45s ease-out forwards; }
 
+/* ── CTA 반짝임(셀프 진단 유도) — 버튼 위를 대각선 하이라이트가 천천히 훑고 지나감 ── */
+@keyframes cta-shine {
+  0% { transform: translateX(-140%) skewX(-20deg); }
+  55%, 100% { transform: translateX(360%) skewX(-20deg); }
+}
+.shine-cta { position: relative; overflow: hidden; }
+.shine-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(-140%) skewX(-20deg);
+  animation: cta-shine 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* ── 스크롤 등장(리빌) — 토스풍 페이드 + 슬라이드업 ── */
 .reveal-init {
   opacity: 0;
@@ -128,6 +147,10 @@
   .animate-icon-pop,
   .animate-save-burst {
     animation: none;
+  }
+  .shine-cta::after {
+    animation: none;
+    display: none;
   }
   .animate-check-draw,
   .animate-ring-draw {
