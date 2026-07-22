@@ -1,8 +1,9 @@
 // 서비스몰 공용 상품 상세페이지 — 한국형 "랜딩형" 상세 템플릿(슈가 컴퍼니류 리듬).
 // /business-services/:slug 전 상품에 적용 (정책자금은 전용 페이지가 우선 매칭).
-// 흐름: 히어로(구매+후킹 합본) → 밤잠 고민 공감(속마음) → 악화 시나리오 → 진짜 가치
-//       리프레임(다크 · '사실 대표님이 사는 것') → 핵심 혜택 → 우리 방식(네이비) → 변화
-//       → 추천 대상+결과물 → 왜 미래 AI 랩(신뢰) → FAQ → 최종 CTA(네이비) → 유의사항.
+// 흐름(감정선: 불안→희망→납득→신뢰→자기확인→소유감→결정):
+//   히어로(구매+후킹) → 밤잠 고민 공감 → 악화 시나리오 → 진짜 가치 리프레임(다크)
+//   → ①혜택(유리해집니다) → ②통과·활용 구조(네이비, whyClosing) → ③전후 비교
+//   → ④추천 체크리스트 + ⑤남는 자산(그룹) → ⑥대행 비교(versus) → FAQ → 최종 CTA → 유의사항.
 // 섹션마다 컬러 칩 아이브로우 + 큰 가운데 제목 + 리듬(배경/레이아웃) 변화로 술술 읽히게.
 // 하단 상담 폼은 제거 — 상담은 모든 CTA에서 구글폼으로 연결(모바일은 하단 고정바가 따라다님).
 // 결제: /checkout/:slug 별도 페이지 (PortOne V2). ⚠️ 결제/PortOne/API/slug/amount 로직은 미변경.
@@ -375,37 +376,44 @@ export default function BusinessServiceDetailPage() {
         </div>
       </section>
 
-      {/* ── 핵심 혜택 ─────────────────────────────────────────────── */}
+      {/* ── 섹션1: 혜택 — 정리하고 나면, 회사는 이렇게 유리해집니다 ── */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <SectionTitle chip="💡 핵심 혜택" tone={CHIP.emerald}>
-            정리하면,<br /><span className={accentText}>이런 게 좋아져요</span>
+          <SectionTitle chip="💡 정리하고 나면" tone={CHIP.emerald}>
+            회사는 이렇게<br /><span className={accentText}>유리해집니다</span>
           </SectionTitle>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {content.benefits.map((b) => (
+          <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
+            단순한 제도상의 혜택이 아니라, 실제 경영에서 달라지는 변화를 확인해보세요.
+          </p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+            {content.benefits.map((b, i) => (
               <div key={b.t} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-slate-50 text-2xl ring-1 ring-slate-200" aria-hidden>{b.icon}</span>
-                  <p className="text-[1.12rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
+                <div className="flex items-center gap-2.5">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-slate-900 text-xs font-black text-white" aria-hidden>{`0${i + 1}`}</span>
+                  <span className="text-2xl" aria-hidden>{b.icon}</span>
                 </div>
-                <p className="mt-3 text-[0.98rem] leading-relaxed text-slate-600">{renderEmphasis(b.d)}</p>
+                <p className="mt-3.5 text-[1.15rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
+                <p className="mt-2 text-[0.98rem] leading-relaxed text-slate-600">{renderEmphasis(b.d)}</p>
               </div>
             ))}
           </div>
-          <p className="mx-auto mt-6 max-w-md text-center text-xs leading-relaxed text-slate-400">
-            ※ 수치는 제도·시점·요건·심사에 따라 달라질 수 있고, 예시 금액은 이해를 돕기 위한 것입니다.
+          <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed text-slate-400">
+            {content.benefitsNote ?? '※ 예시 수치는 이해를 돕기 위한 것으로, 실제 적용 여부와 금액은 제도·시점·기업 요건·심사 결과에 따라 달라질 수 있습니다.'}
           </p>
         </div>
       </section>
 
-      {/* ── 우리 방식 (네이비 · 리듬 전환) ────────────────────────── */}
+      {/* ── 섹션2: 왜 전문가가 필요한가 (네이비) — 신청이 아니라 통과·활용 구조 ── */}
       {!trimmed && (
         <section className={`bg-slate-900 ${band}`}>
           <div className={inner}>
-            <SectionTitle chip="🧭 우리가 하는 일" tone={CHIP.dark} dark>
-              혼자 하기 어려운 일,<br /><span className="text-amber-300">저희가 정리해드려요</span>
+            <SectionTitle chip="🧭 왜 전문가와 함께 하나요" tone={CHIP.dark} dark>
+              문제는 신청이 아니라,<br /><span className="text-amber-300">통과하고 활용할 구조입니다</span>
             </SectionTitle>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            <p className="mx-auto mt-4 max-w-lg text-center text-[1rem] font-medium leading-relaxed text-slate-400">
+              혼자 하기 어려운 이유는 서류가 많아서가 아니라, 무엇을 어떤 순서로 증명해야 하는지 판단하기 어렵기 때문입니다.
+            </p>
+            <div className="mt-9 grid gap-4 sm:grid-cols-2">
               {content.whyPoints.map((w, i) => (
                 <div key={w.t} className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
                   <span className="text-3xl font-black text-amber-300 sm:text-4xl">{`0${i + 1}`}</span>
@@ -415,30 +423,37 @@ export default function BusinessServiceDetailPage() {
               ))}
             </div>
             <div className="mx-auto mt-7 max-w-xl rounded-2xl bg-amber-400 px-6 py-5 text-center">
-              <p className="text-[1.02rem] font-black leading-snug text-slate-900 sm:text-lg">{pkg.expectation}</p>
+              <p className="text-[1.02rem] font-black leading-snug text-slate-900 sm:text-lg">{content.whyClosing}</p>
             </div>
           </div>
         </section>
       )}
 
-      {/* ── 변화 (Before → After) ─────────────────────────────────── */}
+      {/* ── 섹션3: 진행 전 → 진행 후 비교 ───────────────────────── */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <SectionTitle chip="💫 진행 후" tone={CHIP.violet}>
-            {content.afterLine}<br /><span className={accentText}>{content.afterAccent}</span>
+          <SectionTitle chip="💫 진행 전과 진행 후" tone={CHIP.violet}>
+            회사는 이렇게<br /><span className={accentText}>달라집니다</span>
           </SectionTitle>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
+            대표의 설명과 개인의 경험에 의존하던 내용을 회사의 자료·제도·시스템으로 바꿉니다.
+          </p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {content.afters.map((a) => (
               <div key={a.after} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-                <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">지금</p>
-                <p className="mt-1 text-[0.95rem] font-semibold leading-snug text-slate-400 line-through decoration-slate-300">{a.before}</p>
-                <div className="my-3 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" aria-hidden />
-                <p className={`text-[11px] font-black uppercase tracking-wide ${accentText}`}>진행 후</p>
-                <p className="mt-1 text-[1.15rem] font-extrabold leading-snug text-slate-900">{a.after}</p>
+                <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">진행 전</p>
+                <p className="mt-1 text-[0.95rem] font-semibold leading-snug text-slate-400">{a.before}</p>
+                <p className="my-2.5 text-center text-slate-300" aria-hidden>↓</p>
+                <div className={`rounded-xl px-4 py-3 ${flagship ? 'bg-amber-50' : 'bg-blue-50'}`}>
+                  <p className={`text-[11px] font-black uppercase tracking-wide ${accentText}`}>진행 후</p>
+                  <p className="mt-1 text-[1.08rem] font-extrabold leading-snug text-slate-900">{a.after}</p>
+                </div>
               </div>
             ))}
           </div>
-          <p className="mt-9 text-center text-[1.1rem] font-black text-slate-900 sm:text-xl">{content.afterClosing}</p>
+          {content.afterClosing && (
+            <p className="mt-9 text-center text-[1.1rem] font-black text-slate-900 sm:text-xl">{content.afterClosing}</p>
+          )}
         </div>
       </section>
 
@@ -463,48 +478,62 @@ export default function BusinessServiceDetailPage() {
       {!trimmed && (
         <>
           {/* ── 추천 대상 + 결과물 ─────────────────────────────────── */}
+          {/* ── 섹션4: 추천 대상 체크리스트 + 섹션5: 남는 자산 ────────── */}
           <section className={`bg-slate-50 ${band}`}>
             <div className={inner}>
-              <SectionTitle chip="🙌 추천 대상" tone={CHIP.sky}>
-                이런 분들께<br /><span className={accentText}>추천드려요</span>
+              <SectionTitle chip="🙋 지금 우리 회사 이야기라면" tone={CHIP.sky}>
+                아래 항목 중 2개 이상이라면<br /><span className={accentText}>지금 점검해볼 시점입니다</span>
               </SectionTitle>
-              <div className="mt-10 grid gap-3 sm:grid-cols-2">
-                {pkg.recommendedFor.map((r) => (
-                  <div key={r} className="flex items-start gap-3 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-                    <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-black text-white ${checkBg}`} aria-hidden>✓</span>
-                    <p className="text-[1.05rem] font-semibold leading-snug text-slate-700">{r}</p>
+              <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
+                준비가 급해진 뒤보다 선택지가 있을 때 시작하는 편이 유리합니다.
+              </p>
+              <div className="mx-auto mt-9 max-w-xl space-y-2.5">
+                {content.checklist.map((r) => (
+                  <div key={r} className="flex items-start gap-3 rounded-2xl bg-white p-4.5 shadow-sm ring-1 ring-slate-100">
+                    <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md text-xs font-black text-white ${checkBg}`} aria-hidden>✓</span>
+                    <p className="text-[1.02rem] font-semibold leading-snug text-slate-700">{r}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-14 text-center">
-                <Chip tone={CHIP.slate}>📦 상담 후 남는 것</Chip>
+              <div className="mt-16 text-center">
+                <Chip tone={CHIP.slate}>📦 진행이 끝나도</Chip>
                 <h3 className="mt-3 text-[1.55rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[2rem]">
-                  이런 결과물이 남아요
+                  회사 안에는 <span className={accentText}>이것이 남습니다</span>
                 </h3>
+                <p className="mx-auto mt-3 max-w-md text-[1rem] font-medium leading-relaxed text-slate-500">
+                  한 번 쓰고 버리는 서류가 아니라, 다음 자금·인증·지원사업·영업에도 활용할 회사의 자산을 만듭니다.
+                </p>
               </div>
-              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {pkg.deliverables.map((d, i) => (
-                  <div key={d} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <span className={`text-xl font-black ${accentText}`}>{`0${i + 1}`}</span>
-                    <p className="mt-2 text-[1.05rem] font-extrabold leading-snug text-slate-900">{d}</p>
+              <div className={`mt-8 grid gap-4 ${content.outcomes.length >= 3 ? 'lg:grid-cols-3 sm:grid-cols-2' : 'sm:grid-cols-2'}`}>
+                {content.outcomes.map((g) => (
+                  <div key={g.label} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <p className="flex items-center gap-2 text-[0.95rem] font-black text-slate-900">
+                      <span aria-hidden>{g.icon}</span>{g.label}
+                    </p>
+                    <ul className="mt-3.5 space-y-2.5">
+                      {g.items.map((it) => (
+                        <li key={it} className="flex items-start gap-2 text-[0.95rem] font-semibold leading-snug text-slate-600">
+                          <span className={`mt-0.5 font-black ${accentText}`} aria-hidden>✓</span>
+                          {it}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                ))}
-              </div>
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
-                {pkg.highlights.map((hi) => (
-                  <span key={hi} className="rounded-full bg-blue-50 px-3.5 py-1.5 text-sm font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">{hi}</span>
                 ))}
               </div>
             </div>
           </section>
 
-          {/* ── 왜 미래 AI 랩 (신뢰) ───────────────────────────────── */}
+          {/* ── 섹션6: 대행 비교 (신뢰) ─────────────────────────────── */}
           <section className={`bg-white ${band}`}>
             <div className={inner}>
               <SectionTitle chip="🛡️ 왜 미래 AI 랩?" tone={CHIP.blue}>
-                그냥 대행과는<br /><span className={accentText}>다릅니다</span>
+                서류만 처리하는<br /><span className={accentText}>대행과는 다릅니다</span>
               </SectionTitle>
+              <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
+                현재 신청 한 건만 처리하는 것이 아니라, 이후 자금·인증·세제·성장 단계까지 연결합니다.
+              </p>
 
               {!NO_TRUST_IDS.has(pkg.id) && (
                 <div className="mx-auto mt-9 grid max-w-lg grid-cols-3 gap-3">
@@ -521,13 +550,32 @@ export default function BusinessServiceDetailPage() {
                 </div>
               )}
 
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                {content.reasons.map((r) => (
-                  <div key={r} className="flex items-center gap-3 rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-100 sm:flex-col sm:text-center">
-                    <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-base font-black text-white ${checkBg}`} aria-hidden>✓</span>
-                    <p className="text-[1.05rem] font-bold text-slate-900">{r}</p>
-                  </div>
-                ))}
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                  <p className="text-[0.95rem] font-black text-slate-500">일반적인 신청·제작 대행</p>
+                  <ul className="mt-3.5 space-y-2.5">
+                    {content.versusNormal.map((it) => (
+                      <li key={it} className="flex items-start gap-2 text-[0.95rem] font-medium leading-snug text-slate-500">
+                        <span className="mt-0.5 shrink-0 font-black text-slate-300" aria-hidden>✕</span>
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="rounded-3xl bg-slate-900 p-6 shadow-lg">
+                  <p className="text-[0.95rem] font-black text-amber-300">미래 AI 랩 컨설팅</p>
+                  <ul className="mt-3.5 space-y-2.5">
+                    {content.versusOurs.map((it) => (
+                      <li key={it} className="flex items-start gap-2 text-[0.95rem] font-semibold leading-snug text-slate-200">
+                        <span className="mt-0.5 shrink-0 font-black text-emerald-400" aria-hidden>✓</span>
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className={`mx-auto mt-6 max-w-2xl rounded-2xl border-2 px-6 py-5 text-center ${flagship ? 'border-amber-300 bg-amber-50' : 'border-blue-200 bg-blue-50'}`}>
+                <p className="text-[1.02rem] font-black leading-snug text-slate-900 sm:text-lg">{content.versusClosing}</p>
               </div>
 
               <div className="mt-6 rounded-3xl bg-slate-900 p-7 text-center">

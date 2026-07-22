@@ -132,22 +132,48 @@ const principles = [
   { n: '03', t: '거절도 전략으로 만듭니다', d: '거절 사유를 정확히 파악해 기관·시점·서류를 바꿔 다시 도전합니다.' },
 ]
 
-// "단순 신청 지원과 다른 점" — 담백한 3가지 (과장 표현 없이)
-const beyondFunding = [
-  { icon: '🔍', t: '자금 가능성만 보지 않습니다', d: '현재 재무·매출 현황과 보완이 필요한 부분을 함께 정리해, 이번 자금뿐 아니라 다음 준비까지 이어지도록 합니다.' },
-  { icon: '🌱', t: '필요하면 성장 요소로 연결합니다', d: '상황에 따라 인증·특허·세금 환급·AX(업무자동화) 등 성장에 필요한 요소를 함께 검토합니다.' },
-  { icon: '🔁', t: '결과 이후까지 이어갑니다', d: '자금 조달 이후의 운영·유지관리와 다음 자금 시점까지 함께 관리합니다.' },
+// ── 후반부 강화 콘텐츠 — 혜택 / 어려운 이유 / 전후 비교 / 추천 체크 / 결과물 그룹 ──
+// 정리하고 나면 회사는 이렇게 유리해집니다 (5카드)
+const fundingBenefits = [
+  { icon: '🏛️', t: '자금이 급해지기 전에 선택 가능한 기관을 확보합니다', d: '중진공·소진공·신용보증기금·기술보증기금은 기관마다 심사 기준과 유리한 기업이 다릅니다. 회사의 업력·매출·부채·신용·자금 용도에 맞춰 먼저 검토할 기관과 순서를 정리합니다.' },
+  { icon: '💳', t: '고금리 자금에 의존할 가능성을 줄입니다', d: '급여일·결제일이 임박해 카드론과 고금리 신용대출부터 찾기 전에, 정책자금과 보증부대출 가능성을 점검할 수 있습니다.' },
+  { icon: '🧮', t: '필요한 자금 규모를 감이 아니라 숫자로 판단합니다', d: '운영자금·시설자금·상환 예정액과 현금흐름을 함께 검토해, 필요한 금액과 실제 사용계획을 정리합니다.' },
+  { icon: '🔍', t: '거절 가능성을 키우는 약점을 미리 확인합니다', d: '대표자 신용, 기존 대출, 매출 감소, 세금 문제, 재무비율 등 심사에 영향을 줄 수 있는 요소를 신청 전에 확인합니다.' },
+  { icon: '🧭', t: '한 번의 신청이 다음 조달을 방해하지 않게 설계합니다', d: '기관을 무작정 동시에 접촉하거나 보증 한도를 먼저 소진하지 않도록, 다음 신청까지 고려해 접근 순서를 정합니다.' },
 ]
 
-// 1회 컨설팅 후 남는 결과물 (기능명 나열이 아니라 고객이 받는 결과 중심)
-const resultItems = [
-  '어디서나 쓸 수 있는 고퀄리티 사업계획서',
-  '기업 현황 진단 요약',
-  '우선 검토 자금·기관',
-  '준비자료 목록',
-  '보완해야 할 항목',
-  '실행 순서 정리',
-  '예상 질문과 대응 준비',
+// 혼자 하기 어려운 이유 (판단·구조 설계)
+const whyHard = [
+  { t: '어느 기관이 지금 우리 회사에 유리한지 판단해야 합니다', d: '기관마다 심사 기준과 선호 기업이 다릅니다. 같은 회사도 어디를 먼저 두드리느냐에 따라 결과가 달라집니다.' },
+  { t: '대표자 신용과 법인 재무를 함께 봐야 합니다', d: '법인만 보거나 대표 개인만 봐서는 안 됩니다. 두 축이 함께 심사에 반영되기 때문에 종합적인 판단이 필요합니다.' },
+  { t: '신청금액과 자금 용도가 납득 가능해야 합니다', d: '막연히 “많이”가 아니라, 용도와 상환계획이 뒷받침되는 금액이어야 심사자가 고개를 끄덕입니다.' },
+  { t: '한 기관의 결과가 다른 신청에 미칠 영향까지 고려해야 합니다', d: '보증 여력과 한도는 한정되어 있습니다. 순서를 잘못 잡으면 다음 기회까지 좁아집니다.' },
+]
+
+// 진행 전 → 진행 후 비교
+const fundingAfters = [
+  { before: '필요할 때마다 무작정 기관에 문의합니다', after: '회사에 맞는 기관과 우선순위가 확보됩니다' },
+  { before: '필요한 금액을 감으로 결정합니다', after: '용도와 상환계획을 반영해 필요금액을 산정합니다' },
+  { before: '거절 이유를 모른 채 반복 신청합니다', after: '약점과 보완항목을 사전에 확인합니다' },
+  { before: '대표 개인 신용에 의존합니다', after: '법인·정책기관 중심의 조달 가능성을 검토합니다' },
+  { before: '당장의 실행만 확인합니다', after: '다음 자금 신청까지 고려한 순서가 설계됩니다' },
+]
+
+// 추천 대상 체크리스트 (최근 실제 상황 기준)
+const fundingChecklist = [
+  '앞으로 3~6개월 안에 운영자금이나 시설자금이 필요하다',
+  '최근 은행 금리와 원리금 상환 부담이 커졌다',
+  '중진공·소진공·신보·기보 중 어디부터 접촉해야 할지 모르겠다',
+  '기존 대출이 늘어나 추가 자금 가능성이 걱정된다',
+  '정책자금에서 거절됐지만 정확한 이유를 모른다',
+  '급여·세금·거래처 결제일이 겹칠 때 현금흐름이 불안해진다',
+]
+
+// 진행이 끝나도 회사 안에 남는 것 (그룹)
+const fundingOutcomes = [
+  { label: '공식·심사용 자료', icon: '📄', items: ['어디서나 쓸 수 있는 고퀄리티 사업계획서', '자금 사용계획과 필요금액 근거', '기관별 요구자료 정리', '예상 질문과 대응 준비'] },
+  { label: '회사에 남는 자산', icon: '🏢', items: ['기업 현황·자금 가능성 진단표', '기관별 접근 우선순위', '재무·신용 약점 정리'] },
+  { label: '다음 단계 실행자료', icon: '🧭', items: ['향후 자금조달 일정', '신용·재무 보완계획', '다음 신청 시점과 준비사항'] },
 ]
 
 // 방치하면 악화되는 것 (사실 기반 — 조작 통계·허위 사례 금지). tag=손실 종류 라벨
@@ -266,7 +292,7 @@ export default function FundingConsultingDetailPage() {
           onClick={() => openConsult()}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-4 text-lg font-black text-slate-900 shadow-lg shadow-amber-500/20 transition-transform hover:-translate-y-0.5"
         >
-          무료 상담 신청하기
+          가능성 진단 신청하기
         </button>
         <p className={`mt-2 text-xs font-medium leading-relaxed ${variant === 'dark' ? 'text-slate-300' : 'text-slate-500'}`}>{paymentsPreparingNotice}</p>
       </>
@@ -530,6 +556,34 @@ export default function FundingConsultingDetailPage() {
       </section>
 
       {/* 혜택 1 — 성공수수료 0원 */}
+      {/* ── 후반부 1: 정리하고 나면 회사는 이렇게 유리해집니다 ── */}
+      <section className={`bg-white ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>💡 정리하고 나면</p>
+          <h2 className={bigHead}>
+            회사는 이렇게<br /><span className="text-blue-600">유리해집니다</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-center text-base font-medium leading-relaxed text-slate-600">
+            단순한 제도상의 혜택이 아니라, 실제 경영에서 달라지는 변화를 확인해보세요.
+          </p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+            {fundingBenefits.map((b, i) => (
+              <div key={b.t} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                <div className="flex items-center gap-2.5">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-slate-900 text-xs font-black text-white" aria-hidden>{`0${i + 1}`}</span>
+                  <span className="text-2xl" aria-hidden>{b.icon}</span>
+                </div>
+                <p className="mt-3.5 text-[1.12rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
+                <p className="mt-2 text-[0.98rem] leading-relaxed text-slate-600">{b.d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed text-slate-400">
+            ※ 실제 조달 가능 여부·금액·조건은 기관 심사와 회사의 재무·신용 상태에 따라 달라질 수 있습니다.
+          </p>
+        </div>
+      </section>
+
       <section className={`bg-white ${band}`}>
         <div className={inner}>
           <p className={kicker}>✨ 미래 AI 랩의 방식</p>
@@ -770,21 +824,74 @@ export default function FundingConsultingDetailPage() {
       </section>
 
       {/* 왜 미래 AI 랩 — 단순 신청 지원과 다른 점(담백한 3가지) */}
+      {/* ── 후반부 2: 문제는 신청이 아니라, 통과·활용 구조 ── */}
+      <section className={`bg-slate-900 ${band}`}>
+        <div className={inner}>
+          <p className="text-center text-sm font-black uppercase tracking-widest text-amber-300">🧭 왜 전문가와 함께 하나요</p>
+          <h2 className="mt-3 text-center text-[1.85rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.7rem]">
+            문제는 신청이 아니라,<br /><span className="text-amber-300">통과하고 활용할 구조입니다</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-400">
+            혼자 하기 어려운 이유는 서류가 많아서가 아니라, 무엇을 어떤 순서로 증명해야 하는지 판단하기 어렵기 때문입니다.
+          </p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+            {whyHard.map((w, i) => (
+              <div key={w.t} className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+                <span className="text-3xl font-black text-amber-300 sm:text-4xl">{`0${i + 1}`}</span>
+                <p className="mt-3 text-[1.1rem] font-bold text-white">{w.t}</p>
+                <p className="mt-1.5 text-[0.98rem] leading-relaxed text-slate-300">{w.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mx-auto mt-7 max-w-xl rounded-2xl bg-amber-400 px-6 py-5 text-center">
+            <p className="text-[1.02rem] font-black leading-snug text-slate-900 sm:text-lg">
+              미래 AI 랩은 “돈이 필요하다”는 신청서를 대신 써드리는 것이 아니라, 회사가 받을 가능성이 높은 자금 경로와 준비 순서를 먼저 설계합니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 후반부 3: 진행 전 → 진행 후 비교 ── */}
+      <section className={`bg-white ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>💫 진행 전과 진행 후</p>
+          <h2 className={bigHead}>
+            회사는 이렇게<br /><span className="text-blue-600">달라집니다</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-center text-base font-medium leading-relaxed text-slate-600">
+            급할 때마다 기관을 두드리던 방식이, 회사 기준의 조달 순서로 바뀝니다.
+          </p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+            {fundingAfters.map((a) => (
+              <div key={a.after} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">진행 전</p>
+                <p className="mt-1 text-[0.95rem] font-semibold leading-snug text-slate-400">{a.before}</p>
+                <p className="my-2.5 text-center text-slate-300" aria-hidden>↓</p>
+                <div className="rounded-xl bg-blue-50 px-4 py-3">
+                  <p className="text-[11px] font-black uppercase tracking-wide text-blue-600">진행 후</p>
+                  <p className="mt-1 text-[1.05rem] font-extrabold leading-snug text-slate-900">{a.after}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 후반부 4: 추천 대상 체크리스트 ── */}
       <section className={`bg-blue-50/50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>🔍 단순 신청 지원과 다른 점</p>
+          <p className={kicker}>🙋 지금 우리 회사 이야기라면</p>
           <h2 className={bigHead}>
-            자금만 보고<br /><span className="text-blue-600">끝내지 않습니다</span>
+            아래 항목 중 2개 이상이라면<br /><span className="text-blue-600">지금 점검해볼 시점입니다</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-lg text-center text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-            신청서 작성을 넘어, <b className="text-slate-900">현황 정리부터 자금 이후 관리까지</b> 필요한 만큼 함께 봅니다.
+          <p className="mx-auto mt-4 max-w-md text-center text-base font-medium leading-relaxed text-slate-600">
+            준비가 급해진 뒤보다 선택지가 있을 때 시작하는 편이 유리합니다.
           </p>
-          <div className="mt-9 grid gap-4 sm:grid-cols-3">
-            {beyondFunding.map((b) => (
-              <div key={b.t} className="flex flex-col items-center text-center sm:items-start sm:text-left rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-blue-50 text-2xl" aria-hidden>{b.icon}</span>
-                <p className="mt-3 text-[1.15rem] font-extrabold leading-snug text-slate-900">{b.t}</p>
-                <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{b.d}</p>
+          <div className="mx-auto mt-9 max-w-xl space-y-2.5">
+            {fundingChecklist.map((c) => (
+              <div key={c} className="flex items-start gap-3 rounded-2xl bg-white p-4.5 shadow-sm ring-1 ring-slate-100">
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md bg-blue-600 text-xs font-black text-white" aria-hidden>✓</span>
+                <p className="text-[1.02rem] font-semibold leading-snug text-slate-700">{c}</p>
               </div>
             ))}
           </div>
@@ -961,21 +1068,35 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* 제공 결과물 */}
+      {/* ── 후반부 5: 진행이 끝나도 회사 안에 남는 것 (그룹) ── */}
       <section className={`bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>📄 컨설팅 후 남는 것</p>
-          <h2 className={bigHead}>컨설팅 후에는 대표님들이<br /><span className="text-blue-600">이런 것들을 얻게 되십니다</span></h2>
+          <p className={kicker}>📦 진행이 끝나도</p>
+          <h2 className={bigHead}>회사 안에는<br /><span className="text-blue-600">이것이 남습니다</span></h2>
           <p className="mx-auto mt-4 max-w-lg text-center text-base leading-relaxed text-slate-600">
-            상담만 받고 끝나는 게 아니라, 대표님이 직접 신청하거나 내부에서 바로 쓰실 수 있도록 정리된 자료로 남습니다.
+            한 번 쓰고 버리는 서류가 아니라, 회사가 자금이 필요할 때마다 다시 쓸 수 있는 조달 기준을 만듭니다.
           </p>
-          <div className="mx-auto mt-9 grid max-w-2xl gap-3 sm:grid-cols-2">
-            {resultItems.map((d, i) => (
-              <div key={d} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-5 py-4">
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-blue-600 text-xs font-black text-white">{`0${i + 1}`}</span>
-                <p className="text-[1.05rem] font-bold leading-snug text-slate-800">{d}</p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {fundingOutcomes.map((g) => (
+              <div key={g.label} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                <p className="flex items-center gap-2 text-[0.95rem] font-black text-slate-900">
+                  <span aria-hidden>{g.icon}</span>{g.label}
+                </p>
+                <ul className="mt-3.5 space-y-2.5">
+                  {g.items.map((it) => (
+                    <li key={it} className="flex items-start gap-2 text-[0.95rem] font-semibold leading-snug text-slate-600">
+                      <span className="mt-0.5 font-black text-blue-600" aria-hidden>✓</span>
+                      {it}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
+          </div>
+          <div className="mx-auto mt-6 max-w-2xl rounded-2xl border-2 border-blue-200 bg-blue-50 px-6 py-5 text-center">
+            <p className="text-[1.02rem] font-black leading-snug text-slate-900 sm:text-lg">
+              한 번의 접수를 처리하는 것이 아니라, 회사가 자금이 필요할 때마다 사용할 수 있는 조달 기준을 만듭니다.
+            </p>
           </div>
         </div>
       </section>
@@ -1008,7 +1129,7 @@ export default function FundingConsultingDetailPage() {
             </div>
             <p className="mt-5 border-t border-slate-100 pt-4 text-center text-[1.05rem] leading-relaxed text-slate-500">
               지금 당장 결정하지 않으셔도 괜찮습니다.<br />
-              <b className="text-slate-700">무료 상담으로 가능성만 먼저 확인</b>해 두세요. 확인하는 데는 비용이 들지 않습니다.
+              <b className="text-slate-700">가능성 진단으로 우리 회사 적용 여부만 먼저 확인</b>해 두세요. 확인하는 데는 비용이 들지 않습니다.
             </p>
           </div>
         </div>
@@ -1069,7 +1190,7 @@ export default function FundingConsultingDetailPage() {
           {inquiryOnly ? (
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[0.92rem] font-black text-slate-900">우리 회사, 가능 여부 확인</span>
-              <span className="block truncate text-xs font-medium text-slate-500">무료 상담 · 신청 1~2분</span>
+              <span className="block truncate text-xs font-medium text-slate-500">가능성 진단 · 신청 1~2분</span>
             </span>
           ) : (
             <span className="flex shrink-0 items-baseline gap-1">
@@ -1087,7 +1208,7 @@ export default function FundingConsultingDetailPage() {
         open={consult.open}
         onClose={() => setConsult({ open: false, plan: null })}
         source="정책자금 컨설팅"
-        heading="정책자금 무료 상담 신청"
+        heading="정책자금 가능성 진단 신청"
         topicGroups={CONSULT_TOPIC_GROUPS}
         preselectProduct="정책자금 컨설팅"
         showContactMethod
