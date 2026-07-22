@@ -5,9 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
-import { loadLocalOrders } from '../lib/payments'
 import { getCart, getLikes } from '../lib/savedItems'
-import { consultLinks } from '../config/businessInfo'
 import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
 import { loginPathWithNext } from '../lib/authRouting'
@@ -51,43 +49,58 @@ const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; active
   slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-200', activeBg: 'bg-slate-200', activeText: 'text-slate-900', badge: 'bg-slate-600', groupBg: 'bg-slate-100' },
 }
 
-// 대표자용 — 실제 존재하는 상품 slug·라우트만 사용
+// 대표자용 — 새 사업방향(핵심 프로그램 3 + 성장 모듈 4그룹) 구조. 실제 라우트/앵커만 사용.
 const BUSINESS_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
-  topSub: '중소기업 대표님을 위한 경영지원 서비스',
+  topSub: '자금조달과 기업 성장을 함께 설계합니다',
   lead: {
     label: '3분 무료 기업 성장진단',
-    desc: '우리 회사에 지금 필요한 자금·지원금·인증을 확인해보세요.',
+    desc: '지금 필요한 것이 자금인지, 기술·인증인지, AX 운영혁신인지 먼저 확인해보세요.',
     to: '/business-diagnosis',
     match: (p) => p.startsWith('/business-diagnosis'),
   },
   groups: [
     {
       no: '01',
-      heading: '대표 서비스',
+      heading: '시작하기',
       accent: 'blue',
       items: [
-        { label: '전체 상품 보기', to: '/business-services#packages', match: (p) => p === '/business-services' },
-        { no: '1', label: '저금리로 자금 조달이 필요하다면', to: '/business-services/funding-consulting' },
-        { no: '2', label: '정부 지원금, 놓치지 않고 받고 싶다면', to: '/business-services/employment-subsidy' },
-        { no: '3', label: '대외 신뢰도·가점·세금 혜택까지 챙기고 싶다면', to: '/business-services?category=certification' },
-        { no: '4', label: 'AI 시대에 뒤처지지 않는 회사로 만들고 싶다면', to: '/business-services?category=digital' },
-        { no: '5', label: '믿을 만한 파트너가 늘 함께했으면 한다면', to: '/business-services?category=full' },
-        { no: '6', label: '세금은 줄이고, 회사의 부를 제대로 옮기고 싶다면', to: '/business-services?category=corporate' },
+        { label: '3분 기업 성장진단', to: '/business-diagnosis', match: (p) => p.startsWith('/business-diagnosis') },
+        { label: '기업진단·자금전략', desc: '500,000원 · 성과보수 없음', to: '/business-services#core-A' },
       ],
     },
     {
       no: '02',
-      heading: '기업 성장',
+      heading: '자금조달',
       accent: 'cyan',
       items: [
-        { label: '기업 진단', to: '/business-diagnosis', match: (p) => p.startsWith('/business-diagnosis') },
-        { label: '카톡 상담하기', to: consultLinks.kakaoChat },
-        { label: '상담 신청 (이메일)', to: '#consult' },
+        { label: '자금조달 실행형', desc: '착수금 + 실제 조달액의 3%', to: '/business-services#core-B' },
+        { label: 'AX 결합 성장자금형', desc: '초기 10개사 · 실제 조달액의 5%', to: '/business-services#core-C' },
       ],
     },
     {
       no: '03',
+      heading: '성장 모듈',
+      accent: 'violet',
+      items: [
+        { no: '1', label: '기술·혁신 기반', to: '/business-services?group=tech' },
+        { no: '2', label: '경영·대외 신뢰', to: '/business-services?group=trust' },
+        { no: '3', label: '디지털 실행', to: '/business-services?group=digital' },
+        { no: '4', label: '재무·전문가 연계', to: '/business-services?group=finance' },
+      ],
+    },
+    {
+      no: '04',
+      heading: '내 서비스',
+      accent: 'blue',
+      items: [
+        { label: '마이페이지', to: '/mypage', match: (p) => p.startsWith('/mypage') },
+        { label: '주문·진행현황', to: '/my-orders', match: (p) => p.startsWith('/my-orders') },
+        { label: '상담 신청', to: '#consult' },
+      ],
+    },
+    {
+      no: '05',
       heading: '고객지원',
       accent: 'slate',
       items: [
@@ -99,7 +112,7 @@ const BUSINESS_MENU: MenuConfig = {
       ],
     },
   ],
-  cta: { label: '우리 회사에 필요한 서비스 찾기', to: '/business-diagnosis' },
+  cta: { label: '내 회사에 맞는 방식 확인하기', to: '/business-diagnosis' },
 }
 
 // 컨설턴트용 — /consultants 공개 소개 + 로그인/도구함
@@ -170,7 +183,6 @@ export default function PublicMenuDrawer({
   const [open, setOpen] = useState(false)
   const [consultOpen, setConsultOpen] = useState(false)
   const [historyCount, setHistoryCount] = useState(0)
-  const [orderCount, setOrderCount] = useState(0)
   const [savedCount, setSavedCount] = useState(0)
   const location = useLocation()
   const navigate = useNavigate()
@@ -183,37 +195,23 @@ export default function PublicMenuDrawer({
   const acctType = memberTypeLabel({ roles, memberType, needsOnboarding })
   const acctAvatar = resolveAvatarUrl(user)
 
-  // 대표자 메뉴의 '기업 성장' 그룹에 '내 진단 결과 N건'·'내 결제·신청내역 N건' 동적 추가
+  // 대표자 메뉴 '내 서비스' 그룹에 '찜·장바구니 N개'·'내 진단 결과 N건' 동적 추가
+  // (주문·진행현황은 정적 항목으로 이미 존재하므로 orderCount 중복 링크는 생략)
   const config = useMemo<MenuConfig>(() => {
-    if (variant !== 'business' || (historyCount <= 0 && orderCount <= 0 && savedCount <= 0)) return MENUS[variant]
+    if (variant !== 'business' || (historyCount <= 0 && savedCount <= 0)) return MENUS[variant]
     const base = MENUS.business
     const extra: MenuItem[] = []
     if (savedCount > 0) {
-      extra.push({
-        label: `찜·장바구니 ${savedCount}개`,
-        to: '/saved',
-        match: (p) => p === '/saved',
-      })
+      extra.push({ label: `찜·장바구니 ${savedCount}개`, to: '/saved', match: (p) => p === '/saved' })
     }
     if (historyCount > 0) {
-      extra.push({
-        label: `내 진단 결과 ${historyCount}건`,
-        to: '/business-diagnosis/results',
-        match: (p) => p.startsWith('/business-diagnosis/results'),
-      })
-    }
-    if (orderCount > 0) {
-      extra.push({
-        label: `내 결제·신청내역 ${orderCount}건`,
-        to: '/my-orders',
-        match: (p) => p.startsWith('/my-orders'),
-      })
+      extra.push({ label: `내 진단 결과 ${historyCount}건`, to: '/business-diagnosis/results', match: (p) => p.startsWith('/business-diagnosis/results') })
     }
     return {
       ...base,
-      groups: base.groups.map((g) => (g.heading === '기업 성장' ? { ...g, items: [...g.items, ...extra] } : g)),
+      groups: base.groups.map((g) => (g.heading === '내 서비스' ? { ...g, items: [...g.items, ...extra] } : g)),
     }
-  }, [variant, historyCount, orderCount, savedCount])
+  }, [variant, historyCount, savedCount])
 
   useEffect(() => {
     setOpen(false)
@@ -222,7 +220,6 @@ export default function PublicMenuDrawer({
   useEffect(() => {
     if (open && variant === 'business') {
       setHistoryCount(loadHistory().length)
-      setOrderCount(loadLocalOrders().length)
       setSavedCount(getLikes().length + getCart().length)
     }
   }, [open, variant])
@@ -489,6 +486,7 @@ export default function PublicMenuDrawer({
         topicGroups={variant === 'business' ? CONSULT_TOPIC_GROUPS : undefined}
         showContactMethod={variant === 'business'}
         showCompanyFields={variant === 'business'}
+        programSelect={variant === 'business'}
       />
     </>
   )

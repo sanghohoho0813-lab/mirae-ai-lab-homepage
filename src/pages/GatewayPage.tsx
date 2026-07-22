@@ -66,10 +66,10 @@ const choices: Choice[] = [
     to: '/business-services',
     icon: '🏢',
     label: '경영지원 서비스',
-    title: '중소기업 대표님이신가요?',
-    desc: '정책자금·고용지원금·기업인증·AX 시스템까지, 회사에 필요한 성장 서비스를 골라보세요.',
-    cta: '대표님용 서비스 보기',
-    keywords: ['정책자금', '고용지원금', '기업인증', 'AX 컨설팅'],
+    title: '자금조달과 기업 성장을 준비하는 대표님',
+    desc: '기업진단부터 정책자금, 인증, AX 운영시스템까지 현재 회사에 필요한 순서로 정리합니다.',
+    cta: '중소기업 대표 서비스 보기',
+    keywords: ['기업진단·자금전략', '정책자금', '기업인증', 'AX 운영시스템'],
     theme: blueTheme,
   },
   {
@@ -104,10 +104,10 @@ export default function GatewayPage() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-14 text-center sm:py-16">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-8 text-center sm:py-14">
         {/* Brand */}
-        <div className="flex flex-col items-center gap-3">
-          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-slate-900 text-lg font-black tracking-tight text-sky-400 shadow-lg shadow-slate-900/20">
+        <div className="flex flex-col items-center gap-2.5">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-900 text-base font-black tracking-tight text-sky-400 shadow-lg shadow-slate-900/20 sm:h-14 sm:w-14 sm:text-lg">
             AI
           </span>
           <div className="leading-tight">
@@ -117,16 +117,16 @@ export default function GatewayPage() {
         </div>
 
         {/* Main copy */}
-        <h1 className="mt-8 text-[1.7rem] font-extrabold leading-[1.25] tracking-tight text-slate-900 sm:text-4xl lg:text-[2.9rem] lg:leading-[1.2]">
+        <h1 className="mt-5 text-[1.55rem] font-extrabold leading-[1.25] tracking-tight text-slate-900 sm:mt-7 sm:text-4xl lg:text-[2.7rem] lg:leading-[1.2]">
           대표님의 성장 전략과 컨설턴트의 실무 도구를
           <br className="hidden sm:block" /> <span className="text-blue-600">AI로 연결</span>합니다.
         </h1>
-        <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        <p className="mt-3.5 max-w-2xl text-[0.95rem] leading-relaxed text-slate-600 sm:mt-5 sm:text-lg">
           정책자금·고용지원금·기업인증·AX 시스템·AI 업무도구를 목적에 맞게 나누어 안내합니다.
         </p>
 
         {/* Choice cards */}
-        <div className="mt-11 grid w-full gap-5 sm:grid-cols-2 sm:gap-6">
+        <div className="mt-7 grid w-full gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-6">
           {choices.map((c) => {
             const t = c.theme
             return (
@@ -165,7 +165,7 @@ export default function GatewayPage() {
         </div>
 
         {/* Trust line */}
-        <div className="mt-11 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-sm font-medium text-slate-500">
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2 text-sm font-medium text-slate-500 sm:mt-10">
           {trustItems.map((t, i) => (
             <span key={t} className="inline-flex items-center gap-2.5">
               {i > 0 && <span aria-hidden className="text-slate-300">·</span>}
