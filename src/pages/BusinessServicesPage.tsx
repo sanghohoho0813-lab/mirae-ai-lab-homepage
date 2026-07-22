@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import CouponSignupBanner from '../components/CouponSignupBanner'
@@ -78,10 +78,11 @@ function scrollToId(id: string) {
 }
 
 export default function BusinessServicesPage() {
-  const { likes, cart } = useSavedItems()
-  const savedCount = likes.length + cart.length
+  const { cart } = useSavedItems()
   const [historyCount] = useState(() => loadHistory().length)
   const [showBar, setShowBar] = useState(false)
+  const [atEnd, setAtEnd] = useState(false)
+  const finalCtaRef = useRef<HTMLDivElement>(null)
   const [consultOpen, setConsultOpen] = useState(false)
   const [preselectProgram, setPreselectProgram] = useState<string | undefined>(undefined)
   const [openGroup, setOpenGroup] = useState<ModuleGroup | null>(null)
@@ -108,11 +109,21 @@ export default function BusinessServicesPage() {
     if (location.hash) setTimeout(() => scrollToId(location.hash.slice(1)), 60)
   }, [location.hash])
 
+  // 하단 고정 바 — 어느 정도 스크롤하면 표시
   useEffect(() => {
     const onScroll = () => setShowBar(window.scrollY > 480)
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // 최종 CTA 카드가 화면에 들어오면 하단 고정 바를 숨겨 중복·가림 방지(스크롤 높이 계산 대신 IntersectionObserver로 견고하게)
+  useEffect(() => {
+    const el = finalCtaRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver((entries) => setAtEnd(entries[0]?.isIntersecting ?? false), { rootMargin: '0px 0px -40px 0px' })
+    io.observe(el)
+    return () => io.disconnect()
   }, [])
 
   const moduleProducts = useMemo(() => {
@@ -157,10 +168,13 @@ export default function BusinessServicesPage() {
                 내 진단 결과 <b>{historyCount}</b>
               </Link>
             )}
-            <Link to="/saved" aria-label={`찜한 상품·장바구니 ${savedCount}개 보기`} className="relative grid h-10 w-10 place-items-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
-              <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx="9" cy="20" r="1.4" /><circle cx="17.5" cy="20" r="1.4" /><path d="M2.5 3.5h2.5l2.6 12h10.7l2.2-8.5H6" /></svg>
-              {savedCount > 0 && <span className="absolute -right-0.5 -top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white">{savedCount > 99 ? '99+' : savedCount}</span>}
-            </Link>
+            {/* 장바구니 아이콘 — 실제 장바구니 상품이 있을 때만 노출(찜만 있는 경우는 표시 안 함, 쇼핑몰 인상 완화). 찜은 햄버거 '내 서비스'에서 접근. */}
+            {cart.length > 0 && (
+              <Link to="/saved" aria-label={`장바구니 ${cart.length}개 보기`} className="relative grid h-10 w-10 place-items-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900">
+                <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx="9" cy="20" r="1.4" /><circle cx="17.5" cy="20" r="1.4" /><path d="M2.5 3.5h2.5l2.6 12h10.7l2.2-8.5H6" /></svg>
+                <span className="absolute -right-0.5 -top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white">{cart.length > 99 ? '99+' : cart.length}</span>
+              </Link>
+            )}
             <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex">3분 성장진단</Link>
             <HeaderAccount variant="business" />
           </div>
@@ -512,7 +526,7 @@ export default function BusinessServicesPage() {
             ))}
           </div>
           {/* 최종 CTA — 동일 섹션 내 마무리 카드 */}
-          <div className="mt-8 rounded-3xl bg-slate-900 p-7 text-center sm:p-9">
+          <div ref={finalCtaRef} className="mt-8 rounded-3xl bg-slate-900 p-7 text-center sm:p-9">
             <h3 className="text-xl font-black tracking-tight text-white sm:text-2xl">내 회사에 맞는 방식부터 확인해보세요</h3>
             <p className="mx-auto mt-2.5 max-w-md text-[0.98rem] leading-relaxed text-slate-300">자금·기술·인증·AX 중 무엇부터인지, 3분 진단 또는 상담으로 정리해 드립니다.</p>
             <div className="mx-auto mt-5 flex max-w-md flex-col gap-2.5 sm:flex-row sm:justify-center">
@@ -525,11 +539,18 @@ export default function BusinessServicesPage() {
 
       <LegalFooter />
 
-      {/* Mobile sticky CTA */}
-      {showBar && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-2 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
-          <Link to="/business-diagnosis" className="flex flex-1 items-center justify-center rounded-xl bg-blue-600 px-4 py-3.5 text-base font-bold text-white">3분 성장진단</Link>
-          <a href={consultLinks.kakaoChat} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-[#FEE500] px-4 py-3.5 text-base font-bold text-[#191919]">카톡 상담</a>
+      {/* Mobile sticky CTA — 성장진단이 주(약 2/3), 카톡은 보조(흰·연노랑 배경 + 노란 아이콘). 높이 축소 + safe-area. 최종 CTA 노출 시 숨김. */}
+      {showBar && !atEnd && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
+          <div className="flex items-center gap-2">
+            <Link to="/business-diagnosis" className="flex flex-[2] items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-3 text-[0.95rem] font-bold text-white shadow-sm transition-colors hover:bg-blue-700">
+              <span aria-hidden>🩺</span> 3분 성장진단
+            </Link>
+            <a href={consultLinks.kakaoChat} target="_blank" rel="noopener noreferrer" aria-label="카카오톡 상담" className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3 py-3 text-sm font-bold text-slate-700 transition-colors hover:bg-amber-100">
+              <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] text-amber-500" fill="currentColor" aria-hidden><path d="M12 3.4c-5.1 0-9.2 3.3-9.2 7.3 0 2.6 1.7 4.9 4.3 6.2-.2.7-.7 2.5-.8 2.9 0 .1 0 .3.2.4.1.1.3 0 .4 0 .5-.1 2.8-1.9 3.3-2.2.6.1 1.2.1 1.8.1 5.1 0 9.2-3.3 9.2-7.4S17.1 3.4 12 3.4z" /></svg>
+              상담
+            </a>
+          </div>
         </div>
       )}
 
