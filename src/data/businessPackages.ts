@@ -10,6 +10,30 @@ export type Faq = { q: string; a: string }
 //  - variant : 선택형(옵션에 따라 금액 변동, 예: ISO 1/2/3종)
 //  - consult : 카드결제 없이 상담 후 결정
 export type PriceType = 'fixed' | 'variant' | 'consult'
+
+// ── 상품 아키텍처(1층 핵심 프로그램 / 2층 성장 모듈) — 새 사업방향 분류 ──
+// 1층 핵심 프로그램의 정의·가격은 src/data/corePrograms.ts 가 단일 소스입니다.
+/** 1층(core: 고객이 먼저 선택) / 2층(module: 진단 결과에 따라 추가) */
+export type ProductTier = 'core' | 'module'
+/** 성장 모듈 그룹 — tech: 기술·혁신 기반 / trust: 경영·대외 신뢰 / digital: 디지털 실행 / finance: 재무·전문가 연계 */
+export type ModuleGroup = 'tech' | 'trust' | 'digital' | 'finance'
+export const MODULE_GROUP_LABELS: Record<ModuleGroup, string> = {
+  tech: '기술·혁신 기반',
+  trust: '경영·대외 신뢰',
+  digital: '디지털 실행',
+  finance: '재무·전문가 연계',
+}
+/** 가격 표시 유형 — fixed: 고정가격 / from: 기준가부터(기업 상태·보완범위에 따라 확정) / quote: 기업진단 후 기능명세·견적 */
+export type PriceModel = 'fixed' | 'from' | 'quote'
+/** 모듈 상태값 — 노출·판매 방식 구분 (2단계 목록 리디자인에서 시각화) */
+export type ModuleStatusTag =
+  | '진단에 포함'
+  | '필요 시 추천'
+  | '단독 진행 가능'
+  | '기준가 공개'
+  | '기업진단 후 견적'
+  | '전문가 연계'
+  | 'AX 참여기업 10% 할인'
 /** optionId 는 서버 결제 카탈로그(billing_products.option_id)와 일치해야 합니다 */
 export type PriceVariant = { optionId: string; label: string; amount: number; note?: string; badge?: string }
 
@@ -57,6 +81,15 @@ export type BusinessPackage = {
   featured?: boolean
   /** 대표 상품 (골드 강조) */
   flagship?: boolean
+  // ── 새 사업방향 분류 (옵션 — 미지정 상품은 기존 동작 그대로) ──
+  /** 1층 핵심 프로그램 / 2층 성장 모듈 */
+  tier?: ProductTier
+  /** 성장 모듈 그룹 (tier === 'module') */
+  moduleGroup?: ModuleGroup
+  /** 가격 표시 유형 분류 (이번 단계는 분류만 — 표시 문자열·결제 amount 는 변경하지 않음) */
+  priceModel?: PriceModel
+  /** 모듈 상태값 */
+  moduleStatus?: ModuleStatusTag[]
 }
 
 // 카테고리 탭
@@ -78,7 +111,8 @@ export const CATEGORY_NOTES: Record<string, string> = {
 }
 
 // 대표 상품 TOP 5 노출 순서
-export const FEATURED_IDS = ['funding-consulting', 'employment-subsidy', 'growth-roadmap-package', 'venture-innovation', 'ai-ax-system']
+// 소형 AX 단품(ai-ax-system)은 모듈 영역으로 재분류되어 대표 노출에서 제외 (slug·데이터는 유지)
+export const FEATURED_IDS = ['funding-consulting', 'employment-subsidy', 'growth-roadmap-package', 'venture-innovation']
 
 // 공통 진행 절차
 export const PROCEDURE = ['기본 진단', '자료 확인', '전략 정리', '결과물 제작 또는 문서화', '후속 안내']
@@ -95,6 +129,8 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'funding-consulting',
     slug: 'funding-consulting',
+    tier: 'core',
+    priceModel: 'fixed',
     category: '자금조달',
     badge: '가능성 진단',
     badgeTone: 'blue',
@@ -133,6 +169,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'employment-subsidy',
     slug: 'employment-subsidy',
+    tier: 'module',
+    moduleGroup: 'trust',
+    priceModel: 'quote',
+    moduleStatus: ['필요 시 추천', '단독 진행 가능', '기업진단 후 견적'],
     category: '지원금',
     badge: '성공보수형',
     badgeTone: 'blue',
@@ -163,6 +203,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'venture-innovation',
     slug: 'venture-innovation',
+    tier: 'module',
+    moduleGroup: 'tech',
+    priceModel: 'from',
+    moduleStatus: ['필요 시 추천', '단독 진행 가능', '기준가 공개', 'AX 참여기업 10% 할인'],
     category: '인증·절세',
     badge: '특허출원 포함',
     badgeTone: 'blue',
@@ -193,6 +237,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'venture-investment',
     slug: 'venture-investment',
+    tier: 'module',
+    moduleGroup: 'tech',
+    priceModel: 'quote',
+    moduleStatus: ['필요 시 추천', '전문가 연계'],
     category: '인증·절세',
     badge: '절세 전략',
     badgeTone: 'blue',
@@ -222,6 +270,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'responsive-homepage',
     slug: 'responsive-homepage',
+    tier: 'module',
+    moduleGroup: 'digital',
+    priceModel: 'fixed',
+    moduleStatus: ['단독 진행 가능', '기준가 공개'],
     category: 'AX 컨설팅',
     badge: '온라인 영업',
     badgeTone: 'slate',
@@ -248,12 +300,16 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'ai-ax-system',
     slug: 'ai-ax-system',
+    tier: 'module',
+    moduleGroup: 'digital',
+    priceModel: 'quote',
+    moduleStatus: ['필요 시 추천', '기업진단 후 견적'],
     category: 'AX 컨설팅',
     badge: '업무 자동화',
     badgeTone: 'slate',
-    name: 'AI 업무 자동화 프로그램 구축',
-    tagline: '매일 반복되는 업무를 자동화 프로그램으로 만들어, 시간과 비용을 대폭 절감해 드립니다.',
-    short: '매일 반복하는 업무를 자동화해 시간과 인건비를 줄입니다',
+    name: '소형 업무자동화 MVP',
+    tagline: '핵심 기능 하나만 빠르게 만드는 소형 자동화 프로젝트 — 기존 고객 추가 자동화, 홈페이지+간단 업무도구 결합에 맞습니다.',
+    short: '핵심 업무 하나만 자동화하는 소형 독립 프로젝트',
     price: '299만원~',
     priceNote: '기업 규모와 자동화 범위에 따라 상담 후 최종 견적이 안내됩니다.',
     priceType: 'consult',
@@ -268,16 +324,21 @@ export const businessPackages: BusinessPackage[] = [
       { q: '어떤 업무를 자동화할 수 있나요?', a: '반복 입력·조회·리포트 등 대표님 업무를 진단해 자동화 효과가 가장 큰 업무부터 함께 정합니다.' },
       { q: '견적은 어떻게 정해지나요?', a: '기업 규모와 자동화 범위에 따라 달라, 상담 후 최종 견적을 안내드립니다. 표시된 299만원은 시작 기준 금액입니다.' },
       { q: 'AX 풀 패키지와는 무엇이 다른가요?', a: '이 상품은 반복업무 자동화 프로그램 구축에 집중합니다. 전사 업무 프로세스·CRM·ERP·AI Agent까지 통합 설계하는 것은 별도의 AX 풀 패키지에서 상담으로 진행합니다.' },
+      { q: 'AX 결합 성장자금형과는 무엇이 다른가요?', a: '「AX 결합 성장자금형」은 자금조달 전략과 업무혁신(프로토타입·MVP·KPI)을 함께 진행하는 선별형 프로그램입니다. 이 상품은 자금조달 컨설팅이 포함되지 않는 독립 소형 프로젝트로, 기존 고객의 추가 자동화나 핵심 기능 하나만 만드는 경우에 적합합니다.' },
     ],
     visualType: 'mvp',
     imageSrc: '/assets/business-services/ai-ax-system.png',
     notice:
-      '표시 금액(299만원~)은 시작 기준 금액이며, 최종 견적은 기업 규모와 자동화 범위에 따라 상담 후 확정됩니다.',
-    featured: true,
+      '표시 금액(299만원~)은 시작 기준 금액이며, 최종 견적은 기업 규모와 자동화 범위에 따라 상담 후 확정됩니다. 이 상품은 자금조달 컨설팅이 포함되지 않는 독립 소형 프로젝트로, 자금조달 전략과 업무혁신을 함께 진행하는 「AX 결합 성장자금형」과는 별개 상품입니다.',
+    featured: false,
   },
   {
     id: 'ax-full-package',
     slug: 'ax-full-package',
+    tier: 'module',
+    moduleGroup: 'digital',
+    priceModel: 'quote',
+    moduleStatus: ['기업진단 후 견적'],
     category: 'AX 컨설팅',
     badge: '한눈에 관리',
     badgeTone: 'slate',
@@ -307,6 +368,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'welfare-fund',
     slug: 'welfare-fund',
+    tier: 'module',
+    moduleGroup: 'finance',
+    priceModel: 'quote',
+    moduleStatus: ['필요 시 추천', '전문가 연계', '기업진단 후 견적'],
     category: 'AX 컨설팅',
     categoryLabel: '직원 복지·절세',
     badge: '전문가 협업',
@@ -337,6 +402,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'rnd-center',
     slug: 'rnd-center',
+    tier: 'module',
+    moduleGroup: 'tech',
+    priceModel: 'fixed',
+    moduleStatus: ['단독 진행 가능', '기준가 공개', 'AX 참여기업 10% 할인'],
     category: '인증·절세',
     badge: '가점 확보',
     badgeTone: 'slate',
@@ -364,6 +433,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'iso-certification',
     slug: 'iso-certification',
+    tier: 'module',
+    moduleGroup: 'trust',
+    priceModel: 'fixed',
+    moduleStatus: ['단독 진행 가능', '기준가 공개'],
     category: '인증·절세',
     badge: '3종 패키지',
     badgeTone: 'slate',
@@ -396,6 +469,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'mainbiz-certification',
     slug: 'mainbiz-certification',
+    tier: 'module',
+    moduleGroup: 'trust',
+    priceModel: 'from',
+    moduleStatus: ['필요 시 추천', '기준가 공개'],
     category: '인증·절세',
     badge: '가점 확보',
     badgeTone: 'slate',
@@ -422,6 +499,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'innobiz-certification',
     slug: 'innobiz-certification',
+    tier: 'module',
+    moduleGroup: 'tech',
+    priceModel: 'from',
+    moduleStatus: ['필요 시 추천', '기준가 공개'],
     category: '인증·절세',
     badge: '기술혁신',
     badgeTone: 'slate',
@@ -448,6 +529,9 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'growth-roadmap-package',
     slug: 'growth-roadmap-package',
+    tier: 'module',
+    priceModel: 'quote',
+    moduleStatus: ['기업진단 후 견적'],
     category: '풀패키지',
     badge: '대표 상품',
     badgeTone: 'primary',
@@ -495,6 +579,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'provisional-payment',
     slug: 'provisional-payment',
+    tier: 'module',
+    moduleGroup: 'finance',
+    priceModel: 'quote',
+    moduleStatus: ['필요 시 추천', '전문가 연계', '기업진단 후 견적'],
     category: '법인 컨설팅',
     badge: '전문 자격사 협업',
     badgeTone: 'slate',
@@ -524,6 +612,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'retained-earnings',
     slug: 'retained-earnings',
+    tier: 'module',
+    moduleGroup: 'finance',
+    priceModel: 'quote',
+    moduleStatus: ['필요 시 추천', '전문가 연계', '기업진단 후 견적'],
     category: '법인 컨설팅',
     badge: '전문 자격사 협업',
     badgeTone: 'slate',
@@ -553,6 +645,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'business-succession',
     slug: 'business-succession',
+    tier: 'module',
+    moduleGroup: 'finance',
+    priceModel: 'quote',
+    moduleStatus: ['필요 시 추천', '전문가 연계', '기업진단 후 견적'],
     category: '법인 컨설팅',
     badge: '전문 자격사 협업',
     badgeTone: 'slate',
@@ -582,6 +678,10 @@ export const businessPackages: BusinessPackage[] = [
   {
     id: 'spouse-stock-retirement',
     slug: 'spouse-stock-retirement',
+    tier: 'module',
+    moduleGroup: 'finance',
+    priceModel: 'quote',
+    moduleStatus: ['필요 시 추천', '전문가 연계', '기업진단 후 견적'],
     category: '법인 컨설팅',
     badge: '전문 자격사 협업',
     badgeTone: 'slate',

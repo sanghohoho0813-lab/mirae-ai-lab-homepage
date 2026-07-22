@@ -463,6 +463,7 @@ export default function BusinessServicesPage() {
         topicGroups={CONSULT_TOPIC_GROUPS}
         showContactMethod
         showCompanyFields
+        programSelect
       />
     </div>
   )

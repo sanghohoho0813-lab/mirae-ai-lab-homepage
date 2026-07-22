@@ -53,6 +53,8 @@ export type ConsultPayload = {
   source: string
   /** 담긴 상품/선택 옵션/체크 항목 등 (이메일에 표로 표시) */
   context?: ConsultContextRow[]
+  /** 구조화 응답(진행방식·자금계획·AX 문항·동의) — 서버에서 Supabase consult_leads 에 저장 */
+  structured?: Record<string, unknown>
 }
 
 export type ConsultResult = { ok: boolean; message: string }

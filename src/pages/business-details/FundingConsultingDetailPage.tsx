@@ -9,6 +9,7 @@ import FundingCasesSection from '../../components/FundingCasesSection'
 import ConsultModal from '../../components/ConsultModal'
 import { CONSULT_TOPIC_GROUPS, type ConsultContextRow } from '../../lib/consultApi'
 import { getPackageBySlug } from '../../data/businessPackages'
+import { CORE_PROGRAMS, AX_LAUNCH } from '../../data/corePrograms'
 import { paymentsEnabled, paymentsPreparingNotice } from '../../config/commerce'
 
 const pkg = getPackageBySlug('funding-consulting')!
@@ -47,82 +48,66 @@ const trustStats = [
   { value: '0원', label: '성공수수료' },
 ]
 
-// 3가지 진행 방식 — 상품 A/B/C. 금액은 화면 표시용(A 실결제 금액은 서버 카탈로그가 최종 결정).
-// ⚠️ 승인/승인금액 보장 표현 금지. 3%·5% 는 '실제 조달금액' 기준 성과보수(결과 보장 아님).
+// 3가지 진행 방식 — 핵심 프로그램 A/B/C. 정의·가격은 corePrograms.ts 단일 소스에서 파생.
+// (A 실결제 금액은 서버 카탈로그가 최종 결정. 승인/승인금액 보장 표현 금지.)
 type PlanCta = 'buy' | 'inquiry'
 type Plan = {
   key: 'A' | 'B' | 'C'
   name: string
-  label: string // 카드 상단 배지 (성과보수 없음 / 선택형 / 선별 진행)
+  label: string
+  priceTop?: { label: string; value: string }
   priceMain: string
+  priceMainLabel?: string
   priceSub: string
-  points: string[] // 핵심 포함범위 (최대 5개)
-  recommend: string // 카드 하단 추천 대상 한 줄
+  points: string[]
+  recommend: string
   cta: PlanCta
   ctaLabel: string
   featured?: boolean
 }
-const plans: Plan[] = [
-  {
-    key: 'A',
-    name: '기업진단·자금전략 1회 컨설팅',
-    label: '성과보수 없음',
-    priceMain: '500,000원',
-    priceSub: '이 금액으로 종료 가능',
-    points: [
-      '기업 현황·자금 가능성 진단',
-      '우선 검토 기관·자금과 실행 순서 정리',
-      '보완 항목 + 준비자료·체크리스트 안내',
-    ],
-    recommend: 'AI·서류가 익숙하고 정책자금 흐름을 아신다면, 이 진단만으로 충분합니다.',
-    cta: 'buy',
-    ctaLabel: '1회 컨설팅 결제하기',
-  },
-  {
-    key: 'B',
-    name: '자금조달 전부 위임형',
-    label: '선택형',
-    priceMain: '착수금 500,000원',
-    priceSub: '+ 조달액의 3% (선택 시)',
-    points: ['신청·서류·진행 전부 대행', '업계 성공수수료 5~7% 대비 낮은 편', 'AX 프로그램 구축은 미포함'],
-    recommend: '사업이 바빠 직접 하기 어렵거나 AI·서류가 부담이시면, 전 과정을 맡아 드립니다.',
-    cta: 'inquiry',
-    ctaLabel: '전부 위임형 가능성 확인',
-  },
-  {
-    key: 'C',
-    name: 'AX 결합 성장자금형',
-    label: '선별 진행',
-    priceMain: '착수금 500,000원',
-    priceSub: '+ 조달액의 5% · 최대 1,500만원 한도 (선택 시)',
-    points: ['기업진단 · 업종별 비효율 분석', '프로토타입 · 핵심 MVP 구축', '선택적 AI 기능 · 현장 테스트 · 성과 측정'],
-    recommend: '자금을 넘어 AI 자동화까지. 정책자금만 받고 끝나지 않고, 프로그램도 함께 남습니다.',
-    cta: 'inquiry',
-    ctaLabel: 'AX 결합형 적합성 확인',
-    featured: true,
-  },
-]
+const plans: Plan[] = CORE_PROGRAMS.map((p) => ({
+  key: p.key,
+  name: p.name,
+  label: p.label,
+  priceTop: p.priceTop,
+  priceMain: p.priceMain,
+  priceMainLabel: p.priceMainLabel,
+  priceSub: p.priceSub,
+  points: p.points,
+  recommend: p.recommend,
+  cta: p.contract === 'payment' ? 'buy' : 'inquiry',
+  ctaLabel: p.ctaLabel,
+  featured: p.key === 'C',
+}))
 
-// A/B/C 빠른 비교표 — 카드(대상·가격·포함범위)와 역할 분리, 상품 차이만 압축.
-// 시각 우선순위: 1) 500,000원 기본 진단 2) 맡기는 범위 3) 선택형 성과보수 조건. (표 안에는 CTA 없음)
+// A/B/C 빠른 비교표 — 카드(대상·가격·포함범위)와 역할 분리, 상품 차이만 압축. (표 안에는 CTA 없음)
 type CompareCell = string | { main: string; sub: string }
 const compareCols: { key: string; name: string; badge: string; featured?: boolean }[] = [
-  { key: 'A', name: '기본 진단', badge: '성과보수 없음', featured: true },
-  { key: 'B', name: '전부 위임형', badge: '선택형' },
-  { key: 'C', name: 'AX 결합형', badge: '선별 진행' },
+  { key: 'A', name: '기업진단·자금전략', badge: '성과보수 없음', featured: true },
+  { key: 'B', name: '자금조달 실행형', badge: '선택형' },
+  { key: 'C', name: 'AX 결합 성장자금형', badge: '선별 진행' },
 ]
 const compareRows: { label: string; cells: CompareCell[] }[] = [
-  { label: '기본 비용', cells: ['500,000원', '착수금 500,000원', '착수금 500,000원'] },
+  {
+    label: '착수금',
+    cells: [
+      '500,000원',
+      '500,000원',
+      { main: '1,000,000원', sub: '초기 10개사 레퍼런스 구축 참여가 · 정식 운영 예정 착수금 3,000,000원' },
+    ],
+  },
   {
     label: '성과보수',
     cells: [
       { main: '없음', sub: '500,000원으로 종료 가능' },
-      { main: '조달액의 3%', sub: '전체 진행 시' },
-      { main: '조달액의 5%', sub: '최대 1,500만원 한도' },
+      { main: '실제 조달금액의 3%', sub: '전체 진행 선택 시' },
+      { main: '실제 조달금액의 5%', sub: '최대 15,000,000원' },
     ],
   },
-  { label: '맡기는 범위', cells: ['방향·순서 정리', '신청·서류 전체 대행', '전체 진행 + AX 구축'] },
-  { label: '업무자동화·AI', cells: ['—', '미포함', '포함'] },
+  { label: '맡기는 범위', cells: ['방향·순서·전략 정리', '신청 준비·진행 전체', '전체 진행 + AX 구축'] },
+  { label: '업무자동화·AI', cells: ['—', '미포함', '프로토타입·MVP 포함'] },
+  { label: '권장 대상', cells: ['방향 점검 후 직접 진행', '전체 위임 희망 기업', '조달 목표 1억원 이상 성장기업'] },
+  { label: '진행 방식', cells: ['결제 후 바로 진행', '신청·진단 후 계약', '적합성 검토 후 선별 진행'] },
 ]
 
 // 정직한 진행 원칙 3가지 — '아무나 받지 않는' 셀렉티브 포지셔닝 (과장 없이)
@@ -653,11 +638,11 @@ export default function FundingConsultingDetailPage() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-slate-900 text-xs font-black text-white">B</span>
-                <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-slate-900">사업이 바빠 직접 하기 어렵거나 서류가 부담이면</b> — 전부 위임형으로 맡기세요.</p>
+                <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-slate-900">사업이 바빠 직접 하기 어렵거나 서류가 부담이면</b> — 자금조달 실행형으로 맡기세요.</p>
               </li>
               <li className="flex items-start gap-3">
                 <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-blue-600 text-xs font-black text-white">C</span>
-                <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-blue-700">혼자서는 어렵고, 동종 업계보다 앞서가며 자금 그 이상까지 원하시면</b> — AX 결합 성장자금형이 좋습니다.</p>
+                <p className="text-[0.98rem] leading-snug text-slate-700"><b className="text-blue-700">조달 목표금액이 1억원 이상이고, 자금과 함께 실제 업무혁신까지 원하시면</b> — AX 결합 성장자금형이 좋습니다.</p>
               </li>
             </ul>
           </div>
@@ -683,7 +668,13 @@ export default function FundingConsultingDetailPage() {
                 <p className="mt-2 text-[0.92rem] leading-relaxed text-slate-600">{p.recommend}</p>
 
                 <div className="mt-4 border-y border-slate-100 py-4">
-                  <p className={`text-2xl font-black tracking-tight ${p.featured ? 'text-blue-700' : 'text-slate-900'}`}>{p.priceMain}</p>
+                  {p.priceTop && (
+                    <p className="text-[0.78rem] font-semibold text-slate-400">
+                      {p.priceTop.label} <span className="font-bold text-slate-500">{p.priceTop.value}</span>
+                    </p>
+                  )}
+                  {p.priceMainLabel && <p className={`mt-1 text-[0.78rem] font-black ${p.featured ? 'text-blue-600' : 'text-slate-500'}`}>{p.priceMainLabel}</p>}
+                  <p className={`mt-0.5 text-2xl font-black tracking-tight ${p.featured ? 'text-blue-700' : 'text-slate-900'}`}>{p.priceMain}</p>
                   <p className="mt-1 text-sm font-bold text-slate-600">{p.priceSub}</p>
                 </div>
 
@@ -710,17 +701,17 @@ export default function FundingConsultingDetailPage() {
                     <>
                       <button
                         type="button"
-                        onClick={() => openConsult(`${p.key}형 · ${p.name}`)}
+                        onClick={() => openConsult(p.name)}
                         className="flex w-full items-center justify-center rounded-xl bg-amber-400 px-5 py-3.5 text-[0.95rem] font-black text-slate-900 shadow-sm transition-transform hover:-translate-y-0.5"
                       >
-                        1회 컨설팅 신청하기
+                        {p.ctaLabel}
                       </button>
                       <p className="mt-1.5 text-center text-[0.72rem] font-medium text-slate-400">카드결제 준비 중 · 신청 시 결제 방법 안내</p>
                     </>
                   ) : (
                     <button
                       type="button"
-                      onClick={() => openConsult(`${p.key}형 · ${p.name}`)}
+                      onClick={() => openConsult(p.name)}
                       className={`flex w-full items-center justify-center rounded-xl px-5 py-3.5 text-[0.95rem] font-black shadow-sm transition-transform hover:-translate-y-0.5 ${
                         p.featured ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'
                       }`}
@@ -777,9 +768,62 @@ export default function FundingConsultingDetailPage() {
           </div>
 
           <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-relaxed text-slate-400">
-            ※ 성과보수(B 3%·C 5%)는 <b className="text-slate-500">추가 진행을 선택</b>하고 <b className="text-slate-500">실제로 자금이 조달된 경우에만</b> 발생하며, 기본 1회 컨설팅(500,000원)에는 자동으로 붙지 않습니다.
-            조달 성공이나 특정 금액을 보장하지 않으며, 성과보수 발생 시점·조달금액 정의·상한 등 세부 기준은 개별 계약서에서 확정합니다.
+            ※ 성과보수(B 3%·C 5%)는 <b className="text-slate-500">추가 진행을 선택</b>하고 <b className="text-slate-500">실제로 자금이 조달된 경우에만</b> 발생하며, 기업진단·자금전략(500,000원)에는 자동으로 붙지 않습니다.
+            C의 성과보수는 최대 15,000,000원을 상한으로 합니다. 조달 성공이나 특정 금액을 보장하지 않으며, 성과보수 발생 시점·조달금액 정의 등 세부 산정 기준과 지급 시점은 개별 계약서에서 확정합니다.
           </p>
+
+          {/* ── AX 결합 성장자금형 — 초기 10개사 레퍼런스 구축 조건 ────── */}
+          <div className="mx-auto mt-10 max-w-3xl rounded-3xl border-2 border-blue-200 bg-blue-50/50 p-6 sm:p-8">
+            <p className="text-center text-xs font-black uppercase tracking-widest text-blue-600">AX 결합 성장자금형 · 초기 10개사</p>
+            <h3 className="mt-2 text-center text-[1.35rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.6rem]">
+              레퍼런스 구축 참여가로<br className="sm:hidden" /> 진행하는 이유
+            </h3>
+            <p className="mx-auto mt-3 max-w-xl text-center text-[0.95rem] leading-relaxed text-slate-600">
+              1,000,000원은 단순 할인 가격이 아니라 <b className="text-slate-900">초기 10개 기업 레퍼런스 구축 참여가</b>입니다.
+              정식 운영 예정 착수금은 <b className="text-slate-900">3,000,000원</b>이며, 초기 참여 기업의 실제 사용경험과 사례를 함께 만드는 조건으로 참여가가 적용됩니다.
+            </p>
+            <div className="mx-auto mt-5 max-w-xl rounded-2xl bg-white p-4 text-center ring-1 ring-blue-100">
+              <p className="text-[0.92rem] font-bold text-slate-800">{AX_LAUNCH.selection}</p>
+              <p className="mt-1 text-[0.82rem] text-slate-500">진행 순서: {AX_LAUNCH.flow}</p>
+            </div>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl bg-white p-4 ring-1 ring-blue-100">
+                <p className="text-[0.85rem] font-black text-slate-900">참여 조건</p>
+                <ul className="mt-2 space-y-1.5">
+                  {AX_LAUNCH.conditions.map((c) => (
+                    <li key={c} className="flex items-start gap-1.5 text-[0.85rem] leading-snug text-slate-600">
+                      <span className="mt-0.5 shrink-0 font-black text-blue-500" aria-hidden>✓</span>{c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-2xl bg-white p-4 ring-1 ring-blue-100">
+                <p className="text-[0.85rem] font-black text-slate-900">상세 피드백 방식 (하나 이상 선택)</p>
+                <ul className="mt-2 space-y-1.5">
+                  {AX_LAUNCH.feedbackOptions.map((c) => (
+                    <li key={c} className="flex items-start gap-1.5 text-[0.85rem] leading-snug text-slate-600">
+                      <span className="mt-0.5 shrink-0 font-black text-blue-500" aria-hidden>·</span>{c}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2.5 text-[0.78rem] leading-snug text-slate-400">
+                  긍정적인 후기를 요구하지 않습니다. 솔직한 사용경험과 개선 피드백이면 충분하며, 익명 사례 공개 범위는 공개 전에 직접 확인하실 수 있습니다.
+                </p>
+              </div>
+            </div>
+            {/* AX 참여기업 전용 추가 혜택 — 기술기반 모듈 10% */}
+            <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5">
+              <p className="text-[0.85rem] font-black text-amber-800">기술기반을 더 보강해야 한다면 — AX 성장형 참여기업 전용 추가 혜택</p>
+              <p className="mt-1.5 text-[0.85rem] leading-relaxed text-slate-600">
+                AX 시스템만으로 충분한 기업도 있습니다. 추가적인 기술자산과 연구개발 체계가 필요한 기업에는
+                <b className="text-slate-800"> 벤처확인 준비 패키지</b>와 <b className="text-slate-800">기업부설연구소·연구개발전담부서 설립 지원</b>을 각각
+                <b className="text-amber-700"> 정상 진행가격의 10% 할인</b>으로 함께 제안합니다. (자동 포함이 아니며, 진단 후 필요성이 있는 기업에만 추천 · 자금승인 보장 없음)
+              </p>
+            </div>
+            <p className="mx-auto mt-4 max-w-xl text-center text-[0.72rem] leading-relaxed text-slate-400">
+              기본 범위: {AX_LAUNCH.scope.join(' · ')} / 기본 제외: {AX_LAUNCH.excluded.join(' · ')}
+            </p>
+          </div>
 
           {/* AX가 뭔가요 — 인포그래픽 부연 설명 (3번 AX 결합형 이해용) */}
           <div className="mx-auto mt-12 max-w-2xl rounded-3xl border-2 border-blue-100 bg-blue-50/50 p-6 sm:p-8">
@@ -1213,6 +1257,8 @@ export default function FundingConsultingDetailPage() {
         preselectProduct="정책자금 컨설팅"
         showContactMethod
         showCompanyFields
+        programSelect
+        preselectProgram={consult.plan ?? undefined}
         contextRows={
           consult.plan ? ([{ label: '선택 방식', value: consult.plan }] as ConsultContextRow[]) : []
         }

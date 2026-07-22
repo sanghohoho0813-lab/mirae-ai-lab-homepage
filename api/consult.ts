@@ -24,6 +24,52 @@ type ConsultBody = {
   source?: string
   page?: string
   context?: ContextRow[]
+  /** 구조화 응답(진행방식·자금계획·AX 문항·동의) — Supabase consult_leads 저장용 */
+  structured?: Record<string, unknown>
+}
+
+/** 신청 데이터를 Supabase consult_leads 에 저장 (비치명적 — 실패해도 이메일 발송은 계속) */
+async function saveConsultLead(row: {
+  name: string
+  contact: string
+  company: string
+  source: string
+  page: string
+  message: string
+  program: string | null
+  structured: Record<string, unknown> | null
+  context: Array<[string, string]>
+}): Promise<string | null> {
+  try {
+    const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!url || !serviceKey) return null
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabase = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
+    const { data, error } = await supabase
+      .from('consult_leads')
+      .insert({
+        name: row.name,
+        contact: row.contact,
+        company: row.company || null,
+        source: row.source || null,
+        page: row.page || null,
+        message: row.message || null,
+        program: row.program,
+        structured: row.structured,
+        context: row.context.map(([label, value]) => ({ label, value })),
+      })
+      .select('id')
+      .single()
+    if (error) {
+      console.error('[consult] supabase insert error:', detailOf(error))
+      return null
+    }
+    return (data as { id?: string } | null)?.id ?? null
+  } catch (e) {
+    console.error('[consult] supabase save skipped:', detailOf(e))
+    return null
+  }
 }
 
 function detailOf(e: unknown): string {
@@ -80,6 +126,17 @@ export default async function handler(req: any, res: any) {
     const message = (body.message ?? '').trim().slice(0, 2000)
     const source = (body.source ?? '').trim().slice(0, 120)
     const context = normalizeContext(body.context)
+    // 구조화 응답 (크기 제한 — 남용 방지)
+    let structured: Record<string, unknown> | null = null
+    if (body.structured && typeof body.structured === 'object' && !Array.isArray(body.structured)) {
+      try {
+        const raw = JSON.stringify(body.structured)
+        if (raw.length <= 20000) structured = JSON.parse(raw)
+      } catch {
+        structured = null
+      }
+    }
+    const program = structured && typeof structured.program === 'string' ? String(structured.program).slice(0, 80) : null
 
     // 필수: 성함, 연락처
     if (!name || !contact) {
@@ -114,6 +171,19 @@ export default async function handler(req: any, res: any) {
       (req.headers?.referer as string | undefined) ||
       (req.headers?.origin as string | undefined) ||
       (req.headers?.host ? `https://${req.headers.host}` : SITE_NAME)
+
+    // Supabase 저장 (비치명적 — 미설정/실패 시 이메일 발송만 진행)
+    const leadId = await saveConsultLead({
+      name,
+      contact,
+      company,
+      source,
+      page: String(siteUrl).slice(0, 400),
+      message,
+      program,
+      structured,
+      context,
+    })
 
     const rows: Array<[string, string]> = [
       ['성함', name],
@@ -193,7 +263,7 @@ export default async function handler(req: any, res: any) {
 
     return res
       .status(200)
-      .json({ ok: true, message: '상담 신청이 접수되었습니다. 확인 후 빠르게 연락드리겠습니다.', id: data?.id })
+      .json({ ok: true, message: '상담 신청이 접수되었습니다. 확인 후 빠르게 연락드리겠습니다.', id: data?.id, leadId })
   } catch (error) {
     console.error('[consult] unhandled error:', detailOf(error))
     return res.status(500).json({
