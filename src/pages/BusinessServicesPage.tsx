@@ -4,6 +4,7 @@ import HeaderAccount from '../components/account/HeaderAccount'
 import CouponSignupBanner from '../components/CouponSignupBanner'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
+import AxCapabilityShowcase from '../components/AxCapabilityShowcase'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { consultLinks } from '../config/businessInfo'
 import { paymentsEnabled } from '../config/commerce'
@@ -245,7 +246,7 @@ export default function BusinessServicesPage() {
           <p className={eyebrow}>핵심 프로그램</p>
           <h2 className={h2Class}>가장 먼저, 3가지 진행 방식 중에서</h2>
           <p className="mt-3 max-w-2xl text-[1rem] leading-relaxed text-slate-500">
-            자금조달이 시작점입니다. 어디까지 맡길지에 따라 방식이 달라지며, 필요한 기업에는 AX 운영혁신과 성장 모듈을 이어서 제안합니다.
+            자금조달이 시작점입니다. 어디까지 맡길지에 따라 진행 방식이 달라집니다.
           </p>
           <div className="mt-8 grid items-stretch gap-4 lg:grid-cols-3">
             {CORE_PROGRAMS.map((p) => {
@@ -305,6 +306,9 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
+      {/* ── AX 프론트엔드 구현역량 (핵심 프로그램 직후, 비교표 앞) ──── */}
+      <AxCapabilityShowcase onConsult={() => openProgram('AX 결합 성장자금형')} onCompare={() => scrollToId('compare')} />
+
       {/* ── 4. 핵심 프로그램 비교 ─────────────────────────────────── */}
       <section id="compare" className="scroll-mt-16 border-t border-slate-200">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
@@ -359,7 +363,7 @@ export default function BusinessServicesPage() {
           <p className="text-center text-xs font-black uppercase tracking-widest text-teal-300">AX 결합 성장자금형 · 초기 10개사</p>
           <h2 className="mt-2 text-center text-2xl font-black tracking-tight text-white sm:text-[2.1rem]">초기 10개 기업과 실제 AX 사례를 만듭니다</h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-[1rem] leading-relaxed text-slate-300">
-            단순 시연용 화면이 아니라, 실제 업무에서 사용하고 결과를 측정할 수 있는 시스템을 함께 만듭니다.
+            실제 사용경험과 사례를 함께 만드는 참여 프로그램입니다. 가격·참여조건은 아래에서 확인하세요.
           </p>
           {/* 가격·조건 요약 칩 (우선 노출) */}
           <div className="mx-auto mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
@@ -397,7 +401,7 @@ export default function BusinessServicesPage() {
 
       {/* ── 6. 무료 3분 기업 성장진단 ─────────────────────────────── */}
       <section className="border-t border-slate-200 bg-gradient-to-b from-blue-50/60 to-white">
-        <div className="mx-auto max-w-3xl px-5 py-12 text-center sm:px-6 sm:py-16">
+        <div className="mx-auto max-w-3xl px-5 py-10 text-center sm:px-6 sm:py-12">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3.5 py-1.5 text-[0.82rem] font-black text-blue-700">무료 · 비회원 가능 · 3분</span>
           <h2 className="mt-4 text-2xl font-black tracking-tight text-slate-900 sm:text-[2.1rem]">무엇부터 준비할지 먼저 확인해보세요</h2>
           <p className="mx-auto mt-3 max-w-lg text-[1.02rem] leading-relaxed text-slate-600">
