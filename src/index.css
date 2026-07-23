@@ -189,3 +189,14 @@
     margin: 14mm;
   }
 }
+
+/* ── AX 쇼케이스 — 히어로 목업 부유 효과 (아주 약하게) ── */
+@keyframes ax-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.ax-float { animation: ax-float 8s ease-in-out infinite; }
+.ax-float-slow { animation: ax-float 11s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .ax-float, .ax-float-slow { animation: none; }
+}

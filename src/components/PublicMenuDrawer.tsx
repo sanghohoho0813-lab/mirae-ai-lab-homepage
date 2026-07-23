@@ -83,10 +83,10 @@ const BUSINESS_MENU: MenuConfig = {
       heading: '성장 모듈',
       accent: 'violet',
       items: [
-        { no: '1', label: '기술·혁신 기반', to: '/business-services?group=tech' },
-        { no: '2', label: '경영·대외 신뢰', to: '/business-services?group=trust' },
-        { no: '3', label: '디지털 실행', to: '/business-services?group=digital' },
-        { no: '4', label: '재무·전문가 연계', to: '/business-services?group=finance' },
+        { no: '1', label: '기술·혁신 기반', to: '/business-services#module-innovation' },
+        { no: '2', label: '경영·대외 신뢰', to: '/business-services#module-trust' },
+        { no: '3', label: '디지털 실행', to: '/business-services#module-digital' },
+        { no: '4', label: '재무·전문가 연계', to: '/business-services#module-finance' },
       ],
     },
     {
