@@ -14,6 +14,7 @@ import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { FLAGSHIP, BUILD_LEVELS, levelTotalLabel, PROGRAM_NOTICES, type BuildLevel } from '../data/corePrograms'
 import { businessPackages, type ModuleGroup } from '../data/businessPackages'
 import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
+import { FUNDING_TARGET, REFERENCE_PROGRAM_STATUS as REF } from '../data/policyFunding2026'
 
 // 중소기업 대표용 메인 페이지 (모바일 우선). 대표상품 1개 + 공개 구현 1~4단계(+5단계 별도견적).
 // 순서: Hero → AX SHOWCASE → 2026 AX → 대표 프로그램 → 1~4단계 → 진행방식 → 분리발주 비교 → 진행현황 → 성장모듈 → 대표자 → FAQ → CTA
@@ -74,7 +75,7 @@ function scrollToId(id: string) {
 // 구현 단계 카드(선택된 단계 상세)
 function LevelDetail({ l }: { l: BuildLevel }) {
   return (
-    <div className={`rounded-2xl border-2 bg-white p-5 sm:p-6 ${l.recommended ? 'border-slate-800 shadow-xl shadow-slate-900/10' : 'border-slate-200 shadow-sm'}`}>
+    <div className={`rounded-2xl border-2 bg-white p-4 sm:p-5 ${l.recommended ? 'border-slate-800 shadow-xl shadow-slate-900/10' : 'border-slate-200 shadow-sm'}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-[1.15rem] font-black tracking-tight text-slate-900">{l.name}</p>
         {l.recommended && <span className="rounded-full bg-slate-900 px-2.5 py-1 text-[0.72rem] font-black text-teal-300">미래AI랩 권장 최종 목표</span>}
@@ -197,7 +198,7 @@ export default function BusinessServicesPage() {
   const saveReturn = (cardId: string) => saveBusinessReturn(cardId)
 
   return (
-    <div className="min-h-screen bg-white pb-20 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
+    <div className="min-h-screen bg-white pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
@@ -248,23 +249,23 @@ export default function BusinessServicesPage() {
       {/* S4. 하나의 대표 프로그램 (#program) */}
       <section id="program" className="scroll-mt-16 border-t border-slate-200 bg-white">
         <span id="programs" aria-hidden className="block h-0 scroll-mt-24" />
-        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
           <p className={eyebrow}>하나의 대표 프로그램</p>
           <h2 className={h2Class}>{FLAGSHIP.name}</h2>
           <p className="mt-2.5 max-w-2xl text-[1.02rem] leading-relaxed text-slate-600">{FLAGSHIP.tagline}</p>
-          <div className="mt-5 grid gap-5 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-            <div className="rounded-3xl border-2 border-blue-500 bg-white p-6 shadow-sm sm:p-7">
+          <div className="mt-4 grid gap-5 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+            <div className="rounded-3xl border-2 border-blue-500 bg-white p-5 shadow-sm sm:p-6">
               <p className="text-[0.8rem] font-bold text-slate-400">메인 가격</p>
               <p className="mt-0.5 text-[1.7rem] font-black tracking-tight text-blue-700 sm:text-[2rem]">{FLAGSHIP.priceMain}</p>
               <p className="mt-1.5 text-[0.92rem] font-bold text-slate-600">{FLAGSHIP.priceSub}</p>
               <p className="mt-4 border-l-2 border-teal-500 pl-3.5 text-[0.95rem] font-black leading-snug text-slate-900">{FLAGSHIP.collabLine}</p>
               <p className="mt-2.5 text-[0.88rem] leading-relaxed text-slate-500">자금전략과 개발을 서로 다른 업체에 전달하지 않아, 사업 구조와 실제 구현 사이의 차이를 줄입니다. 기업진단부터 자금전략, AX 화면설계와 본개발까지 하나의 흐름으로 진행합니다.</p>
-              <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                 <Link to="/business-services/funding-consulting" className="flex flex-1 items-center justify-center rounded-xl bg-blue-600 px-5 py-3.5 text-[0.95rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-700">전체 비용·단계 자세히 보기</Link>
                 <button type="button" onClick={openProgram} className="flex flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3.5 text-[0.95rem] font-black text-slate-700 transition-colors hover:bg-slate-50">상담 신청</button>
               </div>
             </div>
-            <div className="rounded-2xl bg-slate-900 p-6 text-white sm:p-7">
+            <div className="rounded-2xl bg-slate-900 p-5 text-white sm:p-6">
               <p className="text-[0.82rem] font-black uppercase tracking-widest text-teal-300">비용 구조 한눈에</p>
               <dl className="mt-3 space-y-2">
                 {[
@@ -287,15 +288,78 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
+      {/* S4b. 자금조달 목표 (#funding-target) */}
+      <section id="funding-target" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
+          <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+            <div>
+              <p className={eyebrow}>자금조달 목표</p>
+              <h2 className={h2Class}>{FUNDING_TARGET.title}</h2>
+              <div className="mt-4 space-y-2.5">
+                <p className="flex items-baseline gap-2 text-[1.4rem] font-black tracking-tight text-blue-700 sm:text-[1.7rem]">{FUNDING_TARGET.main}</p>
+                <p className="text-[0.98rem] font-bold text-slate-700">{FUNDING_TARGET.sub}</p>
+                <p className="text-[0.9rem] text-slate-500">{FUNDING_TARGET.more}</p>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+              <ul className="space-y-2">
+                {FUNDING_TARGET.detail.map((d) => <li key={d} className="flex items-start gap-2 text-[0.9rem] leading-relaxed text-slate-600"><span aria-hidden className="mt-0.5 shrink-0 text-blue-500">·</span>{d}</li>)}
+              </ul>
+              <div className="mt-3 space-y-1 rounded-xl bg-amber-50 px-4 py-3">
+                {FUNDING_TARGET.notices.map((n) => <p key={n} className="text-[0.8rem] leading-relaxed text-amber-800">{n}</p>)}
+              </div>
+            </div>
+          </div>
+          {/* 업력이 짧은 기업 메시지 */}
+          <details className="group mt-4 rounded-2xl border border-slate-200 bg-white">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5 text-[0.95rem] font-black text-slate-800">
+              {FUNDING_TARGET.earlyStage.title}
+              <span aria-hidden className="shrink-0 text-slate-400 transition-transform group-open:rotate-180">▾</span>
+            </summary>
+            <div className="border-t border-slate-100 px-4 py-3.5">
+              {FUNDING_TARGET.earlyStage.body.map((b) => <p key={b} className="mb-1.5 text-[0.88rem] leading-relaxed text-slate-600">{b}</p>)}
+              <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-[0.82rem] leading-relaxed text-slate-500">{FUNDING_TARGET.earlyStage.notice}</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      {/* S4c. 초기 레퍼런스와 신뢰구조 (#references) */}
+      <section id="references" className="scroll-mt-16 border-t border-slate-200 bg-white">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
+          <p className={eyebrow}>초기 레퍼런스와 신뢰</p>
+          <h2 className={h2Class}>완료된 승인사례가 쌓이기 전인데, 무엇을 믿고 시작할 수 있나요?</h2>
+          <p className="mt-2.5 max-w-2xl text-[0.98rem] leading-relaxed text-slate-500">미래AI랩은 아직 확보하지 않은 결과를 먼저 약속하지 않습니다. 대신 고객의 초기 위험과 제공 결과물을 명확히 공개합니다.</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { t: '초기 위험 제한', d: '큰 개발비가 아니라 컨설팅비 100만원으로 시작합니다.' },
+              { t: '14영업일 산출물', d: '자금전략, 업무 흐름도와 화면 초안을 확인할 수 있습니다.' },
+              { t: '확인 후 결정', d: '1단계 결과물을 본 뒤 본개발 여부를 선택합니다.' },
+              { t: '적합기업 선별', d: '모든 신청기업을 무조건 진행하지 않습니다.' },
+            ].map((x, i) => (
+              <div key={x.t} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <span aria-hidden className="text-[0.9rem] font-black text-blue-600">0{i + 1}</span>
+                <p className="mt-1 text-[1rem] font-black leading-snug text-slate-900">{x.t}</p>
+                <p className="mt-1.5 text-[0.86rem] leading-relaxed text-slate-600">{x.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 space-y-1 rounded-xl bg-slate-100 px-4 py-3 text-[0.82rem] leading-relaxed text-slate-500">
+            <p>미래AI랩의 귀책으로 약정한 1단계 산출물을 제공하지 못한 경우 컨설팅비를 반환합니다.</p>
+            <p>산출물 제공 이후 고객 사정으로 중단하는 경우 계약기준에 따라 정산합니다. 자금조달 결과와 지원금액은 보장하지 않습니다.</p>
+          </div>
+        </div>
+      </section>
+
       {/* S5. 1~4단계 구현수준 (#build-levels) */}
       <section id="build-levels" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
           <p className={eyebrow}>공개 구현 수준</p>
           <h2 className={h2Class}>1단계 설계부터 4단계 업무사용형 MVP까지</h2>
           <p className="mt-2.5 max-w-2xl text-[0.98rem] leading-relaxed text-slate-500">아래 단계는 기능 범위를 이해하기 쉽도록 구분한 미래AI랩 자체 구현 수준 기준입니다. 기업진단과 자금검토는 모든 프로젝트의 선행 업무로 진행됩니다.</p>
 
           {/* 단계 탭 */}
-          <div role="tablist" aria-label="구현 단계" className="mt-5 grid grid-cols-4 gap-1.5 rounded-2xl border border-slate-200 bg-white p-1.5 sm:max-w-2xl">
+          <div role="tablist" aria-label="구현 단계" className="mt-4 grid grid-cols-4 gap-1.5 rounded-2xl border border-slate-200 bg-white p-1.5 sm:max-w-2xl">
             {LEVELS_1_4.map((l) => {
               const on = l.key === levelKey
               return (
@@ -308,10 +372,10 @@ export default function BusinessServicesPage() {
             })}
           </div>
 
-          <div className="mt-4"><LevelDetail l={level} /></div>
+          <div className="mt-3.5"><LevelDetail l={level} /></div>
 
           {/* 단계별 가격·총액 표 */}
-          <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <div className="mt-3.5 overflow-hidden rounded-2xl border border-slate-200 bg-white">
             <div className="grid grid-cols-[1.3fr_1fr_1fr] bg-slate-100 px-3 py-2 text-[0.74rem] font-black text-slate-500 sm:px-4">
               <span>단계</span><span className="text-right">개발비</span><span className="text-right">총액 (VAT 별도)</span>
             </div>
@@ -350,19 +414,55 @@ export default function BusinessServicesPage() {
       {/* S6. 진행 방식 (#process) */}
       <AxProcessSection />
 
+      {/* S6b. 자금조달 전·후 제공 결과물 (#deliverables) */}
+      <section id="deliverables" className="scroll-mt-16 border-t border-slate-200 bg-white">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
+          <p className={eyebrow}>실제 제공 결과물</p>
+          <h2 className={h2Class}>심사에 쓰고 버리는 화면이 아닙니다.</h2>
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            {/* 자금조달 전 */}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[0.82rem] font-black uppercase tracking-wide text-slate-500">자금조달 전 제공 결과물</p>
+              <ul className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5">
+                {['기업·재무 진단 요약', '기관별 가능성 검토', '주력 자금선정·우선순위', '현재·개선 업무흐름', '핵심 기능목록·화면목록', '화면 초안 3~5개', '특허 아이디어 구조', '사업계획 핵심논리', '기술·사업성 설명자료', '자금 사용계획', '예상질문과 답변', '부결사유 검토·핵심자료 수정 1회'].map((it) => (
+                  <li key={it} className="flex items-start gap-1.5 text-[0.85rem] leading-snug text-slate-600"><span aria-hidden className="mt-0.5 text-blue-500">✓</span>{it}</li>
+                ))}
+              </ul>
+            </div>
+            {/* 자금조달 후 */}
+            <div className="rounded-2xl border-2 border-blue-500 bg-blue-50/40 p-4">
+              <p className="text-[0.82rem] font-black uppercase tracking-wide text-blue-700">자금조달 후 제공 결과물</p>
+              <div className="mt-3 space-y-3">
+                {[
+                  { lv: '2단계', items: ['클릭형 프로토타입', '샘플 데이터', '반응형 화면', '배포 URL'] },
+                  { lv: '3단계', items: ['로그인·데이터베이스', '핵심 업무 1개', '기본 관리자', '등록·조회·수정'] },
+                  { lv: '4단계', items: ['사용자 권한·핵심 업무 최대 2개', '관리자 대시보드·검색·필터', '기본통계·보고서', '직원 운영테스트·오류보수'] },
+                ].map((b) => (
+                  <div key={b.lv} className="rounded-xl bg-white px-3.5 py-2.5">
+                    <p className="text-[0.82rem] font-black text-slate-900">{b.lv}</p>
+                    <p className="mt-0.5 text-[0.83rem] leading-snug text-slate-600">{b.items.join(' · ')}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <p className="mt-3 rounded-xl bg-slate-900 px-5 py-3.5 text-[0.92rem] font-bold leading-snug text-white">심사에 쓰고 버리는 화면이 아니라, 자금조달 이후 실제 업무에 연결하는 것을 목표로 합니다.</p>
+        </div>
+      </section>
+
       {/* S7. 분리발주 비교 */}
       <section id="compare" className="scroll-mt-16 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
           <p className={eyebrow}>비교</p>
           <h2 className={h2Class}>자금컨설팅과 개발을 따로 맡길 때와 무엇이 다른가요?</h2>
-          <div className="mt-5 grid gap-3 lg:grid-cols-2">
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5">
+          <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
               <p className="text-[0.82rem] font-black text-slate-500">일반적인 분리발주 방식</p>
               <ul className="mt-3 space-y-1.5">
                 {OUTSOURCE.map((it) => <li key={it} className="flex items-start gap-2 text-[0.9rem] leading-snug text-slate-500"><span aria-hidden className="mt-0.5 text-slate-300">○</span>{it}</li>)}
               </ul>
             </div>
-            <div className="rounded-2xl border-2 border-blue-500 bg-blue-50/40 p-5">
+            <div className="rounded-2xl border-2 border-blue-500 bg-blue-50/40 p-4">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-[0.82rem] font-black text-blue-700">미래AI랩 런칭 프로그램</p>
                 <span className="rounded-full bg-blue-600 px-2.5 py-1 text-[0.7rem] font-black text-white">초기 레퍼런스 런칭 가격</span>
@@ -379,28 +479,41 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* S8. 현재 진행현황 (#status) */}
-      <section id="status" className="scroll-mt-16 border-t border-slate-800 bg-slate-900">
-        <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6 sm:py-9">
-          <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+      {/* S8. 현재 진행 프로젝트 (#projects) */}
+      <section id="projects" className="scroll-mt-16 border-t border-slate-800 bg-slate-900">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
+          <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-sm font-bold uppercase tracking-widest text-teal-300">현재 진행현황</p>
-              <h2 className="mt-2 text-[1.5rem] font-black leading-snug tracking-tight text-white sm:text-[1.8rem]">초기 레퍼런스 프로젝트를 진행하고 있습니다.</h2>
-              <p className="mt-2.5 text-[0.98rem] leading-relaxed text-slate-300">자금전략, 업종별 AX 실행설계와 기관 설명자료를 함께 준비하고 있습니다.</p>
-              <p className="mt-3 text-[0.82rem] leading-relaxed text-slate-400">현재 진행 단계의 프로젝트이며 자금승인 완료 사례를 의미하지 않습니다. 확정된 결과는 실제 증빙을 확보한 순서대로 공개합니다.</p>
+              <p className="text-sm font-bold uppercase tracking-widest text-teal-300">현재 진행 프로젝트</p>
+              <h2 className="mt-2 text-[1.5rem] font-black leading-snug tracking-tight text-white sm:text-[1.9rem]">현재 첫 AX 결합 레퍼런스를 만들고 있습니다.</h2>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-              <p className="text-[0.82rem] font-bold text-slate-400">2026년 7월 24일 기준</p>
-              <p className="mt-1 flex items-baseline gap-1.5 text-white"><span className="text-[2.4rem] font-black leading-none tracking-tight text-teal-300">3</span><span className="text-[1.1rem] font-bold text-slate-400">개 기업 진행 중</span></p>
-              <p className="mt-3 text-[0.82rem] leading-relaxed text-slate-500">초기 레퍼런스 프로젝트 진행 중</p>
+            <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2.5">
+              <span className="text-[2rem] font-black leading-none text-teal-300">{REF.activeProjects}</span>
+              <span className="text-[0.86rem] font-bold leading-tight text-slate-300">/ 전체 {REF.totalSlots}개사<br /><span className="text-slate-500">추가 {REF.remainingSlots}개사 선별</span></span>
             </div>
           </div>
+          <p className="mt-2.5 max-w-2xl text-[0.94rem] leading-relaxed text-slate-300">실제 프로젝트 수행 가능 범위에 맞춰 추가 {REF.remainingSlots}개 기업만 선별합니다. ({REF.asOf.replace(/-/g, '.')} 기준)</p>
+          {/* 익명 프로젝트 카드 3개 — 확인된 공통 진행 상태만 표시 */}
+          <div className="mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 lg:grid lg:grid-cols-3 lg:overflow-visible">
+            {[
+              { label: '진행기업 A', stage: '자금전략 수립 · AX 적용업무 선정' },
+              { label: '진행기업 B', stage: '업무 흐름 설계 · 화면 제작' },
+              { label: '진행기업 C', stage: '기업자료 검토 · 기관 설명자료 준비' },
+            ].map((p) => (
+              <div key={p.label} className="w-[80%] shrink-0 snap-start rounded-2xl border border-white/10 bg-white/[0.04] p-4 lg:w-auto">
+                <span className="inline-block rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.72rem] font-black text-teal-200">진행 중</span>
+                <p className="mt-2.5 text-[1.02rem] font-black text-white">{p.label}</p>
+                <p className="mt-1.5 text-[0.86rem] leading-relaxed text-slate-400">{p.stage}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3.5 text-[0.8rem] leading-relaxed text-slate-500">현재 진행 단계이며 자금승인 완료 사례를 의미하지 않습니다. 고객사명과 세부정보는 동의 없이 공개하지 않으며, 승인결과는 실제 증빙 확보 후 공개합니다.</p>
         </div>
       </section>
 
       {/* S9. 성장 모듈 (#growth-modules) */}
       <section id="growth-modules" className="scroll-mt-16 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-10">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
           <p className="text-[0.8rem] font-semibold text-slate-400">프로그램은 자금조달과 AX의 진행 방식이고, 성장 모듈은 기업진단 결과에 따라 연결하는 실행 항목입니다.</p>
           <h2 className="mt-1.5 text-[1.4rem] font-black tracking-tight text-slate-900 sm:text-[1.6rem]">필요한 인증과 지원제도는 성장 순서에 맞게 연결합니다.</h2>
           <p className="mt-1.5 max-w-2xl text-[0.94rem] leading-relaxed text-slate-500">모든 기업에 모든 인증이 필요한 것은 아닙니다. 자금 목적, 기술성, 고용계획과 성장단계를 확인한 뒤 필요한 항목만 연결합니다.</p>
@@ -408,7 +521,7 @@ export default function BusinessServicesPage() {
             {GROWTH_MODULES.map((m, i) => <ModuleGroupCard key={m.id} m={m} defaultOpen={i === 0} onNav={saveReturn} />)}
           </div>
           {GROWTH_MODULES.map((m) => <span key={m.id} id={m.id} aria-hidden className="block h-0 scroll-mt-24" />)}
-          <div className="mt-5 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-4 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="max-w-2xl text-[0.78rem] leading-relaxed text-slate-400">일부 업무는 세무사·노무사·변호사·변리사 등 외부 전문가 검토 또는 연계가 필요할 수 있습니다.</p>
             <Link to="/business-diagnosis" className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-5 py-2.5 text-[0.9rem] font-black text-white transition-transform hover:-translate-y-0.5">
               기업진단으로 필요한 항목 확인하기 <span aria-hidden>→</span>
@@ -419,7 +532,7 @@ export default function BusinessServicesPage() {
 
       {/* S10. 대표자 메시지 */}
       <section id="leader" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
+        <div className="mx-auto max-w-6xl px-5 py-6 sm:px-6 sm:py-8">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex items-center gap-3">
               <span aria-hidden className="grid h-12 w-12 place-items-center rounded-full bg-slate-900 text-lg font-black text-teal-300">대표</span>
@@ -428,12 +541,12 @@ export default function BusinessServicesPage() {
                 <p className="text-[1.05rem] font-black tracking-tight text-slate-900">미래 AI 랩 · 미래경영지원센터</p>
               </div>
             </div>
-            <div className="mt-5 space-y-3 text-[1rem] leading-relaxed text-slate-700">
+            <div className="mt-4 space-y-3 text-[1rem] leading-relaxed text-slate-700">
               <p>기존에는 자금조달 중심으로 기업을 도왔습니다. 하지만 현장에서는 사업계획서만으로 기업의 실행력을 충분히 설명하기 어려운 경우가 많았습니다.</p>
               <p>그래서 이제는 자금을 신청하는 것에서 멈추지 않고, 실제 업무 흐름과 화면, 필요한 경우 작동형 MVP까지 함께 만듭니다. 자금 컨설턴트와 개발 담당자가 처음부터 같은 프로젝트로 참여합니다.</p>
               <p className="font-bold text-slate-900">처음부터 완벽하다고 말하지 않겠습니다. 현재 실제 기업들과 결과를 만들고 있으며, 확인된 성과를 하나씩 투명하게 공개하겠습니다.</p>
             </div>
-            <Link to="/business-diagnosis" className="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-5 py-3 text-[0.92rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-700">
+            <Link to="/business-diagnosis" className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-5 py-3 text-[0.92rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-700">
               우리 회사 방향 진단하기 <span aria-hidden>→</span>
             </Link>
           </div>
@@ -442,10 +555,10 @@ export default function BusinessServicesPage() {
 
       {/* S11. FAQ (#faq) */}
       <section id="faq" className="scroll-mt-16 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-3xl px-5 py-9 sm:px-6 sm:py-10">
+        <div className="mx-auto max-w-3xl px-5 py-6 sm:px-6 sm:py-8">
           <p className={eyebrow}>자주 묻는 질문</p>
           <h2 className={h2Class}>대표님들이 자주 묻는 질문</h2>
-          <div className="mt-5 space-y-2.5">
+          <div className="mt-4 space-y-2.5">
             {homeFaqs.map((f) => (
               <details key={f.q} className="group rounded-2xl border border-slate-200 bg-slate-50 open:bg-white">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5 text-[0.98rem] font-bold text-slate-900">

@@ -452,7 +452,7 @@ export default function ConsultModal({
       {isAx && (
         <>
           <p className="mt-2.5 rounded-lg bg-white px-3 py-2 text-[0.78rem] leading-relaxed text-slate-500 ring-1 ring-blue-100">
-            컨설팅비 100만원으로 기업분석·자금전략·AX 실행설계를 먼저 진행하고, 본개발비는 자금조달 후 선택한 구현 수준에 따라 정산합니다. 신청 시 결제가 이뤄지지 않습니다.
+            컨설팅비 100만원으로 기업분석·자금전략·AX 실행설계를 먼저 진행하고, 본개발비는 자금조달 후 선택한 구현 수준에 따라 정산합니다. 자금조달 결과와 금액은 기관심사에 따라 달라지며, 상담접수만으로 비용이 발생하지 않습니다. 유료 컨설팅은 적합성 검토 후 별도 계약과 결제로 시작합니다.
           </p>
           <div className="mt-3">
             <p className="mb-1.5 text-[0.82rem] font-semibold text-slate-500">희망 구현단계 <span className="font-normal text-slate-400">(선택 · 진단 후 결정 가능)</span></p>

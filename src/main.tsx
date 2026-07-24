@@ -2,6 +2,16 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './index.css'
+
+// 빌드 메타데이터를 <html> dataset 에 기록(배포 커밋 확인용, 비노출)
+try {
+  const el = document.documentElement
+  el.dataset.buildCommit = __BUILD_COMMIT__
+  el.dataset.buildBranch = __BUILD_BRANCH__
+  el.dataset.buildTime = __BUILD_TIME__
+} catch {
+  /* noop */
+}
 import App from './App.tsx'
 import { AuthProvider } from './lib/auth'
 import LoginPage from './pages/LoginPage'

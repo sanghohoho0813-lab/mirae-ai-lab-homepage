@@ -348,3 +348,131 @@ export const AX_TRANSFORM_ASIDE = {
   construction: v2(85, 'construction-admin', 'land', '건설 현장관리 관리자 화면 보조 예시', '건설 현장관리'),
   reservation: v2(86, 'reservation-transform', 'land', '예약·고객관리 CRM 전환 화면 보조 예시', '예약·고객관리'),
 }
+
+// ══════════════════════════════════════════════════════════════════════════
+// AX SHOWCASE CATALOG — 통합 쇼케이스(사진 1~110) 단일 소스.
+// 신규 8개 브랜드(NEW_INDUSTRIES) + 기존 6개 업종(AX_INDUSTRY_TABS)을 한 배열로.
+// 화면종류 키: integrated(통합) · desktop/admin(관리자·PC) · mobile/field(현장·모바일).
+// 실제 이미지가 있는 키만 포함한다. (준비된 화면 없음 → 카드 세그먼트 disabled)
+// ══════════════════════════════════════════════════════════════════════════
+
+export type ScreenTypeKey = 'integrated' | 'desktop' | 'admin' | 'mobile' | 'field'
+export type ShowcaseCatalogImages = Partial<Record<ScreenTypeKey, ShowcaseImg>>
+export type ShowcaseCatalogEntry = {
+  id: string
+  solutionName: string
+  brandName: string
+  category: string
+  description: string
+  features: string[]
+  images: ShowcaseCatalogImages
+  photoNumbers: number[]
+  prototypeType: string
+  sourceType: 'new' | 'legacy'
+}
+
+/** 신규 브랜드 category(브랜드 label 기반, 병원·의원/학원·교육은 고객서비스로 통합) */
+const NEW_CATEGORY: Record<string, string> = {
+  staydeck: '숙박·호텔',
+  garageos: '자동차 정비',
+  fieldcare: '시설관리',
+  siteflow: '건설·현장',
+  storepulse: '외식·프랜차이즈',
+  careflow: '고객서비스',
+  classpilot: '고객서비스',
+  leaseflow: '임대·건물관리',
+}
+/** 기존 6개 업종 category(스펙 매핑) */
+const LEGACY_CATEGORY: Record<string, string> = {
+  mfg: '생산·제조',
+  wms: '물류·유통',
+  reservation: '예약·CRM',
+  rnd: '연구소·R&D',
+  b2b: 'B2B·영업',
+  equip: '기업운영',
+}
+
+/** 신규 브랜드 → 카탈로그 엔트리 (integrated=대표, desktop=PC, mobile=모바일) */
+function newCatalogEntry(ind: ShowcaseIndustry): ShowcaseCatalogEntry {
+  const images: ShowcaseCatalogImages = { integrated: ind.representative }
+  const photoNumbers = [ind.representative.no]
+  if (ind.pc) {
+    images.desktop = ind.pc
+    photoNumbers.push(ind.pc.no)
+  }
+  if (ind.mobile) {
+    images.mobile = ind.mobile
+    photoNumbers.push(ind.mobile.no)
+  }
+  return {
+    id: ind.key,
+    solutionName: ind.brand,
+    brandName: ind.brand,
+    category: NEW_CATEGORY[ind.key] ?? ind.label,
+    description: ind.desc,
+    features: ind.features,
+    images,
+    photoNumbers,
+    prototypeType: ind.prototypeLevel,
+    sourceType: 'new',
+  }
+}
+
+/** 기존 이미지들을 화면종류 슬롯으로 분배(첫 번째=통합, 나머지는 데스크톱/모바일 성격에 맞춰 truthful 배치) */
+function legacyCatalogImages(imageNos: number[]): ShowcaseCatalogImages {
+  const [first, ...rest] = imageNos
+  const images: ShowcaseCatalogImages = { integrated: legacy(first) }
+  const deskSlots: ScreenTypeKey[] = ['desktop', 'admin']
+  const mobileSlots: ScreenTypeKey[] = ['mobile', 'field']
+  let di = 0
+  let mi = 0
+  for (const no of rest) {
+    const im = AX_IMAGES[no]
+    const mobileLike = im.screen.includes('모바일') || im.h > im.w
+    if (mobileLike) {
+      const slot = mobileSlots[mi] ?? deskSlots[di]
+      if (mobileSlots[mi]) mi += 1
+      else di += 1
+      images[slot] = legacy(no)
+    } else {
+      const slot = deskSlots[di] ?? mobileSlots[mi]
+      if (deskSlots[di]) di += 1
+      else mi += 1
+      images[slot] = legacy(no)
+    }
+  }
+  return images
+}
+
+/** 기존 업종 탭 → 카탈로그 엔트리 */
+function legacyCatalogEntry(t: AxIndustryTab): ShowcaseCatalogEntry {
+  const first = t.imageNos[0]
+  return {
+    id: `legacy-${t.key}`,
+    solutionName: t.label,
+    brandName: '',
+    category: LEGACY_CATEGORY[t.key] ?? t.label,
+    description: t.desc,
+    features: ax(first).features,
+    images: legacyCatalogImages(t.imageNos),
+    photoNumbers: [...t.imageNos],
+    prototypeType: ax(first).level === '작동형 화면 예시' ? '작동형 화면 예시' : '클릭형 프론트엔드 프로토타입',
+    sourceType: 'legacy',
+  }
+}
+
+const NEW_BY_KEY = new Map(NEW_INDUSTRIES.map((i) => [i.key, i] as const))
+const NEW_CATALOG = AX_QUICKNAV_KEYS.map((k) => NEW_BY_KEY.get(k)).filter((i): i is ShowcaseIndustry => Boolean(i)).map(newCatalogEntry)
+const LEGACY_CATALOG = AX_INDUSTRY_TABS.map(legacyCatalogEntry)
+
+/** 통합 쇼케이스 단일 소스 — 신규 8 + 기존 6 = 14 엔트리 */
+export const AX_SHOWCASE_CATALOG: ShowcaseCatalogEntry[] = [...NEW_CATALOG, ...LEGACY_CATALOG]
+
+/** 필터 우선순위(존재하는 category만 노출, 목록 밖 category는 뒤에 append) */
+const FILTER_PRIORITY = ['숙박·호텔', '자동차 정비', '시설관리', '건설·현장', '생산·제조', '물류·유통', '연구소·R&D', 'B2B·영업', '예약·CRM', '고객서비스', '기업운영']
+const PRESENT_CATEGORIES = new Set(AX_SHOWCASE_CATALOG.map((e) => e.category))
+export const AX_SHOWCASE_FILTERS: string[] = [
+  '전체',
+  ...FILTER_PRIORITY.filter((c) => PRESENT_CATEGORIES.has(c)),
+  ...[...PRESENT_CATEGORIES].filter((c) => !FILTER_PRIORITY.includes(c)),
+]

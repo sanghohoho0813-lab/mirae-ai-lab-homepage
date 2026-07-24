@@ -409,8 +409,11 @@ export const AX_LAUNCH = {
 
 // ── 공통 신청폼 — 진행방식·조건부 문항 상수 ────────────────────────────────
 // 대표상품은 단일(AX 사업화·자금조달 프로그램). 구현단계 선택은 선택사항(진단 후 결정 가능).
-export const PROGRAM_CHOICES = ['AX 사업화·자금조달 프로그램', '아직 구현수준을 모르겠음'] as const
+export const PROGRAM_CHOICES = ['AX 사업화·자금조달 프로그램', '초기 레퍼런스 참여 검토', '구현단계 상담', '진단 후 결정'] as const
 export type ProgramChoice = (typeof PROGRAM_CHOICES)[number]
+
+/** 상담 모달 — 자금목표(희망금액, 보장금액 아님) */
+export const FUNDING_TARGET_CHOICES = ['1억원 미만', '1억원 이상', '2억원 이상', '3억원 이상', '진단 후 결정'] as const
 
 /** 상담 모달 — 선택형 구현단계(선택사항). 4단계에 권장 표시 */
 export const BUILD_LEVEL_CHOICES = [
