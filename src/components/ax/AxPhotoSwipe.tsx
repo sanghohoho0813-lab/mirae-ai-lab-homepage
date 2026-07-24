@@ -113,7 +113,7 @@ export default function AxPhotoSwipe({
             zIndex: '10',
             transition: 'opacity .5s ease',
           })
-          el.textContent = '두 손가락으로 확대하거나 두 번 눌러 자세히 확인하세요.'
+          el.textContent = '핀치 또는 더블탭으로 확대해서 확인해보세요.'
           window.setTimeout(() => {
             el.style.opacity = '0'
           }, 3000)
