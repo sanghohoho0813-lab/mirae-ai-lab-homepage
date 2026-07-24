@@ -22,11 +22,11 @@ const DETAIL = '/business-services/funding-consulting'
 
 // 최종 제공 결과물(이미지 중심 5개)
 const DELIVERABLES = [
-  { t: '자금조달 전략', d: '신청기관, 목표금액과 자금사용계획', img: '/ax-showcase/design-direction/photo-68-design-direction.webp' },
+  { t: '자금조달 전략', d: '신청기관, 목표금액과 자금사용계획', img: '/ax-showcase/b2b-order/photo-67-b2b-scope.webp' },
   { t: 'AX 업무 흐름도', d: '현재 업무와 개선 업무를 한눈에 정리', img: '/ax-showcase/equipment-platform/photo-84-equiplink-flow.webp' },
   { t: '실제 화면 초안', d: '사업계획을 눈으로 확인할 수 있는 화면', img: '/ax-showcase-v2/photo-104-staydeck-showcase.webp' },
   { t: '시연형·작동형 MVP', d: '선택한 구현단계에 따른 실제 시스템', img: '/ax-showcase/b2b-order/photo-65-b2b-admin-dashboard.webp' },
-  { t: '심사 설명자료·특허 연계', d: '기술성과 실행계획을 설명하는 자료', img: '/ax-showcase/b2b-order/photo-67-b2b-scope.webp' },
+  { t: '심사 설명자료·특허 연계', d: '기술성과 실행계획을 설명하는 자료', img: '/ax-showcase/design-direction/photo-68-design-direction.webp' },
 ]
 
 // 1~4단계 — 가격이 아니라 "왜 필요한지"

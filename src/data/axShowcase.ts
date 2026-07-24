@@ -378,8 +378,8 @@ const NEW_CATEGORY: Record<string, string> = {
   fieldcare: '시설관리',
   siteflow: '건설·현장',
   storepulse: '외식·프랜차이즈',
-  careflow: '고객서비스',
-  classpilot: '고객서비스',
+  careflow: '병원·의원',
+  classpilot: '학원·교육',
   leaseflow: '임대·건물관리',
 }
 /** 기존 6개 업종 category(스펙 매핑) */

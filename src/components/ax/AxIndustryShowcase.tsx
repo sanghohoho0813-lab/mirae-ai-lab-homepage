@@ -1,70 +1,45 @@
 // SECTION #ax-showcase — 업종 선택형 peek 캐러셀 단일 뷰어.
-// 업종 pill(이모지) 선택 또는 좌우 스와이프 → 가운데 업종 1세트를 크게, 양옆 업종은 살짝 겹쳐 보이게.
-// 선택된 업종 안에서만 통합/관리자·PC/현장·모바일 3탭 전환 → 크게 보기(PhotoSwipe).
-// PC·모바일이 같은 정보구조·같은 동작. 바둑판 그리드 없음. 자동 이동 없음(사용자가 직접 이동).
+// 8개 업종(신규 브랜드) 각각: 통합=대표(쇼케이스) / 관리자·PC=pc / 현장·모바일=mobile 로 정확히 매핑한다.
+// 업종 pill(이모지) 선택 또는 좌우 스와이프 → 가운데 업종 1세트 크게, 양옆 업종은 살짝 겹쳐 보임.
+// 선택한 업종 안에서만 통합/관리자·PC/현장·모바일 3화면 전환 → 크게 보기(PhotoSwipe).
+// PC·모바일 동일 구조·동일 이미지·동일 순서. 자동 이동 없음.
 import { useEffect, useRef, useState } from 'react'
-import {
-  AX_SHOWCASE_CATALOG,
-  type ScreenTypeKey,
-  type ShowcaseCatalogEntry,
-  type ShowcaseImg,
-} from '../../data/axShowcase'
+import { SHOWCASE_INDUSTRIES, AX_QUICKNAV_KEYS, type ShowcaseImg, type ShowcaseIndustry } from '../../data/axShowcase'
 import { SectionHead } from './axFrames'
 import AxPhotoSwipe, { type AxPswpSlide } from './AxPhotoSwipe'
 
+// 3화면 탭 — 각 업종의 대표(통합)/pc(관리자·PC)/mobile(현장·모바일)
 const TABS = [
-  { key: 'integrated', label: '통합', imgKeys: ['integrated'] as ScreenTypeKey[] },
-  { key: 'pc', label: '관리자·PC', imgKeys: ['desktop', 'admin'] as ScreenTypeKey[] },
-  { key: 'mobile', label: '현장·모바일', imgKeys: ['mobile', 'field'] as ScreenTypeKey[] },
+  { key: 'integrated', label: '통합', pick: (b: ShowcaseIndustry) => b.representative, screen: '통합 화면' },
+  { key: 'pc', label: '관리자·PC', pick: (b: ShowcaseIndustry) => b.pc, screen: '관리자·PC' },
+  { key: 'mobile', label: '현장·모바일', pick: (b: ShowcaseIndustry) => b.mobile, screen: '현장·모바일' },
 ] as const
 type TabKey = (typeof TABS)[number]['key']
 
-const SLIDE_ORDER: ScreenTypeKey[] = ['integrated', 'desktop', 'admin', 'mobile', 'field']
-const SCREEN_LABEL: Record<ScreenTypeKey, string> = {
-  integrated: '통합 화면',
-  desktop: '관리자·PC',
-  admin: '관리자·PC',
-  mobile: '현장·모바일',
-  field: '현장·모바일',
-}
-
-// 업종별 이모지(카테고리명 기준)
+// 업종별 이모지(업종명 기준)
 const CAT_EMOJI: Record<string, string> = {
   '숙박·호텔': '🏨',
   '자동차 정비': '🚘',
   '시설관리': '🏢',
-  '건설·현장': '🏗️',
-  '생산·제조': '🏭',
-  '물류·유통': '🚚',
-  '연구소·R&D': '🔬',
-  'B2B·영업': '🤝',
-  '예약·CRM': '📅',
-  '고객서비스': '🎧',
-  '기업운영': '⚙️',
   '임대·건물관리': '🏠',
+  '병원·의원': '🏥',
+  '학원·교육': '🎓',
   '외식·프랜차이즈': '🍽️',
+  '건설·현장': '🏗️',
 }
 
-// 카테고리별 대표 1세트(첫 엔트리)만 노출
-const CATEGORY_SET: ShowcaseCatalogEntry[] = (() => {
-  const seen = new Set<string>()
-  const out: ShowcaseCatalogEntry[] = []
-  for (const e of AX_SHOWCASE_CATALOG) {
-    if (seen.has(e.category)) continue
-    seen.add(e.category)
-    out.push(e)
-  }
-  return out
-})()
+// 8개 신규 브랜드만 (사진 87~110), QUICKNAV 순서
+const BRANDS: ShowcaseIndustry[] = AX_QUICKNAV_KEYS
+  .map((k) => SHOWCASE_INDUSTRIES.find((s) => s.key === k))
+  .filter((s): s is ShowcaseIndustry => Boolean(s))
 
-function buildSlides(entry: ShowcaseCatalogEntry): { keys: ScreenTypeKey[]; slides: AxPswpSlide[] } {
-  const keys = SLIDE_ORDER.filter((k) => entry.images[k])
-  const mid = entry.brandName ? `${entry.brandName} · ${entry.category}` : entry.category
-  const slides = keys.map((k) => {
-    const img = entry.images[k]!
-    return { src: img.src, width: img.w, height: img.h, alt: img.alt, caption: `${mid} · ${SCREEN_LABEL[k]}` }
-  })
-  return { keys, slides }
+function buildSlides(b: ShowcaseIndustry): { imgs: ShowcaseImg[]; slides: AxPswpSlide[] } {
+  const imgs = TABS.map((t) => t.pick(b)).filter((im): im is ShowcaseImg => Boolean(im))
+  const slides = TABS.map((t) => {
+    const im = t.pick(b)
+    return im ? { src: im.src, width: im.w, height: im.h, alt: im.alt, caption: `${b.brand} · ${b.label} · ${t.screen}` } : null
+  }).filter((s): s is AxPswpSlide => Boolean(s))
+  return { imgs, slides }
 }
 
 function ViewerImg({ img }: { img: ShowcaseImg }) {
@@ -83,22 +58,20 @@ function ViewerImg({ img }: { img: ShowcaseImg }) {
   )
 }
 
-// 한 업종 뷰어 카드(활성 카드만 탭·버튼 동작, 비활성은 미리보기)
 function ViewerCard({
-  entry,
+  brand,
   active,
   onActivate,
   onOpen,
 }: {
-  entry: ShowcaseCatalogEntry
+  brand: ShowcaseIndustry
   active: boolean
   onActivate: () => void
-  onOpen: (entry: ShowcaseCatalogEntry, key: ScreenTypeKey) => void
+  onOpen: (b: ShowcaseIndustry, tabKey: TabKey) => void
 }) {
   const [tab, setTab] = useState<TabKey>('integrated')
   const activeTab = TABS.find((t) => t.key === tab) ?? TABS[0]
-  const resolvedKey: ScreenTypeKey = activeTab.imgKeys.find((k) => entry.images[k]) ?? 'integrated'
-  const img = entry.images[resolvedKey] ?? entry.images.integrated!
+  const img = activeTab.pick(brand) ?? brand.representative
 
   return (
     <div
@@ -109,18 +82,17 @@ function ViewerCard({
       aria-hidden={!active}
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        {entry.brandName && <p className="text-[0.72rem] font-black uppercase tracking-widest text-teal-300">{entry.brandName}</p>}
+        <p className="text-[0.72rem] font-black uppercase tracking-widest text-teal-300">{brand.brand}</p>
         <span className="rounded-md bg-white/5 px-2 py-0.5 text-[0.72rem] font-bold text-slate-300 ring-1 ring-inset ring-white/10">
-          {CAT_EMOJI[entry.category] ? `${CAT_EMOJI[entry.category]} ` : ''}{entry.category}
+          {CAT_EMOJI[brand.label] ? `${CAT_EMOJI[brand.label]} ` : ''}{brand.label}
         </span>
       </div>
-      <h3 className="mt-1.5 text-[1.25rem] font-black leading-tight text-white sm:text-[1.5rem]">{entry.solutionName}</h3>
-      <p className="mt-1.5 line-clamp-2 text-[0.9rem] leading-relaxed text-slate-300 sm:text-[0.95rem]">{entry.description}</p>
+      <h3 className="mt-1.5 text-[1.25rem] font-black leading-tight text-white sm:text-[1.5rem]">{brand.headline}</h3>
+      <p className="mt-1.5 line-clamp-2 text-[0.9rem] leading-relaxed text-slate-300 sm:text-[0.95rem]">{brand.desc}</p>
 
-      {/* 3개 보기 탭 — 활성 카드만 조작 */}
+      {/* 3화면 탭 */}
       <div role="tablist" aria-label="화면 유형" className="mt-3.5 flex rounded-xl bg-white/5 p-1">
         {TABS.map((t) => {
-          const available = t.imgKeys.some((k) => entry.images[k])
           const on = tab === t.key
           return (
             <button
@@ -128,11 +100,10 @@ function ViewerCard({
               type="button"
               role="tab"
               aria-selected={on}
-              disabled={!available || !active}
-              title={available ? undefined : '준비된 화면 없음'}
-              onClick={() => available && setTab(t.key)}
+              disabled={!active}
+              onClick={() => setTab(t.key)}
               className={`min-h-[44px] flex-1 rounded-lg px-2 text-[0.82rem] font-black transition-colors ${
-                on ? 'bg-teal-400 text-slate-900' : available ? 'text-slate-300 hover:text-white' : 'cursor-not-allowed text-slate-600'
+                on ? 'bg-teal-400 text-slate-900' : 'text-slate-300 hover:text-white'
               }`}
             >
               {t.label}
@@ -141,13 +112,16 @@ function ViewerCard({
         })}
       </div>
 
+      {/* 현재 화면 캡션 */}
+      <p className="mt-2 truncate text-[0.76rem] font-bold text-slate-400">{img.caption}</p>
+
       {/* 이미지 — 활성 카드는 탭하면 크게 보기 */}
       <button
         type="button"
-        onClick={() => active && onOpen(entry, resolvedKey)}
-        aria-label={`${entry.solutionName} ${activeTab.label} 화면 크게 보기`}
+        onClick={() => active && onOpen(brand, tab)}
+        aria-label={`${brand.brand} ${activeTab.label} 화면 크게 보기`}
         tabIndex={active ? 0 : -1}
-        className="mt-3.5 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-slate-950 p-2"
+        className="mt-2 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-slate-950 p-2"
       >
         <ViewerImg img={img} />
       </button>
@@ -155,7 +129,7 @@ function ViewerCard({
       {/* 단일 액션 */}
       <button
         type="button"
-        onClick={() => active && onOpen(entry, resolvedKey)}
+        onClick={() => active && onOpen(brand, tab)}
         tabIndex={active ? 0 : -1}
         className="mt-3.5 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-white/10 px-4 text-[0.9rem] font-bold text-white ring-1 ring-inset ring-white/15 transition-colors hover:bg-white/20"
       >
@@ -185,7 +159,7 @@ export default function AxIndustryShowcase() {
 
   const onScroll = () => {
     const el = trackRef.current
-    if (!el || CATEGORY_SET.length === 0) return
+    if (!el) return
     const center = el.scrollLeft + el.clientWidth / 2
     let best = 0
     let bestDist = Infinity
@@ -207,10 +181,11 @@ export default function AxIndustryShowcase() {
     return () => { el.removeEventListener('scroll', handler); cancelAnimationFrame(raf) }
   }, [])
 
-  const openFullscreen = (entry: ShowcaseCatalogEntry, key: ScreenTypeKey) => {
-    const { keys, slides } = buildSlides(entry)
+  const openFullscreen = (b: ShowcaseIndustry, tabKey: TabKey) => {
+    const { slides } = buildSlides(b)
+    const idx = TABS.findIndex((t) => t.key === tabKey)
     setPswpSlides(slides)
-    setPswpIndex(Math.max(0, keys.indexOf(key)))
+    setPswpIndex(Math.max(0, idx))
     setPswpOpen(true)
   }
 
@@ -224,18 +199,18 @@ export default function AxIndustryShowcase() {
           desc="업종을 선택하거나 좌우로 넘겨 다른 AX 화면을 확인하세요."
         />
 
-        {/* 업종 pill(이모지) — 가로 스크롤(PC·모바일 동일) */}
+        {/* 업종 pill(이모지) */}
         <div
           className="mt-6 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0"
           style={{ scrollbarWidth: 'none' }}
           role="tablist"
           aria-label="업종 선택"
         >
-          {CATEGORY_SET.map((e, i) => {
+          {BRANDS.map((b, i) => {
             const on = i === active
             return (
               <button
-                key={e.category}
+                key={b.key}
                 type="button"
                 role="tab"
                 aria-selected={on}
@@ -244,37 +219,37 @@ export default function AxIndustryShowcase() {
                   on ? 'bg-teal-400 text-slate-900' : 'bg-white/5 text-slate-300 ring-1 ring-inset ring-white/15 hover:bg-white/10'
                 }`}
               >
-                {CAT_EMOJI[e.category] ? `${CAT_EMOJI[e.category]} ` : ''}{e.category}
+                {CAT_EMOJI[b.label] ? `${CAT_EMOJI[b.label]} ` : ''}{b.label}
               </button>
             )
           })}
         </div>
 
-        {/* peek 캐러셀 — 가운데 업종 크게, 양옆 살짝 겹쳐 보임 */}
+        {/* peek 캐러셀 */}
         <div
           ref={trackRef}
           className="mt-5 -mx-5 flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto px-[8vw] pb-2 [&::-webkit-scrollbar]:hidden sm:mx-0 sm:gap-4"
           style={{ scrollbarWidth: 'none' }}
         >
-          {CATEGORY_SET.map((entry, i) => (
-            <ViewerCard key={entry.id} entry={entry} active={i === active} onActivate={() => scrollToIdx(i)} onOpen={openFullscreen} />
+          {BRANDS.map((b, i) => (
+            <ViewerCard key={b.key} brand={b} active={i === active} onActivate={() => scrollToIdx(i)} onOpen={openFullscreen} />
           ))}
         </div>
 
         {/* 현재 위치 표시 */}
         <div className="mt-3 flex items-center justify-center gap-1.5">
-          {CATEGORY_SET.map((c, i) => (
+          {BRANDS.map((b, i) => (
             <button
-              key={c.id}
+              key={b.key}
               type="button"
-              aria-label={`${c.category} 보기`}
+              aria-label={`${b.label} 보기`}
               onClick={() => scrollToIdx(i)}
               className={`h-1.5 rounded-full transition-all ${i === active ? 'w-5 bg-teal-400' : 'w-1.5 bg-white/25'}`}
             />
           ))}
         </div>
         <p className="mt-2 text-center text-[0.78rem] font-medium text-slate-400">
-          {active + 1} / {CATEGORY_SET.length} · 좌우로 넘기거나 위 업종을 선택하세요
+          {active + 1} / {BRANDS.length} · 좌우로 넘기거나 위 업종을 선택하세요
         </p>
 
         <p className="mt-5 text-[0.78rem] leading-relaxed text-slate-500">

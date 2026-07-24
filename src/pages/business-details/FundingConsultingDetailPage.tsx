@@ -330,7 +330,7 @@ export default function FundingConsultingDetailPage() {
             <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
               <p className="mb-3 inline-flex rounded-md bg-slate-200 px-2.5 py-1 text-[0.78rem] font-black text-slate-600">Before · 다른 곳</p>
               <div className="grayscale [filter:grayscale(1)_opacity(0.85)]">
-                <Shot src={`${IMG}/photo-104-staydeck-showcase.webp`} alt="계획서 문장 위주로만 준비된 상태 예시 화면" />
+                <Shot src="/ax-showcase/wms/photo-36-wms-problem.webp" alt="엑셀·수기 등으로 흩어진 현재 업무 예시 화면" />
               </div>
               <p className="mt-3 text-[1rem] font-bold leading-snug text-slate-700">AI로 만든 사업계획서만 제출</p>
               <p className="mt-1 text-[0.92rem] leading-relaxed text-slate-500">심사자가 실제 모습을 상상해야 합니다.</p>
@@ -398,10 +398,10 @@ export default function FundingConsultingDetailPage() {
           <h2 className={bigHead}>4단계로<br /><span className="text-blue-600">이렇게 바뀝니다</span></h2>
           <div className="mt-9 space-y-4">
             {([
-              { n: '1', src: `${IMG}/photo-105-leaseflow-pc.webp`, t: '현재 업무 분석', d: '흩어진 업무와 반복 작업을 찾습니다.', alt: '현재 반복 업무를 분석하는 화면 예시' },
-              { n: '2', src: `${IMG}/photo-090-storepulse-pc.webp`, t: 'AX 실행설계', d: '사용자·데이터·화면 구조를 설계합니다.', alt: 'AX 실행설계 화면 구조 예시' },
-              { n: '3', src: `${IMG}/photo-099-garageos-pc.webp`, t: '심사용 프로토타입', d: '심사에서 설명할 화면과 시연자료를 만듭니다.', alt: '심사용 시연 화면 예시', ex: '자동차 정비소에서는 차량 접수부터 정비 완료까지 화면을 넘기며 심사자에게 보여줍니다.' },
-              { n: '4', src: `${IMG}/photo-108-fieldcare-pc.webp`, t: '작동형 업무 MVP', d: '자금조달 이후 실제 업무에 사용하는 시스템으로 구현합니다.', alt: '실제 업무에 사용하는 시스템 화면 예시' },
+              { n: '1', src: '/ax-showcase/b2b-order/photo-60-b2b-problem.webp', t: '현재 업무 분석', d: '흩어진 업무와 반복 작업을 찾습니다.', alt: '엑셀·수기 등 흩어진 현재 업무를 정리하는 예시' },
+              { n: '2', src: '/ax-showcase/design-direction/photo-68-design-direction.webp', t: 'AX 실행설계', d: '사용자·데이터·화면 구조를 설계합니다.', alt: '사용자·데이터·화면 구조를 설계하는 예시' },
+              { n: '3', src: `${IMG}/photo-101-garageos-showcase.webp`, t: '심사용 프로토타입', d: '심사에서 설명할 화면과 시연자료를 만듭니다.', alt: '심사에서 시연하는 자동차 정비 통합 화면 예시', ex: '자동차 정비소에서는 차량 접수부터 정비 완료까지 화면을 넘기며 심사자에게 보여줍니다.' },
+              { n: '4', src: '/ax-showcase/wms/photo-37-wms-live-dashboard.webp', t: '작동형 업무 MVP', d: '자금조달 이후 실제 업무에 사용하는 시스템으로 구현합니다.', alt: '실제 업무를 운영하는 관리자 대시보드 예시' },
             ] as { n: string; src: string; t: string; d: string; alt: string; ex?: string }[]).map((s, i, arr) => (
               <div key={s.n}>
                 <div className="grid items-center gap-4 rounded-3xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-[1.1fr,1fr] sm:p-5">
@@ -429,11 +429,11 @@ export default function FundingConsultingDetailPage() {
           <h2 className={bigHead}>프로그램으로<br /><span className="text-blue-600">받게 되는 것</span></h2>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {([
-              { src: `${IMG}/photo-093-careflow-pc.webp`, t: '자금조달 전략', d: '목표 자금·신청기관·준비 순서를 정리합니다.', alt: '자금조달 전략 정리 화면 예시' },
-              { src: `${IMG}/photo-086-reservation-transform.webp`, t: 'AX 업무 흐름도', d: '지금(Before)과 바뀐 뒤(After)를 한 장에 담습니다.', alt: '업무 흐름 Before After 정리 예시', ex: 'B2B 영업에서는 거래처 문의부터 견적·계약까지 흐름을 한 장으로 정리합니다.' },
-              { src: `${IMG}/photo-096-classpilot-pc.webp`, t: '실제 화면 초안', d: '심사에서 보여줄 주요 화면을 미리 그립니다.', alt: '실제 화면 초안 예시' },
-              { src: `${IMG}/photo-092-storepulse-showcase.webp`, t: '시연형·작동형 MVP', d: '선택 단계에 따라 클릭 시연부터 실제 작동까지.', alt: '시연형 작동형 화면 예시' },
-              { src: `${IMG}/photo-098-classpilot-showcase.webp`, t: '심사 설명자료·특허 연계', d: '설명자료와 서비스 구조 연계 특허출원 준비.', alt: '심사 설명자료와 특허 연계 예시' },
+              { src: '/ax-showcase/b2b-order/photo-67-b2b-scope.webp', t: '자금조달 전략', d: '목표 자금·신청기관·준비 순서를 정리합니다.', alt: '목표 자금·신청기관·준비 순서를 정리한 예시' },
+              { src: '/ax-showcase/b2b-order/photo-64-b2b-cart-flow.webp', t: 'AX 업무 흐름도', d: '지금(Before)과 바뀐 뒤(After)를 한 장에 담습니다.', alt: '거래처 문의부터 견적·계약까지 업무 흐름 정리 예시', ex: 'B2B 영업에서는 거래처 문의부터 견적·계약까지 흐름을 한 장으로 정리합니다.' },
+              { src: '/ax-showcase/design-direction/photo-68-design-direction.webp', t: '실제 화면 초안', d: '심사에서 보여줄 주요 화면을 미리 그립니다.', alt: '심사에서 보여줄 주요 화면 초안 예시' },
+              { src: '/ax-showcase/b2b-order/photo-65-b2b-admin-dashboard.webp', t: '시연형·작동형 MVP', d: '선택 단계에 따라 클릭 시연부터 실제 작동까지.', alt: '실제로 작동하는 관리자 화면 예시' },
+              { src: '/ax-showcase/equipment-platform/photo-82-equiplink-quote.webp', t: '심사 설명자료·특허 연계', d: '설명자료와 서비스 구조 연계 특허출원 준비.', alt: '심사 설명자료와 견적·구조 정리 예시' },
             ] as { src: string; t: string; d: string; alt: string; ex?: string }[]).map((c) => (
               <div key={c.t} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
                 <Shot src={c.src} alt={c.alt} />
