@@ -18,7 +18,7 @@ export default function AxProcessSection() {
   const s = AX_PROCESS[step]
   return (
     <section id="process" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-      <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
+      <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-7">
         <SectionHead
           eyebrow="How We Work"
           title="상담 이후, 프로젝트는 이 순서로 진행됩니다"

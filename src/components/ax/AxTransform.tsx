@@ -2,7 +2,7 @@
 // 업종 탭별 4단계: 기존 방식(Before 이미지) → 업무 흐름 정리 → 화면 설계 → 작동 프로토타입(이미지)
 // Before 이미지(36·48·60)는 이 섹션에서만 사용. Before와 Prototype에 같은 이미지 중복 금지.
 import { useState } from 'react'
-import { AX_TRANSFORM_STEPS, AX_TRANSFORM_TABS, ax, type AxImage } from '../../data/axShowcase'
+import { AX_TRANSFORM_ASIDE, AX_TRANSFORM_STEPS, AX_TRANSFORM_TABS, ax, type AxImage } from '../../data/axShowcase'
 import { AxImg, SectionHead } from './axFrames'
 import AxLightbox from './AxLightbox'
 
@@ -14,7 +14,7 @@ export default function AxTransform() {
   const proto = ax(t.protoNo)
   return (
     <section id="transform" className="scroll-mt-16 border-t border-slate-200">
-      <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
+      <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-7">
         <SectionHead
           eyebrow="Problem → Screen"
           title={<>흩어진 업무를, <span className="text-blue-600">실제로 사용하는 AX 화면</span>으로 바꿉니다</>}
@@ -72,6 +72,21 @@ export default function AxTransform() {
           </div>
         </div>
         <p className="mt-4 text-[0.75rem] font-medium text-slate-400">화면을 누르면 해결 문제·주요 기능·구현 수준과 함께 크게 볼 수 있습니다.</p>
+
+        {/* 다른 업종 보조 사례 — 건설·예약 (같은 방식의 확장 예시, 컴팩트) */}
+        <div className="mt-6 border-t border-slate-100 pt-5">
+          <p className="text-[0.82rem] font-bold text-slate-500"><b className="font-black text-slate-700">같은 방식, 다른 업종</b> — 현장·예약 업무도 관리자 웹과 현장 화면으로 다시 설계합니다.</p>
+          <div className="mt-3 flex gap-3 overflow-x-auto pb-1 sm:grid sm:grid-cols-2 sm:overflow-visible">
+            {[AX_TRANSFORM_ASIDE.construction, AX_TRANSFORM_ASIDE.reservation].map((im) => (
+              <figure key={im.src} className="w-[86%] shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm sm:w-auto">
+                <span className="block h-40 overflow-hidden sm:h-44">
+                  <img src={im.src} srcSet={`${im.srcSm} 960w, ${im.src} ${im.w}w`} sizes="(min-width:1024px) 540px, 86vw" alt={im.alt} width={im.w} height={im.h} loading="lazy" decoding="async" className="h-full w-full object-cover object-top" />
+                </span>
+                <figcaption className="border-t border-slate-100 px-3.5 py-2 text-[0.82rem] font-bold text-slate-500">{im.caption} · 가상 업종 프로토타입 예시</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
       </div>
       <AxLightbox image={lb} onClose={() => setLb(null)} />
     </section>

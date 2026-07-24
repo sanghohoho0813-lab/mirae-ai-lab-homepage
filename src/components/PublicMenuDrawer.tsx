@@ -49,7 +49,7 @@ const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; active
   slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-200', activeBg: 'bg-slate-200', activeText: 'text-slate-900', badge: 'bg-slate-600', groupBg: 'bg-slate-100' },
 }
 
-// 대표자용 — 새 사업방향(핵심 프로그램 3 + 성장 모듈 4그룹) 구조. 실제 라우트/앵커만 사용.
+// 대표자용 — PC 상단 내비게이션과 동일한 개념·순서(6항목). 성장 모듈 상세 링크는 별도 그룹에 유지. 실제 라우트/앵커만 사용.
 const BUSINESS_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
   topSub: '자금조달과 기업 성장을 함께 설계합니다',
@@ -62,35 +62,30 @@ const BUSINESS_MENU: MenuConfig = {
   groups: [
     {
       no: '01',
-      heading: '시작하기',
+      heading: '서비스 안내',
       accent: 'blue',
       items: [
-        { label: '3분 기업 성장진단', to: '/business-diagnosis', match: (p) => p.startsWith('/business-diagnosis') },
-        { label: '기업진단·자금전략', desc: '500,000원 · 성과보수 없음', to: '/business-services#core-A' },
+        { no: '1', label: '자금조달 전략', desc: '정책자금 신청 전략·실행 근거', to: '/business-services/funding-consulting', match: (p) => p.startsWith('/business-services/funding-consulting') },
+        { no: '2', label: '왜 AX인가', to: '/business-services#why-ax' },
+        { no: '3', label: '진행 방식', to: '/business-services#process' },
+        { no: '4', label: 'AX 구축 사례', to: '/business-services#industry' },
+        { no: '5', label: '프로그램', desc: 'A. 자금조달 실행형 · B. AX 결합 성장자금형', to: '/business-services#programs' },
+        { no: '6', label: '성장 모듈', to: '/business-services#growth-modules' },
       ],
     },
     {
       no: '02',
-      heading: '자금조달',
-      accent: 'cyan',
+      heading: '성장 모듈',
+      accent: 'violet',
       items: [
-        { label: '자금조달 실행형', desc: '착수금 + 실제 조달액의 3%', to: '/business-services#core-B' },
-        { label: 'AX 결합 성장자금형', desc: '초기 10개사 · 실제 조달액의 5%', to: '/business-services#core-C' },
+        { no: '1', label: '기술·혁신 기반', desc: '벤처확인·연구소·이노비즈·특허', to: '/business-services#module-innovation' },
+        { no: '2', label: '경영·대외 신뢰', desc: '메인비즈·ISO 인증', to: '/business-services#module-trust' },
+        { no: '3', label: '디지털 실행', desc: '홈페이지·업무자동화·작동형 AX', to: '/business-services#module-digital' },
+        { no: '4', label: '재무·전문가 연계', desc: '가지급금·승계·전문가 검토', to: '/business-services#module-finance' },
       ],
     },
     {
       no: '03',
-      heading: '성장 모듈',
-      accent: 'violet',
-      items: [
-        { no: '1', label: '기술·혁신 기반', to: '/business-services#module-innovation' },
-        { no: '2', label: '경영·대외 신뢰', to: '/business-services#module-trust' },
-        { no: '3', label: '디지털 실행', to: '/business-services#module-digital' },
-        { no: '4', label: '재무·전문가 연계', to: '/business-services#module-finance' },
-      ],
-    },
-    {
-      no: '04',
       heading: '내 서비스',
       accent: 'blue',
       items: [
@@ -100,7 +95,7 @@ const BUSINESS_MENU: MenuConfig = {
       ],
     },
     {
-      no: '05',
+      no: '04',
       heading: '고객지원',
       accent: 'slate',
       items: [

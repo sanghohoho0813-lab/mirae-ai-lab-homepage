@@ -24,6 +24,8 @@ export type CoreProgram = {
   priceMainLabel?: string
   /** 성과보수 표기 */
   priceSub: string
+  /** 성과보수 산정용 수치(계산기 단일 소스) — rate·capKrw 는 priceSub 문구와 반드시 일치시킬 것 */
+  successFee?: { rate: number; capKrw: number }
   /** 핵심 포함 범위 (카드) */
   points: string[]
   /** 추천 대상 한 줄 */
@@ -62,6 +64,7 @@ export const CORE_PROGRAMS: CoreProgram[] = [
     catchline: '진단 이후 전체 진행을 맡기고 싶은 기업의 확장형',
     priceMain: '착수금 500,000원',
     priceSub: '+ 실제 조달금액의 3% (전체 진행 선택 시)',
+    successFee: { rate: 0.03, capKrw: 0 },
     points: [
       '기업진단 · 자금조달 방향 설계 · 기관·상품 검토',
       '자료 요청·구조화 · 사업계획 내용 정리 지원',
@@ -81,6 +84,7 @@ export const CORE_PROGRAMS: CoreProgram[] = [
     priceMain: '1,000,000원',
     priceMainLabel: '초기 10개 기업 레퍼런스 구축 참여가',
     priceSub: '+ 실제 조달금액의 5% · 성과보수 최대 15,000,000원',
+    successFee: { rate: 0.05, capKrw: 15_000_000 },
     points: [
       '기업·업무 현황 진단 · 반복업무와 비용·시간 낭비 분석',
       '화면 설계·클릭형 프로토타입 · 핵심 업무 MVP · 규칙 기반 자동화',
@@ -95,6 +99,118 @@ export const CORE_PROGRAMS: CoreProgram[] = [
 
 export function getCoreProgram(key: CoreProgramKey): CoreProgram {
   return CORE_PROGRAMS.find((p) => p.key === key)!
+}
+
+// ── 메인 페이지 유료 프로그램 = A·B 2종 (단일 소스) ───────────────────────────
+// A(자금조달 실행형)는 legacy CORE_PROGRAMS의 B, B(AX 결합)는 legacy C에 대응한다.
+// 무료 '3분 기업진단'이 최초 진입점이며, 기업진단·자금전략(legacy A)은 메인 카드에서 제외되고
+// 정책자금 상세 페이지(/business-services/funding-consulting)에서 계속 제공된다.
+export type MainProgramKey = 'A' | 'B'
+export type MainProgram = {
+  key: MainProgramKey
+  /** 섹션 앵커 (#program-A / #program-B) */
+  anchor: string
+  /** 하위호환 앵커 (기존 #core-* 링크 매핑) */
+  legacyAnchors: string[]
+  /** 상담 모달 진행방식 선택값 (PROGRAM_CHOICES 중 하나) */
+  consultName: string
+  tone: 'blue' | 'navy'
+  badge: string
+  name: string
+  tagline: string
+  /** 가격 상단(선택) */
+  priceTop?: string
+  priceMain: string
+  priceSub: string
+  /** 계산기: 착수금·요율·상한(원, null=상한 없음) */
+  startFee: number
+  feeRate: number
+  feeCap: number | null
+  purpose: string
+  recommend: string[]
+  included: string[]
+  /** 결과물 구현 수준 라벨 */
+  levelLabel: string
+  /** 기본 제외/별도 범위 */
+  excluded: string[]
+  excludedLabel: string
+  /** A형 AX 제공 원칙(선택) */
+  axNote?: string
+  ctaLabel: string
+}
+
+export const MAIN_PROGRAMS: MainProgram[] = [
+  {
+    key: 'A',
+    anchor: 'program-A',
+    legacyAnchors: ['core-A', 'core-B'],
+    consultName: '자금조달 실행형',
+    tone: 'blue',
+    badge: '초기 런칭 조건',
+    name: '자금조달 실행형',
+    tagline: '정책자금 실행과 업종 맞춤 AX 실행근거를 함께 준비합니다.',
+    priceMain: '착수 50만원 + 실제 조달금액의 3%',
+    priceSub: '정식 전환 예정 조건 · 착수 70만원 + 4%',
+    startFee: 500000,
+    feeRate: 0.03,
+    feeCap: null,
+    purpose: '심사에서 설명할 실행근거를 만듭니다.',
+    recommend: [
+      '소상공인·초기기업, 첫 정책자금 신청기업',
+      '대규모 시스템 개발보다 자금 실행이 우선인 기업',
+      '사업계획의 실행근거를 보완해야 하는 기업',
+    ],
+    included: [
+      '기업·재무현황 진단 · 자금조달 기관·자금 종류 선정',
+      '신청전략 · 사업계획 구조화 · 신청서류 준비',
+      '보완 대응 · 예상 질의 대응',
+      '업종 맞춤 AX 실행설계 · 업무 흐름도 또는 서비스 구조도',
+      '핵심 화면 3~5개 클릭형 프론트엔드 프로토타입 (PC 또는 모바일) · 수정 1회',
+    ],
+    levelLabel: '실행근거형 프로토타입',
+    excluded: ['로그인·데이터베이스 저장·사용자 권한', '실제 관리자 운영·외부 API·결제·ERP 연동', '작동형 전체 MVP·지속 유지보수'],
+    excludedLabel: '기본 제외 — 작동형 앱 전체는 미포함',
+    axNote: 'AX 실행설계는 모든 A형 프로젝트에 포함됩니다. 기업 상황에 따라 클릭형 화면·업무 흐름도·서비스 구조도 형태로 제공됩니다.',
+    ctaLabel: '자금조달 실행형 상담 신청',
+  },
+  {
+    key: 'B',
+    anchor: 'program-B',
+    legacyAnchors: ['core-C'],
+    consultName: 'AX 결합 성장자금형',
+    tone: 'navy',
+    badge: '초기 레퍼런스 참여기업 10개사',
+    name: 'AX 결합 성장자금형',
+    tagline: '자금조달과 실제 업무용 AX 시스템 구축을 하나의 프로젝트로 진행합니다.',
+    priceTop: '정식 전환 예정 착수금 · 300만원',
+    priceMain: '착수 100만원 + 실제 조달금액의 5%',
+    priceSub: '성과보수 최대 1,500만원',
+    startFee: 1000000,
+    feeRate: 0.05,
+    feeCap: 15_000_000,
+    purpose: '자금조달 후 실제로 사용할 AX 시스템을 만듭니다.',
+    recommend: [
+      '반복적인 수기 업무가 있고, 직원·거래처가 함께 쓰는 업무 흐름이 있는 기업',
+      '엑셀·카카오톡·전화로 업무가 분산된 기업',
+      '주문·현장·재고·고객·연구·생산 데이터가 쌓이는 기업',
+      '자금조달 이후 실제 시스템을 사용할, 통상 1억원 이상 조달 검토 성장기업',
+    ],
+    included: [
+      'A형의 자금조달 컨설팅 전체',
+      '기업 업무 인터뷰 · 요구사항 정의 · 화면설계',
+      'PC·모바일 반응형 · 로그인 · 사용자 권한 · 데이터베이스 저장 · 관리자 화면',
+      '핵심 업무 흐름 1개 작동형 AX MVP (예: 주문 접수→관리자 확인→출고상태)',
+      '테스트 · 기본 운영안내 · 실제 업무 적용을 위한 초기 개선',
+    ],
+    levelLabel: '작동형 AX MVP',
+    excluded: ['카드결제 PG·복잡한 환불·부분취소', 'ERP 실시간 연동·세금계산서 자동발행·택배사 API', '회계 프로그램 연동·복잡한 재고 동기화', '네이티브 앱·대규모 다중 사업장·고급 보안·별도 서버'],
+    excludedLabel: '기본 제외 또는 별도 범위 (협의)',
+    ctaLabel: 'AX 결합 성장자금형 적합성 확인',
+  },
+]
+
+export function getMainProgram(key: MainProgramKey): MainProgram {
+  return MAIN_PROGRAMS.find((p) => p.key === key)!
 }
 
 // ── AX 결합 성장자금형 — 런칭(초기 10개사) 조건 ─────────────────────────────
@@ -134,7 +250,8 @@ export const AX_LAUNCH = {
 } as const
 
 // ── 공통 신청폼 — 진행방식·조건부 문항 상수 ────────────────────────────────
-export const PROGRAM_CHOICES = ['기업진단·자금전략', '자금조달 실행형', 'AX 결합 성장자금형', '아직 잘 모르겠습니다'] as const
+// 메인 유료 프로그램은 A·B 2종. 무료 3분 기업진단이 최초 진입점이라 진행방식 선택은 A·B + 진단 후 추천.
+export const PROGRAM_CHOICES = ['자금조달 실행형', 'AX 결합 성장자금형', '아직 잘 모르겠습니다 (진단 후 추천)'] as const
 export type ProgramChoice = (typeof PROGRAM_CHOICES)[number]
 
 export const FUNDING_GOAL_OPTIONS = ['5천만원 미만', '5천만원 이상~1억원 미만', '1억원 이상~2억원 미만', '2억원 이상~3억원 미만', '3억원 이상', '아직 잘 모르겠습니다']

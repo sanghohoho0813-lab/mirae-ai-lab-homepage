@@ -11,7 +11,7 @@ const AWARDS = [
 export default function AxDifference() {
   return (
     <section id="difference" className="scroll-mt-16 border-t border-slate-200">
-      <div className="mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-14">
+      <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-7">
         <SectionHead
           center
           eyebrow="Difference"

@@ -16,6 +16,7 @@ import { CONSULT_TOPIC_GROUPS, type ConsultContextRow } from '../lib/consultApi'
 import { businessPackages, categoryToneClass, DISCLAIMER, getPackageBySlug } from '../data/businessPackages'
 import { paymentsEnabled, paymentsPreparingNotice } from '../config/commerce'
 import { getDetailContent } from '../data/businessDetailContent'
+import { clearDiagnosisReturn, getDiagnosisReturn } from '../lib/diagnosisReturn'
 
 const band = 'px-5 py-16 sm:py-24'
 const inner = 'mx-auto max-w-[720px]'
@@ -90,6 +91,8 @@ export default function BusinessServiceDetailPage() {
   const [variantIdx, setVariantIdx] = useState(0)
   const [showBar, setShowBar] = useState(false)
   const [consultOpen, setConsultOpen] = useState(false)
+  // 진단 결과에서 넘어온 경우에만 노출되는 "돌아가기" 대상 경로 (없으면 null)
+  const [diagReturn] = useState(() => getDiagnosisReturn())
 
   useEffect(() => {
     if (pkg) document.title = `${pkg.name} | 미래 AI 랩 서비스몰`
@@ -250,6 +253,22 @@ export default function BusinessServiceDetailPage() {
           </div>
         </div>
       </header>
+
+      {/* 진단에서 넘어온 경우 — 결과로 돌아가기 (진단 응답은 그대로 보존됨) */}
+      {diagReturn && (
+        <div className="border-b border-cyan-100 bg-cyan-50/70">
+          <div className="mx-auto max-w-6xl px-5 py-2.5 sm:px-6">
+            <Link
+              to={diagReturn}
+              onClick={() => clearDiagnosisReturn()}
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-cyan-800 transition-colors hover:text-cyan-900"
+            >
+              <span aria-hidden>←</span> 기업진단으로 돌아가기
+              <span className="font-medium text-cyan-600/80">· 진단 결과가 그대로 유지돼요</span>
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Breadcrumb */}
       <div className="border-b border-slate-100 bg-slate-50/60">

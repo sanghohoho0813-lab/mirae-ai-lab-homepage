@@ -16,6 +16,7 @@ import type {
   TopPriority,
 } from '../../types/businessDiagnosis'
 import { getPackageBySlug } from '../../data/businessPackages'
+import { rememberDiagnosisReturn } from '../../lib/diagnosisReturn'
 import { ADVANTAGE_DISCLAIMER } from '../../data/policyAdvantageFactors'
 import ScoreCard from './ScoreCard'
 import { formatKoreanMoney } from '../ProductCard'
@@ -114,6 +115,7 @@ function TopPrioritiesSection({ step, items }: { step: string; items: TopPriorit
                   {pkg && (
                     <Link
                       to={`/business-services/${pkg.slug}`}
+                      onClick={() => rememberDiagnosisReturn()}
                       className="mt-3.5 inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2.5 text-[0.95rem] font-bold text-white transition-colors hover:bg-slate-700"
                     >
                       도움되는 서비스 · {pkg.name} →
@@ -270,7 +272,7 @@ function Recommendations({
           return (
             <article key={rec.slug} className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               {pkg.imageSrc && (
-                <Link to={`/business-services/${pkg.slug}`} onClick={() => onProductClick(rec.slug, rec.rank, position)} className="relative block aspect-[3/2] bg-slate-100">
+                <Link to={`/business-services/${pkg.slug}`} onClick={() => { rememberDiagnosisReturn(); onProductClick(rec.slug, rec.rank, position) }} className="relative block aspect-[3/2] bg-slate-100">
                   <img src={pkg.imageSrc} alt={pkg.name} loading="lazy" className="absolute inset-0 h-full w-full object-contain" />
                 </Link>
               )}
@@ -292,19 +294,24 @@ function Recommendations({
                   </div>
                 )}
                 <p className="mt-3 flex-1 text-xl font-black tracking-tight text-slate-900">{formatKoreanMoney(pkg.price)}</p>
-                <div className="mt-3 flex gap-2 print:hidden">
-                  <Link to={`/business-services/${pkg.slug}`} onClick={() => onProductClick(rec.slug, rec.rank, position)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-slate-700">
-                    자세히 보기
-                  </Link>
+                {/* 선택 액션(상담/결제)과 상세 보기를 분리 — 아래 상세 링크는 진단 상태를 보존한 채 이동 */}
+                <div className="mt-3 flex flex-col gap-2 print:hidden">
                   {pkg.priceType === 'consult' || !paymentsEnabled ? (
-                    <button type="button" onClick={() => { onConsultClick(rec.slug); setConsultPkg({ name: pkg.name, price: pkg.price }) }} className="flex min-h-11 flex-1 items-center justify-center rounded-xl border border-slate-300 px-3 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50">
-                      상담 신청
+                    <button type="button" onClick={() => { onConsultClick(rec.slug); setConsultPkg({ name: pkg.name, price: pkg.price }) }} className="flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
+                      이 서비스로 상담 신청
                     </button>
                   ) : (
-                    <Link to={`/checkout/${pkg.slug}`} onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
+                    <Link to={`/checkout/${pkg.slug}`} onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
                       바로 결제하기
                     </Link>
                   )}
+                  <Link
+                    to={`/business-services/${pkg.slug}`}
+                    onClick={() => { rememberDiagnosisReturn(); onProductClick(rec.slug, rec.rank, position) }}
+                    className="flex min-h-11 w-full items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50"
+                  >
+                    상세 페이지에서 더 알아보기 <span aria-hidden>→</span>
+                  </Link>
                 </div>
               </div>
             </article>
@@ -361,7 +368,7 @@ function GrowthPicksSection({ excludeSlugs, onProductClick }: { excludeSlugs: st
             <Link
               key={p.slug}
               to={`/business-services/${pkg.slug}`}
-              onClick={() => onProductClick(p.slug, '함께 준비', 'result_growth_pick')}
+              onClick={() => { rememberDiagnosisReturn(); onProductClick(p.slug, '함께 준비', 'result_growth_pick') }}
               className="flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-3.5 transition-colors hover:border-blue-300 hover:bg-blue-50/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
             >
               {pkg.imageSrc && <img src={pkg.imageSrc} alt="" loading="lazy" className="h-16 w-[96px] shrink-0 rounded-lg bg-slate-100 object-cover sm:h-[72px] sm:w-[108px]" />}
