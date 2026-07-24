@@ -197,7 +197,7 @@ export default function BusinessServicesPage() {
           <nav className="hidden items-center gap-5 text-[0.92rem] font-medium text-slate-600 xl:flex">
             <button type="button" onClick={() => scrollToId('why-ax')} className="transition-colors hover:text-slate-900">왜 AX인가</button>
             <button type="button" onClick={() => scrollToId('ax-showcase')} className="transition-colors hover:text-slate-900">AX 쇼케이스</button>
-            <button type="button" onClick={() => scrollToId('process')} className="transition-colors hover:text-slate-900">2주 실행과정</button>
+            <button type="button" onClick={() => scrollToId('process')} className="transition-colors hover:text-slate-900">실행과정</button>
             <button type="button" onClick={() => scrollToId('lifecycle')} className="transition-colors hover:text-slate-900">기업 생애주기</button>
             <Link to={DETAIL} className="transition-colors hover:text-slate-900">프로그램</Link>
           </nav>
@@ -465,7 +465,7 @@ export default function BusinessServicesPage() {
             <h2 className="break-keep text-[1.55rem] font-black leading-tight tracking-tight text-white sm:text-[2rem]">
               자금을 신청하는 회사에서,<br /><span className="text-amber-300">자금을 받을 이유가 보이는 AX 혁신기업</span>으로.
             </h2>
-            <p className="mt-3 break-keep text-[0.98rem] leading-relaxed text-slate-300">1억원 이상 정책자금을 목표로, 자금전략·사업기획·실행화면을 2주 안에 설계합니다.</p>
+            <p className="mt-3 break-keep text-[0.98rem] leading-relaxed text-slate-300">자금전략·사업기획·실행화면을 하나의 흐름으로 설계합니다.</p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-blue-500 px-7 py-4 text-base font-black text-white shadow-lg shadow-blue-500/25 transition-transform hover:-translate-y-0.5 hover:bg-blue-400 sm:w-auto">
                 <span aria-hidden>🩺</span> 3분 기업진단 시작
