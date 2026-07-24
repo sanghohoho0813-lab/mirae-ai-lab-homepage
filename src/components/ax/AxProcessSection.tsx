@@ -1,33 +1,13 @@
-// SECTION #process — 진행 방식 4단계 (진단 → 실행설계 → 실행근거 제작 → 자금 실행·적용).
-// 한 줄 요약만 기본 노출, 세부 진행 내용은 펼쳐보기(아코디언)로만 노출.
+// SECTION #process — 자금조달 전후 진행방식 5단계. 큰 개발비 선지급이 아니라 컨설팅 100만 → 자금조달 후 본개발 정산.
 import { useState } from 'react'
 import { SectionHead } from './axFrames'
 
 const STEPS = [
-  {
-    no: '1',
-    title: '3분 기업진단',
-    summary: '업종, 매출, 재무상태, 자금 목적과 반복 업무를 확인합니다.',
-    detail: '진단 결과에 따라 자금조달 실행형(A) 또는 AX 결합 성장자금형(B) 중 우리 회사에 맞는 방식을 안내합니다.',
-  },
-  {
-    no: '2',
-    title: '자금·AX 실행설계',
-    summary: '신청 가능한 자금과 함께 설명해야 할 사업 구조와 AX 범위를 정합니다.',
-    detail: '기업·재무현황 진단, 기관·자금 종류 선정, 신청전략과 함께 어떤 업무 흐름을 AX 화면으로 만들지 범위를 확정합니다.',
-  },
-  {
-    no: '3',
-    title: '실행근거 제작',
-    summary: 'A형은 클릭형 AX 프로토타입, B형은 실제 업무용 작동형 MVP를 제작합니다.',
-    detail: '업무 흐름도·화면설계를 바탕으로 A형은 핵심 화면 3~5개의 클릭형 프로토타입을, B형은 로그인·DB·관리자 화면을 포함한 작동형 MVP를 만듭니다.',
-  },
-  {
-    no: '4',
-    title: '자금 실행과 업무 적용',
-    summary: '신청, 보완과 기관 대응을 진행하고 구축 결과물을 실제 업무에 적용합니다.',
-    detail: '신청서류 제출·보완 요청 대응과 함께, 구축한 화면을 자금기관 설명자료로 활용하고 프로젝트 이후 실제 업무에 적용합니다.',
-  },
+  { no: '1', title: '컨설팅 신청', body: '100만원으로 기업분석과 자금·AX 진단을 시작합니다.' },
+  { no: '2', title: '1단계 AX 실행설계', body: '신청기관, 사업구조, 업무 흐름과 필요한 구현 수준을 결정하고 주요 화면 초안을 만듭니다.' },
+  { no: '3', title: '심사 설명자료 준비', body: '업무 흐름도, 화면 초안과 필요한 범위의 시연자료를 만들어 사업을 구체적으로 설명합니다.' },
+  { no: '4', title: '정책자금 신청과 대응', body: '신청서, 사업계획 구조, 보완자료와 기관 질의 대응을 진행합니다.' },
+  { no: '5', title: '자금조달 후 본개발', body: '조달된 자금과 기업의 실제 필요에 맞춰 2·3·4단계 중 필요한 수준을 구축합니다.' },
 ]
 
 export default function AxProcessSection() {
@@ -37,27 +17,35 @@ export default function AxProcessSection() {
       <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
         <SectionHead
           eyebrow="진행 방식"
-          title="진단부터 자금 실행과 AX 구축까지 한 흐름으로 진행합니다."
-          desc="복잡한 절차 대신 4단계로 단순하게 진행합니다."
+          title="처음부터 큰 개발비를 지급하는 방식이 아닙니다."
+          desc="컨설팅비 100만원으로 자금전략과 AX 실행설계를 먼저 준비하고, 본개발비는 자금조달 후 선택한 구현 수준에 따라 정산합니다."
         />
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {STEPS.map((s, i) => (
-            <div key={s.no} className="relative flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center gap-2.5">
-                <span aria-hidden className={`grid h-8 w-8 place-items-center rounded-lg text-[0.9rem] font-black text-white ${i === STEPS.length - 1 ? 'bg-teal-500' : 'bg-slate-900'}`}>{s.no}</span>
-                <p className="text-[1.02rem] font-black leading-tight text-slate-900">{s.title}</p>
-              </div>
-              <p className="mt-2.5 text-[0.9rem] leading-relaxed text-slate-600">{s.summary}</p>
-              {open && <p className="mt-2.5 border-t border-slate-100 pt-2.5 text-[0.84rem] leading-relaxed text-slate-500">{s.detail}</p>}
+            <div key={s.no} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <span aria-hidden className={`grid h-8 w-8 place-items-center rounded-lg text-[0.9rem] font-black text-white ${i === STEPS.length - 1 ? 'bg-teal-500' : 'bg-slate-900'}`}>{s.no}</span>
+              <p className="mt-2.5 text-[0.98rem] font-black leading-tight text-slate-900">{s.title}</p>
+              <p className="mt-1.5 text-[0.86rem] leading-relaxed text-slate-600">{s.body}</p>
             </div>
           ))}
         </div>
 
-        <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-[0.85rem] font-bold text-slate-600 transition-colors hover:bg-slate-100">
-          {open ? '세부 진행 내용 접기' : '각 단계 세부 진행 내용 보기'}
-          <span aria-hidden className={`transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
-        </button>
+        <p className="mt-4 rounded-xl bg-white px-4 py-3 text-[0.86rem] leading-relaxed text-slate-600 ring-1 ring-slate-200">
+          자금조달 결과와 지원금액은 기업조건과 기관 심사에 따라 달라지며 보장되지 않습니다. 4단계를 목표로 설계하더라도, 자금조달 전에는 심사 설명에 필요한 업무 흐름과 화면 초안을 먼저 준비합니다.
+        </p>
+
+        <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left">
+            <span className="text-[0.9rem] font-black text-slate-800">자금조달 전에 먼저 구축할 수도 있나요?</span>
+            <span aria-hidden className={`shrink-0 text-blue-600 transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
+          </button>
+          {open && (
+            <p className="border-t border-slate-100 px-4 py-3 text-[0.86rem] leading-relaxed text-slate-600">
+              기업이 별도 개발예산을 보유하고 있거나 실제 서비스 운영이 시급한 경우, 자금조달 전에도 2·3·4단계 개발을 먼저 진행할 수 있습니다. 이 경우 선택한 구현단계의 개발계약과 단계별 대금조건을 별도로 체결합니다.
+            </p>
+          )}
+        </div>
       </div>
     </section>
   )

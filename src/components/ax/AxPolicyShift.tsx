@@ -1,73 +1,64 @@
-// SECTION #why-ax — "왜 지금은 사업계획서만으로 부족할까요?" (압축형: 3카드 + 결론 + 공식근거 아코디언)
-// ⚠️ 승인·가점 단정 금지. corePrograms(가격)와 무관. 공식 숫자는 policyShift2026.ts + 출처 고지 함께 노출.
+// SECTION #why-ax — "2026 정책자금 × AX" 정책변화 밴드. AX SHOWCASE 바로 다음, 메인 위계.
+// 기본 접힘으로 숨기지 않는다: 제목 + 공식 수치 4종이 모바일 첫 화면에도 바로 보인다. 세부·전체출처만 아코디언.
+// ⚠️ 승인·가점 자동적용 단정 금지. 공식 숫자·출처는 policyShift2026.ts 단일 소스.
 import { useState } from 'react'
 import { POLICY_SHIFT as S } from '../../data/policyShift2026'
 
-const CARDS = [
-  {
-    n: '1',
-    title: '계획서 품질의 평준화',
-    body: 'AI로 문서 작성은 쉬워졌습니다. 이제는 사업을 실제로 어떻게 실행할 것인지가 더 중요합니다.',
-  },
-  {
-    n: '2',
-    title: '설명 가능한 실행근거',
-    body: '업무 흐름도, 프로토타입과 MVP는 계획을 확인 가능한 구조로 설명하는 데 도움이 됩니다.',
-  },
-  {
-    n: '3',
-    title: '자금조달 이후의 활용',
-    body: '심사만을 위한 일회성 화면이 아니라 자금조달 후 실제 업무에서 사용할 시스템으로 연결합니다.',
-  },
+const LEVEL_LINES = [
+  '2단계는 클릭 가능한 실행 화면을 보여줍니다.',
+  '3단계는 실제 데이터를 저장하며 핵심 업무를 시험합니다.',
+  '4단계는 직원 사용과 관리자 운영까지 연결해 가장 풍부한 실행근거를 제공합니다.',
 ]
 
 export default function AxPolicyShift() {
-  const [factsOpen, setFactsOpen] = useState(false)
+  const [open, setOpen] = useState(false)
   return (
-    <section id="why-ax" className="scroll-mt-16 border-t border-slate-200 bg-gradient-to-b from-slate-50 to-white">
+    <section id="why-ax" className="scroll-mt-16 border-t border-slate-800 bg-slate-900">
       <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
-        <p className="text-sm font-bold uppercase tracking-widest text-teal-600">왜 지금 AX인가</p>
-        <h2 className="mt-2 max-w-4xl text-[1.7rem] font-black leading-[1.22] tracking-tight text-slate-900 sm:text-[2rem]">
-          왜 지금은 <span className="text-teal-600">사업계획서만으로 부족</span>할까요?
+        <p className="text-sm font-black uppercase tracking-[0.2em] text-teal-300">2026 POLICY FUNDING × AX</p>
+        <h2 className="mt-2.5 max-w-4xl text-[1.7rem] font-black leading-[1.22] tracking-tight text-white sm:text-[2.1rem]">
+          2026년, 정책자금의 방향이 <span className="text-teal-300">AI·AX 활용기업</span>으로 이동하고 있습니다.
         </h2>
-        <p className="mt-3 max-w-3xl text-[1.02rem] leading-relaxed text-slate-600">
-          AI로 누구나 그럴듯한 계획서를 만들 수 있는 시대입니다. 기업의 차이는 문장보다 실행할 구조와 준비도에서 드러납니다.
+        <p className="mt-3 max-w-3xl text-[1.02rem] leading-relaxed text-slate-300">
+          사업계획서만 작성하는 데서 멈추지 않고, 기존 사업에 AI를 어떻게 적용하고 실제 업무를 어떻게 바꿀 것인지 설명할 준비가 필요합니다.
         </p>
 
-        {/* 3카드 */}
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          {CARDS.map((c) => (
-            <div key={c.n} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <span aria-hidden className="grid h-8 w-8 place-items-center rounded-lg bg-teal-500 text-[0.82rem] font-black text-white">{c.n}</span>
-              <p className="mt-3 text-[1.05rem] font-black leading-snug text-slate-900">{c.title}</p>
-              <p className="mt-1.5 text-[0.92rem] leading-relaxed text-slate-600">{c.body}</p>
+        {/* 공식 수치 4종 — 항상 노출(모바일 2열) */}
+        <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {S.facts.map((f) => (
+            <div key={f.title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <p className="text-[1.35rem] font-black leading-none tracking-tight text-teal-300 sm:text-[1.5rem]">{f.value}</p>
+              <p className="mt-2 text-[0.9rem] font-black leading-snug text-white">{f.title}</p>
+              <p className="mt-1 text-[0.8rem] leading-relaxed text-slate-400">{f.desc}</p>
             </div>
           ))}
         </div>
+        <p className="mt-2.5 text-[0.78rem] leading-relaxed text-slate-500">출처: 중소벤처기업부 2026년 중소기업 정책자금 공급계획</p>
 
-        {/* 결론 강조 */}
-        <p className="mt-5 rounded-2xl bg-slate-900 px-5 py-4 text-[0.98rem] font-bold leading-relaxed text-white sm:text-[1.02rem]">
-          AX 화면이 승인을 보장하는 것은 아닙니다. 다만 계획만 제시하는 것보다 <span className="text-teal-300">실행 준비도와 설명력을 높이기 위한 현실적인 방법</span>입니다. 기업별 결과는 업종·재무상태·대표자 역량·자금 종류와 기관 심사에 따라 달라집니다.
-        </p>
+        {/* 강조 문구 */}
+        <div className="mt-6 rounded-2xl bg-white/[0.04] p-5 ring-1 ring-inset ring-white/10 sm:p-6">
+          <p className="text-[1.05rem] font-black leading-relaxed text-white sm:text-[1.12rem]">
+            AI로 누구나 계획서를 만들 수 있는 시대, 기업의 차이는 <span className="text-teal-300">실행할 구조와 준비도</span>에서 납니다.
+          </p>
+          <p className="mt-2 text-[0.95rem] leading-relaxed text-slate-300">미래AI랩은 사업계획을 실제 업무 흐름과 확인 가능한 화면으로 바꿉니다.</p>
+        </div>
 
-        {/* 공식 근거 — 기본 접힘 아코디언 */}
-        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <button type="button" onClick={() => setFactsOpen((v) => !v)} aria-expanded={factsOpen} className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left">
-            <span className="text-[0.95rem] font-black text-slate-800">2026년 정책 및 AI 전환 환경 근거 보기</span>
-            <span aria-hidden className={`shrink-0 text-teal-600 transition-transform ${factsOpen ? 'rotate-180' : ''}`}>▾</span>
+        {/* 세부 설명 + 전체 출처 아코디언 (여기만 접힘) */}
+        <div className="mt-4 overflow-hidden rounded-2xl border border-white/10">
+          <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="flex w-full items-center justify-between gap-3 bg-white/[0.03] px-4 py-3.5 text-left">
+            <span className="text-[0.92rem] font-black text-white">구현 수준별 실행근거와 전체 고지 보기</span>
+            <span aria-hidden className={`shrink-0 text-teal-300 transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
           </button>
-          {factsOpen && (
-            <div className="border-t border-slate-100 p-4">
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {S.facts.map((f) => (
-                  <div key={f.title} className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
-                    <p className="text-[1.15rem] font-black leading-none tracking-tight text-teal-600">{f.value}</p>
-                    <p className="mt-1.5 text-[0.9rem] font-black leading-snug text-slate-900">{f.title}</p>
-                    <p className="mt-1 text-[0.82rem] leading-relaxed text-slate-500">{f.desc}</p>
-                  </div>
+          {open && (
+            <div className="border-t border-white/10 p-4">
+              <ul className="space-y-1.5">
+                {LEVEL_LINES.map((l) => (
+                  <li key={l} className="flex items-start gap-2 text-[0.9rem] leading-snug text-slate-200"><span aria-hidden className="mt-0.5 text-teal-300">✓</span>{l}</li>
                 ))}
-              </div>
-              <p className="mt-3 text-[0.76rem] leading-relaxed text-slate-400">{S.sourceNote}</p>
+              </ul>
+              <p className="mt-3 rounded-xl bg-white/[0.03] px-4 py-3 text-[0.82rem] leading-relaxed text-slate-400">
+                {S.sourceNote} 모든 정책자금에 AX 가점이 자동 적용되는 것은 아니며, AX 화면이나 MVP가 자금승인을 보장하지 않습니다. 구현 수준은 설명력과 운영 준비도를 보완하기 위한 기준이며 승인결과를 보장하지 않습니다.
+              </p>
             </div>
           )}
         </div>

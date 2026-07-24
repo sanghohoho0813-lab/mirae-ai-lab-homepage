@@ -21,7 +21,7 @@ function HeroImg({ img, className }: { img: ShowcaseImg; className?: string }) {
   )
 }
 
-export default function AxHero({ onShowcase }: { onShowcase: () => void }) {
+export default function AxHero({ onShowcase, onProgram }: { onShowcase: () => void; onProgram: () => void }) {
   const [slide, setSlide] = useState(0)
   const active = AX_HERO2.slides[slide]
   return (
@@ -43,17 +43,24 @@ export default function AxHero({ onShowcase }: { onShowcase: () => void }) {
             <span className="block text-teal-300">AX 화면으로 바꿉니다.</span>
           </h1>
           <p className="mt-6 max-w-md text-[1.02rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
-            자금조달 전략부터 클릭형 프로토타입과 작동형 MVP까지 함께 설계합니다.
+            컨설팅비 100만원으로 자금전략과 AX 실행설계를 시작하고, 자금조달 후 필요한 수준의 시스템을 구축합니다.
           </p>
-          {/* CTA 2개 */}
-          <div className="mt-8 flex flex-col gap-3 sm:max-w-md sm:flex-row">
+          {/* 신뢰 문구 — 개발 협업 방식 */}
+          <p className="mt-4 border-l-2 border-teal-400 pl-3.5 text-[0.95rem] font-bold leading-snug text-teal-100 sm:text-[1rem]">
+            자금 컨설턴트와 개발 담당자가 처음부터 같은 프로젝트로 참여합니다.
+          </p>
+          {/* CTA 2개 + 텍스트 링크 */}
+          <div className="mt-7 flex flex-col gap-3 sm:max-w-md sm:flex-row">
             <Link to="/business-diagnosis" className="shine-cta flex items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 py-4 text-base font-black text-white shadow-lg shadow-blue-500/25 transition-transform hover:-translate-y-0.5 hover:bg-blue-400">
               <span aria-hidden>🩺</span> 3분 기업진단
             </Link>
             <button type="button" onClick={onShowcase} className="flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/5 px-6 py-4 text-base font-bold text-white transition-colors hover:bg-white/10">
-              AX 사례 먼저 보기 <span aria-hidden>↓</span>
+              AX 구축 사례 보기 <span aria-hidden>↓</span>
             </button>
           </div>
+          <button type="button" onClick={onProgram} className="mt-3.5 inline-flex items-center gap-1 text-[0.9rem] font-semibold text-teal-200/90 underline underline-offset-4 transition-colors hover:text-teal-100">
+            프로그램과 가격 보기 <span aria-hidden>→</span>
+          </button>
         </div>
 
         {/* 데스크톱 — 대표 AX 화면 크게 + 브랜드 수동 전환 (모바일 숨김) */}

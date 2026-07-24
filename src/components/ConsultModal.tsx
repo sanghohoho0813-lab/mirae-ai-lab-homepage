@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_METHODS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
 import {
   PROGRAM_CHOICES,
+  BUILD_LEVEL_CHOICES,
   FUNDING_GOAL_OPTIONS,
   FUNDING_TIMING_OPTIONS,
   ARREARS_OPTIONS,
@@ -14,7 +15,7 @@ import {
   AX_FORM,
 } from '../data/corePrograms'
 
-const AX_PROGRAM_NAME = 'AX 결합 성장자금형'
+const AX_PROGRAM_NAME = 'AX 사업화·자금조달 프로그램'
 
 const CONTACT_EMAIL = 'sanghohoho0813@gmail.com'
 
@@ -121,8 +122,9 @@ export default function ConsultModal({
   const [companyName, setCompanyName] = useState('')
   const [message, setMessage] = useState('')
   const [messageExtra, setMessageExtra] = useState('')
-  // ── 진행방식(핵심 프로그램) + 자금 공통질문 ──
+  // ── 진행방식(대표 프로그램) + 선택형 구현단계 + 자금 공통질문 ──
   const [program, setProgram] = useState('')
+  const [buildLevel, setBuildLevel] = useState('')
   const [bizForm, setBizForm] = useState('')
   const [goal, setGoal] = useState('')
   const [timing, setTiming] = useState('')
@@ -166,6 +168,7 @@ export default function ConsultModal({
     setProgram(next)
     setStepError('')
     if (next !== AX_PROGRAM_NAME) {
+      setBuildLevel('')
       setAxTasks([])
       setAxTaskEtc('')
       setAxData([])
@@ -199,6 +202,7 @@ export default function ConsultModal({
     setMessage('')
     setMessageExtra('')
     setProgram(preselectProgram && (PROGRAM_CHOICES as readonly string[]).includes(preselectProgram) ? preselectProgram : '')
+    setBuildLevel('')
     setBizForm('')
     setGoal('')
     setTiming('')
@@ -330,6 +334,7 @@ export default function ConsultModal({
     const programRows: ConsultContextRow[] = programSelect
       ? [
           ...(program ? [{ label: '진행방식', value: program }] : []),
+          ...(buildLevel ? [{ label: '희망 구현단계', value: buildLevel }] : []),
           ...(bizForm ? [{ label: '사업자 형태', value: bizForm }] : []),
           ...(goal ? [{ label: '목표 조달금액', value: goal }] : []),
           ...(timing ? [{ label: '자금 필요 시기', value: timing }] : []),
@@ -361,6 +366,7 @@ export default function ConsultModal({
     const structured = programSelect
       ? {
           program: program || null,
+          buildLevel: buildLevel || null,
           bizForm: bizForm || null,
           fundingGoal: goal || null,
           fundingTiming: timing || null,
@@ -444,9 +450,25 @@ export default function ConsultModal({
         })}
       </div>
       {isAx && (
-        <p className="mt-2.5 rounded-lg bg-white px-3 py-2 text-[0.78rem] leading-relaxed text-slate-500 ring-1 ring-blue-100">
-          AX 결합 성장자금형은 <b className="text-slate-700">적합성 신청 → 내부 검토 → 참여 승인 → 착수금 결제</b> 순서로 진행됩니다. 신청 시 결제가 이뤄지지 않습니다.
-        </p>
+        <>
+          <p className="mt-2.5 rounded-lg bg-white px-3 py-2 text-[0.78rem] leading-relaxed text-slate-500 ring-1 ring-blue-100">
+            컨설팅비 100만원으로 기업분석·자금전략·AX 실행설계를 먼저 진행하고, 본개발비는 자금조달 후 선택한 구현 수준에 따라 정산합니다. 신청 시 결제가 이뤄지지 않습니다.
+          </p>
+          <div className="mt-3">
+            <p className="mb-1.5 text-[0.82rem] font-semibold text-slate-500">희망 구현단계 <span className="font-normal text-slate-400">(선택 · 진단 후 결정 가능)</span></p>
+            <div className="flex flex-wrap gap-1.5">
+              {BUILD_LEVEL_CHOICES.map((lv) => {
+                const on = buildLevel === lv
+                return (
+                  <button key={lv} type="button" onClick={() => setBuildLevel(on ? '' : lv)} aria-pressed={on}
+                    className={`rounded-lg border px-2.5 py-1.5 text-left text-[0.8rem] leading-snug transition ${on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'}`}>
+                    {lv}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </>
       )}
     </div>
   )
