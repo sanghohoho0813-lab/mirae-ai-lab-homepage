@@ -230,7 +230,7 @@ export default function BusinessServicesPage() {
           <p className={eyebrow}>혹시 이런 상황이신가요?</p>
           <h2 className={h2Class}>조건이 좋은 회사만 큰 자금을 받는 것 같으셨나요?</h2>
           <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-600">
-            첫 거래이고 기존 대출이 적으며, 매출·신용상태가 좋은 기업은 대표자가 직접 신청해도 자금을 받을 수 있습니다. <b className="text-slate-900">문제는 그렇지 않은 기업입니다.</b>
+            첫 거래에 대출이 적고 매출·신용이 좋은 기업은, 대표자가 직접 신청해도 자금을 받습니다. <b className="text-slate-900">문제는 그렇지 않은 기업입니다.</b>
           </p>
           <ul className="mt-5 grid gap-2 sm:grid-cols-2">
             {EMPATHY.map((q) => (
@@ -240,7 +240,7 @@ export default function BusinessServicesPage() {
             ))}
           </ul>
           <p className="mt-5 break-keep border-l-2 border-blue-500 pl-4 text-[1rem] font-bold leading-relaxed text-slate-900">
-            신청서를 조금 더 잘 쓰는 것만으로 한계를 넘기는 어렵습니다. <span className="text-blue-700">1억원 이상</span>을 목표로 한다면, 신청금액이 아니라 <span className="text-blue-700">자금을 받을 이유와 실행계획</span>부터 달라져야 합니다.
+            신청서를 더 잘 쓰는 것만으로는 한계를 넘기 어렵습니다. 신청금액이 아니라, <span className="text-blue-700">자금을 받을 이유</span>부터 달라져야 합니다.
           </p>
         </div>
       </section>
@@ -254,8 +254,8 @@ export default function BusinessServicesPage() {
       {/* 5. 1억원 이상 목표 + 단일 프로그램 (홈 유일의 가격 노출) */}
       <section id="program" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
-          <p className={eyebrow}>1억원 이상을 설명할 수 있는 회사</p>
-          <h2 className={h2Class}>1억원 이상을 조달하려면, 1억원이 필요한 이유부터 보여줘야 합니다.</h2>
+          <p className={eyebrow}>자금 목표</p>
+          <h2 className={h2Class}>1억원 이상을 조달하려면, 그만한 이유부터 보여줘야 합니다.</h2>
           <p className="mt-3 max-w-2xl break-keep text-[1.02rem] font-bold leading-relaxed text-slate-800">{FUNDING_HOME.main}</p>
           <ul className="mt-3 space-y-1">
             {FUNDING_HOME.notes.map((n) => <li key={n} className="break-keep text-[0.82rem] leading-relaxed text-slate-500">· {n}</li>)}
@@ -263,7 +263,7 @@ export default function BusinessServicesPage() {
 
           <div className="mt-6 rounded-3xl border-2 border-blue-500 bg-white p-5 shadow-sm sm:p-6">
             <p className="text-[1.15rem] font-black tracking-tight text-slate-900">{FLAGSHIP.name}</p>
-            <p className="mt-1 break-keep text-[0.92rem] leading-relaxed text-slate-500">자금 신청서를 대신 쓰는 것이 아니라, 1억원 이상을 설명할 수 있는 회사를 만드는 것이 목표입니다.</p>
+            <p className="mt-1 break-keep text-[0.92rem] leading-relaxed text-slate-500">신청서를 대신 쓰는 것이 목표가 아닙니다. 그 돈이 필요한 이유를 보여주는 회사를 만듭니다.</p>
             <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
               <div className="rounded-xl bg-slate-50 px-4 py-3">
                 <p className="text-[0.76rem] font-bold text-slate-400">시작</p>
@@ -299,8 +299,8 @@ export default function BusinessServicesPage() {
       {/* 7. 2주 후 받는 결과물 */}
       <section id="deliverables" className="scroll-mt-16 border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-14">
-          <p className={eyebrow}>2주 후 받는 결과물</p>
-          <h2 className={h2Class}>말이 아니라 결과물을 확인합니다.</h2>
+          <p className={eyebrow}>받는 결과물</p>
+          <h2 className={h2Class}>계획서가 아니라, 눈으로 확인할 초안을 받습니다.</h2>
           <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {DELIVERABLES.map((d) => (
               <Link key={d.t} to={DETAIL} onClick={() => saveReturn('deliverables')} className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-transform hover:-translate-y-0.5">
@@ -424,7 +424,7 @@ export default function BusinessServicesPage() {
             ))}
           </div>
           <p className="mt-4 break-keep text-[0.85rem] leading-relaxed text-slate-500">
-            모든 서비스를 한꺼번에 권하지 않습니다. 현재 문제와 성장단계를 먼저 파악하고 가장 필요한 순서부터 김팀장이 설계합니다.
+            모든 서비스를 한꺼번에 권하지 않습니다. 지금 회사에 가장 필요한 순서부터 하나씩 설계합니다.
           </p>
           {/* 필요한 항목 바로가기(상세 모듈) */}
           <div className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">

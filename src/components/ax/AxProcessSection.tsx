@@ -38,13 +38,13 @@ export default function AxProcessSection({ onResult }: { onResult?: () => void }
         </div>
 
         <p className="mt-5 break-keep rounded-xl bg-slate-900 px-5 py-3.5 text-[0.9rem] font-bold leading-relaxed text-white">
-          이후 자금이 조달되면 선택한 구현단계에 따라 작동형 시스템으로 개발합니다. <span className="text-amber-300">2주</span>는 1단계 AX 실행설계와 화면 초안 제공기간이며, 정책기관 심사기간·본개발 일정과 고객 자료제출 지연 기간은 포함하지 않습니다.
+          자금이 조달되면 선택한 단계에 따라 작동형 시스템으로 개발합니다. 이 기간은 1단계(실행설계·화면 초안) 제공 기준이며, 심사기간·본개발 일정과 자료제출 지연은 포함하지 않습니다.
         </p>
 
         {onResult && (
           <div className="mt-5 flex justify-center">
             <button type="button" onClick={onResult} className="inline-flex min-h-[48px] items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-6 text-[0.92rem] font-black text-slate-700 transition-colors hover:bg-slate-50">
-              2주 동안 받는 결과물 보기 <span aria-hidden>→</span>
+              이 과정에서 받는 결과물 보기 <span aria-hidden>→</span>
             </button>
           </div>
         )}

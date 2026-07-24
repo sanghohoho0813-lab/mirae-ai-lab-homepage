@@ -48,14 +48,14 @@ export default function AxHero({ onShowcase, onProcess }: { onShowcase: () => vo
           <p className="mt-5 break-keep text-[1rem] font-bold leading-relaxed text-teal-200 sm:text-[1.08rem]">
             이제는 디지털 전환을 넘어 AI 전환, <span className="text-amber-300">AX의 시대</span>입니다.
           </p>
-          <p className="mt-3 max-w-lg break-keep text-[1rem] leading-relaxed text-slate-200 sm:text-[1.06rem]">
-            <span className="font-black text-amber-300">1억원 이상</span> 정책자금을 목표로, 기존 사업을 자금을 받을 이유가 보이는 <span className="font-bold text-white">AX 혁신기업</span> 구조로 전환합니다.
+          <p className="mt-3 max-w-lg break-keep text-[1.02rem] leading-relaxed text-slate-200 sm:text-[1.08rem]">
+            <span className="font-black text-amber-300">1억원 이상</span>을 목표로, 자금을 받을 이유가 보이는 <span className="font-bold text-white">AX 혁신기업</span>으로 바꿉니다.
           </p>
           <p className="mt-3.5 break-keep border-l-2 border-amber-400 pl-3.5 text-[0.95rem] font-bold leading-snug text-amber-100 sm:text-[1rem]">
-            대표 컨설턴트 김팀장이 기획과 개발에 직접 참여해 <span className="text-amber-300">2주</span> 안에 실행 초안을 완성합니다.
+            대표 컨설턴트 김팀장이 직접 참여해 <span className="text-amber-300">2주</span> 안에 실행 초안을 드립니다.
           </p>
           <p className="mt-2 break-keep text-[0.74rem] leading-relaxed text-slate-500">
-            필요자료가 모두 접수된 날부터 14일 기준이며, 정책기관 심사기간과 본개발 기간은 별도입니다.
+            필요자료 접수일부터 14일 기준이며, 심사기간·본개발 일정은 별도입니다.
           </p>
 
           {/* CTA */}
