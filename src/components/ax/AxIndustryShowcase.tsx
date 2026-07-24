@@ -16,6 +16,18 @@ const TABS = [
 ] as const
 type TabKey = (typeof TABS)[number]['key']
 
+// 업종별 "정책자금 설명 포인트" — 이 화면이 심사에서 어떤 사업구조를 설명하는지(브랜드 key 기준)
+const FUNDING_LINE: Record<string, string> = {
+  staydeck: '객실운영과 고객요청을 데이터로 관리하는 사업구조',
+  garageos: '차량 입고부터 작업사진과 출고까지 기록되는 정비시스템',
+  fieldcare: '직원배정·현장사진·완료보고를 연결한 현장관리 구조',
+  leaseflow: '계약·공실·수납과 현장점검을 한 화면으로 관리하는 구조',
+  careflow: '예약·접수·재방문 안내를 데이터로 연결한 진료운영 구조',
+  classpilot: '수업·출결·상담과 학부모 안내를 연결한 운영 구조',
+  storepulse: '전 매장 발주·재고·마감을 본사에서 관리하는 구조',
+  siteflow: '현장 공정·일일보고·자재요청을 본사와 연결한 관리 구조',
+}
+
 // 업종별 이모지(업종명 기준)
 const CAT_EMOJI: Record<string, string> = {
   '숙박·호텔': '🏨',
@@ -112,6 +124,13 @@ function ViewerCard({
         })}
       </div>
 
+      {/* 정책자금 설명 포인트 — 이 화면이 심사에서 설명하는 사업구조 */}
+      {FUNDING_LINE[brand.key] && (
+        <p className="mt-2.5 break-keep rounded-lg bg-teal-400/10 px-3 py-2 text-[0.82rem] font-bold leading-snug text-teal-200 ring-1 ring-inset ring-teal-400/20">
+          정책자금 설명 포인트 · {FUNDING_LINE[brand.key]}
+        </p>
+      )}
+
       {/* 현재 화면 캡션 */}
       <p className="mt-2 truncate text-[0.76rem] font-bold text-slate-400">{img.caption}</p>
 
@@ -195,8 +214,8 @@ export default function AxIndustryShowcase() {
         <SectionHead
           dark
           eyebrow="AX Showcase"
-          title={<>업종마다 <span className="text-teal-300">실제로 다른 AX 화면</span>을 만듭니다.</>}
-          desc="업종을 선택하거나 좌우로 넘겨 다른 AX 화면을 확인하세요."
+          title={<>우리 회사가 AX로 바뀌면 <span className="text-teal-300">심사에서 이렇게</span> 보여줄 수 있습니다.</>}
+          desc="업종을 선택하면 관리자·현장직원·고객이 어떤 화면을 쓰게 되는지 확인할 수 있습니다."
         />
 
         {/* 업종 pill(이모지) */}

@@ -16,17 +16,27 @@ import { FUNDING_HOME } from '../data/policyFunding2026'
 import { businessPackages, type ModuleGroup } from '../data/businessPackages'
 import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
 
-// 중소기업 대표용 메인 페이지 (모바일 우선). 핵심 메시지: 억 단위 정책자금 + 실제 AX 화면 + 공동 참여 + 후불.
-// 섹션 수는 유지하되 메시지·이미지·구매동선을 강화. 가격은 홈에서 한 곳(프로그램)에서만 노출.
+// 미래AI랩 = 정책자금 전문회사. AX는 자금을 받을 이유를 보여주는 실행수단.
+// 스토리: Hero → 고객 공감 → DX를 넘어 AX(정책근거) → AX 쇼케이스 → 1억 목표·프로그램 →
+//          2주 실행과정 → 결과물 → 구현수준 → 비교 → 진행 프로젝트 → 김팀장 → 생애주기 → FAQ → CTA
 const DETAIL = '/business-services/funding-consulting'
+
+// 고객 공감 — 소액만 받거나 거절당한 기업의 현실
+const EMPATHY = [
+  '다른 컨설팅 회사에서 진행했는데도 몇천만원에서 그치셨나요?',
+  '이미 대출이 있어 추가 자금 한도가 막히셨나요?',
+  '매출·업력이 부족하다는 이유로 거절당하셨나요?',
+  '신설법인이라 과거 실적은 적지만 지금 필요한 자금은 크지 않으신가요?',
+  '매번 소액만 받아 급한 운영비만 막고 제자리로 돌아오지는 않으셨나요?',
+]
 
 // 최종 제공 결과물(이미지 중심 5개)
 const DELIVERABLES = [
-  { t: '자금조달 전략', d: '신청기관, 목표금액과 자금사용계획', img: '/ax-showcase/b2b-order/photo-67-b2b-scope.webp' },
-  { t: 'AX 업무 흐름도', d: '현재 업무와 개선 업무를 한눈에 정리', img: '/ax-showcase/equipment-platform/photo-84-equiplink-flow.webp' },
-  { t: '실제 화면 초안', d: '사업계획을 눈으로 확인할 수 있는 화면', img: '/ax-showcase-v2/photo-104-staydeck-showcase.webp' },
-  { t: '시연형·작동형 MVP', d: '선택한 구현단계에 따른 실제 시스템', img: '/ax-showcase/b2b-order/photo-65-b2b-admin-dashboard.webp' },
-  { t: '심사 설명자료·특허 연계', d: '기술성과 실행계획을 설명하는 자료', img: '/ax-showcase/design-direction/photo-68-design-direction.webp' },
+  { t: '자금조달 전략', d: '목표기관, 자금용도와 우선순위', img: '/ax-showcase/b2b-order/photo-67-b2b-scope.webp' },
+  { t: '현재·개선 업무 흐름도', d: '기존 방식이 AX 방식으로 어떻게 바뀌는지 정리', img: '/ax-showcase/equipment-platform/photo-84-equiplink-flow.webp' },
+  { t: '주요 화면 초안 3~5개', d: '심사에서 실제로 보여줄 관리자·현장 화면', img: '/ax-showcase-v2/photo-104-staydeck-showcase.webp' },
+  { t: '기술·사업성 설명구조', d: '왜 이 시스템이 필요하고 어떻게 성장으로 이어지는지', img: '/ax-showcase/b2b-order/photo-65-b2b-admin-dashboard.webp' },
+  { t: 'AX·특허·본개발 로드맵', d: '자금조달 이후 무엇을 개발하고 확장할지 정리', img: '/ax-showcase/design-direction/photo-68-design-direction.webp' },
 ]
 
 // 1~4단계 — 가격이 아니라 "왜 필요한지"
@@ -41,6 +51,15 @@ const PROJECTS = [
   { label: '진행기업 A', stage: '자금전략 수립 · AX 적용업무 선정' },
   { label: '진행기업 B', stage: '업무 흐름 설계 · 화면 제작' },
   { label: '진행기업 C', stage: '기업자료 검토 · 기관 설명자료 준비' },
+]
+
+// 기업 생애주기 로드맵 5축
+const LIFECYCLE = [
+  { icon: '💰', t: '자금 확보', d: '현재 기업에 가장 적합한 자금과 기관을 먼저 정합니다.', tags: '정책자금 · 보증기관 · 운전·시설자금' },
+  { icon: '👥', t: '사람과 조직', d: '직원 채용·유지에 필요한 제도를 연결합니다.', tags: '고용지원금 · 인사제도 · 사내근로복지기금' },
+  { icon: '🏅', t: '기업가치 증명', d: '기술성·신뢰도를 외부에서 확인할 근거를 만듭니다.', tags: '벤처 · 연구소 · 메인비즈 · 이노비즈 · ISO' },
+  { icon: '🧮', t: '세금과 재무', d: '필요한 전문가와 함께 세금·재무전략을 검토합니다.', tags: '세무사 등 전문가 연계 · 법인운영 · 절세' },
+  { icon: '⚙️', t: 'AX·업무 고도화', d: '자금조달 이후 실제 업무가 더 잘 돌아가도록 고도화합니다.', tags: '업무시스템 · 데이터 · 자동화 · 기능확장' },
 ]
 
 const AWARDS = [
@@ -112,7 +131,6 @@ export default function BusinessServicesPage() {
     document.title = 'AX 사업화·자금조달 프로그램 | 미래 AI 랩'
   }, [])
 
-  // 뒤로가기(POP) 복원 — 상세/모듈에서 돌아오면 이전 스크롤 위치로. manual 로 직접 제어.
   useEffect(() => {
     if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'
     if (location.hash) return
@@ -173,14 +191,14 @@ export default function BusinessServicesPage() {
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.82rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></span>
+              <span className="text-[0.82rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">정책자금 전문</b></span>
             </span>
           </Link>
           <nav className="hidden items-center gap-5 text-[0.92rem] font-medium text-slate-600 xl:flex">
+            <button type="button" onClick={() => scrollToId('why-ax')} className="transition-colors hover:text-slate-900">왜 AX인가</button>
             <button type="button" onClick={() => scrollToId('ax-showcase')} className="transition-colors hover:text-slate-900">AX 쇼케이스</button>
-            <button type="button" onClick={() => scrollToId('why-ax')} className="transition-colors hover:text-slate-900">2026 정책</button>
-            <button type="button" onClick={() => scrollToId('process')} className="transition-colors hover:text-slate-900">진행 과정</button>
-            <button type="button" onClick={() => scrollToId('build-levels')} className="transition-colors hover:text-slate-900">구현 수준</button>
+            <button type="button" onClick={() => scrollToId('process')} className="transition-colors hover:text-slate-900">2주 실행과정</button>
+            <button type="button" onClick={() => scrollToId('lifecycle')} className="transition-colors hover:text-slate-900">기업 생애주기</button>
             <Link to={DETAIL} className="transition-colors hover:text-slate-900">프로그램</Link>
           </nav>
           <div className="flex items-center gap-2 sm:gap-2.5">
@@ -203,32 +221,53 @@ export default function BusinessServicesPage() {
 
       {/* 1. Hero */}
       <div ref={heroRef}>
-        <AxHero onShowcase={() => scrollToId('ax-showcase')} />
+        <AxHero onShowcase={() => scrollToId('ax-showcase')} onProcess={() => scrollToId('process')} />
       </div>
 
-      {/* 2. 업종별 AX 쇼케이스 */}
-      <AxIndustryShowcase />
+      {/* 2. 고객 공감 */}
+      <section className="border-t border-slate-200 bg-white">
+        <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
+          <p className={eyebrow}>혹시 이런 상황이신가요?</p>
+          <h2 className={h2Class}>조건이 좋은 회사만 큰 자금을 받는 것 같으셨나요?</h2>
+          <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-600">
+            첫 거래이고 기존 대출이 적으며, 매출·신용상태가 좋은 기업은 대표자가 직접 신청해도 자금을 받을 수 있습니다. <b className="text-slate-900">문제는 그렇지 않은 기업입니다.</b>
+          </p>
+          <ul className="mt-5 grid gap-2 sm:grid-cols-2">
+            {EMPATHY.map((q) => (
+              <li key={q} className="flex items-start gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[0.92rem] leading-snug text-slate-700">
+                <span aria-hidden className="mt-0.5 shrink-0 text-slate-400">·</span>{q}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 break-keep border-l-2 border-blue-500 pl-4 text-[1rem] font-bold leading-relaxed text-slate-900">
+            신청서를 조금 더 잘 쓰는 것만으로 한계를 넘기는 어렵습니다. <span className="text-blue-700">1억원 이상</span>을 목표로 한다면, 신청금액이 아니라 <span className="text-blue-700">자금을 받을 이유와 실행계획</span>부터 달라져야 합니다.
+          </p>
+        </div>
+      </section>
 
-      {/* 3. 정책자금 심사환경 변화 */}
+      {/* 3. DX를 넘어 AX — 정책 스토리 */}
       <AxPolicyShift onDetail={() => goDetail()} />
 
-      {/* 4. 억 단위 자금 목표 + 단일 프로그램 (홈 유일의 가격 노출) */}
+      {/* 4. AX 쇼케이스 */}
+      <AxIndustryShowcase />
+
+      {/* 5. 1억원 이상 목표 + 단일 프로그램 (홈 유일의 가격 노출) */}
       <section id="program" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
-          <p className={eyebrow}>억 단위 자금 목표 · 단일 프로그램</p>
-          <h2 className={h2Class}>{FUNDING_HOME.title}</h2>
-          <p className="mt-3 max-w-2xl break-keep text-[1.05rem] font-bold leading-relaxed text-slate-800">{FUNDING_HOME.main}</p>
+          <p className={eyebrow}>1억원 이상을 설명할 수 있는 회사</p>
+          <h2 className={h2Class}>1억원 이상을 조달하려면, 1억원이 필요한 이유부터 보여줘야 합니다.</h2>
+          <p className="mt-3 max-w-2xl break-keep text-[1.02rem] font-bold leading-relaxed text-slate-800">{FUNDING_HOME.main}</p>
           <ul className="mt-3 space-y-1">
             {FUNDING_HOME.notes.map((n) => <li key={n} className="break-keep text-[0.82rem] leading-relaxed text-slate-500">· {n}</li>)}
           </ul>
 
-          {/* 프로그램 + 비용 구조(가격 한 곳) */}
           <div className="mt-6 rounded-3xl border-2 border-blue-500 bg-white p-5 shadow-sm sm:p-6">
             <p className="text-[1.15rem] font-black tracking-tight text-slate-900">{FLAGSHIP.name}</p>
+            <p className="mt-1 break-keep text-[0.92rem] leading-relaxed text-slate-500">자금 신청서를 대신 쓰는 것이 아니라, 1억원 이상을 설명할 수 있는 회사를 만드는 것이 목표입니다.</p>
             <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
               <div className="rounded-xl bg-slate-50 px-4 py-3">
                 <p className="text-[0.76rem] font-bold text-slate-400">시작</p>
-                <p className="mt-0.5 text-[0.95rem] font-black text-slate-900">컨설팅비 100만원</p>
+                <p className="mt-0.5 text-[0.95rem] font-black text-slate-900">AX 혁신전환 컨설팅 100만원</p>
               </div>
               <div className="rounded-xl bg-amber-50 px-4 py-3 ring-1 ring-inset ring-amber-200">
                 <p className="text-[0.76rem] font-bold text-amber-700">본개발비 · 후불</p>
@@ -254,14 +293,14 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 5. 계획서가 AX 시스템으로 바뀌는 과정(이미지 흐름) */}
-      <AxProcessSection onDetail={() => goDetail()} />
+      {/* 6. 2주 실행과정 */}
+      <AxProcessSection onResult={() => scrollToId('deliverables')} />
 
-      {/* 6. 최종 제공 결과물(이미지 중심 5개) */}
+      {/* 7. 2주 후 받는 결과물 */}
       <section id="deliverables" className="scroll-mt-16 border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-14">
-          <p className={eyebrow}>실제 제공 결과물</p>
-          <h2 className={h2Class}>최종적으로 무엇을 받게 되나요?</h2>
+          <p className={eyebrow}>2주 후 받는 결과물</p>
+          <h2 className={h2Class}>말이 아니라 결과물을 확인합니다.</h2>
           <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {DELIVERABLES.map((d) => (
               <Link key={d.t} to={DETAIL} onClick={() => saveReturn('deliverables')} className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-transform hover:-translate-y-0.5">
@@ -286,7 +325,7 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 7. 1~4단계 구현수준(가격 없이 메시지 중심) */}
+      {/* 8. 1~4단계 구현수준 (가격 없이 메시지 중심) */}
       <section id="build-levels" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
           <p className={eyebrow}>구현 수준</p>
@@ -306,22 +345,11 @@ export default function BusinessServicesPage() {
           <p className="mt-4 break-keep text-[0.85rem] leading-relaxed text-slate-500">
             3단계도 핵심 기능을 검증할 수 있지만, 직원 사용과 운영계획까지 보여줘야 하는 기업에는 4단계를 권장합니다. 자금조달 결과와 금액은 기관 심사에 따라 달라지며 보장되지 않습니다.
           </p>
-          <div className="mt-5 flex justify-center">
+          <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <button type="button" onClick={() => goDetail('#build-levels')} className="inline-flex min-h-[48px] items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-6 text-[0.92rem] font-black text-slate-700 transition-colors hover:bg-slate-50">
               단계별 범위 확인하기 <span aria-hidden>→</span>
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. 일반 개발방식 비교(홈은 링크만) */}
-      <section className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-10">
-          <div className="flex flex-col items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-            <p className="break-keep text-[0.98rem] font-bold leading-snug text-slate-700">
-              일반 개발회사에 처음부터 전체 시스템을 의뢰하는 방식과 무엇이 다른지 확인해보세요.
-            </p>
-            <button type="button" onClick={() => goDetail('#compare')} className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-5 text-[0.9rem] font-black text-white transition-transform hover:-translate-y-0.5">
+            <button type="button" onClick={() => goDetail('#compare')} className="inline-flex min-h-[48px] items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-6 text-[0.92rem] font-black text-white transition-transform hover:-translate-y-0.5">
               일반 개발방식과 비교하기 <span aria-hidden>→</span>
             </button>
           </div>
@@ -346,34 +374,25 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 10. 성장 모듈 */}
-      <section id="growth-modules" className="scroll-mt-16 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-12">
-          <p className="text-[0.8rem] font-semibold text-slate-400">진단 결과에 따라 필요한 인증·지원제도만 연결합니다.</p>
-          <h2 className="mt-1.5 text-[1.4rem] font-black tracking-tight text-slate-900 sm:text-[1.6rem]">필요한 항목만 성장 순서에 맞게 연결합니다.</h2>
-          <div className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-            {GROWTH_MODULES.map((m, i) => <ModuleGroupCard key={m.id} m={m} defaultOpen={i === 0} onNav={saveReturn} />)}
-          </div>
-          {GROWTH_MODULES.map((m) => <span key={m.id} id={m.id} aria-hidden className="block h-0 scroll-mt-24" />)}
-        </div>
-      </section>
-
-      {/* 11. 대표자 신뢰영역 */}
+      {/* 10. 김팀장의 역할 */}
       <section id="leader" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <img src="/assets/profile/ceo-avatar.webp" alt="미래 AI 랩 대표 프로필 사진" loading="lazy" decoding="async" width={200} height={200} className="h-16 w-16 shrink-0 rounded-full object-cover shadow ring-2 ring-amber-400/40 sm:h-20 sm:w-20" />
+              <img src="/assets/profile/ceo-avatar.webp" alt="미래 AI 랩 대표 컨설턴트 김팀장 프로필 사진" loading="lazy" decoding="async" width={200} height={200} className="h-16 w-16 shrink-0 rounded-full object-cover shadow ring-2 ring-amber-400/40 sm:h-20 sm:w-20" />
               <div className="min-w-0">
-                <p className="text-[0.78rem] font-black uppercase tracking-widest text-blue-600">대표자와 수행체계</p>
-                <h3 className="mt-1 break-keep text-[1.2rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.4rem]">자금만 아는 사람도, 개발만 아는 사람도 만들기 어려운 방식입니다.</h3>
+                <p className="text-[0.78rem] font-black uppercase tracking-widest text-blue-600">정책자금·AX 성장설계 총괄</p>
+                <h3 className="mt-1 break-keep text-[1.2rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.4rem]">정책자금만 연결하는 컨설턴트가 아닙니다. 기업의 다음 단계까지 설계합니다.</h3>
               </div>
             </div>
             <p className="mt-5 break-keep text-[1rem] leading-relaxed text-slate-700">
-              정책자금 전략은 대표 컨설턴트가 직접 설계하고, 개발 담당자가 처음부터 함께 참여합니다.
+              대표 컨설턴트 김팀장은 자금 가능성 검토에서 끝나지 않습니다. 어떤 업무를 AX로 바꿀지 직접 기획하고, 개발 담당자와 기능·화면을 함께 설계합니다. 자금조달 이후에는 지원금·인증·연구개발조직·복지제도·절세전략까지 성장순서에 맞춰 연결합니다.
             </p>
             <p className="mt-2.5 break-keep text-[0.9rem] leading-relaxed text-slate-500">
               세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원. 누적 자금조달 지원 100억원+(지원금·세금 환급 포함).
+            </p>
+            <p className="mt-2.5 break-keep rounded-xl bg-slate-100 px-4 py-2.5 text-[0.82rem] leading-relaxed text-slate-600">
+              세무사 등 분야별 전문업무는 해당 자격을 보유한 외부 전문가와 협업해 연결합니다.
             </p>
             <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
               {AWARDS.map((a) => (
@@ -386,19 +405,48 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
+      {/* 11. 기업 생애주기 로드맵 */}
+      <section id="lifecycle" className="scroll-mt-16 border-t border-slate-200 bg-white">
+        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-14">
+          <p className={eyebrow}>기업 생애주기 로드맵</p>
+          <h2 className={h2Class}>자금조달이 끝이 아닙니다. 다음 성장순서까지 함께 설계합니다.</h2>
+          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {LIFECYCLE.map((a, i) => (
+              <div key={a.t} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-center gap-2">
+                  <span aria-hidden className="text-[1.2rem]">{a.icon}</span>
+                  <span className="text-[0.72rem] font-black text-slate-400">0{i + 1}</span>
+                </div>
+                <p className="mt-1.5 text-[1rem] font-black leading-snug text-slate-900">{a.t}</p>
+                <p className="mt-1.5 break-keep text-[0.85rem] leading-snug text-slate-600">{a.d}</p>
+                <p className="mt-2 break-keep text-[0.72rem] leading-snug text-slate-400">{a.tags}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 break-keep text-[0.85rem] leading-relaxed text-slate-500">
+            모든 서비스를 한꺼번에 권하지 않습니다. 현재 문제와 성장단계를 먼저 파악하고 가장 필요한 순서부터 김팀장이 설계합니다.
+          </p>
+          {/* 필요한 항목 바로가기(상세 모듈) */}
+          <div className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            {GROWTH_MODULES.map((m, i) => <ModuleGroupCard key={m.id} m={m} defaultOpen={i === 0} onNav={saveReturn} />)}
+          </div>
+          {GROWTH_MODULES.map((m) => <span key={m.id} id={m.id} aria-hidden className="block h-0 scroll-mt-24" />)}
+        </div>
+      </section>
+
       {/* 12. FAQ */}
-      <section id="faq" className="scroll-mt-16 border-t border-slate-200 bg-white">
+      <section id="faq" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>자주 묻는 질문</p>
           <h2 className={h2Class}>대표님들이 자주 묻는 질문</h2>
           <div className="mt-5 space-y-2.5">
             {[
-              { q: 'AX가 정확히 뭔가요?', a: '새로운 AI 사업을 시작한다는 뜻만은 아닙니다. 지금 엑셀, 카카오톡이나 수기로 처리하는 업무를 로그인·데이터 저장·자동화가 되는 화면으로 바꾸는 것도 AX입니다.' },
+              { q: 'AX가 정확히 뭔가요?', a: '새로운 AI 사업을 시작한다는 뜻만은 아닙니다. 지금 엑셀, 카카오톡이나 수기로 처리하는 업무를 AI와 데이터를 활용해 실제로 바꾸는 것도 AX입니다. 회사의 간판이 아니라 일하는 구조를 바꾸는 것입니다.' },
               { q: '개발을 전혀 몰라도 진행할 수 있나요?', a: '가능합니다. 대표자는 현재 업무가 어떻게 돌아가는지만 설명하면 됩니다. 기능명이나 개발용어를 미리 알 필요는 없습니다.' },
-              { q: '큰 개발비는 언제 내나요?', a: '컨설팅비 100만원으로 시작하고, 본개발비는 정책자금이 조달된 이후에 정산합니다. 자금이 실행되지 않으면 선택하지 않은 본개발비는 발생하지 않습니다.' },
-              { q: '정책자금 승인이 보장되나요?', a: '보장되지 않습니다. 다만 사업계획을 실제 업무 흐름, 화면과 자금사용계획으로 구체화해 심사에서 설명할 근거를 보완합니다.' },
+              { q: '큰 개발비는 언제 내나요?', a: 'AX 혁신전환 컨설팅비 100만원으로 시작하고, 본개발비는 정책자금이 조달된 이후에 정산합니다. 자금이 실행되지 않으면 선택하지 않은 본개발비는 발생하지 않습니다.' },
+              { q: '정책자금 승인이 보장되나요?', a: '보장되지 않습니다. 다만 사업계획을 실제 업무 흐름, 화면과 자금사용계획으로 구체화해 심사에서 설명할 근거를 보완합니다. 실제 승인 여부와 금액은 기관평가에 따라 달라집니다.' },
             ].map((f) => (
-              <details key={f.q} className="group rounded-2xl border border-slate-200 bg-slate-50 open:bg-white">
+              <details key={f.q} className="group rounded-2xl border border-slate-200 bg-white open:bg-white">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5 text-[0.98rem] font-bold text-slate-900">
                   Q. {f.q}
                   <span aria-hidden className="shrink-0 text-slate-400 transition-transform group-open:rotate-180">▾</span>
@@ -414,7 +462,10 @@ export default function BusinessServicesPage() {
       <div ref={finalCtaRef}>
         <section id="cta" className="border-t border-slate-800 bg-slate-900">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
-            <h2 className="break-keep text-[1.65rem] font-black leading-tight tracking-tight text-white sm:text-[2.1rem]">우리 회사도 AX로 설명할 수 있는지<br className="sm:hidden" /> 먼저 확인해보세요.</h2>
+            <h2 className="break-keep text-[1.55rem] font-black leading-tight tracking-tight text-white sm:text-[2rem]">
+              자금을 신청하는 회사에서,<br /><span className="text-amber-300">자금을 받을 이유가 보이는 AX 혁신기업</span>으로.
+            </h2>
+            <p className="mt-3 break-keep text-[0.98rem] leading-relaxed text-slate-300">1억원 이상 정책자금을 목표로, 자금전략·사업기획·실행화면을 2주 안에 설계합니다.</p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-blue-500 px-7 py-4 text-base font-black text-white shadow-lg shadow-blue-500/25 transition-transform hover:-translate-y-0.5 hover:bg-blue-400 sm:w-auto">
                 <span aria-hidden>🩺</span> 3분 기업진단 시작
@@ -430,7 +481,7 @@ export default function BusinessServicesPage() {
       <LegalFooter />
       <KakaoFloat />
 
-      {/* Mobile sticky CTA — 기업진단(카톡은 KakaoFloat가 담당) */}
+      {/* Mobile sticky CTA — 기업진단(카톡은 KakaoFloat) */}
       {!heroVisible && !atEnd && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
           <Link to="/business-diagnosis" className="flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-3 text-[0.95rem] font-bold text-white shadow-sm transition-colors hover:bg-blue-700">

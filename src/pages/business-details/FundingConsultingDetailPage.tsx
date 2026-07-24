@@ -290,16 +290,19 @@ export default function FundingConsultingDetailPage() {
         <div aria-hidden className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-teal-500/15 blur-3xl" />
         <div className="relative mx-auto max-w-3xl px-5 py-16 text-center sm:px-6 sm:py-24">
           <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-400/10 px-3.5 py-1.5 text-[0.82rem] font-bold text-amber-200 backdrop-blur">
-            자금전략 + 업종 맞춤 <Tip term="AX" className="text-amber-200">AI 전환(AI Transformation). 사람이 반복하던 업무를 자동화·디지털화해 회사 운영 방식을 바꾸는 것.</Tip> 실행설계 + 화면 구축
+            정책자금 × <Tip term="AX" className="text-amber-200">AI 전환(AI Transformation). 사람이 반복하던 업무를 자동화·디지털화해 회사 운영 방식을 바꾸는 것.</Tip> 혁신전환
           </span>
           <h1 className="mt-5 text-[1.7rem] font-black leading-[1.28] tracking-tight text-white sm:text-[2.5rem] sm:leading-[1.16]">
-            <span className="text-amber-300">억 단위 정책자금</span> 조달을 목표로,<br />실제로 보여줄 AX 화면까지 만듭니다.
+            정책자금, 계속 거절당하거나<br /><span className="text-amber-300">몇천만원</span> 수준에서 그치셨나요?
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-[1.05rem] leading-relaxed text-slate-300 sm:text-lg">
-            사업계획서 작성에서 끝나지 않습니다. 자금전략을 실제 업무 흐름과 작동하는 화면으로 구현합니다.
+            이제는 디지털 전환을 넘어 AI 전환, AX의 시대입니다.
           </p>
-          <p className="mx-auto mt-5 max-w-md text-[0.95rem] font-semibold leading-relaxed text-teal-200">
-            자금 컨설턴트와 개발 담당자가 처음부터 같은 프로젝트로 참여합니다.
+          <p className="mx-auto mt-4 max-w-xl text-[1.05rem] font-bold leading-relaxed text-white sm:text-lg">
+            <span className="text-amber-300">1억원 이상</span> 정책자금을 목표로, 기존 사업을 자금을 받을 이유가 보이는 AX 혁신기업 구조로 전환합니다.
+          </p>
+          <p className="mx-auto mt-5 max-w-lg text-[0.95rem] font-semibold leading-relaxed text-teal-200">
+            대표 컨설턴트 김팀장이 자금전략·기획·화면설계에 직접 참여하고, 개발 담당자가 처음부터 같은 프로젝트에 참여합니다.
           </p>
           <div className="mx-auto mt-8 flex w-full max-w-md flex-col gap-2.5 sm:flex-row sm:justify-center">
             <Link
@@ -313,10 +316,31 @@ export default function FundingConsultingDetailPage() {
               onClick={() => scrollToId('process')}
               className="flex min-h-[52px] flex-1 items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 text-[1.02rem] font-bold text-white transition-colors hover:bg-white/10"
             >
-              진행방식 보기
+              2주 실행과정 보기
             </button>
           </div>
           <Guarantee dark />
+        </div>
+      </section>
+
+      {/* ── 1.5 미래AI랩 정체성 — 우리는 어떤 회사인가? ──────────────────── */}
+      <section className={`bg-white ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>미래AI랩은</p>
+          <h2 className={bigHead}>
+            정책자금을 받을 사업구조를 설계하고,<br />그 전략을 실제 <span className="text-blue-600">AX 화면</span>으로 구현하는 정책자금 전문회사입니다.
+          </h2>
+          <p className={lead}>
+            정책자금 컨설팅 회사는 개발을 모르고, 개발회사는 정책자금 심사를 모르는 경우가 많습니다. 미래AI랩은 자금전략과 실제 화면을 하나의 프로젝트로 연결합니다.
+          </p>
+          <div className="mx-auto mt-7 max-w-xl rounded-3xl border-2 border-amber-300 bg-amber-50/60 p-5 text-center sm:p-6">
+            <p className="text-[1.05rem] font-black leading-snug text-slate-900">
+              자금을 신청하는 회사에서, <span className="text-amber-600">자금을 받을 이유가 보이는 AX 혁신기업</span>으로.
+            </p>
+            <p className="mt-2.5 text-[0.82rem] leading-relaxed text-slate-500">
+              AX 혁신기업은 미래AI랩이 기업의 AX 전환상태를 설명하기 위해 쓰는 표현이며, 특정 정부인증 명칭이 아닙니다.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -348,29 +372,29 @@ export default function FundingConsultingDetailPage() {
       {/* ── 3. 정책자금 심사환경 변화 — 왜 AX가 필요한가? ────────────────── */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>심사 환경</p>
-          <h2 className={bigHead}>정책자금 심사가<br /><span className="text-blue-600">달라지고 있습니다</span></h2>
+          <p className={kicker}>DX → AX</p>
+          <h2 className={bigHead}>왜 지금 DX를 넘어<br /><span className="text-blue-600">AX인가요?</span></h2>
+          <p className={lead}>
+            정부가 중점적으로 지원하는 산업과 기업 방향은 분명합니다. 수출·첨단기술·미래산업과 AI 관련 분야처럼 성장성과 정책적 필요성이 높은 기업을 우선 검토하는 방향이 강화되고 있습니다.
+          </p>
           <div className="mt-9 space-y-3">
             <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
-              <h3 className="text-[1.1rem] font-black leading-snug text-slate-900">평가 기회부터 갈립니다</h3>
+              <h3 className="text-[1.1rem] font-black leading-snug text-slate-900">정부가 보는 성장방향은 분명합니다</h3>
               <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">
-                신청서를 내기 전에, 정책적으로 먼저 지원할 분야인지 살펴보는 초기 평가부터 통과해야 합니다.
-              </p>
-              <p className="mt-2 text-[0.82rem] font-semibold text-slate-400">작은 용어: 정책우선도 평가</p>
-              <Example>기업부설연구소를 둔 회사는 연구노트와 신고 일정을 놓치지 않도록 관리하며 기술·성장성을 함께 설명합니다.</Example>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
-              <h3 className="text-[1.1rem] font-black leading-snug text-slate-900">문장만으로는 부족합니다</h3>
-              <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">
-                AI로 누구나 비슷한 사업계획서를 써서, 실제 실행구조와 준비 정도가 더 중요해졌습니다.
+                혁신성장분야·AI 활용기업 등 정책적으로 중요한 분야를 중점적으로 살펴봅니다.
               </p>
             </div>
             <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
-              <h3 className="text-[1.1rem] font-black leading-snug text-slate-900">거의 모든 업종에 적용됩니다</h3>
+              <h3 className="text-[1.1rem] font-black leading-snug text-slate-900">우리 회사가 수출·첨단기업이 될 수는 없습니다</h3>
               <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">
-                고객관리·작업일정·수거배송·예약·시설관리·보고처럼 반복 업무부터 바꿉니다.
+                숙박업체가 반도체회사가, 시설관리회사가 화장품 수출회사가 될 수는 없습니다.
               </p>
-              <Example>숙박업에서는 예약·객실 청소·정산을 한 화면에서 관리하도록 바꿉니다.</Example>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
+              <h3 className="text-[1.1rem] font-black leading-snug text-slate-900">기존 업무에 AI를 도입하는 AX 기업으로는 전환할 수 있습니다</h3>
+              <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">
+                2026년 정책자금 공고에서도 AI 관련 분야 영위기업뿐 아니라 AI를 도입·활용하는 중소벤처기업이 지원대상에 포함됩니다.
+              </p>
             </div>
           </div>
 
@@ -384,8 +408,9 @@ export default function FundingConsultingDetailPage() {
                 <Tip term="기술사업성평가">과거 매출만이 아니라 기술·사업모델·성장 가능성을 함께 보는 평가.</Tip>가 확대되며, 과거 매출만이 아니라 기술·사업모델·성장 가능성을 함께 봅니다.
               </p>
               <p>혁신성장분야는 정부가 성장 가능성이 높다고 보고 중점 지원하는 산업·기술 분야를 말합니다.</p>
-              <p>정책자금은 인건비·원재료·운영비처럼 사업을 계속 돌리는 데 필요한 운전자금과, 공장·기계·설비 구입에 쓰는 시설자금으로 나뉩니다.</p>
-              <p className="font-semibold text-slate-700">해당 여부와 지원결과는 중진공 등 기관의 실제 평가를 통해 결정됩니다.</p>
+              <p>2026년 정책자금 공고에서는 AI 관련 분야를 영위하는 기업뿐 아니라, 기존 업무에 AI를 도입·활용하는 중소벤처기업도 지원대상에 포함됩니다.</p>
+              <p className="font-semibold text-slate-700">실제 중점지원분야 해당 여부와 우대 적용은 기업의 사업내용·도입방식과 기관평가에 따라 결정됩니다.</p>
+              <p className="text-[0.82rem] text-slate-400">출처: 중소벤처기업부·중소벤처기업진흥공단 2026년 정책자금 융자계획 및 참고자료 (공고 제2026-287호).</p>
             </div>
           </details>
         </div>
@@ -394,14 +419,14 @@ export default function FundingConsultingDetailPage() {
       {/* ── 4. 실제 변화 과정 — 어떤 순서로 진행되나? ────────────────────── */}
       <section id="process" className={`scroll-mt-16 bg-white ${band}`}>
         <div className={inner}>
-          <p className={kicker}>진행 순서</p>
-          <h2 className={bigHead}>4단계로<br /><span className="text-blue-600">이렇게 바뀝니다</span></h2>
+          <p className={kicker}>2주 실행과정</p>
+          <h2 className={bigHead}><span className="text-amber-600">2주</span> 안에 사업계획이<br /><span className="text-blue-600">실행구조로</span> 바뀝니다</h2>
           <div className="mt-9 space-y-4">
             {([
-              { n: '1', src: '/ax-showcase/b2b-order/photo-60-b2b-problem.webp', t: '현재 업무 분석', d: '흩어진 업무와 반복 작업을 찾습니다.', alt: '엑셀·수기 등 흩어진 현재 업무를 정리하는 예시' },
-              { n: '2', src: '/ax-showcase/design-direction/photo-68-design-direction.webp', t: 'AX 실행설계', d: '사용자·데이터·화면 구조를 설계합니다.', alt: '사용자·데이터·화면 구조를 설계하는 예시' },
-              { n: '3', src: `${IMG}/photo-101-garageos-showcase.webp`, t: '심사용 프로토타입', d: '심사에서 설명할 화면과 시연자료를 만듭니다.', alt: '심사에서 시연하는 자동차 정비 통합 화면 예시', ex: '자동차 정비소에서는 차량 접수부터 정비 완료까지 화면을 넘기며 심사자에게 보여줍니다.' },
-              { n: '4', src: '/ax-showcase/wms/photo-37-wms-live-dashboard.webp', t: '작동형 업무 MVP', d: '자금조달 이후 실제 업무에 사용하는 시스템으로 구현합니다.', alt: '실제 업무를 운영하는 관리자 대시보드 예시' },
+              { n: '1', src: '/ax-showcase/b2b-order/photo-60-b2b-problem.webp', t: '기업과 자금 분석', d: '왜 자금이 필요하고 어떤 기관을 검토할지 정합니다.', alt: '엑셀·수기 등 흩어진 현재 업무를 정리하는 예시' },
+              { n: '2', src: '/ax-showcase/design-direction/photo-68-design-direction.webp', t: 'AX 적용업무 선정', d: '반복되는 업무 중 가장 먼저 바꿀 한 가지를 고릅니다.', alt: '사용자·데이터·화면 구조를 설계하는 예시' },
+              { n: '3', src: `${IMG}/photo-101-garageos-showcase.webp`, t: '업무 흐름과 화면설계', d: '직원과 관리자가 어떤 순서·화면으로 일할지 만듭니다.', alt: '심사에서 시연하는 자동차 정비 통합 화면 예시' },
+              { n: '4', src: '/ax-showcase/wms/photo-37-wms-live-dashboard.webp', t: '자금 설명자료 완성', d: '자금 사용계획·사업계획·AX 화면을 하나의 논리로 연결합니다.', alt: '실제 업무를 운영하는 관리자 대시보드 예시' },
             ] as { n: string; src: string; t: string; d: string; alt: string; ex?: string }[]).map((s, i, arr) => (
               <div key={s.n}>
                 <div className="grid items-center gap-4 rounded-3xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-[1.1fr,1fr] sm:p-5">
@@ -419,6 +444,9 @@ export default function FundingConsultingDetailPage() {
               </div>
             ))}
           </div>
+          <p className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-[0.85rem] leading-relaxed text-slate-500">
+            필요자료가 모두 접수된 날부터 14일 기준이며, 정책기관 심사기간과 본개발 일정은 별도입니다. 고객 자료제출·의사결정 지연 기간은 포함하지 않습니다.
+          </p>
         </div>
       </section>
 
@@ -550,11 +578,13 @@ export default function FundingConsultingDetailPage() {
 
           <div className="mt-5 rounded-3xl border-2 border-amber-300 bg-amber-50/60 p-5 sm:p-6">
             <p className="text-[1.05rem] font-black leading-snug text-slate-900">
-              본개발비는 <span className="text-amber-600">정책자금 조달 이후 정산</span>합니다.
+              본개발비는 <span className="text-amber-600">정책자금 조달 이후 정산(후불)</span>합니다.
             </p>
-            <p className="mt-2 text-[0.98rem] leading-relaxed text-slate-700">
-              자금이 실행되지 않으면 선택하지 않은 본개발비는 발생하지 않습니다.
-            </p>
+            <ul className="mt-2.5 space-y-1.5 text-[0.98rem] leading-relaxed text-slate-700">
+              <li>컨설팅비 100만원은 개발비에서 차감되지 않습니다.</li>
+              <li>자금이 실행되지 않으면 선택하지 않은 본개발비는 발생하지 않습니다.</li>
+              <li>선개발을 별도 계약한 경우 해당 계약의 지급조건이 적용됩니다.</li>
+            </ul>
           </div>
           <p className="mt-3 text-[0.8rem] leading-relaxed text-slate-500">
             자금조달 전에 먼저 개발(선개발)을 원하는 경우, 자금조달과 별개의 개발계약으로 진행합니다.
@@ -567,50 +597,74 @@ export default function FundingConsultingDetailPage() {
       <section className={`bg-white ${band}`}>
         <div className="mx-auto max-w-5xl px-0">
           <p className={kicker}>비교</p>
-          <h2 className={bigHead}>일반 분리발주 vs<br /><span className="text-blue-600">미래AI랩</span></h2>
-          <div className="mt-9 grid gap-4 lg:grid-cols-2">
-            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-              <p className="text-[0.82rem] font-black uppercase tracking-wide text-slate-400">일반 분리발주</p>
-              <ul className="mt-4 space-y-2.5">
-                {[
-                  '자금 컨설턴트·개발회사를 각각 따로 발주',
-                  '같은 사업을 개발회사에 다시 설명',
-                  '처음부터 전체 개발범위로 견적',
-                  '맞춤 시스템은 수천만원까지 확대',
-                  '착수금·중도금을 먼저 결제',
-                  '개발 이후 사업계획·자료를 다시 연결',
-                ].map((t) => (
-                  <li key={t} className="flex items-start gap-2 text-[0.95rem] leading-relaxed text-slate-500">
-                    <span className="mt-0.5 shrink-0 text-slate-400" aria-hidden>—</span>
-                    <span>{t}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="relative rounded-3xl border-2 border-blue-500 bg-white p-6 shadow-sm">
-              <span className="absolute -top-3 left-6 inline-flex rounded-full bg-blue-600 px-3 py-1 text-[0.74rem] font-black text-white shadow-sm">미래AI랩</span>
-              <p className="mt-1 text-[0.82rem] font-black uppercase tracking-wide text-blue-600">한 팀, 단계별 진행</p>
-              <ul className="mt-4 space-y-2.5">
-                {[
-                  '자금 컨설턴트·개발 담당자가 처음부터 공동참여',
-                  '컨설팅비 100만원으로 방향·화면부터',
-                  '심사에 필요한 핵심 업무부터 설계',
-                  '단계별 구현범위를 사전 공개',
-                  '본개발비는 정책자금 조달 이후 정산',
-                  'AX 구조를 사업계획과 함께 설계',
-                ].map((t) => (
-                  <li key={t} className="flex items-start gap-2 text-[0.95rem] font-semibold leading-relaxed text-slate-700">
-                    <span className="mt-0.5 shrink-0 font-black text-blue-600" aria-hidden>✓</span>
-                    <span>{t}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <h2 className={bigHead}>각자 잘하는 곳은 있습니다.<br /><span className="text-blue-600">둘을 잇는 곳은 드뭅니다.</span></h2>
+          <p className={lead}>정책자금 컨설팅 회사(A)와 개발회사(B)는 각자 강점이 있지만, 미래AI랩(C)은 자금전략과 실제 화면을 하나의 프로젝트로 잇습니다.</p>
+          <div className="mt-9 grid gap-4 lg:grid-cols-3">
+            {([
+              {
+                label: 'A · 일반 정책자금 컨설팅',
+                items: [
+                  '사업계획서·신청자료 중심',
+                  '실제 AX 화면·시스템은 별도',
+                  '개발업체에 사업을 다시 설명',
+                  '자금조달 이후 실행까지 연결 안 될 수 있음',
+                ],
+                highlight: false,
+              },
+              {
+                label: 'B · 일반 개발회사',
+                items: [
+                  '정책자금 심사·자금논리를 모를 수 있음',
+                  '처음부터 큰 개발범위 견적',
+                  '착수금·중도금 먼저',
+                  '개발 후 사업계획과 별도',
+                ],
+                highlight: false,
+              },
+              {
+                label: 'C · 미래AI랩',
+                items: [
+                  '김팀장이 정책자금·사업기획을 직접 설계',
+                  '개발 담당자 처음부터 공동참여',
+                  '컨설팅비 100만원으로 방향·화면 먼저',
+                  '2주 안에 자금전략·화면 초안',
+                  '본개발비는 자금조달 이후',
+                  '지원금·인증·복지기금·절세까지 성장단계 연결',
+                ],
+                highlight: true,
+              },
+            ] as { label: string; items: string[]; highlight: boolean }[]).map((col) =>
+              col.highlight ? (
+                <div key={col.label} className="relative rounded-3xl border-2 border-blue-500 bg-white p-6 shadow-sm">
+                  <span className="absolute -top-3 left-6 inline-flex rounded-full bg-blue-600 px-3 py-1 text-[0.74rem] font-black text-white shadow-sm">미래AI랩</span>
+                  <p className="mt-1 text-[0.82rem] font-black uppercase tracking-wide text-blue-600">{col.label}</p>
+                  <ul className="mt-4 space-y-2.5">
+                    {col.items.map((t) => (
+                      <li key={t} className="flex items-start gap-2 text-[0.95rem] font-semibold leading-relaxed text-slate-700">
+                        <span className="mt-0.5 shrink-0 font-black text-blue-600" aria-hidden>✓</span>
+                        <span>{t}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <div key={col.label} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                  <p className="text-[0.82rem] font-black uppercase tracking-wide text-slate-400">{col.label}</p>
+                  <ul className="mt-4 space-y-2.5">
+                    {col.items.map((t) => (
+                      <li key={t} className="flex items-start gap-2 text-[0.95rem] leading-relaxed text-slate-500">
+                        <span className="mt-0.5 shrink-0 text-slate-400" aria-hidden>—</span>
+                        <span>{t}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ),
+            )}
           </div>
-          <div className="mx-auto mt-5 max-w-2xl space-y-2 text-center">
-            <p className="text-[1rem] font-bold text-slate-800">무조건 가장 저렴하다고 말하지 않습니다.</p>
-            <p className="text-[0.95rem] leading-relaxed text-slate-600">
-              처음부터 불필요한 전체 시스템을 만드는 대신, 자금조달과 실제 업무에 필요한 기능부터 단계적으로 구현합니다.
+          <div className="mx-auto mt-6 max-w-2xl rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
+            <p className="text-[1rem] font-bold leading-relaxed text-slate-800">
+              정책자금만 받고 끝나는 것도, 시스템만 만들고 끝나는 것도 아닙니다. 자금전략과 실제 회사의 변화를 하나의 프로젝트로 진행합니다.
             </p>
           </div>
         </div>
@@ -649,14 +703,14 @@ export default function FundingConsultingDetailPage() {
       {/* ── 11. 대표자와 수행체계 — 누가 책임지고 하나? ──────────────────── */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>수행 체계</p>
+          <p className={kicker}>대표 컨설턴트</p>
           <div className="mx-auto mt-5 flex max-w-2xl flex-col items-center rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-8">
-            <img src="/assets/profile/ceo-avatar.webp" alt="대표 컨설턴트 프로필" loading="lazy" decoding="async" className="h-16 w-16 rounded-full border border-slate-200 object-cover" />
+            <img src="/assets/profile/ceo-avatar.webp" alt="대표 컨설턴트 김팀장 프로필" loading="lazy" decoding="async" className="h-16 w-16 rounded-full border border-slate-200 object-cover" />
             <h2 className="mt-4 text-[1.2rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.4rem]">
-              자금만 아는 사람도, 개발만 아는 사람도 만들기 어려운 방식입니다.
+              정책자금만 연결하는 컨설턴트가 아닙니다.<br />기업의 다음 단계까지 설계합니다.
             </h2>
             <p className="mt-3 text-[1rem] leading-relaxed text-slate-600">
-              정책자금 전략은 대표 컨설턴트가 직접 설계하고, 개발 담당자가 처음부터 함께 참여합니다.
+              대표 컨설턴트 김팀장은 자금 가능성 검토에서 끝나지 않습니다. 어떤 업무를 AX로 바꿀지 직접 기획하고, 개발 담당자와 기능·화면을 함께 설계합니다. 자금조달 이후에는 지원금·인증·연구개발조직·복지제도·절세전략까지 성장순서에 맞춰 연결합니다.
             </p>
             <p className="mt-4 rounded-2xl bg-slate-50 px-4 py-3 text-[0.92rem] leading-relaxed text-slate-600">
               세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원.
@@ -665,7 +719,39 @@ export default function FundingConsultingDetailPage() {
               <span className="text-[1.05rem] font-black text-amber-600">100억원+</span>
               <span className="text-[0.85rem] font-semibold text-slate-600">누적 자금조달 지원 (지원금·세금 환급 포함)</span>
             </div>
+            <p className="mt-4 text-[0.82rem] leading-relaxed text-slate-500">
+              세무사 등 분야별 전문업무는 해당 자격을 보유한 외부 전문가와 협업해 연결합니다.
+            </p>
           </div>
+        </div>
+      </section>
+
+      {/* ── 11.5 기업 생애주기 로드맵 — 자금조달 이후 성장순서 ────────────── */}
+      <section className={`bg-white ${band}`}>
+        <div className={inner}>
+          <p className={kicker}>성장 로드맵</p>
+          <h2 className={bigHead}>자금조달이 끝이 아닙니다.<br /><span className="text-blue-600">기업이 성장할 다음 순서</span>까지 함께 설계합니다.</h2>
+          <div className="mt-9 grid gap-3 sm:grid-cols-2">
+            {([
+              { n: '1', t: '자금 확보', d: '현재 기업에 가장 적합한 자금과 기관을 먼저 정합니다.', ex: '정책자금 · 보증기관 · 운전 · 시설자금' },
+              { n: '2', t: '사람과 조직', d: '직원 채용·유지에 필요한 제도를 연결합니다.', ex: '고용지원금 · 인사제도 · 사내근로복지기금' },
+              { n: '3', t: '기업가치 증명', d: '기술성·신뢰도를 외부에서 확인할 근거를 만듭니다.', ex: '벤처기업 · 연구소 · 메인비즈 · 이노비즈 · ISO' },
+              { n: '4', t: '세금과 재무', d: '필요한 전문가와 함께 세금·재무전략을 검토합니다.', ex: '세무사 등 전문가 연계 · 법인운영 · 절세' },
+              { n: '5', t: 'AX·업무 고도화', d: '자금조달 이후 실제 업무가 더 잘 돌아가도록 시스템을 고도화합니다.', ex: '' },
+            ] as { n: string; t: string; d: string; ex: string }[]).map((a) => (
+              <div key={a.n} className="flex items-start gap-3.5 rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-900 text-[0.9rem] font-black text-teal-300">{a.n}</span>
+                <div>
+                  <h3 className="text-[1.05rem] font-black leading-snug text-slate-900">{a.t}</h3>
+                  <p className="mt-1 text-[0.95rem] leading-relaxed text-slate-600">{a.d}</p>
+                  {a.ex && <p className="mt-1.5 text-[0.82rem] font-semibold text-slate-400">{a.ex}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-[0.92rem] leading-relaxed text-slate-500">
+            모든 서비스를 한꺼번에 권하지 않습니다. 현재 문제와 성장단계를 먼저 파악하고 가장 필요한 순서부터 설계합니다.
+          </p>
         </div>
       </section>
 
