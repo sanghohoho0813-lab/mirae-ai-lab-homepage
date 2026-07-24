@@ -1,117 +1,64 @@
-// SECTION 3 — 미래AI랩 컨설팅 진행 6단계 (인터랙티브, 텍스트·UI카드 중심)
-// 이미지는 4단계(화면 방향=68 1장) + 5단계(대표 프로토타입 2~3장)에만. 6단계=타임라인 UI.
+// SECTION #process — 진행 방식 4단계 (진단 → 실행설계 → 실행근거 제작 → 자금 실행·적용).
+// 한 줄 요약만 기본 노출, 세부 진행 내용은 펼쳐보기(아코디언)로만 노출.
 import { useState } from 'react'
-import { AX_PROCESS, ax, type AxImage } from '../../data/axShowcase'
-import { AxImg, SectionHead } from './axFrames'
-import AxLightbox from './AxLightbox'
+import { SectionHead } from './axFrames'
 
-const TIMELINE = [
-  { label: '자금 신청 서류 접수', state: '완료', tone: 'done' },
-  { label: '기관 보완자료 요청 대응', state: '진행 중', tone: 'now' },
-  { label: 'AX 화면 2차 피드백 반영', state: '진행 중', tone: 'now' },
-  { label: '다음 과제 · 연구소 신고일정 점검', state: '예정', tone: 'next' },
-] as const
+const STEPS = [
+  {
+    no: '1',
+    title: '3분 기업진단',
+    summary: '업종, 매출, 재무상태, 자금 목적과 반복 업무를 확인합니다.',
+    detail: '진단 결과에 따라 자금조달 실행형(A) 또는 AX 결합 성장자금형(B) 중 우리 회사에 맞는 방식을 안내합니다.',
+  },
+  {
+    no: '2',
+    title: '자금·AX 실행설계',
+    summary: '신청 가능한 자금과 함께 설명해야 할 사업 구조와 AX 범위를 정합니다.',
+    detail: '기업·재무현황 진단, 기관·자금 종류 선정, 신청전략과 함께 어떤 업무 흐름을 AX 화면으로 만들지 범위를 확정합니다.',
+  },
+  {
+    no: '3',
+    title: '실행근거 제작',
+    summary: 'A형은 클릭형 AX 프로토타입, B형은 실제 업무용 작동형 MVP를 제작합니다.',
+    detail: '업무 흐름도·화면설계를 바탕으로 A형은 핵심 화면 3~5개의 클릭형 프로토타입을, B형은 로그인·DB·관리자 화면을 포함한 작동형 MVP를 만듭니다.',
+  },
+  {
+    no: '4',
+    title: '자금 실행과 업무 적용',
+    summary: '신청, 보완과 기관 대응을 진행하고 구축 결과물을 실제 업무에 적용합니다.',
+    detail: '신청서류 제출·보완 요청 대응과 함께, 구축한 화면을 자금기관 설명자료로 활용하고 프로젝트 이후 실제 업무에 적용합니다.',
+  },
+]
 
 export default function AxProcessSection() {
-  const [step, setStep] = useState(0)
-  const [lb, setLb] = useState<AxImage | null>(null)
-  const s = AX_PROCESS[step]
+  const [open, setOpen] = useState(false)
   return (
     <section id="process" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-      <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-7">
+      <div className="mx-auto max-w-6xl px-5 py-9 sm:px-6 sm:py-11">
         <SectionHead
-          eyebrow="How We Work"
-          title="상담 이후, 프로젝트는 이 순서로 진행됩니다"
-          desc="단계마다 고객이 제공하는 것, 미래AI랩이 수행하는 것, 남는 결과물이 명확합니다."
+          eyebrow="진행 방식"
+          title="진단부터 자금 실행과 AX 구축까지 한 흐름으로 진행합니다."
+          desc="복잡한 절차 대신 4단계로 단순하게 진행합니다."
         />
 
-        <div className="mt-7 grid gap-5 lg:grid-cols-[minmax(0,270px)_minmax(0,1fr)] lg:items-start">
-          {/* 단계 선택 */}
-          <div role="tablist" aria-label="진행 단계" className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible">
-            {AX_PROCESS.map((p, i) => {
-              const on = i === step
-              return (
-                <button
-                  key={p.no}
-                  role="tab"
-                  aria-selected={on}
-                  onClick={() => setStep(i)}
-                  className={`flex shrink-0 items-center gap-3 rounded-2xl border px-4 py-2.5 text-left transition-colors lg:w-full ${on ? 'border-blue-300 bg-white shadow-md' : 'border-transparent bg-white/60 hover:bg-white'}`}
-                >
-                  <span className={`text-[0.95rem] font-black tabular-nums ${on ? 'text-blue-600' : 'text-slate-300'}`}>{p.no}</span>
-                  <span className={`whitespace-nowrap text-[0.95rem] font-bold lg:whitespace-normal ${on ? 'text-slate-900' : 'text-slate-500'}`}>{p.title}</span>
-                </button>
-              )
-            })}
-          </div>
-
-          {/* 단계 상세 */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-            <div className="flex items-baseline gap-3">
-              <span className="text-[1.6rem] font-black tabular-nums text-blue-600">{s.no}</span>
-              <h3 className="text-[1.3rem] font-black tracking-tight text-slate-900">{s.title}</h3>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map((s, i) => (
+            <div key={s.no} className="relative flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex items-center gap-2.5">
+                <span aria-hidden className={`grid h-8 w-8 place-items-center rounded-lg text-[0.9rem] font-black text-white ${i === STEPS.length - 1 ? 'bg-teal-500' : 'bg-slate-900'}`}>{s.no}</span>
+                <p className="text-[1.02rem] font-black leading-tight text-slate-900">{s.title}</p>
+              </div>
+              <p className="mt-2.5 text-[0.9rem] leading-relaxed text-slate-600">{s.summary}</p>
+              {open && <p className="mt-2.5 border-t border-slate-100 pt-2.5 text-[0.84rem] leading-relaxed text-slate-500">{s.detail}</p>}
             </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-[0.78rem] font-black text-slate-400">고객이 제공하는 것</p>
-                <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-700">{s.client}</p>
-              </div>
-              <div className="rounded-2xl bg-blue-50/70 p-4">
-                <p className="text-[0.78rem] font-black text-blue-600">미래AI랩이 수행하는 것</p>
-                <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-700">{s.lab}</p>
-              </div>
-            </div>
-            <p className="mt-4 flex flex-wrap items-center gap-2 text-[0.92rem]">
-              <span className="rounded-md bg-slate-900 px-2 py-0.5 text-[0.75rem] font-black text-white">결과물</span>
-              <b className="text-slate-800">{s.output}</b>
-            </p>
-
-            {/* 4단계 — 화면 방향(68) 1장 */}
-            {s.no === '04' && s.imageNos && (
-              <>
-                <button type="button" onClick={() => setLb(ax(s.imageNos![0]))} className="group mt-5 block w-full overflow-hidden rounded-xl border border-slate-200 shadow-sm transition-transform hover:-translate-y-0.5" aria-label={`${ax(s.imageNos[0]).screen} 확대 보기`}>
-                  <AxImg image={ax(s.imageNos[0])} sizes="(min-width:1024px) 700px, 100vw" className="w-full transition-transform duration-300 group-hover:scale-[1.01] motion-reduce:transition-none" />
-                </button>
-                <p className="mt-2 text-[0.75rem] font-medium text-slate-400">화면 예시는 프로젝트 초기 방향을 함께 정하기 위한 디자인 가이드입니다.</p>
-              </>
-            )}
-
-            {/* 5단계 — 대표 프로토타입 2~3장 */}
-            {s.no === '05' && s.imageNos && (
-              <>
-                <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                  {s.imageNos.map((no) => {
-                    const im = ax(no)
-                    return (
-                      <button key={no} type="button" onClick={() => setLb(im)} className="group overflow-hidden rounded-xl border border-slate-200 shadow-sm transition-transform hover:-translate-y-0.5" aria-label={`${im.screen} 확대 보기`}>
-                        <AxImg image={im} sizes="(min-width:640px) 240px, 100vw" className="w-full transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none" />
-                      </button>
-                    )
-                  })}
-                </div>
-                <p className="mt-2 text-[0.75rem] font-medium text-slate-400">가상 업종 기반 프로토타입 화면 예시 · 누르면 크게 볼 수 있습니다.</p>
-              </>
-            )}
-
-            {/* 6단계 — 진행 타임라인 UI */}
-            {s.no === '06' && (
-              <div className="mt-5 rounded-2xl border border-slate-200 p-4">
-                <p className="text-[0.8rem] font-black text-slate-500">진행 상태 예시</p>
-                <ul className="mt-3 space-y-2.5">
-                  {TIMELINE.map((t) => (
-                    <li key={t.label} className="flex items-center gap-3">
-                      <span aria-hidden className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[0.6rem] font-black ${t.tone === 'done' ? 'bg-emerald-500 text-white' : t.tone === 'now' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{t.tone === 'done' ? '✓' : t.tone === 'now' ? '●' : ''}</span>
-                      <span className="flex-1 text-[0.9rem] font-semibold text-slate-700">{t.label}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-[0.72rem] font-black ${t.tone === 'done' ? 'bg-emerald-50 text-emerald-700' : t.tone === 'now' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-500'}`}>{t.state}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+          ))}
         </div>
+
+        <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-[0.85rem] font-bold text-slate-600 transition-colors hover:bg-slate-100">
+          {open ? '세부 진행 내용 접기' : '각 단계 세부 진행 내용 보기'}
+          <span aria-hidden className={`transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
+        </button>
       </div>
-      <AxLightbox image={lb} onClose={() => setLb(null)} />
     </section>
   )
 }

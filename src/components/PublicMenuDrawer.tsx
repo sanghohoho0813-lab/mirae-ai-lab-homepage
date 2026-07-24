@@ -65,12 +65,12 @@ const BUSINESS_MENU: MenuConfig = {
       heading: '서비스 안내',
       accent: 'blue',
       items: [
-        { no: '1', label: '자금조달 전략', desc: '정책자금 신청 전략·실행 근거', to: '/business-services/funding-consulting', match: (p) => p.startsWith('/business-services/funding-consulting') },
+        { no: '1', label: 'AX 구축 사례', desc: '업종별 실제 화면 먼저 보기', to: '/business-services#ax-showcase' },
         { no: '2', label: '왜 AX인가', to: '/business-services#why-ax' },
         { no: '3', label: '진행 방식', to: '/business-services#process' },
-        { no: '4', label: 'AX 구축 사례', to: '/business-services#industry' },
-        { no: '5', label: '프로그램', desc: 'A. 자금조달 실행형 · B. AX 결합 성장자금형', to: '/business-services#programs' },
-        { no: '6', label: '성장 모듈', to: '/business-services#growth-modules' },
+        { no: '4', label: 'A·B 프로그램', desc: 'A. 자금조달 실행형 · B. AX 결합 성장자금형', to: '/business-services#programs' },
+        { no: '5', label: '성장 모듈', to: '/business-services#growth-modules' },
+        { no: '6', label: '자금조달 상세', desc: '정책자금 신청 전략·실행 근거', to: '/business-services/funding-consulting', match: (p) => p.startsWith('/business-services/funding-consulting') },
       ],
     },
     {

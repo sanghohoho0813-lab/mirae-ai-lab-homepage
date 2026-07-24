@@ -310,8 +310,8 @@ const LEGACY_INDUSTRIES: ShowcaseIndustry[] = AX_INDUSTRY_TABS.map((t): Showcase
 
 /** 전체 업종(신규 8 + 기존 6) — 쇼케이스 컴포넌트 단일 소스 */
 export const SHOWCASE_INDUSTRIES: ShowcaseIndustry[] = [...NEW_INDUSTRIES, ...LEGACY_INDUSTRIES]
-/** 첫 화면 퀵내비 기본 노출 8개(신규 업종). '전체 보기'로 기존 업종까지 확장 */
-export const AX_QUICKNAV_KEYS = NEW_INDUSTRIES.map((i) => i.key)
+/** 첫 화면 노출 순서(스펙): 숙박 → 정비 → 시설관리 → 임대 → 병원 → 학원 → 외식 → 건설 */
+export const AX_QUICKNAV_KEYS = ['staydeck', 'garageos', 'fieldcare', 'leaseflow', 'careflow', 'classpilot', 'storepulse', 'siteflow']
 
 export function showcaseIndustry(key: string): ShowcaseIndustry | undefined {
   return SHOWCASE_INDUSTRIES.find((i) => i.key === key)
