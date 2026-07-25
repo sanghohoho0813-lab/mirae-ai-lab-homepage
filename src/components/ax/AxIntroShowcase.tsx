@@ -51,31 +51,31 @@ export default function AxIntroShowcase({ onShowcase, onProcess }: { onShowcase:
             // 5개를 2열로 놓으면 마지막 1개가 남는다 — 마지막 카드만 가로로 채운다(모바일·태블릿)
             const wide = i === PREVIEWS.length - 1
             return (
-            <button
-              key={p.card.key}
-              type="button"
-              onClick={() => { setIndex(i); setOpen(true) }}
-              aria-label={`${p.card.label} ${p.screen} 크게 보기`}
-              className={`flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-2 text-left transition-colors hover:bg-white/[0.08] sm:p-2.5 ${wide ? 'max-lg:col-span-2' : ''}`}
-            >
-              <div className={`flex items-center justify-center overflow-hidden rounded-xl bg-slate-950 p-1 sm:h-[132px] ${wide ? 'h-[150px]' : 'h-[104px]'}`}>
-                <img
-                  src={p.img.srcSm}
-                  alt={p.img.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="max-h-full w-auto max-w-full object-contain"
-                />
-              </div>
-              <div className="mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1">
-                <span aria-hidden className="text-[0.95rem] leading-none">{p.card.emoji}</span>
-                <span className="text-[0.9rem] font-black leading-tight text-white">{p.card.label}</span>
-                {p.card.status === 'similar' && (
-                  <span className="rounded-md bg-amber-400/15 px-1.5 py-0.5 text-[0.78rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-400/30">유사 사례</span>
-                )}
-              </div>
-              <p className="mt-1 break-keep text-[0.82rem] leading-snug text-slate-400">{p.card.tasks.slice(0, 3).join(' · ')}</p>
-            </button>
+              <button
+                key={p.card.key}
+                type="button"
+                onClick={() => { setIndex(i); setOpen(true) }}
+                aria-label={`${p.card.label} ${p.screen} 크게 보기`}
+                className={`flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-2 text-left transition-colors hover:bg-white/[0.08] sm:p-2.5 ${wide ? 'max-lg:col-span-2' : ''}`}
+              >
+                <div className={`flex items-center justify-center overflow-hidden rounded-xl bg-slate-950 p-1 sm:h-[132px] ${wide ? 'h-[150px]' : 'h-[104px]'}`}>
+                  <img
+                    src={p.img.srcSm}
+                    alt={p.img.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="max-h-full w-auto max-w-full object-contain"
+                  />
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                  <span aria-hidden className="text-[0.95rem] leading-none">{p.card.emoji}</span>
+                  <span className="text-[0.9rem] font-black leading-tight text-white">{p.card.label}</span>
+                  {p.card.status === 'similar' && (
+                    <span className="rounded-md bg-amber-400/15 px-1.5 py-0.5 text-[0.78rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-400/30">유사 사례</span>
+                  )}
+                </div>
+                <p className="mt-1 break-keep text-[0.82rem] leading-snug text-slate-400">{p.card.tasks.slice(0, 3).join(' · ')}</p>
+              </button>
             )
           })}
         </div>
