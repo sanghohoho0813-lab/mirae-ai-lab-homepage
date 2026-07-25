@@ -40,6 +40,13 @@ export default function AxPhotoSwipe({
     }
 
     let destroyed = false
+    let closingViaPop = false
+
+    // 뒤로가기(하드웨어/브라우저)로 라이트박스만 닫히도록 히스토리 센티넬을 push.
+    // 열 때 항목을 하나 쌓고, popstate 시 페이지 이탈 대신 PhotoSwipe만 닫는다.
+    // 라이트박스가 X·ESC·배경클릭 등 자체 UI로 닫힐 때는 이 센티넬을 history.back()으로 소비한다.
+    window.history.pushState({ ...(window.history.state ?? {}), miraePswp: true }, '')
+
     const pswp = new PhotoSwipe({
       dataSource: data.map((s) => ({ src: s.src, width: s.width, height: s.height, alt: s.alt })),
       index: Math.max(0, Math.min(indexRef.current, data.length - 1)),
@@ -124,11 +131,22 @@ export default function AxPhotoSwipe({
     pswp.on('destroy', () => {
       destroyed = true
       onCloseRef.current()
+      // 뒤로가기로 닫힌 게 아니라면(=자체 UI로 닫힘) 우리가 쌓은 센티넬을 소비한다.
+      if (!closingViaPop && (window.history.state as { miraePswp?: boolean } | null)?.miraePswp) {
+        window.history.back()
+      }
     })
+
+    const onPop = () => {
+      closingViaPop = true
+      if (!destroyed) pswp.close()
+    }
+    window.addEventListener('popstate', onPop)
 
     pswp.init()
 
     return () => {
+      window.removeEventListener('popstate', onPop)
       if (!destroyed) pswp.destroy()
     }
     // open 이 true 로 바뀔 때만 새 인스턴스를 만든다(슬라이드/인덱스는 ref 로 최신값 사용).
