@@ -7,6 +7,7 @@ import KakaoFloat from '../components/KakaoFloat'
 import AxHero from '../components/ax/AxHero'
 import AxFourSteps from '../components/ax/AxFourSteps'
 import AxIndustryShowcase from '../components/ax/AxIndustryShowcase'
+import AxIntroShowcase from '../components/ax/AxIntroShowcase'
 import AxPolicyShift from '../components/ax/AxPolicyShift'
 import AxProcessSection from '../components/ax/AxProcessSection'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
@@ -18,8 +19,9 @@ import { businessPackages, type ModuleGroup } from '../data/businessPackages'
 import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
 
 // 미래AI랩 = 정책자금 전문회사. AX는 자금을 받을 이유를 보여주는 실행수단.
-// 스토리: Hero → 공감 → 사업계획서만으로 부족한 이유 → 정부 정책방향 → AX 4단계 → AX 화면 →
-//          최대 2주 과정 → 결과물 → 프로그램·비용(1회) → 진행형 사례 → 김팀장 → 생애주기 → FAQ → CTA
+// 스토리: Hero(궁금증) → AX 화면 미리보기+핵심 메시지 → 공감 → 사업계획서만으로 부족한 이유 →
+//          정부 정책방향 → AX 4단계 → AX 화면 16업종 → 최대 2주 과정 → 결과물 → 프로그램·비용(1회) →
+//          진행형 사례 → 김팀장 → 생애주기 → FAQ → CTA
 const DETAIL = '/business-services/funding-consulting'
 
 // 고객 공감 — 소액만 받거나 거절당한 기업의 현실
@@ -236,12 +238,15 @@ export default function BusinessServicesPage() {
         </div>
       </header>
 
-      {/* 1. Hero */}
+      {/* 1. Hero — 궁금증만 남기고 끊는다 */}
       <div ref={heroRef}>
-        <AxHero onShowcase={() => scrollToId('ax-showcase')} onProcess={() => scrollToId('process')} />
+        <AxHero onNext={() => scrollToId('ax-preview')} />
       </div>
 
-      {/* 2. 고객의 현실 */}
+      {/* 2. AX 화면 미리보기 → 핵심 메시지 → 진행속도 → CTA */}
+      <AxIntroShowcase onShowcase={() => scrollToId('ax-showcase')} onProcess={() => scrollToId('process')} />
+
+      {/* 3. 고객의 현실 */}
       <section className="border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
           <p className={eyebrow}>혹시 이런 상황이신가요?</p>
@@ -266,7 +271,7 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 3. 사업계획서만으로 부족한 이유 */}
+      {/* 4. 사업계획서만으로 부족한 이유 */}
       <section id="plan" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
           <p className={eyebrow}>지금 심사에서 벌어지는 일</p>
@@ -284,19 +289,19 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 4. 정부 정책방향과 AX */}
+      {/* 5. 정부 정책방향과 AX */}
       <AxPolicyShift onDetail={() => goDetail()} />
 
-      {/* 5. AX 혁신전환 4단계 */}
+      {/* 6. AX 혁신전환 4단계 */}
       <AxFourSteps />
 
-      {/* 6. 업종별 AX 화면 */}
+      {/* 7. 업종별 AX 화면 */}
       <AxIndustryShowcase />
 
-      {/* 7. 최대 2주 진행과정 */}
+      {/* 8. 최대 2주 진행과정 */}
       <AxProcessSection onResult={() => scrollToId('deliverables')} />
 
-      {/* 8. 최종 결과물 */}
+      {/* 9. 최종 결과물 */}
       <section id="deliverables" className="scroll-mt-16 border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-14">
           <p className={eyebrow}>받는 결과물</p>
@@ -328,7 +333,7 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 9. 프로그램 · 비용(홈 유일 노출) */}
+      {/* 10. 프로그램 · 비용(홈 유일 노출) */}
       <section id="program" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
           <p className={eyebrow}>프로그램</p>
@@ -383,7 +388,7 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 10. 진행형 사례 */}
+      {/* 11. 진행형 사례 */}
       <section id="projects" className="scroll-mt-16 border-t border-slate-800 bg-slate-900">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-12">
           <p className="text-sm font-bold uppercase tracking-widest text-teal-300">진행 중인 프로젝트</p>
@@ -408,7 +413,7 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 11. 김팀장 */}
+      {/* 12. 김팀장 */}
       <section id="leader" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
@@ -439,7 +444,7 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 12. 기업 생애주기 — 순서 미리보기 */}
+      {/* 13. 기업 생애주기 — 순서 미리보기 */}
       <section id="lifecycle" className="scroll-mt-16 border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-14">
           <p className={eyebrow}>기업 생애주기 로드맵</p>
@@ -466,7 +471,7 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 13. FAQ */}
+      {/* 14. FAQ */}
       <section id="faq" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>자주 묻는 질문</p>
@@ -490,7 +495,7 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 14. 최종 CTA */}
+      {/* 15. 최종 CTA */}
       <div ref={finalCtaRef}>
         <section id="cta" className="border-t border-slate-800 bg-slate-900">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
