@@ -1,14 +1,13 @@
-// SECTION 2 — 히어로 다음 첫 스크롤 화면. AX 화면 예시 5개를 먼저 보여준 뒤,
-// "사업계획서만 준비하는 것이 아닙니다" 메시지와 진행속도·CTA로 이어간다.
+// SECTION 2 — 히어로 다음 첫 스크롤 화면. 히어로에서 넘어온 "AX의 시대 · 1억원 이상" 메시지를
+// AX 화면 예시 4개와 함께 보여준 뒤, "사업계획서만 준비하는 것이 아닙니다" 메시지와 진행속도·CTA로 이어간다.
 // 업종 데이터는 #ax-showcase와 같은 단일 소스(AX_INDUSTRY_CARDS)를 그대로 읽어온다(내용 변경 없음).
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AX_INDUSTRY_CARDS, type AxIndustryCard, type ShowcaseImg } from '../../data/axShowcase'
 import AxPhotoSwipe, { type AxPswpSlide } from './AxPhotoSwipe'
-import { SectionHead } from './axFrames'
 
-// 미리보기 업종 5개 — 제조 · 도소매 · 학원 · B2B · 외식 프랜차이즈
-const PREVIEW_KEYS = ['mfg', 'retail', 'classpilot', 'b2bsales', 'storepulse']
+// 미리보기 업종 4개 — 도소매 · 생산제조 · 학원·교육 · B2B
+const PREVIEW_KEYS = ['retail', 'mfg', 'classpilot', 'b2bsales']
 
 type Preview = { card: AxIndustryCard; img: ShowcaseImg; screen: string }
 
@@ -39,45 +38,46 @@ export default function AxIntroShowcase({ onShowcase, onProcess }: { onShowcase:
   return (
     <section id="ax-preview" className="scroll-mt-16 border-t border-white/10 bg-slate-900">
       <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-14">
-        <SectionHead
-          dark
-          eyebrow="AX 화면 미리보기"
-          title={<>말로만 설명하지 않습니다. <span className="text-teal-300">이런 화면</span>을 직접 만들어 드립니다.</>}
-          desc="업종별로 실제 업무가 돌아가는 화면입니다. 눌러서 크게 확인해보세요."
-        />
+        {/* 히어로에서 넘어온 메시지 — AX 화면 예시와 같은 화면에서 이어 읽힌다 */}
+        <p className="text-[1.05rem] font-bold leading-relaxed text-teal-300 sm:text-[1.25rem]">
+          이제는 디지털 전환을 넘어 AI 전환, <span className="text-amber-300">AX의 시대</span>입니다.
+        </p>
+        <p className="mt-3 max-w-2xl break-keep rounded-2xl border border-white/12 bg-white/[0.04] px-5 py-4 text-[1rem] leading-relaxed text-slate-200 sm:px-6 sm:py-5 sm:text-[1.15rem]">
+          <span className="font-black text-amber-300">1억원 이상 정책자금</span>을 목표로, 자금을 받을 이유가 보이는 <span className="font-bold text-white">AX 혁신기업 구조</span>를 만듭니다.
+        </p>
 
-        <div className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-3.5 lg:grid-cols-5">
-          {PREVIEWS.map((p, i) => {
-            // 5개를 2열로 놓으면 마지막 1개가 남는다 — 마지막 카드만 가로로 채운다(모바일·태블릿)
-            const wide = i === PREVIEWS.length - 1
-            return (
-              <button
-                key={p.card.key}
-                type="button"
-                onClick={() => { setIndex(i); setOpen(true) }}
-                aria-label={`${p.card.label} ${p.screen} 크게 보기`}
-                className={`flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-2 text-left transition-colors hover:bg-white/[0.08] sm:p-2.5 ${wide ? 'max-lg:col-span-2' : ''}`}
-              >
-                <div className={`flex items-center justify-center overflow-hidden rounded-xl bg-slate-950 p-1 sm:h-[132px] ${wide ? 'h-[150px]' : 'h-[104px]'}`}>
-                  <img
-                    src={p.img.srcSm}
-                    alt={p.img.alt}
-                    loading="lazy"
-                    decoding="async"
-                    className="max-h-full w-auto max-w-full object-contain"
-                  />
-                </div>
-                <div className="mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1">
-                  <span aria-hidden className="text-[0.95rem] leading-none">{p.card.emoji}</span>
-                  <span className="text-[0.9rem] font-black leading-tight text-white">{p.card.label}</span>
-                  {p.card.status === 'similar' && (
-                    <span className="rounded-md bg-amber-400/15 px-1.5 py-0.5 text-[0.78rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-400/30">유사 사례</span>
-                  )}
-                </div>
-                <p className="mt-1 break-keep text-[0.82rem] leading-snug text-slate-400">{p.card.tasks.slice(0, 3).join(' · ')}</p>
-              </button>
-            )
-          })}
+        <p className="mt-6 max-w-2xl break-keep text-[0.9rem] leading-relaxed text-slate-400">
+          업종별로 실제 업무가 돌아가는 화면입니다. 눌러서 크게 확인해보세요.
+        </p>
+
+        <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-3.5 lg:grid-cols-4">
+          {PREVIEWS.map((p, i) => (
+            <button
+              key={p.card.key}
+              type="button"
+              onClick={() => { setIndex(i); setOpen(true) }}
+              aria-label={`${p.card.label} ${p.screen} 크게 보기`}
+              className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-2 text-left transition-colors hover:bg-white/[0.08] sm:p-2.5"
+            >
+              <div className="flex h-[104px] items-center justify-center overflow-hidden rounded-xl bg-slate-950 p-1 sm:h-[132px]">
+                <img
+                  src={p.img.srcSm}
+                  alt={p.img.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="max-h-full w-auto max-w-full object-contain"
+                />
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1">
+                <span aria-hidden className="text-[0.95rem] leading-none">{p.card.emoji}</span>
+                <span className="text-[0.9rem] font-black leading-tight text-white">{p.card.label}</span>
+                {p.card.status === 'similar' && (
+                  <span className="rounded-md bg-amber-400/15 px-1.5 py-0.5 text-[0.78rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-400/30">유사 사례</span>
+                )}
+              </div>
+              <p className="mt-1 break-keep text-[0.82rem] leading-snug text-slate-400">{p.card.tasks.slice(0, 3).join(' · ')}</p>
+            </button>
+          ))}
         </div>
 
         <button type="button" onClick={onShowcase} className="mt-3.5 inline-flex items-center gap-1 text-[0.9rem] font-semibold text-teal-200/90 underline underline-offset-4 transition-colors hover:text-teal-100">
