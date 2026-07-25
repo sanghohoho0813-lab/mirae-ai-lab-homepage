@@ -468,6 +468,119 @@ const LEGACY_CATALOG = AX_INDUSTRY_TABS.map(legacyCatalogEntry)
 /** 통합 쇼케이스 단일 소스 — 신규 8 + 기존 6 = 14 엔트리 */
 export const AX_SHOWCASE_CATALOG: ShowcaseCatalogEntry[] = [...NEW_CATALOG, ...LEGACY_CATALOG]
 
+// ══════════════════════════════════════════════════════════════════════════
+// AX 업종 카드 16종 — 쇼케이스 업종 선택 UI 단일 소스.
+// 원칙(이미지 정직성): ① 실제로 맞는 화면이 있으면 그대로 매핑한다.
+//                    ② 없으면 유사 사례임을 카드에 명시한다(status: 'similar').
+//                    ③ 그것도 없으면 이미지를 억지로 붙이지 않고 준비 중 + 대표 업무만 보여준다.
+// 화면 슬롯: integrated(통합) · pc(관리자·PC) · mobile(현장·모바일). 없는 슬롯은 탭에서 비활성.
+// ══════════════════════════════════════════════════════════════════════════
+
+export type IndustryCardStatus = 'ready' | 'similar' | 'soon'
+export type AxIndustryCard = {
+  key: string
+  emoji: string
+  label: string
+  status: IndustryCardStatus
+  /** 카드 헤드라인 1줄 */
+  headline: string
+  /** 대표 업무(준비 중 업종에서도 무엇을 만드는지 보여준다) */
+  tasks: string[]
+  /** 이 화면이 심사에서 설명하는 사업구조 */
+  fundingLine: string
+  /** 유사 사례 / 준비 중 고지 */
+  note?: string
+  screens: { integrated?: ShowcaseImg; pc?: ShowcaseImg; mobile?: ShowcaseImg }
+}
+
+const NEW_BY_KEY_ALL = new Map(NEW_INDUSTRIES.map((i) => [i.key, i] as const))
+/** 신규 브랜드 업종 → 카드(대표/PC/모바일 그대로) */
+function brandCard(key: string, emoji: string, label: string, fundingLine: string): AxIndustryCard {
+  const b = NEW_BY_KEY_ALL.get(key)
+  if (!b) throw new Error(`unknown showcase brand: ${key}`)
+  return {
+    key, emoji, label, status: 'ready',
+    headline: b.headline,
+    tasks: b.features,
+    fundingLine,
+    screens: { integrated: b.representative, pc: b.pc, mobile: b.mobile },
+  }
+}
+
+export const AX_INDUSTRY_CARDS: AxIndustryCard[] = [
+  brandCard('staydeck', '🏨', '숙박·호텔', '객실 운영과 고객 요청을 데이터로 관리하는 사업구조'),
+  brandCard('garageos', '🚘', '자동차 정비', '차량 입고부터 작업사진과 출고까지 기록되는 정비시스템'),
+  brandCard('fieldcare', '🏢', '시설관리', '직원배정·현장사진·완료보고를 연결한 현장관리 구조'),
+  brandCard('leaseflow', '🏠', '임대·건물관리', '계약·공실·수납과 현장점검을 한 화면으로 관리하는 구조'),
+  brandCard('siteflow', '🏗️', '건설·현장', '현장 공정·일일보고·자재요청을 본사와 연결한 관리 구조'),
+  {
+    key: 'mfg', emoji: '🏭', label: '생산·제조', status: 'ready',
+    headline: '작업지시부터 공정 진행과 현장 실적까지 하나로 연결합니다.',
+    tasks: ['작업지시 배포', '공정 진행률', '현장 실적 입력', '불량·이슈 기록', '생산 KPI 집계'],
+    fundingLine: '생산 데이터를 쌓아 납기와 불량을 관리하는 제조운영 구조',
+    screens: { integrated: legacy(1), pc: legacy(3), mobile: legacy(5) },
+  },
+  {
+    key: 'retail', emoji: '📦', label: '도소매', status: 'ready',
+    headline: '전화·카톡 주문을 거래처 앱과 관리자 화면으로 바꿉니다.',
+    tasks: ['거래처 반복주문', '단위 자동 환산', '재고 연동', '미결제 관리', '출고 상태 확인'],
+    fundingLine: '주문·재고·출고를 한 데이터로 묶어 오출고를 줄이는 유통 구조',
+    screens: { integrated: legacy(67), pc: legacy(65), mobile: legacy(61) },
+  },
+  {
+    key: 'wms', emoji: '🚚', label: '물류·유통', status: 'ready',
+    headline: '입고부터 피킹·출고까지 창고 흐름을 실시간으로 봅니다.',
+    tasks: ['입고 검수', '적치 위치 안내', '모바일 스캔 피킹', '부족재고 경고', '출고 확정'],
+    fundingLine: '재고차이와 오출고 위험을 데이터로 관리하는 물류운영 구조',
+    screens: { integrated: legacy(35), pc: legacy(42), mobile: legacy(41) },
+  },
+  {
+    key: 'rnd', emoji: '🔬', label: '연구소·R&D', status: 'ready',
+    headline: '연구과제·연구노트·신고일정을 한 화면에서 관리합니다.',
+    tasks: ['연구원·과제 연결', '월별 연구노트', '증빙 누락 확인', '신고일정 알림', '인력변경 이력'],
+    fundingLine: '연구개발 활동을 증빙으로 남겨 기술성 평가에 사용하는 구조',
+    note: '현장 모바일 화면은 준비 중입니다. 기업 인터뷰 후 필요 여부를 함께 정합니다.',
+    screens: { integrated: legacy(47), pc: legacy(49) },
+  },
+  {
+    key: 'b2bsales', emoji: '🤝', label: 'B2B·영업', status: 'similar',
+    headline: '거래처 탐색부터 견적·상담까지 영업 흐름을 연결합니다.',
+    tasks: ['품목 탐색·필터', '상세·점검 정보', '견적 요청', '상담 배정', '요청 이력 관리'],
+    fundingLine: '영업 문의와 견적 이력을 데이터로 축적하는 B2B 거래 구조',
+    note: '같은 업종 화면 대신 산업장비 B2B 매칭 플랫폼 화면을 유사 사례로 보여드립니다.',
+    screens: { integrated: legacy(84), mobile: legacy(81) },
+  },
+  {
+    key: 'reservation', emoji: '📅', label: '예약·CRM', status: 'ready',
+    headline: '예약과 고객 이력, 재방문 관리를 하나로 묶습니다.',
+    tasks: ['직원별 예약 캘린더', '중복·누락 방지', '고객 상담 이력', '고객 모바일 예약', '재방문 안내'],
+    fundingLine: '고객 데이터를 남겨 재방문과 매출을 설명하는 서비스 운영 구조',
+    screens: { integrated: legacy(25), pc: legacy(27), mobile: legacy(29) },
+  },
+  {
+    key: 'cs', emoji: '🎧', label: '고객서비스', status: 'soon',
+    headline: '문의 접수부터 처리 완료까지 응대 이력을 남깁니다.',
+    tasks: ['문의 접수·담당자 배정', '처리 상태 관리', '응대 이력 기록', '반복 문의 안내', '만족도 확인'],
+    fundingLine: '응대 품질과 처리 속도를 수치로 설명하는 고객관리 구조',
+    note: '이 업종의 전용 화면은 준비 중입니다. 실제 업무는 인터뷰 후 맞춤 설계합니다.',
+    screens: {},
+  },
+  {
+    key: 'ops', emoji: '⚙️', label: '기업운영', status: 'soon',
+    headline: '흩어진 사내 업무 요청과 기록을 한 곳으로 모읍니다.',
+    tasks: ['업무 요청·승인', '자산·비품 관리', '계약 일정 알림', '부서별 업무 이력', '경영 지표 정리'],
+    fundingLine: '내부 업무를 데이터로 관리해 인건비 대비 처리량을 설명하는 구조',
+    note: '이 업종의 전용 화면은 준비 중입니다. 실제 업무는 인터뷰 후 맞춤 설계합니다.',
+    screens: {},
+  },
+  brandCard('storepulse', '🍽️', '외식·프랜차이즈', '전 매장 발주·재고·마감을 본사에서 관리하는 구조'),
+  brandCard('careflow', '🏥', '병원·의원', '예약·접수·재방문 안내를 데이터로 연결한 진료운영 구조'),
+  brandCard('classpilot', '🎓', '학원·교육', '수업·출결·상담과 학부모 안내를 연결한 운영 구조'),
+]
+
+/** 기본 선택 업종 — 통합/PC/모바일 3화면이 모두 준비된 시설관리 */
+export const AX_INDUSTRY_DEFAULT = 'fieldcare'
+
 /** 필터 우선순위(존재하는 category만 노출, 목록 밖 category는 뒤에 append) */
 const FILTER_PRIORITY = ['숙박·호텔', '자동차 정비', '시설관리', '건설·현장', '생산·제조', '물류·유통', '연구소·R&D', 'B2B·영업', '예약·CRM', '고객서비스', '기업운영']
 const PRESENT_CATEGORIES = new Set(AX_SHOWCASE_CATALOG.map((e) => e.category))

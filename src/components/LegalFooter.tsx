@@ -40,7 +40,7 @@ export default function LegalFooter({
             </span>
             <span className="flex flex-col leading-tight">
               <span className={`text-[0.95rem] font-bold tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>{b.serviceName}</span>
-              <span className={`text-xs font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · <b className={`font-bold ${dark ? 'text-slate-200' : 'text-slate-700'}`}>미래경영지원센터</b></span>
+              <span className={`text-[0.82rem] font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · <b className={`font-bold ${dark ? 'text-slate-200' : 'text-slate-700'}`}>미래경영지원센터</b></span>
             </span>
           </Link>
 
@@ -77,7 +77,7 @@ export default function LegalFooter({
           </p>
         </div>
 
-        <div className={`mt-5 flex flex-col gap-1 text-xs ${dark ? 'text-slate-500' : 'text-slate-400'} sm:flex-row sm:items-center sm:justify-between`}>
+        <div className={`mt-5 flex flex-col gap-1 text-[0.82rem] ${dark ? 'text-slate-500' : 'text-slate-400'} sm:flex-row sm:items-center sm:justify-between`}>
           <p>© {year} {b.companyName}. All rights reserved.</p>
           <p>정책자금·정부지원·기업인증·세금 관련 결과는 기관 심사 등에 따라 달라질 수 있으며 특정 결과를 보장하지 않습니다.</p>
         </div>

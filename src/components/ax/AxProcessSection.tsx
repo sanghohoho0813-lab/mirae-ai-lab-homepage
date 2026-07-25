@@ -1,44 +1,45 @@
-// SECTION #process — "2주 안에 사업계획이 실행구조로". 이미지 중심 4단계.
-// 각 단계: 제목 1줄 + 설명 1줄 + 대표 이미지 1장. 14일 범위 고지 포함.
+// SECTION #process — 최대 2주 진행과정 타임라인.
+// 오래 끄는 컨설팅이 아니라는 점을 날짜로 보여준다. 5구간 세로 타임라인 + 짧은 현실 고지.
 import { SectionHead } from './axFrames'
 
-const STEPS = [
-  { no: '1', title: '기업과 자금 분석', desc: '왜 자금이 필요하고 어떤 기관을 검토할지 정합니다.', img: '/ax-showcase/b2b-order/photo-60-b2b-problem.webp', alt: '기업·자금 상황을 분석하는 예시 화면' },
-  { no: '2', title: 'AX 적용업무 선정', desc: '반복되는 업무 중 가장 먼저 바꿀 한 가지를 고릅니다.', img: '/ax-showcase/design-direction/photo-68-design-direction.webp', alt: 'AX로 바꿀 업무를 선정하는 예시 화면' },
-  { no: '3', title: '업무 흐름과 화면설계', desc: '직원과 관리자가 어떤 순서·화면으로 일할지 만듭니다.', img: '/ax-showcase-v2/photo-089-siteflow-showcase.webp', alt: '업무 흐름과 화면을 설계한 예시 화면' },
-  { no: '4', title: '자금 설명자료 완성', desc: '자금 사용계획·사업계획·AX 화면을 하나의 논리로 연결합니다.', img: '/ax-showcase/b2b-order/photo-67-b2b-scope.webp', alt: '자금 설명자료를 정리한 예시 화면' },
+const TIMELINE = [
+  { day: 'Day 0~1', title: '인터뷰와 자료 확인', desc: '현재 업무와 자금 상황을 듣고 필요한 자료를 정리합니다.' },
+  { day: 'Day 1~2', title: '방향안내와 디자인 초안', desc: '어떤 자금을 어떤 논리로 준비할지, 화면은 어떤 방향일지 먼저 보여드립니다.' },
+  { day: 'Day 3~5', title: 'MVP 초안 제작', desc: '실제 업무 기준으로 최소 기능 버전(바로 보여줄 수 있는 첫 버전)을 만듭니다.' },
+  { day: 'Day 6~10', title: '소통과 보완', desc: '대표님 피드백을 반영해 화면과 사업 논리를 함께 다듬습니다.' },
+  { day: 'Day 10~14', title: '최종 결과물 완성 목표', desc: '자금전략, 사업계획과 AX 프로그램을 하나의 결과물로 정리합니다.' },
 ]
 
 export default function AxProcessSection({ onResult }: { onResult?: () => void }) {
   return (
     <section id="process" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-14">
+      <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-14">
         <SectionHead
-          eyebrow="2주 실행과정"
-          title={<>2주 안에 사업계획이 <span className="text-blue-600">실행구조</span>로 바뀝니다.</>}
-          desc="필요자료가 준비되면, 자금전략부터 업무 흐름과 화면 초안까지 눈으로 확인합니다."
+          eyebrow="최대 2주 진행과정"
+          title={<>오래 끌지 않습니다. <span className="text-blue-600">빠르게 보여드리고</span> 함께 완성합니다.</>}
+          desc="인터뷰와 동시에 설계를 시작합니다. 기다리는 시간이 아니라, 확인하는 시간이 됩니다."
         />
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s, i) => (
-            <div key={s.no} className="relative flex flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-              <div className="flex h-[150px] items-center justify-center overflow-hidden rounded-xl bg-slate-900 sm:h-[170px]">
-                <img src={s.img} alt={s.alt} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-              </div>
-              <div className="mt-3 flex items-center gap-2">
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-900 text-[0.82rem] font-black text-amber-300">{s.no}</span>
-                <p className="text-[1rem] font-black tracking-tight text-slate-900">{s.title}</p>
-              </div>
-              <p className="mt-1.5 break-keep text-[0.9rem] leading-snug text-slate-500">{s.desc}</p>
-              {i < STEPS.length - 1 && (
-                <span aria-hidden className="absolute -right-3 top-[85px] z-10 hidden text-xl font-black text-amber-400 lg:block">›</span>
+        <ol className="mt-8 space-y-0">
+          {TIMELINE.map((t, i) => (
+            <li key={t.day} className="relative flex gap-4 pb-6 last:pb-0">
+              {i < TIMELINE.length - 1 && (
+                <span aria-hidden className="absolute left-[15px] top-8 h-[calc(100%-1.5rem)] w-px bg-slate-300" />
               )}
-            </div>
+              <span className="relative z-10 mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-slate-900 text-[0.8rem] font-black text-amber-300">
+                {i + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[0.82rem] font-black uppercase tracking-wider text-blue-600">{t.day}</p>
+                <p className="mt-0.5 break-keep text-[1.05rem] font-black leading-snug tracking-tight text-slate-900">{t.title}</p>
+                <p className="mt-1 break-keep text-[0.95rem] leading-relaxed text-slate-600">{t.desc}</p>
+              </div>
+            </li>
           ))}
-        </div>
+        </ol>
 
-        <p className="mt-5 break-keep rounded-xl bg-slate-900 px-5 py-3.5 text-[0.9rem] font-bold leading-relaxed text-white">
-          자금이 조달되면 선택한 단계에 따라 작동형 시스템으로 개발합니다. 이 기간은 1단계(실행설계·화면 초안) 제공 기준이며, 심사기간·본개발 일정과 자료제출 지연은 포함하지 않습니다.
+        <p className="mt-4 break-keep rounded-xl bg-white px-4 py-3 text-[0.8rem] leading-relaxed text-slate-500 ring-1 ring-inset ring-slate-200">
+          자료 접수와 의사결정이 원활한 경우의 목표 일정입니다. 외부 시스템 연동과 복잡한 데이터 이전은 별도 일정으로 진행하며, 정책기관 심사기간은 포함하지 않습니다. 최종 범위는 선택한 단계에 따라 달라집니다.
         </p>
 
         {onResult && (

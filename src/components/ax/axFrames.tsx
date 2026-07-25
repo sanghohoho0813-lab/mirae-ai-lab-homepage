@@ -58,5 +58,5 @@ export function SectionHead({ eyebrow, title, desc, center = false, dark = false
 
 /** 프로토타입 표기 배지 */
 export function ProtoBadge({ text = '가상 업종 기반 프로토타입' }: { text?: string }) {
-  return <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-[0.72rem] font-black text-blue-700 ring-1 ring-inset ring-blue-200">{text}</span>
+  return <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-[0.82rem] font-black text-blue-700 ring-1 ring-inset ring-blue-200">{text}</span>
 }

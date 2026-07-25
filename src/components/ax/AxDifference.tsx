@@ -48,12 +48,12 @@ export default function AxDifference() {
               <p className="mt-1 text-[0.9rem] leading-relaxed text-slate-600">세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원.</p>
               <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                 {AWARDS.map((a) => (
-                  <span key={a.title} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[0.75rem] font-semibold text-slate-600">
-                    <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[0.64rem] font-black text-amber-300">{a.year}</span>
+                  <span key={a.title} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[0.82rem] font-semibold text-slate-600">
+                    <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[0.82rem] font-black text-amber-300">{a.year}</span>
                     {a.title}<span className="text-slate-400"> · {a.detail}</span>
                   </span>
                 ))}
-                <a href="https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[0.75rem] font-bold text-slate-700 hover:text-slate-900" aria-label="유튜브 김팀장의 경영노트 채널 (새 탭에서 열림)">
+                <a href="https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[0.82rem] font-bold text-slate-700 hover:text-slate-900" aria-label="유튜브 김팀장의 경영노트 채널 (새 탭에서 열림)">
                   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><rect x="1.5" y="5" width="21" height="14" rx="3.5" fill="#FF0000" /><path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="#fff" /></svg>
                   유튜브 ‘김팀장의 경영노트’ <span aria-hidden>↗</span>
                 </a>
