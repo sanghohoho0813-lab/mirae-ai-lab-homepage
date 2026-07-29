@@ -21,7 +21,7 @@ export default function AxPackageComparison({ onConsult }: { onConsult?: (code: 
                 {p.badges.map((b, i) => (
                   <span
                     key={b}
-                    className={`break-keep rounded-full px-2.5 py-1 text-[0.78rem] font-black ${
+                    className={`break-keep rounded-full px-2.5 py-1 text-[0.82rem] font-black ${
                       i === 0 ? 'bg-amber-400 text-slate-900' : 'bg-white/10 text-amber-200 ring-1 ring-inset ring-amber-400/30'
                     }`}
                   >

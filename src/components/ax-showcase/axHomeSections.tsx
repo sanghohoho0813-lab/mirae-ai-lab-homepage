@@ -224,11 +224,11 @@ export function AxDeliverablesSection() {
         <ol className="mt-6 grid gap-2.5 sm:grid-cols-2">
           {AX_DELIVERABLES_V2.map((d, i) => (
             <li key={d.name} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-slate-900 text-[0.78rem] font-black text-amber-300">{i + 1}</span>
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-slate-900 text-[0.82rem] font-black text-amber-300">{i + 1}</span>
               <div className="min-w-0">
                 <p className="flex flex-wrap items-center gap-1.5 text-[1rem] font-black leading-snug text-slate-900">
                   {d.name}
-                  <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[0.75rem] font-bold text-slate-500">{d.from} 이상</span>
+                  <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[0.82rem] font-bold text-slate-500">{d.from} 이상</span>
                 </p>
                 <p className="mt-0.5 break-keep text-[0.9rem] leading-snug text-slate-500">{d.desc}</p>
               </div>

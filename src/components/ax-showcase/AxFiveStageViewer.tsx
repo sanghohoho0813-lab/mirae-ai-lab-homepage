@@ -54,7 +54,7 @@ export default function AxFiveStageViewer({ industry }: { industry: AxV2Industry
                 on ? 'bg-teal-400 text-slate-900' : 'bg-white/5 text-slate-400 ring-1 ring-inset ring-white/10 hover:text-white'
               }`}
             >
-              <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[0.72rem] font-black ${on ? 'bg-slate-900/15 text-slate-900' : 'bg-white/10 text-slate-300'}`}>{s.no}</span>
+              <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[0.8rem] font-black ${on ? 'bg-slate-900/15 text-slate-900' : 'bg-white/10 text-slate-300'}`}>{s.no}</span>
               <span className="truncate">{s.label}</span>
             </button>
           )
@@ -114,7 +114,7 @@ export default function AxFiveStageViewer({ industry }: { industry: AxV2Industry
         </button>
 
         {/* 현재 위치 */}
-        <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-slate-950/75 px-2.5 py-1 text-[0.78rem] font-black text-teal-200 ring-1 ring-inset ring-white/15">
+        <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-slate-950/75 px-2.5 py-1 text-[0.82rem] font-black text-teal-200 ring-1 ring-inset ring-white/15">
           {cur.no} / {total}
         </span>
       </div>

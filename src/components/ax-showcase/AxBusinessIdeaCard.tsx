@@ -48,7 +48,7 @@ export default function AxBusinessIdeaCard({
           </p>
           <div className="flex flex-wrap gap-1.5">
             {idea.tags.map((t) => (
-              <span key={t} className="rounded-md bg-white/5 px-2 py-0.5 text-[0.78rem] font-semibold text-slate-400 ring-1 ring-inset ring-white/10">#{t}</span>
+              <span key={t} className="rounded-md bg-white/5 px-2 py-0.5 text-[0.82rem] font-semibold text-slate-400 ring-1 ring-inset ring-white/10">#{t}</span>
             ))}
           </div>
         </div>

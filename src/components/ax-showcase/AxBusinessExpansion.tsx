@@ -15,7 +15,7 @@ export default function AxBusinessExpansion({ industryName }: { industryName: st
         {AX_V2_EXPANSION_FLOW.map((step, i) => (
           <li key={step} className="flex items-center gap-2 sm:flex-1 sm:min-w-[9.5rem]">
             <div className="flex w-full items-center gap-2 rounded-xl border border-white/12 bg-slate-950/40 px-3 py-2.5">
-              <span aria-hidden className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-[0.75rem] font-black ${i === AX_V2_EXPANSION_FLOW.length - 1 ? 'bg-amber-400 text-slate-900' : 'bg-white/10 text-teal-200'}`}>
+              <span aria-hidden className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-[0.82rem] font-black ${i === AX_V2_EXPANSION_FLOW.length - 1 ? 'bg-amber-400 text-slate-900' : 'bg-white/10 text-teal-200'}`}>
                 {i + 1}
               </span>
               <span className="break-keep text-[0.85rem] font-bold leading-tight text-slate-200">{step}</span>

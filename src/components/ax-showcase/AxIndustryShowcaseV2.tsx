@@ -65,7 +65,7 @@ export default function AxIndustryShowcaseV2() {
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
             <span aria-hidden className="text-[1.3rem] leading-none">{industry.icon}</span>
             <h3 className="text-[1.15rem] font-black text-white sm:text-[1.3rem]">{industry.displayName}</h3>
-            <span className="rounded-md bg-white/8 px-2 py-0.5 text-[0.78rem] font-bold text-slate-300 ring-1 ring-inset ring-white/15">
+            <span className="rounded-md bg-white/8 px-2 py-0.5 text-[0.82rem] font-bold text-slate-300 ring-1 ring-inset ring-white/15">
               화면 5장
             </span>
           </div>
