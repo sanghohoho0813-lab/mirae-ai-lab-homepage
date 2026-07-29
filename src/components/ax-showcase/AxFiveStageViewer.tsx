@@ -77,7 +77,9 @@ export default function AxFiveStageViewer({ industry }: { industry: AxV2Industry
             // 세로 스크롤과 충돌하지 않도록 가로 이동이 분명할 때만 단계 이동
             if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1)
           }}
-          className="group flex w-full items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-slate-950 p-1.5 transition-colors hover:border-teal-400/40 sm:p-2"
+          // 높이를 고정한다 — 이미지가 늦게 로드돼도 아래 내용이 밀리지 않아야
+          // 뒤로가기 스크롤 복원 위치가 어긋나지 않는다.
+          className="group flex h-[248px] w-full items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-slate-950 p-1.5 transition-colors hover:border-teal-400/40 sm:h-[416px] sm:p-2 lg:h-[486px]"
         >
           <img
             key={cur.img.src}
@@ -89,7 +91,7 @@ export default function AxFiveStageViewer({ industry }: { industry: AxV2Industry
             height={cur.img.h}
             loading="lazy"
             decoding="async"
-            className="max-h-[240px] w-auto object-contain transition-transform duration-300 group-hover:scale-[1.01] sm:max-h-[400px] lg:max-h-[470px]"
+            className="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]"
           />
         </button>
 
