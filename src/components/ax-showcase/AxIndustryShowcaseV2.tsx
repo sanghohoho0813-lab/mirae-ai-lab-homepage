@@ -10,6 +10,7 @@ import {
   axV2Industry,
 } from '../../data/axIndustryShowcaseV2'
 import { readAxSelection, saveAxSelection } from '../../lib/axShowcaseState'
+import { saveBusinessReturn } from '../../lib/businessServicesReturn'
 import AxBusinessExpansion from './AxBusinessExpansion'
 import AxBusinessIdeaCard from './AxBusinessIdeaCard'
 import AxFiveStageViewer from './AxFiveStageViewer'
@@ -90,6 +91,9 @@ export default function AxIndustryShowcaseV2() {
           <div className="mt-4 flex flex-wrap gap-2.5">
             <Link
               to={`/ax-industries/${industry.slug}`}
+              // 뒤로가기로 돌아왔을 때 스크롤 위치까지 복원되도록 현재 위치를 남긴다.
+              // 선택한 업종·보기 모드는 sessionStorage(axShowcaseState)에서 이미 복원된다.
+              onClick={() => saveBusinessReturn(`ax-industry:${industry.slug}`)}
               className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl border border-teal-400/30 bg-teal-400/10 px-4 text-[0.95rem] font-bold text-teal-200 transition-colors hover:bg-teal-400/20 hover:text-teal-100"
             >
               {industry.displayName} 상세 보기 <span aria-hidden>→</span>
