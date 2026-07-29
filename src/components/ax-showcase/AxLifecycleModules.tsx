@@ -1,0 +1,99 @@
+// 자금 이후 성장 로드맵 — 홈에서 정책자금 상세페이지로 옮겨온 영역.
+// 드로어의 /business-services/funding-consulting#module-* 링크가 가리키는 앵커를 여기서 제공한다.
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { businessPackages, type ModuleGroup } from '../../data/businessPackages'
+
+const LIFECYCLE = [
+  { icon: '💰', t: '자금조달' },
+  { icon: '👥', t: '고용지원금과 조직' },
+  { icon: '🏅', t: '벤처·연구소·메인비즈·이노비즈·ISO' },
+  { icon: '🎁', t: '복지기금과 기업제도' },
+  { icon: '🧮', t: '전문가와 함께하는 세무·절세전략' },
+  { icon: '⚙️', t: 'AX 업무시스템 고도화' },
+]
+
+const GROWTH_MODULES: { id: string; no: string; title: string; group: ModuleGroup; accent: string }[] = [
+  { id: 'module-innovation', no: '01', title: '기술·혁신 기반', group: 'tech', accent: 'text-violet-600' },
+  { id: 'module-trust', no: '02', title: '경영·대외 신뢰', group: 'trust', accent: 'text-blue-600' },
+  { id: 'module-digital', no: '03', title: '디지털 실행', group: 'digital', accent: 'text-teal-600' },
+  { id: 'module-finance', no: '04', title: '재무·전문가 연계', group: 'finance', accent: 'text-slate-500' },
+]
+
+const MODULE_MEMBERS: Record<ModuleGroup, { slug: string; name: string }[]> = (
+  ['tech', 'trust', 'digital', 'finance'] as ModuleGroup[]
+).reduce(
+  (acc, g) => {
+    acc[g] = businessPackages.filter((p) => p.moduleGroup === g).map((p) => ({ slug: p.slug, name: p.name }))
+    return acc
+  },
+  {} as Record<ModuleGroup, { slug: string; name: string }[]>,
+)
+
+function ModuleGroupCard({ m, defaultOpen }: { m: (typeof GROWTH_MODULES)[number]; defaultOpen: boolean }) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 px-4 py-4 text-left lg:pointer-events-none"
+      >
+        <span className="flex items-center gap-2">
+          <span className={`text-[1.17rem] font-black tabular-nums ${m.accent}`}>{m.no}</span>
+          <span className="text-[1.32rem] font-black leading-snug text-slate-900">{m.title}</span>
+        </span>
+        <span aria-hidden className={`text-slate-400 transition-transform lg:hidden ${open ? 'rotate-180' : ''}`}>▾</span>
+      </button>
+      <div className={`${open ? 'block' : 'hidden'} border-t border-slate-100 px-2 pb-2 lg:block`}>
+        <ul className="space-y-0.5 pt-1">
+          {MODULE_MEMBERS[m.group].map((mp) => (
+            <li key={mp.slug}>
+              <Link
+                to={`/business-services/${mp.slug}`}
+                className="group -mx-0.5 flex items-center justify-between gap-2 rounded-lg px-2.5 py-2.5 text-[1.13rem] font-bold text-slate-700 transition-colors hover:bg-slate-50 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+              >
+                <span className="min-w-0 truncate">{mp.name}</span>
+                <span aria-hidden className="shrink-0 text-slate-300 transition-colors group-hover:text-blue-500">→</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+export default function AxLifecycleModules() {
+  return (
+    <div>
+      <ol className="mt-6 flex flex-wrap gap-2">
+        {LIFECYCLE.map((a, i) => (
+          <li
+            key={a.t}
+            className="flex min-w-0 flex-1 basis-[calc(50%-0.25rem)] items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 sm:basis-[calc(33.333%-0.34rem)]"
+          >
+            <span aria-hidden className="text-[1.44rem]">{a.icon}</span>
+            <span className="min-w-0">
+              <span className="block text-[1.03rem] font-black text-slate-400">STEP {i + 1}</span>
+              <span className="block break-keep text-[1.15rem] font-bold leading-tight text-slate-800">{a.t}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p className="mt-4 break-keep text-[1.15rem] leading-relaxed text-slate-500">
+        모든 서비스를 한꺼번에 권하지 않습니다. 지금 회사에 가장 필요한 순서부터 하나씩 설계합니다.
+      </p>
+
+      <div className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+        {GROWTH_MODULES.map((m, i) => (
+          <ModuleGroupCard key={m.id} m={m} defaultOpen={i === 0} />
+        ))}
+      </div>
+      {GROWTH_MODULES.map((m) => (
+        <span key={m.id} id={m.id} aria-hidden className="block h-0 scroll-mt-24" />
+      ))}
+    </div>
+  )
+}

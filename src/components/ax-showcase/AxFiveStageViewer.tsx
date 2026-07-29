@@ -50,11 +50,11 @@ export default function AxFiveStageViewer({ industry }: { industry: AxV2Industry
               role="tab"
               aria-selected={on}
               onClick={() => setIdx(i)}
-              className={`flex min-h-[44px] items-center justify-center gap-1.5 break-keep rounded-lg px-2 py-1.5 text-[0.8rem] font-bold leading-tight transition-colors sm:text-[0.82rem] ${
+              className={`flex min-h-[44px] items-center justify-center gap-1.5 break-keep rounded-lg px-2 py-1.5 text-[1.0rem] font-bold leading-tight transition-colors sm:text-[1.0rem] ${
                 on ? 'bg-teal-400 text-slate-900' : 'bg-white/5 text-slate-400 ring-1 ring-inset ring-white/10 hover:text-white'
               }`}
             >
-              <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[0.8rem] font-black ${on ? 'bg-slate-900/15 text-slate-900' : 'bg-white/10 text-slate-300'}`}>{s.no}</span>
+              <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[1.0rem] font-black ${on ? 'bg-slate-900/15 text-slate-900' : 'bg-white/10 text-slate-300'}`}>{s.no}</span>
               <span className="truncate">{s.label}</span>
             </button>
           )
@@ -116,22 +116,22 @@ export default function AxFiveStageViewer({ industry }: { industry: AxV2Industry
         </button>
 
         {/* 현재 위치 */}
-        <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-slate-950/75 px-2.5 py-1 text-[0.82rem] font-black text-teal-200 ring-1 ring-inset ring-white/15">
+        <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-slate-950/75 px-2.5 py-1 text-[1.0rem] font-black text-teal-200 ring-1 ring-inset ring-white/15">
           {cur.no} / {total}
         </span>
       </div>
 
       {/* 단계 제목과 설명 */}
       <div className="mt-3.5">
-        <p className="text-[0.8rem] font-black uppercase tracking-widest text-teal-300">
+        <p className="text-[1.0rem] font-black tracking-tight text-teal-300">
           {cur.no}단계 · {cur.label}
         </p>
-        <h4 className="mt-1.5 break-keep text-[1.1rem] font-black leading-snug text-white sm:text-[1.35rem]">{cur.title}</h4>
-        <p className="mt-2 max-w-3xl break-keep text-[0.95rem] leading-relaxed text-slate-300 sm:text-[1rem]">{cur.desc}</p>
+        <h4 className="mt-1.5 break-keep text-[1.26rem] font-black leading-snug text-white sm:text-[1.35rem]">{cur.title}</h4>
+        <p className="mt-2 max-w-3xl break-keep text-[1.09rem] leading-relaxed text-slate-300 sm:text-[1.15rem]">{cur.desc}</p>
         {cur.chips.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {cur.chips.map((c) => (
-              <span key={c} className="rounded-lg bg-white/5 px-2.5 py-1 text-[0.82rem] font-semibold text-slate-300 ring-1 ring-inset ring-white/10">{c}</span>
+              <span key={c} className="rounded-lg bg-white/5 px-2.5 py-1 text-[1.0rem] font-semibold text-slate-300 ring-1 ring-inset ring-white/10">{c}</span>
             ))}
           </div>
         )}
@@ -139,8 +139,8 @@ export default function AxFiveStageViewer({ industry }: { industry: AxV2Industry
 
       {/* 모바일 좌우 이동 + PC 썸네일 */}
       <div className="mt-3.5 flex items-center gap-2 sm:hidden">
-        <button type="button" onClick={() => go(-1)} disabled={idx === 0} className="min-h-[44px] flex-1 rounded-xl border border-white/15 bg-white/5 text-[0.88rem] font-bold text-white disabled:opacity-30">← 이전</button>
-        <button type="button" onClick={() => go(1)} disabled={idx === total - 1} className="min-h-[44px] flex-1 rounded-xl border border-white/15 bg-white/5 text-[0.88rem] font-bold text-white disabled:opacity-30">다음 →</button>
+        <button type="button" onClick={() => go(-1)} disabled={idx === 0} className="min-h-[44px] flex-1 rounded-xl border border-white/15 bg-white/5 text-[1.01rem] font-bold text-white disabled:opacity-30">← 이전</button>
+        <button type="button" onClick={() => go(1)} disabled={idx === total - 1} className="min-h-[44px] flex-1 rounded-xl border border-white/15 bg-white/5 text-[1.01rem] font-bold text-white disabled:opacity-30">다음 →</button>
       </div>
 
       <div className="mt-3.5 hidden grid-cols-5 gap-2 sm:grid">
@@ -160,7 +160,7 @@ export default function AxFiveStageViewer({ industry }: { industry: AxV2Industry
         ))}
       </div>
 
-      <p className="mt-2.5 text-[0.82rem] text-slate-500">이미지를 누르면 전체화면으로 확인할 수 있습니다.</p>
+      <p className="mt-2.5 text-[1.0rem] text-slate-500">이미지를 누르면 전체화면으로 확인할 수 있습니다.</p>
 
       <AxPhotoSwipe open={pswpOpen} slides={slides} index={idx} onClose={() => setPswpOpen(false)} />
     </div>

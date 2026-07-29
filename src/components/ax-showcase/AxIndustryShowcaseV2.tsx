@@ -18,17 +18,30 @@ import AxIndustryModeToggle, { type AxViewMode } from './AxIndustryModeToggle'
 import AxIndustrySelector from './AxIndustrySelector'
 import AxTaskSelector from './AxTaskSelector'
 
-export default function AxIndustryShowcaseV2() {
+export default function AxIndustryShowcaseV2({
+  /** 상세페이지에서 ?industry=... 로 넘어온 업종을 처음부터 선택해 둔다 */
+  initialSlug,
+  /** 상세페이지에서는 '더 알아보기'가 자기 자신을 가리키므로 숨긴다 */
+  showIdeaDetailLink = true,
+  /** 상세페이지에서는 업종 상세로 다시 나가는 링크를 숨긴다 */
+  showIndustryDetailLink = true,
+}: {
+  initialSlug?: string
+  showIdeaDetailLink?: boolean
+  showIndustryDetailLink?: boolean
+} = {}) {
   const restored = useMemo(() => readAxSelection(), [])
-  const [mode, setMode] = useState<AxViewMode>(restored?.mode ?? 'industry')
-  const [slug, setSlug] = useState(restored?.slug ?? AX_V2_DEFAULT_SLUG)
+  const [mode, setMode] = useState<AxViewMode>(initialSlug ? 'industry' : (restored?.mode ?? 'industry'))
+  const [slug, setSlug] = useState(initialSlug ?? restored?.slug ?? AX_V2_DEFAULT_SLUG)
   const [taskKey, setTaskKey] = useState(restored?.taskKey ?? AX_V2_TASK_VIEWS[0].key)
 
   const industry = axV2Industry(slug) ?? AX_V2_INDUSTRIES[0]
 
+  // 홈에서 고른 업종만 세션에 남긴다. 상세페이지 진입은 홈의 선택을 덮어쓰지 않는다.
   useEffect(() => {
+    if (initialSlug) return
     saveAxSelection({ mode, slug: industry.slug, taskKey })
-  }, [mode, industry.slug, taskKey])
+  }, [initialSlug, mode, industry.slug, taskKey])
 
   return (
     <section id="ax-showcase-v2" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-900">
@@ -38,7 +51,7 @@ export default function AxIndustryShowcaseV2() {
         <h2 className="break-keep text-[1.6rem] font-black leading-tight text-white sm:text-[2.25rem]">
           우리 업종이 AX로 바뀌면<br className="hidden sm:block" /> 무엇이 달라지는지 <span className="text-teal-300">직접 확인해보세요.</span>
         </h2>
-        <p className="mt-3 max-w-3xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
+        <p className="mt-3 max-w-3xl break-keep text-[1.15rem] leading-relaxed text-slate-300 sm:text-[1.24rem]">
           먼저 현재 업무가 어떻게 달라지는지 보고, 그다음 새로운 앱·웹 서비스와 반복매출로 확장되는 과정을 확인할 수 있습니다.
         </p>
 
@@ -64,13 +77,18 @@ export default function AxIndustryShowcaseV2() {
         {/* 선택한 업종 하나만 크게 */}
         <div className="mt-6">
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-            <span aria-hidden className="text-[1.3rem] leading-none">{industry.icon}</span>
-            <h3 className="text-[1.15rem] font-black text-white sm:text-[1.3rem]">{industry.displayName}</h3>
-            <span className="rounded-md bg-white/8 px-2 py-0.5 text-[0.82rem] font-bold text-slate-300 ring-1 ring-inset ring-white/15">
+            {initialSlug && (
+              <span className="rounded-md bg-amber-400/15 px-2.5 py-1 text-[1.03rem] font-black text-amber-200 ring-1 ring-inset ring-amber-400/30">
+                선택한 업종 · {industry.displayName}
+              </span>
+            )}
+            <span aria-hidden className="text-[1.5rem] leading-none">{industry.icon}</span>
+            <h3 className="text-[1.32rem] font-black text-white sm:text-[1.5rem]">{industry.displayName}</h3>
+            <span className="rounded-md bg-white/8 px-2 py-0.5 text-[1.0rem] font-bold text-slate-300 ring-1 ring-inset ring-white/15">
               화면 5장
             </span>
           </div>
-          <p className="mt-2 max-w-3xl break-keep text-[0.95rem] leading-relaxed text-slate-300 sm:text-[1rem]">{industry.overview}</p>
+          <p className="mt-2 max-w-3xl break-keep text-[1.09rem] leading-relaxed text-slate-300 sm:text-[1.15rem]">{industry.overview}</p>
 
           <div className="mt-4">
             <AxFiveStageViewer industry={industry} />
@@ -84,30 +102,32 @@ export default function AxIndustryShowcaseV2() {
           {/* 사업화 예시 2개 */}
           <div className="mt-4 grid gap-3 lg:grid-cols-2">
             {industry.ideas.map((idea) => (
-              <AxBusinessIdeaCard key={idea.no} idea={idea} industryName={industry.displayName} />
+              <AxBusinessIdeaCard key={idea.no} idea={idea} industryName={industry.displayName} industrySlug={industry.slug} showDetailLink={showIdeaDetailLink} />
             ))}
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2.5">
+            {showIndustryDetailLink && (
             <Link
               to={`/ax-industries/${industry.slug}`}
               // 뒤로가기로 돌아왔을 때 스크롤 위치까지 복원되도록 현재 위치를 남긴다.
               // 선택한 업종·보기 모드는 sessionStorage(axShowcaseState)에서 이미 복원된다.
               onClick={() => saveBusinessReturn(`ax-industry:${industry.slug}`)}
-              className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl border border-teal-400/30 bg-teal-400/10 px-4 text-[0.95rem] font-bold text-teal-200 transition-colors hover:bg-teal-400/20 hover:text-teal-100"
+              className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl border border-teal-400/30 bg-teal-400/10 px-4 text-[1.09rem] font-bold text-teal-200 transition-colors hover:bg-teal-400/20 hover:text-teal-100"
             >
               {industry.displayName} 상세 보기 <span aria-hidden>→</span>
             </Link>
+            )}
             <Link
               to="/business-diagnosis"
-              className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl bg-blue-500 px-4 text-[0.95rem] font-black text-white transition-colors hover:bg-blue-400"
+              className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl bg-blue-500 px-4 text-[1.09rem] font-black text-white transition-colors hover:bg-blue-400"
             >
               <span aria-hidden>🩺</span> 3분 기업진단
             </Link>
           </div>
         </div>
 
-        <p className="mt-6 break-keep text-[0.85rem] leading-relaxed text-slate-500">{AX_V2_DISCLAIMER}</p>
+        <p className="mt-6 break-keep text-[1.0rem] leading-relaxed text-slate-500">{AX_V2_DISCLAIMER}</p>
       </div>
     </section>
   )

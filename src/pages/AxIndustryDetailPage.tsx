@@ -73,7 +73,7 @@ export default function AxIndustryDetailPage() {
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/90 backdrop-blur">
         <div className="mx-auto flex max-w-[880px] items-center justify-between gap-3 px-5 py-3">
-          <Link to="/business-services" className="flex items-center gap-1.5 text-[0.9rem] font-bold text-slate-300 transition-colors hover:text-white">
+          <Link to="/business-services" className="flex items-center gap-1.5 text-[1.03rem] font-bold text-slate-300 transition-colors hover:text-white">
             <span aria-hidden>←</span> 미래 AI 랩
           </Link>
           <HeaderAccount />
@@ -83,18 +83,18 @@ export default function AxIndustryDetailPage() {
       {/* 1. 업종 Hero */}
       <section className={`${band} border-b border-white/10 bg-slate-900`}>
         <div className={inner}>
-          <p className="flex items-center gap-2 text-[0.82rem] font-black uppercase tracking-widest text-teal-300">
-            <span aria-hidden className="text-[1.15rem] leading-none">{industry.icon}</span> {industry.displayName} AX 사업화
+          <p className="flex items-center gap-2 text-[1.0rem] font-black tracking-tight text-teal-300">
+            <span aria-hidden className="text-[1.32rem] leading-none">{industry.icon}</span> {industry.displayName} AX 사업화
           </p>
           <h1 className="mt-3 break-keep text-[1.75rem] font-black leading-[1.28] text-white sm:text-[2.5rem]">
             {industry.shortHook}
           </h1>
-          <p className="mt-4 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.1rem]">{industry.overview}</p>
+          <p className="mt-4 max-w-2xl break-keep text-[1.15rem] leading-relaxed text-slate-300 sm:text-[1.26rem]">{industry.overview}</p>
           <div className="mt-6 flex flex-col gap-2.5 sm:max-w-lg sm:flex-row">
-            <Link to="/business-diagnosis" className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 text-[1rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-400">
+            <Link to="/business-diagnosis" className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 text-[1.15rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-400">
               <span aria-hidden>🩺</span> 3분 기업진단
             </Link>
-            <Link to="/business-services#ax-showcase-v2" className="flex min-h-[52px] items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 text-[1rem] font-bold text-white transition-colors hover:bg-white/10">
+            <Link to="/business-services#ax-showcase-v2" className="flex min-h-[52px] items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10">
               다른 업종 보기
             </Link>
           </div>
@@ -109,12 +109,12 @@ export default function AxIndustryDetailPage() {
           </h2>
           <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
             {industry.ideas.map((idea) => (
-              <p key={idea.no} className="break-keep rounded-2xl border border-white/12 bg-white/[0.04] p-4 text-[0.95rem] leading-relaxed text-slate-300">
+              <p key={idea.no} className="break-keep rounded-2xl border border-white/12 bg-white/[0.04] p-4 text-[1.09rem] leading-relaxed text-slate-300">
                 {idea.problem}
               </p>
             ))}
           </div>
-          <p className="mt-4 break-keep border-l-2 border-amber-400 pl-3.5 text-[1rem] font-bold leading-relaxed text-amber-100 sm:text-[1.08rem]">
+          <p className="mt-4 break-keep border-l-2 border-amber-400 pl-3.5 text-[1.15rem] font-bold leading-relaxed text-amber-100 sm:text-[1.24rem]">
             {industry.targetCustomer}에게 특히 필요한 구조입니다.
           </p>
         </div>
@@ -126,7 +126,7 @@ export default function AxIndustryDetailPage() {
           <h2 className="break-keep text-[1.35rem] font-black leading-snug text-white sm:text-[1.8rem]">
             현재 업무에 적용하는 <span className="text-teal-300">AX 5단계</span>
           </h2>
-          <p className="mt-2.5 max-w-2xl break-keep text-[0.95rem] leading-relaxed text-slate-400">
+          <p className="mt-2.5 max-w-2xl break-keep text-[1.09rem] leading-relaxed text-slate-400">
             단계를 누르면 이미지와 설명이 함께 바뀝니다. 이미지를 누르면 전체화면으로 볼 수 있습니다.
           </p>
           <div className="mt-4">
@@ -150,7 +150,7 @@ export default function AxIndustryDetailPage() {
           </h2>
           <div className="mt-4 grid gap-3 lg:grid-cols-2">
             {industry.ideas.map((idea) => (
-              <AxBusinessIdeaCard key={idea.no} idea={idea} industryName={industry.displayName} variant="full" />
+              <AxBusinessIdeaCard key={idea.no} idea={idea} industryName={industry.displayName} industrySlug={industry.slug} variant="full" />
             ))}
           </div>
         </div>
@@ -160,14 +160,14 @@ export default function AxIndustryDetailPage() {
       <section className={`${band} border-b border-white/10 bg-slate-950`}>
         <div className={inner}>
           <h2 className="break-keep text-[1.35rem] font-black leading-snug text-white sm:text-[1.8rem]">예상되는 신규매출 구조</h2>
-          <p className="mt-2.5 break-keep text-[0.92rem] leading-relaxed text-slate-400">
+          <p className="mt-2.5 break-keep text-[1.06rem] leading-relaxed text-slate-400">
             아래는 이 업종에서 만들 수 있는 매출 형태의 예시입니다. 실제 적용 범위와 성과는 기업 상황에 따라 달라집니다.
           </p>
           <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {industry.ideas.flatMap((i) => i.revenues).map((r, i) => (
               <div key={`${r}-${i}`} className="flex items-start gap-2 rounded-xl border border-amber-400/20 bg-amber-400/[0.07] p-3">
-                <span aria-hidden className="mt-0.5 text-[0.9rem]">💰</span>
-                <span className="break-keep text-[0.9rem] font-bold leading-snug text-amber-100">{r}</span>
+                <span aria-hidden className="mt-0.5 text-[1.03rem]">💰</span>
+                <span className="break-keep text-[1.03rem] font-bold leading-snug text-amber-100">{r}</span>
               </div>
             ))}
           </div>
@@ -180,7 +180,7 @@ export default function AxIndustryDetailPage() {
           <h2 className="break-keep text-[1.35rem] font-black leading-snug text-white sm:text-[1.8rem]">
             정책자금·벤처·연구소·특허로 <span className="text-teal-300">연결하는 방법</span>
           </h2>
-          <p className="mt-3 break-keep rounded-2xl border border-teal-400/25 bg-teal-400/[0.08] p-4 text-[0.98rem] font-bold leading-relaxed text-teal-100 sm:text-[1.05rem]">
+          <p className="mt-3 break-keep rounded-2xl border border-teal-400/25 bg-teal-400/[0.08] p-4 text-[1.13rem] font-bold leading-relaxed text-teal-100 sm:text-[1.21rem]">
             {industry.policyPoint}
           </p>
           <ul className="mt-4 space-y-2">
@@ -190,13 +190,13 @@ export default function AxIndustryDetailPage() {
               '화면과 업무 흐름을 자금사용계획과 연결해 심사에서 설명합니다.',
               '특허가 필요한 기술구조는 제휴 변리사를 통해 출원으로 연계합니다.',
             ].map((t) => (
-              <li key={t} className="flex gap-2 break-keep text-[0.95rem] leading-relaxed text-slate-300">
+              <li key={t} className="flex gap-2 break-keep text-[1.09rem] leading-relaxed text-slate-300">
                 <span aria-hidden className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-teal-400" />
                 {t}
               </li>
             ))}
           </ul>
-          <p className="mt-3 break-keep text-[0.85rem] leading-relaxed text-slate-500">
+          <p className="mt-3 break-keep text-[1.0rem] leading-relaxed text-slate-500">
             벤처·연구소·특허는 각각 별도의 심사와 처리절차가 있으며, 결과와 기간은 외부기관 판단에 따라 달라집니다.
           </p>
         </div>
@@ -207,14 +207,14 @@ export default function AxIndustryDetailPage() {
         <div className={inner}>
           <h2 className="break-keep text-[1.35rem] font-black leading-snug text-white sm:text-[1.8rem]">이 업종에 적합한 프로그램</h2>
           <div className="mt-4 rounded-2xl border border-amber-400/40 bg-amber-400/[0.08] p-4 sm:p-5">
-            <p className="text-[0.8rem] font-black tracking-widest text-amber-300">가장 추천</p>
-            <p className="mt-1 text-[1.2rem] font-black text-white sm:text-[1.35rem]">{recommended.name}</p>
-            <p className="mt-2 break-keep text-[0.95rem] leading-relaxed text-slate-200">{recommended.oneLiner}</p>
-            <p className="mt-2.5 break-keep text-[0.88rem] leading-relaxed text-slate-400">{recommended.fit}</p>
+            <p className="text-[1.0rem] font-black tracking-tight text-amber-300">가장 추천</p>
+            <p className="mt-1 text-[1.38rem] font-black text-white sm:text-[1.35rem]">{recommended.name}</p>
+            <p className="mt-2 break-keep text-[1.09rem] leading-relaxed text-slate-200">{recommended.oneLiner}</p>
+            <p className="mt-2.5 break-keep text-[1.01rem] leading-relaxed text-slate-400">{recommended.fit}</p>
           </div>
           <Link
             to="/business-services/funding-consulting#ax-packages"
-            className="mt-3.5 inline-flex min-h-[48px] items-center gap-1.5 rounded-xl border border-white/25 bg-white/5 px-4 text-[0.95rem] font-bold text-white transition-colors hover:bg-white/10"
+            className="mt-3.5 inline-flex min-h-[48px] items-center gap-1.5 rounded-xl border border-white/25 bg-white/5 px-4 text-[1.09rem] font-bold text-white transition-colors hover:bg-white/10"
           >
             프로그램과 비용 전체 보기 <span aria-hidden>→</span>
           </Link>
@@ -245,11 +245,11 @@ export default function AxIndustryDetailPage() {
               },
             ].map((f) => (
               <details key={f.q} className="group rounded-2xl border border-white/12 bg-white/[0.04] p-4">
-                <summary className="cursor-pointer list-none break-keep text-[0.98rem] font-black text-white marker:hidden">
+                <summary className="cursor-pointer list-none break-keep text-[1.13rem] font-black text-white marker:hidden">
                   <span className="mr-2 text-teal-300" aria-hidden>Q</span>
                   {f.q}
                 </summary>
-                <p className="mt-2.5 break-keep text-[0.92rem] leading-relaxed text-slate-300">{f.a}</p>
+                <p className="mt-2.5 break-keep text-[1.06rem] leading-relaxed text-slate-300">{f.a}</p>
               </details>
             ))}
           </div>
@@ -259,15 +259,15 @@ export default function AxIndustryDetailPage() {
       {/* 다른 업종 */}
       <section className={`${band} border-b border-white/10 bg-slate-950`}>
         <div className={inner}>
-          <h2 className="text-[1.1rem] font-black text-white sm:text-[1.25rem]">다른 업종도 확인해보세요</h2>
+          <h2 className="text-[1.26rem] font-black text-white sm:text-[1.44rem]">다른 업종도 확인해보세요</h2>
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
             {others.map((o) => (
               <Link
                 key={o.slug}
                 to={`/ax-industries/${o.slug}`}
-                className="flex min-h-[52px] items-center gap-2 rounded-xl border border-white/12 bg-white/[0.04] px-3 py-2 text-[0.9rem] font-bold text-slate-200 transition-colors hover:border-teal-400/40 hover:text-white"
+                className="flex min-h-[52px] items-center gap-2 rounded-xl border border-white/12 bg-white/[0.04] px-3 py-2 text-[1.03rem] font-bold text-slate-200 transition-colors hover:border-teal-400/40 hover:text-white"
               >
-                <span aria-hidden className="text-[1.05rem] leading-none">{o.icon}</span>
+                <span aria-hidden className="text-[1.21rem] leading-none">{o.icon}</span>
                 <span className="break-keep">{o.displayName}</span>
               </Link>
             ))}
@@ -283,11 +283,11 @@ export default function AxIndustryDetailPage() {
           </h2>
           <Link
             to="/business-diagnosis"
-            className="mt-5 inline-flex min-h-[56px] items-center gap-2 rounded-xl bg-blue-500 px-6 text-[1.05rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-400"
+            className="mt-5 inline-flex min-h-[56px] items-center gap-2 rounded-xl bg-blue-500 px-6 text-[1.21rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-400"
           >
             <span aria-hidden>🩺</span> 3분 기업진단 시작하기
           </Link>
-          <p className="mt-5 break-keep text-[0.82rem] leading-relaxed text-slate-500">{AX_V2_DISCLAIMER}</p>
+          <p className="mt-5 break-keep text-[1.0rem] leading-relaxed text-slate-500">{AX_V2_DISCLAIMER}</p>
         </div>
       </section>
 

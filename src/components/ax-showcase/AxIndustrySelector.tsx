@@ -24,13 +24,13 @@ export default function AxIndustrySelector({
             type="button"
             aria-pressed={on}
             onClick={() => onChange(ind.slug)}
-            className={`flex min-h-[52px] items-center justify-center gap-1.5 break-keep rounded-xl px-2 py-2 text-center text-[0.9rem] font-bold leading-tight transition-all ${
+            className={`flex min-h-[52px] items-center justify-center gap-1.5 break-keep rounded-xl px-2 py-2 text-center text-[1.03rem] font-bold leading-tight transition-all ${
               on
                 ? 'bg-teal-400 text-slate-900 shadow-lg shadow-teal-400/20'
                 : 'bg-white/5 text-slate-300 ring-1 ring-inset ring-white/15 hover:bg-white/10 hover:text-white'
             }`}
           >
-            <span aria-hidden className="text-[1.05rem] leading-none">{ind.icon}</span>
+            <span aria-hidden className="text-[1.21rem] leading-none">{ind.icon}</span>
             <span>{ind.displayName}</span>
           </button>
         )

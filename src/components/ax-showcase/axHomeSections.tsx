@@ -29,23 +29,23 @@ export function AxHeroV2({ onShowcase }: { onShowcase: () => void }) {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-slate-950" />
 
       <div className={`relative w-full ${wrap} px-5 pb-20 pt-12 sm:px-6 sm:pb-24 sm:pt-16`}>
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.85rem] font-bold text-teal-200 backdrop-blur">
+        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[1.0rem] font-bold text-teal-200 backdrop-blur">
           정책자금 × AX 사업화
         </span>
 
         <h1 className="mt-6 max-w-4xl break-keep text-[clamp(2rem,7.4vw,2.9rem)] font-black leading-[1.26] tracking-normal text-white sm:mt-7 sm:text-[clamp(2.5rem,5.4vw,3.6rem)]">
-          사업계획서만으로는 부족합니다.<br />
-          <span className="text-teal-300">정책자금을 받을 수 있는 사업의 실체</span>를 먼저 만듭니다.
+          이제 사업계획서만으로는 부족합니다.<br />
+          우리 회사를 <span className="text-teal-300">정책자금을 잘 받을 수 있는<br />사업체 유형</span>으로 먼저 바꿔드립니다.
         </h1>
 
-        <p className="mt-5 max-w-2xl break-keep text-[1.02rem] leading-relaxed text-slate-300 sm:mt-6 sm:text-[1.15rem]">
+        <p className="mt-5 max-w-2xl break-keep text-[1.18rem] leading-relaxed text-slate-300 sm:mt-6 sm:text-[1.32rem]">
           기존 업종의 경험과 데이터를 실제 AX 서비스로 바꾸고,<br className="hidden sm:block" />
-          화면·벤처·연구소·특허·정책자금까지 한 흐름으로 설계합니다.
+          화면·사업모델·인증·자금전략을 한 흐름으로 설계합니다.
         </p>
 
-        <p className="mt-5 max-w-2xl break-keep rounded-2xl border border-white/12 bg-white/[0.05] px-5 py-4 text-[1rem] leading-relaxed text-slate-200 backdrop-blur sm:px-6 sm:py-5 sm:text-[1.1rem]">
+        <p className="mt-5 max-w-2xl break-keep rounded-2xl border border-white/12 bg-white/[0.05] px-5 py-4 text-[1.16rem] leading-relaxed text-slate-200 backdrop-blur sm:px-6 sm:py-5 sm:text-[1.28rem]">
           지금 사업을 버리는 것이 아닙니다.<br />
-          <span className="font-black text-amber-300">정책자금에서 평가받는 구조</span>를 바꾸는 것입니다.
+          <span className="font-black text-amber-300">정책자금에서 평가받을 수 있도록</span> 사업의 구조를 바꾸는 것입니다.
         </p>
 
         {/* 시각적 증거 */}
@@ -53,11 +53,11 @@ export function AxHeroV2({ onShowcase }: { onShowcase: () => void }) {
           {[
             { n: '15개', l: '업종' },
             { n: '75개', l: 'AX 전환 화면' },
-            { n: '2개', l: '업종별 신규 사업모델' },
+            { n: '2개', l: '업종별 신규 사업화 아이디어' },
           ].map((s) => (
             <div key={s.l} className="rounded-2xl border border-white/12 bg-white/[0.04] px-3 py-3 text-center backdrop-blur">
-              <dt className="text-[1.35rem] font-black leading-none text-teal-300 sm:text-[1.7rem]">{s.n}</dt>
-              <dd className="mt-1.5 break-keep text-[0.82rem] font-semibold leading-tight text-slate-400">{s.l}</dd>
+              <dt className="text-[1.55rem] font-black leading-none text-teal-300 sm:text-[1.95rem]">{s.n}</dt>
+              <dd className="mt-1.5 break-keep text-[1.0rem] font-semibold leading-tight text-slate-400">{s.l}</dd>
             </div>
           ))}
         </dl>
@@ -66,21 +66,21 @@ export function AxHeroV2({ onShowcase }: { onShowcase: () => void }) {
           <button
             type="button"
             onClick={onShowcase}
-            className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-xl bg-teal-400 px-5 text-[1rem] font-black text-slate-900 transition-transform hover:-translate-y-0.5 hover:bg-teal-300"
+            className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-xl bg-teal-400 px-5 text-[1.15rem] font-black text-slate-900 transition-transform hover:-translate-y-0.5 hover:bg-teal-300"
           >
             우리 업종의 AX 보기
           </button>
           <Link
             to="/business-diagnosis"
-            className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-5 text-[1rem] font-bold text-white transition-colors hover:bg-white/10"
+            className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-5 text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10"
           >
             진행 가능 여부 확인
           </Link>
         </div>
 
         <p className="mt-4">
-          <Link to="/business-services/funding-consulting" className="text-[0.92rem] font-semibold text-slate-400 underline underline-offset-4 transition-colors hover:text-white">
-            프로그램과 비용 보기
+          <Link to="/business-services/funding-consulting" className="text-[1.06rem] font-semibold text-slate-400 underline underline-offset-4 transition-colors hover:text-white">
+            프로그램 자세히 보기
           </Link>
         </p>
       </div>
@@ -96,19 +96,19 @@ export function AxEmpathyV2() {
         <h2 className={h2Dark}>
           자금이 적게 나온 이유가<br className="hidden sm:block" /> 사업계획서를 못 써서만은 아닐 수 있습니다.
         </h2>
-        <p className="mt-4 max-w-3xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
+        <p className="mt-4 max-w-3xl break-keep text-[1.15rem] leading-relaxed text-slate-300 sm:text-[1.24rem]">
           조건이 좋은 기업은 대표자가 직접 신청해도 자금을 받을 수 있습니다.
         </p>
-        <p className="mt-2.5 max-w-3xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
+        <p className="mt-2.5 max-w-3xl break-keep text-[1.15rem] leading-relaxed text-slate-300 sm:text-[1.24rem]">
           문제는 업력이 짧거나, 기존 대출이 있거나, <span className="font-bold text-white">기존 업종만으로 성장성과 차별성을 설명하기 어려운 기업</span>입니다.
         </p>
 
-        <p className="mt-6 max-w-3xl break-keep rounded-2xl border-l-2 border-amber-400 bg-white/[0.04] py-4 pl-4 pr-5 text-[1.05rem] font-bold leading-relaxed text-amber-100 sm:text-[1.15rem]">
+        <p className="mt-6 max-w-3xl break-keep rounded-2xl border-l-2 border-amber-400 bg-white/[0.04] py-4 pl-4 pr-5 text-[1.21rem] font-bold leading-relaxed text-amber-100 sm:text-[1.32rem]">
           <span className="font-black text-amber-300">1억원 이상</span>을 목표로 한다면,<br className="hidden sm:block" />
           신청금액보다 그만한 자금이 필요한 이유부터 보여줘야 합니다.
         </p>
 
-        <p className="mt-6 max-w-3xl break-keep text-[1.05rem] font-bold leading-relaxed text-white sm:text-[1.15rem]">
+        <p className="mt-6 max-w-3xl break-keep text-[1.21rem] font-bold leading-relaxed text-white sm:text-[1.32rem]">
           미래AI랩은 기존 사업에서 기술과 데이터가 될 부분을 찾고,<br className="hidden sm:block" />
           <span className="text-teal-300">실제 서비스와 신규 매출모델</span>로 만듭니다.
         </p>
@@ -127,8 +127,8 @@ export function AxCoreValuesSection() {
           {AX_CORE_VALUES.map((v) => (
             <div key={v.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <span aria-hidden className="text-[1.6rem] leading-none">{v.icon}</span>
-              <h3 className="mt-3 break-keep text-[1.1rem] font-black leading-snug text-slate-900 sm:text-[1.2rem]">{v.title}</h3>
-              <p className="mt-2 break-keep text-[0.95rem] leading-relaxed text-slate-600">{v.desc}</p>
+              <h3 className="mt-3 break-keep text-[1.26rem] font-black leading-snug text-slate-900 sm:text-[1.38rem]">{v.title}</h3>
+              <p className="mt-2 break-keep text-[1.09rem] leading-relaxed text-slate-600">{v.desc}</p>
             </div>
           ))}
         </div>
@@ -148,11 +148,11 @@ export function AxMethodSection() {
         <ol className="mt-6 space-y-2.5">
           {AX_METHOD_STEPS.map((s) => (
             <li key={s.no} className="flex items-start gap-3.5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-900 text-[1.1rem]" aria-hidden>{s.icon}</span>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-900 text-[1.26rem]" aria-hidden>{s.icon}</span>
               <div className="min-w-0">
-                <p className="text-[0.8rem] font-black tracking-widest text-blue-600">{s.no}단계</p>
-                <h3 className="mt-0.5 break-keep text-[1.08rem] font-black leading-snug text-slate-900 sm:text-[1.18rem]">{s.title}</h3>
-                <p className="mt-1.5 break-keep text-[0.95rem] leading-relaxed text-slate-600">{s.desc}</p>
+                <p className="text-[1.0rem] font-black tracking-tight text-blue-600">{s.no}단계</p>
+                <h3 className="mt-0.5 break-keep text-[1.24rem] font-black leading-snug text-slate-900 sm:text-[1.36rem]">{s.title}</h3>
+                <p className="mt-1.5 break-keep text-[1.09rem] leading-relaxed text-slate-600">{s.desc}</p>
               </div>
             </li>
           ))}
@@ -174,10 +174,10 @@ export function AxTimelineSection() {
         <ol className="mt-6 space-y-2">
           {AX_TIMELINE.map((s) => (
             <li key={s.range} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex sm:items-start sm:gap-5 sm:p-5">
-              <p className="shrink-0 text-[0.9rem] font-black tabular-nums text-blue-600 sm:w-[6.5rem]">{s.range}</p>
+              <p className="shrink-0 text-[1.03rem] font-black tabular-nums text-blue-600 sm:w-[6.5rem]">{s.range}</p>
               <div className="mt-1.5 min-w-0 sm:mt-0">
-                <h3 className="break-keep text-[1.05rem] font-black leading-snug text-slate-900">{s.title}</h3>
-                <p className="mt-1 break-keep text-[0.92rem] leading-relaxed text-slate-600">{s.items.join(' · ')}</p>
+                <h3 className="break-keep text-[1.21rem] font-black leading-snug text-slate-900">{s.title}</h3>
+                <p className="mt-1 break-keep text-[1.06rem] leading-relaxed text-slate-600">{s.items.join(' · ')}</p>
               </div>
             </li>
           ))}
@@ -185,25 +185,25 @@ export function AxTimelineSection() {
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <div className="rounded-2xl border border-teal-200 bg-teal-50 p-4">
-            <p className="text-[0.95rem] font-black text-teal-900">2주 목표에 포함</p>
+            <p className="text-[1.09rem] font-black text-teal-900">2주 목표에 포함</p>
             <ul className="mt-2 space-y-1">
               {AX_TIMELINE_INCLUDED.map((t) => (
-                <li key={t} className="flex gap-2 break-keep text-[0.9rem] leading-snug text-teal-800"><span aria-hidden>✓</span>{t}</li>
+                <li key={t} className="flex gap-2 break-keep text-[1.03rem] leading-snug text-teal-800"><span aria-hidden>✓</span>{t}</li>
               ))}
             </ul>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <p className="text-[0.95rem] font-black text-slate-800">포함되지 않음</p>
+            <p className="text-[1.09rem] font-black text-slate-800">포함되지 않음</p>
             <ul className="mt-2 space-y-1">
               {AX_TIMELINE_EXCLUDED.map((t) => (
-                <li key={t} className="flex gap-2 break-keep text-[0.9rem] leading-snug text-slate-500"><span aria-hidden>·</span>{t}</li>
+                <li key={t} className="flex gap-2 break-keep text-[1.03rem] leading-snug text-slate-500"><span aria-hidden>·</span>{t}</li>
               ))}
             </ul>
           </div>
         </div>
 
-        <p className="mt-4 break-keep text-[0.88rem] leading-relaxed text-slate-500">{AX_TIMELINE_NOTICE}</p>
-        <p className="mt-1.5 break-keep text-[0.88rem] leading-relaxed text-slate-500">{AX_MVP_DEFINITION}</p>
+        <p className="mt-4 break-keep text-[1.01rem] leading-relaxed text-slate-500">{AX_TIMELINE_NOTICE}</p>
+        <p className="mt-1.5 break-keep text-[1.01rem] leading-relaxed text-slate-500">{AX_MVP_DEFINITION}</p>
       </div>
     </section>
   )
@@ -217,20 +217,20 @@ export function AxDeliverablesSection() {
         <h2 className={h2Light}>
           말로 설명하는 컨설팅이 아니라<br className="hidden sm:block" /> 직접 확인할 결과물을 제공합니다.
         </h2>
-        <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-600">
+        <p className="mt-3 max-w-2xl break-keep text-[1.15rem] leading-relaxed text-slate-600">
           사업계획서뿐 아니라, 실제로 보여주고 활용할 AX 서비스를 갖게 됩니다.
           심사에서는 자금이 어디에 쓰이는지 화면으로 설명하고, 자금조달 이후에는 고객과 직원이 실제로 사용할 수 있습니다.
         </p>
         <ol className="mt-6 grid gap-2.5 sm:grid-cols-2">
           {AX_DELIVERABLES_V2.map((d, i) => (
             <li key={d.name} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-slate-900 text-[0.82rem] font-black text-amber-300">{i + 1}</span>
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-slate-900 text-[1.0rem] font-black text-amber-300">{i + 1}</span>
               <div className="min-w-0">
-                <p className="flex flex-wrap items-center gap-1.5 text-[1rem] font-black leading-snug text-slate-900">
+                <p className="flex flex-wrap items-center gap-1.5 text-[1.15rem] font-black leading-snug text-slate-900">
                   {d.name}
-                  <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[0.82rem] font-bold text-slate-500">{d.from} 이상</span>
+                  <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[1.0rem] font-bold text-slate-500">{d.from} 이상</span>
                 </p>
-                <p className="mt-0.5 break-keep text-[0.9rem] leading-snug text-slate-500">{d.desc}</p>
+                <p className="mt-0.5 break-keep text-[1.03rem] leading-snug text-slate-500">{d.desc}</p>
               </div>
             </li>
           ))}
@@ -246,26 +246,26 @@ export function AxSelectionSection() {
     <section id="selection" className={`${band} scroll-mt-16 border-t border-white/10 bg-slate-900`}>
       <div className={wrap}>
         <h2 className={h2Dark}>모든 기업을 진행하지 않습니다.</h2>
-        <p className="mt-4 max-w-3xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
+        <p className="mt-4 max-w-3xl break-keep text-[1.15rem] leading-relaxed text-slate-300 sm:text-[1.24rem]">
           대표 컨설턴트가 사업과 AX 구조를 직접 설계하기 때문에 <span className="font-bold text-white">월 최대 5개 기업만 선별</span>해 진행합니다.
         </p>
 
         <div className="mt-6 grid gap-3 lg:grid-cols-2">
           <div className="rounded-2xl border border-teal-400/25 bg-teal-400/[0.07] p-4 sm:p-5">
-            <p className="text-[0.98rem] font-black text-teal-200">우선 진행기업</p>
+            <p className="text-[1.13rem] font-black text-teal-200">우선 진행기업</p>
             <ul className="mt-2.5 space-y-1.5">
               {AX_SELECTION_PRIORITY.map((t) => (
-                <li key={t} className="flex gap-2 break-keep text-[0.93rem] leading-relaxed text-slate-200">
+                <li key={t} className="flex gap-2 break-keep text-[1.07rem] leading-relaxed text-slate-200">
                   <span aria-hidden className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-teal-400" />{t}
                 </li>
               ))}
             </ul>
           </div>
           <div className="rounded-2xl border border-white/12 bg-white/[0.04] p-4 sm:p-5">
-            <p className="text-[0.98rem] font-black text-slate-300">진행하지 않는 경우</p>
+            <p className="text-[1.13rem] font-black text-slate-300">진행하지 않는 경우</p>
             <ul className="mt-2.5 space-y-1.5">
               {AX_SELECTION_DECLINE.map((t) => (
-                <li key={t} className="flex gap-2 break-keep text-[0.93rem] leading-relaxed text-slate-400">
+                <li key={t} className="flex gap-2 break-keep text-[1.07rem] leading-relaxed text-slate-400">
                   <span aria-hidden className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600" />{t}
                 </li>
               ))}
@@ -273,7 +273,7 @@ export function AxSelectionSection() {
           </div>
         </div>
 
-        <p className="mt-5 max-w-3xl break-keep text-[1.02rem] font-bold leading-relaxed text-white sm:text-[1.1rem]">
+        <p className="mt-5 max-w-3xl break-keep text-[1.17rem] font-bold leading-relaxed text-white sm:text-[1.26rem]">
           자금만 신청하고 끝나는 기업보다, <span className="text-amber-300">자금을 통해 사업을 실제로 바꾸려는 기업</span>을 우선합니다.
         </p>
       </div>
