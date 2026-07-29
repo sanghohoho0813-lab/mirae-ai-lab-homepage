@@ -12,13 +12,15 @@ import { Link, useLocation } from 'react-router-dom'
 import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import ConsultModal from '../../components/ConsultModal'
-import AxIndustryShowcase from '../../components/ax/AxIndustryShowcase'
+import AxIndustryShowcaseV2 from '../../components/ax-showcase/AxIndustryShowcaseV2'
+import AxPackageComparison from '../../components/ax-showcase/AxPackageComparison'
 import AxFourSteps from '../../components/ax/AxFourSteps'
 import AxProcessSection from '../../components/ax/AxProcessSection'
 import AxPolicyShift from '../../components/ax/AxPolicyShift'
 import KakaoFloat from '../../components/KakaoFloat'
 import { CONSULT_TOPIC_GROUPS, type ConsultContextRow } from '../../lib/consultApi'
-import { FLAGSHIP, BUILD_LEVELS, type BuildLevel } from '../../data/corePrograms'
+import { FLAGSHIP } from '../../data/corePrograms'
+import { AX_BUILD_NOTE } from '../../data/axPackages'
 
 // ── 공통 스타일 토큰 ───────────────────────────────────────────────────────
 const band = 'px-5 py-10 sm:py-16'
@@ -27,9 +29,6 @@ const kicker = 'text-center text-[0.8rem] font-black uppercase tracking-widest t
 const bigHead =
   'mt-2.5 text-center text-[1.5rem] font-black leading-[1.3] tracking-tight text-slate-900 sm:text-[2rem]'
 const lead = 'mx-auto mt-4 max-w-xl text-center text-[1rem] leading-relaxed text-slate-600 sm:text-[1.05rem]'
-
-// 개발 1~4단계만(5단계 별도견적 제외). BuildLevel 타입 사용처.
-const DEV_LEVELS: BuildLevel[] = BUILD_LEVELS.filter((l) => l.key !== '5')
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -90,81 +89,6 @@ const DELIVERABLE_SHOTS = [
   { img: '/ax-showcase/equipment-platform/photo-84-equiplink-flow.webp', cap: 'AX 업무 흐름 정리 예시' },
   { img: `${IMG}/photo-110-fieldcare-showcase.webp`, cap: '실제로 보여줄 수 있는 프로그램 화면 예시' },
 ]
-
-// ── 10. 구현 수준 탭 — 개발용어를 모두 "고객이 얻는 결과"로 서술 ────────────
-type LevelTab = {
-  key: '1' | '2' | '3' | '4'
-  title: string
-  message: string
-  list: string[]
-  result: string
-  recommended?: boolean
-}
-const LEVEL_TABS: LevelTab[] = [
-  {
-    key: '1',
-    title: '무엇을 만들지 먼저 정합니다.',
-    message: '회사의 반복 업무를 찾아 어떤 순서·화면으로 바꿀지 정리합니다.',
-    list: [
-      '회사에서 반복되는 업무를 찾아 바꿀 순서를 정리합니다.',
-      '고객·작업 정보를 어떻게 입력하고 저장할지 설계합니다.',
-      '심사에서 보여줄 주요 화면 초안 3~5개를 그립니다.',
-      '목표 정책자금과 신청기관을 함께 검토합니다.',
-    ],
-    result: '업무 흐름도와 주요 화면 초안 3~5개',
-  },
-  {
-    key: '2',
-    title: '클릭하며 보여줄 화면을 만듭니다.',
-    message: '심사자 앞에서 고객 등록부터 작업 완료까지 화면을 넘기며 보여줍니다.',
-    list: [
-      '주요 화면 5~8개를 실제처럼 클릭할 수 있게 만듭니다.',
-      'PC와 스마트폰에서 모두 보기 편한 화면으로 만듭니다.',
-      '예시 데이터로 접수부터 완료까지 흐름을 시연합니다.',
-      '회사 밖에서도 인터넷으로 접속해 보여줄 수 있게 설치합니다.',
-    ],
-    result: '클릭 가능한 시연용 프로토타입',
-  },
-  {
-    key: '3',
-    title: '고객·작업기록이 쌓이기 시작합니다.',
-    message: '대표자와 담당자가 로그인해 고객·업무정보를 입력하고 저장합니다.',
-    list: [
-      '직원은 각자 로그인해 자기 업무만 봅니다.',
-      '고객정보·작업기록·사진이 사라지지 않고 고객별·날짜별로 쌓입니다.',
-      '접수부터 담당자 배정, 처리 완료까지 핵심 업무 하나가 실제로 작동합니다.',
-      '회사 밖에서도 인터넷으로 접속해 사용할 수 있습니다.',
-    ],
-    result: '핵심 업무 한 가지가 실제로 작동하는 초기 시스템',
-  },
-  {
-    key: '4',
-    title: '직원이 실제 업무에 씁니다.',
-    message: '관리자·현장직원이 각자 화면으로 업무를 처리합니다.',
-    list: [
-      '현장에서는 사진·결과를 바로 올리고, 관리자는 진행상태를 확인합니다.',
-      '대표자·관리자가 오늘 할 일, 진행상태, 누락된 업무를 한 화면에서 확인합니다.',
-      '검색·필터·기본 통계와 출력물 1종을 함께 제공합니다.',
-      '실제 사용 테스트와 납품 후 30일 오류보수를 포함합니다.',
-    ],
-    result: '실제 회사 업무에 적용하는 업무용 MVP',
-    recommended: true,
-  },
-]
-
-// 가격표 — 500/1,000/1,500 은 여기서만 노출
-const PRICE_ROWS: { name: string; price: string; recommended?: boolean }[] = DEV_LEVELS.map((l) => ({
-  name:
-    l.key === '1'
-      ? '1단계 · 무엇을 만들지 설계'
-      : l.key === '2'
-        ? '2단계 · 클릭하며 보여줄 화면'
-        : l.key === '3'
-          ? '3단계 · 로그인·저장 시스템'
-          : '4단계 · 직원이 쓰는 업무 시스템',
-  price: l.priceLabel, // 단일 출처(BUILD_LEVELS)
-  recommended: l.recommended,
-}))
 
 // ── 11. 비교 3열 ───────────────────────────────────────────────────────────
 const COMPARE = [
@@ -279,7 +203,6 @@ function Guarantee({ dark = false }: { dark?: boolean }) {
 }
 
 export default function FundingConsultingDetailPage() {
-  const [level, setLevel] = useState<LevelTab['key']>('1')
   const [showBar, setShowBar] = useState(false)
   const [atEnd, setAtEnd] = useState(false)
   const [consult, setConsult] = useState(false)
@@ -287,7 +210,6 @@ export default function FundingConsultingDetailPage() {
   const finalCtaRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
 
-  const activeTab = LEVEL_TABS.find((t) => t.key === level) ?? LEVEL_TABS[0]
   const openConsult = () => setConsult(true)
 
   useEffect(() => {
@@ -551,7 +473,7 @@ export default function FundingConsultingDetailPage() {
       </section>
 
       {/* ── 7. 업종별 AX 화면 — 실제로 보인다 ─────────────────────────────── */}
-      <AxIndustryShowcase />
+      <AxIndustryShowcaseV2 />
 
       {/* ── 8. 최대 2주 진행과정 — 빠르다 ─────────────────────────────────── */}
       <AxProcessSection onResult={() => scrollToId('deliverables')} />
@@ -588,99 +510,42 @@ export default function FundingConsultingDetailPage() {
       </section>
 
       {/* ── 10. 가격과 결제시점 (딱 한 번) — 부담이 적다 ──────────────────── */}
-      <section id="build-levels" className={`scroll-mt-16 bg-slate-50 ${band}`}>
+      <section id="ax-packages" className={`scroll-mt-16 bg-slate-950 ${band}`}>
         <div className={inner}>
-          <p className={kicker}>구현 수준 · 비용</p>
-          <h2 className={bigHead}>처음부터 수천만원이 아닙니다.<br /><span className="text-blue-600">100만원으로 시작</span>합니다.</h2>
-          <p className={lead}>어디까지 만들지 먼저 고르고, 그 다음에 비용을 정합니다.</p>
-
-          <div role="tablist" aria-label="구현 단계 선택" className="mt-8 grid grid-cols-4 gap-1.5 rounded-2xl border border-slate-200 bg-white p-1.5">
-            {LEVEL_TABS.map((t) => {
-              const on = level === t.key
-              return (
-                <button
-                  key={t.key}
-                  type="button"
-                  role="tab"
-                  aria-selected={on}
-                  onClick={() => setLevel(t.key)}
-                  className={`relative min-h-[46px] rounded-xl px-2 text-center text-[0.95rem] font-black transition ${
-                    on ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-50'
-                  }`}
-                >
-                  {t.key}단계
-                  {t.recommended && <span className="ml-0.5 align-super text-[0.6rem] text-amber-400" aria-hidden>★</span>}
-                </button>
-              )
-            })}
+          <p className="text-center text-[0.8rem] font-black uppercase tracking-widest text-teal-300">프로그램 · 비용</p>
+          <h2 className="mt-2.5 text-center text-[1.5rem] font-black leading-[1.3] tracking-tight text-white sm:text-[2rem]">
+            어디까지 준비할지<br /><span className="text-teal-300">먼저 고르세요.</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-center text-[1rem] leading-relaxed text-slate-300 sm:text-[1.05rem]">
+            방향만 확인할지, 벤처·연구소까지 함께 준비할지, 특허와 다음 자금 로드맵까지 갈지 선택할 수 있습니다.
+          </p>
+          <div className="mt-8">
+            <AxPackageComparison />
           </div>
+        </div>
+      </section>
 
-          <div className={`mt-4 rounded-3xl border-2 p-5 shadow-sm sm:p-6 ${activeTab.recommended ? 'border-amber-300 bg-amber-50/40' : 'border-slate-200 bg-white'}`}>
-            {activeTab.recommended && (
-              <span className="mb-3 inline-flex items-center gap-1 rounded-full bg-amber-400 px-3 py-1 text-[0.82rem] font-black text-slate-900 shadow-sm">
-                미래AI랩 권장 최종 목표
-              </span>
-            )}
-            <h3 className="text-[1.2rem] font-black leading-snug tracking-tight text-slate-900">{activeTab.key}단계 · {activeTab.title}</h3>
-            <p className="mt-2 text-[1rem] leading-relaxed text-slate-600">{activeTab.message}</p>
-            <ul className="mt-4 space-y-2.5">
-              {activeTab.list.map((it) => (
-                <li key={it} className="flex items-start gap-2 text-[0.96rem] leading-relaxed text-slate-700">
-                  <span className="mt-0.5 shrink-0 font-black text-teal-500" aria-hidden>✓</span>
-                  <span>{it}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 rounded-2xl bg-slate-900 px-4 py-3">
-              <p className="text-[0.82rem] font-black uppercase tracking-wide text-teal-300">이 단계 결과물</p>
-              <p className="mt-1 text-[0.98rem] font-bold leading-snug text-white">{activeTab.result}</p>
-            </div>
-          </div>
-
-          <div className="mt-5 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-[0.8rem] font-black uppercase tracking-wide text-slate-500">
-                  <th className="px-4 py-3">단계</th>
-                  <th className="px-4 py-3">비용</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PRICE_ROWS.map((r) => (
-                  <tr key={r.name} className={`border-b border-slate-100 last:border-0 ${r.recommended ? 'bg-amber-50/50' : ''}`}>
-                    <td className="px-4 py-3.5 align-top">
-                      <span className="block text-[0.96rem] font-black leading-snug text-slate-900">{r.name}</span>
-                      {r.recommended && (
-                        <span className="mt-1 inline-flex rounded-md bg-amber-400 px-2 py-0.5 text-[0.78rem] font-black text-slate-900">권장 최종 목표</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 align-top text-[0.96rem] font-bold text-slate-800">{r.price}</td>
-                  </tr>
-                ))}
-                <tr>
-                  <td className="px-4 py-3 text-[0.9rem] font-semibold text-slate-500">VAT</td>
-                  <td className="px-4 py-3 text-[0.9rem] font-semibold text-slate-500">별도</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-5 rounded-3xl border-2 border-amber-300 bg-amber-50/60 p-5 sm:p-6">
-            <p className="text-[1.05rem] font-black leading-snug text-slate-900">
-              본개발비는 <span className="text-amber-600">정책자금 조달 이후 정산(후불)</span>합니다.
-            </p>
-            <ul className="mt-2.5 space-y-1.5 text-[0.96rem] leading-relaxed text-slate-700">
-              <li>컨설팅비 100만원은 개발비에서 차감되지 않습니다.</li>
-              <li>자금이 실행되지 않으면 선택하지 않은 본개발비는 발생하지 않습니다.</li>
-              <li>먼저 개발을 원하는 경우에는 자금조달과 별개의 개발계약으로 진행합니다.</li>
-            </ul>
-          </div>
-          <p className="mt-3 text-[0.82rem] leading-relaxed text-slate-500">
+      {/* ── 운영형 본개발 안내 — 메인 가격표에 병기하지 않고 여기서만 설명 ── */}
+      <section className={`bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <h2 className="text-[1.25rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.6rem]">
+            시연형 MVP 다음, 운영형 개발이 필요하다면
+          </h2>
+          <ul className="mt-4 space-y-2">
+            {AX_BUILD_NOTE.map((t) => (
+              <li key={t} className="flex items-start gap-2.5 rounded-2xl bg-white px-4 py-3.5 text-[0.96rem] leading-relaxed text-slate-700 ring-1 ring-inset ring-slate-200">
+                <span aria-hidden className="mt-0.5 shrink-0 font-black text-teal-500">·</span>
+                {t}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[0.85rem] leading-relaxed text-slate-500">
             카카오 알림톡, 결제, 택배사, 세무·회계 프로그램처럼 다른 서비스와 자동으로 연결하는 기능은 별도 견적입니다.
           </p>
           <Guarantee />
         </div>
       </section>
+
 
       {/* ── 11. 비교 3열 — 여기가 다르다 ──────────────────────────────────── */}
       <section id="compare" className={`scroll-mt-16 bg-white ${band}`}>
