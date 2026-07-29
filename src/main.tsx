@@ -28,6 +28,7 @@ import MyOrdersPage from './pages/MyOrdersPage'
 import BusinessDiagnosisPage from './pages/BusinessDiagnosisPage'
 import BusinessDiagnosisResultsPage from './pages/BusinessDiagnosisResultsPage'
 import BusinessServicesPage from './pages/BusinessServicesPage'
+import AxIndustryDetailPage from './pages/AxIndustryDetailPage'
 import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
 import FundingConsultingDetailPage from './pages/business-details/FundingConsultingDetailPage'
 import GatewayPage from './pages/GatewayPage'
@@ -81,6 +82,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/payment/complete" element={<PaymentCompletePage />} />
           <Route path="/my-orders" element={<MyOrdersPage />} />
           <Route path="/business-services" element={<BusinessServicesPage />} />
+          <Route path="/ax-industries/:slug" element={<AxIndustryDetailPage />} />
           <Route path="/saved" element={<SavedItemsPage />} />
           <Route path="/business-diagnosis" element={<BusinessDiagnosisPage />} />
           <Route path="/business-diagnosis/results" element={<BusinessDiagnosisResultsPage />} />
