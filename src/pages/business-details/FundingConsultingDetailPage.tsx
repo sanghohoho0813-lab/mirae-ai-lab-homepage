@@ -217,14 +217,21 @@ export default function FundingConsultingDetailPage() {
     window.scrollTo(0, 0)
   }, [])
 
-  // 해시(#process 등)로 진입/이동 시 해당 앵커로 스크롤
+  // 해시(#process 등)로 진입/이동 시 해당 앵커로 스크롤.
+  // 위쪽 이미지가 늦게 자리를 잡으면 한 번의 스크롤로는 어긋나므로 몇 차례 다시 맞춘다.
   useEffect(() => {
     const id = location.hash.replace('#', '')
     if (!id) return
-    const el = document.getElementById(id)
-    if (!el) return
-    const t = window.setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60)
-    return () => window.clearTimeout(t)
+    const go = () => {
+      const el = document.getElementById(id)
+      if (!el) return
+      const y = el.getBoundingClientRect().top + window.scrollY - 64
+      window.scrollTo({ top: Math.max(0, y), behavior: 'instant' })
+    }
+    go()
+    const timers = [80, 250, 600, 1000].map((d) => window.setTimeout(go, d))
+    window.addEventListener('load', go, { once: true })
+    return () => { timers.forEach(clearTimeout); window.removeEventListener('load', go) }
   }, [location.hash])
 
   // 스크롤 리빌
