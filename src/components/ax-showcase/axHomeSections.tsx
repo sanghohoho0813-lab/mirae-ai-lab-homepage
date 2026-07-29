@@ -35,7 +35,7 @@ export function AxHeroV2({ onShowcase }: { onShowcase: () => void }) {
 
         <h1 className="mt-6 max-w-4xl break-keep text-[clamp(2rem,7.4vw,2.9rem)] font-black leading-[1.26] tracking-normal text-white sm:mt-7 sm:text-[clamp(2.5rem,5.4vw,3.6rem)]">
           이제 사업계획서만으로는 부족합니다.<br />
-          우리 회사를 <span className="text-teal-300">정책자금을 잘 받을 수 있는<br />사업체 유형</span>으로 먼저 바꿔드립니다.
+          우리 회사를 <span className="text-teal-300">정책자금을 잘 받을 수 있는 사업체 유형</span>으로<br className="hidden sm:block" /> 먼저 바꿔드립니다.
         </h1>
 
         <p className="mt-5 max-w-2xl break-keep text-[1.18rem] leading-relaxed text-slate-300 sm:mt-6 sm:text-[1.32rem]">
