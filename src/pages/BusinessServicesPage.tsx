@@ -1,67 +1,33 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation, useNavigate, useNavigationType } from 'react-router-dom'
+import { Link, useLocation, useNavigationType } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
-import AxHero from '../components/ax/AxHero'
-import AxFourSteps from '../components/ax/AxFourSteps'
-import AxIndustryShowcase from '../components/ax/AxIndustryShowcase'
-import AxIntroShowcase from '../components/ax/AxIntroShowcase'
-import AxPolicyShift from '../components/ax/AxPolicyShift'
-import AxProcessSection from '../components/ax/AxProcessSection'
+import AxIndustryShowcaseV2 from '../components/ax-showcase/AxIndustryShowcaseV2'
+import AxPackageComparison from '../components/ax-showcase/AxPackageComparison'
+import {
+  AxCoreValuesSection,
+  AxDeliverablesSection,
+  AxEmpathyV2,
+  AxHeroV2,
+  AxMethodSection,
+  AxSelectionSection,
+  AxTimelineSection,
+} from '../components/ax-showcase/axHomeSections'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { FLAGSHIP } from '../data/corePrograms'
-import { FUNDING_HOME } from '../data/policyFunding2026'
 import { businessPackages, type ModuleGroup } from '../data/businessPackages'
 import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
 
-// 미래AI랩 = 정책자금 전문회사. AX는 자금을 받을 이유를 보여주는 실행수단.
-// 스토리: Hero(궁금증) → AX 화면 미리보기+핵심 메시지 → 공감 → 사업계획서만으로 부족한 이유 →
-//          정부 정책방향 → AX 4단계 → AX 화면 16업종 → 최대 2주 과정 → 결과물 → 프로그램·비용(1회) →
-//          진행형 사례 → 김팀장 → 생애주기 → FAQ → CTA
+// 미래AI랩 = 정책자금 기반 기업 사업화 회사. AX는 자금을 받을 이유를 실제로 만들어 보여주는 수단이다.
+// 홈 순서: Hero → 자금문제 공감 → 세 가지 가치 → AX 사업화 5단계 →
+//          15개 업종 선택 · 5장 변화 · 여기서 끝나지 않습니다 · 사업화 예시 2개 →
+//          프로그램 A·B·C(가격 노출은 홈에서 여기 한 곳) → 최대 2주 과정 → 실제 결과물 →
+//          진행 중인 사례 → 김팀장과 수행체계 → 생애주기 → 월 최대 5개사 선별기준 → FAQ → CTA
 const DETAIL = '/business-services/funding-consulting'
-
-// 고객 공감 — 소액만 받거나 거절당한 기업의 현실
-const EMPATHY = [
-  '이미 대출이 있어 추가 한도가 막히셨나요?',
-  '업력이 짧아 볼 수 있는 실적이 부족하신가요?',
-  '신설법인이라 과거 자료로 설명하기 어려우신가요?',
-  '우리 회사의 차별성을 서류로 설명하기 어려우신가요?',
-  '매번 소액만 받아 급한 운영비만 막고 제자리로 돌아오지는 않으셨나요?',
-]
-
-// 메시지 통일 — 사업계획서는 필요하지만, 그것만으로는 부족하다.
-const PLAN_LINES = [
-  '사업계획서 작성에서 끝나지 않습니다.',
-  '사업계획과 실제 실행구조를 함께 만듭니다.',
-  '문서와 화면이 같은 방향을 말하도록 연결합니다.',
-  '정책자금 전략, 사업계획과 AX 프로그램을 하나의 프로젝트로 진행합니다.',
-]
-
-// 최종 제공 결과물 5종
-const DELIVERABLES = [
-  { t: '자금조달 전략', d: '어떤 기관에 어떤 순서로 신청할지 정리합니다.' },
-  { t: '사업계획과 자금사용계획', d: '받은 자금을 어디에 쓰고 무엇이 좋아지는지 설명합니다.' },
-  { t: 'AX 업무 흐름', d: '지금 방식이 어떻게 바뀌는지 흐름으로 정리합니다.' },
-  { t: 'MVP 또는 선택 단계 프로그램', d: '실제로 열어서 보여줄 수 있는 화면을 드립니다.' },
-  { t: '이후 성장 로드맵', d: '자금조달 다음에 무엇을 할지 순서를 정합니다.' },
-]
-// 결과물 대표 이미지 — 실제로 일치하는 화면만 사용
-const DELIVERABLE_SHOTS = [
-  { img: '/ax-showcase/equipment-platform/photo-84-equiplink-flow.webp', cap: 'AX 업무 흐름 정리 예시' },
-  { img: '/ax-showcase-v2/photo-110-fieldcare-showcase.webp', cap: '실제로 보여줄 수 있는 프로그램 화면 예시' },
-]
-
-// 구현 수준 — 가격이 아니라 "어디까지 만드는지"
-const LEVELS = [
-  { no: '1', name: 'AX 실행 설계', msg: '아이디어를 화면구조로 바꿉니다.' },
-  { no: '2', name: '시연형 프로토타입', msg: '심사자가 클릭하며 흐름을 확인합니다.' },
-  { no: '3', name: '핵심기능 MVP', msg: '로그인·데이터 저장이 실제로 작동합니다.' },
-  { no: '4', name: '업무사용형 MVP', msg: '직원이 실제 업무에 사용합니다.', rec: true },
-]
 
 // 진행형 사례 — 자금승인 완료 사례가 아니라 현재 진행단계
 const CASE_A = {
@@ -145,7 +111,6 @@ export default function BusinessServicesPage() {
   const [consultOpen, setConsultOpen] = useState(false)
   const location = useLocation()
   const navType = useNavigationType()
-  const navigate = useNavigate()
 
   useEffect(() => {
     document.title = 'AX 사업화·자금조달 프로그램 | 미래 AI 랩'
@@ -200,7 +165,6 @@ export default function BusinessServicesPage() {
   }, [])
 
   const saveReturn = (cardId: string) => saveBusinessReturn(cardId)
-  const goDetail = (hash = '') => { saveReturn('detail'); navigate(DETAIL + hash) }
 
   return (
     <div className="min-h-screen bg-white pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
@@ -216,7 +180,7 @@ export default function BusinessServicesPage() {
           </Link>
           <nav className="hidden items-center gap-5 text-[0.92rem] font-medium text-slate-600 lg:flex">
             <Link to={DETAIL} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">프로그램</Link>
-            <button type="button" onClick={() => scrollToId('ax-showcase')} className="transition-colors hover:text-slate-900">AX 화면</button>
+            <button type="button" onClick={() => scrollToId('ax-showcase-v2')} className="transition-colors hover:text-slate-900">업종별 AX</button>
             <button type="button" onClick={() => scrollToId('process')} className="transition-colors hover:text-slate-900">진행과정</button>
             <a href="https://pf.kakao.com/_xkxnBxbn/chat" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-slate-900">카톡 상담</a>
           </nav>
@@ -238,155 +202,43 @@ export default function BusinessServicesPage() {
         </div>
       </header>
 
-      {/* 1. Hero — 궁금증만 남기고 끊는다 */}
+      {/* 1. Hero — 무엇을 파는 회사인지 5초 안에 */}
       <div ref={heroRef}>
-        <AxHero onNext={() => scrollToId('ax-preview')} />
+        <AxHeroV2 onShowcase={() => scrollToId('ax-showcase-v2')} />
       </div>
 
-      {/* 2. AX 화면 미리보기 → 핵심 메시지 → 진행속도 → CTA */}
-      <AxIntroShowcase onShowcase={() => scrollToId('ax-showcase')} onProcess={() => scrollToId('process')} />
+      {/* 2. 고객의 자금문제 공감 */}
+      <AxEmpathyV2 />
 
-      {/* 3. 고객의 현실 */}
-      <section className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
-          <p className={eyebrow}>혹시 이런 상황이신가요?</p>
-          <h2 className={h2Class}>다른 곳에서 컨설팅을 받았는데도, 결국 몇천만원에서 끝나셨나요?</h2>
-          <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-600">
-            첫 거래에 대출이 적고 매출·신용이 충분한 기업은 대표님이 직접 신청해도 자금이 나옵니다. <b className="text-slate-900">문제는 그렇지 않은 기업입니다.</b>
+      {/* 3. 미래AI랩이 만드는 세 가지 가치 */}
+      <AxCoreValuesSection />
+
+      {/* 4. AX 사업화 5단계 */}
+      <AxMethodSection />
+
+      {/* 5~8. 15개 업종 선택 → 5장 AX 변화 → 여기서 끝나지 않습니다 → 사업화 예시 2개 */}
+      <AxIndustryShowcaseV2 />
+
+      {/* 9. 프로그램 A·B·C (홈 유일 가격 노출) */}
+      <section id="ax-packages" className="scroll-mt-16 border-t border-white/10 bg-slate-950 px-5 py-11 sm:px-6 sm:py-16">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="break-keep text-[1.6rem] font-black leading-tight text-white sm:text-[2.15rem]">
+            어디까지 준비할지 <span className="text-teal-300">먼저 고르세요.</span>
+          </h2>
+          <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-300">
+            방향만 확인할지, 벤처·연구소까지 함께 준비할지, 특허와 다음 자금 로드맵까지 갈지 선택할 수 있습니다.
           </p>
-          <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-            {EMPATHY.map((q) => (
-              <li key={q} className="flex items-start gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[0.95rem] leading-snug text-slate-700">
-                <span aria-hidden className="mt-0.5 shrink-0 text-slate-400">·</span>{q}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-5 break-keep border-l-2 border-blue-500 pl-4">
-            <p className="text-[1.02rem] font-bold leading-relaxed text-slate-900">사업이 부족해서가 아닐 수 있습니다.</p>
-            <p className="mt-1 text-[1rem] leading-relaxed text-slate-600">
-              심사자가 <span className="font-bold text-blue-700">더 큰 자금을 지원해야 할 이유</span>를 충분히 확인하지 못했을 수 있습니다.
-            </p>
-            <p className="mt-2 text-[1rem] font-bold leading-relaxed text-slate-900">그렇다고 방법이 없는 것은 아닙니다.</p>
+          <div className="mt-6">
+            <AxPackageComparison />
           </div>
         </div>
       </section>
 
-      {/* 4. 사업계획서만으로 부족한 이유 */}
-      <section id="plan" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
-          <p className={eyebrow}>지금 심사에서 벌어지는 일</p>
-          <h2 className={h2Class}>사업계획서는 필요합니다.<br className="sm:hidden" /> 하지만 사업계획서만으로는 부족합니다.</h2>
-          <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-600">
-            이제는 AI로 누구나 그럴듯한 사업계획서를 만들 수 있습니다. 그래서 심사자는 문장이 아니라 <b className="text-slate-900">실행 가능성, 실제 구조, 경쟁력</b>을 확인합니다.
-          </p>
-          <ul className="mt-5 space-y-2">
-            {PLAN_LINES.map((l) => (
-              <li key={l} className="flex items-start gap-2.5 rounded-xl bg-white px-4 py-3 text-[0.98rem] font-bold leading-snug text-slate-800 ring-1 ring-inset ring-slate-200">
-                <span aria-hidden className="mt-0.5 shrink-0 text-blue-500">✓</span>{l}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {/* 10. 최대 2주 진행과정 */}
+      <AxTimelineSection />
 
-      {/* 5. 정부 정책방향과 AX */}
-      <AxPolicyShift onDetail={() => goDetail()} />
-
-      {/* 6. AX 혁신전환 4단계 */}
-      <AxFourSteps />
-
-      {/* 7. 업종별 AX 화면 */}
-      <AxIndustryShowcase />
-
-      {/* 8. 최대 2주 진행과정 */}
-      <AxProcessSection onResult={() => scrollToId('deliverables')} />
-
-      {/* 9. 최종 결과물 */}
-      <section id="deliverables" className="scroll-mt-16 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-14">
-          <p className={eyebrow}>받는 결과물</p>
-          <h2 className={h2Class}>사업계획서뿐 아니라, 실제로 보여주고 사용할 AX 프로그램을 갖게 됩니다.</h2>
-          <ol className="mt-6 grid gap-2.5 sm:grid-cols-2">
-            {DELIVERABLES.map((d, i) => (
-              <li key={d.t} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm">
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-slate-900 text-[0.8rem] font-black text-amber-300">{i + 1}</span>
-                <div className="min-w-0">
-                  <p className="text-[1rem] font-black leading-snug text-slate-900">{d.t}</p>
-                  <p className="mt-0.5 break-keep text-[0.9rem] leading-snug text-slate-500">{d.d}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div className="mt-5 grid grid-cols-2 gap-2.5 sm:gap-3">
-            {DELIVERABLE_SHOTS.map((s) => (
-              <figure key={s.img} className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-sm">
-                <img src={s.img} alt={s.cap} loading="lazy" decoding="async" className="h-[128px] w-full object-cover sm:h-[190px]" />
-                <figcaption className="break-keep bg-white px-3 py-2.5 text-[0.8rem] font-semibold leading-snug text-slate-500 sm:px-4 sm:text-[0.85rem]">{s.cap}</figcaption>
-              </figure>
-            ))}
-          </div>
-          <div className="mt-6 flex justify-center">
-            <button type="button" onClick={() => goDetail()} className="inline-flex min-h-[48px] items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-6 text-[0.92rem] font-black text-white transition-transform hover:-translate-y-0.5">
-              결과물과 진행방식 자세히 보기 <span aria-hidden>→</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* 10. 프로그램 · 비용(홈 유일 노출) */}
-      <section id="program" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
-          <p className={eyebrow}>프로그램</p>
-          <h2 className={h2Class}>큰 자금을 받으려면, 그만한 이유부터 보여줘야 합니다.</h2>
-          <p className="mt-3 max-w-2xl break-keep text-[1.02rem] font-bold leading-relaxed text-slate-800">{FUNDING_HOME.main}</p>
-          <ul className="mt-3 space-y-1">
-            {FUNDING_HOME.notes.map((n) => <li key={n} className="break-keep text-[0.82rem] leading-relaxed text-slate-500">· {n}</li>)}
-          </ul>
-
-          <div className="mt-6 rounded-3xl border-2 border-blue-500 bg-white p-5 shadow-sm sm:p-6">
-            <p className="text-[1.15rem] font-black tracking-tight text-slate-900">{FLAGSHIP.name}</p>
-            <p className="mt-1 break-keep text-[0.95rem] leading-relaxed text-slate-600">정책자금 전략, 사업계획과 AX 프로그램을 하나의 프로젝트로 진행합니다.</p>
-            <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
-              <div className="rounded-xl bg-slate-50 px-4 py-3">
-                <p className="text-[0.82rem] font-bold text-slate-400">시작 비용</p>
-                <p className="mt-0.5 text-[0.98rem] font-black text-slate-900">AX 혁신전환 컨설팅 100만원</p>
-              </div>
-              <div className="rounded-xl bg-amber-50 px-4 py-3 ring-1 ring-inset ring-amber-200">
-                <p className="text-[0.82rem] font-bold text-amber-700">본개발비 · 후불</p>
-                <p className="mt-0.5 text-[0.98rem] font-black text-amber-800">정책자금 조달 이후 정산</p>
-              </div>
-            </div>
-            <p className="mt-3.5 break-keep rounded-xl bg-slate-900 px-4 py-3 text-[0.92rem] font-bold leading-relaxed text-white">
-              개발회사처럼 먼저 큰 개발비를 받지 않습니다. 자금이 실행되지 않으면 선택하지 않은 <span className="text-amber-300">본개발비는 발생하지 않습니다.</span>
-            </p>
-
-            {/* 구현 수준 — 어디까지 만들지 */}
-            <div id="build-levels" className="mt-5 scroll-mt-20">
-              <p className="text-[0.82rem] font-black text-slate-400">어디까지 만들지 골라서 진행합니다</p>
-              <ul className="mt-2 space-y-1.5">
-                {LEVELS.map((l) => (
-                  <li key={l.no} className={`flex items-start gap-2.5 rounded-xl px-3.5 py-2.5 text-[0.92rem] leading-snug ${l.rec ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-700'}`}>
-                    <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-md text-[0.82rem] font-black ${l.rec ? 'bg-amber-400 text-slate-900' : 'bg-white text-slate-500 ring-1 ring-inset ring-slate-200'}`}>{l.no}</span>
-                    <span className="min-w-0">
-                      <b className={l.rec ? 'text-white' : 'text-slate-900'}>{l.name}</b> · {l.msg}
-                      {l.rec && <span className="ml-1.5 rounded-full bg-amber-400 px-2 py-0.5 text-[0.82rem] font-black text-slate-900">권장</span>}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
-              <Link to={DETAIL} onClick={() => saveReturn('program')} className="flex flex-1 items-center justify-center rounded-xl bg-blue-600 px-5 py-3.5 text-[0.95rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-700">
-                단계·비용 자세히 보기
-              </Link>
-              <button type="button" onClick={() => goDetail('#compare')} className="flex flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3.5 text-[0.95rem] font-black text-slate-700 transition-colors hover:bg-slate-50">
-                일반 개발회사와 비교하기
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 11. 실제 제공 결과물 */}
+      <AxDeliverablesSection />
 
       {/* 11. 진행형 사례 */}
       <section id="projects" className="scroll-mt-16 border-t border-slate-800 bg-slate-900">
@@ -471,16 +323,19 @@ export default function BusinessServicesPage() {
         </div>
       </section>
 
-      {/* 14. FAQ */}
+      {/* 14. 월 최대 5개사 선별기준 */}
+      <AxSelectionSection />
+
+      {/* 15. FAQ */}
       <section id="faq" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-12">
           <p className={eyebrow}>자주 묻는 질문</p>
           <h2 className={h2Class}>대표님들이 자주 묻는 질문</h2>
           <div className="mt-5 space-y-2.5">
             {[
-              { q: '우리 회사는 AI 회사가 아닌데요?', a: 'AI를 파는 회사만 대상이 아닙니다. 지금 엑셀·카카오톡·수기로 하는 업무를 데이터로 바꾸는 것도 AX입니다. 업종을 바꾸는 것이 아니라 일하는 방식을 바꾸는 것입니다.' },
+              { q: '우리 회사는 AI 회사가 아닌데요?', a: 'AI를 파는 회사만 대상이 아닙니다. 지금 엑셀·카카오톡·수기로 하는 업무를 데이터로 바꾸는 것도 AX입니다. 지금 사업을 버리는 것이 아니라, 정책자금에서 평가받는 구조를 바꾸는 것입니다.' },
               { q: '개발을 전혀 몰라도 진행할 수 있나요?', a: '가능합니다. 대표님은 지금 업무가 어떻게 돌아가는지만 말씀해 주시면 됩니다. 기능명이나 개발용어는 저희가 정리합니다.' },
-              { q: '큰 개발비는 언제 내나요?', a: 'AX 혁신전환 컨설팅비 100만원으로 시작합니다. 큰 개발비는 정책자금이 조달된 이후에 정산하고, 자금이 실행되지 않으면 선택하지 않은 개발비는 발생하지 않습니다.' },
+              { q: '시연형 MVP 이후 운영형 개발은 어떻게 되나요?', a: '세 프로그램은 AX 사업화·컨설팅·인증 준비 범위입니다. 로그인·데이터 저장·외부연동이 필요한 운영형 개발은 필요한 기능과 사용인원을 확인한 뒤 별도로 견적합니다. 처음부터 모든 기능을 만들지 않고 가장 중요한 기능부터 단계적으로 구현합니다.' },
               { q: '정책자금 승인이 보장되나요?', a: '보장되지 않습니다. 다만 사업계획을 실제 업무 흐름, 화면과 자금사용계획으로 구체화해 심사에서 설명할 근거를 보완합니다. 실제 승인 여부와 금액은 기관평가에 따라 달라집니다.' },
             ].map((f) => (
               <details key={f.q} className="group rounded-2xl border border-slate-200 bg-white open:bg-white">
