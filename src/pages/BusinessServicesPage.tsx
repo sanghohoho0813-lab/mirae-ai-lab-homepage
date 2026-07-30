@@ -5,6 +5,7 @@ import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
 import AxIndustryShowcaseV2 from '../components/ax-showcase/AxIndustryShowcaseV2'
+import AxPurposeSection from '../components/ax-showcase/AxPurposeSection'
 import AxScreenPreviewSection from '../components/ax-showcase/AxScreenPreviewSection'
 import AxSimpleExplanationSection from '../components/ax-showcase/AxSimpleExplanationSection'
 import { AxHeroV2, AxSelectionSection } from '../components/ax-showcase/axHomeSections'
@@ -17,9 +18,10 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 미래AI랩 = 정책자금 기반 기업 사업화 회사. AX는 자금을 받을 이유를 실제로 만들어 보여주는 수단이다.
 //
 // 홈은 세 가지만 강하게 보여준다 — 왜 지금 AX인가 / 우리 업종은 어떻게 달라지는가 / 누가 직접 설계하는가.
-// 홈 순서: ① Hero(한 문장만) → ② 이런 화면을 만들어 드립니다(업종 3개 × 5단계 화면)
-//          → ③ AX 쉽게 설명하면 · 왜 하필 지금 AX인가 → ④ 15개 업종 쇼케이스
-//          → ⑤ 김팀장·수행체계 → ⑥ 월 최대 5개사 → ⑦ 최종 CTA
+// 홈 순서: ① Hero(한 문장만) → ② AX의 목적 네 가지(가볍게)
+//          → ③ 이런 프로그램을 만들어 드립니다(업종 3개 × 5단계 화면)
+//          → ④ AX 쉽게 설명하면 · 왜 하필 지금 AX인가 → ⑤ 15개 업종 쇼케이스
+//          → ⑥ 김팀장·수행체계 → ⑦ 월 최대 5개사 → ⑧ 최종 CTA
 // 쿠팡·네이버 상세페이지처럼 한 화면에 핵심 메시지 하나, 위아래 여백을 넉넉히 둔다.
 // 가격·2주 과정·결과물·비교표·생애주기·FAQ 는 정책자금 상세페이지에서만 다룬다.
 const DETAIL = '/business-services/funding-consulting'
@@ -140,10 +142,13 @@ export default function BusinessServicesPage() {
 
       {/* 1. Hero — 무엇을 파는 회사인지 5초 안에 */}
       <div ref={heroRef}>
-        <AxHeroV2 onNext={() => scrollToId('ax-screen-preview')} />
+        <AxHeroV2 onNext={() => scrollToId('ax-purpose')} />
       </div>
 
-      {/* 2. 이런 화면을 만들어 드립니다 — 업종 3개 × 5단계 화면 */}
+      {/* 2. AX가 무엇을 위한 것인지 — 목적 네 가지만 가볍게 */}
+      <AxPurposeSection onNext={() => scrollToId('ax-screen-preview')} />
+
+      {/* 3. 이런 프로그램을 만들어 드립니다 — 업종 3개 × 5단계 화면 */}
       <AxScreenPreviewSection />
 
       {/* 3. AX가 무엇인지 쉬운 말로 → 왜 하필 지금인가(공식 정책근거) */}
@@ -164,7 +169,7 @@ export default function BusinessServicesPage() {
               </div>
             </div>
             <p className="mt-5 break-keep text-[1.26rem] sm:text-[1.15rem] leading-relaxed text-slate-700">
-              김팀장은 자금 가능성 검토에서 끝내지 않습니다. 대표님의 사업을 듣고 어떤 업무를 AX로 바꿀지 직접 기획하며, <b className="text-slate-900">개발자와 함께 사업과 AX 구조를 직접 설계합니다.</b> 그래서 사업계획과 실제 결과물이 따로 움직이지 않습니다. 자금조달 이후에는 지원금·인증·복지제도까지 성장순서에 맞춰 연결합니다.
+              김팀장은 자금 가능성 검토에서 끝내지 않습니다. 대표님의 사업을 듣고 어떤 업무를 AX로 바꿀지 직접 기획하며, <b className="text-slate-900">내부 개발자와 함께 사업과 AX 구조를 직접 설계합니다.</b> 그래서 사업계획과 실제 결과물이 따로 움직이지 않습니다. 자금조달 이후에는 지원금·인증·복지제도까지 성장순서에 맞춰 연결합니다.
             </p>
             <p className="mt-2.5 break-keep text-[1.13rem] sm:text-[1.03rem] leading-relaxed text-slate-500">
               세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원. 누적 자금조달 지원 100억원+(지원금·세금 환급 포함).

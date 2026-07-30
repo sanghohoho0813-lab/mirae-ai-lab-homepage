@@ -1,4 +1,4 @@
-// 홈 2번 화면 — "이런 화면을 만들어 드립니다".
+// 홈 3번 화면 — "이런 프로그램을 만들어 드립니다".
 // 히어로에서 내려온 방문자가 무엇을 만들어 주는 회사인지 사진으로 먼저 확인한다.
 // 업종 3개 중 하나를 고르면 그 업종의 5단계 화면과 단계별 짧은 설명만 보여준다.
 // 확장 이야기(여기서 끝나지 않습니다)와 사업화 예시는 아래 15업종 쇼케이스에서 다룬다.
@@ -21,14 +21,11 @@ export default function AxScreenPreviewSection() {
 
       <div className="relative mx-auto max-w-5xl px-5 py-16 sm:px-6 sm:py-24">
         <h2 className="break-keep text-center text-[2.04rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.6rem]">
-          이런 화면을<br className="sm:hidden" /> 만들어 드립니다.
+          이런 프로그램을<br className="sm:hidden" /> 만들어 드립니다.
         </h2>
-        <p className="mx-auto mt-6 max-w-2xl break-keep text-center text-[1.26rem] leading-[1.75] text-slate-300 sm:mt-8 sm:text-[1.3rem]">
-          업종을 고르면 지금 하는 업무가 어떤 화면으로 바뀌는지<br className="hidden sm:block" /> 다섯 단계로 확인할 수 있습니다.
-        </p>
 
         {/* 업종 3개 */}
-        <div role="tablist" aria-label="업종 예시 선택" className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-2.5 sm:mt-12 sm:grid-cols-3">
+        <div role="tablist" aria-label="업종 예시 선택" className="mx-auto mt-9 grid max-w-2xl grid-cols-1 gap-2.5 sm:mt-11 sm:grid-cols-3">
           {PREVIEWS.map((ind) => {
             const on = ind.slug === industry.slug
             return (
