@@ -49,9 +49,10 @@ export function PhoneShell({ children, className = '' }: { children: React.React
 export function SectionHead({ eyebrow, title, desc, center = false, dark = false }: { eyebrow: string; title: React.ReactNode; desc?: React.ReactNode; center?: boolean; dark?: boolean }) {
   return (
     <div className={center ? 'text-center' : ''}>
-      <p className={`text-sm font-bold uppercase tracking-widest ${dark ? 'text-teal-300' : 'text-blue-600'}`}>{eyebrow}</p>
-      <h2 className={`mt-2 text-2xl font-extrabold leading-[1.25] tracking-tight sm:text-[2.1rem] ${dark ? 'text-white' : 'text-slate-900'}`}>{title}</h2>
-      {desc && <p className={`mt-3 max-w-2xl text-[1rem] leading-relaxed ${dark ? 'text-slate-300' : 'text-slate-500'} ${center ? 'mx-auto' : ''}`}>{desc}</p>}
+      {/* 한글 머리말에는 자간을 벌리지 않는다 — 모바일은 10% 크게, PC는 기존 크기 유지 */}
+      <p className={`text-[1.05rem] font-bold tracking-tight sm:text-sm ${dark ? 'text-teal-300' : 'text-blue-600'}`}>{eyebrow}</p>
+      <h2 className={`mt-2 break-keep text-[1.65rem] font-extrabold leading-[1.25] tracking-tight sm:text-[2.1rem] ${dark ? 'text-white' : 'text-slate-900'}`}>{title}</h2>
+      {desc && <p className={`mt-3 max-w-2xl break-keep text-[1.1rem] leading-relaxed sm:text-[1rem] ${dark ? 'text-slate-300' : 'text-slate-500'} ${center ? 'mx-auto' : ''}`}>{desc}</p>}
     </div>
   )
 }

@@ -39,12 +39,12 @@ export default function LegalFooter({
               AI
             </span>
             <span className="flex flex-col leading-tight">
-              <span className={`text-[0.95rem] font-bold tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>{b.serviceName}</span>
-              <span className={`text-[0.82rem] font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · <b className={`font-bold ${dark ? 'text-slate-200' : 'text-slate-700'}`}>미래경영지원센터</b></span>
+              <span className={`text-[1.045rem] sm:text-[0.95rem] font-bold tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>{b.serviceName}</span>
+              <span className={`text-[0.902rem] sm:text-[0.82rem] font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · <b className={`font-bold ${dark ? 'text-slate-200' : 'text-slate-700'}`}>미래경영지원센터</b></span>
             </span>
           </Link>
 
-          <nav aria-label="약관 및 정책" className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-semibold">
+          <nav aria-label="약관 및 정책" className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.96rem] font-semibold sm:text-sm">
             {legalLinks.map((l) => (
               <Link
                 key={l.to}
@@ -58,7 +58,7 @@ export default function LegalFooter({
         </div>
 
         {/* 사업자 정보 */}
-        <div className={`mt-6 border-t pt-5 text-sm leading-relaxed ${dark ? 'border-white/10 text-slate-400' : 'border-slate-100 text-slate-500'}`}>
+        <div className={`mt-6 border-t pt-5 text-[0.96rem] leading-relaxed sm:text-sm ${dark ? 'border-white/10 text-slate-400' : 'border-slate-100 text-slate-500'}`}>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             {infoRows.map((row) => (
               <span key={row}>{row}</span>
@@ -77,7 +77,7 @@ export default function LegalFooter({
           </p>
         </div>
 
-        <div className={`mt-5 flex flex-col gap-1 text-[0.82rem] ${dark ? 'text-slate-500' : 'text-slate-400'} sm:flex-row sm:items-center sm:justify-between`}>
+        <div className={`mt-5 flex flex-col gap-1 text-[0.902rem] sm:text-[0.82rem] ${dark ? 'text-slate-500' : 'text-slate-400'} sm:flex-row sm:items-center sm:justify-between`}>
           <p>© {year} {b.companyName}. All rights reserved.</p>
           <p>정책자금·정부지원·기업인증·세금 관련 결과는 기관 심사 등에 따라 달라질 수 있으며 특정 결과를 보장하지 않습니다.</p>
         </div>

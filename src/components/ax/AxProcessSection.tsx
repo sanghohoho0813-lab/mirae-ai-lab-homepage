@@ -26,25 +26,25 @@ export default function AxProcessSection({ onResult }: { onResult?: () => void }
               {i < TIMELINE.length - 1 && (
                 <span aria-hidden className="absolute left-[15px] top-8 h-[calc(100%-1.5rem)] w-px bg-slate-300" />
               )}
-              <span className="relative z-10 mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-slate-900 text-[0.8rem] font-black text-amber-300">
+              <span className="relative z-10 mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-slate-900 text-[0.88rem] sm:text-[0.8rem] font-black text-amber-300">
                 {i + 1}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[0.82rem] font-black uppercase tracking-wider text-blue-600">{t.day}</p>
-                <p className="mt-0.5 break-keep text-[1.05rem] font-black leading-snug tracking-tight text-slate-900">{t.title}</p>
-                <p className="mt-1 break-keep text-[0.95rem] leading-relaxed text-slate-600">{t.desc}</p>
+                <p className="text-[0.902rem] sm:text-[0.82rem] font-black uppercase tracking-wider text-blue-600">{t.day}</p>
+                <p className="mt-0.5 break-keep text-[1.155rem] sm:text-[1.05rem] font-black leading-snug tracking-tight text-slate-900">{t.title}</p>
+                <p className="mt-1 break-keep text-[1.045rem] sm:text-[0.95rem] leading-relaxed text-slate-600">{t.desc}</p>
               </div>
             </li>
           ))}
         </ol>
 
-        <p className="mt-4 break-keep rounded-xl bg-white px-4 py-3 text-[0.8rem] leading-relaxed text-slate-500 ring-1 ring-inset ring-slate-200">
+        <p className="mt-4 break-keep rounded-xl bg-white px-4 py-3 text-[0.88rem] sm:text-[0.8rem] leading-relaxed text-slate-500 ring-1 ring-inset ring-slate-200">
           자료 접수와 의사결정이 원활한 경우의 목표 일정입니다. 외부 시스템 연동과 복잡한 데이터 이전은 별도 일정으로 진행하며, 정책기관 심사기간은 포함하지 않습니다. 최종 범위는 선택한 단계에 따라 달라집니다.
         </p>
 
         {onResult && (
           <div className="mt-5 flex justify-center">
-            <button type="button" onClick={onResult} className="inline-flex min-h-[48px] items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-6 text-[0.92rem] font-black text-slate-700 transition-colors hover:bg-slate-50">
+            <button type="button" onClick={onResult} className="inline-flex min-h-[48px] items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-6 text-[1.012rem] sm:text-[0.92rem] font-black text-slate-700 transition-colors hover:bg-slate-50">
               이 과정에서 받는 결과물 보기 <span aria-hidden>→</span>
             </button>
           </div>

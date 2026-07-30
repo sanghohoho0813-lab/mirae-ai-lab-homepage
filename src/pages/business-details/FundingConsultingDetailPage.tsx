@@ -28,7 +28,8 @@ import { AX_BUILD_PAYMENT, AX_BUILD_STAGES, AX_PACKAGES } from '../../data/axPac
 // ── 공통 스타일 토큰 ───────────────────────────────────────────────────────
 const band = 'px-5 py-10 sm:py-16'
 const inner = 'mx-auto max-w-[820px]'
-const kicker = 'text-center text-[1.0rem] font-black uppercase tracking-widest text-teal-600'
+// 한글 머리말이라 자간을 벌리지 않는다
+const kicker = 'text-center text-[1.1rem] font-black tracking-tight text-teal-600 sm:text-[1.0rem]'
 const bigHead =
   'mt-2.5 text-center text-[1.5rem] font-black leading-[1.3] tracking-tight text-slate-900 sm:text-[2rem]'
 const lead = 'mx-auto mt-4 max-w-xl text-center text-[1.15rem] leading-relaxed text-slate-600 sm:text-[1.21rem]'
@@ -781,7 +782,7 @@ export default function FundingConsultingDetailPage() {
       {/* Footer */}
       <LegalFooter
         topSlot={
-          <Link to="/business-services" className="text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900">
+          <Link to="/business-services" className="text-[0.96rem] font-semibold text-slate-500 transition-colors hover:text-slate-900 sm:text-sm">
             ← 서비스몰 홈으로
           </Link>
         }
