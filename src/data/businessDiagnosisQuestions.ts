@@ -381,6 +381,32 @@ export const questions: DiagnosisQuestion[] = [
     ],
   },
   {
+    id: 'axCustomerFacing',
+    stage: 3,
+    type: 'single',
+    title: '고객이 직접 쓰는 화면(앱·웹)이 있으신가요?',
+    desc: '주문·예약·진행상태 확인처럼 고객이 직접 보는 화면이요. AX 사업화에서 신규 매출을 설명할 근거가 됩니다.',
+    options: [
+      { value: 'has', label: '있어요, 고객이 직접 사용해요' },
+      { value: 'partial', label: '문의·예약 정도만 받아요' },
+      { value: 'none', label: '없어요, 전화·메신저로만 받아요' },
+      { value: 'planning', label: '만들고 싶은데 아직이에요' },
+    ],
+  },
+  {
+    id: 'axDataAsset',
+    stage: 3,
+    type: 'single',
+    title: '고객·거래·작업 기록이 데이터로 쌓이고 있나요?',
+    desc: '쌓인 기록은 정책자금 심사에서 기술성과 성장성을 설명하는 근거가 됩니다.',
+    options: [
+      { value: 'system', label: '시스템에 남아 조회할 수 있어요' },
+      { value: 'files', label: '엑셀·한글파일로 흩어져 있어요' },
+      { value: 'person', label: '담당자 기억에 주로 남아요' },
+      { value: 'none', label: '거의 남지 않아요' },
+    ],
+  },
+  {
     id: 'repetitiveWork',
     stage: 3,
     type: 'single',

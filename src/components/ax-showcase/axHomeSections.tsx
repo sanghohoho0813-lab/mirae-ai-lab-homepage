@@ -101,31 +101,32 @@ export function AxSelectionSection() {
             <span className="text-[1.5rem] font-black text-white sm:text-[1.9rem]">만 진행합니다</span>
           </p>
           <p className="mx-auto mt-8 max-w-2xl break-keep text-[1.2rem] leading-[1.75] text-slate-200 sm:text-[1.36rem]">
-            대표 컨설턴트가 사업과 AX 구조를 직접 설계하기 때문에,<br className="hidden sm:block" /> 같은 기간에 더 많은 기업을 맡지 않습니다.
+            업종이 다르고, 지금 막힌 지점이 다르고, 쌓여 있는 데이터도 다릅니다.<br className="hidden sm:block" />
+            같은 자료를 돌려 쓰는 방식으로는 만들 수 없습니다.
           </p>
           <p className="mx-auto mt-6 max-w-2xl break-keep text-[1.2rem] font-bold leading-[1.75] text-white sm:text-[1.36rem]">
-            자금만 신청하고 끝나는 기업보다,<br className="hidden sm:block" /> <span className="text-amber-300">자금을 통해 사업을 실제로 바꾸려는 기업</span>을 우선합니다.
+            대표님 회사에 <span className="text-amber-300">완전히 맞춘 사업구조와 화면</span>을 만들어야 하기 때문에,<br className="hidden sm:block" />
+            결과물의 수준을 지키려면 한 달에 5개사가 현실적인 한계입니다.
+          </p>
+          <p className="mx-auto mt-6 max-w-2xl break-keep text-[1.2rem] leading-[1.75] text-slate-200 sm:text-[1.36rem]">
+            그래서 자금만 신청하고 끝나는 기업보다,<br className="hidden sm:block" /> 자금을 통해 사업을 실제로 바꾸려는 기업을 우선합니다.
           </p>
         </div>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border border-teal-400/25 bg-teal-400/[0.07] p-6 sm:p-7">
+          <div className="rounded-2xl border border-teal-400/25 bg-teal-400/[0.07] p-6 text-center sm:p-7">
             <p className="text-[1.3rem] font-black text-teal-200">우선 진행기업</p>
             <ul className="mt-5 space-y-3">
               {AX_SELECTION_PRIORITY.map((t) => (
-                <li key={t} className="flex gap-2 break-keep text-[1.18rem] leading-[1.7] text-slate-200">
-                  <span aria-hidden className="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-teal-400" />{t}
-                </li>
+                <li key={t} className="break-keep text-[1.18rem] leading-[1.7] text-slate-200">{t}</li>
               ))}
             </ul>
           </div>
-          <div className="rounded-2xl border border-white/12 bg-white/[0.04] p-6 sm:p-7">
+          <div className="rounded-2xl border border-white/12 bg-white/[0.04] p-6 text-center sm:p-7">
             <p className="text-[1.3rem] font-black text-slate-300">진행하지 않는 경우</p>
             <ul className="mt-5 space-y-3">
               {AX_SELECTION_DECLINE.map((t) => (
-                <li key={t} className="flex gap-2 break-keep text-[1.18rem] leading-[1.7] text-slate-400">
-                  <span aria-hidden className="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600" />{t}
-                </li>
+                <li key={t} className="break-keep text-[1.18rem] leading-[1.7] text-slate-400">{t}</li>
               ))}
             </ul>
           </div>

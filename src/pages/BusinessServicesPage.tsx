@@ -108,7 +108,7 @@ export default function BusinessServicesPage() {
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-[1.09rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[1.0rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">정책자금 전문</b></span>
+              <span className="text-[1.0rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">정책자금 × AX사업화 전문</b></span>
             </span>
           </Link>
           <nav className="hidden items-center gap-5 text-[1.06rem] font-medium text-slate-600 lg:flex">
@@ -186,19 +186,17 @@ export default function BusinessServicesPage() {
       <div ref={finalCtaRef}>
         <section id="cta" className="border-t border-slate-800 bg-slate-900">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
-            <h2 className="break-keep text-[1.5rem] font-black leading-tight tracking-tight text-white sm:text-[1.95rem]">
-              이번에도 몇천만원에서 끝날지,<br /><span className="text-amber-300">1억원 이상을 설명할 구조</span>가 있는지 먼저 확인해보세요.
-            </h2>
-            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-blue-500 px-7 py-4 text-base font-black text-white shadow-lg shadow-blue-500/25 transition-transform hover:-translate-y-0.5 hover:bg-blue-400 sm:w-auto">
+            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-blue-500 px-7 py-4 text-[1.15rem] font-black text-white shadow-lg shadow-blue-500/25 transition-transform hover:-translate-y-0.5 hover:bg-blue-400 sm:w-auto">
                 <span aria-hidden>🩺</span> 3분 기업진단 시작
               </Link>
-              <button type="button" onClick={() => setConsultOpen(true)} className="flex w-full max-w-xs items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-base font-bold text-white transition-colors hover:bg-white/10 sm:w-auto">
+              <button type="button" onClick={() => setConsultOpen(true)} className="flex w-full max-w-xs items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto">
                 상담 신청
               </button>
+              <Link to={DETAIL} onClick={() => saveReturn('cta')} className="flex w-full max-w-xs items-center justify-center rounded-xl border border-teal-400/40 bg-teal-400/10 px-7 py-4 text-[1.15rem] font-bold text-teal-200 transition-colors hover:bg-teal-400/20 sm:w-auto">
+                자세히 보기
+              </Link>
             </div>
-            <p className="mt-5 break-keep text-[1.01rem] leading-relaxed text-slate-400">진단만으로 별도 비용이 발생하지 않습니다.</p>
-            <p className="mt-1 break-keep text-[1.0rem] leading-relaxed text-slate-500">선별 진행 여부는 진단과 상담 후 안내합니다.</p>
           </div>
         </section>
       </div>

@@ -51,14 +51,15 @@ export default function AxScreenPreviewSection() {
           })}
         </div>
 
+        {/* 업종 칩 바로 아래 — 전체 15개 업종이 준비돼 있다는 안내 */}
+        <p className="mx-auto mt-5 max-w-2xl break-keep rounded-2xl border border-teal-400/25 bg-teal-400/[0.08] px-5 py-4 text-center text-[1.15rem] font-bold leading-[1.7] text-teal-100 sm:mt-6 sm:text-[1.26rem]">
+          여기 3개 업종은 <span className="text-teal-300">맛보기</span>입니다.<br className="sm:hidden" /> 전체 <span className="text-teal-300">15개 업종</span>의 화면은 아래에서 모두 확인할 수 있습니다.
+        </p>
+
         {/* 5단계 라벨 + 사진 + 단계별 짧은 설명 */}
-        <div className="mt-8 sm:mt-10">
+        <div className="mt-10 sm:mt-12">
           <AxFiveStageViewer industry={industry} />
         </div>
-
-        <p className="mx-auto mt-10 max-w-2xl break-keep text-center text-[1.1rem] leading-[1.75] text-slate-400 sm:mt-12 sm:text-[1.16rem]">
-          전체 15개 업종의 화면은 아래에서 모두 확인할 수 있습니다.
-        </p>
       </div>
     </section>
   )

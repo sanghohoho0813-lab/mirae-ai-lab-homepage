@@ -55,26 +55,35 @@ export default function AxPackageComparison({ onConsult }: { onConsult?: (code: 
               {p.fit}
             </p>
 
-            {onConsult ? (
-              <button
-                type="button"
-                onClick={() => onConsult(p.code)}
-                className={`mt-4 min-h-[52px] w-full rounded-xl px-4 text-[1.13rem] font-black transition-transform hover:-translate-y-0.5 ${
-                  p.recommended ? 'bg-amber-400 text-slate-900 hover:bg-amber-300' : 'bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/15'
-                }`}
-              >
-                {p.ctaLabel}
-              </button>
-            ) : (
+            {/* 버튼 두 개 — ① 간단 상담 신청 ② 자가진단과 상담을 한 번에 */}
+            <div className="mt-5 flex flex-col gap-2.5">
+              {onConsult ? (
+                <button
+                  type="button"
+                  onClick={() => onConsult(p.code)}
+                  className={`min-h-[54px] w-full rounded-xl px-4 text-[1.13rem] font-black transition-transform hover:-translate-y-0.5 ${
+                    p.recommended ? 'bg-amber-400 text-slate-900 hover:bg-amber-300' : 'bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/15'
+                  }`}
+                >
+                  상담 신청하기
+                </button>
+              ) : (
+                <Link
+                  to="/business-services/funding-consulting#ax-packages"
+                  className={`flex min-h-[54px] w-full items-center justify-center rounded-xl px-4 text-[1.13rem] font-black transition-transform hover:-translate-y-0.5 ${
+                    p.recommended ? 'bg-amber-400 text-slate-900 hover:bg-amber-300' : 'bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/15'
+                  }`}
+                >
+                  상담 신청하기
+                </Link>
+              )}
               <Link
-                to="/business-diagnosis"
-                className={`mt-4 flex min-h-[52px] w-full items-center justify-center rounded-xl px-4 text-[1.13rem] font-black transition-transform hover:-translate-y-0.5 ${
-                  p.recommended ? 'bg-amber-400 text-slate-900 hover:bg-amber-300' : 'bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/15'
-                }`}
+                to={`/business-diagnosis?program=${p.code}`}
+                className="flex min-h-[54px] w-full items-center justify-center break-keep rounded-xl border border-teal-400/40 bg-teal-400/10 px-4 text-center text-[1.06rem] font-bold leading-snug text-teal-200 transition-colors hover:bg-teal-400/20"
               >
-                {p.ctaLabel}
+                더 정확한 결과를 위해<br className="sm:hidden" /> 자가진단 + 상담 한 번에
               </Link>
-            )}
+            </div>
           </article>
         ))}
       </div>

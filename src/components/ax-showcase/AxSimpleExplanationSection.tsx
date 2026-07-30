@@ -2,7 +2,7 @@
 // 긴 설명은 정책자금 상세페이지에서 다룬다. 여기서는 딱 보고 이해되는 것만 남긴다.
 //
 // 문장 원칙: 한 문장에 하나의 주장, 결론부터. API·인프라·백엔드 같은 IT 용어는 쓰지 않는다.
-import { AX_NOT_A_PIVOT, AX_SIMPLE_EXPLANATION, AX_WHY_NOW_LINES } from '../../data/policyAxEvidence2026'
+import { AX_SIMPLE_EXPLANATION, AX_WHY_NOW_LINES } from '../../data/policyAxEvidence2026'
 import AxBeforeAfterDiagram from './AxBeforeAfterDiagram'
 import AxPolicyEvidenceStrip from './AxPolicyEvidenceStrip'
 
@@ -56,13 +56,12 @@ export default function AxSimpleExplanationSection({ onShowcase }: { onShowcase:
           <p className="mx-auto mt-5 max-w-2xl break-keep text-[1.15rem] leading-[1.75] text-slate-200 sm:text-[1.28rem]">
             AI를 판매하는 기업이 아니어도, AI와 데이터를 실제 업무에 활용하는 기업이 될 수 있습니다.
           </p>
-          <p className="mx-auto mt-5 max-w-2xl break-keep text-[1.03rem] leading-relaxed text-slate-500">{AX_NOT_A_PIVOT.brandNote}</p>
         </div>
 
         {/* 왜 지금 — 두 줄 + 공식근거 */}
         <div className="mt-20 border-t border-white/10 pt-16 sm:mt-28 sm:pt-20">
           <h3 className="break-keep text-center text-[1.85rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.6rem]">
-            왜 하필 지금 AX일까요?
+            우리는 왜 AX로 전환해야 하는 걸까요?
           </h3>
           <div className="mx-auto mt-8 max-w-3xl space-y-5 sm:mt-10">
             {AX_WHY_NOW_LINES.map((line) => (
