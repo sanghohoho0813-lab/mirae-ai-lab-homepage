@@ -54,15 +54,15 @@ export default function AxIndustryShowcaseV2({
     <section id="ax-showcase-v2" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-900">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(90%_100%_at_25%_0%,rgba(45,212,191,0.13),transparent_70%)]" />
 
-      <div className="relative mx-auto max-w-5xl px-5 py-12 sm:px-6 sm:py-16">
-        <h2 className="break-keep text-[1.6rem] font-black leading-tight text-white sm:text-[2.25rem]">
+      <div className="relative mx-auto max-w-5xl px-5 py-16 sm:px-6 sm:py-24">
+        <h2 className="break-keep text-center text-[1.85rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.6rem]">
           우리 업종이 AX로 바뀌면<br className="hidden sm:block" /> 무엇이 달라지는지 <span className="text-teal-300">직접 확인해보세요.</span>
         </h2>
-        <p className="mt-3 max-w-3xl break-keep text-[1.15rem] leading-relaxed text-slate-300 sm:text-[1.24rem]">
-          먼저 현재 업무가 어떻게 달라지는지 보고, 그다음 새로운 앱·웹 서비스와 반복매출로 확장되는 과정을 확인할 수 있습니다.
+        <p className="mx-auto mt-8 max-w-2xl break-keep text-center text-[1.2rem] leading-[1.75] text-slate-300 sm:text-[1.36rem]">
+          15개 업종 중 하나를 선택하면 현재 업무가 달라지는 5단계와<br className="hidden sm:block" /> 새로운 매출로 확장할 사업화 아이디어를 확인할 수 있습니다.
         </p>
 
-        <div className="mt-6">
+        <div className="mt-12">
           <AxIndustryModeToggle value={mode} onChange={setMode} />
         </div>
 

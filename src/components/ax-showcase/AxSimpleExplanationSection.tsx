@@ -13,74 +13,76 @@ export default function AxSimpleExplanationSection({ onShowcase }: { onShowcase:
     <section id="ax-explained" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-900">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(85%_100%_at_20%_0%,rgba(45,212,191,0.12),transparent_70%)]" />
 
-      <div className="relative mx-auto max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-        <p className="text-[1.08rem] font-black tracking-tight text-teal-300">{x.eyebrow}</p>
+      <div className="relative mx-auto max-w-5xl px-5 py-16 sm:px-6 sm:py-24">
+        <p className="text-center text-[1.15rem] font-black tracking-tight text-teal-300">{x.eyebrow}</p>
 
         {/* 왜 AX라고 부르는지부터 */}
-        <p className="mt-3 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-          <span className="text-[2.1rem] font-black leading-none text-white sm:text-[2.6rem]">AX</span>
-          <span className="text-[1.16rem] font-bold text-teal-300 sm:text-[1.3rem]">{x.acronym.en}</span>
-          <span className="text-[1.16rem] font-bold text-slate-400 sm:text-[1.3rem]">· {x.acronym.ko}</span>
+        <p className="mt-6 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
+          <span className="text-[2.6rem] font-black leading-none text-white sm:text-[3.4rem]">AX</span>
+          <span className="text-[1.3rem] font-bold text-teal-300 sm:text-[1.5rem]">{x.acronym.en}</span>
+          <span className="text-[1.3rem] font-bold text-slate-400 sm:text-[1.5rem]">· {x.acronym.ko}</span>
         </p>
 
-        <h2 className="mt-3 max-w-3xl break-keep text-[1.55rem] font-black leading-[1.3] text-white sm:text-[2.15rem]">
+        <h2 className="mx-auto mt-8 max-w-3xl break-keep text-center text-[1.85rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:mt-10 sm:text-[2.6rem]">
           {x.title}
         </h2>
 
-        <div className="mt-7 grid gap-6 lg:grid-cols-[55fr_45fr] lg:gap-8">
-          {/* 왼쪽 — 정의와 세 가지 효과 */}
-          <div className="min-w-0">
-            <p className="break-keep rounded-2xl border-l-2 border-teal-400 bg-white/[0.04] py-4 pl-4 pr-5 text-[1.2rem] font-bold leading-relaxed text-white sm:text-[1.3rem]">
-              {x.definition}
-            </p>
+        <p className="mx-auto mt-10 max-w-3xl break-keep text-center text-[1.3rem] font-bold leading-[1.75] text-white sm:mt-12 sm:text-[1.55rem]">
+          {x.definition}
+        </p>
 
-            <ul className="mt-4 space-y-2.5">
-              {x.benefits.map((b) => (
-                <li key={b.title} className="flex gap-3 rounded-2xl border border-white/12 bg-white/[0.04] p-4">
-                  <span aria-hidden className="text-[1.5rem] leading-none">{b.icon}</span>
-                  <span className="min-w-0">
-                    <span className="block break-keep text-[1.16rem] font-black leading-snug text-white sm:text-[1.26rem]">{b.title}</span>
-                    <span className="mt-1 block break-keep text-[1.08rem] leading-relaxed text-slate-300 sm:text-[1.14rem]">{b.body}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+        {/* 기존 방식 → AX 적용 */}
+        <div className="mx-auto mt-14 max-w-md sm:mt-20">
+          <AxBeforeAfterDiagram />
+        </div>
 
-            {/* 업종을 바꾸는 게 아니라는 한 줄 정리 */}
-            <p className="mt-5 break-keep rounded-2xl border border-amber-400/25 bg-amber-400/[0.08] p-4 text-[1.12rem] font-bold leading-relaxed text-amber-100 sm:text-[1.2rem]">
-              업종을 바꾸는 것이 아닙니다. <span className="text-amber-300">지금 하는 업무방식을 AX로 바꾸면 됩니다.</span>
-              <br />
-              AI를 판매하는 기업이 아니어도, AI와 데이터를 실제 업무에 활용하는 기업이 될 수 있습니다.
-            </p>
-            <p className="mt-2.5 break-keep text-[1.03rem] leading-relaxed text-slate-500">{AX_NOT_A_PIVOT.brandNote}</p>
-          </div>
+        {/* 무엇이 좋아지는지 세 가지 */}
+        <ul className="mt-16 space-y-5 sm:mt-24 sm:space-y-6">
+          {x.benefits.map((b) => (
+            <li key={b.title} className="rounded-3xl border border-white/12 bg-white/[0.04] p-7 text-center sm:p-9">
+              <span aria-hidden className="text-[2.2rem] leading-none">{b.icon}</span>
+              <p className="mt-4 break-keep text-[1.4rem] font-black leading-snug text-white sm:text-[1.7rem]">{b.title}</p>
+              <p className="mx-auto mt-3 max-w-xl break-keep text-[1.15rem] leading-[1.75] text-slate-300 sm:text-[1.28rem]">{b.body}</p>
+            </li>
+          ))}
+        </ul>
 
-          {/* 오른쪽 — Before→After와 정책근거 */}
-          <div className="min-w-0">
-            <AxBeforeAfterDiagram />
-          </div>
+        {/* 업종을 바꾸는 게 아니라는 한 줄 정리 */}
+        <div className="mt-16 rounded-3xl border border-amber-400/25 bg-amber-400/[0.08] p-7 text-center sm:mt-24 sm:p-10">
+          <p className="break-keep text-[1.35rem] font-black leading-[1.6] text-amber-100 sm:text-[1.7rem]">
+            업종을 바꾸는 것이 아닙니다.<br />
+            <span className="text-amber-300">지금 하는 업무방식을 AX로 바꾸면 됩니다.</span>
+          </p>
+          <p className="mx-auto mt-5 max-w-2xl break-keep text-[1.15rem] leading-[1.75] text-slate-200 sm:text-[1.28rem]">
+            AI를 판매하는 기업이 아니어도, AI와 데이터를 실제 업무에 활용하는 기업이 될 수 있습니다.
+          </p>
+          <p className="mx-auto mt-5 max-w-2xl break-keep text-[1.03rem] leading-relaxed text-slate-500">{AX_NOT_A_PIVOT.brandNote}</p>
         </div>
 
         {/* 왜 지금 — 두 줄 + 공식근거 */}
-        <div className="mt-10 border-t border-white/10 pt-8">
-          <h3 className="break-keep text-[1.4rem] font-black leading-snug text-white sm:text-[1.8rem]">왜 하필 지금 AX일까요?</h3>
-          <div className="mt-3 max-w-3xl space-y-2">
+        <div className="mt-20 border-t border-white/10 pt-16 sm:mt-28 sm:pt-20">
+          <h3 className="break-keep text-center text-[1.85rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.6rem]">
+            왜 하필 지금 AX일까요?
+          </h3>
+          <div className="mx-auto mt-8 max-w-3xl space-y-5 sm:mt-10">
             {AX_WHY_NOW_LINES.map((line) => (
-              <p key={line} className="break-keep text-[1.12rem] leading-relaxed text-slate-300 sm:text-[1.2rem]">{line}</p>
+              <p key={line} className="break-keep text-center text-[1.2rem] leading-[1.8] text-slate-300 sm:text-[1.36rem]">{line}</p>
             ))}
           </div>
-          <div className="mt-5">
+          <div className="mt-12 sm:mt-16">
             <AxPolicyEvidenceStrip />
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={onShowcase}
-          className="mt-8 flex min-h-[58px] w-full items-center justify-center gap-2 rounded-xl bg-teal-400 px-6 text-[1.16rem] font-black text-slate-900 transition-transform hover:-translate-y-0.5 hover:bg-teal-300 sm:w-auto"
-        >
-          우리 업종은 어떻게 바뀌는지 보기 <span aria-hidden>↓</span>
-        </button>
+        <div className="mt-16 flex justify-center sm:mt-20">
+          <button
+            type="button"
+            onClick={onShowcase}
+            className="flex min-h-[62px] w-full items-center justify-center gap-2 rounded-xl bg-teal-400 px-8 text-[1.24rem] font-black text-slate-900 transition-transform hover:-translate-y-0.5 hover:bg-teal-300 sm:w-auto"
+          >
+            우리 업종은 어떻게 바뀌는지 보기 <span aria-hidden>↓</span>
+          </button>
+        </div>
       </div>
     </section>
   )

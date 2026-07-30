@@ -5,6 +5,7 @@ import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
 import AxIndustryShowcaseV2 from '../components/ax-showcase/AxIndustryShowcaseV2'
+import AxScreenPreviewSection from '../components/ax-showcase/AxScreenPreviewSection'
 import AxSimpleExplanationSection from '../components/ax-showcase/AxSimpleExplanationSection'
 import { AxHeroV2, AxSelectionSection } from '../components/ax-showcase/axHomeSections'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
@@ -16,8 +17,10 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 미래AI랩 = 정책자금 기반 기업 사업화 회사. AX는 자금을 받을 이유를 실제로 만들어 보여주는 수단이다.
 //
 // 홈은 세 가지만 강하게 보여준다 — 왜 지금 AX인가 / 우리 업종은 어떻게 달라지는가 / 누가 직접 설계하는가.
-// 홈 순서: Hero → AX 쉬운 설명·정책근거·현실·반론 해소 → 15개 업종 쇼케이스(5단계·사업화 예시 2개)
-//          → 김팀장·수행체계 → 월 최대 5개사 → 최종 CTA
+// 홈 순서: ① Hero(한 문장만) → ② 이런 화면을 만들어 드립니다(업종 3개 × 5단계 화면)
+//          → ③ AX 쉽게 설명하면 · 왜 하필 지금 AX인가 → ④ 15개 업종 쇼케이스
+//          → ⑤ 김팀장·수행체계 → ⑥ 월 최대 5개사 → ⑦ 최종 CTA
+// 쿠팡·네이버 상세페이지처럼 한 화면에 핵심 메시지 하나, 위아래 여백을 넉넉히 둔다.
 // 가격·2주 과정·결과물·비교표·생애주기·FAQ 는 정책자금 상세페이지에서만 다룬다.
 const DETAIL = '/business-services/funding-consulting'
 
@@ -39,8 +42,6 @@ export default function BusinessServicesPage() {
   const heroRef = useRef<HTMLDivElement>(null)
   const finalCtaRef = useRef<HTMLDivElement>(null)
   const [consultOpen, setConsultOpen] = useState(false)
-  // 히어로의 업종 예시를 누르면 쇼케이스가 그 업종으로 바뀐다.
-  const [pickedIndustry, setPickedIndustry] = useState<string | undefined>(undefined)
   const location = useLocation()
   const navType = useNavigationType()
 
@@ -135,17 +136,17 @@ export default function BusinessServicesPage() {
 
       {/* 1. Hero — 무엇을 파는 회사인지 5초 안에 */}
       <div ref={heroRef}>
-        <AxHeroV2
-          onShowcase={() => scrollToId('ax-showcase-v2')}
-          onPickIndustry={(slug) => { setPickedIndustry(slug); scrollToId('ax-showcase-v2') }}
-        />
+        <AxHeroV2 onNext={() => scrollToId('ax-screen-preview')} />
       </div>
 
-      {/* 2. AX를 쉬운 말로 설명 → 왜 지금인가(정책근거) → 고객 현실 → 반론 해소 */}
+      {/* 2. 이런 화면을 만들어 드립니다 — 업종 3개 × 5단계 화면 */}
+      <AxScreenPreviewSection />
+
+      {/* 3. AX가 무엇인지 쉬운 말로 → 왜 하필 지금인가(공식 정책근거) */}
       <AxSimpleExplanationSection onShowcase={() => scrollToId('ax-showcase-v2')} />
 
       {/* 5~8. 15개 업종 선택 → 5장 AX 변화 → 여기서 끝나지 않습니다 → 사업화 예시 2개 */}
-      <AxIndustryShowcaseV2 externalSlug={pickedIndustry} />
+      <AxIndustryShowcaseV2 />
 
       {/* 12. 김팀장 */}
       <section id="leader" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
