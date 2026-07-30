@@ -68,9 +68,7 @@ const BUSINESS_MENU: MenuConfig = {
         { no: '1', label: '업종별 AX 화면', desc: '15개 업종 실제 화면 먼저 보기', to: '/business-services#ax-showcase-v2' },
         { no: '2', label: 'AX란 무엇인가', desc: '쉬운 설명과 2026 정책근거', to: '/business-services#ax-explained' },
         { no: '3', label: '월 최대 5개사 선별', desc: '맞춤 설계라 인원을 제한합니다', to: '/business-services#selection' },
-        { no: '4', label: 'A·B·C 프로그램', desc: 'AX 사업화 설계 · 혁신기업 패키지 · 혁신성장 완성형', to: '/business-services/funding-consulting#ax-packages' },
-        { no: '5', label: '진행 방식과 결과물', desc: '최대 2주 일정과 실제 산출물', to: '/business-services/funding-consulting#process' },
-        { no: '6', label: '자금조달 상세', desc: '정책자금 신청 전략·실행 근거', to: '/business-services/funding-consulting', match: (p) => p.startsWith('/business-services/funding-consulting') },
+        { no: '4', label: '자금조달 상세', desc: '프로그램 비용·진행방식·결과물까지', to: '/business-services/funding-consulting', match: (p) => p.startsWith('/business-services/funding-consulting') },
       ],
     },
     {

@@ -415,13 +415,12 @@ export type ProgramChoice = (typeof PROGRAM_CHOICES)[number]
 /** 상담 모달 — 자금목표(희망금액, 보장금액 아님) */
 export const FUNDING_TARGET_CHOICES = ['1억원 미만', '1억원 이상', '2억원 이상', '3억원 이상', '진단 후 결정'] as const
 
-/** 상담 모달 — 선택형 구현단계(선택사항). 4단계에 권장 표시 */
+/** 상담 모달 — 선택형 구현단계(선택사항).
+ *  운영형 본개발 3단계(axPackages.AX_BUILD_STAGES)와 같은 이름·금액을 쓴다. 권장 표시는 두지 않는다. */
 export const BUILD_LEVEL_CHOICES = [
-  '1단계 AX 실행설계와 화면 초안',
-  '2단계 시연형 AX 프로토타입',
-  '3단계 핵심기능 AX MVP',
-  '4단계 업무사용형 AX MVP (미래AI랩 권장 최종 목표)',
-  '5단계 이후 상용화·고도화',
+  'STEP 1 시연형 화면 완성 (500만원)',
+  'STEP 2 핵심업무 작동형 (1,000만원)',
+  'STEP 3 운영형 확장 (1,500만원)',
   '진단 후 결정',
 ] as const
 

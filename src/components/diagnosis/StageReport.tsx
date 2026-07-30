@@ -293,7 +293,11 @@ function Recommendations({
                     </ul>
                   </div>
                 )}
-                <p className="mt-3 flex-1 text-xl font-black tracking-tight text-slate-900">{formatKoreanMoney(pkg.price)}</p>
+                <div className="mt-3 flex-1">
+                  <p className="text-xl font-black tracking-tight text-slate-900">{formatKoreanMoney(pkg.price)}</p>
+                  {/* 단계형 상품은 어떤 단계로 나뉘는지 카드에서 바로 보이게 한다 */}
+                  {pkg.priceNote && <p className="mt-1 break-keep text-xs leading-relaxed text-slate-500">{pkg.priceNote}</p>}
+                </div>
                 {/* 선택 액션(상담/결제)과 상세 보기를 분리 — 아래 상세 링크는 진단 상태를 보존한 채 이동 */}
                 <div className="mt-3 flex flex-col gap-2 print:hidden">
                   {pkg.priceType === 'consult' || !paymentsEnabled ? (

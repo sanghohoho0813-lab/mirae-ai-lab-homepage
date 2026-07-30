@@ -14,6 +14,7 @@ import LegalFooter from '../../components/LegalFooter'
 import ConsultModal from '../../components/ConsultModal'
 import AxIndustryShowcaseV2 from '../../components/ax-showcase/AxIndustryShowcaseV2'
 import AxLifecycleModules from '../../components/ax-showcase/AxLifecycleModules'
+import AxBuildStageCards from '../../components/ax-showcase/AxBuildStageCards'
 import { AxCoreValuesSection, AxMethodSection } from '../../components/ax-showcase/axHomeSections'
 import AxPolicyEvidenceStrip from '../../components/ax-showcase/AxPolicyEvidenceStrip'
 import { axV2Industry } from '../../data/axIndustryShowcaseV2'
@@ -23,7 +24,7 @@ import AxPolicyShift from '../../components/ax/AxPolicyShift'
 import KakaoFloat from '../../components/KakaoFloat'
 import { CONSULT_TOPIC_GROUPS, type ConsultContextRow } from '../../lib/consultApi'
 import { FLAGSHIP } from '../../data/corePrograms'
-import { AX_BUILD_PAYMENT, AX_BUILD_STAGES, AX_PACKAGES } from '../../data/axPackages'
+import { AX_BUILD_PAYMENT, AX_PACKAGES } from '../../data/axPackages'
 
 // ── 공통 스타일 토큰 ───────────────────────────────────────────────────────
 const band = 'px-5 py-10 sm:py-16'
@@ -564,33 +565,8 @@ export default function FundingConsultingDetailPage() {
             필요한 수준을 먼저 고르고, 개발비는 정책자금이 조달된 뒤에 정산합니다.
           </p>
 
-          <div className="mt-8 grid gap-3 lg:grid-cols-3">
-            {AX_BUILD_STAGES.map((b) => (
-              <article
-                key={b.no}
-                className={`relative flex flex-col rounded-3xl border p-5 sm:p-6 ${
-                  b.recommended ? 'border-amber-400 bg-amber-50/60 shadow-lg shadow-amber-500/10' : 'border-slate-200 bg-white'
-                }`}
-              >
-                {b.recommended && (
-                  <span className="mb-3 inline-flex w-fit rounded-full bg-amber-400 px-3 py-1 text-[1.1rem] sm:text-[1.0rem] font-black text-slate-900">
-                    가장 많이 선택
-                  </span>
-                )}
-                <p className="text-[1.16rem] sm:text-[1.05rem] font-black text-blue-600">{b.no}단계</p>
-                <h3 className="mt-1 break-keep text-[1.43rem] sm:text-[1.3rem] font-black leading-tight text-slate-900">{b.name}</h3>
-                <p className="mt-3 text-[2.09rem] sm:text-[1.9rem] font-black leading-none text-slate-900">{b.price}</p>
-                <p className="mt-2 break-keep text-[1.17rem] sm:text-[1.06rem] font-bold leading-snug text-slate-500">{b.level}</p>
-                <ul className="mt-4 flex-1 space-y-1.5">
-                  {b.items.map((it) => (
-                    <li key={it} className="flex gap-2 break-keep text-[1.17rem] sm:text-[1.06rem] leading-snug text-slate-700">
-                      <span aria-hidden className="mt-0.5 shrink-0 font-black text-teal-500">✓</span>
-                      {it}
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
+          <div className="mt-8">
+            <AxBuildStageCards />
           </div>
 
           {/* 후불 정산 구조 — "개발이 공짜"로 오해되지 않게 한다 */}
