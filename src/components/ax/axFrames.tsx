@@ -50,14 +50,14 @@ export function SectionHead({ eyebrow, title, desc, center = false, dark = false
   return (
     <div className={center ? 'text-center' : ''}>
       {/* 한글 머리말에는 자간을 벌리지 않는다 — 모바일은 10% 크게, PC는 기존 크기 유지 */}
-      <p className={`text-[1.05rem] font-bold tracking-tight sm:text-sm ${dark ? 'text-teal-300' : 'text-blue-600'}`}>{eyebrow}</p>
-      <h2 className={`mt-2 break-keep text-[1.65rem] font-extrabold leading-[1.25] tracking-tight sm:text-[2.1rem] ${dark ? 'text-white' : 'text-slate-900'}`}>{title}</h2>
-      {desc && <p className={`mt-3 max-w-2xl break-keep text-[1.1rem] leading-relaxed sm:text-[1rem] ${dark ? 'text-slate-300' : 'text-slate-500'} ${center ? 'mx-auto' : ''}`}>{desc}</p>}
+      <p className={`text-[1.05rem] font-bold tracking-tight sm:text-[1.137rem] ${dark ? 'text-teal-300' : 'text-blue-600'}`}>{eyebrow}</p>
+      <h2 className={`mt-2 break-keep text-[1.65rem] font-extrabold leading-[1.25] tracking-tight sm:text-[2.73rem] ${dark ? 'text-white' : 'text-slate-900'}`}>{title}</h2>
+      {desc && <p className={`mt-3 max-w-2xl break-keep text-[1.1rem] leading-relaxed sm:text-[1.3rem] ${dark ? 'text-slate-300' : 'text-slate-500'} ${center ? 'mx-auto' : ''}`}>{desc}</p>}
     </div>
   )
 }
 
 /** 프로토타입 표기 배지 */
 export function ProtoBadge({ text = '가상 업종 기반 프로토타입' }: { text?: string }) {
-  return <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-[0.82rem] font-black text-blue-700 ring-1 ring-inset ring-blue-200">{text}</span>
+  return <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-[0.82rem] sm:text-[1.066rem] font-black text-blue-700 ring-1 ring-inset ring-blue-200">{text}</span>
 }

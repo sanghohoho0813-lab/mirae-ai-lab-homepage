@@ -76,7 +76,8 @@ export const AX_PACKAGES: AxPackage[] = [
     ],
     fit: '1억원 이상 정책자금과 기업성장을 본격적으로 준비하는 기업',
     recommended: true,
-    badges: ['가장 추천', '정책자금·AX·벤처·연구소를 한 흐름으로'],
+    // 두 번째 배지는 카드 안에서 한 줄로 끝나야 아래 항목들의 위치가 어긋나지 않는다
+    badges: ['가장 추천', '정책자금·벤처·연구소 한 흐름'],
     ctaLabel: 'AX 혁신기업 패키지 상담',
   },
   {
@@ -161,8 +162,16 @@ export type AxBuildStage = {
   level: string
   /** 착수일 기준 소요기간 */
   duration: string
-  /** 색상 블록 그라디언트 */
+  /** 색상 블록 그라디언트 (미래AI랩 색 — 슬레이트·틸·앰버) */
   tone: string
+  /** 색상 블록 글자색 */
+  toneText: string
+  /** 단계 성격을 한 단어로 (배지) */
+  levelTag?: string
+  /** ★ 추천 — 단계 하나에만 붙인다 */
+  best?: boolean
+  /** 추천 이유 한 줄 */
+  bestNote?: string
   items: string[]
 }
 
@@ -174,7 +183,8 @@ export const AX_BUILD_STAGES: AxBuildStage[] = [
     price: '500만원',
     level: '심사에서 눌러가며 보여줄 수 있는 수준',
     duration: '착수일로부터 약 1~7일 소요',
-    tone: 'from-blue-700 to-blue-500',
+    tone: 'from-slate-700 to-slate-500',
+    toneText: 'text-white',
     items: [
       '핵심 화면 8~12개를 클릭형으로 제작합니다.',
       '대표·직원·고객이 보는 화면 흐름을 연결합니다.',
@@ -189,7 +199,9 @@ export const AX_BUILD_STAGES: AxBuildStage[] = [
     price: '1,000만원',
     level: '직원이 실제 업무 하나를 돌릴 수 있는 수준',
     duration: '착수일로부터 약 7~14일 소요',
-    tone: 'from-orange-600 to-amber-500',
+    tone: 'from-teal-700 to-teal-500',
+    toneText: 'text-white',
+    levelTag: '안정권 수준',
     items: [
       '로그인·사용자 권한·데이터 저장을 구현합니다.',
       '핵심 업무 흐름 한 가지가 실제로 작동합니다.',
@@ -204,7 +216,10 @@ export const AX_BUILD_STAGES: AxBuildStage[] = [
     price: '1,500만원',
     level: '여러 업무와 고객용 서비스까지 함께 쓰는 수준',
     duration: '착수일로부터 약 21~28일 소요',
-    tone: 'from-violet-700 to-fuchsia-500',
+    tone: 'from-amber-500 to-amber-300',
+    toneText: 'text-slate-900',
+    best: true,
+    bestNote: '정책자금·정부지원사업에서 설명하기에 가장 알맞은 구성입니다.',
     items: [
       '업무 흐름 2~3개를 동시에 운영합니다.',
       '고객용 앱과 반응형 웹까지 연결합니다.',

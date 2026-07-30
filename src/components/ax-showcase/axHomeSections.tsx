@@ -4,7 +4,7 @@ import { AX_CORE_VALUES, AX_METHOD_STEPS, AX_SELECTION_DECLINE, AX_SELECTION_PRI
 
 const band = 'px-5 py-16 sm:px-6 sm:py-24'
 const wrap = 'mx-auto max-w-5xl'
-const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.15rem]'
+const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
 /** SECTION 1 — Hero. 한 문장만 남긴다. 설명·CTA·예시는 다음 화면부터. */
 export function AxHeroV2({ onNext }: { onNext: () => void }) {
@@ -52,9 +52,9 @@ export function AxCoreValuesSection() {
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
           {AX_CORE_VALUES.map((v) => (
             <div key={v.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <span aria-hidden className="text-[2.02rem] sm:text-[1.84rem] leading-none">{v.icon}</span>
-              <h3 className="mt-4 break-keep text-[1.39rem] font-black leading-snug text-slate-900 sm:text-[1.38rem]">{v.title}</h3>
-              <p className="mt-2.5 break-keep text-[1.24rem] sm:text-[1.13rem] leading-relaxed text-slate-600">{v.desc}</p>
+              <span aria-hidden className="text-[2.02rem] sm:text-[2.392rem] leading-none">{v.icon}</span>
+              <h3 className="mt-4 break-keep text-[1.39rem] font-black leading-snug text-slate-900 sm:text-[1.794rem]">{v.title}</h3>
+              <p className="mt-2.5 break-keep text-[1.24rem] sm:text-[1.469rem] leading-relaxed text-slate-600">{v.desc}</p>
             </div>
           ))}
         </div>
@@ -74,11 +74,11 @@ export function AxMethodSection() {
         <ol className="mt-8 space-y-3">
           {AX_METHOD_STEPS.map((s) => (
             <li key={s.no} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-slate-900 text-[1.39rem] sm:text-[1.26rem]" aria-hidden>{s.icon}</span>
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-slate-900 text-[1.39rem] sm:text-[1.638rem]" aria-hidden>{s.icon}</span>
               <div className="min-w-0">
-                <p className="text-[1.1rem] sm:text-[1.0rem] font-black tracking-tight text-blue-600">{s.no}단계</p>
-                <h3 className="mt-1 break-keep text-[1.36rem] font-black leading-snug text-slate-900 sm:text-[1.36rem]">{s.title}</h3>
-                <p className="mt-2 break-keep text-[1.24rem] sm:text-[1.13rem] leading-relaxed text-slate-600">{s.desc}</p>
+                <p className="text-[1.1rem] sm:text-[1.3rem] font-black tracking-tight text-blue-600">{s.no}단계</p>
+                <h3 className="mt-1 break-keep text-[1.36rem] font-black leading-snug text-slate-900 sm:text-[1.768rem]">{s.title}</h3>
+                <p className="mt-2 break-keep text-[1.24rem] sm:text-[1.469rem] leading-relaxed text-slate-600">{s.desc}</p>
               </div>
             </li>
           ))}

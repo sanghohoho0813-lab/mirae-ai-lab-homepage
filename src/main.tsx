@@ -30,6 +30,7 @@ import BusinessDiagnosisResultsPage from './pages/BusinessDiagnosisResultsPage'
 import BusinessServicesPage from './pages/BusinessServicesPage'
 import AxIndustryDetailPage from './pages/AxIndustryDetailPage'
 import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
+import BusinessCatalogPage from './pages/BusinessCatalogPage'
 import FundingConsultingDetailPage from './pages/business-details/FundingConsultingDetailPage'
 import GatewayPage from './pages/GatewayPage'
 import AuthCallbackPage from './pages/auth/AuthCallbackPage'
@@ -88,6 +89,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/business-diagnosis/results" element={<BusinessDiagnosisResultsPage />} />
           <Route path="/business-diagnosis/results/:resultId" element={<BusinessDiagnosisResultsPage />} />
           <Route path="/business-services/funding-consulting" element={<FundingConsultingDetailPage />} />
+          <Route path="/business-services/all" element={<BusinessCatalogPage />} />
           <Route path="/business-services/:slug" element={<BusinessServiceDetailPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
