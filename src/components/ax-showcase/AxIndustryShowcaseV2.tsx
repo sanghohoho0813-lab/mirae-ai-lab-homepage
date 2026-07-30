@@ -55,10 +55,10 @@ export default function AxIndustryShowcaseV2({
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(90%_100%_at_25%_0%,rgba(45,212,191,0.13),transparent_70%)]" />
 
       <div className="relative mx-auto max-w-5xl px-5 py-16 sm:px-6 sm:py-24">
-        <h2 className="break-keep text-center text-[1.85rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.6rem]">
+        <h2 className="break-keep text-center text-[2.04rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.6rem]">
           우리 업종이 AX로 바뀌면<br className="hidden sm:block" /> 무엇이 달라지는지 <span className="text-teal-300">직접 확인해보세요.</span>
         </h2>
-        <p className="mx-auto mt-8 max-w-2xl break-keep text-center text-[1.2rem] leading-[1.75] text-slate-300 sm:text-[1.36rem]">
+        <p className="mx-auto mt-8 max-w-2xl break-keep text-center text-[1.32rem] leading-[1.75] text-slate-300 sm:text-[1.36rem]">
           15개 업종 중 하나를 선택하면 현재 업무가 달라지는 5단계와<br className="hidden sm:block" /> 새로운 매출로 확장할 사업화 아이디어를 확인할 수 있습니다.
         </p>
 
@@ -85,17 +85,17 @@ export default function AxIndustryShowcaseV2({
         <div className="mt-6">
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
             {initialSlug && (
-              <span className="rounded-md bg-amber-400/15 px-2.5 py-1 text-[1.03rem] font-black text-amber-200 ring-1 ring-inset ring-amber-400/30">
+              <span className="rounded-md bg-amber-400/15 px-2.5 py-1 text-[1.13rem] sm:text-[1.03rem] font-black text-amber-200 ring-1 ring-inset ring-amber-400/30">
                 선택한 업종 · {industry.displayName}
               </span>
             )}
-            <span aria-hidden className="text-[1.5rem] leading-none">{industry.icon}</span>
-            <h3 className="text-[1.32rem] font-black text-white sm:text-[1.5rem]">{industry.displayName}</h3>
-            <span className="rounded-md bg-white/8 px-2 py-0.5 text-[1.0rem] font-bold text-slate-300 ring-1 ring-inset ring-white/15">
+            <span aria-hidden className="text-[1.65rem] sm:text-[1.5rem] leading-none">{industry.icon}</span>
+            <h3 className="text-[1.45rem] font-black text-white sm:text-[1.5rem]">{industry.displayName}</h3>
+            <span className="rounded-md bg-white/8 px-2 py-0.5 text-[1.1rem] sm:text-[1.0rem] font-bold text-slate-300 ring-1 ring-inset ring-white/15">
               화면 5장
             </span>
           </div>
-          <p className="mt-2 max-w-3xl break-keep text-[1.09rem] leading-relaxed text-slate-300 sm:text-[1.15rem]">{industry.overview}</p>
+          <p className="mt-2 max-w-3xl break-keep text-[1.2rem] leading-relaxed text-slate-300 sm:text-[1.15rem]">{industry.overview}</p>
 
           <div className="mt-4">
             <AxFiveStageViewer industry={industry} />
@@ -118,21 +118,21 @@ export default function AxIndustryShowcaseV2({
               // 뒤로가기로 돌아왔을 때 스크롤 위치까지 복원되도록 현재 위치를 남긴다.
               // 선택한 업종·보기 모드는 sessionStorage(axShowcaseState)에서 이미 복원된다.
               onClick={() => saveBusinessReturn(`ax-industry:${industry.slug}`)}
-              className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl border border-teal-400/30 bg-teal-400/10 px-4 text-[1.09rem] font-bold text-teal-200 transition-colors hover:bg-teal-400/20 hover:text-teal-100"
+              className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl border border-teal-400/30 bg-teal-400/10 px-4 text-[1.2rem] sm:text-[1.09rem] font-bold text-teal-200 transition-colors hover:bg-teal-400/20 hover:text-teal-100"
             >
               {industry.displayName} 상세 보기 <span aria-hidden>→</span>
             </Link>
             )}
             <Link
               to="/business-diagnosis"
-              className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl bg-blue-500 px-4 text-[1.09rem] font-black text-white transition-colors hover:bg-blue-400"
+              className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl bg-blue-500 px-4 text-[1.2rem] sm:text-[1.09rem] font-black text-white transition-colors hover:bg-blue-400"
             >
               <span aria-hidden>🩺</span> 3분 기업진단
             </Link>
           </div>
         </div>
 
-        <p className="mt-6 break-keep text-[1.0rem] leading-relaxed text-slate-500">{AX_V2_DISCLAIMER}</p>
+        <p className="mt-6 break-keep text-[1.1rem] sm:text-[1.0rem] leading-relaxed text-slate-500">{AX_V2_DISCLAIMER}</p>
       </div>
     </section>
   )

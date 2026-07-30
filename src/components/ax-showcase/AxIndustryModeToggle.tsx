@@ -21,8 +21,8 @@ export default function AxIndustryModeToggle({ value, onChange }: { value: AxVie
               on ? 'bg-teal-400 text-slate-900' : 'text-slate-300 hover:text-white'
             }`}
           >
-            <span className="block text-[1.09rem] font-black leading-tight">{t.label}</span>
-            <span className={`mt-0.5 block text-[1.0rem] leading-tight ${on ? 'text-slate-700' : 'text-slate-500'}`}>{t.hint}</span>
+            <span className="block text-[1.2rem] sm:text-[1.09rem] font-black leading-tight">{t.label}</span>
+            <span className={`mt-0.5 block text-[1.1rem] sm:text-[1.0rem] leading-tight ${on ? 'text-slate-700' : 'text-slate-500'}`}>{t.hint}</span>
           </button>
         )
       })}

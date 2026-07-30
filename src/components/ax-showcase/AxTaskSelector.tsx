@@ -27,18 +27,18 @@ export default function AxTaskSelector({
               role="tab"
               aria-selected={on}
               onClick={() => onChange(t.key)}
-              className={`flex min-h-[48px] items-center justify-center gap-1.5 break-keep rounded-xl px-2 py-2 text-center text-[1.01rem] font-bold leading-tight transition-all ${
+              className={`flex min-h-[48px] items-center justify-center gap-1.5 break-keep rounded-xl px-2 py-2 text-center text-[1.11rem] sm:text-[1.01rem] font-bold leading-tight transition-all ${
                 on ? 'bg-amber-400 text-slate-900 shadow-lg shadow-amber-400/20' : 'bg-white/5 text-slate-300 ring-1 ring-inset ring-white/15 hover:bg-white/10 hover:text-white'
               }`}
             >
-              <span aria-hidden className="text-[1.15rem] leading-none">{t.icon}</span>
+              <span aria-hidden className="text-[1.26rem] sm:text-[1.15rem] leading-none">{t.icon}</span>
               <span>{t.label}</span>
             </button>
           )
         })}
       </div>
 
-      <p className="mt-4 break-keep text-[1.13rem] font-bold leading-relaxed text-teal-200 sm:text-[1.21rem]">{active.desc}</p>
+      <p className="mt-4 break-keep text-[1.24rem] font-bold leading-relaxed text-teal-200 sm:text-[1.21rem]">{active.desc}</p>
 
       <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {related.map((ind) => (
@@ -48,15 +48,15 @@ export default function AxTaskSelector({
             onClick={() => onPickIndustry(ind.slug)}
             className="flex items-start gap-3 rounded-2xl border border-white/12 bg-white/[0.04] p-3.5 text-left transition-colors hover:border-teal-400/40 hover:bg-white/[0.08]"
           >
-            <span aria-hidden className="text-[1.4rem] leading-none">{ind.icon}</span>
+            <span aria-hidden className="text-[1.54rem] sm:text-[1.4rem] leading-none">{ind.icon}</span>
             <span className="min-w-0">
-              <span className="block text-[1.09rem] font-black text-white">{ind.displayName}</span>
-              <span className="mt-0.5 block break-keep text-[1.0rem] leading-snug text-slate-400">{ind.shortHook}</span>
+              <span className="block text-[1.2rem] sm:text-[1.09rem] font-black text-white">{ind.displayName}</span>
+              <span className="mt-0.5 block break-keep text-[1.1rem] sm:text-[1.0rem] leading-snug text-slate-400">{ind.shortHook}</span>
             </span>
           </button>
         ))}
       </div>
-      <p className="mt-2.5 text-[1.0rem] text-slate-500">이 업무와 연관성이 높은 업종만 보여드립니다. 눌러서 해당 업종 화면을 확인하세요.</p>
+      <p className="mt-2.5 text-[1.1rem] sm:text-[1.0rem] text-slate-500">이 업무와 연관성이 높은 업종만 보여드립니다. 눌러서 해당 업종 화면을 확인하세요.</p>
     </div>
   )
 }

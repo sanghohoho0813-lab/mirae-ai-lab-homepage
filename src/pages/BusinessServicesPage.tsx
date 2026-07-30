@@ -107,18 +107,22 @@ export default function BusinessServicesPage() {
           <Link to="/" className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
-              <span className="text-[1.09rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[1.0rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">정책자금 × AX사업화 전문</b></span>
+              <span className="text-[1.2rem] sm:text-[1.09rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
+              {/* 모바일에서는 세 줄이 되지 않도록 영문 사명을 접고 태그라인만 남긴다 */}
+              <span className="break-keep text-[1.1rem] sm:text-[1.0rem] font-medium text-slate-500">
+                <span className="hidden sm:inline">Mirae AI Lab · </span>
+                <b className="font-bold text-slate-800">정책자금 × AX사업화 전문</b>
+              </span>
             </span>
           </Link>
-          <nav className="hidden items-center gap-5 text-[1.06rem] font-medium text-slate-600 lg:flex">
+          <nav className="hidden items-center gap-5 text-[1.17rem] sm:text-[1.06rem] font-medium text-slate-600 lg:flex">
             <Link to={DETAIL} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">프로그램</Link>
             <button type="button" onClick={() => scrollToId('ax-showcase-v2')} className="transition-colors hover:text-slate-900">업종별 AX</button>
             <button type="button" onClick={() => scrollToId('leader')} className="transition-colors hover:text-slate-900">수행체계</button>
           </nav>
           <div className="flex items-center gap-2 sm:gap-2.5">
             {historyCount > 0 && (
-              <Link to="/business-diagnosis/results" className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-[1.0rem] font-bold text-cyan-800 transition-colors hover:bg-cyan-100 lg:inline-flex">
+              <Link to="/business-diagnosis/results" className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-[1.1rem] sm:text-[1.0rem] font-bold text-cyan-800 transition-colors hover:bg-cyan-100 lg:inline-flex">
                 내 진단 결과 <b>{historyCount}</b>
               </Link>
             )}
@@ -128,7 +132,7 @@ export default function BusinessServicesPage() {
                 <span className="absolute -right-0.5 -top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white">{cart.length > 99 ? '99+' : cart.length}</span>
               </Link>
             )}
-            <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-[1.09rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex">3분 기업진단</Link>
+            <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-[1.2rem] sm:text-[1.09rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex">3분 기업진단</Link>
             <HeaderAccount variant="business" />
           </div>
         </div>
@@ -155,23 +159,23 @@ export default function BusinessServicesPage() {
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <img src="/assets/profile/ceo-avatar.webp" alt="미래 AI 랩 대표 컨설턴트 김팀장 프로필 사진" loading="lazy" decoding="async" width={200} height={200} className="h-16 w-16 shrink-0 rounded-full object-cover shadow ring-2 ring-amber-400/40 sm:h-20 sm:w-20" />
               <div className="min-w-0">
-                <p className="text-[1.0rem] font-black tracking-tight text-blue-600">정책자금·AX 성장설계 총괄</p>
-                <h3 className="mt-1 break-keep text-[1.38rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.4rem]">대표 컨설턴트가 직접 듣고, 직접 설계하고, 끝까지 확인합니다.</h3>
+                <p className="text-[1.1rem] sm:text-[1.0rem] font-black tracking-tight text-blue-600">정책자금·AX 성장설계 총괄</p>
+                <h3 className="mt-1 break-keep text-[1.52rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.4rem]">대표 컨설턴트가 직접 듣고, 직접 설계하고, 끝까지 확인합니다.</h3>
               </div>
             </div>
-            <p className="mt-5 break-keep text-[1.15rem] leading-relaxed text-slate-700">
+            <p className="mt-5 break-keep text-[1.26rem] sm:text-[1.15rem] leading-relaxed text-slate-700">
               김팀장은 자금 가능성 검토에서 끝내지 않습니다. 대표님의 사업을 듣고 어떤 업무를 AX로 바꿀지 직접 기획하며, <b className="text-slate-900">개발자와 함께 사업과 AX 구조를 직접 설계합니다.</b> 그래서 사업계획과 실제 결과물이 따로 움직이지 않습니다. 자금조달 이후에는 지원금·인증·복지제도까지 성장순서에 맞춰 연결합니다.
             </p>
-            <p className="mt-2.5 break-keep text-[1.03rem] leading-relaxed text-slate-500">
+            <p className="mt-2.5 break-keep text-[1.13rem] sm:text-[1.03rem] leading-relaxed text-slate-500">
               세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원. 누적 자금조달 지원 100억원+(지원금·세금 환급 포함).
             </p>
-            <p className="mt-2.5 break-keep rounded-xl bg-slate-100 px-4 py-2.5 text-[1.0rem] leading-relaxed text-slate-600">
+            <p className="mt-2.5 break-keep rounded-xl bg-slate-100 px-4 py-2.5 text-[1.1rem] sm:text-[1.0rem] leading-relaxed text-slate-600">
               세무·노무·법률 업무는 해당 자격을 보유한 외부 전문가가 직접 수행합니다.
             </p>
             <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
               {AWARDS.map((a) => (
-                <span key={a.title} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[1.0rem] font-semibold text-slate-600">
-                  <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[1.0rem] font-black text-amber-300">{a.year}</span>{a.title}
+                <span key={a.title} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[1.1rem] sm:text-[1.0rem] font-semibold text-slate-600">
+                  <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[1.1rem] sm:text-[1.0rem] font-black text-amber-300">{a.year}</span>{a.title}
                 </span>
               ))}
             </div>
@@ -187,14 +191,14 @@ export default function BusinessServicesPage() {
         <section id="cta" className="border-t border-slate-800 bg-slate-900">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-blue-500 px-7 py-4 text-[1.15rem] font-black text-white shadow-lg shadow-blue-500/25 transition-transform hover:-translate-y-0.5 hover:bg-blue-400 sm:w-auto">
+              <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-blue-500 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-white shadow-lg shadow-blue-500/25 transition-transform hover:-translate-y-0.5 hover:bg-blue-400 sm:w-auto">
                 <span aria-hidden>🩺</span> 3분 기업진단 시작
               </Link>
-              <button type="button" onClick={() => setConsultOpen(true)} className="flex w-full max-w-xs items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto">
+              <button type="button" onClick={() => setConsultOpen(true)} className="flex w-full max-w-xs items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto">
                 상담 신청
               </button>
-              <Link to={DETAIL} onClick={() => saveReturn('cta')} className="flex w-full max-w-xs items-center justify-center rounded-xl border border-teal-400/40 bg-teal-400/10 px-7 py-4 text-[1.15rem] font-bold text-teal-200 transition-colors hover:bg-teal-400/20 sm:w-auto">
-                자세히 보기
+              <Link to={DETAIL} onClick={() => saveReturn('cta')} className="flex w-full max-w-xs items-center justify-center rounded-xl border border-teal-400/40 bg-teal-400/10 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-teal-200 transition-colors hover:bg-teal-400/20 sm:w-auto">
+                정책자금 × AX 서비스 자세히 알아보기
               </Link>
             </div>
           </div>
@@ -207,7 +211,7 @@ export default function BusinessServicesPage() {
       {/* Mobile sticky CTA — 기업진단(카톡은 KakaoFloat) */}
       {!heroVisible && !atEnd && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
-          <Link to="/business-diagnosis" className="flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-3 text-[1.09rem] font-bold text-white shadow-sm transition-colors hover:bg-blue-700">
+          <Link to="/business-diagnosis" className="flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-3 text-[1.2rem] sm:text-[1.09rem] font-bold text-white shadow-sm transition-colors hover:bg-blue-700">
             <span aria-hidden>🩺</span> 3분 기업진단 시작
           </Link>
         </div>

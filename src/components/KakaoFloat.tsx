@@ -32,7 +32,7 @@ export default function KakaoFloat() {
       aria-label="카카오톡으로 상담하기 (새 탭에서 열림)"
       aria-hidden={!shown}
       tabIndex={shown ? undefined : -1}
-      className={`fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] z-40 inline-flex items-center gap-2 rounded-full bg-[#FEE500] px-4 py-3 text-[1.06rem] font-black text-[#181600] shadow-lg shadow-slate-900/20 ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 sm:right-6 sm:bottom-6 ${
+      className={`fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] z-40 inline-flex items-center gap-2 rounded-full bg-[#FEE500] px-4 py-3 text-[1.17rem] sm:text-[1.06rem] font-black text-[#181600] shadow-lg shadow-slate-900/20 ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 sm:right-6 sm:bottom-6 ${
         shown ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'
       }`}
     >

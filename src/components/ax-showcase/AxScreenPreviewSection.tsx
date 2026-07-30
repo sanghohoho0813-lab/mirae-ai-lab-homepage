@@ -20,10 +20,10 @@ export default function AxScreenPreviewSection() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(90%_100%_at_50%_0%,rgba(56,189,248,0.12),transparent_70%)]" />
 
       <div className="relative mx-auto max-w-5xl px-5 py-16 sm:px-6 sm:py-24">
-        <h2 className="break-keep text-center text-[1.85rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.6rem]">
+        <h2 className="break-keep text-center text-[2.04rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.6rem]">
           이런 화면을<br className="sm:hidden" /> 만들어 드립니다.
         </h2>
-        <p className="mx-auto mt-6 max-w-2xl break-keep text-center text-[1.15rem] leading-[1.75] text-slate-300 sm:mt-8 sm:text-[1.3rem]">
+        <p className="mx-auto mt-6 max-w-2xl break-keep text-center text-[1.26rem] leading-[1.75] text-slate-300 sm:mt-8 sm:text-[1.3rem]">
           업종을 고르면 지금 하는 업무가 어떤 화면으로 바뀌는지<br className="hidden sm:block" /> 다섯 단계로 확인할 수 있습니다.
         </p>
 
@@ -38,13 +38,13 @@ export default function AxScreenPreviewSection() {
                 role="tab"
                 aria-selected={on}
                 onClick={() => setSlug(ind.slug)}
-                className={`flex min-h-[56px] items-center justify-center gap-2 break-keep rounded-xl px-3 py-3 text-center text-[1.1rem] font-bold leading-tight transition-all ${
+                className={`flex min-h-[56px] items-center justify-center gap-2 break-keep rounded-xl px-3 py-3 text-center text-[1.21rem] sm:text-[1.1rem] font-bold leading-tight transition-all ${
                   on
                     ? 'bg-teal-400 text-slate-900 shadow-lg shadow-teal-400/20'
                     : 'bg-white/5 text-slate-300 ring-1 ring-inset ring-white/15 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                <span aria-hidden className="text-[1.25rem] leading-none">{ind.icon}</span>
+                <span aria-hidden className="text-[1.38rem] sm:text-[1.25rem] leading-none">{ind.icon}</span>
                 <span>{ind.displayName}</span>
               </button>
             )
@@ -52,8 +52,8 @@ export default function AxScreenPreviewSection() {
         </div>
 
         {/* 업종 칩 바로 아래 — 전체 15개 업종이 준비돼 있다는 안내 */}
-        <p className="mx-auto mt-5 max-w-2xl break-keep rounded-2xl border border-teal-400/25 bg-teal-400/[0.08] px-5 py-4 text-center text-[1.15rem] font-bold leading-[1.7] text-teal-100 sm:mt-6 sm:text-[1.26rem]">
-          여기 3개 업종은 <span className="text-teal-300">맛보기</span>입니다.<br className="sm:hidden" /> 전체 <span className="text-teal-300">15개 업종</span>의 화면은 아래에서 모두 확인할 수 있습니다.
+        <p className="mx-auto mt-5 max-w-2xl break-keep rounded-2xl border border-teal-400/25 bg-teal-400/[0.08] px-5 py-4 text-center text-[1.26rem] font-bold leading-[1.7] text-teal-100 sm:mt-6 sm:text-[1.26rem]">
+          전체 <span className="text-teal-300">15개 업종</span>의 화면은<br className="sm:hidden" /> 아래에서 모두 확인할 수 있습니다.
         </p>
 
         {/* 5단계 라벨 + 사진 + 단계별 짧은 설명 */}
