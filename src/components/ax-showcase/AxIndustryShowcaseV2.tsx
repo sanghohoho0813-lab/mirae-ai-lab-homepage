@@ -21,12 +21,15 @@ import AxTaskSelector from './AxTaskSelector'
 export default function AxIndustryShowcaseV2({
   /** 상세페이지에서 ?industry=... 로 넘어온 업종을 처음부터 선택해 둔다 */
   initialSlug,
+  externalSlug,
   /** 상세페이지에서는 '더 알아보기'가 자기 자신을 가리키므로 숨긴다 */
   showIdeaDetailLink = true,
   /** 상세페이지에서는 업종 상세로 다시 나가는 링크를 숨긴다 */
   showIndustryDetailLink = true,
 }: {
   initialSlug?: string
+  /** 히어로의 업종 예시를 눌렀을 때 바깥에서 선택을 밀어넣는다 */
+  externalSlug?: string
   showIdeaDetailLink?: boolean
   showIndustryDetailLink?: boolean
 } = {}) {
@@ -36,6 +39,10 @@ export default function AxIndustryShowcaseV2({
   const [taskKey, setTaskKey] = useState(restored?.taskKey ?? AX_V2_TASK_VIEWS[0].key)
 
   const industry = axV2Industry(slug) ?? AX_V2_INDUSTRIES[0]
+
+  useEffect(() => {
+    if (externalSlug) setSlug(externalSlug)
+  }, [externalSlug])
 
   // 홈에서 고른 업종만 세션에 남긴다. 상세페이지 진입은 홈의 선택을 덮어쓰지 않는다.
   useEffect(() => {
@@ -94,16 +101,14 @@ export default function AxIndustryShowcaseV2({
             <AxFiveStageViewer industry={industry} />
           </div>
 
-          {/* 5번째 이미지 뒤 — 확장 구간 */}
-          <div className="mt-5">
-            <AxBusinessExpansion industryName={industry.displayName} />
-          </div>
-
-          {/* 사업화 예시 2개 */}
-          <div className="mt-4 grid gap-3 lg:grid-cols-2">
-            {industry.ideas.map((idea) => (
-              <AxBusinessIdeaCard key={idea.no} idea={idea} industryName={industry.displayName} industrySlug={industry.slug} showDetailLink={showIdeaDetailLink} />
-            ))}
+          {/* 5번째 이미지 뒤 — 확장 구간과 사업화 예시를 한 박스로 묶어 이어 읽히게 한다 */}
+          <div className="mt-5 rounded-3xl border border-amber-400/25 bg-gradient-to-b from-amber-400/[0.09] to-transparent p-4 sm:p-5">
+            <AxBusinessExpansion industryName={industry.displayName} inBox />
+            <div className="mt-5 grid gap-3 border-t border-amber-400/20 pt-5 lg:grid-cols-2">
+              {industry.ideas.map((idea) => (
+                <AxBusinessIdeaCard key={idea.no} idea={idea} industryName={industry.displayName} industrySlug={industry.slug} showDetailLink={showIdeaDetailLink} />
+              ))}
+            </div>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2.5">

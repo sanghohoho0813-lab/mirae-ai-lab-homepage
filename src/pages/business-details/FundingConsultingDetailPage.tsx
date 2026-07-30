@@ -14,10 +14,10 @@ import LegalFooter from '../../components/LegalFooter'
 import ConsultModal from '../../components/ConsultModal'
 import AxIndustryShowcaseV2 from '../../components/ax-showcase/AxIndustryShowcaseV2'
 import AxLifecycleModules from '../../components/ax-showcase/AxLifecycleModules'
+import { AxCoreValuesSection, AxMethodSection } from '../../components/ax-showcase/axHomeSections'
 import AxPolicyEvidenceStrip from '../../components/ax-showcase/AxPolicyEvidenceStrip'
 import { axV2Industry } from '../../data/axIndustryShowcaseV2'
 import AxPackageComparison from '../../components/ax-showcase/AxPackageComparison'
-import AxFourSteps from '../../components/ax/AxFourSteps'
 import AxProcessSection from '../../components/ax/AxProcessSection'
 import AxPolicyShift from '../../components/ax/AxPolicyShift'
 import KakaoFloat from '../../components/KakaoFloat'
@@ -424,7 +424,10 @@ export default function FundingConsultingDetailPage() {
       <AxPolicyShift />
 
       {/* ── 5. AX 혁신전환 4단계 — 방법이 보인다 ──────────────────────────── */}
-      <AxFourSteps />
+      <AxCoreValuesSection />
+
+      {/* ── 5. AX 사업화 5단계 방법론 (홈에서 이동) ───────────────────────── */}
+      <AxMethodSection />
 
       {/* ── 6. 실제 사례 Before → After ───────────────────────────────────── */}
       <section className={`bg-slate-50 ${band}`}>

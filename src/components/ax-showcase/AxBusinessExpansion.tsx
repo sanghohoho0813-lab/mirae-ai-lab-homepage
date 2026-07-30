@@ -2,9 +2,9 @@
 // 업종별 5번째 이미지 바로 뒤에 붙는다.
 import { AX_V2_EXPANSION_FLOW } from '../../data/axIndustryShowcaseV2'
 
-export default function AxBusinessExpansion({ industryName }: { industryName: string }) {
+export default function AxBusinessExpansion({ industryName, inBox = false }: { industryName: string; inBox?: boolean }) {
   return (
-    <div className="rounded-3xl border border-amber-400/25 bg-gradient-to-br from-amber-400/[0.09] to-transparent p-4 sm:p-6">
+    <div className={inBox ? '' : 'rounded-3xl border border-amber-400/25 bg-gradient-to-br from-amber-400/[0.09] to-transparent p-4 sm:p-6'}>
       <p className="break-keep text-[1.44rem] font-black leading-tight text-white sm:text-[1.6rem]">여기서 끝나지 않습니다.</p>
       <p className="mt-2.5 max-w-3xl break-keep text-[1.09rem] leading-relaxed text-slate-300 sm:text-[1.21rem]">
         현재 업무를 편하게 만드는 수준을 넘어, <span className="font-bold text-white">{industryName}</span>이 가진 고객·거래·운영 데이터를 활용해

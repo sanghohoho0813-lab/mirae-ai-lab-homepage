@@ -60,13 +60,13 @@ export default function AxBusinessIdeaCard({
         </div>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2">
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         {variant === 'compact' && (
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            className="min-h-[40px] rounded-lg border border-white/20 bg-white/5 px-3 text-[1.0rem] font-bold text-white transition-colors hover:bg-white/10"
+            className="min-h-[46px] w-full rounded-lg border border-white/20 bg-white/5 px-3 text-[1.0rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto"
           >
             {open ? '접기' : '자세히 보기'}
           </button>
@@ -76,7 +76,7 @@ export default function AxBusinessIdeaCard({
             // 진단·상담이 아니라 정책자금 상세페이지로 보낸다. 선택한 업종은 query 로 전달한다.
             to={`/business-services/funding-consulting?industry=${industrySlug}#ax-application`}
             onClick={() => saveBusinessReturn(`ax-idea:${industrySlug}`)}
-            className="inline-flex min-h-[46px] items-center gap-1.5 rounded-lg bg-blue-500 px-4 text-[1.13rem] font-black text-white transition-colors hover:bg-blue-400"
+            className="flex min-h-[50px] w-full items-center justify-center gap-1.5 rounded-lg bg-blue-500 px-4 text-[1.13rem] font-black text-white transition-colors hover:bg-blue-400 sm:inline-flex sm:w-auto"
           >
             더 알아보기 <span aria-hidden>→</span>
           </Link>

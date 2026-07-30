@@ -39,6 +39,8 @@ export default function BusinessServicesPage() {
   const heroRef = useRef<HTMLDivElement>(null)
   const finalCtaRef = useRef<HTMLDivElement>(null)
   const [consultOpen, setConsultOpen] = useState(false)
+  // 히어로의 업종 예시를 누르면 쇼케이스가 그 업종으로 바뀐다.
+  const [pickedIndustry, setPickedIndustry] = useState<string | undefined>(undefined)
   const location = useLocation()
   const navType = useNavigationType()
 
@@ -133,14 +135,17 @@ export default function BusinessServicesPage() {
 
       {/* 1. Hero — 무엇을 파는 회사인지 5초 안에 */}
       <div ref={heroRef}>
-        <AxHeroV2 onShowcase={() => scrollToId('ax-showcase-v2')} />
+        <AxHeroV2
+          onShowcase={() => scrollToId('ax-showcase-v2')}
+          onPickIndustry={(slug) => { setPickedIndustry(slug); scrollToId('ax-showcase-v2') }}
+        />
       </div>
 
       {/* 2. AX를 쉬운 말로 설명 → 왜 지금인가(정책근거) → 고객 현실 → 반론 해소 */}
       <AxSimpleExplanationSection onShowcase={() => scrollToId('ax-showcase-v2')} />
 
       {/* 5~8. 15개 업종 선택 → 5장 AX 변화 → 여기서 끝나지 않습니다 → 사업화 예시 2개 */}
-      <AxIndustryShowcaseV2 />
+      <AxIndustryShowcaseV2 externalSlug={pickedIndustry} />
 
       {/* 12. 김팀장 */}
       <section id="leader" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
@@ -154,7 +159,7 @@ export default function BusinessServicesPage() {
               </div>
             </div>
             <p className="mt-5 break-keep text-[1.15rem] leading-relaxed text-slate-700">
-              김팀장은 자금 가능성 검토에서 끝내지 않습니다. 어떤 업무를 AX로 바꿀지 직접 기획하고, 개발 담당자와 화면을 함께 설계합니다. 자금조달 이후에는 지원금·인증·복지제도까지 성장순서에 맞춰 연결합니다.
+              김팀장은 자금 가능성 검토에서 끝내지 않습니다. 대표님의 사업을 듣고 어떤 업무를 AX로 바꿀지 직접 기획하며, <b className="text-slate-900">개발자와 함께 사업과 AX 구조를 직접 설계합니다.</b> 그래서 사업계획과 실제 결과물이 따로 움직이지 않습니다. 자금조달 이후에는 지원금·인증·복지제도까지 성장순서에 맞춰 연결합니다.
             </p>
             <p className="mt-2.5 break-keep text-[1.03rem] leading-relaxed text-slate-500">
               세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원. 누적 자금조달 지원 100억원+(지원금·세금 환급 포함).
