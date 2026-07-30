@@ -88,8 +88,8 @@ const DELIVERABLES = [
   { t: '이후 성장 로드맵', d: '자금조달 다음에 무엇을 준비할지 순서를 정합니다.' },
 ]
 const DELIVERABLE_SHOTS = [
-  { img: '/ax-industries/manufacturing/02.webp', cap: 'AX 업무 흐름 정리 예시 — 오늘 먼저 처리할 일' },
-  { img: '/ax-industries/professional-services/03.webp', cap: '실제로 보여줄 수 있는 프로그램 화면 예시' },
+  { img: '/ax-cases/flow.webp', cap: 'AX 업무 흐름 정리 예시 — 오늘 먼저 처리할 일' },
+  { img: '/ax-cases/screen.webp', cap: '실제로 보여줄 수 있는 프로그램 화면 예시' },
 ]
 
 // ── 11. 비교 3열 ───────────────────────────────────────────────────────────
@@ -322,7 +322,7 @@ export default function FundingConsultingDetailPage() {
             이제는 디지털 전환을 넘어 AI 전환, <b className="font-bold text-amber-300">AX의 시대</b>입니다.
           </p>
           <p className="mx-auto mt-4 max-w-xl text-[1.33rem] font-bold leading-relaxed text-white sm:text-[1.573rem]">
-            <span className="text-amber-300">1억원 이상</span> 정책자금을 목표로, 자금을 받을 이유가 보이는 AX 혁신기업 구조를 만듭니다.
+            <span className="text-amber-300">최소 1억원 이상</span> 정책자금을 목표로, 자금을 받을 이유가 보이는 AX 혁신기업 구조를 만듭니다.
           </p>
           <p className="mx-auto mt-3.5 max-w-xl text-[1.24rem] sm:text-[1.469rem] leading-relaxed text-slate-300">
             사업계획서만 준비하는 것이 아닙니다. 자금전략과 실제 업무에 사용할 AX 프로그램을 함께 만듭니다.
@@ -441,15 +441,13 @@ export default function FundingConsultingDetailPage() {
           <div className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-4">
             <div className="rounded-2xl border border-slate-200 bg-white p-2.5 sm:p-4">
               <p className="mb-2 inline-flex rounded-md bg-slate-200 px-2 py-0.5 text-[1.1rem] font-black text-slate-600 sm:mb-3 sm:px-2.5 sm:py-1 sm:text-[1.3rem]">Before</p>
-              <div className="grayscale [filter:grayscale(1)_opacity(0.85)]">
-                <Shot src="/ax-industries/facility-building/01.webp" alt="점검·수리비·민원이 흩어져 반복 고장을 찾기 어려운 현재 업무 예시 화면" />
-              </div>
+              <Shot src="/ax-cases/before.webp" alt="장부·엑셀·메모에 기록이 흩어져 있는 기존 업무 방식" />
               <p className="mt-2.5 text-[1.2rem] font-bold leading-snug text-slate-700 sm:text-[1.495rem]">문서로만 설명</p>
               <p className="mt-1 text-[1.11rem] leading-relaxed text-slate-500 sm:text-[1.378rem]">심사자가 실제 모습을 상상해야 합니다.</p>
             </div>
             <div className="rounded-2xl border-2 border-teal-300 bg-teal-50/40 p-2.5 shadow-sm sm:p-4">
               <p className="mb-2 inline-flex rounded-md bg-teal-500 px-2 py-0.5 text-[1.1rem] font-black text-white sm:mb-3 sm:px-2.5 sm:py-1 sm:text-[1.3rem]">After</p>
-              <Shot src="/ax-industries/facility-building/04.webp" alt="정기점검·관리성과·재계약까지 이어지는 AX 화면 예시" />
+              <Shot src="/ax-cases/after.webp" alt="같은 데이터를 대표·직원·고객 화면에서 함께 확인하는 AX 적용 모습" />
               <p className="mt-2.5 text-[1.2rem] font-bold leading-snug text-slate-900 sm:text-[1.495rem]">화면과 데이터로 확인</p>
               <p className="mt-1 text-[1.11rem] leading-relaxed text-slate-600 sm:text-[1.378rem]">눈으로 보이니 설명이 훨씬 쉬워집니다.</p>
             </div>
@@ -529,7 +527,8 @@ export default function FundingConsultingDetailPage() {
           <div className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-4">
             {DELIVERABLE_SHOTS.map((s) => (
               <figure key={s.img}>
-                <Shot src={s.img} alt={s.cap} />
+                {/* 원본이 16:9 화면 캡처라 위아래가 잘리지 않게 비율을 맞춘다 */}
+                <Shot src={s.img} alt={s.cap} ratio="aspect-[16/9]" />
                 <figcaption className="mt-2 text-center text-[1.1rem] leading-snug text-slate-500 sm:text-[1.3rem]">{s.cap}</figcaption>
               </figure>
             ))}
