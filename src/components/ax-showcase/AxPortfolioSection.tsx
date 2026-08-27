@@ -4,13 +4,13 @@
 // 움직임 방식
 //  - 단계별로 툭툭 넘기지 않고 매 프레임 조금씩 밀어 끊김 없이 흐르게 한다(기본 24px/초).
 //  - 카드 목록을 두 벌 렌더링하고, 한 바퀴를 지나면 같은 위치로 되돌려 이음매가 보이지 않게 한다.
-//  - 마우스를 올리거나 직접 스와이프하면 멈추고, 손을 뗀 뒤 잠시 후 다시 흐른다.
+//  - 마우스를 올려두는 것만으로는 멈추지 않는다. 직접 끌거나 버튼을 누른 동안에만 잠시 멈춘다.
 //  - 탭이 숨겨져 있거나 "동작 줄이기" 설정이면 아예 움직이지 않는다.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { PORTFOLIO_SAMPLES, PORTFOLIO_SECTION } from '../../data/portfolioSamples'
 
-/** 초당 이동 거리(px) — 천천히 읽을 수 있는 속도 */
-const SPEED = 24
+/** 초당 이동 거리(px) — 천천히 읽히되 멈춰 보이지 않는 속도 */
+const SPEED = 36
 /** 직접 조작한 뒤 다시 흐르기까지 기다리는 시간 */
 const RESUME_MS = 5000
 const N = PORTFOLIO_SAMPLES.length
@@ -20,7 +20,6 @@ const LOOP = [...PORTFOLIO_SAMPLES, ...PORTFOLIO_SAMPLES]
 export default function AxPortfolioSection() {
   const trackRef = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
   const resumeAt = useRef(0)
   const acc = useRef(0)
 
@@ -68,16 +67,13 @@ export default function AxPortfolioSection() {
         if (w > 0) setIndex(Math.round(el.scrollLeft / w) % N)
       })
     }
-    // 마우스를 올려두거나 만지는 동안에는 멈춘다 — enter/leave 대신 움직임 자체로 판단해
-    // 어떤 브라우저에서도 동일하게 동작하게 한다
+    // 직접 끌거나 휠을 굴린 동안에만 멈춘다 — 마우스를 올려두는 것만으로는 멈추지 않는다
     el.addEventListener('scroll', onScroll, { passive: true })
-    el.addEventListener('pointermove', hold, { passive: true })
     el.addEventListener('pointerdown', hold, { passive: true })
     el.addEventListener('touchstart', hold, { passive: true })
     el.addEventListener('wheel', hold, { passive: true })
     return () => {
       el.removeEventListener('scroll', onScroll)
-      el.removeEventListener('pointermove', hold)
       el.removeEventListener('pointerdown', hold)
       el.removeEventListener('touchstart', hold)
       el.removeEventListener('wheel', hold)
@@ -97,7 +93,7 @@ export default function AxPortfolioSection() {
       prev = now
       const el = trackRef.current
       if (!el || dt === 0) return
-      if (paused || document.hidden || Date.now() < resumeAt.current) { acc.current = 0; return }
+      if (document.hidden || Date.now() < resumeAt.current) { acc.current = 0; return }
       const loop = loopWidth()
       // 한 바퀴를 넘어가면 같은 그림 위치로 되돌린다 — 화면에는 이음매가 보이지 않는다
       if (loop > 0 && el.scrollLeft >= loop) el.scrollLeft -= loop
@@ -111,7 +107,7 @@ export default function AxPortfolioSection() {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [paused])
+  }, [])
 
   return (
     <section id="portfolio" className="scroll-mt-16 border-t border-white/10 bg-slate-900">
@@ -127,13 +123,7 @@ export default function AxPortfolioSection() {
         </div>
 
         {/* 캐러셀 — 좌우로 넘기며 실제 화면을 크게 본다 */}
-        <div
-          className="group relative mt-9 sm:mt-12"
-          onPointerEnter={() => setPaused(true)}
-          onPointerLeave={() => setPaused(false)}
-          onFocusCapture={() => setPaused(true)}
-          onBlurCapture={() => setPaused(false)}
-        >
+        <div className="group relative mt-9 sm:mt-12">
           <div
             ref={trackRef}
             role="list"
