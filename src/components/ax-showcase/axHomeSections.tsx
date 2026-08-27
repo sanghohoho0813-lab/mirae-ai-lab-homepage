@@ -22,10 +22,8 @@ export function AxHeroV2({ onNext }: { onNext: () => void }) {
 
         {/* 위아래 여백과 행간을 넉넉히 — 이 한 문장만 읽히게 한다 */}
         <h1 className="mt-12 max-w-4xl break-keep text-[clamp(2.1rem,7.8vw,3rem)] font-black leading-[1.42] tracking-[-0.015em] text-white sm:mt-14 sm:text-[clamp(2.6rem,5.6vw,3.8rem)]">
-          이제 사업계획서만으로는<br />부족합니다.
-          <span className="mt-6 block sm:mt-8">
-            우리 회사를 <span className="text-teal-300">정책자금을 잘 받을 수 있는 사업체 유형</span>으로<br className="hidden sm:block" /> 먼저 바꿔드립니다.
-          </span>
+          아직도 <span className="text-teal-300">사업계획서 하나만으로</span><br />
+          정책자금·정부지원금에<br className="sm:hidden" /> 도전하시나요?
         </h1>
       </div>
 
@@ -36,7 +34,7 @@ export function AxHeroV2({ onNext }: { onNext: () => void }) {
         aria-label="다음 화면 보기"
         className="group absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-2 px-5 py-2 text-slate-400 transition-colors hover:text-white sm:bottom-10"
       >
-        <span className="text-[1.16rem] sm:text-[1.05rem] font-bold">어떤 화면을 만들어 드리는지 보기</span>
+        <span className="text-[1.16rem] sm:text-[1.05rem] font-bold">직접 만든 서비스 먼저 보기</span>
         <span aria-hidden className="grid h-10 w-10 animate-bounce place-items-center rounded-full border border-white/20 bg-white/5 text-[1.32rem] sm:text-[1.2rem] text-teal-200">↓</span>
       </button>
     </section>

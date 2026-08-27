@@ -7,7 +7,11 @@ export default function AxPurposeSection({ onNext }: { onNext?: () => void }) {
   return (
     <section id="ax-purpose" className="scroll-mt-16 border-t border-white/10 bg-slate-950">
       <div className="mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
-        <p className="text-center text-[1.16rem] font-black tracking-tight text-teal-300 sm:text-[1.3rem]">{AX_PURPOSE.eyebrow}</p>
+        {/* 앞의 레퍼런스 카드에서 넘어오는 전환 문구 — 왜 AX가 필요한지로 이어준다 */}
+        <p className="mx-auto max-w-3xl break-keep text-center text-[1.54rem] font-black leading-[1.45] tracking-[-0.01em] text-white sm:text-[2rem]">
+          {AX_PURPOSE.bridge}
+        </p>
+        <p className="mt-10 text-center text-[1.16rem] font-black tracking-tight text-teal-300 sm:mt-12 sm:text-[1.3rem]">{AX_PURPOSE.eyebrow}</p>
         <h2 className="mx-auto mt-3 max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
           {AX_PURPOSE.title}
         </h2>

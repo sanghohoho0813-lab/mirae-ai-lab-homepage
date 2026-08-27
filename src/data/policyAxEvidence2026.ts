@@ -83,6 +83,8 @@ export const AX_URGENCY_LINES: string[] = [
 /** 히어로 다음 첫 설명 — AX가 무엇을 위한 것인지 네 가지 목적으로 가볍게 짚는다.
  *  ⚠️ 한도·선정은 기관 심사 사항이므로 "목적"으로만 쓰고 고지를 함께 노출한다. */
 export const AX_PURPOSE = {
+  /** 포트폴리오 바로 다음에 놓이는 전환 문구 */
+  bridge: '요즘은 AI를 결합한 웹앱까지 있어야 하는 시대입니다.',
   eyebrow: 'AX, 한 줄로 말하면',
   title: '우리 회사 전용 프로그램을 만들어 드립니다.',
   lead:
