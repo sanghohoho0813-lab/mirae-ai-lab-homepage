@@ -5,6 +5,7 @@ import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
 import AxIndustryShowcaseV2 from '../components/ax-showcase/AxIndustryShowcaseV2'
+import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
 import AxPurposeSection from '../components/ax-showcase/AxPurposeSection'
 import AxScreenPreviewSection from '../components/ax-showcase/AxScreenPreviewSection'
 import AxSimpleExplanationSection from '../components/ax-showcase/AxSimpleExplanationSection'
@@ -20,8 +21,8 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 홈은 세 가지만 강하게 보여준다 — 왜 지금 AX인가 / 우리 업종은 어떻게 달라지는가 / 누가 직접 설계하는가.
 // 홈 순서: ① Hero(한 문장만) → ② AX의 목적 네 가지(가볍게)
 //          → ③ 이런 프로그램을 만들어 드립니다(업종 3개 × 5단계 화면)
-//          → ④ AX 쉽게 설명하면 · 왜 하필 지금 AX인가 → ⑤ 15개 업종 쇼케이스
-//          → ⑥ 김팀장·수행체계 → ⑦ 월 최대 5개사 → ⑧ 최종 CTA
+//          → ④ 직접 만든 MVP 레퍼런스 10개 → ⑤ AX 쉽게 설명하면 · 왜 하필 지금 AX인가
+//          → ⑥ 15개 업종 쇼케이스 → ⑦ 김팀장·수행체계 → ⑧ 월 최대 5개사 → ⑨ 최종 CTA
 // 쿠팡·네이버 상세페이지처럼 한 화면에 핵심 메시지 하나, 위아래 여백을 넉넉히 둔다.
 // 가격·2주 과정·결과물·비교표·생애주기·FAQ 는 정책자금 상세페이지에서만 다룬다.
 const DETAIL = '/business-services/funding-consulting'
@@ -150,6 +151,9 @@ export default function BusinessServicesPage() {
 
       {/* 3. 이런 프로그램을 만들어 드립니다 — 업종 3개 × 5단계 화면 */}
       <AxScreenPreviewSection />
+
+      {/* 4. 직접 만든 MVP 레퍼런스 10개 — 실제로 만들 수 있는 회사인지 먼저 보여준다 */}
+      <AxPortfolioSection />
 
       {/* 3. AX가 무엇인지 쉬운 말로 → 왜 하필 지금인가(공식 정책근거) */}
       <AxSimpleExplanationSection onShowcase={() => scrollToId('ax-showcase-v2')} />

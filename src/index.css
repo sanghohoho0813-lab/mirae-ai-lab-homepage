@@ -200,3 +200,12 @@
 @media (prefers-reduced-motion: reduce) {
   .ax-float, .ax-float-slow { animation: none; }
 }
+
+/* 포트폴리오 캐러셀 — 스크롤바를 숨기되 스크롤은 그대로 동작하게 한다 */
+.ax-portfolio-track {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ax-portfolio-track::-webkit-scrollbar {
+  display: none;
+}
