@@ -1,35 +1,62 @@
-// 홈 — 미래AI랩이 직접 만든 MVP 레퍼런스 10개를 좌우로 넘겨 보는 캐러셀.
-// 목적: 처음 들어온 방문자가 "이 회사가 실제로 만들 수 있는가"를 사진 한 장으로 판단하게 한다.
-// 자동으로 천천히 넘어가되, 사용자가 만지거나 탭이 숨겨지면 멈춘다(모션 축소 설정도 존중).
+// 홈 — 미래AI랩이 직접 만든 MVP 레퍼런스 10개가 아주 천천히 계속 흘러가는 캐러셀.
+// 목적: 처음 들어온 방문자가 "이 회사가 실제로 만들 수 있는가"를 사진으로 먼저 판단하게 한다.
+//
+// 움직임 방식
+//  - 단계별로 툭툭 넘기지 않고 매 프레임 조금씩 밀어 끊김 없이 흐르게 한다(기본 24px/초).
+//  - 카드 목록을 두 벌 렌더링하고, 한 바퀴를 지나면 같은 위치로 되돌려 이음매가 보이지 않게 한다.
+//  - 마우스를 올리거나 직접 스와이프하면 멈추고, 손을 뗀 뒤 잠시 후 다시 흐른다.
+//  - 탭이 숨겨져 있거나 "동작 줄이기" 설정이면 아예 움직이지 않는다.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { PORTFOLIO_SAMPLES, PORTFOLIO_SECTION } from '../../data/portfolioSamples'
 
-const AUTO_MS = 4800
+/** 초당 이동 거리(px) — 천천히 읽을 수 있는 속도 */
+const SPEED = 24
+/** 직접 조작한 뒤 다시 흐르기까지 기다리는 시간 */
+const RESUME_MS = 5000
+const N = PORTFOLIO_SAMPLES.length
+/** 끊김 없는 순환을 위해 목록을 두 벌 그린다 */
+const LOOP = [...PORTFOLIO_SAMPLES, ...PORTFOLIO_SAMPLES]
 
 export default function AxPortfolioSection() {
   const trackRef = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const resumeAt = useRef(0)
+  const acc = useRef(0)
 
-  // 카드 위치는 실제 offsetLeft 로 계산한다 — 여백·gap·스냅이 달라져도 어긋나지 않는다
+  // 카드 위치는 실제 offsetLeft 로 계산한다 — 여백·gap 이 달라져도 어긋나지 않는다
   const cards = () => Array.from(trackRef.current?.querySelectorAll('[data-card]') ?? []) as HTMLElement[]
+  /** 카드 하나가 차지하는 간격 */
   const step = () => {
     const c = cards()
     return c.length > 1 ? c[1].offsetLeft - c[0].offsetLeft : (c[0]?.offsetWidth ?? 0)
   }
+  /** 한 바퀴 길이 = 카드 10장 */
+  const loopWidth = () => {
+    const c = cards()
+    return c.length > N ? c[N].offsetLeft - c[0].offsetLeft : step() * N
+  }
+  const hold = useCallback(() => { resumeAt.current = Date.now() + RESUME_MS }, [])
 
+  /** 원하는 카드로 이동 — 지금 위치에서 더 가까운 쪽(원본/복제본)으로 간다 */
   const goTo = useCallback((i: number, smooth = true) => {
     const el = trackRef.current
     const c = cards()
     if (!el || c.length === 0) return
-    const n = c.length
-    const next = ((i % n) + n) % n
-    el.scrollTo({ left: c[next].offsetLeft - c[0].offsetLeft, behavior: smooth ? 'smooth' : 'auto' })
-    setIndex(next)
-  }, [])
+    const w = step()
+    const loop = loopWidth()
+    const target = ((i % N) + N) % N
+    const base = c[0].offsetLeft
+    const a = c[target].offsetLeft - base
+    const b = a + loop
+    const cur = el.scrollLeft
+    const to = Math.abs(a - cur) <= Math.abs(b - cur) ? a : b
+    hold()
+    el.scrollTo({ left: to, behavior: smooth ? 'smooth' : 'auto' })
+    if (w > 0) setIndex(target)
+  }, [hold])
 
-  // 사용자가 직접 스크롤하면 현재 위치를 따라가고, 잠시 자동이동을 멈춘다
+  // 사용자가 직접 스크롤하면 현재 순번을 따라가고 잠시 자동 흐름을 멈춘다
   useEffect(() => {
     const el = trackRef.current
     if (!el) return
@@ -38,39 +65,53 @@ export default function AxPortfolioSection() {
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(() => {
         const w = step()
-        if (w <= 0) return
-        // 끝까지 밀면 마지막 카드가 다 보이지 않아도 마지막 순번으로 센다
-        const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 4
-        setIndex(atEnd ? PORTFOLIO_SAMPLES.length - 1 : Math.min(PORTFOLIO_SAMPLES.length - 1, Math.round(el.scrollLeft / w)))
+        if (w > 0) setIndex(Math.round(el.scrollLeft / w) % N)
       })
     }
-    const hold = () => { resumeAt.current = Date.now() + 9000 }
+    // 마우스를 올려두거나 만지는 동안에는 멈춘다 — enter/leave 대신 움직임 자체로 판단해
+    // 어떤 브라우저에서도 동일하게 동작하게 한다
     el.addEventListener('scroll', onScroll, { passive: true })
+    el.addEventListener('pointermove', hold, { passive: true })
     el.addEventListener('pointerdown', hold, { passive: true })
+    el.addEventListener('touchstart', hold, { passive: true })
     el.addEventListener('wheel', hold, { passive: true })
     return () => {
       el.removeEventListener('scroll', onScroll)
+      el.removeEventListener('pointermove', hold)
       el.removeEventListener('pointerdown', hold)
+      el.removeEventListener('touchstart', hold)
       el.removeEventListener('wheel', hold)
       cancelAnimationFrame(raf)
     }
-  }, [])
+  }, [hold])
 
-  // 자동 이동 — 모션 축소 설정이면 켜지 않는다
+  // 매 프레임 조금씩 미는 연속 이동 — 모션 축소 설정이면 켜지 않는다
   useEffect(() => {
     if (typeof window === 'undefined') return
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
-    const id = window.setInterval(() => {
-      if (paused || document.hidden || Date.now() < resumeAt.current) return
+    let raf = 0
+    let prev = 0
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick)
+      const dt = prev ? Math.min(now - prev, 100) : 0
+      prev = now
       const el = trackRef.current
-      if (!el) return
-      const w = step()
-      const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 4
-      const cur = atEnd ? PORTFOLIO_SAMPLES.length - 1 : w > 0 ? Math.round(el.scrollLeft / w) : 0
-      goTo(cur + 1)
-    }, AUTO_MS)
-    return () => window.clearInterval(id)
-  }, [paused, goTo])
+      if (!el || dt === 0) return
+      if (paused || document.hidden || Date.now() < resumeAt.current) { acc.current = 0; return }
+      const loop = loopWidth()
+      // 한 바퀴를 넘어가면 같은 그림 위치로 되돌린다 — 화면에는 이음매가 보이지 않는다
+      if (loop > 0 && el.scrollLeft >= loop) el.scrollLeft -= loop
+      // scrollLeft 가 정수로 반올림돼도 멈추지 않도록 소수점을 모아 둔다
+      acc.current += (SPEED * dt) / 1000
+      const move = Math.floor(acc.current)
+      if (move >= 1) {
+        acc.current -= move
+        el.scrollLeft += move
+      }
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [paused])
 
   return (
     <section id="portfolio" className="scroll-mt-16 border-t border-white/10 bg-slate-900">
@@ -97,17 +138,19 @@ export default function AxPortfolioSection() {
             ref={trackRef}
             role="list"
             aria-label="미래AI랩이 만든 서비스 레퍼런스"
-            className="ax-portfolio-track flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-5 pb-2 sm:gap-5 sm:px-[max(1.5rem,calc((100vw-64rem)/2))]"
+            className="ax-portfolio-track flex gap-4 overflow-x-auto px-5 pb-2 sm:gap-5 sm:px-[max(1.5rem,calc((100vw-64rem)/2))]"
           >
-            {PORTFOLIO_SAMPLES.map((s, i) => (
+            {LOOP.map((s, i) => (
               <a
-                key={s.slug}
+                key={`${s.slug}-${i}`}
                 data-card
                 role="listitem"
+                aria-hidden={i >= N || undefined}
+                tabIndex={i >= N ? -1 : undefined}
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/card w-[86vw] max-w-[560px] shrink-0 snap-start overflow-hidden rounded-3xl border border-white/12 bg-slate-950 shadow-xl shadow-slate-950/40 transition-colors hover:border-teal-400/45 sm:w-[560px]"
+                className="group/card w-[86vw] max-w-[560px] shrink-0 overflow-hidden rounded-3xl border border-white/12 bg-slate-950 shadow-xl shadow-slate-950/40 transition-colors hover:border-teal-400/45 sm:w-[560px]"
               >
                 <span className="block aspect-[16/10] overflow-hidden bg-slate-800">
                   <img
