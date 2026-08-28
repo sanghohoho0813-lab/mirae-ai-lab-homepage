@@ -3,9 +3,10 @@
 //      → ④ 심사위원 반문 + A/B 기업 비교표 → "선택이 아니라 필수" → ⑤ 업계 전환 사례
 // ⚠️ 한도·선정은 기관 심사 사항 — 목적·예시로만 말하고 고지를 함께 노출한다.
 //    사례는 업계에 공개된 내용을 재구성한 것으로, 자체 실적처럼 보이지 않게 한다.
+import { Link } from 'react-router-dom'
 import { AX_INDUSTRY_CASES, AX_JUDGE, AX_PURPOSE } from '../../data/policyAxEvidence2026'
 
-export default function AxPurposeSection({ onNext }: { onNext?: () => void }) {
+export default function AxPurposeSection() {
   return (
     <section id="ax-purpose" className="scroll-mt-16 border-t border-white/10 bg-slate-950">
       <div className="mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
@@ -139,17 +140,15 @@ export default function AxPurposeSection({ onNext }: { onNext?: () => void }) {
           {AX_INDUSTRY_CASES.disclaimer}
         </p>
 
-        {onNext && (
-          <div className="mt-10 flex justify-center">
-            <button
-              type="button"
-              onClick={onNext}
-              className="flex min-h-[54px] w-full items-center justify-center gap-2 break-keep rounded-xl border border-white/20 bg-white/5 px-6 text-center text-[1.24rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto sm:text-[1.3rem]"
-            >
-              어떤 프로그램을 만들어 드리는지 보기 <span aria-hidden>↓</span>
-            </button>
-          </div>
-        )}
+        {/* 실제로 무엇을 만들어 드리는지는 상세페이지에서 화면까지 함께 본다 */}
+        <div className="mt-10 flex justify-center">
+          <Link
+            to="/business-services/funding-consulting"
+            className="flex min-h-[54px] w-full items-center justify-center gap-2 break-keep rounded-xl border border-white/20 bg-white/5 px-6 text-center text-[1.24rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto sm:text-[1.3rem]"
+          >
+            어떤 프로그램을 만들어 드리는지 보기 <span aria-hidden>→</span>
+          </Link>
+        </div>
       </div>
     </section>
   )

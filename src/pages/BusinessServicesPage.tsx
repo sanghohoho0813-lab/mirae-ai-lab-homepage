@@ -4,12 +4,10 @@ import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
-import AxIndustryShowcaseV2 from '../components/ax-showcase/AxIndustryShowcaseV2'
 import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
 import AxPurposeSection from '../components/ax-showcase/AxPurposeSection'
-import AxScreenPreviewSection from '../components/ax-showcase/AxScreenPreviewSection'
 import AxSimpleExplanationSection from '../components/ax-showcase/AxSimpleExplanationSection'
-import { AxHeroV2, AxSelectionSection } from '../components/ax-showcase/axHomeSections'
+import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -18,25 +16,14 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 
 // 미래AI랩 = 정책자금 기반 기업 사업화 회사. AX는 자금을 받을 이유를 실제로 만들어 보여주는 수단이다.
 //
-// 홈은 세 가지만 강하게 보여준다 — 왜 지금 AX인가 / 우리 업종은 어떻게 달라지는가 / 누가 직접 설계하는가.
-// 홈 순서: ① Hero(질문 한 문장, 유도 버튼 없음) → ② 직접 만든 MVP 레퍼런스 10개
+// 홈은 딱 한 가지만 한다 — "이 회사가 실제로 만들 수 있고, 왜 지금 필요한가"를 납득시키고 상세페이지로 넘긴다.
+// 홈 순서: ① Hero(질문 한 문장) → ② 직접 만든 MVP 레퍼런스 10개
 //          → ③ AX 정의 → 왜 필요한가(심사위원 반문·비교표·업계 사례)
-//          → ④ 이런 프로그램을 만들어 드립니다(업종 3개 × 5단계 화면)
-//          → ⑤ AX 쉽게 설명하면 · 왜 하필 지금 AX인가 → ⑥ 15개 업종 쇼케이스
-//          → ⑦ 김팀장·수행체계 → ⑧ 월 최대 5개사 → ⑨ 최종 CTA
+//          → ④ 업종을 바꾸는 게 아니라는 정리 · 2026 공식 정책근거 → ⑤ 최종 CTA
 // 쿠팡·네이버 상세페이지처럼 한 화면에 핵심 메시지 하나, 위아래 여백을 넉넉히 둔다.
-// 가격·2주 과정·결과물·비교표·생애주기·FAQ 는 정책자금 상세페이지에서만 다룬다.
+// 업종별 15개 화면 · 대표 컨설턴트 · 월 5개사 선별 · 가격 · 진행과정 · 결과물 · 비교표 ·
+// 생애주기 · FAQ 는 모두 정책자금 상세페이지에서 다룬다.
 const DETAIL = '/business-services/funding-consulting'
-
-const AWARDS = [
-  { year: '2024', title: 'ESG 골든리더스 브랜드대상 · 경영컨설팅 부문 1위' },
-  { year: '2025', title: '대한민국 사회공헌 K-컬처 나눔봉사공헌대상 · 벤처부문' },
-]
-
-
-function scrollToId(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
 
 export default function BusinessServicesPage() {
   const { cart } = useSavedItems()
@@ -121,8 +108,8 @@ export default function BusinessServicesPage() {
           </Link>
           <nav className="hidden items-center gap-5 text-[1.17rem] sm:text-[1.06rem] font-medium text-slate-600 lg:flex">
             <Link to={DETAIL} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">프로그램</Link>
-            <button type="button" onClick={() => scrollToId('ax-showcase-v2')} className="transition-colors hover:text-slate-900">업종별 AX</button>
-            <button type="button" onClick={() => scrollToId('leader')} className="transition-colors hover:text-slate-900">수행체계</button>
+            <Link to={`${DETAIL}#ax-showcase-v2`} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">업종별 AX</Link>
+            <Link to={`${DETAIL}#leader`} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">수행체계</Link>
           </nav>
           <div className="flex items-center gap-2 sm:gap-2.5">
             {historyCount > 0 && (
@@ -150,51 +137,11 @@ export default function BusinessServicesPage() {
       {/* 2. 직접 만든 MVP 레퍼런스 10개 — 실제로 만들 수 있는 회사인지 가장 먼저 보여준다 */}
       <AxPortfolioSection />
 
-      {/* 3. 전환 문구 + AX가 무엇을 위한 것인지 — 목적 네 가지만 가볍게 */}
-      <AxPurposeSection onNext={() => scrollToId('ax-screen-preview')} />
+      {/* 3. AX 정의 → 왜 필요한가(심사위원 반문·비교표·업계 사례) → 상세페이지로 */}
+      <AxPurposeSection />
 
-      {/* 4. 이런 프로그램을 만들어 드립니다 — 업종 3개 × 5단계 화면 */}
-      <AxScreenPreviewSection />
-
-      {/* 3. AX가 무엇인지 쉬운 말로 → 왜 하필 지금인가(공식 정책근거) */}
-      <AxSimpleExplanationSection onShowcase={() => scrollToId('ax-showcase-v2')} />
-
-      {/* 5~8. 15개 업종 선택 → 5장 AX 변화 → 여기서 끝나지 않습니다 → 사업화 예시 2개 */}
-      <AxIndustryShowcaseV2 />
-
-      {/* 12. 김팀장 */}
-      <section id="leader" className="scroll-mt-16 border-t border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <img src="/assets/profile/ceo-avatar.webp" alt="미래 AI 랩 대표 컨설턴트 김팀장 프로필 사진" loading="lazy" decoding="async" width={200} height={200} className="h-16 w-16 shrink-0 rounded-full object-cover shadow ring-2 ring-amber-400/40 sm:h-20 sm:w-20" />
-              <div className="min-w-0">
-                <p className="text-[1.1rem] sm:text-[1.0rem] font-black tracking-tight text-blue-600">정책자금·AX 성장설계 총괄</p>
-                <h3 className="mt-1 break-keep text-[1.52rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.4rem]">대표 컨설턴트가 직접 듣고, 직접 설계하고, 끝까지 확인합니다.</h3>
-              </div>
-            </div>
-            <p className="mt-5 break-keep text-[1.26rem] sm:text-[1.15rem] leading-relaxed text-slate-700">
-              김팀장은 자금 가능성 검토에서 끝내지 않습니다. 대표님의 사업을 듣고 어떤 업무를 AX로 바꿀지 직접 기획하며, <b className="text-slate-900">내부 개발자와 함께 사업과 AX 구조를 직접 설계합니다.</b> 그래서 사업계획과 실제 결과물이 따로 움직이지 않습니다. 자금조달 이후에는 지원금·인증·복지제도까지 성장순서에 맞춰 연결합니다.
-            </p>
-            <p className="mt-2.5 break-keep text-[1.13rem] sm:text-[1.03rem] leading-relaxed text-slate-500">
-              세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원. 누적 자금조달 지원 100억원+(지원금·세금 환급 포함).
-            </p>
-            <p className="mt-2.5 break-keep rounded-xl bg-slate-100 px-4 py-2.5 text-[1.1rem] sm:text-[1.0rem] leading-relaxed text-slate-600">
-              세무·노무·법률 업무는 해당 자격을 보유한 외부 전문가가 직접 수행합니다.
-            </p>
-            <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
-              {AWARDS.map((a) => (
-                <span key={a.title} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[1.1rem] sm:text-[1.0rem] font-semibold text-slate-600">
-                  <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[1.1rem] sm:text-[1.0rem] font-black text-amber-300">{a.year}</span>{a.title}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 14. 월 최대 5개사 선별기준 */}
-      <AxSelectionSection />
+      {/* 4. 남은 오해 정리 → 2026 공식 정책근거 */}
+      <AxSimpleExplanationSection />
 
       {/* 15. 최종 CTA */}
       <div ref={finalCtaRef}>

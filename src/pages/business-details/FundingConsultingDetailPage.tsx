@@ -15,7 +15,7 @@ import ConsultModal from '../../components/ConsultModal'
 import AxIndustryShowcaseV2 from '../../components/ax-showcase/AxIndustryShowcaseV2'
 import AxLifecycleModules from '../../components/ax-showcase/AxLifecycleModules'
 import AxBuildStageCards from '../../components/ax-showcase/AxBuildStageCards'
-import { AxCoreValuesSection, AxMethodSection } from '../../components/ax-showcase/axHomeSections'
+import { AxCoreValuesSection, AxMethodSection, AxSelectionSection } from '../../components/ax-showcase/axHomeSections'
 import AxPolicyEvidenceStrip from '../../components/ax-showcase/AxPolicyEvidenceStrip'
 import { axV2Industry } from '../../data/axIndustryShowcaseV2'
 import AxPackageComparison from '../../components/ax-showcase/AxPackageComparison'
@@ -40,6 +40,11 @@ function scrollToId(id: string) {
 }
 
 // ── 2. 고객의 현실 ─────────────────────────────────────────────────────────
+const AWARDS = [
+  { year: '2024', title: 'ESG 골든리더스 브랜드대상 · 경영컨설팅 부문 1위' },
+  { year: '2025', title: '대한민국 사회공헌 K-컬처 나눔봉사공헌대상 · 벤처부문' },
+]
+
 const REALITY = [
   '이미 받은 대출이 있어 추가 한도가 막혀 있습니다.',
   '업력이 짧아 보여줄 수 있는 실적이 많지 않습니다.',
@@ -651,8 +656,8 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* ── 12. 김팀장과 월 5개사 ─────────────────────────────────────────── */}
-      <section className={`bg-slate-50 ${band}`}>
+      {/* ── 12. 대표 컨설턴트(홈에서 이동) ────────────────────────────────── */}
+      <section id="leader" className={`scroll-mt-16 bg-slate-50 ${band}`}>
         <div className={inner}>
           <p className={kicker}>대표 컨설턴트</p>
           <div className="mx-auto mt-5 flex max-w-2xl flex-col items-center rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-8">
@@ -661,16 +666,18 @@ export default function FundingConsultingDetailPage() {
             <h2 className="mt-2 text-[1.52rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[1.82rem]">
               대표 컨설턴트가 직접 듣고,<br />직접 설계하고, 끝까지 확인합니다.
             </h2>
-            <p className="mt-3 text-[1.26rem] sm:text-[1.495rem] leading-relaxed text-slate-600">
-              인터뷰부터 자금전략과 화면설계까지 직접 참여합니다. 자금조달 이후에는 지원금·인증·복지제도·절세까지 성장순서에 맞춰 연결합니다.
+            <p className="mt-3 break-keep text-[1.26rem] sm:text-[1.495rem] leading-relaxed text-slate-600">
+              자금 가능성 검토에서 끝내지 않습니다. 대표님의 사업을 듣고 어떤 업무를 AX로 바꿀지 직접 기획하며,{' '}
+              <b className="text-slate-900">내부 개발자와 함께 사업과 AX 구조를 직접 설계합니다.</b> 그래서 사업계획과 실제 결과물이 따로 움직이지 않습니다. 자금조달 이후에는 지원금·인증·복지제도·절세까지 성장순서에 맞춰 연결합니다.
             </p>
-            <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50/70 px-5 py-4">
-              <p className="text-[1.29rem] sm:text-[1.521rem] font-black leading-snug text-slate-900">한 달에 5개 기업만 진행합니다.</p>
-              <p className="mt-2 text-[1.18rem] sm:text-[1.391rem] leading-relaxed text-slate-600">
-                모든 프로젝트에 직접 참여하기 때문에, 동시에 진행할 수 있는 기업 수가 정해져 있습니다. 자리를 재촉하는 마케팅이 아니라 품질을 유지하기 위한 기준입니다.
-              </p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
+              {AWARDS.map((a) => (
+                <span key={a.title} className="inline-flex items-center gap-1.5 break-keep rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[1.1rem] sm:text-[1.3rem] font-semibold text-slate-600">
+                  <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[1.1rem] sm:text-[1.3rem] font-black text-amber-300">{a.year}</span>{a.title}
+                </span>
+              ))}
             </div>
-            <p className="mt-4 rounded-2xl bg-slate-50 px-4 py-3 text-[1.17rem] sm:text-[1.378rem] leading-relaxed text-slate-600">
+            <p className="mt-4 break-keep rounded-2xl bg-slate-50 px-4 py-3 text-[1.17rem] sm:text-[1.378rem] leading-relaxed text-slate-600">
               세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원. 누적 자금조달 지원 100억원+ (지원금·세금 환급 포함).
             </p>
             <p className="mt-3 text-[1.1rem] sm:text-[1.3rem] leading-relaxed text-slate-500">
@@ -679,6 +686,9 @@ export default function FundingConsultingDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* ── 13. 월 최대 5개사 선별기준(홈에서 이동) ───────────────────────── */}
+      <AxSelectionSection />
 
       {/* ── 자금 이후 성장 로드맵 ────────────────────────────────────────── */}
       <section id="lifecycle" className={`scroll-mt-16 bg-white ${band}`}>

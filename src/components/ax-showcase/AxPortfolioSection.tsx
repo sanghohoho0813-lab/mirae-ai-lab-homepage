@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { PORTFOLIO_SAMPLES, PORTFOLIO_SECTION } from '../../data/portfolioSamples'
 
 /** 초당 이동 거리(px) — 카드 10장을 지루하지 않게 훑을 수 있는 속도 */
-const SPEED = 56
+const SPEED = 67
 /** 캐러셀을 직접 끈 뒤 다시 흐르기까지 기다리는 시간 */
 const RESUME_MS = 2500
 const N = PORTFOLIO_SAMPLES.length
@@ -120,11 +120,8 @@ export default function AxPortfolioSection() {
     <section id="portfolio" className="scroll-mt-16 border-t border-white/10 bg-slate-900">
       <div className="py-14 sm:py-20">
         <div className="mx-auto max-w-5xl px-5 sm:px-6">
-          <p className="mx-auto max-w-3xl break-keep text-center text-[1.32rem] font-black leading-snug tracking-tight text-teal-300 sm:text-[1.5rem]">
+          <h2 className="mx-auto max-w-3xl whitespace-pre-line break-keep text-center text-[1.65rem] font-black leading-[1.4] tracking-[-0.015em] text-teal-300 sm:text-[2.05rem]">
             {PORTFOLIO_SECTION.kicker}
-          </p>
-          <h2 className="mx-auto mt-4 max-w-3xl whitespace-pre-line break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-            {PORTFOLIO_SECTION.title}
           </h2>
           <p className="mx-auto mt-5 max-w-2xl break-keep text-center text-[1.24rem] leading-[1.75] text-slate-300 sm:text-[1.36rem]">
             {PORTFOLIO_SECTION.lead}
@@ -149,13 +146,13 @@ export default function AxPortfolioSection() {
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/card w-[64vw] max-w-[270px] shrink-0 overflow-hidden rounded-2xl border border-white/12 bg-slate-950 shadow-xl shadow-slate-950/40 transition-colors hover:border-teal-400/45 sm:w-[560px] sm:max-w-none sm:rounded-3xl"
+                className="group/card w-[58vw] max-w-[238px] shrink-0 overflow-hidden rounded-2xl border border-white/12 bg-slate-950 shadow-xl shadow-slate-950/40 transition-colors hover:border-teal-400/45 sm:w-[476px] sm:max-w-none sm:rounded-3xl"
               >
                 <span className="block aspect-[16/10] overflow-hidden bg-slate-800">
                   <img
                     src={s.img}
                     srcSet={`${s.imgSm} 720w, ${s.img} 1440w`}
-                    sizes="(min-width:640px) 560px, 64vw"
+                    sizes="(min-width:640px) 476px, 58vw"
                     alt={s.alt}
                     width={1440}
                     height={900}
@@ -164,19 +161,19 @@ export default function AxPortfolioSection() {
                     className="h-full w-full object-cover object-top transition-transform duration-500 group-hover/card:scale-[1.02]"
                   />
                 </span>
-                <span className="block p-3.5 sm:p-6">
+                <span className="block p-3 sm:p-5">
                   <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                    <span className="break-keep text-[1.14rem] font-black leading-tight text-white sm:text-[1.6rem]">{s.name}</span>
-                    <span className="break-keep text-[0.98rem] font-bold text-teal-300 sm:text-[1.24rem]">{s.kind}</span>
+                    <span className="break-keep text-[1.08rem] font-black leading-tight text-white sm:text-[1.44rem]">{s.name}</span>
+                    <span className="break-keep text-[0.94rem] font-bold text-teal-300 sm:text-[1.14rem]">{s.kind}</span>
                   </span>
-                  <span className="mt-2.5 hidden break-keep text-[1.17rem] leading-relaxed text-slate-300 sm:block sm:text-[1.24rem]">{s.summary}</span>
+                  <span className="mt-2 hidden break-keep text-[1.1rem] leading-relaxed text-slate-300 sm:block sm:text-[1.15rem]">{s.summary}</span>
                   <span className="mt-2 flex flex-wrap items-center gap-1.5 sm:mt-3.5">
                     {s.tags.map((t) => (
-                      <span key={t} className="hidden rounded-lg bg-white/8 px-2.5 py-1 font-bold text-slate-300 ring-1 ring-inset ring-white/12 sm:inline text-[1.1rem]">
+                      <span key={t} className="hidden rounded-lg bg-white/8 px-2.5 py-1 font-bold text-slate-300 ring-1 ring-inset ring-white/12 sm:inline text-[1.02rem]">
                         {t}
                       </span>
                     ))}
-                    <span className="ml-auto inline-flex items-center gap-1 text-[0.95rem] font-black text-teal-300 sm:text-[1.17rem]">
+                    <span className="ml-auto inline-flex items-center gap-1 text-[0.92rem] font-black text-teal-300 sm:text-[1.08rem]">
                       사이트 열기 <span aria-hidden>↗</span>
                     </span>
                   </span>
