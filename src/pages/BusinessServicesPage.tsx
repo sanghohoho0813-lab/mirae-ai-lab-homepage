@@ -19,8 +19,8 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 미래AI랩 = 정책자금 기반 기업 사업화 회사. AX는 자금을 받을 이유를 실제로 만들어 보여주는 수단이다.
 //
 // 홈은 세 가지만 강하게 보여준다 — 왜 지금 AX인가 / 우리 업종은 어떻게 달라지는가 / 누가 직접 설계하는가.
-// 홈 순서: ① Hero(질문 한 문장) → ② 직접 만든 MVP 레퍼런스 10개
-//          → ③ "요즘은 AI를 결합한 웹앱까지" + AX의 목적 네 가지
+// 홈 순서: ① Hero(질문 한 문장, 유도 버튼 없음) → ② 직접 만든 MVP 레퍼런스 10개
+//          → ③ AX 정의 → 왜 필요한가(심사위원 반문·비교표·업계 사례)
 //          → ④ 이런 프로그램을 만들어 드립니다(업종 3개 × 5단계 화면)
 //          → ⑤ AX 쉽게 설명하면 · 왜 하필 지금 AX인가 → ⑥ 15개 업종 쇼케이스
 //          → ⑦ 김팀장·수행체계 → ⑧ 월 최대 5개사 → ⑨ 최종 CTA
@@ -144,7 +144,7 @@ export default function BusinessServicesPage() {
 
       {/* 1. Hero — 무엇을 파는 회사인지 5초 안에 */}
       <div ref={heroRef}>
-        <AxHeroV2 onNext={() => scrollToId('portfolio')} />
+        <AxHeroV2 />
       </div>
 
       {/* 2. 직접 만든 MVP 레퍼런스 10개 — 실제로 만들 수 있는 회사인지 가장 먼저 보여준다 */}

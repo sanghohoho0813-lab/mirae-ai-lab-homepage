@@ -6,8 +6,8 @@ const band = 'px-5 py-16 sm:px-6 sm:py-24'
 const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
-/** SECTION 1 — Hero. 한 문장만 남긴다. 설명·CTA·예시는 다음 화면부터. */
-export function AxHeroV2({ onNext }: { onNext: () => void }) {
+/** SECTION 1 — Hero. 질문 한 문장만 남긴다. 아래 유도 버튼 없이 바로 다음 섹션으로 스크롤이 이어진다. */
+export function AxHeroV2() {
   return (
     <section className="relative flex min-h-[calc(100svh-53px)] items-center overflow-hidden bg-slate-950">
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(115%_78%_at_50%_-10%,rgba(56,189,248,0.22),transparent_62%)]" />
@@ -20,23 +20,12 @@ export function AxHeroV2({ onNext }: { onNext: () => void }) {
           정책자금 × AX 사업화
         </span>
 
-        {/* 위아래 여백과 행간을 넉넉히 — 이 한 문장만 읽히게 한다 */}
-        <h1 className="mt-12 max-w-4xl break-keep text-[clamp(2.1rem,7.8vw,3rem)] font-black leading-[1.42] tracking-[-0.015em] text-white sm:mt-14 sm:text-[clamp(2.6rem,5.6vw,3.8rem)]">
-          아직도 <span className="text-teal-300">사업계획서 하나만으로</span><br />
+        {/* 위아래 여백과 행간을 넉넉히 — 이 한 문장만 읽히게 한다. 모바일은 PC 대비 체감이 작지 않게 1.2배 키웠다 */}
+        <h1 className="mt-12 max-w-4xl break-keep text-[clamp(2.52rem,9.4vw,3.6rem)] font-black leading-[1.4] tracking-[-0.015em] text-white sm:mt-14 sm:text-[clamp(2.6rem,5.6vw,3.8rem)]">
+          아직도 <span className="text-teal-300">사업계획서 하나만 가지고</span><br />
           정책자금·정부지원금에<br className="sm:hidden" /> 도전하시나요?
         </h1>
       </div>
-
-      {/* 다음 화면으로 내려가도록 유도 */}
-      <button
-        type="button"
-        onClick={onNext}
-        aria-label="다음 화면 보기"
-        className="group absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-2 px-5 py-2 text-slate-400 transition-colors hover:text-white sm:bottom-10"
-      >
-        <span className="text-[1.16rem] sm:text-[1.05rem] font-bold">직접 만든 서비스 먼저 보기</span>
-        <span aria-hidden className="grid h-10 w-10 animate-bounce place-items-center rounded-full border border-white/20 bg-white/5 text-[1.32rem] sm:text-[1.2rem] text-teal-200">↓</span>
-      </button>
     </section>
   )
 }
