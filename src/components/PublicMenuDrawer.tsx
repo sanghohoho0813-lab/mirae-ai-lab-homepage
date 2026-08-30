@@ -49,37 +49,37 @@ const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; active
   slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-200', activeBg: 'bg-slate-200', activeText: 'text-slate-900', badge: 'bg-slate-600', groupBg: 'bg-slate-100' },
 }
 
-// 대표자용 — PC 상단 내비게이션과 동일한 개념·순서(6항목). 성장 모듈 상세 링크는 별도 그룹에 유지. 실제 라우트/앵커만 사용.
+// 대표자용 — 현재 홈 내비게이션과 1:1 동기화. 실제 존재하는 라우트·앵커만 사용한다.
 const BUSINESS_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
-  topSub: '자금조달과 기업 성장을 함께 설계합니다',
+  topSub: '중소기업 AX · AI Growth',
   lead: {
-    label: '3분 무료 기업 성장진단',
-    desc: '지금 필요한 것이 자금인지, 기술·인증인지, AX 운영혁신인지 먼저 확인해보세요.',
+    label: '3분 AX 가능성 진단',
+    desc: '업종과 현재 업무방식만 알려주시면, 내부 AX와 고객 플랫폼 적용 가능성을 먼저 진단합니다.',
     to: '/business-diagnosis',
     match: (p) => p.startsWith('/business-diagnosis'),
   },
   groups: [
     {
       no: '01',
-      heading: '서비스 안내',
+      heading: 'AX 살펴보기',
       accent: 'blue',
       items: [
-        { no: '1', label: '업종별 AX 화면', desc: '15개 업종 실제 화면 먼저 보기', to: '/business-services#ax-showcase-v2' },
-        { no: '2', label: 'AX란 무엇인가', desc: '쉬운 설명과 2026 정책근거', to: '/business-services#ax-explained' },
-        { no: '3', label: '월 최대 5개사 선별', desc: '맞춤 설계라 인원을 제한합니다', to: '/business-services#selection' },
-        { no: '4', label: '자금조달 상세', desc: '프로그램 비용·진행방식·결과물까지', to: '/business-services/funding-consulting', match: (p) => p.startsWith('/business-services/funding-consulting') },
+        { no: '1', label: 'AX 사례', desc: '실제로 만든 AX·플랫폼 데모 먼저 보기', to: '/business-services#portfolio' },
+        { no: '2', label: '실제 기업 프로젝트', desc: '현장에서 고도화 중인 프로젝트', to: '/business-services#real-projects' },
+        { no: '3', label: 'AX란 무엇인가', desc: '디지털화와 무엇이 다른가', to: '/business-services#ax-explained' },
+        { no: '4', label: 'AI 적용', desc: 'AI가 실제 업무에서 하는 일', to: '/business-services#ai-at-work' },
       ],
     },
     {
       no: '02',
-      heading: '성장 모듈',
-      accent: 'violet',
+      heading: '프로그램 · 성장',
+      accent: 'cyan',
       items: [
-        { no: '1', label: '기술·혁신 기반', desc: '벤처확인·연구소·이노비즈·특허', to: '/business-services/funding-consulting#module-innovation' },
-        { no: '2', label: '경영·대외 신뢰', desc: '메인비즈·ISO 인증', to: '/business-services/funding-consulting#module-trust' },
-        { no: '3', label: '디지털 실행', desc: '홈페이지·업무자동화·작동형 AX', to: '/business-services/funding-consulting#module-digital' },
-        { no: '4', label: '재무·전문가 연계', desc: '가지급금·승계·전문가 검토', to: '/business-services/funding-consulting#module-finance' },
+        { no: '1', label: 'Growth Layer', desc: '정책자금·정부지원·벤처·특허 연결', to: '/business-services#growth' },
+        { no: '2', label: '정책자금 × AX 프로그램', desc: '비용·진행방식·결과물까지', to: '/business-services/funding-consulting', match: (p) => p.startsWith('/business-services/funding-consulting') },
+        { no: '3', label: '수행체계', desc: '대표 컨설턴트 · 월 5개사 선별', to: '/business-services/funding-consulting#leader' },
+        { no: '4', label: '자금 이후 성장 로드맵', desc: '인증·IP·복지제도 연계', to: '/business-services/funding-consulting#lifecycle' },
       ],
     },
     {
@@ -105,7 +105,7 @@ const BUSINESS_MENU: MenuConfig = {
       ],
     },
   ],
-  cta: { label: '내 회사에 맞는 방식 확인하기', to: '/business-diagnosis' },
+  cta: { label: '3분 AX 가능성 진단', to: '/business-diagnosis' },
 }
 
 // 컨설턴트용 — /consultants 공개 소개 + 로그인/도구함
@@ -322,48 +322,6 @@ export default function PublicMenuDrawer({
 
             {/* 메뉴 (독립 스크롤) */}
             <nav className="flex-1 overflow-y-auto px-3 py-3" aria-label="사이트 메뉴">
-              {/* 계정 영역 — 로그인 상태를 모바일에서도 명확히 노출 */}
-              {user ? (
-                <div className="mb-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar name={acctName} imageUrl={acctAvatar} size={44} />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[0.95rem] font-black text-slate-900">{acctName}</p>
-                      {acctEmail && <p className="truncate text-xs font-medium text-slate-500">{acctEmail}</p>}
-                      {acctType && (
-                        <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-black ${needsOnboarding ? 'bg-amber-100 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
-                          {acctType}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="mt-3 grid grid-cols-2 gap-1.5">
-                    {needsOnboarding && (
-                      <Link to="/auth/onboarding" className="col-span-2 flex items-center justify-center gap-1.5 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-bold text-white hover:bg-amber-600">
-                        가입 완료하기 →
-                      </Link>
-                    )}
-                    <Link to="/mypage" className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">마이페이지</Link>
-                    <Link to="/my-tools" className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">내 도구함</Link>
-                    {isAdmin && (
-                      <Link to="/admin" className="col-span-2 flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">관리자</Link>
-                    )}
-                    <button
-                      type="button"
-                      onClick={async () => { setOpen(false); await signOut(); navigate('/') }}
-                      className="col-span-2 flex items-center justify-center rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-100"
-                    >
-                      로그아웃
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="mb-3 grid grid-cols-2 gap-2">
-                  <Link to={loginPathWithNext(location.pathname + location.search)} className="flex min-h-11 items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50">로그인</Link>
-                  <Link to="/signup" className="flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-700">회원가입</Link>
-                </div>
-              )}
-
               {/* 대표 CTA (넘버 그룹 위) */}
               <Link
                 to={config.lead.to}
@@ -452,6 +410,49 @@ export default function PublicMenuDrawer({
                   </div>
                 )
               })}
+
+              {/* 계정 영역 — 메인 내비 아래 Secondary 위계 */}
+              {user ? (
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar name={acctName} imageUrl={acctAvatar} size={44} />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[0.95rem] font-black text-slate-900">{acctName}</p>
+                      {acctEmail && <p className="truncate text-xs font-medium text-slate-500">{acctEmail}</p>}
+                      {acctType && (
+                        <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-black ${needsOnboarding ? 'bg-amber-100 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
+                          {acctType}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-1.5">
+                    {needsOnboarding && (
+                      <Link to="/auth/onboarding" className="col-span-2 flex items-center justify-center gap-1.5 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-bold text-white hover:bg-amber-600">
+                        가입 완료하기 →
+                      </Link>
+                    )}
+                    <Link to="/mypage" className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">마이페이지</Link>
+                    <Link to="/my-tools" className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">내 도구함</Link>
+                    {isAdmin && (
+                      <Link to="/admin" className="col-span-2 flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">관리자</Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={async () => { setOpen(false); await signOut(); navigate('/') }}
+                      className="col-span-2 flex items-center justify-center rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-100"
+                    >
+                      로그아웃
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <Link to={loginPathWithNext(location.pathname + location.search)} className="flex min-h-11 items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50">로그인</Link>
+                  <Link to="/signup" className="flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-700">회원가입</Link>
+                </div>
+              )}
+
             </nav>
 
             {/* 하단 CTA (고정 + safe-area) */}

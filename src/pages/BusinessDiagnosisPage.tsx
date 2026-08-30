@@ -342,7 +342,7 @@ export default function BusinessDiagnosisPage() {
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
           <div className="flex min-w-0 items-center gap-2">
-            <Link to="/" onClick={handleBrandClick} className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
+            <Link to="/business-services" onClick={handleBrandClick} className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
               <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
               <span className="flex flex-col leading-tight">
                 <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>

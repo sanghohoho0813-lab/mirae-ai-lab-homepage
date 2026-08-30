@@ -112,7 +112,7 @@ export default function GatewayPage() {
           </span>
           <div className="leading-tight">
             <p className="text-lg font-bold tracking-tight text-slate-900">미래 AI 랩</p>
-            <p className="text-[0.82rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></p>
+            <p className="text-[0.82rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></p>
           </div>
         </div>
 
@@ -173,7 +173,7 @@ export default function GatewayPage() {
             </span>
           ))}
         </div>
-        <p className="mt-3 text-xs text-slate-400">미래경영지원센터가 직접 운영합니다</p>
+        <p className="mt-3 text-xs text-slate-400">미래 AI 랩이 직접 운영합니다</p>
       </div>
 
       <div className="relative z-10">

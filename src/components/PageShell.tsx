@@ -11,7 +11,7 @@ function BrandMark() {
       </span>
       <span className="flex flex-col leading-tight">
         <span className="text-base font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-        <span className="text-[0.8rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></span>
+        <span className="text-[0.8rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></span>
       </span>
     </Link>
   )

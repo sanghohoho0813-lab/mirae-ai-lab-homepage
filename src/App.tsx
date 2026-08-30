@@ -238,7 +238,7 @@ function App() {
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-base font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-base font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.85rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></span>
+              <span className="text-[0.85rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></span>
             </span>
           </Link>
           <nav className="hidden items-center gap-7 text-base font-medium text-slate-600 lg:flex">
@@ -350,7 +350,7 @@ function App() {
                   <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[0.9rem] font-medium text-slate-300 sm:mt-2.5 sm:text-[0.95rem]">
                     <span className="font-bold text-white">미래 AI 랩 대표</span>
                     <span className="text-slate-600">·</span>
-                    <span>미래경영지원센터</span>
+                    <span>Mirae AI Lab</span>
                     <span className="text-slate-600">·</span>
                     <a
                       href="https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA"

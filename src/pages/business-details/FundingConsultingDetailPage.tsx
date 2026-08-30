@@ -16,6 +16,7 @@ import AxIndustryShowcaseV2 from '../../components/ax-showcase/AxIndustryShowcas
 import AxLifecycleModules from '../../components/ax-showcase/AxLifecycleModules'
 import AxBuildStageCards from '../../components/ax-showcase/AxBuildStageCards'
 import AxJudgeCaseSection from '../../components/ax-showcase/AxJudgeCaseSection'
+import { AxHowWeBuildSection } from '../../components/ax-showcase/axRenewalHome'
 import { AxCoreValuesSection, AxMethodSection, AxSelectionSection } from '../../components/ax-showcase/axHomeSections'
 import AxPolicyEvidenceStrip from '../../components/ax-showcase/AxPolicyEvidenceStrip'
 import { axV2Industry } from '../../data/axIndustryShowcaseV2'
@@ -284,12 +285,12 @@ export default function FundingConsultingDetailPage() {
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
           {/* 로고는 좁은 화면에서 줄어들 수 있게(min-w-0 + truncate), 우측 버튼은 줄어들지 않게(shrink-0) */}
-          <Link to="/" className="flex min-w-0 items-center gap-2.5">
+          <Link to="/business-services" className="flex min-w-0 items-center gap-2.5">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-900 text-sm sm:text-[1.137rem] font-black tracking-tight text-sky-400">AI</span>
             <span className="flex min-w-0 flex-col leading-tight">
               <span className="truncate text-[1.2rem] sm:text-[1.417rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
               {/* 모바일에는 3분 기업진단 버튼이 함께 놓여 자리가 없다 — 부제는 sm 이상에서만 */}
-              <span className="hidden break-keep text-[1.09rem] font-medium text-slate-500 lg:block">Mirae AI Lab · <b className="font-bold text-slate-800">미래경영지원센터</b></span>
+              <span className="hidden break-keep text-[1.09rem] font-medium text-slate-500 lg:block">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></span>
             </span>
           </Link>
           <div className="flex shrink-0 items-center gap-2.5 sm:gap-4">
@@ -440,6 +441,9 @@ export default function FundingConsultingDetailPage() {
 
       {/* ── 5. AX 사업화 5단계 방법론 (홈에서 이동) ───────────────────────── */}
       <AxMethodSection />
+
+      {/* ── 5-1. 개발 방식 — 화면만 만드는 것이 아닙니다 ──────────────────── */}
+      <AxHowWeBuildSection />
 
       {/* ── 6. 실제 사례 Before → After ───────────────────────────────────── */}
       <section className={`bg-slate-50 ${band}`}>

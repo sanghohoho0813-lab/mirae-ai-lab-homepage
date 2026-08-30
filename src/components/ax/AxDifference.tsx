@@ -44,7 +44,7 @@ export default function AxDifference() {
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             <img src="/assets/profile/ceo-avatar.webp" alt="미래 AI 랩 대표 프로필 사진" loading="lazy" decoding="async" width={200} height={200} className="h-14 w-14 shrink-0 rounded-full object-cover shadow ring-2 ring-slate-200 sm:h-16 sm:w-16" />
             <div className="min-w-0 flex-1">
-              <p className="text-[1.122rem] sm:text-[1.02rem] font-black text-slate-900">미래 AI 랩 대표 · 미래경영지원센터</p>
+              <p className="text-[1.122rem] sm:text-[1.02rem] font-black text-slate-900">미래 AI 랩 대표 · Business AX & AI Growth</p>
               <p className="mt-1 text-[0.99rem] sm:text-[0.9rem] leading-relaxed text-slate-600">세무·노무·법무·자금 분야 합산 9년 현장 경험. 정책자금·정부지원금·법인컨설팅 전문, ISO 9001·14001·45001 심사원.</p>
               <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                 {AWARDS.map((a) => (

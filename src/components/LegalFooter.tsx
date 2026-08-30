@@ -40,7 +40,7 @@ export default function LegalFooter({
             </span>
             <span className="flex flex-col leading-tight">
               <span className={`text-[1.045rem] sm:text-[1.05rem] font-bold tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>{b.serviceName}</span>
-              <span className={`text-[0.902rem] sm:text-[0.95rem] font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · <b className={`font-bold ${dark ? 'text-slate-200' : 'text-slate-700'}`}>미래경영지원센터</b></span>
+              <span className={`text-[0.902rem] sm:text-[0.95rem] font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · <b className={`font-bold ${dark ? 'text-slate-200' : 'text-slate-700'}`}>중소기업 AX · AI Growth</b></span>
             </span>
           </Link>
 

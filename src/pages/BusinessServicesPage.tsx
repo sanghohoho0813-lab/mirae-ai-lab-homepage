@@ -9,9 +9,11 @@ import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
 import {
   AxAiAtWorkSection,
   AxBuildProcessSection,
+  AxConversionBridge,
   AxDifferenceSection,
   AxFeaturedPortfolio,
   AxGrowthLayerSection,
+  AxRealProjectsSection,
   AxStackSection,
   AxTrustStrip,
   AxWhatIsAx,
@@ -25,9 +27,10 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 미래AI랩 = 기업의 운영·고객·데이터를 AI로 연결하는 AX 회사.
 // 정책자금·정부지원은 메인 상품이 아니라 AX 실행력을 성장으로 잇는 Growth Layer 로 배치한다.
 //
-// 홈 순서: ① Hero(정체성) → ② 대표 포트폴리오(AX+플랫폼 10종) → ③ 초기 MVP 마퀴 10종
-//          → ④ AX란 무엇인가 → ⑤ 5-Layer 구조 → ⑥ 무엇이 다른가 → ⑦ AI가 하는 일
-//          → ⑧ 구축 프로세스 → ⑨ Growth Layer → ⑩ 신뢰 → ⑪ 최종 CTA
+// 홈 순서: ① Hero(정체성) → ② Industry AX Reference 10종 → ③ 초기 MVP 10종(드리프트)
+//          → ④ 실제 기업 프로젝트(Proof) → ⑤ 전환 브릿지 → ⑥ AX란 무엇인가
+//          → ⑦ 5-Layer 구조 → ⑧ 무엇이 다른가 → ⑨ AI가 하는 일 → ⑩ 구축 프로세스
+//          → ⑪ Growth Layer → ⑫ 신뢰 → ⑬ 최종 CTA
 // 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다.
 // 가격 · 진행과정 · 업종별 15개 화면 · 비교표 · FAQ 는 정책자금 상세페이지에서 다룬다.
 const DETAIL = '/business-services/funding-consulting'
@@ -102,22 +105,24 @@ export default function BusinessServicesPage() {
       {/* Header — 핵심 메뉴만 */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link to="/business-services" className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
               <span className="text-[1.2rem] sm:text-[1.09rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
               {/* 모바일에서는 세 줄이 되지 않도록 영문 사명을 접고 태그라인만 남긴다 */}
-              <span className="break-keep text-[1.1rem] sm:text-[1.0rem] font-medium text-slate-500">
-                <span className="hidden sm:inline">Mirae AI Lab · </span>
+              <span className="whitespace-nowrap text-[1.1rem] sm:text-[1.0rem] font-medium text-slate-500">
+                <span className="hidden min-[1360px]:inline">Mirae AI Lab · </span>
                 <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b>
               </span>
             </span>
           </Link>
-          <nav className="hidden items-center gap-5 text-[1.17rem] sm:text-[1.06rem] font-medium text-slate-600 lg:flex">
-            <a href="#portfolio" className="transition-colors hover:text-slate-900">포트폴리오</a>
+          <nav className="hidden items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
+            <a href="#portfolio" className="transition-colors hover:text-slate-900">AX 사례</a>
+            <a href="#real-projects" className="transition-colors hover:text-slate-900">실제 프로젝트</a>
             <a href="#ax-explained" className="transition-colors hover:text-slate-900">AX란</a>
+            <a href="#ai-at-work" className="hidden transition-colors hover:text-slate-900 min-[1360px]:inline">AI 적용</a>
+            <a href="#growth" className="hidden transition-colors hover:text-slate-900 min-[1360px]:inline">Growth Layer</a>
             <Link to={DETAIL} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">프로그램</Link>
-            <Link to={`${DETAIL}#leader`} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">수행체계</Link>
           </nav>
           <div className="flex items-center gap-2 sm:gap-2.5">
             {historyCount > 0 && (
@@ -145,8 +150,14 @@ export default function BusinessServicesPage() {
       {/* 2. 대표 포트폴리오 — 내부 AX + 고객·거래처 플랫폼 + AI가 한 세트인 데모 10종 */}
       <AxFeaturedPortfolio />
 
-      {/* 3. 초기 MVP 레퍼런스 10종 — 두 줄 반대 방향 마퀴 */}
+      {/* 3. 초기 MVP 레퍼런스 10종 — 반대 방향 핑퐁 드리프트 */}
       <AxPortfolioSection />
+
+      {/* 4. 실제 기업 프로젝트 — 데모가 아니라 현장 Proof */}
+      <AxRealProjectsSection />
+
+      {/* 5. 전환 브릿지 — 우리 회사라면? */}
+      <AxConversionBridge />
 
       {/* 4. AX란 무엇인가 — 정의·디지털화와의 차이·업종을 바꾸는 게 아니라는 정리 */}
       <AxWhatIsAx />
