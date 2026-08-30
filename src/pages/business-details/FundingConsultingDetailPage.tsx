@@ -171,7 +171,7 @@ function Tip({ term, children, className = '' }: { term: string; children: React
   )
 }
 
-// 반복되는 CTA 묶음 — 3분 기업진단 + 상담 신청
+// 반복되는 CTA 묶음 — 3분 AX 진단 + 상담 신청
 function CtaButtons({ dark = false, onConsult }: { dark?: boolean; onConsult: () => void }) {
   return (
     <div className="mx-auto mt-8 flex w-full max-w-md flex-col gap-2.5 sm:flex-row sm:justify-center">
@@ -179,7 +179,7 @@ function CtaButtons({ dark = false, onConsult }: { dark?: boolean; onConsult: ()
         to="/business-diagnosis"
         className="flex min-h-[52px] flex-1 items-center justify-center rounded-xl bg-teal-400 px-6 text-[1.29rem] sm:text-[1.521rem] font-black text-slate-900 shadow-lg shadow-teal-500/20 transition-transform hover:-translate-y-0.5"
       >
-        3분 기업진단
+        3분 AX 진단
       </Link>
       <button
         type="button"
@@ -289,14 +289,14 @@ export default function FundingConsultingDetailPage() {
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-900 text-sm sm:text-[1.137rem] font-black tracking-tight text-sky-400">AI</span>
             <span className="flex min-w-0 flex-col leading-tight">
               <span className="truncate text-[1.2rem] sm:text-[1.417rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              {/* 모바일에는 3분 기업진단 버튼이 함께 놓여 자리가 없다 — 부제는 sm 이상에서만 */}
+              {/* 모바일에는 3분 AX 진단 버튼이 함께 놓여 자리가 없다 — 부제는 sm 이상에서만 */}
               <span className="hidden break-keep text-[1.09rem] font-medium text-slate-500 lg:block">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></span>
             </span>
           </Link>
           <div className="flex shrink-0 items-center gap-2.5 sm:gap-4">
             <Link to="/business-services" className="hidden text-[1.2rem] sm:text-[1.417rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
             <Link to="/business-diagnosis" className="whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-[1.2rem] sm:px-4 sm:text-[1.417rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">
-              3분 기업진단
+              3분 AX 진단
             </Link>
             <HeaderAccount />
           </div>
@@ -347,7 +347,7 @@ export default function FundingConsultingDetailPage() {
               to="/business-diagnosis"
               className="flex min-h-[52px] flex-1 items-center justify-center rounded-xl bg-teal-400 px-7 text-[1.33rem] sm:text-[1.573rem] font-black text-slate-900 shadow-lg shadow-teal-500/20 transition-transform hover:-translate-y-0.5"
             >
-              3분 기업진단
+              3분 AX 진단
             </Link>
             <button
               type="button"
@@ -415,26 +415,29 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* ── 2026 정책변화와 AX 공식근거 ─────────────────────────────────── */}
-      <section id="policy-2026" className={`scroll-mt-16 bg-slate-50 ${band}`}>
+      {/* ── 3-1. 어디에서 새는가 — AX 필요성을 가장 빨리 이해시키는 장치 ──── */}
+      <section id="leak" className={`scroll-mt-16 bg-white ${band}`}>
         <div className={inner}>
-          <h2 className="text-[1.49rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[2.405rem]">
-            2026 정책변화와 AX 공식근거
-          </h2>
-          <p className="mt-3 max-w-2xl text-[1.33rem] sm:text-[1.573rem] leading-relaxed text-slate-600">
-            아래는 공식 문서에서 확인되는 변화입니다. 미래AI랩의 실적이나 승인사례가 아닙니다.
-          </p>
-          <div className="mt-6">
-            <AxPolicyEvidenceStrip tone="light" />
+          <p className={kicker}>지금 새고 있는 것</p>
+          <h2 className={bigHead}>매일 조금씩,<br /><span className="text-blue-600">돈과 시간과 고객이 새고 있습니다</span></h2>
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            {[
+              { t: '놓친 재방문·재구매', d: '다시 올 때가 된 고객을 아무도 챙기지 못하고 지나갑니다.' },
+              { t: '견적 누락·미응답', d: '보낸 견적이 어디까지 갔는지, 답이 없는 건이 몇 건인지 모릅니다.' },
+              { t: '월말 재입력·이중 장부', d: '같은 숫자를 엑셀과 수기에 두 번 적고, 월말마다 다시 맞춥니다.' },
+              { t: '담당자 의존', d: '그 직원이 자리를 비우면 업무가 멈추거나 처음부터 다시 설명합니다.' },
+            ].map((x) => (
+              <div key={x.t} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <p className="break-keep text-[1.29rem] font-black leading-snug text-slate-900 sm:text-[1.52rem]">{x.t}</p>
+                <p className="mt-2 break-keep text-[1.15rem] leading-relaxed text-slate-600 sm:text-[1.37rem]">{x.d}</p>
+              </div>
+            ))}
           </div>
+          <p className="mt-6 break-keep text-center text-[1.2rem] font-bold leading-relaxed text-slate-700 sm:text-[1.43rem]">
+            AX는 바로 이 새는 지점부터 데이터로 잇는 작업입니다.
+          </p>
         </div>
       </section>
-
-      {/* ── 4. 정부 정책방향과 AX ─────────────────────────────────────────── */}
-      <AxPolicyShift />
-
-      {/* ── 4-1. 심사위원 반문 + A/B 비교표 + 업계 사례 (홈에서 이동) ──────── */}
-      <AxJudgeCaseSection />
 
       {/* ── 5. AX 혁신전환 4단계 — 방법이 보인다 ──────────────────────────── */}
       <AxCoreValuesSection />
@@ -664,6 +667,27 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
+      {/* ── 12. 정책·성장 근거 — 실증을 외부기관에 설명할 수 있는 이유 ────── */}
+      <section id="policy-2026" className={`scroll-mt-16 bg-slate-50 ${band}`}>
+        <div className={inner}>
+          <h2 className="text-[1.49rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[2.405rem]">
+            2026 정책변화와 AX 공식근거
+          </h2>
+          <p className="mt-3 max-w-2xl text-[1.33rem] sm:text-[1.573rem] leading-relaxed text-slate-600">
+            아래는 공식 문서에서 확인되는 변화입니다. 미래AI랩의 실적이나 승인사례가 아닙니다.
+          </p>
+          <div className="mt-6">
+            <AxPolicyEvidenceStrip tone="light" />
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. 정부 정책방향과 AX ─────────────────────────────────────────── */}
+      <AxPolicyShift />
+
+      {/* ── 4-1. 심사위원 반문 + A/B 비교표 + 업계 사례 (홈에서 이동) ──────── */}
+      <AxJudgeCaseSection />
+
       {/* ── 12. 대표 컨설턴트(홈에서 이동) ────────────────────────────────── */}
       <section id="leader" className={`scroll-mt-16 bg-slate-50 ${band}`}>
         <div className={inner}>
@@ -764,7 +788,7 @@ export default function FundingConsultingDetailPage() {
             이번에도 몇천만원에서 끝날지,<br /><span className="text-amber-300">1억원 이상을 설명할 구조</span>가 있는지<br />먼저 확인해보세요.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[1.26rem] sm:text-[1.495rem] leading-relaxed text-slate-300">
-            3분 기업진단으로 현재 상황을 정리하고, <b className="text-white">{FLAGSHIP.name}</b> 상담으로 이어갈 수 있습니다.
+            3분 AX 진단으로 현재 상황을 정리하고, <b className="text-white">{FLAGSHIP.name}</b> 상담으로 이어갈 수 있습니다.
           </p>
           <CtaButtons dark onConsult={openConsult} />
           <p className="mt-5 text-[1.1rem] sm:text-[1.3rem] leading-relaxed text-slate-400">진단만으로 별도 비용이 발생하지 않습니다.</p>
@@ -790,10 +814,10 @@ export default function FundingConsultingDetailPage() {
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[1.2rem] sm:text-[1.417rem] font-black text-slate-900">{FLAGSHIP.name}</span>
-            <span className="block truncate text-[1.1rem] sm:text-[1.3rem] font-medium text-slate-500">3분 기업진단으로 시작하세요</span>
+            <span className="block truncate text-[1.1rem] sm:text-[1.3rem] font-medium text-slate-500">3분 AX 진단으로 시작하세요</span>
           </span>
           <Link to="/business-diagnosis" className="flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 text-[1.2rem] sm:text-[1.417rem] font-bold text-white">
-            3분 기업진단
+            3분 AX 진단
           </Link>
         </div>
       )}

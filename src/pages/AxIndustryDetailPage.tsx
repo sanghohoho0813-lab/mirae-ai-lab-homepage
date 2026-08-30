@@ -92,7 +92,7 @@ export default function AxIndustryDetailPage() {
           <p className="mt-4 max-w-2xl break-keep text-[1.26rem] leading-relaxed text-slate-300 sm:text-[1.26rem]">{industry.overview}</p>
           <div className="mt-6 flex flex-col gap-2.5 sm:max-w-lg sm:flex-row">
             <Link to="/business-diagnosis" className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 text-[1.26rem] sm:text-[1.15rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-400">
-              <span aria-hidden>🩺</span> 3분 기업진단
+              <span aria-hidden>🩺</span> 3분 AX 진단
             </Link>
             <Link to="/business-services#ax-showcase-v2" className="flex min-h-[52px] items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10">
               다른 업종 보기
@@ -285,7 +285,7 @@ export default function AxIndustryDetailPage() {
             to="/business-diagnosis"
             className="mt-5 inline-flex min-h-[56px] items-center gap-2 rounded-xl bg-blue-500 px-6 text-[1.33rem] sm:text-[1.21rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-400"
           >
-            <span aria-hidden>🩺</span> 3분 기업진단 시작하기
+            <span aria-hidden>🩺</span> 3분 AX 가능성 진단
           </Link>
           <p className="mt-5 break-keep text-[1.1rem] sm:text-[1.0rem] leading-relaxed text-slate-500">{AX_V2_DISCLAIMER}</p>
         </div>

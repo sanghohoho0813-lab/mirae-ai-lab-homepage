@@ -6,18 +6,8 @@ import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
 import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
-import {
-  AxAiAtWorkSection,
-  AxBuildProcessSection,
-  AxConversionBridge,
-  AxDifferenceSection,
-  AxFeaturedPortfolio,
-  AxGrowthLayerSection,
-  AxRealProjectsSection,
-  AxStackSection,
-  AxTrustStrip,
-  AxWhatIsAx,
-} from '../components/ax-showcase/axRenewalHome'
+import { AxDifferenceSection, AxFeaturedPortfolio, AxRealProjectsSection } from '../components/ax-showcase/axRenewalHome'
+import { AxAiDataSection, AxChangeLoopSection, AxGrowthOutcomeSection, AxWhyNowSection } from '../components/ax-showcase/axStoryHome'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -27,10 +17,12 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 미래AI랩 = 기업의 운영·고객·데이터를 AI로 연결하는 AX 회사.
 // 정책자금·정부지원은 메인 상품이 아니라 AX 실행력을 성장으로 잇는 Growth Layer 로 배치한다.
 //
-// 홈 순서: ① Hero(정체성) → ② Industry AX Reference 10종 → ③ 초기 MVP 10종(드리프트)
-//          → ④ 실제 기업 프로젝트(Proof) → ⑤ 전환 브릿지 → ⑥ AX란 무엇인가
-//          → ⑦ 5-Layer 구조 → ⑧ 무엇이 다른가 → ⑨ AI가 하는 일 → ⑩ 구축 프로세스
-//          → ⑪ Growth Layer → ⑫ 신뢰 → ⑬ 최종 CTA
+// 홈 = 1분 설득. CHANGE → WHY NOW → PROOF → AX가 바꾸는 것 → AI·데이터 → GROWTH → CTA.
+// 홈 순서: ① Hero(정체성) → ② WHY NOW(질문·병목) → ③ 실제 기업 프로젝트(Proof A)
+//          → ④ Industry AX Reference 10종(Proof B) → ⑤ 초기 MVP 10종(드리프트)
+//          → ⑥ AX가 바꾸는 것(Before/After + Closed Loop) → ⑦ AI·데이터 자산
+//          → ⑧ Growth(+정책 시그널·Growth Layer) → ⑨ 무엇이 다른가 → ⑩ 최종 CTA
+// 깊은 설명(정의·프로세스·수행체계·개발방식)은 프로그램 상세페이지가 맡는다.
 // 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다.
 // 가격 · 진행과정 · 업종별 15개 화면 · 비교표 · FAQ 는 정책자금 상세페이지에서 다룬다.
 const DETAIL = '/business-services/funding-consulting'
@@ -136,7 +128,7 @@ export default function BusinessServicesPage() {
                 <span className="absolute -right-0.5 -top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white">{cart.length > 99 ? '99+' : cart.length}</span>
               </Link>
             )}
-            <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-[1.2rem] sm:text-[1.09rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex">3분 기업진단</Link>
+            <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-[1.2rem] sm:text-[1.09rem] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:inline-flex">3분 AX 진단</Link>
             <HeaderAccount variant="business" />
           </div>
         </div>
@@ -147,46 +139,40 @@ export default function BusinessServicesPage() {
         <AxHeroV2 />
       </div>
 
-      {/* 2. 대표 포트폴리오 — 내부 AX + 고객·거래처 플랫폼 + AI가 한 세트인 데모 10종 */}
-      <AxFeaturedPortfolio />
+      {/* 2. WHY NOW — 가장 강한 질문 하나와 병목 구조 */}
+      <AxWhyNowSection />
 
-      {/* 3. 초기 MVP 레퍼런스 10종 — 반대 방향 핑퐁 드리프트 */}
-      <AxPortfolioSection />
-
-      {/* 4. 실제 기업 프로젝트 — 데모가 아니라 현장 Proof */}
+      {/* 3. Proof A — 실제 기업 프로젝트 */}
       <AxRealProjectsSection />
 
-      {/* 5. 전환 브릿지 — 우리 회사라면? */}
-      <AxConversionBridge />
+      {/* 4. Proof B — Industry AX + Platform Reference 10종 */}
+      <AxFeaturedPortfolio />
 
-      {/* 4. AX란 무엇인가 — 정의·디지털화와의 차이·업종을 바꾸는 게 아니라는 정리 */}
-      <AxWhatIsAx />
+      {/* 5. 초기 MVP 레퍼런스 10종 — 반대 방향 핑퐁 드리프트 */}
+      <AxPortfolioSection />
 
-      {/* 5. 미래AI랩의 구조 — 고객·운영·AI·데이터·성장 5개 층 */}
-      <AxStackSection />
+      {/* 6. AX가 실제로 바꾸는 것 — Before/After + Customer↔AX Closed Loop */}
+      <AxChangeLoopSection />
 
-      {/* 6. 무엇이 다른가 — 컨설팅·개발사와의 역할 차이 */}
+      {/* 7. AI는 필요한 자리에서 + 회사 데이터 자산 */}
+      <AxAiDataSection />
+
+      {/* 8. Growth — 효율에서 확장까지 + 정책 시그널·Growth Layer */}
+      <AxGrowthOutcomeSection onConsult={() => setConsultOpen(true)} />
+
+      {/* 9. 무엇이 다른가 — 컨설팅·개발사와의 역할 차이 */}
       <AxDifferenceSection />
 
-      {/* 7. AI가 실제로 하는 일 */}
-      <AxAiAtWorkSection />
-
-      {/* 8. 구축 프로세스 7단계 */}
-      <AxBuildProcessSection />
-
-      {/* 9. Growth Layer — 정책자금·정부지원·인증은 성장을 잇는 층 */}
-      <AxGrowthLayerSection onConsult={() => setConsultOpen(true)} />
-
-      {/* 10. 신뢰 — 대표 컨설턴트 요약 */}
-      <AxTrustStrip />
-
-      {/* 11. 최종 CTA — 행동 하나만 */}
+      {/* 10. 최종 CTA — 우리 회사라면? */}
       <div ref={finalCtaRef}>
         <section id="cta" className="border-t border-slate-800 bg-slate-900">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
             <h2 className="break-keep text-[1.7rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.1rem]">
-              우리 회사에도 AX가 가능한지,<br className="sm:hidden" /> 먼저 진단해보세요.
+              우리 회사라면,<br className="sm:hidden" /> 어떤 AX가 만들어질까요?
             </h2>
+            <p className="mx-auto mt-4 max-w-xl break-keep text-[1.18rem] leading-[1.7] text-slate-300 sm:text-[1.26rem]">
+              업종과 현재 업무방식을 알려주시면, Business AX와 Customer Platform 적용 가능성을 먼저 봅니다.
+            </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-teal-400 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-slate-900 shadow-lg shadow-teal-500/20 transition-transform hover:-translate-y-0.5 hover:bg-teal-300 sm:w-auto">
                 3분 AX 가능성 진단

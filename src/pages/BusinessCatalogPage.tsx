@@ -60,7 +60,7 @@ export default function BusinessCatalogPage() {
               to="/business-diagnosis"
               className="whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-[1.2rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 sm:px-4 sm:text-[1.42rem]"
             >
-              3분 기업진단
+              3분 AX 진단
             </Link>
             <HeaderAccount />
           </div>
@@ -85,7 +85,7 @@ export default function BusinessCatalogPage() {
             지금 진행 가능한 컨설팅을<br className="sm:hidden" /> 한 화면에서 확인하세요.
           </h1>
           <p className="mt-4 max-w-3xl break-keep text-[1.2rem] leading-relaxed text-slate-600 sm:text-[1.43rem]">
-            모두 진행해야 하는 것이 아닙니다. 3분 기업진단으로 지금 회사에 필요한 순서를 먼저 정하고, 그 순서대로 하나씩 준비하시면 됩니다.
+            모두 진행해야 하는 것이 아닙니다. 3분 AX 진단으로 지금 회사에 필요한 순서를 먼저 정하고, 그 순서대로 하나씩 준비하시면 됩니다.
           </p>
 
           {/* 카테고리(상황) 탭 */}
@@ -142,7 +142,7 @@ export default function BusinessCatalogPage() {
               to="/business-diagnosis"
               className="flex min-h-[56px] flex-1 items-center justify-center rounded-xl bg-blue-600 px-6 text-[1.26rem] font-black text-white transition-transform hover:-translate-y-0.5 sm:text-[1.495rem]"
             >
-              🩺 3분 기업진단으로 순서 정하기
+              🩺 3분 AX 진단으로 순서 정하기
             </Link>
             <button
               type="button"

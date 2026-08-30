@@ -27,22 +27,22 @@ export function AxHeroV2() {
           <span className="text-teal-300">AI가 움직이는 구조</span>로 바꿉니다.
         </h1>
         <p className="mt-7 max-w-2xl break-keep text-[1.28rem] leading-[1.75] text-slate-300 sm:mt-8 sm:text-[1.4rem]">
-          내부 운영 AX부터 고객·거래처 플랫폼까지 직접 설계·구축하고,{' '}
-          AI 분석·추천·자동화를 실제 업무에 연결합니다.{' '}
-          필요하면 정책자금·정부지원 같은 성장 연결까지 함께 설계합니다.
+          고객·업무·매출·재고·현장 데이터를 연결하고,{' '}
+          Business AX와 고객 플랫폼을 직접 구축해{' '}
+          <b className="text-white">회사의 다음 운영체계</b>를 만듭니다.
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:mt-11 sm:flex-row">
           <Link
             to="/business-diagnosis"
             className="shine-cta flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-teal-400 px-7 text-[1.24rem] font-black text-slate-900 shadow-lg shadow-teal-500/20 transition-transform hover:-translate-y-0.5 hover:bg-teal-300 sm:w-auto sm:text-[1.2rem]"
           >
-            우리 회사 AX 가능성 진단
+            3분 AX 가능성 진단
           </Link>
           <a
-            href="#portfolio"
+            href="#real-projects"
             className="flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-7 text-[1.24rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto sm:text-[1.2rem]"
           >
-            실제 구축 사례 보기 <span aria-hidden>↓</span>
+            AX 사례 보기 <span aria-hidden>↓</span>
           </a>
         </div>
       </div>

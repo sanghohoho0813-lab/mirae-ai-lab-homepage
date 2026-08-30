@@ -144,7 +144,7 @@ const CONSULTANT_MENU: MenuConfig = {
       accent: 'cyan',
       items: [
         { label: '경영지원 서비스', to: '/business-services' },
-        { label: '무료 기업 성장진단', to: '/business-diagnosis' },
+        { label: '3분 AX 가능성 진단', to: '/business-diagnosis' },
       ],
     },
     {

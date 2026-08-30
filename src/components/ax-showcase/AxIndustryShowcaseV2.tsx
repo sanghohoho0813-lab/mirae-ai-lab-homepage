@@ -127,7 +127,7 @@ export default function AxIndustryShowcaseV2({
               to="/business-diagnosis"
               className="inline-flex min-h-[48px] items-center gap-1.5 rounded-xl bg-blue-500 px-4 text-[1.2rem] sm:text-[1.417rem] font-black text-white transition-colors hover:bg-blue-400"
             >
-              <span aria-hidden>🩺</span> 3분 기업진단
+              <span aria-hidden>🩺</span> 3분 AX 진단
             </Link>
           </div>
         </div>
