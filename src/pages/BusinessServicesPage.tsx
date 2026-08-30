@@ -7,7 +7,7 @@ import KakaoFloat from '../components/KakaoFloat'
 import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
 import { AxDifferenceSection, AxFeaturedPortfolio, AxRealProjectsSection } from '../components/ax-showcase/axRenewalHome'
-import { AxAiDataSection, AxChangeLoopSection, AxDataAssetSection, AxGrowthOutcomeSection, AxWhyNowSection } from '../components/ax-showcase/axStoryHome'
+import { AxChangeLoopSection, AxDefinitionSection, AxGrowthOutcomeSection, AxWhyNowSection } from '../components/ax-showcase/axStoryHome'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -19,9 +19,9 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 //
 // 홈 = 1분 설득. CHANGE → WHY NOW → PROOF → AX가 바꾸는 것 → AI·데이터 → GROWTH → CTA.
 // 홈 순서: ① Hero → ② WHY NOW(계획서만으로는 부족한 시대) → ③ 업종별 화면 먼저
-//          → ④ AX가 바꾸는 것(Before/After + Closed Loop) → ⑤ 데이터 자산
-//          → ⑥ AI가 들어가는 자리 → ⑦ 초기 MVP → ⑧ 실제 기업 프로젝트(익명)
-//          → ⑨ 왜 미래AI랩인가 → ⑩ Growth Layer → ⑪ 최종 CTA
+//          → ④ AX란 무엇인가(정의·디지털화와의 차이) → ⑤ AX가 바꾸는 것
+//          → ⑥ 초기 MVP → ⑦ 실제 기업 프로젝트(익명) → ⑧ 왜 미래AI랩인가
+//          → ⑨ Growth Layer → ⑩ 최종 CTA
 // 깊은 설명(정의·프로세스·수행체계·개발방식)은 프로그램 상세페이지가 맡는다.
 // 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다.
 // 가격 · 진행과정 · 업종별 15개 화면 · 비교표 · FAQ 는 정책자금 상세페이지에서 다룬다.
@@ -111,9 +111,8 @@ export default function BusinessServicesPage() {
           <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
             <a href="#portfolio" className="transition-colors hover:text-slate-900">AX 사례</a>
             <a href="#real-projects" className="transition-colors hover:text-slate-900">실제 프로젝트</a>
-            <a href="#ax-explained" className="transition-colors hover:text-slate-900">AX란</a>
-            <a href="#ai-at-work" className="hidden transition-colors hover:text-slate-900 min-[1360px]:inline">AI 적용</a>
-            <a href="#growth" className="hidden transition-colors hover:text-slate-900 min-[1360px]:inline">Growth Layer</a>
+            <a href="#ax-definition" className="transition-colors hover:text-slate-900">AX란</a>
+                        <a href="#growth" className="hidden transition-colors hover:text-slate-900 min-[1360px]:inline">Growth Layer</a>
             <Link to={DETAIL} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">프로그램</Link>
           </nav>
           <div className="flex items-center gap-2 sm:gap-2.5">
@@ -145,25 +144,22 @@ export default function BusinessServicesPage() {
       {/* 3. 업종별 화면을 먼저 — 이 섹션의 주인공은 실제 UI */}
       <AxFeaturedPortfolio />
 
-      {/* 4. AX가 실제로 바꾸는 것 — Before/After + Customer↔AX Closed Loop */}
+      {/* 4. AX란 무엇인가 — 약자·정의·디지털화와의 차이 */}
+      <AxDefinitionSection />
+
+      {/* 5. AX가 실제로 바꾸는 것 — Before/After + Customer↔AX Closed Loop */}
       <AxChangeLoopSection />
 
-      {/* 5. 데이터 자산 — 화면보다 오래 남는 것 */}
-      <AxDataAssetSection />
-
-      {/* 6. AI가 들어가는 자리 */}
-      <AxAiDataSection />
-
-      {/* 7. 초기 MVP 10종 — 반대 방향 핑퐁 드리프트 */}
+      {/* 6. 초기 MVP 10종 — 반대 방향 핑퐁 드리프트 */}
       <AxPortfolioSection />
 
-      {/* 8. 실제 기업 AX 프로젝트 — 전원 익명 */}
+      {/* 7. 실제 기업 AX 프로젝트 — 전원 익명 */}
       <AxRealProjectsSection />
 
-      {/* 9. 왜 미래AI랩인가 */}
+      {/* 8. 왜 미래AI랩인가 */}
       <AxDifferenceSection />
 
-      {/* 10. Growth — 효율에서 확장까지 + 정책 시그널·Growth Layer */}
+      {/* 9. Growth — 효율에서 확장까지 + 정책 시그널·Growth Layer */}
       <AxGrowthOutcomeSection onConsult={() => setConsultOpen(true)} />
 
       {/* 10. 최종 CTA — 우리 회사라면? */}
