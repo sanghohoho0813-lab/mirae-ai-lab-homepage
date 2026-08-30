@@ -52,7 +52,7 @@ export default function AxPortfolioSection() {
         <div className="mx-auto max-w-5xl px-5 sm:px-6">
           <p className="text-center text-[1.1rem] font-black tracking-tight text-teal-300 sm:text-[1.2rem]">EARLY MVP</p>
           <h2 className="mx-auto mt-3 max-w-3xl break-keep text-center text-[1.55rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[1.95rem]">
-            아이디어도, 동작하는 제품으로 빠르게 만듭니다.
+            머릿속에만 있던 아이디어도,<br className="sm:hidden" /> 일단 움직이게 만들어봅니다.
           </h2>
         </div>
 

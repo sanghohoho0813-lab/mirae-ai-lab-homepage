@@ -12,7 +12,7 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import HeaderAccount from '../../components/account/HeaderAccount'
 import LegalFooter from '../../components/LegalFooter'
 import ConsultModal from '../../components/ConsultModal'
-import AxIndustryShowcaseV2 from '../../components/ax-showcase/AxIndustryShowcaseV2'
+import { AxSamplesGridSection } from '../../components/ax-showcase/axFinalHome'
 import AxLifecycleModules from '../../components/ax-showcase/AxLifecycleModules'
 import AxBuildStageCards from '../../components/ax-showcase/AxBuildStageCards'
 import AxJudgeCaseSection from '../../components/ax-showcase/AxJudgeCaseSection'
@@ -210,8 +210,13 @@ export default function FundingConsultingDetailPage() {
   const finalCtaRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const [searchParams] = useSearchParams()
-  // 홈의 '더 알아보기'에서 넘어온 업종. 없으면 일반 진입으로 취급한다.
+  // 진단·홈에서 ?industry= 로 넘어온 경우 실제 샘플 그리드로 이동시킨다.
   const requestedIndustry = axV2Industry(searchParams.get('industry') ?? '')?.slug
+  useEffect(() => {
+    if (!requestedIndustry) return
+    const t = window.setTimeout(() => scrollToId('ax-showcase-v2'), 350)
+    return () => window.clearTimeout(t)
+  }, [requestedIndustry])
 
   const openConsult = () => setConsult(true)
   // A·B·C 카드에서 어떤 프로그램으로 상담을 신청했는지 메일에 함께 실어 보낸다.
@@ -511,13 +516,9 @@ export default function FundingConsultingDetailPage() {
         </div>
       </section>
 
-      {/* ── 7. 업종별 AX 화면 — 실제로 보인다 ─────────────────────────────── */}
+      {/* ── 7. 업종별 실제 AX 화면 — 개념 이미지 대신 실제 데모 10종 ──────── */}
       <span id="ax-application" aria-hidden className="block h-0 scroll-mt-20" />
-      <AxIndustryShowcaseV2
-        initialSlug={requestedIndustry}
-        showIdeaDetailLink={false}
-        showIndustryDetailLink={false}
-      />
+      <AxSamplesGridSection />
 
       {/* ── 7-1. 데이터·AI가 들어가는 지점 → 성장 → 현재 단계(정직 표기) ──── */}
       <section id="data-ai-growth" className={`scroll-mt-16 bg-slate-950 ${band}`}>

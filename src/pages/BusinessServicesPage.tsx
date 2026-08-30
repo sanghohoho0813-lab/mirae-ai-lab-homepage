@@ -6,8 +6,15 @@ import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
 import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
-import { AxDifferenceSection, AxFeaturedPortfolio, AxRealProjectsSection } from '../components/ax-showcase/axRenewalHome'
-import { AxChangeLoopSection, AxDefinitionSection, AxGrowthOutcomeSection, AxWhyNowSection } from '../components/ax-showcase/axStoryHome'
+import { AxDefinitionSection, AxWhyNowSection } from '../components/ax-showcase/axStoryHome'
+import {
+  AxCeoMomentSection,
+  AxFaqTrioSection,
+  AxGrowthFinalSection,
+  AxOneStorySection,
+  AxRealProjectsDeep,
+  AxScreenShowcase,
+} from '../components/ax-showcase/axFinalHome'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -18,10 +25,11 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 정책자금·정부지원은 메인 상품이 아니라 AX 실행력을 성장으로 잇는 Growth Layer 로 배치한다.
 //
 // 홈 = 1분 설득. CHANGE → WHY NOW → PROOF → AX가 바꾸는 것 → AI·데이터 → GROWTH → CTA.
-// 홈 순서: ① Hero → ② WHY NOW(계획서만으로는 부족한 시대) → ③ 업종별 화면 먼저
-//          → ④ AX란 무엇인가(정의·디지털화와의 차이) → ⑤ AX가 바꾸는 것
-//          → ⑥ 초기 MVP → ⑦ 실제 기업 프로젝트(익명) → ⑧ 왜 미래AI랩인가
-//          → ⑨ Growth Layer → ⑩ 최종 CTA
+// 표면은 짧게, 아코디언은 깊게. 심리: 인지 → 호기심 → 정보습득 → 의심제거 → 망설임제거 → 상담.
+// 홈 순서: ① Hero → ② Problem Hook("그래서 실제로 무엇이 있습니까?") → ③ 화면 먼저(드리프트+직접 눌러보기)
+//          → ④ AX란(정의+인포그래픽+3칩) → ⑤ 대표의 장면 → ⑥ Early MVP
+//          → ⑦ 실제 프로젝트(깊은 아코디언) → ⑧ 하나의 Growth Story → ⑨ Growth
+//          → ⑩ FAQ 3개+결제 부담 → ⑪ 최종 CTA
 // 깊은 설명(정의·프로세스·수행체계·개발방식)은 프로그램 상세페이지가 맡는다.
 // 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다.
 // 가격 · 진행과정 · 업종별 15개 화면 · 비교표 · FAQ 는 정책자금 상세페이지에서 다룬다.
@@ -141,36 +149,39 @@ export default function BusinessServicesPage() {
       {/* 2. WHY NOW — 가장 강한 질문 하나와 병목 구조 */}
       <AxWhyNowSection />
 
-      {/* 3. 업종별 화면을 먼저 — 이 섹션의 주인공은 실제 UI */}
-      <AxFeaturedPortfolio />
+      {/* 3. 말 대신 화면 — 천천히 흐르는 실제 UI + 직접 눌러보기 */}
+      <AxScreenShowcase />
 
-      {/* 4. AX란 무엇인가 — 약자·정의·디지털화와의 차이 */}
+      {/* 4. AX란 무엇인가 — 정의 + 사람/데이터 인포그래픽 + 결과 3칩 */}
       <AxDefinitionSection />
 
-      {/* 5. AX가 실제로 바꾸는 것 — Before/After + Customer↔AX Closed Loop */}
-      <AxChangeLoopSection />
+      {/* 5. 대표에게 꽂히는 장면 */}
+      <AxCeoMomentSection />
 
       {/* 6. 초기 MVP 10종 — 반대 방향 핑퐁 드리프트 */}
       <AxPortfolioSection />
 
-      {/* 7. 실제 기업 AX 프로젝트 — 전원 익명 */}
-      <AxRealProjectsSection />
+      {/* 7. 실제 기업 AX 프로젝트 — 짧은 카드 + 깊은 아코디언 */}
+      <AxRealProjectsDeep />
 
-      {/* 8. 왜 미래AI랩인가 */}
-      <AxDifferenceSection />
+      {/* 8. 왜 미래AI랩인가 — 분절이 아니라 하나의 Growth Story */}
+      <AxOneStorySection />
 
-      {/* 9. Growth — 효율에서 확장까지 + 정책 시그널·Growth Layer */}
-      <AxGrowthOutcomeSection onConsult={() => setConsultOpen(true)} />
+      {/* 9. Growth — 만들어 놓고 끝낼 이유가 없습니다 */}
+      <AxGrowthFinalSection onConsult={() => setConsultOpen(true)} />
+
+      {/* 10. 의심·망설임 제거 — FAQ 3개 + 초기 부담 */}
+      <AxFaqTrioSection />
 
       {/* 10. 최종 CTA — 우리 회사라면? */}
       <div ref={finalCtaRef}>
         <section id="cta" className="border-t border-slate-800 bg-slate-900">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
             <h2 className="break-keep text-[1.7rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.1rem]">
-              우리 회사라면,<br className="sm:hidden" /> 어떤 AX가 만들어질까요?
+              우리 회사라면,<br className="sm:hidden" /> 어디부터 바꾸면 될까요?
             </h2>
             <p className="mx-auto mt-4 max-w-xl break-keep text-[1.18rem] leading-[1.7] text-slate-300 sm:text-[1.26rem]">
-              업종과 현재 업무방식을 알려주시면, Business AX와 Customer Platform 적용 가능성을 먼저 봅니다.
+              업종과 현재 업무방식만 알려주시면, 무엇을 AX로 바꿀 수 있고 고객 플랫폼까지 어디까지 연결할 수 있는지 먼저 봅니다.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-teal-400 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-slate-900 shadow-lg shadow-teal-500/20 transition-transform hover:-translate-y-0.5 hover:bg-teal-300 sm:w-auto">

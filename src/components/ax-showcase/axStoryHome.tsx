@@ -3,268 +3,140 @@
 //       → AX가 바꾸는 것(Before/After + Closed Loop) → 성장(+정책 시그널·Growth Layer).
 // 원칙: 위기감 30 / 희망 70 — 항상 RISK → SOLUTION → OPPORTUNITY 로 끝낸다.
 //       기능 나열 금지, 실제 흐름과 화면이 말하게 한다. 과장·보장성 표현 금지.
-import { Link } from 'react-router-dom'
 import { AX_SIMPLE_EXPLANATION } from '../../data/policyAxEvidence2026'
 
-const DETAIL = '/business-services/funding-consulting'
 
-/* ── SECTION 02 — WHY NOW: 계획서만으로는 설명되지 않는 시대 ─────────────── */
+/* ── HOME 02 — Problem Hook: 계획 다음에 무엇이 있습니까 ─────────────────── */
 
-const PLAN_ONLY = ['사업계획서', '앞으로의 계획', '예상 매출표'] as const
-const PROVEN = ['실제 동작하는 화면', '고객과 연결된 구조', '쌓이는 운영 데이터', '설명 가능한 성장 경로'] as const
+const SIGNAL_FIELDS = ['정책자금', '정부지원', '투자', '기술사업화'] as const
 
 export function AxWhyNowSection() {
   return (
     <section id="why-now" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-900">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(85%_100%_at_50%_0%,rgba(251,191,36,0.07),transparent_70%)]" />
-      <div className="relative mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
-        <h2 className="mx-auto max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.4rem]">
+      <div className="relative mx-auto max-w-4xl px-5 py-16 text-center sm:px-6 sm:py-24">
+        <h2 className="mx-auto max-w-3xl break-keep text-[1.87rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.4rem]">
           아직도 <span className="text-amber-300">사업계획서 하나만 가지고</span><br />
-          정책자금·정부지원사업·투자자 앞에 서시나요?
+          정책자금·정부지원사업·투자 앞에 서시나요?
         </h2>
-        <p className="mx-auto mt-7 max-w-2xl break-keep text-center text-[1.24rem] leading-[1.75] text-slate-300 sm:text-[1.34rem]">
-          기업이 보여줘야 하는 것이 <b className="text-white">&ldquo;앞으로 하겠습니다&rdquo;라는 계획만은 아닌 시대</b>입니다.
+
+        <p className="mt-9 break-keep text-[1.24rem] leading-[1.75] text-slate-300 sm:mt-11 sm:text-[1.34rem]">
+          계획은 누구나 쓸 수 있습니다.<br />결국 다음 질문이 남습니다.
+        </p>
+        <p className="mt-5 break-keep text-[1.6rem] font-black leading-snug text-white sm:text-[1.9rem]">
+          &ldquo;그래서, 실제로 무엇이 있습니까?&rdquo;
         </p>
 
-        {/* 계획서만 vs 실증까지 — 준비 상태의 차이 */}
-        <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-2 sm:gap-4">
-          <div className="rounded-2xl border border-white/12 bg-slate-950/60 p-5 sm:p-6">
-            <p className="text-[1.05rem] font-black text-slate-400 sm:text-[1.15rem]">계획서만 있는 회사</p>
-            <ul className="mt-4 space-y-2">
-              {PLAN_ONLY.map((t) => (
-                <li key={t} className="flex gap-2 break-keep text-[1.13rem] leading-snug text-slate-400 sm:text-[1.2rem]">
-                  <span aria-hidden className="shrink-0 text-slate-600">✕</span>{t}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-2xl border-2 border-teal-400/50 bg-teal-400/[0.07] p-5 sm:p-6">
-            <p className="text-[1.05rem] font-black text-teal-300 sm:text-[1.15rem]">실증까지 보여주는 회사</p>
-            <ul className="mt-4 space-y-2">
-              {PROVEN.map((t) => (
-                <li key={t} className="flex gap-2 break-keep text-[1.13rem] font-semibold leading-snug text-slate-100 sm:text-[1.2rem]">
-                  <span aria-hidden className="shrink-0 font-black text-teal-400">✓</span>{t}
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="mx-auto mt-8 flex max-w-xl flex-wrap justify-center gap-1.5">
+          {['작동하는 서비스', '실제 고객이 쓰는 화면', '쌓이기 시작한 데이터', '매출과 성장으로 잇는 구조'].map((t) => (
+            <span key={t} className="break-keep rounded-lg bg-teal-400/10 px-3 py-1.5 text-[1.05rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-400/25 sm:text-[1.14rem]">
+              {t}
+            </span>
+          ))}
         </div>
 
-        <p className="mx-auto mt-8 max-w-2xl break-keep text-center text-[1.2rem] leading-[1.75] text-slate-300 sm:text-[1.3rem]">
-          경쟁사가 시스템과 데이터를 쌓기 시작하는 동안 우리 회사가 엑셀·카카오톡·직원 기억에 머문다면,{' '}
-          그 차이는 시간이 갈수록 벌어집니다.
+        <p className="mt-8 break-keep text-[1.3rem] font-black leading-[1.7] text-white sm:text-[1.45rem]">
+          미래AI랩은 그 &lsquo;다음&rsquo;을 실제로 만듭니다.
         </p>
-        <p className="mx-auto mt-6 max-w-2xl break-keep text-center text-[1.28rem] font-bold leading-[1.75] text-white sm:text-[1.4rem]">
-          미래AI랩은 계획서를 잘 쓰는 데서 끝내지 않습니다.<br className="hidden sm:block" />{' '}
-          그 사업을 <span className="text-teal-300">실제 화면과 데이터, 고객 플랫폼</span>으로 연결합니다.
-        </p>
+
+        {/* 작은 시그널 — 평가의 무게중심이 옮겨간다 (선정·승인을 보장한다는 뜻이 아니다) */}
+        <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-white/12 bg-white/[0.04] px-5 py-4">
+          <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[0.95rem] font-bold text-slate-400 sm:text-[1.0rem]">
+            {SIGNAL_FIELDS.map((t) => (
+              <span key={t} className="rounded-md bg-white/[0.06] px-2 py-0.5">{t}</span>
+            ))}
+          </p>
+          <p className="mt-2.5 flex flex-wrap items-center justify-center gap-x-2 text-[1.0rem] font-black sm:text-[1.08rem]">
+            <span className="text-slate-500 line-through decoration-slate-600">PLAN ONLY</span>
+            <span aria-hidden className="text-slate-500">→</span>
+            <span className="text-teal-300">SYSTEM + DATA + EVIDENCE</span>
+          </p>
+        </div>
       </div>
     </section>
   )
 }
 
-/* ── SECTION — AX란 무엇인가: 약자·정의·디지털화와의 차이 ────────────────── */
+/* ── HOME 04 — AX란 무엇인가: 정의 + 좌/중/우 인포그래픽 + 결과 3칩 ─────────── */
+
+const HUMAN_CHAIN = ['카카오톡', '메모', '엑셀', '직원 기억', '대표 확인', '고객 연락'] as const
+const DATA_CHAIN = ['고객 행동', 'Customer Platform', 'Data', 'Business AX', 'AI · Rule', 'Action', '고객에게 다시 반영'] as const
+const AX_OUTCOMES = [
+  { t: '덜 샙니다', d: '반복입력 · 누락 · 재작업' },
+  { t: '더 잘 보입니다', d: '고객 · 재고 · 매출 · 현장' },
+  { t: '더 많이 남깁니다', d: '재방문 · 재구매 · 반복매출' },
+] as const
 
 export function AxDefinitionSection() {
   const x = AX_SIMPLE_EXPLANATION
   return (
-    <section id="ax-definition" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-950">
+    <section id="ax-definition" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-900">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(85%_100%_at_50%_0%,rgba(45,212,191,0.1),transparent_70%)]" />
       <div className="relative mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
-        <p className="text-center text-[1.16rem] font-black tracking-tight text-teal-300 sm:text-[1.3rem]">AX란 무엇인가</p>
+        <h2 className="mx-auto max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.4rem]">
+          AX가 어렵게 들리신다면,<br className="sm:hidden" /> 이렇게 생각하시면 됩니다.
+        </h2>
 
-        {/* 왜 AX라고 부르는지부터 */}
-        <p className="mt-6 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
-          <span className="text-[2.6rem] font-black leading-none text-white sm:text-[3.2rem]">AX</span>
-          <span className="text-[1.35rem] font-bold text-teal-300 sm:text-[1.5rem]">{x.acronym.en}</span>
-          <span className="text-[1.35rem] font-bold text-slate-400 sm:text-[1.5rem]">· {x.acronym.ko}</span>
+        {/* 약자와 정의 — 두 줄로 짧게 */}
+        <p className="mt-7 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
+          <span className="text-[2.3rem] font-black leading-none text-white sm:text-[2.8rem]">AX</span>
+          <span className="text-[1.25rem] font-bold text-teal-300 sm:text-[1.4rem]">{x.acronym.en}</span>
+          <span className="text-[1.25rem] font-bold text-slate-400 sm:text-[1.4rem]">· {x.acronym.ko}</span>
         </p>
-
-        <p className="mx-auto mt-8 max-w-3xl break-keep text-center text-[1.35rem] font-bold leading-[1.75] text-white sm:mt-10 sm:text-[1.55rem]">
+        <p className="mx-auto mt-5 max-w-3xl break-keep text-center text-[1.22rem] font-bold leading-[1.75] text-slate-200 sm:text-[1.4rem]">
           {x.definition}
         </p>
 
-        {/* 디지털화와 무엇이 다른가 */}
-        <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:mt-12 sm:grid-cols-2 sm:gap-4">
-          <div className="rounded-2xl border border-white/12 bg-white/[0.04] p-5 sm:p-6">
-            <p className="text-[1.05rem] font-black text-slate-400 sm:text-[1.15rem]">디지털화</p>
-            <p className="mt-1.5 break-keep text-[1.24rem] font-bold leading-snug text-slate-300 sm:text-[1.32rem]">
-              종이와 수기를 화면으로 옮기는 것
-            </p>
-            <p className="mt-2.5 break-keep text-[1.08rem] leading-relaxed text-slate-500 sm:text-[1.14rem]">
-              기록하는 곳만 바뀌고, 이어지는 일은 여전히 사람이 옮깁니다.
-            </p>
-          </div>
-          <div className="rounded-2xl border-2 border-teal-400/60 bg-teal-400/[0.08] p-5 sm:p-6">
-            <p className="text-[1.05rem] font-black text-teal-300 sm:text-[1.15rem]">AX</p>
-            <p className="mt-1.5 break-keep text-[1.24rem] font-bold leading-snug text-white sm:text-[1.32rem]">
-              데이터가 연결되고, AI가 분석·추천·자동화까지 하는 것
-            </p>
-            <p className="mt-2.5 break-keep text-[1.08rem] leading-relaxed text-slate-300 sm:text-[1.14rem]">
-              한 번 들어온 정보가 다음 업무와 판단으로 그대로 이어집니다.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ── SECTION — AX가 실제로 바꾸는 것: Before/After + Closed Loop ──────────── */
-
-const BEFORE_FLOW = ['고객 문의', '직원 메모', '엑셀 입력', '담당자 판단', '다른 직원 확인', '다시 고객 연락'] as const
-const AFTER_FLOW = ['고객 행동', 'Customer Platform', 'Data', 'Business AX', '판단 · AI Insight', 'Action', '고객 결과 반영'] as const
-const LOOP = [
-  { en: 'CUSTOMER / PARTNER', ko: '예약 · 주문 · 견적 · 요청', tone: 'border-amber-400/30 bg-amber-400/[0.06] text-amber-300' },
-  { en: 'CUSTOMER PLATFORM', ko: '고객·거래처가 쓰는 화면', tone: 'border-sky-400/30 bg-sky-400/[0.06] text-sky-300' },
-  { en: 'DATA', ko: '한 번 기록되면 회사 자산으로', tone: 'border-slate-400/30 bg-white/[0.05] text-slate-300' },
-  { en: 'BUSINESS AX', ko: '직원이 쓰는 운영 시스템', tone: 'border-blue-400/30 bg-blue-400/[0.06] text-blue-300' },
-  { en: 'AI · HUMAN DECISION', ko: '시스템이 찾고, 사람이 결정', tone: 'border-teal-400/40 bg-teal-400/[0.08] text-teal-300' },
-  { en: 'ACTION → CUSTOMER RESULT', ko: '처리 결과가 다시 고객 경험으로', tone: 'border-amber-400/30 bg-amber-400/[0.06] text-amber-300' },
-] as const
-
-export function AxChangeLoopSection() {
-  return (
-    <section id="ax-explained" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-900">
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(85%_100%_at_20%_0%,rgba(45,212,191,0.1),transparent_70%)]" />
-      <div className="relative mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
-        <p className="text-center text-[1.16rem] font-black tracking-tight text-teal-300 sm:text-[1.3rem]">AX가 실제로 바꾸는 것</p>
-        <h2 className="mx-auto mt-3 max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-          한 번 생긴 정보가,<br className="sm:hidden" /> 다음 업무까지 이어지게 만듭니다.
-        </h2>
-
-        {/* Before / After */}
-        <div className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-2 sm:gap-4">
+        {/* 좌(사람이 연결) — 중앙 AX — 우(데이터가 연결) 인포그래픽 */}
+        <div className="mx-auto mt-11 grid max-w-4xl items-stretch gap-4 sm:mt-14 sm:grid-cols-[1fr_auto_1fr]">
           <div className="rounded-2xl border border-white/12 bg-slate-950/60 p-5 sm:p-6">
-            <p className="text-[1.05rem] font-black text-slate-400 sm:text-[1.15rem]">BEFORE — 사람이 이어붙이는 흐름</p>
-            <p className="mt-3 flex flex-wrap items-center gap-y-1.5">
-              {BEFORE_FLOW.map((t, i) => (
-                <span key={t} className="flex items-center">
-                  {i > 0 && <span aria-hidden className="mx-1 text-[0.9rem] font-black text-slate-600">→</span>}
-                  <span className="rounded-md bg-white/[0.05] px-2 py-1 text-[0.98rem] font-bold text-slate-400 ring-1 ring-inset ring-white/10 sm:text-[1.05rem]">{t}</span>
-                </span>
+            <p className="text-center text-[1.05rem] font-black text-slate-400 sm:text-[1.14rem]">사람이 연결하는 회사</p>
+            <div className="mt-4">
+              {HUMAN_CHAIN.map((t, i) => (
+                <div key={t}>
+                  {i > 0 && <p aria-hidden className="py-0.5 text-center text-[0.95rem] font-black leading-none text-slate-600">↓</p>}
+                  <p className="break-keep rounded-lg bg-white/[0.05] px-3 py-1.5 text-center text-[1.02rem] font-bold text-slate-400 ring-1 ring-inset ring-white/10 sm:text-[1.08rem]">{t}</p>
+                </div>
               ))}
-            </p>
-            <p className="mt-3 break-keep text-[0.98rem] leading-snug text-slate-500 sm:text-[1.05rem]">단계마다 사람이 옮겨 적고, 어디선가 끊깁니다.</p>
+            </div>
+          </div>
+          <div className="flex items-center justify-center">
+            <span aria-hidden className="grid h-16 w-16 place-items-center rounded-full bg-teal-400 text-[1.4rem] font-black text-slate-900 shadow-lg shadow-teal-500/30 sm:h-20 sm:w-20 sm:text-[1.6rem]">
+              AX
+            </span>
           </div>
           <div className="rounded-2xl border-2 border-teal-400/50 bg-teal-400/[0.07] p-5 sm:p-6">
-            <p className="text-[1.05rem] font-black text-teal-300 sm:text-[1.15rem]">AFTER — 데이터가 이어주는 흐름</p>
-            <p className="mt-3 flex flex-wrap items-center gap-y-1.5">
-              {AFTER_FLOW.map((t, i) => (
-                <span key={t} className="flex items-center">
-                  {i > 0 && <span aria-hidden className="mx-1 text-[0.9rem] font-black text-teal-500">→</span>}
-                  <span className="rounded-md bg-slate-950/50 px-2 py-1 text-[0.98rem] font-bold text-slate-100 ring-1 ring-inset ring-teal-400/25 sm:text-[1.05rem]">{t}</span>
-                </span>
-              ))}
-            </p>
-            <p className="mt-3 break-keep text-[0.98rem] leading-snug text-slate-300 sm:text-[1.05rem]">기록은 한 번, 나머지는 시스템이 이어줍니다.</p>
-          </div>
-        </div>
-
-        {/* Closed Loop — 고객 행동과 내부 업무가 하나의 순환 */}
-        <div className="mx-auto mt-12 max-w-2xl sm:mt-16">
-          <p className="break-keep text-center text-[1.35rem] font-black leading-snug text-white sm:text-[1.6rem]">
-            직원용 프로그램과 고객용 홈페이지를<br className="sm:hidden" /> 따로 만드는 것이 아닙니다.
-          </p>
-          <p className="mx-auto mt-3 max-w-xl break-keep text-center text-[1.15rem] leading-[1.7] text-slate-400 sm:text-[1.24rem]">
-            고객의 행동이 내부 업무를 만들고, 내부 처리 결과가 다시 고객 경험으로 돌아오는 하나의 데이터 루프로 설계합니다.
-          </p>
-          <div className="mt-7">
-            {LOOP.map((l, i) => (
-              <div key={l.en}>
-                {i > 0 && <div aria-hidden className="flex justify-center py-1 text-[1.2rem] font-black leading-none text-slate-600">↓</div>}
-                <div className={`rounded-2xl border p-3.5 sm:p-4 ${l.tone.split(' ').slice(0, 2).join(' ')}`}>
-                  <p className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
-                    <span className={`text-[0.95rem] font-black tracking-wide ${l.tone.split(' ')[2]}`}>{l.en}</span>
-                    <span className="break-keep text-[1.02rem] font-bold text-slate-200 sm:text-[1.1rem]">{l.ko}</span>
-                  </p>
+            <p className="text-center text-[1.05rem] font-black text-teal-300 sm:text-[1.14rem]">데이터가 이어지는 회사</p>
+            <div className="mt-4">
+              {DATA_CHAIN.map((t, i) => (
+                <div key={t}>
+                  {i > 0 && <p aria-hidden className="py-0.5 text-center text-[0.95rem] font-black leading-none text-teal-500">↓</p>}
+                  <p className="break-keep rounded-lg bg-slate-950/50 px-3 py-1.5 text-center text-[1.02rem] font-bold text-slate-100 ring-1 ring-inset ring-teal-400/25 sm:text-[1.08rem]">{t}</p>
                 </div>
-              </div>
-            ))}
-            <p aria-hidden className="mt-2 text-center text-[1.0rem] font-bold text-slate-500">↻ 결과가 다시 다음 고객 행동으로</p>
+              ))}
+            </div>
           </div>
-          <p className="mx-auto mt-8 max-w-xl break-keep text-center text-[1.2rem] font-bold leading-[1.7] text-amber-100 sm:text-[1.3rem]">
-            업종을 바꾸는 것이 아닙니다.{' '}
-            <span className="text-amber-300">지금 하는 업무방식을 AX로 바꾸면 됩니다.</span>
-          </p>
         </div>
-      </div>
-    </section>
-  )
-}
 
-/* ── SECTION — GROWTH: 효율에서 끝나지 않는다 + 정책 시그널 + Growth Layer ── */
+        <p className="mx-auto mt-10 max-w-2xl break-keep text-center text-[1.35rem] font-black leading-[1.65] text-white sm:text-[1.55rem]">
+          한 번 생긴 정보가<br className="sm:hidden" /> 다음 업무까지 이어지는 것.<br />
+          <span className="text-teal-300">미래AI랩이 말하는 AX는 이것입니다.</span>
+        </p>
 
-const GROWTH_LADDER = [
-  '반복업무 · 누락 감소',
-  '고객·운영 데이터 축적',
-  '판단 기준 표준화',
-  '재방문 · 재구매 · 객단가 확대',
-  '새로운 고객 서비스',
-  '다점포 · 플랫폼 확장',
-] as const
-const GROWTH_TAGS = ['정책자금', '정부지원', '벤처', '특허', 'R&D', '사업화'] as const
-
-export function AxGrowthOutcomeSection({ onConsult }: { onConsult?: () => void }) {
-  return (
-    <section id="growth" className="scroll-mt-16 border-t border-white/10 bg-slate-950">
-      <div className="mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
-        <h2 className="mx-auto max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-          같은 일을 조금 빨리 하는 시스템이 아니라,<br className="hidden sm:block" />{' '}
-          <span className="text-teal-300">사업을 더 크게 만드는 구조</span>입니다.
-        </h2>
-        <ol className="mx-auto mt-9 flex max-w-4xl flex-wrap items-center justify-center gap-x-2 gap-y-2.5 sm:mt-12">
-          {GROWTH_LADDER.map((t, i) => (
-            <li key={t} className="flex items-center gap-2">
-              <span className={`break-keep rounded-xl border px-3.5 py-2 text-[1.02rem] font-bold sm:text-[1.1rem] ${
-                i >= 3 ? 'border-teal-400/40 bg-teal-400/[0.08] text-teal-200' : 'border-white/12 bg-white/[0.05] text-slate-200'
-              }`}>
-                {t}
-              </span>
-              {i < GROWTH_LADDER.length - 1 && <span aria-hidden className="text-[1.05rem] font-black text-slate-600">→</span>}
-            </li>
+        {/* 그래서 무엇이 좋아지는가 — 딱 3개 */}
+        <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-3">
+          {AX_OUTCOMES.map((o) => (
+            <div key={o.t} className="rounded-2xl border border-white/12 bg-white/[0.04] p-5 text-center">
+              <p className="break-keep text-[1.3rem] font-black text-white sm:text-[1.4rem]">{o.t}</p>
+              <p className="mt-1.5 break-keep text-[1.02rem] font-bold text-slate-400 sm:text-[1.08rem]">{o.d}</p>
+            </div>
           ))}
-        </ol>
-
-        {/* 정책 시그널 — WHY NOW 의 외부 근거. 주인공이 아니라 신호 하나 */}
-        <div className="mx-auto mt-12 max-w-3xl rounded-3xl border border-white/12 bg-white/[0.04] p-6 text-center sm:mt-16 sm:p-8">
-          <p className="text-[1.0rem] font-black tracking-wide text-amber-300 sm:text-[1.1rem]">POLICY SIGNAL · GROWTH LAYER</p>
-          <p className="mx-auto mt-3 max-w-2xl break-keep text-[1.2rem] font-bold leading-[1.75] text-slate-200 sm:text-[1.3rem]">
-            정책과 평가의 방향도 같습니다 — AI를 실제 사업에 적용하고{' '}
-            <b className="text-white">데이터·기술성·사업성·실증 가능성</b>을 보여주는 기업을 더 중요하게 보는 흐름입니다.
-          </p>
-          <p className="mx-auto mt-4 max-w-2xl break-keep text-[1.12rem] leading-[1.7] text-slate-400 sm:text-[1.2rem]">
-            기술만 만들고 끝내지 않습니다. 실제 시스템과 데이터가 쌓인 뒤, 필요하면 다음 성장수단까지 연결합니다.
-          </p>
-          <p className="mt-5 flex flex-wrap justify-center gap-1.5">
-            {GROWTH_TAGS.map((t) => (
-              <span key={t} className="rounded-lg border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[1.0rem] font-bold text-slate-300 sm:text-[1.06rem]">{t}</span>
-            ))}
-          </p>
-          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              to={DETAIL}
-              className="flex min-h-[54px] w-full max-w-sm items-center justify-center gap-2 break-keep rounded-xl bg-teal-400 px-6 text-center text-[1.2rem] font-black text-slate-900 transition-transform hover:-translate-y-0.5 hover:bg-teal-300 sm:w-auto sm:text-[1.24rem]"
-            >
-              정책자금 × AX 프로그램 보기 <span aria-hidden>→</span>
-            </Link>
-            {onConsult && (
-              <button
-                type="button"
-                onClick={onConsult}
-                className="flex min-h-[54px] w-full max-w-sm items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 text-[1.2rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto sm:text-[1.24rem]"
-              >
-                상담 신청
-              </button>
-            )}
-          </div>
-          <p className="mx-auto mt-5 max-w-2xl break-keep text-[0.98rem] leading-relaxed text-slate-500 sm:text-[1.05rem]">
-            정책자금·보증·지원사업의 결과는 각 기관의 독립적인 심사로 결정됩니다.{' '}
-            <Link to={`${DETAIL}#policy-2026`} className="font-bold text-slate-400 underline underline-offset-2 hover:text-slate-300">
-              2026 공식 정책근거 보기
-            </Link>
-          </p>
         </div>
+
+        <p className="mx-auto mt-8 max-w-xl break-keep text-center text-[1.12rem] font-bold leading-[1.7] text-amber-100 sm:text-[1.2rem]">
+          업종을 바꾸는 것이 아닙니다.{' '}
+          <span className="text-amber-300">지금 하는 업무방식을 AX로 바꾸면 됩니다.</span>
+        </p>
       </div>
     </section>
   )

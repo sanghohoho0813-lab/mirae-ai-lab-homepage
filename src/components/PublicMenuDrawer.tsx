@@ -68,7 +68,7 @@ const BUSINESS_MENU: MenuConfig = {
         { no: '1', label: 'AX 사례', desc: '실제로 만든 AX·플랫폼 데모 먼저 보기', to: '/business-services#portfolio' },
         { no: '2', label: '실제 기업 프로젝트', desc: '현장에서 고도화 중인 프로젝트', to: '/business-services#real-projects' },
         { no: '3', label: 'AX란 무엇인가', desc: '디지털화와 무엇이 다른가', to: '/business-services#ax-definition' },
-        { no: '4', label: 'AX가 바꾸는 것', desc: '한 번 생긴 정보가 다음 업무까지', to: '/business-services#ax-explained' },
+        { no: '4', label: '왜 미래AI랩인가', desc: '분절이 아니라 하나의 Growth Story', to: '/business-services#why-mirae' },
       ],
     },
     {
