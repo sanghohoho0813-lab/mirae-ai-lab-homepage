@@ -1,30 +1,50 @@
 // 섹션 모음 — Hero·월 5개사는 홈에서, 세 가지 가치·5단계 방법론은 정책자금 상세페이지에서 사용한다.
 // 한 섹션에서는 하나의 주장만 전달하고, 주장 바로 아래 증명(화면·산출물·근거)을 배치한다.
+import { Link } from 'react-router-dom'
 import { AX_CORE_VALUES, AX_METHOD_STEPS, AX_SELECTION_DECLINE, AX_SELECTION_PRIORITY } from '../../data/axPackages'
 
 const band = 'px-5 py-16 sm:px-6 sm:py-24'
 const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
-/** SECTION 1 — Hero. 질문 한 문장만 남긴다. 아래 유도 버튼 없이 바로 다음 섹션으로 스크롤이 이어진다. */
+/** SECTION 1 — Hero. 정책자금 대행 첫인상이 아니라 "기업을 AI 기반 운영 구조로 바꾸는 AX 회사"가 5초 안에 읽히게 한다. */
 export function AxHeroV2() {
   return (
     <section className="relative flex min-h-[calc(100svh-53px)] items-center overflow-hidden bg-slate-950">
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(115%_78%_at_50%_-10%,rgba(56,189,248,0.22),transparent_62%)]" />
-      <div aria-hidden className="pointer-events-none absolute -right-28 top-1/4 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(115%_78%_at_50%_-10%,rgba(45,212,191,0.16),transparent_62%)]" />
+      <div aria-hidden className="pointer-events-none absolute -right-28 top-1/4 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute -left-24 bottom-8 h-80 w-80 rounded-full bg-amber-500/10 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-slate-950" />
 
-      <div className={`relative w-full ${wrap} px-5 pb-28 pt-16 sm:px-6 sm:pb-32 sm:pt-20`}>
+      <div className={`relative w-full ${wrap} px-5 pb-24 pt-16 sm:px-6 sm:pb-28 sm:pt-20`}>
         <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[1.16rem] sm:text-[1.05rem] font-bold text-teal-200 backdrop-blur">
-          정책자금 × AX 사업화
+          MIRAE AI LAB · Business AX Company
         </span>
 
-        {/* 위아래 여백과 행간을 넉넉히 — 이 한 문장만 읽히게 한다. 모바일은 PC 대비 체감이 작지 않게 1.2배 키웠다 */}
-        <h1 className="mt-12 max-w-4xl break-keep text-[clamp(2.52rem,9.4vw,3.6rem)] font-black leading-[1.4] tracking-[-0.015em] text-white sm:mt-14 sm:text-[clamp(2.6rem,5.6vw,3.8rem)]">
-          아직도 <span className="text-teal-300">사업계획서 하나만 가지고</span><br />
-          정책자금·정부지원금에<br className="sm:hidden" /> 도전하시나요?
+        {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
+        <h1 className="mt-10 max-w-4xl break-keep text-[clamp(2.4rem,8.8vw,3.4rem)] font-black leading-[1.38] tracking-[-0.015em] text-white sm:mt-12 sm:text-[clamp(2.5rem,5.3vw,3.6rem)]">
+          기업의 일을,<br />
+          <span className="text-teal-300">AI가 움직이는 구조</span>로 바꿉니다.
         </h1>
+        <p className="mt-7 max-w-2xl break-keep text-[1.28rem] leading-[1.75] text-slate-300 sm:mt-8 sm:text-[1.4rem]">
+          내부 운영 AX부터 고객·거래처 플랫폼까지 직접 설계·구축하고,{' '}
+          AI 분석·추천·자동화를 실제 업무에 연결합니다.{' '}
+          필요하면 정책자금·정부지원 같은 성장 연결까지 함께 설계합니다.
+        </p>
+        <div className="mt-10 flex flex-col gap-3 sm:mt-11 sm:flex-row">
+          <Link
+            to="/business-diagnosis"
+            className="shine-cta flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-teal-400 px-7 text-[1.24rem] font-black text-slate-900 shadow-lg shadow-teal-500/20 transition-transform hover:-translate-y-0.5 hover:bg-teal-300 sm:w-auto sm:text-[1.2rem]"
+          >
+            우리 회사 AX 가능성 진단
+          </Link>
+          <a
+            href="#portfolio"
+            className="flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-7 text-[1.24rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto sm:text-[1.2rem]"
+          >
+            실제 구축 사례 보기 <span aria-hidden>↓</span>
+          </a>
+        </div>
       </div>
     </section>
   )

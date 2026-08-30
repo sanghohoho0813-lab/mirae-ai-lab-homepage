@@ -15,6 +15,7 @@ import ConsultModal from '../../components/ConsultModal'
 import AxIndustryShowcaseV2 from '../../components/ax-showcase/AxIndustryShowcaseV2'
 import AxLifecycleModules from '../../components/ax-showcase/AxLifecycleModules'
 import AxBuildStageCards from '../../components/ax-showcase/AxBuildStageCards'
+import AxJudgeCaseSection from '../../components/ax-showcase/AxJudgeCaseSection'
 import { AxCoreValuesSection, AxMethodSection, AxSelectionSection } from '../../components/ax-showcase/axHomeSections'
 import AxPolicyEvidenceStrip from '../../components/ax-showcase/AxPolicyEvidenceStrip'
 import { axV2Industry } from '../../data/axIndustryShowcaseV2'
@@ -430,6 +431,9 @@ export default function FundingConsultingDetailPage() {
 
       {/* ── 4. 정부 정책방향과 AX ─────────────────────────────────────────── */}
       <AxPolicyShift />
+
+      {/* ── 4-1. 심사위원 반문 + A/B 비교표 + 업계 사례 (홈에서 이동) ──────── */}
+      <AxJudgeCaseSection />
 
       {/* ── 5. AX 혁신전환 4단계 — 방법이 보인다 ──────────────────────────── */}
       <AxCoreValuesSection />
