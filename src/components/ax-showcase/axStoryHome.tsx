@@ -7,10 +7,10 @@ import { Link } from 'react-router-dom'
 
 const DETAIL = '/business-services/funding-consulting'
 
-/* ── SECTION 02 — WHY NOW: 가장 강한 질문 하나 ───────────────────────────── */
+/* ── SECTION 02 — WHY NOW: 계획서만으로는 설명되지 않는 시대 ─────────────── */
 
-const OLD_WAYS = ['엑셀', '카카오톡', '수기 장부', '직원 기억', '대표 판단'] as const
-const BOTTLENECKS = ['정보 누락', '판단 지연', '고객 이탈', '대표 업무 증가'] as const
+const PLAN_ONLY = ['사업계획서', '앞으로의 계획', '예상 매출표'] as const
+const PROVEN = ['실제 동작하는 화면', '고객과 연결된 구조', '쌓이는 운영 데이터', '설명 가능한 성장 경로'] as const
 
 export function AxWhyNowSection() {
   return (
@@ -18,44 +18,44 @@ export function AxWhyNowSection() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(85%_100%_at_50%_0%,rgba(251,191,36,0.07),transparent_70%)]" />
       <div className="relative mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
         <h2 className="mx-auto max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-          지금보다 매출이 두 배가 되어도,<br />
-          <span className="text-amber-300">지금 방식으로 운영할 수 있습니까?</span>
+          아직도 <span className="text-amber-300">사업계획서 하나만 가지고</span><br />
+          정책자금·정부지원사업·투자자 앞에 서시나요?
         </h2>
-        <div className="mx-auto mt-7 max-w-2xl space-y-3">
-          <p className="break-keep text-center text-[1.24rem] leading-[1.75] text-slate-300 sm:text-[1.34rem]">
-            회사가 작을 때는 대표의 기억과 직원의 경험만으로도 돌아갑니다.
-          </p>
-          <p className="break-keep text-center text-[1.24rem] leading-[1.75] text-slate-300 sm:text-[1.34rem]">
-            하지만 고객·매출·직원이 늘어날수록, 같은 방식이 병목이 됩니다.{' '}
-            <b className="text-white">문제가 생긴 뒤에 시스템을 만드는 것은 늦습니다.</b>
-          </p>
+        <p className="mx-auto mt-7 max-w-2xl break-keep text-center text-[1.24rem] leading-[1.75] text-slate-300 sm:text-[1.34rem]">
+          기업이 보여줘야 하는 것이 <b className="text-white">&ldquo;앞으로 하겠습니다&rdquo;라는 계획만은 아닌 시대</b>입니다.
+        </p>
+
+        {/* 계획서만 vs 실증까지 — 준비 상태의 차이 */}
+        <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-2 sm:gap-4">
+          <div className="rounded-2xl border border-white/12 bg-slate-950/60 p-5 sm:p-6">
+            <p className="text-[1.05rem] font-black text-slate-400 sm:text-[1.15rem]">계획서만 있는 회사</p>
+            <ul className="mt-4 space-y-2">
+              {PLAN_ONLY.map((t) => (
+                <li key={t} className="flex gap-2 break-keep text-[1.13rem] leading-snug text-slate-400 sm:text-[1.2rem]">
+                  <span aria-hidden className="shrink-0 text-slate-600">✕</span>{t}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-2xl border-2 border-teal-400/50 bg-teal-400/[0.07] p-5 sm:p-6">
+            <p className="text-[1.05rem] font-black text-teal-300 sm:text-[1.15rem]">실증까지 보여주는 회사</p>
+            <ul className="mt-4 space-y-2">
+              {PROVEN.map((t) => (
+                <li key={t} className="flex gap-2 break-keep text-[1.13rem] font-semibold leading-snug text-slate-100 sm:text-[1.2rem]">
+                  <span aria-hidden className="shrink-0 font-black text-teal-400">✓</span>{t}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        {/* 현재 방식 → 성장 → 병목 */}
-        <div className="mx-auto mt-10 max-w-2xl rounded-3xl border border-white/12 bg-white/[0.04] p-5 sm:p-7">
-          <p className="flex flex-wrap justify-center gap-1.5">
-            {OLD_WAYS.map((t) => (
-              <span key={t} className="rounded-lg bg-slate-950/60 px-3 py-1.5 text-[1.05rem] font-bold text-slate-300 ring-1 ring-inset ring-white/12 sm:text-[1.12rem]">
-                {t}
-              </span>
-            ))}
-          </p>
-          <p aria-hidden className="my-3 text-center text-[1.15rem] font-black text-slate-500">
-            ↓ <span className="text-[1.0rem] font-bold text-slate-400">고객·매출·직원이 늘어나면</span>
-          </p>
-          <p className="flex flex-wrap justify-center gap-1.5">
-            {BOTTLENECKS.map((t) => (
-              <span key={t} className="rounded-lg bg-amber-400/10 px-3 py-1.5 text-[1.05rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-400/25 sm:text-[1.12rem]">
-                {t}
-              </span>
-            ))}
-          </p>
-        </div>
-
-        {/* RISK 로 끝내지 않는다 — 구조라는 해법 */}
-        <p className="mx-auto mt-8 max-w-2xl break-keep text-center text-[1.28rem] font-bold leading-[1.75] text-white sm:text-[1.4rem]">
-          Business AX와 데이터, 고객 플랫폼이 갖춰지면<br className="hidden sm:block" />{' '}
-          <span className="text-teal-300">같은 인원으로 더 큰 회사를 운영하는 구조</span>가 됩니다.
+        <p className="mx-auto mt-8 max-w-2xl break-keep text-center text-[1.2rem] leading-[1.75] text-slate-300 sm:text-[1.3rem]">
+          경쟁사가 시스템과 데이터를 쌓기 시작하는 동안 우리 회사가 엑셀·카카오톡·직원 기억에 머문다면,{' '}
+          그 차이는 시간이 갈수록 벌어집니다.
+        </p>
+        <p className="mx-auto mt-6 max-w-2xl break-keep text-center text-[1.28rem] font-bold leading-[1.75] text-white sm:text-[1.4rem]">
+          미래AI랩은 계획서를 잘 쓰는 데서 끝내지 않습니다.<br className="hidden sm:block" />{' '}
+          그 사업을 <span className="text-teal-300">실제 화면과 데이터, 고객 플랫폼</span>으로 연결합니다.
         </p>
       </div>
     </section>
@@ -148,7 +148,6 @@ export function AxChangeLoopSection() {
 /* ── SECTION — AI는 필요한 자리에서 + 데이터 자산 ────────────────────────── */
 
 const AI_FLOW = ['고객·매출·이용 데이터', 'Rule · AI 분석', 'Risk · 기회 발견', '추천 Action', '사람의 결정', '실행', '결과 · Evidence'] as const
-const DATA_KINDS = ['고객', '거래처', '매출', '상품·재고', '현장', '방문·구매', '업무 결과'] as const
 
 export function AxAiDataSection() {
   return (
@@ -181,23 +180,43 @@ export function AxAiDataSection() {
           </p>
         </div>
 
-        {/* 데이터 자산 — 화면보다 축적 */}
-        <div className="mx-auto mt-10 max-w-3xl rounded-3xl border border-slate-200 bg-white p-6 text-center sm:mt-12 sm:p-8">
-          <p className="break-keep text-[1.35rem] font-black leading-snug text-slate-900 sm:text-[1.55rem]">
-            AX의 진짜 가치는 화면보다,<br className="sm:hidden" /> <span className="text-teal-600">시간이 지나며 쌓이는 데이터</span>에 있습니다.
-          </p>
-          <p className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
+      </div>
+    </section>
+  )
+}
+
+/* ── SECTION — DATA ASSET: 화면보다 오래 남는 것 ─────────────────────────── */
+
+const DATA_KINDS = ['고객', '거래처', '매출', '상품·재고', '현장', '방문·구매', '반응', '운영기록'] as const
+
+export function AxDataAssetSection() {
+  return (
+    <section id="data-asset" className="scroll-mt-16 border-t border-white/10 bg-slate-950">
+      <div className="mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
+        <h2 className="mx-auto max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.4rem]">
+          AX의 진짜 가치는 화면이 아니라,<br className="hidden sm:block" />{' '}
+          <span className="text-teal-300">시간이 지날수록 쌓이는 데이터</span>에 있습니다.
+        </h2>
+
+        <div className="mx-auto mt-10 max-w-3xl">
+          <p className="flex flex-wrap justify-center gap-1.5">
             {DATA_KINDS.map((t) => (
-              <span key={t} className="rounded-lg bg-slate-50 px-2.5 py-1 text-[0.98rem] font-bold text-slate-600 ring-1 ring-inset ring-slate-200 sm:text-[1.05rem]">{t}</span>
+              <span key={t} className="rounded-lg bg-white/[0.05] px-3 py-1.5 text-[1.05rem] font-bold text-slate-300 ring-1 ring-inset ring-white/12 sm:text-[1.12rem]">{t}</span>
             ))}
-            <span aria-hidden className="mx-1 text-[1.0rem] font-black text-slate-400">→</span>
-            <span className="rounded-lg bg-slate-900 px-3 py-1 text-[0.98rem] font-black text-teal-300 sm:text-[1.05rem]">COMPANY DATA ASSET</span>
           </p>
-          <p className="mx-auto mt-4 max-w-xl break-keep text-[1.08rem] leading-[1.7] text-slate-600 sm:text-[1.16rem]">
-            경쟁사가 1년 동안 데이터를 쌓는 사이 우리 회사가 엑셀·카카오톡·기억에 머문다면,{' '}
-            그 1년의 격차는 나중에 개발비를 한 번 쓴다고 바로 복구되지 않습니다.
+          <p aria-hidden className="my-3 text-center text-[1.2rem] font-black text-slate-600">↓</p>
+          <p className="text-center">
+            <span className="inline-block rounded-xl bg-teal-400 px-5 py-2.5 text-[1.2rem] font-black tracking-wide text-slate-900 sm:text-[1.32rem]">COMPANY DATA ASSET</span>
           </p>
         </div>
+
+        <p className="mx-auto mt-9 max-w-2xl break-keep text-center text-[1.2rem] leading-[1.75] text-slate-300 sm:text-[1.3rem]">
+          경쟁사가 1년 동안 고객·운영 데이터를 쌓는 동안 우리 회사가 엑셀과 기억에만 머문다면,{' '}
+          그 격차는 나중에 한 번에 따라잡기 어렵습니다.
+        </p>
+        <p className="mx-auto mt-5 max-w-2xl break-keep text-center text-[1.28rem] font-bold leading-[1.75] text-white sm:text-[1.4rem]">
+          지금부터라도 구조를 만들면,<br className="sm:hidden" /> 그 데이터는 <span className="text-teal-300">회사의 자산</span>이 됩니다.
+        </p>
       </div>
     </section>
   )

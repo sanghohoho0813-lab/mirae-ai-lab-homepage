@@ -35,9 +35,9 @@ function MvpCard({ s, drift = false }: { s: PortfolioSample; drift?: boolean }) 
       </span>
       <span className="flex flex-1 items-center justify-between gap-2 px-3 py-2.5 sm:px-3.5">
         <span className="min-w-0">
-          {/* 용도가 먼저 — 브랜드명보다 크게 */}
-          <span className="block truncate text-[1.02rem] font-black leading-snug text-teal-300 sm:text-[1.14rem]">{s.kind}</span>
-          <span className="block truncate text-[0.88rem] font-bold text-slate-400 sm:text-[0.95rem]">{s.name}</span>
+          {/* 무슨 서비스인지가 먼저 — 가상 브랜드명은 보조 */}
+          <span className="block truncate text-[1.08rem] font-black leading-snug text-teal-300 sm:text-[1.24rem]">{s.kind}</span>
+          <span className="block truncate text-[0.85rem] font-bold text-slate-500 sm:text-[0.92rem]">{s.name}</span>
         </span>
         <span aria-hidden className="shrink-0 text-[0.95rem] font-black text-slate-500 transition-colors group-hover/card:text-teal-300">↗</span>
       </span>
@@ -50,9 +50,9 @@ export default function AxPortfolioSection() {
     <section id="mvp-refs" className="scroll-mt-16 border-t border-white/10 bg-slate-900">
       <div className="py-12 sm:py-16">
         <div className="mx-auto max-w-5xl px-5 sm:px-6">
-          <p className="text-center text-[1.1rem] font-black tracking-tight text-teal-300 sm:text-[1.2rem]">EARLY MVP REFERENCES</p>
+          <p className="text-center text-[1.1rem] font-black tracking-tight text-teal-300 sm:text-[1.2rem]">EARLY MVP</p>
           <h2 className="mx-auto mt-3 max-w-3xl break-keep text-center text-[1.55rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[1.95rem]">
-            아이디어가 무엇이든, 동작하는 화면으로 만들어 드립니다.
+            아이디어도, 동작하는 제품으로 빠르게 만듭니다.
           </h2>
         </div>
 

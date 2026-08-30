@@ -7,7 +7,7 @@ import KakaoFloat from '../components/KakaoFloat'
 import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
 import { AxDifferenceSection, AxFeaturedPortfolio, AxRealProjectsSection } from '../components/ax-showcase/axRenewalHome'
-import { AxAiDataSection, AxChangeLoopSection, AxGrowthOutcomeSection, AxWhyNowSection } from '../components/ax-showcase/axStoryHome'
+import { AxAiDataSection, AxChangeLoopSection, AxDataAssetSection, AxGrowthOutcomeSection, AxWhyNowSection } from '../components/ax-showcase/axStoryHome'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -18,10 +18,10 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 정책자금·정부지원은 메인 상품이 아니라 AX 실행력을 성장으로 잇는 Growth Layer 로 배치한다.
 //
 // 홈 = 1분 설득. CHANGE → WHY NOW → PROOF → AX가 바꾸는 것 → AI·데이터 → GROWTH → CTA.
-// 홈 순서: ① Hero(정체성) → ② WHY NOW(질문·병목) → ③ 실제 기업 프로젝트(Proof A)
-//          → ④ Industry AX Reference 10종(Proof B) → ⑤ 초기 MVP 10종(드리프트)
-//          → ⑥ AX가 바꾸는 것(Before/After + Closed Loop) → ⑦ AI·데이터 자산
-//          → ⑧ Growth(+정책 시그널·Growth Layer) → ⑨ 무엇이 다른가 → ⑩ 최종 CTA
+// 홈 순서: ① Hero → ② WHY NOW(계획서만으로는 부족한 시대) → ③ 업종별 화면 먼저
+//          → ④ AX가 바꾸는 것(Before/After + Closed Loop) → ⑤ 데이터 자산
+//          → ⑥ AI가 들어가는 자리 → ⑦ 초기 MVP → ⑧ 실제 기업 프로젝트(익명)
+//          → ⑨ 왜 미래AI랩인가 → ⑩ Growth Layer → ⑪ 최종 CTA
 // 깊은 설명(정의·프로세스·수행체계·개발방식)은 프로그램 상세페이지가 맡는다.
 // 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다.
 // 가격 · 진행과정 · 업종별 15개 화면 · 비교표 · FAQ 는 정책자금 상세페이지에서 다룬다.
@@ -96,7 +96,7 @@ export default function BusinessServicesPage() {
     <div className="min-h-screen bg-white pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       {/* Header — 핵심 메뉴만 */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2.5 lg:gap-6">
           <Link to="/business-services" className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
             <span className="flex flex-col leading-tight">
@@ -108,7 +108,7 @@ export default function BusinessServicesPage() {
               </span>
             </span>
           </Link>
-          <nav className="hidden items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
+          <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
             <a href="#portfolio" className="transition-colors hover:text-slate-900">AX 사례</a>
             <a href="#real-projects" className="transition-colors hover:text-slate-900">실제 프로젝트</a>
             <a href="#ax-explained" className="transition-colors hover:text-slate-900">AX란</a>
@@ -142,26 +142,29 @@ export default function BusinessServicesPage() {
       {/* 2. WHY NOW — 가장 강한 질문 하나와 병목 구조 */}
       <AxWhyNowSection />
 
-      {/* 3. Proof A — 실제 기업 프로젝트 */}
-      <AxRealProjectsSection />
-
-      {/* 4. Proof B — Industry AX + Platform Reference 10종 */}
+      {/* 3. 업종별 화면을 먼저 — 이 섹션의 주인공은 실제 UI */}
       <AxFeaturedPortfolio />
 
-      {/* 5. 초기 MVP 레퍼런스 10종 — 반대 방향 핑퐁 드리프트 */}
-      <AxPortfolioSection />
-
-      {/* 6. AX가 실제로 바꾸는 것 — Before/After + Customer↔AX Closed Loop */}
+      {/* 4. AX가 실제로 바꾸는 것 — Before/After + Customer↔AX Closed Loop */}
       <AxChangeLoopSection />
 
-      {/* 7. AI는 필요한 자리에서 + 회사 데이터 자산 */}
+      {/* 5. 데이터 자산 — 화면보다 오래 남는 것 */}
+      <AxDataAssetSection />
+
+      {/* 6. AI가 들어가는 자리 */}
       <AxAiDataSection />
 
-      {/* 8. Growth — 효율에서 확장까지 + 정책 시그널·Growth Layer */}
-      <AxGrowthOutcomeSection onConsult={() => setConsultOpen(true)} />
+      {/* 7. 초기 MVP 10종 — 반대 방향 핑퐁 드리프트 */}
+      <AxPortfolioSection />
 
-      {/* 9. 무엇이 다른가 — 컨설팅·개발사와의 역할 차이 */}
+      {/* 8. 실제 기업 AX 프로젝트 — 전원 익명 */}
+      <AxRealProjectsSection />
+
+      {/* 9. 왜 미래AI랩인가 */}
       <AxDifferenceSection />
+
+      {/* 10. Growth — 효율에서 확장까지 + 정책 시그널·Growth Layer */}
+      <AxGrowthOutcomeSection onConsult={() => setConsultOpen(true)} />
 
       {/* 10. 최종 CTA — 우리 회사라면? */}
       <div ref={finalCtaRef}>

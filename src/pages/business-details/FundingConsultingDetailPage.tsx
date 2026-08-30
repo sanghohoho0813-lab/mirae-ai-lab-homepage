@@ -519,6 +519,65 @@ export default function FundingConsultingDetailPage() {
         showIndustryDetailLink={false}
       />
 
+      {/* ── 7-1. 데이터·AI가 들어가는 지점 → 성장 → 현재 단계(정직 표기) ──── */}
+      <section id="data-ai-growth" className={`scroll-mt-16 bg-slate-950 ${band}`}>
+        <div className="mx-auto max-w-[900px]">
+          <p className="text-center text-[1.1rem] font-black tracking-tight text-teal-300 sm:text-[1.3rem]">데이터 · AI · 성장</p>
+          <h2 className="mt-3 break-keep text-center text-[1.49rem] font-black leading-snug tracking-tight text-white sm:text-[2.405rem]">
+            어디에 데이터가 쌓이고,<br className="sm:hidden" /> 어디에 AI가 들어가는가
+          </h2>
+
+          {/* 판단이 필요한 자리에만 AI — 계산은 코드가 한다 */}
+          <div className="mt-8 rounded-2xl border border-white/12 bg-white/[0.04] p-5 sm:p-7">
+            <ol className="flex flex-wrap items-center justify-center gap-y-2">
+              {['업무 기록', '데이터 축적', 'Rule · AI 분석', '확인할 것 · 연락할 곳', '실행', '결과 기록'].map((t, i, arr) => (
+                <li key={t} className="flex items-center">
+                  {i > 0 && <span aria-hidden className="mx-1.5 text-[1.0rem] font-black text-slate-600">→</span>}
+                  <span className={`break-keep rounded-lg px-2.5 py-1.5 text-[1.05rem] font-bold sm:text-[1.2rem] ${
+                    i === arr.length - 1 ? 'bg-teal-400/12 text-teal-200 ring-1 ring-inset ring-teal-400/30' : 'bg-slate-900 text-slate-200 ring-1 ring-inset ring-white/12'
+                  }`}>{t}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 break-keep text-center text-[1.13rem] leading-relaxed text-slate-400 sm:text-[1.3rem]">
+              계산할 수 있는 것은 코드가 계산합니다. AI는 우선순위·누락 위험·설명이 필요한 자리에만 넣습니다.
+            </p>
+          </div>
+
+          {/* 효율에서 끝나지 않는 성장 */}
+          <p className="mt-10 break-keep text-center text-[1.3rem] font-black leading-snug text-white sm:text-[1.7rem]">
+            효율에서 끝나지 않습니다.
+          </p>
+          <ol className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
+            {['반복업무 · 누락 감소', '데이터 축적', '판단 기준 표준화', '재방문 · 재구매', '새로운 고객 서비스', '사업 확장'].map((t, i, arr) => (
+              <li key={t} className="flex items-center gap-2">
+                <span className={`break-keep rounded-xl border px-3.5 py-2 text-[1.05rem] font-bold sm:text-[1.2rem] ${
+                  i >= 3 ? 'border-teal-400/40 bg-teal-400/[0.08] text-teal-200' : 'border-white/12 bg-white/[0.05] text-slate-200'
+                }`}>{t}</span>
+                {i < arr.length - 1 && <span aria-hidden className="text-[1.05rem] font-black text-slate-600">→</span>}
+              </li>
+            ))}
+          </ol>
+
+          {/* 현재 단계 — 무엇이 구현됐고 무엇이 남았는지 정직하게 */}
+          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            {[
+              { t: '지금 만들어 드리는 것', d: '업무 흐름 설계와 실제 동작하는 화면, 데이터가 쌓이는 구조까지.' },
+              { t: '이어서 고도화하는 것', d: '실사용 데이터가 쌓인 뒤의 판단 기준·자동화·고객 접점 확장.' },
+              { t: '실증이 필요한 것', d: '매출·생산성 변화는 실제 운영 기간이 지나야 데이터로 확인됩니다.' },
+            ].map((x) => (
+              <div key={x.t} className="rounded-2xl border border-white/12 bg-white/[0.04] p-5">
+                <p className="break-keep text-[1.2rem] font-black leading-snug text-white sm:text-[1.4rem]">{x.t}</p>
+                <p className="mt-2 break-keep text-[1.08rem] leading-relaxed text-slate-400 sm:text-[1.24rem]">{x.d}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 break-keep text-center text-[1.02rem] leading-relaxed text-slate-500 sm:text-[1.15rem]">
+            가능한 한 고객사가 자신의 데이터를 직접 보유하고 꺼낼 수 있는 구조를 우선합니다.
+          </p>
+        </div>
+      </section>
+
       {/* ── 8. 최대 2주 진행과정 — 빠르다 ─────────────────────────────────── */}
       <AxProcessSection onResult={() => scrollToId('deliverables')} />
 
