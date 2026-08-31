@@ -113,8 +113,8 @@ export default function BusinessServicesPage() {
     <div className="min-h-screen bg-[#171B20] pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       {/* Header — 핵심 메뉴만 */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2.5 lg:gap-6">
-          <BrandLogo to="/business-services" imgClassName="h-10 max-w-[178px] sm:h-12 sm:max-w-[224px]" />
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-5 lg:gap-6">
+          <BrandLogo to="/business-services" className="shrink-0" imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]" />
           <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
             <a href="#portfolio" className="transition-colors hover:text-slate-900">AX 사례</a>
             <a href="#real-projects" className="transition-colors hover:text-slate-900">실제 프로젝트</a>
@@ -182,7 +182,9 @@ export default function BusinessServicesPage() {
       <AxWhyMiraeSection />
 
       {/* 13. 필요하면 여기까지 */}
-      <AxTogetherScopeSection />
+      <div id="growth" className="scroll-mt-16">
+        <AxTogetherScopeSection />
+      </div>
 
       {/* 14. 우리 업종에도? */}
       <AxIndustryQuestionSection />
@@ -216,9 +218,9 @@ export default function BusinessServicesPage() {
         <button
           type="button"
           onClick={openPreview}
-          className="fixed bottom-20 left-3 z-40 rounded-lg border border-slate-300 bg-white/95 px-3 py-2 text-[0.95rem] font-bold text-slate-800 shadow-lg shadow-slate-950/15 backdrop-blur transition-colors hover:bg-white sm:bottom-5 sm:left-5"
+          className="fixed right-3 top-20 z-40 rounded-lg border border-[#D47A4A]/35 bg-white/95 px-3 py-2 text-[0.95rem] font-bold text-[#171B20] shadow-lg shadow-slate-950/15 backdrop-blur transition-colors hover:bg-white sm:right-5 sm:top-24"
         >
-          화면 보기
+          PC ↔ 스마트폰
         </button>
       )}
 

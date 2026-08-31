@@ -95,7 +95,7 @@ const SECTION_08_INTRO = [
 
 const SECTION_08_OUTRO = [
   storyImage('section-08-platform-04.png', '고객 플랫폼으로 쿠팡식 재구매 경험을 만드는 설명 4', '#0C1016'),
-  storyImage('section-08-platform-05.png', '작은 고객 플랫폼이어도 직접 연결되는 통로가 중요하다는 설명 5', '#0B1218'),
+  storyImage('section-08-platform-05.png', '고객 플랫폼 화면과 성장 확장 기능 예시', '#0B1218', 'pb-2 sm:pb-3'),
 ] as const
 
 const CUSTOMER_PLATFORM_LINKS = [
