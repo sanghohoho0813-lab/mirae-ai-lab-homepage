@@ -4,7 +4,7 @@
 //    오간다(핑퐁 드리프트). 광고 배너처럼 흘러가 사라지지 않아 충분히 읽을 수 있다.
 //    줄에 커서를 올리면 그 줄만 멈춘다. "동작 줄이기" 설정이면 움직이지 않는다.
 //  - 모바일: 애니메이션 대신 2열 그리드 — 탐색·가독·터치를 우선한다.
-//  - 카드는 가상 브랜드명보다 "무엇을 위한 서비스인지"(청록 라벨)가 먼저 읽히게 한다.
+//  - 카드는 가상 브랜드명보다 "무엇을 위한 서비스인지"(브랜드 포인트 라벨)가 먼저 읽히게 한다.
 import { PORTFOLIO_SAMPLES, PORTFOLIO_SECTION, type PortfolioSample } from '../../data/portfolioSamples'
 
 const ROW_A = PORTFOLIO_SAMPLES.slice(0, 5)
@@ -16,11 +16,11 @@ function MvpCard({ s, drift = false }: { s: PortfolioSample; drift?: boolean }) 
       href={s.url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group/card flex flex-col overflow-hidden rounded-xl border border-white/12 bg-slate-950 transition-colors hover:border-teal-400/45 sm:rounded-2xl ${
+      className={`group/card flex flex-col overflow-hidden rounded-xl border border-white/12 bg-[#171B20] transition-colors hover:border-[#D47A4A]/45 sm:rounded-2xl ${
         drift ? 'w-[280px] shrink-0' : ''
       }`}
     >
-      <span className="block aspect-[16/10] overflow-hidden bg-slate-800">
+      <span className="block aspect-[16/10] overflow-hidden bg-[#343B44]">
         <img
           src={s.imgSm}
           srcSet={`${s.imgSm} 720w, ${s.img} 1440w`}
@@ -36,10 +36,10 @@ function MvpCard({ s, drift = false }: { s: PortfolioSample; drift?: boolean }) 
       <span className="flex flex-1 items-center justify-between gap-2 px-3 py-2.5 sm:px-3.5">
         <span className="min-w-0">
           {/* 무슨 서비스인지가 먼저 — 가상 브랜드명은 보조 */}
-          <span className="block truncate text-[1.08rem] font-black leading-snug text-teal-300 sm:text-[1.24rem]">{s.kind}</span>
+          <span className="block truncate text-[1.08rem] font-black leading-snug text-[#D47A4A] sm:text-[1.24rem]">{s.kind}</span>
           <span className="block truncate text-[0.85rem] font-bold text-slate-500 sm:text-[0.92rem]">{s.name}</span>
         </span>
-        <span aria-hidden className="shrink-0 text-[0.95rem] font-black text-slate-500 transition-colors group-hover/card:text-teal-300">↗</span>
+        <span aria-hidden className="shrink-0 text-[0.95rem] font-black text-[#6B7680] transition-colors group-hover/card:text-[#D47A4A]">↗</span>
       </span>
     </a>
   )
@@ -47,10 +47,10 @@ function MvpCard({ s, drift = false }: { s: PortfolioSample; drift?: boolean }) 
 
 export default function AxPortfolioSection() {
   return (
-    <section id="mvp-refs" className="scroll-mt-16 border-t border-white/10 bg-slate-900">
+    <section id="mvp-refs" className="scroll-mt-16 border-t border-white/10 bg-[#171B20]">
       <div className="py-12 sm:py-16">
         <div className="mx-auto max-w-5xl px-5 sm:px-6">
-          <p className="text-center text-[1.1rem] font-black tracking-tight text-teal-300 sm:text-[1.2rem]">EARLY MVP</p>
+          <p className="text-center text-[1.1rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.2rem]">EARLY MVP</p>
           <h2 className="mx-auto mt-3 max-w-3xl break-keep text-center text-[1.55rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[1.95rem]">
             머릿속에만 있던 아이디어도,<br className="sm:hidden" /> 일단 움직이게 만들어봅니다.
           </h2>
@@ -81,7 +81,7 @@ export default function AxPortfolioSection() {
           ))}
         </div>
 
-        <p className="mx-auto mt-6 max-w-2xl break-keep px-5 text-center text-[1.02rem] leading-relaxed text-slate-500 sm:px-6 sm:text-[1.1rem]">
+        <p className="mx-auto mt-6 max-w-2xl break-keep px-5 text-center text-[1.02rem] leading-relaxed text-[#6B7680] sm:px-6 sm:text-[1.1rem]">
           {PORTFOLIO_SECTION.note}
         </p>
       </div>

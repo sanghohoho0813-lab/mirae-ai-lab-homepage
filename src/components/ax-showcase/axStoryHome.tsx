@@ -1,131 +1,268 @@
-// 홈 리빌드 — 설득 스토리 섹션 모음.
-// 흐름: WHY NOW(계획서만으로는 부족한 시대) → …실제 화면… → AX란 무엇인가(정의)
-//       → AX가 바꾸는 것(Before/After + Closed Loop) → 성장(+정책 시그널·Growth Layer).
-// 원칙: 위기감 30 / 희망 70 — 항상 RISK → SOLUTION → OPPORTUNITY 로 끝낸다.
-//       기능 나열 금지, 실제 흐름과 화면이 말하게 한다. 과장·보장성 표현 금지.
-import { AX_SIMPLE_EXPLANATION } from '../../data/policyAxEvidence2026'
+// 홈 스토리 인포그래픽 섹션.
+// 히어로 이후의 설명 흐름은 Drive에서 정리한 이미지 순서를 단일 출처로 사용한다.
+import { AX_PLATFORM_SAMPLES } from '../../data/portfolioSamples'
 
+type StoryTone = 'dark' | 'light'
 
-/* ── HOME 02 — Problem Hook: 계획 다음에 무엇이 있습니까 ─────────────────── */
+type StoryImage = {
+  src: string
+  alt: string
+  bg: string
+}
 
-const WHY_NOW_IMAGES = [
+type StorySectionProps = {
+  id?: string
+  tone?: StoryTone
+  images: readonly StoryImage[]
+}
+
+const STORY_ROOT = '/ax-home-story-clean'
+
+function storyImage(name: string, alt: string, bg = '#171B20'): StoryImage {
+  return { src: `${STORY_ROOT}/${name}`, alt, bg }
+}
+
+function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
+  const sectionClass = tone === 'dark'
+    ? 'scroll-mt-16 overflow-hidden border-t border-white/10 bg-[#171B20]'
+    : 'scroll-mt-16 overflow-hidden border-t border-[#E7EAEE] bg-[#FAFAF8]'
+
+  return (
+    <section id={id} className={sectionClass}>
+      {images.map((image) => (
+        <div key={image.src} className="pb-5 sm:pb-8" style={{ background: image.bg }}>
+          <div className="mx-auto max-w-[989px] px-0 sm:px-6">
+            <div className="mx-auto max-w-[941px]">
+              <img
+                src={image.src}
+                alt={image.alt}
+                width={941}
+                height={1672}
+                loading="lazy"
+                decoding="async"
+                className="block h-auto w-full"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+    </section>
+  )
+}
+
+const SECTION_02 = [
+  storyImage('section-02-problem-01.png', '사업계획서만으로는 부족하며 실제 구현이 중요하다는 첫 번째 문제제기 1', '#0C0F15'),
+  storyImage('section-02-problem-02.png', '사업계획서 이후 실제 구현 여부를 묻는 첫 번째 문제제기 2', '#FAFAF8'),
+  storyImage('section-02-problem-03.png', '정책자금과 투자유치에서 실제 사업의 모습을 보여주는 힘을 설명하는 첫 번째 문제제기 3', '#050B11'),
+  storyImage('section-02-problem-04.png', '작동하는 웹앱과 고객 화면과 데이터의 중요성을 설명하는 첫 번째 문제제기 4', '#FDFCFA'),
+  storyImage('section-02-problem-05.png', '실제 사업을 움직이는 웹앱과 AX의 설명력을 말하는 첫 번째 문제제기 5', '#0F1317'),
+] as const
+
+const SECTION_03 = [
+  storyImage('section-03-screen-01.png', '미래AI랩이 직접 기획하고 개발한 AX 웹앱 화면을 먼저 보여주는 안내', 'linear-gradient(90deg, #0C0F13 0%, #0C0F13 50%, #EEECEA 50%, #EEECEA 100%)'),
+] as const
+
+const SECTION_04 = [
+  storyImage('section-04-ax-01.png', 'AX는 AI Transformation이며 회사가 일하는 방식을 바꾸는 것이라는 설명 1', '#FCFBF8'),
+  storyImage('section-04-ax-02.png', '회사 안의 정보가 엑셀과 카카오톡과 ERP 등에 흩어져 있다는 설명 2', '#FEFDF9'),
+  storyImage('section-04-ax-03.png', '한 번 생긴 정보가 다음 업무와 판단으로 이어지는 AX 구조 설명 3', '#0D1116'),
+] as const
+
+const SECTION_05 = [
+  storyImage('section-05-erp-01.png', 'ERP와 AX의 역할 차이를 설명하는 비교 1', '#FCFBF8'),
+  storyImage('section-05-erp-02.png', 'ERP 위에 판단과 실행의 층을 더하는 AX 설명 2', '#FBF9F6'),
+] as const
+
+const SECTION_06 = [
+  storyImage('section-06-device-01.png', 'PC와 휴대폰으로 회사 전체를 보는 감각 설명 1', '#050B11'),
+  storyImage('section-06-device-02.png', '클라우드 기반 AX에서 핵심 상황을 확인하고 판단하는 구조 설명 2', '#FAFAFA'),
+] as const
+
+const SECTION_07 = [
+  storyImage('section-07-effect-01.png', 'AX 도입 효과 내부 운영이 가벼워지는 변화 1', '#0A1016'),
+  storyImage('section-07-effect-02.png', 'AX 도입 효과 대표의 판단이 빨라지는 변화 2', '#F8F8F8'),
+  storyImage('section-07-effect-03.png', 'AX 도입 효과 기존 고객에서 더 많은 매출을 만드는 변화 3', '#050B12'),
+  storyImage('section-07-effect-04.png', 'AX 도입 효과 외부에도 보여줄 근거가 생기는 변화 4', '#FBFBFB'),
+] as const
+
+const SECTION_08_INTRO = [
+  storyImage('section-08-platform-01.png', '고객 플랫폼이 붙으면 매출 구조가 달라진다는 설명 1', '#0B1117'),
+  storyImage('section-08-platform-02.png', '업종과 규모에 맞는 고객용 플랫폼 예시 설명 2', '#0D1319'),
+] as const
+
+const SECTION_08_OUTRO = [
+  storyImage('section-08-platform-04.png', '고객 플랫폼으로 쿠팡식 재구매 경험을 만드는 설명 4', '#0C1016'),
+  storyImage('section-08-platform-05.png', '작은 고객 플랫폼이어도 직접 연결되는 통로가 중요하다는 설명 5', '#0B1218'),
+] as const
+
+const CUSTOMER_PLATFORM_LINKS = [
   {
-    src: '/why-now/why-now-01.png',
-    alt: '사업계획서만으로는 부족하며 실제 구현이 중요하다는 메시지',
+    industry: '음식점',
+    flow: '예약, 재방문, 고객 주문',
+    sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'gounsot')!,
   },
   {
-    src: '/why-now/why-now-02.png',
-    alt: '계획보다 실제 작동하는 서비스와 데이터가 강한 평가를 받는다는 메시지',
+    industry: '미용실',
+    flow: '예약, 시술이력, 재예약',
+    sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'lumiere')!,
   },
   {
-    src: '/why-now/why-now-03.png',
-    alt: 'AX를 결합한 웹과 앱 구조가 필요하다는 메시지',
+    industry: '정비소',
+    flow: '차량이력, 다음 정비, 예약',
+    sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'autobridge')!,
+  },
+  {
+    industry: '학원',
+    flow: '상담, 출결, 재등록',
+    sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'edumaster')!,
+  },
+  {
+    industry: '제조업',
+    flow: '견적, 재주문, 납기',
+    sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'seum')!,
   },
 ] as const
 
-export function AxWhyNowSection() {
+const SECTION_09 = [
+  storyImage('section-09-ceo-01.png', '대표가 더 바빠지는 회사가 좋은 성장인지 묻는 설명 1', '#0C131A'),
+  storyImage('section-09-ceo-02.png', '사람이 더 바빠지는 회사가 아니라 회사가 더 똑똑해지는 구조 설명 2', '#0B1218'),
+] as const
+
+const SECTION_10 = [
+  storyImage('section-10-not-ax-01.png', '모든 회사에 AX가 꼭 필요한 것은 아니라는 설명 1', '#F9F9F8'),
+  storyImage('section-10-not-ax-02.png', '웹앱으로 구현 가능한 아이디어 예시 설명 2', '#FDFDFC'),
+  storyImage('section-10-not-ax-03.png', '머릿속에 있던 아이디어를 일단 움직이게 만드는 설명 3', '#0D1318'),
+] as const
+
+const SECTION_11 = [
+  storyImage('section-11-real-01.png', '실제 기업 업무와 데이터에도 AX를 적용하고 있다는 안내', 'linear-gradient(90deg, #070D15 0%, #070D15 50%, #FAFAF8 50%, #FAFAF8 100%)'),
+] as const
+
+const SECTION_12 = [
+  storyImage('section-12-why-01.png', '왜 미래AI랩이어야 하는지 하나의 이야기로 연결해야 한다는 설명 1', 'linear-gradient(180deg, #171B20 0%, #171B20 50%, #FAFAF8 50%, #FAFAF8 100%)'),
+  storyImage('section-12-why-02.png', '각자 따로 맡기면 전체 스토리가 어긋나기 쉽다는 설명 2', '#343B44'),
+  storyImage('section-12-why-03.png', '미래AI랩은 사업 진단부터 Scale-up까지 하나의 흐름으로 본다는 설명 3', 'linear-gradient(180deg, #FAFAF8 0%, #FAFAF8 50%, #171B20 50%, #171B20 100%)'),
+] as const
+
+const SECTION_13 = [
+  storyImage('section-13-scope-01.png', '필요하면 기업 구조와 기술자산과 시장 사업성까지 같이 본다는 설명 1', 'linear-gradient(180deg, #FAFAF8 0%, #FAFAF8 50%, #171B20 50%, #171B20 100%)'),
+  storyImage('section-13-scope-02.png', '사업계획서와 정책자금과 정부지원사업까지 같은 논리 안에서 연결한다는 설명 2', '#0C151F'),
+  storyImage('section-13-scope-03.png', '사업과 시스템과 근거를 먼저 만들고 사업계획서로 정리한다는 설명 3', '#0D141E'),
+] as const
+
+const SECTION_14 = [
+  storyImage('section-14-industry-01.png', '우리 업종에도 AX나 플랫폼이 가능한지 업종별 화면을 확인하라는 안내', 'linear-gradient(90deg, #0F181E 0%, #0F181E 50%, #EFEFEE 50%, #EFEFEE 100%)'),
+] as const
+
+function AxIndustryPlatformLinks() {
   return (
-    <section id="why-now" className="scroll-mt-16 overflow-hidden border-t border-white/10 bg-[#02152f]">
-      <div className="mx-auto max-w-[989px] px-5 sm:px-6">
-        <div className="mx-auto max-w-[941px] space-y-8 sm:space-y-12">
-          {WHY_NOW_IMAGES.map((image) => (
-            <img
-              key={image.src}
-              src={image.src}
-              alt={image.alt}
-              width={941}
-              height={1672}
-              loading="lazy"
-              className="block h-auto w-full"
-            />
-          ))}
+    <section className="overflow-hidden bg-[#FCFCFC]">
+      <div className="mx-auto max-w-[989px] px-0 pb-5 sm:px-6 sm:pb-8">
+        <div className="mx-auto max-w-[941px] bg-[#FCFCFC] px-7 py-14 sm:px-12 sm:py-18">
+          <h2 className="break-keep text-[2.1rem] font-black leading-[1.22] tracking-[-0.01em] text-[#171B20] sm:text-[3.05rem]">
+            업종에 맞는<br />
+            <span className="text-[#D47A4A]">고객 플랫폼</span>은<br className="sm:hidden" /> 이렇게 달라집니다
+          </h2>
+          <div className="mt-9 grid gap-3.5">
+            {CUSTOMER_PLATFORM_LINKS.map(({ industry, flow, sample }) => {
+              const href = sample.customerUrl ?? sample.axUrl
+              const label = sample.customerLabel ?? '고객 화면'
+              return (
+                <article key={sample.slug} className="grid gap-3 rounded-2xl border border-[#E7EAEE] bg-white p-3.5 shadow-[0_12px_30px_rgba(23,27,32,0.07)] sm:grid-cols-[144px_1fr_auto] sm:items-center sm:gap-4 sm:p-4">
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block overflow-hidden rounded-xl bg-[#343B44]"
+                    aria-label={`${industry} ${label} 샘플 보기`}
+                  >
+                    <img
+                      src={sample.imgSm}
+                      alt={sample.alt}
+                      width={720}
+                      height={450}
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-[16/10] w-full object-cover object-top transition-transform duration-500 hover:scale-[1.03] sm:h-[90px]"
+                    />
+                  </a>
+                  <div className="min-w-0">
+                    <p className="break-keep text-[1.38rem] font-black leading-snug text-[#171B20] sm:text-[1.55rem]">{industry}</p>
+                    <p className="mt-1 break-keep text-[1.02rem] font-bold leading-snug text-[#6B7680] sm:text-[1.1rem]">{flow}</p>
+                    <p className="mt-1 truncate text-[0.9rem] font-semibold text-[#A36A4B]">{sample.name}</p>
+                  </div>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-xl bg-[#D47A4A] px-4 text-[1.02rem] font-black text-[#171B20] shadow-sm shadow-[#D47A4A]/15 transition-colors hover:bg-[#E8B89A] sm:px-5"
+                  >
+                    샘플 보기 <span aria-hidden className="ml-1">↗</span>
+                  </a>
+                </article>
+              )
+            })}
+          </div>
         </div>
       </div>
     </section>
   )
 }
 
-/* ── HOME 04 — AX란 무엇인가: 정의 + 좌/중/우 인포그래픽 + 결과 3칩 ─────────── */
+export function AxWhyNowSection() {
+  return <AxInfographicStack id="why-now" images={SECTION_02} />
+}
 
-const HUMAN_CHAIN = ['카카오톡', '메모', '엑셀', '직원 기억', '대표 확인', '고객 연락'] as const
-const DATA_CHAIN = ['고객 행동', 'Customer Platform', 'Data', 'Business AX', 'AI · Rule', 'Action', '고객에게 다시 반영'] as const
-const AX_OUTCOMES = [
-  { t: '덜 샙니다', d: '반복입력 · 누락 · 재작업' },
-  { t: '더 잘 보입니다', d: '고객 · 재고 · 매출 · 현장' },
-  { t: '더 많이 남깁니다', d: '재방문 · 재구매 · 반복매출' },
-] as const
+export function AxScreenIntroSection() {
+  return <AxInfographicStack images={SECTION_03} />
+}
 
 export function AxDefinitionSection() {
-  const x = AX_SIMPLE_EXPLANATION
+  return <AxInfographicStack id="ax-definition" images={SECTION_04} />
+}
+
+export function AxErpComparisonSection() {
+  return <AxInfographicStack images={SECTION_05} />
+}
+
+export function AxDeviceOperationSection() {
+  return <AxInfographicStack images={SECTION_06} />
+}
+
+export function AxEffectSection() {
+  return <AxInfographicStack images={SECTION_07} />
+}
+
+export function AxCustomerPlatformSection() {
   return (
-    <section id="ax-definition" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-900">
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(85%_100%_at_50%_0%,rgba(45,212,191,0.1),transparent_70%)]" />
-      <div className="relative mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
-        <h2 className="mx-auto max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-          AX가 어렵게 들리신다면,<br className="sm:hidden" /> 이렇게 생각하시면 됩니다.
-        </h2>
-
-        {/* 약자와 정의 — 두 줄로 짧게 */}
-        <p className="mt-7 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
-          <span className="text-[2.3rem] font-black leading-none text-white sm:text-[2.8rem]">AX</span>
-          <span className="text-[1.25rem] font-bold text-teal-300 sm:text-[1.4rem]">{x.acronym.en}</span>
-          <span className="text-[1.25rem] font-bold text-slate-400 sm:text-[1.4rem]">· {x.acronym.ko}</span>
-        </p>
-        <p className="mx-auto mt-5 max-w-3xl break-keep text-center text-[1.22rem] font-bold leading-[1.75] text-slate-200 sm:text-[1.4rem]">
-          {x.definition}
-        </p>
-
-        {/* 좌(사람이 연결) — 중앙 AX — 우(데이터가 연결) 인포그래픽 */}
-        <div className="mx-auto mt-11 grid max-w-4xl items-stretch gap-4 sm:mt-14 sm:grid-cols-[1fr_auto_1fr]">
-          <div className="rounded-2xl border border-white/12 bg-slate-950/60 p-5 sm:p-6">
-            <p className="text-center text-[1.05rem] font-black text-slate-400 sm:text-[1.14rem]">사람이 연결하는 회사</p>
-            <div className="mt-4">
-              {HUMAN_CHAIN.map((t, i) => (
-                <div key={t}>
-                  {i > 0 && <p aria-hidden className="py-0.5 text-center text-[0.95rem] font-black leading-none text-slate-600">↓</p>}
-                  <p className="break-keep rounded-lg bg-white/[0.05] px-3 py-1.5 text-center text-[1.02rem] font-bold text-slate-400 ring-1 ring-inset ring-white/10 sm:text-[1.08rem]">{t}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center justify-center">
-            <span aria-hidden className="grid h-16 w-16 place-items-center rounded-full bg-teal-400 text-[1.4rem] font-black text-slate-900 shadow-lg shadow-teal-500/30 sm:h-20 sm:w-20 sm:text-[1.6rem]">
-              AX
-            </span>
-          </div>
-          <div className="rounded-2xl border-2 border-teal-400/50 bg-teal-400/[0.07] p-5 sm:p-6">
-            <p className="text-center text-[1.05rem] font-black text-teal-300 sm:text-[1.14rem]">데이터가 이어지는 회사</p>
-            <div className="mt-4">
-              {DATA_CHAIN.map((t, i) => (
-                <div key={t}>
-                  {i > 0 && <p aria-hidden className="py-0.5 text-center text-[0.95rem] font-black leading-none text-teal-500">↓</p>}
-                  <p className="break-keep rounded-lg bg-slate-950/50 px-3 py-1.5 text-center text-[1.02rem] font-bold text-slate-100 ring-1 ring-inset ring-teal-400/25 sm:text-[1.08rem]">{t}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <p className="mx-auto mt-10 max-w-2xl break-keep text-center text-[1.35rem] font-black leading-[1.65] text-white sm:text-[1.55rem]">
-          한 번 생긴 정보가<br className="sm:hidden" /> 다음 업무까지 이어지는 것.<br />
-          <span className="text-teal-300">미래AI랩이 말하는 AX는 이것입니다.</span>
-        </p>
-
-        {/* 그래서 무엇이 좋아지는가 — 딱 3개 */}
-        <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-3">
-          {AX_OUTCOMES.map((o) => (
-            <div key={o.t} className="rounded-2xl border border-white/12 bg-white/[0.04] p-5 text-center">
-              <p className="break-keep text-[1.3rem] font-black text-white sm:text-[1.4rem]">{o.t}</p>
-              <p className="mt-1.5 break-keep text-[1.02rem] font-bold text-slate-400 sm:text-[1.08rem]">{o.d}</p>
-            </div>
-          ))}
-        </div>
-
-        <p className="mx-auto mt-8 max-w-xl break-keep text-center text-[1.12rem] font-bold leading-[1.7] text-amber-100 sm:text-[1.2rem]">
-          업종을 바꾸는 것이 아닙니다.{' '}
-          <span className="text-amber-300">지금 하는 업무방식을 AX로 바꾸면 됩니다.</span>
-        </p>
-      </div>
-    </section>
+    <>
+      <AxInfographicStack images={SECTION_08_INTRO} />
+      <AxIndustryPlatformLinks />
+      <AxInfographicStack images={SECTION_08_OUTRO} />
+    </>
   )
+}
+
+export function AxCeoBusySection() {
+  return <AxInfographicStack images={SECTION_09} />
+}
+
+export function AxNotAlwaysNeededSection() {
+  return <AxInfographicStack images={SECTION_10} />
+}
+
+export function AxRealProjectIntroSection() {
+  return <AxInfographicStack images={SECTION_11} />
+}
+
+export function AxWhyMiraeSection() {
+  return <AxInfographicStack id="why-mirae" images={SECTION_12} />
+}
+
+export function AxTogetherScopeSection() {
+  return <AxInfographicStack images={SECTION_13} />
+}
+
+export function AxIndustryQuestionSection() {
+  return <AxInfographicStack tone="light" images={SECTION_14} />
 }

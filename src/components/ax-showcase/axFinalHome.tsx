@@ -9,7 +9,7 @@ import { AX_BUILD_PAYMENT } from '../../data/axPackages'
 
 function ShowcaseShot({ s }: { s: AxPlatformSample }) {
   return (
-    <figure className="relative w-[380px] shrink-0 overflow-hidden rounded-2xl border border-white/12 bg-slate-900 shadow-xl shadow-slate-950/50 sm:w-[520px]">
+    <figure className="relative w-[380px] shrink-0 overflow-hidden rounded-2xl border border-white/12 bg-[#343B44] shadow-xl shadow-black/30 sm:w-[520px]">
       <img
         src={s.img}
         srcSet={`${s.imgSm} 720w, ${s.img} 1440w`}
@@ -20,8 +20,8 @@ function ShowcaseShot({ s }: { s: AxPlatformSample }) {
         decoding="async"
         className="block aspect-[16/10] w-full object-cover object-top"
       />
-      <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent px-4 pb-3 pt-10">
-        <span className="text-[1.25rem] font-black leading-tight text-teal-300 sm:text-[1.45rem]">{s.industry}</span>
+      <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#171B20]/95 via-[#171B20]/60 to-transparent px-4 pb-3 pt-10">
+        <span className="text-[1.25rem] font-black leading-tight text-[#D47A4A] sm:text-[1.45rem]">{s.industry}</span>
       </figcaption>
     </figure>
   )
@@ -31,7 +31,7 @@ export function AxScreenShowcase() {
   const rowA = AX_PLATFORM_SAMPLES.slice(0, 5)
   const rowB = AX_PLATFORM_SAMPLES.slice(5)
   return (
-    <section id="portfolio" className="scroll-mt-16 border-t border-white/10 bg-slate-950">
+    <section id="portfolio" className="scroll-mt-16 border-t border-white/10 bg-[#171B20]">
       <div className="py-14 sm:py-20">
         <div className="mx-auto max-w-4xl px-5 sm:px-6">
           <h2 className="break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
@@ -61,12 +61,12 @@ export function AxScreenShowcase() {
         <div className="mx-auto mt-12 max-w-[86rem] px-5 sm:mt-16 sm:px-6">
           <p className="break-keep text-center text-[1.5rem] font-black leading-snug text-white sm:text-[1.8rem]">직접 눌러보세요.</p>
           <p className="mx-auto mt-3 max-w-2xl break-keep text-center text-[1.08rem] leading-[1.7] text-slate-400 sm:text-[1.18rem]">
-            직원이 쓰는 <span className="font-bold text-teal-300">AX 화면</span>과 고객·거래처가 쓰는{' '}
-            <span className="font-bold text-amber-300">플랫폼 화면</span>을 각각 열어볼 수 있습니다. 모두 자체 제작 시연 데모입니다.
+            직원이 쓰는 <span className="font-bold text-[#D47A4A]">AX 화면</span>과 고객·거래처가 쓰는{' '}
+            <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 각각 열어볼 수 있습니다. 모두 자체 제작 시연 데모입니다.
           </p>
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
             {AX_PLATFORM_SAMPLES.map((s) => (
-              <article key={s.slug} className="flex flex-col overflow-hidden rounded-2xl border border-white/12 bg-slate-900 transition-colors hover:border-teal-400/40">
+              <article key={s.slug} className="flex flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#343B44] transition-colors hover:border-[#D47A4A]/45">
                 <img
                   src={s.imgSm}
                   alt={s.alt}
@@ -76,14 +76,14 @@ export function AxScreenShowcase() {
                   className="block aspect-[16/10] w-full object-cover object-top"
                 />
                 <div className="flex flex-1 flex-col p-3">
-                  <p className="break-keep text-[1.1rem] font-black leading-tight text-teal-300 sm:text-[1.14rem]">{s.industry}</p>
+                  <p className="break-keep text-[1.1rem] font-black leading-tight text-[#D47A4A] sm:text-[1.14rem]">{s.industry}</p>
                   <p className="mt-1.5 line-clamp-2 break-keep text-[0.95rem] leading-snug text-slate-400 sm:text-[0.98rem]">{s.line}</p>
                   <div className="mt-auto flex flex-wrap gap-1.5 pt-2.5">
-                    <a href={s.axUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[38px] items-center gap-1 rounded-lg bg-teal-400 px-2.5 text-[0.95rem] font-black text-slate-900 transition-colors hover:bg-teal-300">
+                    <a href={s.axUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[38px] items-center gap-1 rounded-lg bg-[#D47A4A] px-2.5 text-[0.95rem] font-black text-[#171B20] transition-colors hover:bg-[#E8B89A]">
                       AX 화면 <span aria-hidden>↗</span>
                     </a>
                     {s.customerUrl && (
-                      <a href={s.customerUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[38px] items-center gap-1 rounded-lg border border-white/20 bg-white/5 px-2.5 text-[0.95rem] font-black text-white transition-colors hover:bg-white/10">
+                      <a href={s.customerUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[38px] items-center gap-1 rounded-lg border border-[#D47A4A]/35 bg-white/5 px-2.5 text-[0.95rem] font-black text-white transition-colors hover:bg-[#343B44]">
                         {s.customerLabel ?? '고객 화면'} <span aria-hidden>↗</span>
                       </a>
                     )}
@@ -102,28 +102,28 @@ export function AxScreenShowcase() {
 
 export function AxSamplesGridSection({ title }: { title?: string }) {
   return (
-    <section id="ax-showcase-v2" className="scroll-mt-16 border-t border-white/10 bg-slate-950">
+    <section id="ax-showcase-v2" className="scroll-mt-16 border-t border-white/10 bg-[#171B20]">
       <div className="mx-auto max-w-[86rem] px-5 py-14 sm:px-6 sm:py-20">
         <h2 className="mx-auto max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
           {title ?? '우리 업종이라면 어떤 모습이 되는지 직접 눌러보세요.'}
         </h2>
         <p className="mx-auto mt-4 max-w-2xl break-keep text-center text-[1.08rem] leading-[1.7] text-slate-400 sm:text-[1.18rem]">
-          직원이 쓰는 <span className="font-bold text-teal-300">AX 화면</span>과 고객·거래처가 쓰는{' '}
-          <span className="font-bold text-amber-300">플랫폼 화면</span>을 각각 열어볼 수 있습니다. 모두 자체 제작 시연 데모입니다.
+          직원이 쓰는 <span className="font-bold text-[#D47A4A]">AX 화면</span>과 고객·거래처가 쓰는{' '}
+          <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 각각 열어볼 수 있습니다. 모두 자체 제작 시연 데모입니다.
         </p>
         <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
           {AX_PLATFORM_SAMPLES.map((s) => (
-            <article key={s.slug} className="flex flex-col overflow-hidden rounded-2xl border border-white/12 bg-slate-900 transition-colors hover:border-teal-400/40">
+            <article key={s.slug} className="flex flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#343B44] transition-colors hover:border-[#D47A4A]/45">
               <img src={s.imgSm} alt={s.alt} width={720} height={450} decoding="async" className="block aspect-[16/10] w-full object-cover object-top" />
               <div className="flex flex-1 flex-col p-3">
-                <p className="break-keep text-[1.1rem] font-black leading-tight text-teal-300 sm:text-[1.14rem]">{s.industry}</p>
+                <p className="break-keep text-[1.1rem] font-black leading-tight text-[#D47A4A] sm:text-[1.14rem]">{s.industry}</p>
                 <p className="mt-1.5 line-clamp-2 break-keep text-[0.95rem] leading-snug text-slate-400 sm:text-[0.98rem]">{s.line}</p>
                 <div className="mt-auto flex flex-wrap gap-1.5 pt-2.5">
-                  <a href={s.axUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[38px] items-center gap-1 rounded-lg bg-teal-400 px-2.5 text-[0.95rem] font-black text-slate-900 transition-colors hover:bg-teal-300">
+                  <a href={s.axUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[38px] items-center gap-1 rounded-lg bg-[#D47A4A] px-2.5 text-[0.95rem] font-black text-[#171B20] transition-colors hover:bg-[#E8B89A]">
                     AX 화면 <span aria-hidden>↗</span>
                   </a>
                   {s.customerUrl && (
-                    <a href={s.customerUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[38px] items-center gap-1 rounded-lg border border-white/20 bg-white/5 px-2.5 text-[0.95rem] font-black text-white transition-colors hover:bg-white/10">
+                    <a href={s.customerUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[38px] items-center gap-1 rounded-lg border border-[#D47A4A]/35 bg-white/5 px-2.5 text-[0.95rem] font-black text-white transition-colors hover:bg-[#343B44]">
                       {s.customerLabel ?? '고객 화면'} <span aria-hidden>↗</span>
                     </a>
                   )}

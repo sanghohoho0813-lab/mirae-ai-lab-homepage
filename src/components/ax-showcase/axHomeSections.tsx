@@ -10,37 +10,36 @@ const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-90
 /** SECTION 1 — Hero. 정책자금 대행 첫인상이 아니라 "기업을 AI 기반 운영 구조로 바꾸는 AX 회사"가 5초 안에 읽히게 한다. */
 export function AxHeroV2() {
   return (
-    <section className="relative flex min-h-[calc(100svh-53px)] items-center overflow-hidden bg-slate-950">
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(115%_78%_at_50%_-10%,rgba(45,212,191,0.16),transparent_62%)]" />
-      <div aria-hidden className="pointer-events-none absolute -right-28 top-1/4 h-96 w-96 rounded-full bg-blue-600/15 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -left-24 bottom-8 h-80 w-80 rounded-full bg-amber-500/10 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-slate-950" />
+    <section className="relative flex min-h-[calc(100svh-53px)] items-center overflow-hidden bg-[#050B11]">
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#050B11_0%,#111820_48%,#050B11_100%)]" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
       <div className={`relative w-full ${wrap} px-5 pb-24 pt-16 sm:px-6 sm:pb-28 sm:pt-20`}>
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[1.16rem] sm:text-[1.05rem] font-bold text-teal-200 backdrop-blur">
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-4 py-2 text-[1.16rem] sm:text-[1.05rem] font-bold text-[#E8B89A] backdrop-blur">
           MIRAE AI LAB · Business AX Company
         </span>
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
-        <h1 className="mt-10 max-w-4xl break-keep text-[clamp(2.4rem,8.8vw,3.4rem)] font-black leading-[1.38] tracking-[-0.015em] text-white sm:mt-12 sm:text-[clamp(2.5rem,5.3vw,3.6rem)]">
+        <h1 className="mt-10 max-w-4xl break-keep text-[clamp(2.45rem,8.8vw,3.5rem)] font-black leading-[1.28] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-12 sm:text-[clamp(2.8rem,5.3vw,3.95rem)]">
           기업의 일을,<br />
-          <span className="text-teal-300">AI가 움직이는 구조</span>로 바꿉니다.
+          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">AI가 움직이는 구조</span>로 바꿉니다.
         </h1>
-        <p className="mt-7 max-w-2xl break-keep text-[1.28rem] leading-[1.75] text-slate-300 sm:mt-8 sm:text-[1.4rem]">
+        <p className="mt-7 max-w-2xl break-keep text-[1.28rem] font-medium leading-[1.75] text-[#E7EAEE] sm:mt-8 sm:text-[1.4rem]">
           고객·업무·매출·재고·현장 데이터를 연결하고,{' '}
           Business AX와 고객 플랫폼을 직접 구축해{' '}
-          <b className="text-white">회사의 다음 운영체계</b>를 만듭니다.
+          <b className="text-[#FAFAF8]">회사의 다음 운영체계</b>를 만듭니다.
         </p>
         <div className="mt-10 flex flex-col gap-3 sm:mt-11 sm:flex-row">
           <Link
             to="/business-diagnosis"
-            className="shine-cta flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-teal-400 px-7 text-[1.24rem] font-black text-slate-900 shadow-lg shadow-teal-500/20 transition-transform hover:-translate-y-0.5 hover:bg-teal-300 sm:w-auto sm:text-[1.2rem]"
+            className="shine-cta flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 text-[1.24rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto sm:text-[1.2rem]"
           >
             3분 AX 가능성 진단
           </Link>
           <a
             href="#real-projects"
-            className="flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-7 text-[1.24rem] font-bold text-white transition-colors hover:bg-white/10 sm:w-auto sm:text-[1.2rem]"
+            className="flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/50 px-7 text-[1.24rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto sm:text-[1.2rem]"
           >
             AX 사례 보기 <span aria-hidden>↓</span>
           </a>
