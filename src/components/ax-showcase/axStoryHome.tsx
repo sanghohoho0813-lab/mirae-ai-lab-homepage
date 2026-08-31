@@ -8,49 +8,37 @@ import { AX_SIMPLE_EXPLANATION } from '../../data/policyAxEvidence2026'
 
 /* ── HOME 02 — Problem Hook: 계획 다음에 무엇이 있습니까 ─────────────────── */
 
-const SIGNAL_FIELDS = ['정책자금', '정부지원', '투자', '기술사업화'] as const
+const WHY_NOW_IMAGES = [
+  {
+    src: '/why-now/why-now-01.png',
+    alt: '사업계획서만으로는 부족하며 실제 구현이 중요하다는 메시지',
+  },
+  {
+    src: '/why-now/why-now-02.png',
+    alt: '계획보다 실제 작동하는 서비스와 데이터가 강한 평가를 받는다는 메시지',
+  },
+  {
+    src: '/why-now/why-now-03.png',
+    alt: 'AX를 결합한 웹과 앱 구조가 필요하다는 메시지',
+  },
+] as const
 
 export function AxWhyNowSection() {
   return (
-    <section id="why-now" className="relative scroll-mt-16 overflow-hidden border-t border-white/10 bg-slate-900">
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(85%_100%_at_50%_0%,rgba(251,191,36,0.07),transparent_70%)]" />
-      <div className="relative mx-auto max-w-4xl px-5 py-16 text-center sm:px-6 sm:py-24">
-        <h2 className="mx-auto max-w-3xl break-keep text-[1.87rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-          아직도 <span className="text-amber-300">사업계획서 하나만 가지고</span><br />
-          정책자금·정부지원사업·투자 앞에 서시나요?
-        </h2>
-
-        <p className="mt-9 break-keep text-[1.24rem] leading-[1.75] text-slate-300 sm:mt-11 sm:text-[1.34rem]">
-          계획은 누구나 쓸 수 있습니다.<br />결국 다음 질문이 남습니다.
-        </p>
-        <p className="mt-5 break-keep text-[1.6rem] font-black leading-snug text-white sm:text-[1.9rem]">
-          &ldquo;그래서, 실제로 무엇이 있습니까?&rdquo;
-        </p>
-
-        <div className="mx-auto mt-8 flex max-w-xl flex-wrap justify-center gap-1.5">
-          {['작동하는 서비스', '실제 고객이 쓰는 화면', '쌓이기 시작한 데이터', '매출과 성장으로 잇는 구조'].map((t) => (
-            <span key={t} className="break-keep rounded-lg bg-teal-400/10 px-3 py-1.5 text-[1.05rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-400/25 sm:text-[1.14rem]">
-              {t}
-            </span>
+    <section id="why-now" className="scroll-mt-16 overflow-hidden border-t border-white/10 bg-[#02152f]">
+      <div className="mx-auto max-w-[989px] px-5 sm:px-6">
+        <div className="mx-auto max-w-[941px] space-y-8 sm:space-y-12">
+          {WHY_NOW_IMAGES.map((image) => (
+            <img
+              key={image.src}
+              src={image.src}
+              alt={image.alt}
+              width={941}
+              height={1672}
+              loading="lazy"
+              className="block h-auto w-full"
+            />
           ))}
-        </div>
-
-        <p className="mt-8 break-keep text-[1.3rem] font-black leading-[1.7] text-white sm:text-[1.45rem]">
-          미래AI랩은 그 &lsquo;다음&rsquo;을 실제로 만듭니다.
-        </p>
-
-        {/* 작은 시그널 — 평가의 무게중심이 옮겨간다 (선정·승인을 보장한다는 뜻이 아니다) */}
-        <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-white/12 bg-white/[0.04] px-5 py-4">
-          <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[0.95rem] font-bold text-slate-400 sm:text-[1.0rem]">
-            {SIGNAL_FIELDS.map((t) => (
-              <span key={t} className="rounded-md bg-white/[0.06] px-2 py-0.5">{t}</span>
-            ))}
-          </p>
-          <p className="mt-2.5 flex flex-wrap items-center justify-center gap-x-2 text-[1.0rem] font-black sm:text-[1.08rem]">
-            <span className="text-slate-500 line-through decoration-slate-600">PLAN ONLY</span>
-            <span aria-hidden className="text-slate-500">→</span>
-            <span className="text-teal-300">SYSTEM + DATA + EVIDENCE</span>
-          </p>
         </div>
       </div>
     </section>

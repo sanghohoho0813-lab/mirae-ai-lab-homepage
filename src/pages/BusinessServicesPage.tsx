@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigationType } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
+import ViewportPreview, { type PreviewDevice } from '../components/ViewportPreview'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
@@ -45,6 +46,8 @@ export default function BusinessServicesPage() {
   const [consultOpen, setConsultOpen] = useState(false)
   const location = useLocation()
   const navType = useNavigationType()
+  const [previewDevice, setPreviewDevice] = useState<PreviewDevice | null>(null)
+  const isPreviewEmbedded = new URLSearchParams(location.search).has('preview')
 
   useEffect(() => {
     document.title = 'AX 사업화·자금조달 프로그램 | 미래 AI 랩'
@@ -99,9 +102,10 @@ export default function BusinessServicesPage() {
   }, [])
 
   const saveReturn = (cardId: string) => saveBusinessReturn(cardId)
+  const openPreview = () => setPreviewDevice(window.innerWidth < 768 ? 'desktop' : 'mobile')
 
   return (
-    <div className="min-h-screen bg-white pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
+    <div className="min-h-screen bg-[#02152f] pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       {/* Header — 핵심 메뉴만 */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2.5 lg:gap-6">
@@ -198,6 +202,16 @@ export default function BusinessServicesPage() {
       <LegalFooter />
       <KakaoFloat />
 
+      {!isPreviewEmbedded && (
+        <button
+          type="button"
+          onClick={openPreview}
+          className="fixed bottom-20 left-3 z-40 rounded-lg border border-slate-300 bg-white/95 px-3 py-2 text-[0.95rem] font-bold text-slate-800 shadow-lg shadow-slate-950/15 backdrop-blur transition-colors hover:bg-white sm:bottom-5 sm:left-5"
+        >
+          화면 보기
+        </button>
+      )}
+
       {/* Mobile sticky CTA — 기업진단(카톡은 KakaoFloat) */}
       {!heroVisible && !atEnd && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
@@ -218,6 +232,16 @@ export default function BusinessServicesPage() {
         programSelect
         preselectProgram={FLAGSHIP.consultName}
       />
+
+      {previewDevice && !isPreviewEmbedded && (
+        <ViewportPreview
+          device={previewDevice}
+          onClose={() => setPreviewDevice(null)}
+          onDeviceChange={setPreviewDevice}
+          path={location.pathname}
+          hash={location.hash}
+        />
+      )}
     </div>
   )
 }
