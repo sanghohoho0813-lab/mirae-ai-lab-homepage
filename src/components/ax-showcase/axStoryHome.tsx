@@ -9,6 +9,8 @@ type StoryImage = {
   alt: string
   bg: string
   gapClass?: string
+  outerClass?: string
+  innerClass?: string
 }
 
 type StorySectionProps = {
@@ -19,8 +21,8 @@ type StorySectionProps = {
 
 const STORY_ROOT = '/ax-home-story-clean'
 
-function storyImage(name: string, alt: string, bg = '#171B20', gapClass?: string): StoryImage {
-  return { src: `${STORY_ROOT}/${name}`, alt, bg, gapClass }
+function storyImage(name: string, alt: string, bg = '#171B20', gapClass?: string, outerClass?: string, innerClass?: string): StoryImage {
+  return { src: `${STORY_ROOT}/${name}`, alt, bg, gapClass, outerClass, innerClass }
 }
 
 function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
@@ -32,8 +34,8 @@ function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
     <section id={id} className={sectionClass}>
       {images.map((image) => (
         <div key={image.src} className={image.gapClass ?? 'pb-5 sm:pb-8'} style={{ background: image.bg }}>
-          <div className="mx-auto max-w-[989px] px-0 sm:px-6">
-            <div className="mx-auto max-w-[941px]">
+          <div className={image.outerClass ?? 'mx-auto max-w-[989px] px-0 sm:px-6'}>
+            <div className={image.innerClass ?? 'mx-auto max-w-[941px]'}>
               <img
                 src={image.src}
                 alt={image.alt}
@@ -152,7 +154,14 @@ const SECTION_13 = [
 ] as const
 
 const SECTION_14 = [
-  storyImage('section-14-industry-01.png', '우리 업종에도 AX나 플랫폼이 가능한지 업종별 화면을 확인하라는 안내', 'linear-gradient(90deg, #0F181E 0%, #0F181E 50%, #EFEFEE 50%, #EFEFEE 100%)'),
+  storyImage(
+    'section-14-industry-01.png',
+    '우리 업종에도 AX나 플랫폼이 가능한지 업종별 화면을 확인하라는 안내',
+    'linear-gradient(90deg, #0F181E 0%, #0F181E 50%, #EFEFEE 50%, #EFEFEE 100%)',
+    'pb-5 sm:pb-8',
+    'mx-auto max-w-[1240px] px-0 sm:px-4 lg:px-6',
+    'mx-auto max-w-[1120px]',
+  ),
 ] as const
 
 function AxIndustryPlatformLinks() {

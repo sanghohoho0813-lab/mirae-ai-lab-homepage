@@ -17,8 +17,6 @@ import {
   AxErpComparisonSection,
   AxIndustryQuestionSection,
   AxNotAlwaysNeededSection,
-  AxRealProjectIntroSection,
-  AxScreenIntroSection,
   AxTogetherScopeSection,
   AxWhyMiraeSection,
   AxWhyNowSection,
@@ -150,9 +148,6 @@ export default function BusinessServicesPage() {
       {/* 2. 첫 번째 문제제기 */}
       <AxWhyNowSection />
 
-      {/* 3. 바로 화면 */}
-      <AxScreenIntroSection />
-
       {/* 샘플 10개 — 기존 섹션 보존 */}
       <AxScreenShowcase />
 
@@ -179,9 +174,6 @@ export default function BusinessServicesPage() {
 
       {/* 샘플 10개 — 기존 섹션 보존 */}
       <AxPortfolioSection />
-
-      {/* 11. 실제 기업 적용 */}
-      <AxRealProjectIntroSection />
 
       {/* REAL · FIELD PROJECTS — 기존 섹션 보존 */}
       <AxRealProjectsDeep />
