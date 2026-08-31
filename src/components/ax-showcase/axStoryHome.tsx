@@ -8,6 +8,7 @@ type StoryImage = {
   src: string
   alt: string
   bg: string
+  gapClass?: string
 }
 
 type StorySectionProps = {
@@ -18,8 +19,8 @@ type StorySectionProps = {
 
 const STORY_ROOT = '/ax-home-story-clean'
 
-function storyImage(name: string, alt: string, bg = '#171B20'): StoryImage {
-  return { src: `${STORY_ROOT}/${name}`, alt, bg }
+function storyImage(name: string, alt: string, bg = '#171B20', gapClass?: string): StoryImage {
+  return { src: `${STORY_ROOT}/${name}`, alt, bg, gapClass }
 }
 
 function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
@@ -30,7 +31,7 @@ function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
   return (
     <section id={id} className={sectionClass}>
       {images.map((image) => (
-        <div key={image.src} className="pb-5 sm:pb-8" style={{ background: image.bg }}>
+        <div key={image.src} className={image.gapClass ?? 'pb-5 sm:pb-8'} style={{ background: image.bg }}>
           <div className="mx-auto max-w-[989px] px-0 sm:px-6">
             <div className="mx-auto max-w-[941px]">
               <img
@@ -69,7 +70,7 @@ const SECTION_04 = [
 ] as const
 
 const SECTION_05 = [
-  storyImage('section-05-erp-01.png', 'ERP와 AX의 역할 차이를 설명하는 비교 1', '#FCFBF8'),
+  storyImage('section-05-erp-01.png', 'ERP와 AX의 역할 차이를 설명하는 비교 1', '#FCFBF8', 'pb-2 sm:pb-3'),
   storyImage('section-05-erp-02.png', 'ERP 위에 판단과 실행의 층을 더하는 AX 설명 2', '#FBF9F6'),
 ] as const
 
