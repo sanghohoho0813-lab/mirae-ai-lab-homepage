@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import BrandLogo from './components/BrandLogo'
 import InquiryForm from './components/InquiryForm'
 import HeaderAccount from './components/account/HeaderAccount'
 import LegalFooter from './components/LegalFooter'
@@ -234,13 +235,7 @@ function App() {
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-base font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-base font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.85rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></span>
-            </span>
-          </Link>
+          <BrandLogo to="/" imgClassName="h-9 max-w-[168px] sm:h-11 sm:max-w-[204px]" />
           <nav className="hidden items-center gap-7 text-base font-medium text-slate-600 lg:flex">
             {navItems.map((item) => (
               <a key={item.href} href={item.href} className="transition-colors hover:text-slate-900">

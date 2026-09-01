@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
+import BrandLogo from '../components/BrandLogo'
 import LegalFooter from '../components/LegalFooter'
 import KakaoFloat from '../components/KakaoFloat'
 import ProductCard from '../components/ProductCard'
@@ -40,15 +41,7 @@ export default function BusinessCatalogPage() {
     <div className="min-h-screen bg-white text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <Link to="/business-services" className="flex min-w-0 items-center gap-2.5">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex min-w-0 flex-col leading-tight">
-              <span className="text-[1.2rem] font-bold tracking-tight text-slate-900 sm:text-[1.42rem]">미래 AI 랩</span>
-              <span className="hidden break-keep text-[1.3rem] font-medium text-slate-500 sm:block">
-                Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b>
-              </span>
-            </span>
-          </Link>
+          <BrandLogo to="/business-services" imgClassName="h-9 max-w-[160px] sm:h-11 sm:max-w-[204px]" />
           <div className="flex shrink-0 items-center gap-2.5 sm:gap-4">
             <Link
               to={DETAIL}

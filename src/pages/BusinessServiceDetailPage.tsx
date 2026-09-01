@@ -10,6 +10,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
+import BrandLogo from '../components/BrandLogo'
 import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import { CONSULT_TOPIC_GROUPS, type ConsultContextRow } from '../lib/consultApi'
@@ -233,13 +234,7 @@ export default function BusinessServiceDetailPage() {
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <Link to="/business-services" className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.8rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></span>
-            </span>
-          </Link>
+          <BrandLogo to="/business-services" imgClassName="h-9 max-w-[160px] sm:h-10 sm:max-w-[190px]" />
           <div className="flex items-center gap-4">
             <Link to="/business-services" className="hidden text-[0.95rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
             <button

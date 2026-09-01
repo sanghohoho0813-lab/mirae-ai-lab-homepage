@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const LOGO_SRC = '/brand/mirae-ai-lab-logo-transparent.png'
+/** 어두운 배경용 — 무채색 글자만 흰색으로 바꾼 버전 */
+const LOGO_SRC_LIGHT = '/brand/mirae-ai-lab-logo-light.png'
 const DEFAULT_TAGLINE = 'MIRAE AI LAB · Business AX Company'
 
 export default function BrandLogo({
@@ -14,6 +16,7 @@ export default function BrandLogo({
   showTagline = true,
   ariaLabel = '미래에이아이랩 홈으로',
   onClick,
+  tone = 'light',
 }: {
   to?: string
   className?: string
@@ -23,6 +26,8 @@ export default function BrandLogo({
   showTagline?: boolean
   ariaLabel?: string
   onClick?: MouseEventHandler<HTMLAnchorElement>
+  /** 'light' = 밝은 배경(기본), 'dark' = 어두운 배경 */
+  tone?: 'light' | 'dark'
 }) {
   const [logoFailed, setLogoFailed] = useState(false)
 
@@ -30,7 +35,7 @@ export default function BrandLogo({
     <Link to={to} onClick={onClick} aria-label={ariaLabel} className={`inline-flex min-w-0 shrink-0 flex-col items-start ${className}`}>
       <span className="inline-flex min-w-0 items-center">
         <img
-          src={LOGO_SRC}
+          src={tone === 'dark' ? LOGO_SRC_LIGHT : LOGO_SRC}
           alt="미래에이아이랩"
           width={828}
           height={250}
@@ -40,17 +45,17 @@ export default function BrandLogo({
         />
         {logoFailed && (
           <span className="flex items-center gap-2">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#171B20] text-[0.82rem] font-black text-[#D47A4A]">
+            <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[0.82rem] font-black ${tone === 'dark' ? 'bg-white/10 text-[#E8B89A]' : 'bg-[#171B20] text-[#D47A4A]'}`}>
               AI
             </span>
-            <span className="whitespace-nowrap text-[1.0rem] font-black leading-tight text-[#171B20] sm:text-[1.08rem]">
+            <span className={`whitespace-nowrap text-[1.0rem] font-black leading-tight sm:text-[1.08rem] ${tone === 'dark' ? 'text-white' : 'text-[#171B20]'}`}>
               미래 AI 랩
             </span>
           </span>
         )}
       </span>
       {showTagline && (
-        <span className={`mt-0.5 block max-w-full truncate text-[0.65rem] font-black tracking-[0.16em] text-slate-500 sm:text-[0.7rem] ${taglineClassName}`}>
+        <span className={`mt-0.5 block max-w-full truncate text-[0.65rem] font-black tracking-[0.16em] sm:text-[0.7rem] ${tone === 'dark' ? 'text-slate-400' : 'text-slate-500'} ${taglineClassName}`}>
           {tagline}
         </span>
       )}

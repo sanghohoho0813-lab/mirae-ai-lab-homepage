@@ -6,6 +6,7 @@ import HeaderAccount from '../components/account/HeaderAccount'
 import { useAuth } from '../lib/auth'
 import { downloadCsv } from '../lib/businessLeadsAdmin'
 import { fetchAdminReviews, moderateReview, type AdminReview, type AdminReviewStats } from '../lib/reviews'
+import BrandLogo from '../components/BrandLogo'
 
 function fmtDate(s?: string | null): string {
   if (!s) return '-'
@@ -113,13 +114,7 @@ export default function AdminReviewsPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <Link to="/admin" className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">상품 후기 관리</span>
-              <span className="text-[0.72rem] font-medium text-slate-500">관리자 전용</span>
-            </span>
-          </Link>
+          <BrandLogo to="/admin" tagline="상품 후기 관리 · 관리자 전용" imgClassName="h-8 max-w-[144px] sm:h-9 sm:max-w-[168px]" />
           <div className="flex items-center gap-2.5">
             <Link to="/admin/members" className="hidden rounded-lg border border-slate-200 px-3 py-2 text-[0.85rem] font-semibold text-slate-600 hover:bg-slate-100 sm:inline">회원 관리</Link>
             <Link to="/admin/business-leads" className="hidden rounded-lg border border-slate-200 px-3 py-2 text-[0.85rem] font-semibold text-slate-600 hover:bg-slate-100 sm:inline">상담 리드</Link>

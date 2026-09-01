@@ -3,6 +3,7 @@
 // 빠른 전환(가짜 로딩 제거), 인라인 혜택 패널(질문 유지), 단계별 즉시 리포트.
 import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import BrandLogo from '../components/BrandLogo'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import DiagnosisStart from '../components/diagnosis/DiagnosisStart'
@@ -342,13 +343,7 @@ export default function BusinessDiagnosisPage() {
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
           <div className="flex min-w-0 items-center gap-2">
-            <Link to="/business-services" onClick={handleBrandClick} className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
-              <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-              <span className="flex flex-col leading-tight">
-                <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-                <span className="text-[0.7rem] font-medium text-slate-500">3분 기업 성장진단</span>
-              </span>
-            </Link>
+            <BrandLogo to="/business-services" onClick={handleBrandClick} tagline="3분 AX 가능성 진단" imgClassName="h-9 max-w-[150px] sm:h-10 sm:max-w-[180px]" />
             {homeConfirm && screen !== 'start' && (
               <span className="animate-fade-in whitespace-nowrap text-[0.7rem] font-bold leading-tight text-amber-600">
                 한 번 더 누르면<br className="sm:hidden" /> 홈으로 이동

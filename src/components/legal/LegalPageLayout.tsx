@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { businessInfo, legalLinks } from '../../config/businessInfo'
 import LegalFooter from '../LegalFooter'
+import BrandLogo from '../BrandLogo'
 
 export type LegalSection = {
   id: string
@@ -52,13 +53,7 @@ export default function LegalPageLayout({
       {/* Header — 로고 클릭 시 홈(/) */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md print:hidden">
         <div className="mx-auto flex max-w-[960px] items-center justify-between px-5 py-3">
-          <Link to="/" className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">{businessInfo.serviceName}</span>
-              <span className="text-[0.7rem] font-medium text-slate-500">약관 및 정책</span>
-            </span>
-          </Link>
+          <BrandLogo to="/" tagline="약관 및 정책" imgClassName="h-9 max-w-[168px] sm:h-10 sm:max-w-[190px]" />
           <button
             type="button"
             onClick={() => window.print()}

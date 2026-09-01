@@ -21,6 +21,7 @@ import {
   preparePayment, rememberTestAccessCode, saveLocalOrder, trackPaymentEvent, type BuyerInput,
 } from '../lib/payments'
 import { BenefitCards, PaymentProgressOverlay, RefundAccordion, ServiceTimeline } from '../components/payment/PaymentUX'
+import BrandLogo from '../components/BrandLogo'
 
 const ISO_STANDARDS = ['ISO9001', 'ISO14001', 'ISO45001'] as const
 
@@ -217,13 +218,7 @@ export default function CheckoutPage() {
     <div className="min-h-dvh bg-slate-50 text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <Link to="/" className="flex items-center gap-2.5" aria-label="미래 AI 랩 홈으로">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.7rem] font-medium text-slate-500">서비스몰 결제</span>
-            </span>
-          </Link>
+          <BrandLogo to="/" tagline="서비스몰 결제" imgClassName="h-9 max-w-[160px] sm:h-10 sm:max-w-[190px]" />
           <div className="flex items-center gap-2">
             {environment === 'test' && (
               <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-black text-amber-700 ring-1 ring-inset ring-amber-300">테스트 결제</span>

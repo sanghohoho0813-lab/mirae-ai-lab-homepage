@@ -7,6 +7,7 @@ import HeaderAccount from '../components/account/HeaderAccount'
 import LoginModal from '../components/LoginModal'
 import { useAuth } from '../lib/auth'
 import { formatKrw, getOrder, loadLocalOrders, updateLocalOrderStatus, type LocalOrder, type OrderSummary } from '../lib/payments'
+import BrandLogo from '../components/BrandLogo'
 
 const STATUS_LABEL: Record<string, { label: string; tone: string }> = {
   pending: { label: '결제 대기', tone: 'bg-slate-100 text-slate-600' },
@@ -52,13 +53,7 @@ export default function MyOrdersPage() {
     <div className="min-h-dvh bg-slate-50 text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <Link to="/business-services" className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              <span className="text-[0.7rem] font-medium text-slate-500">내 결제·신청내역</span>
-            </span>
-          </Link>
+          <BrandLogo to="/business-services" tagline="내 결제·신청내역" imgClassName="h-9 max-w-[160px] sm:h-10 sm:max-w-[190px]" />
           <HeaderAccount variant="business" />
         </div>
       </header>

@@ -1,19 +1,12 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import BrandLogo from './BrandLogo'
 import { businessInfo, legalLinks } from '../config/businessInfo'
 import AccountMenu from './account/AccountMenu'
 
 function BrandMark() {
   return (
-    <Link to="/" className="flex items-center gap-2.5">
-      <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-sm font-black tracking-tight text-sky-400">
-        AI
-      </span>
-      <span className="flex flex-col leading-tight">
-        <span className="text-base font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-        <span className="text-[0.8rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></span>
-      </span>
-    </Link>
+    <BrandLogo to="/" imgClassName="h-9 max-w-[168px] sm:h-11 sm:max-w-[204px]" />
   )
 }
 

@@ -3,6 +3,7 @@
 // 크지 않게(정보 위주) · 로고 클릭 시 '/' 이동 · 링크는 실제 라우트만.
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import BrandLogo from './BrandLogo'
 import { businessInfo, legalLinks } from '../config/businessInfo'
 
 export default function LegalFooter({
@@ -34,15 +35,7 @@ export default function LegalFooter({
 
         {/* 브랜드 + 법적 링크 */}
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-          <Link to="/" className="flex items-center gap-2.5">
-            <span className={`grid h-9 w-9 place-items-center rounded-lg text-sm font-black tracking-tight ${dark ? 'bg-white/10 text-sky-300' : 'bg-slate-900 text-sky-400'}`}>
-              AI
-            </span>
-            <span className="flex flex-col leading-tight">
-              <span className={`text-[1.045rem] sm:text-[1.05rem] font-bold tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>{b.serviceName}</span>
-              <span className={`text-[0.902rem] sm:text-[0.95rem] font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{b.serviceNameEn} · <b className={`font-bold ${dark ? 'text-slate-200' : 'text-slate-700'}`}>중소기업 AX · AI Growth</b></span>
-            </span>
-          </Link>
+          <BrandLogo to="/" tone={dark ? 'dark' : 'light'} imgClassName="h-9 max-w-[168px] sm:h-10 sm:max-w-[190px]" />
 
           <nav aria-label="약관 및 정책" className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.96rem] font-semibold sm:text-sm">
             {legalLinks.map((l) => (

@@ -10,6 +10,7 @@ import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
 import { loginPathWithNext } from '../lib/authRouting'
 import Avatar from './account/Avatar'
+import BrandLogo from './BrandLogo'
 import ConsultModal from './ConsultModal'
 import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 
@@ -301,13 +302,12 @@ export default function PublicMenuDrawer({
           >
             {/* 상단 헤더 (고정) */}
             <div className="flex shrink-0 items-start justify-between border-b border-slate-100 px-5 py-4">
-              <div className="flex items-center gap-2.5">
-                <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-                <span className="flex flex-col leading-tight">
-                  <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">{config.topTitle}</span>
-                  <span className="text-[0.72rem] font-medium text-slate-500">{config.topSub}</span>
-                </span>
-              </div>
+              <BrandLogo
+                to={variant === 'business' ? '/business-services' : '/consultants'}
+                onClick={requestClose}
+                tagline={config.topSub}
+                imgClassName="h-9 max-w-[168px] sm:h-10 sm:max-w-[190px]"
+              />
               <button
                 type="button"
                 onClick={requestClose}

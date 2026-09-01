@@ -8,6 +8,7 @@ import StageReport from '../components/diagnosis/StageReport'
 import { deleteResult, getResultById, loadHistory } from '../lib/businessDiagnosisStorage'
 import { trackEvent } from '../lib/businessDiagnosisApi'
 import type { SavedResult } from '../types/businessDiagnosis'
+import BrandLogo from '../components/BrandLogo'
 
 const DEPTH_LABEL: Record<SavedResult['diagnosisDepth'], string> = {
   basic: '기초체력 진단 (1단계)',
@@ -28,13 +29,7 @@ function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md print:hidden">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-        <Link to="/business-diagnosis" className="flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-900 text-sm font-black tracking-tight text-sky-400">AI</span>
-          <span className="flex flex-col leading-tight">
-            <span className="text-[0.95rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-            <span className="text-[0.7rem] font-medium text-slate-500">내 진단 결과</span>
-          </span>
-        </Link>
+        <BrandLogo to="/business-diagnosis" tagline="내 진단 결과" imgClassName="h-9 max-w-[160px] sm:h-10 sm:max-w-[190px]" />
         <HeaderAccount variant="business" />
       </div>
     </header>

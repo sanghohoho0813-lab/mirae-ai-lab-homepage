@@ -10,6 +10,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import HeaderAccount from '../../components/account/HeaderAccount'
+import BrandLogo from '../../components/BrandLogo'
 import LegalFooter from '../../components/LegalFooter'
 import ConsultModal from '../../components/ConsultModal'
 import { AxSamplesGridSection } from '../../components/ax-showcase/axFinalHome'
@@ -290,14 +291,7 @@ export default function FundingConsultingDetailPage() {
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
           {/* 로고는 좁은 화면에서 줄어들 수 있게(min-w-0 + truncate), 우측 버튼은 줄어들지 않게(shrink-0) */}
-          <Link to="/business-services" className="flex min-w-0 items-center gap-2.5">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-900 text-sm sm:text-[1.137rem] font-black tracking-tight text-sky-400">AI</span>
-            <span className="flex min-w-0 flex-col leading-tight">
-              <span className="truncate text-[1.2rem] sm:text-[1.417rem] font-bold tracking-tight text-slate-900">미래 AI 랩</span>
-              {/* 모바일에는 3분 AX 진단 버튼이 함께 놓여 자리가 없다 — 부제는 sm 이상에서만 */}
-              <span className="hidden break-keep text-[1.09rem] font-medium text-slate-500 lg:block">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></span>
-            </span>
-          </Link>
+          <BrandLogo to="/business-services" imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]" />
           <div className="flex shrink-0 items-center gap-2.5 sm:gap-4">
             <Link to="/business-services" className="hidden text-[1.2rem] sm:text-[1.417rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
             <Link to="/business-diagnosis" className="whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-[1.2rem] sm:px-4 sm:text-[1.417rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">

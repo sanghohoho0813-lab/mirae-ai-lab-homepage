@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import NetworkBackdrop from '../components/NetworkBackdrop'
 import LegalFooter from '../components/LegalFooter'
+import BrandLogo from '../components/BrandLogo'
 import AccountMenu from '../components/account/AccountMenu'
 
 // 루트(/) 역할 선택 게이트웨이. 기존 페이지/컴포넌트는 건드리지 않습니다.
@@ -106,15 +107,12 @@ export default function GatewayPage() {
       {/* Content */}
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-8 text-center sm:py-14">
         {/* Brand */}
-        <div className="flex flex-col items-center gap-2.5">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-900 text-base font-black tracking-tight text-sky-400 shadow-lg shadow-slate-900/20 sm:h-14 sm:w-14 sm:text-lg">
-            AI
-          </span>
-          <div className="leading-tight">
-            <p className="text-lg font-bold tracking-tight text-slate-900">미래 AI 랩</p>
-            <p className="text-[0.82rem] font-medium text-slate-500">Mirae AI Lab · <b className="font-bold text-slate-800">중소기업 AX · AI Growth</b></p>
-          </div>
-        </div>
+        <BrandLogo
+          to="/business-services"
+          className="items-center"
+          taglineClassName="text-center"
+          imgClassName="h-12 max-w-[232px] sm:h-14 sm:max-w-[280px]"
+        />
 
         {/* Main copy */}
         <h1 className="mt-5 text-[1.55rem] font-extrabold leading-[1.25] tracking-tight text-slate-900 sm:mt-7 sm:text-4xl lg:text-[2.7rem] lg:leading-[1.2]">
