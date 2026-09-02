@@ -42,6 +42,7 @@ import SavedItemsPage from './pages/SavedItemsPage'
 import AuthGuard from './components/auth/AuthGuard'
 import GuestOnly from './components/auth/GuestOnly'
 import ScrollToTop from './components/ScrollToTop'
+import CanonicalLink from './components/CanonicalLink'
 import TermsPage from './pages/legal/TermsPage'
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage'
 import RefundPolicyPage from './pages/legal/RefundPolicyPage'
@@ -52,6 +53,7 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <AuthProvider>
         <ScrollToTop />
+        <CanonicalLink />
         <Routes>
           <Route path="/" element={<GatewayPage />} />
           <Route path="/consultants" element={<App />} />

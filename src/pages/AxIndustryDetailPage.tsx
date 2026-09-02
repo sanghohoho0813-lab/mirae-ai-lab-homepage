@@ -13,6 +13,7 @@ import AxBusinessIdeaCard from '../components/ax-showcase/AxBusinessIdeaCard'
 import AxFiveStageViewer from '../components/ax-showcase/AxFiveStageViewer'
 import { AX_V2_DISCLAIMER, AX_V2_INDUSTRIES, axV2Industry } from '../data/axIndustryShowcaseV2'
 import { AX_PACKAGES } from '../data/axPackages'
+import { canonicalUrl } from '../lib/site'
 
 const band = 'px-5 py-10 sm:py-14'
 const inner = 'mx-auto max-w-[880px]'
@@ -43,7 +44,7 @@ function useIndustrySeo(title: string, description: string, slug: string) {
       document.head.appendChild(link)
     }
     const prevHref = link.href
-    link.href = `${window.location.origin}/ax-industries/${slug}`
+    link.href = canonicalUrl(`/ax-industries/${slug}`)
 
     return () => {
       document.title = prevTitle

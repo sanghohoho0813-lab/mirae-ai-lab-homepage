@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# 색인 대상이 아닌 영역 — 로그인·개인 데이터·관리자·결제
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /auth/
+Disallow: /mypage
+Disallow: /account
+Disallow: /my-tools
+Disallow: /my-orders
+Disallow: /saved
+Disallow: /admin
+Disallow: /checkout/
+Disallow: /payment/
+Disallow: /business-diagnosis/results
+
+Sitemap: https://miraeailab.com/sitemap.xml
