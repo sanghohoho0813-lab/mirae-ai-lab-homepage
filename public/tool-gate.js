@@ -85,7 +85,12 @@
     '</div>' +
     '<style>@keyframes mirae-spin{to{transform:rotate(360deg)}}</style>'
 
+  // <head> 에서 실행되면 판정이 body 생성보다 먼저 끝날 수 있다.
+  // 상태를 남겨두지 않으면 이미 허용된 뒤에 오버레이가 붙어 화면이 잠긴 채로 남는다.
+  var state = 'pending' // pending | allowed | denied
+
   function mount() {
+    if (state === 'allowed') return
     var root = document.body || document.documentElement
     if (root && !overlay.parentNode) root.appendChild(overlay)
   }
@@ -93,10 +98,12 @@
   else document.addEventListener('DOMContentLoaded', mount)
 
   function allow() {
+    state = 'allowed'
     if (overlay.parentNode) overlay.parentNode.removeChild(overlay)
   }
 
   function deny(reason) {
+    state = 'denied'
     var title = '이용 기간이 아닙니다'
     var desc = '미래 AI 랩에서 무료 체험을 시작하면 바로 이용할 수 있습니다.'
     if (reason === 'expired') {
