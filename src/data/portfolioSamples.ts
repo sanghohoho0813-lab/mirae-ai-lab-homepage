@@ -155,6 +155,7 @@ export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
     industry: '현장 서비스업',
     line: '일정·현장·품질·재계약·수익성과 AI 운영센터가 연결된 서비스 AX',
     axUrl: 'https://sample13-one.vercel.app/',
+    customerUrl: 'https://sample13-one.vercel.app/care',
     img: '/portfolio/ax/cleanway.webp',
     imgSm: '/portfolio/ax/cleanway-sm.webp',
     alt: 'CLEANWAY 현장 서비스 AX 대시보드 화면',
