@@ -12,7 +12,7 @@ import {
 } from '../lib/accountDisplay'
 import { addRole } from '../lib/identityVerification'
 import { evaluateAccess, formatDate, formatDateTime, type ToolAccess } from '../lib/platform'
-import { fetchMyAccess, fetchTrialTools, type DbTool } from '../lib/portal'
+import { fetchMyAccess, fetchTrialTools, openTool, type DbTool } from '../lib/portal'
 import { formatKrw, getOrder, loadLocalOrders, type LocalOrder, type OrderSummary } from '../lib/payments'
 import { activeCouponAmount, formatWon, loadMyCoupons, type UserCoupon } from '../lib/coupons'
 import { EmptyOrders, StatusBadge } from '../components/payment/PaymentUX'
@@ -300,6 +300,30 @@ function ProductsTab({ userId, configured }: { userId: string; configured: boole
   const [tools, setTools] = useState<DbTool[]>([])
   const [access, setAccess] = useState<ToolAccess[]>([])
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [openingId, setOpeningId] = useState<string | null>(null)
+  const [openError, setOpenError] = useState<{ toolId: string; message: string } | null>(null)
+
+  // 도구 주소는 미리 갖고 있지 않다 — 누를 때 서버에 권한을 물어 받아온다.
+  // 팝업 차단을 피하려고 클릭 시점에 빈 탭을 먼저 열고 주소를 채운다.
+  async function openToolTab(toolId: string) {
+    const tab = window.open('about:blank', '_blank')
+    setOpeningId(toolId)
+    setOpenError(null)
+    try {
+      const url = await openTool(toolId)
+      if (tab) {
+        tab.opener = null
+        tab.location.replace(url)
+      } else {
+        window.location.assign(url)
+      }
+    } catch (e) {
+      tab?.close()
+      setOpenError({ toolId, message: e instanceof Error ? e.message : '도구를 열지 못했어요.' })
+    } finally {
+      setOpeningId(null)
+    }
+  }
 
   useEffect(() => {
     let active = true
@@ -348,9 +372,19 @@ function ProductsTab({ userId, configured }: { userId: string; configured: boole
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2">
                 {view.active ? (
-                  <Link to="/my-tools" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700">바로가기 ↗</Link>
+                  <button
+                    type="button"
+                    disabled={openingId === tool.id}
+                    onClick={() => openToolTab(tool.id)}
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {openingId === tool.id ? '확인 중…' : '바로가기 ↗'}
+                  </button>
                 ) : (
-                  <Link to="/my-tools" className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">{view.active ? '관리' : '연장 · 결제'}</Link>
+                  <Link to="/my-tools" className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">연장 · 결제</Link>
+                )}
+                {openError?.toolId === tool.id && (
+                  <p className="max-w-[220px] text-right text-xs font-medium text-rose-600">{openError.message}</p>
                 )}
               </div>
             </div>
