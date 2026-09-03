@@ -347,8 +347,8 @@ function ProductsTab({ userId, configured }: { userId: string; configured: boole
                 </div>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2">
-                {view.active && tool.external_url ? (
-                  <a href={tool.external_url} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700">바로가기 ↗</a>
+                {view.active ? (
+                  <Link to="/my-tools" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700">바로가기 ↗</Link>
                 ) : (
                   <Link to="/my-tools" className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">{view.active ? '관리' : '연장 · 결제'}</Link>
                 )}

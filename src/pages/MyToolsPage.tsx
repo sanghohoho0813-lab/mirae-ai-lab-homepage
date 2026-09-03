@@ -14,6 +14,7 @@ import {
 import {
   fetchMyAccess,
   fetchTrialTools,
+  openTool as apiOpenTool,
   startTrial as apiStartTrial,
   submitReview as apiSubmitReview,
   submitSurvey as apiSubmitSurvey,
@@ -178,6 +179,28 @@ export default function MyToolsPage() {
   }
   if (!user) return <Navigate to="/login" replace />
 
+  // 도구 열기 — 주소를 미리 갖고 있지 않고, 누를 때 서버에 권한을 물어 받아온다.
+  // 팝업 차단을 피하려고 클릭 시점에 빈 탭을 먼저 열고 주소를 채운다.
+  async function openToolTab(toolId: string) {
+    const tab = window.open('about:blank', '_blank')
+    setBusyId(toolId)
+    try {
+      const url = await apiOpenTool(toolId)
+      if (tab) {
+        tab.opener = null
+        tab.location.replace(url)
+      } else {
+        window.location.assign(url)
+      }
+    } catch (e) {
+      tab?.close()
+      setNotice({ toolId, ok: false, message: errMsg(e) })
+      await load()
+    } finally {
+      setBusyId(null)
+    }
+  }
+
   async function run(toolId: string, fn: () => Promise<{ message?: string }>) {
     setBusyId(toolId)
     try {
@@ -282,15 +305,15 @@ export default function MyToolsPage() {
                       >
                         {busy ? '처리 중…' : '7일 체험 시작'}
                       </button>
-                    ) : view.active && tool.external_url ? (
-                      <a
-                        href={tool.external_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+                    ) : view.active ? (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => openToolTab(tool.id)}
+                        className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        도구 열기 ↗
-                      </a>
+                        {busy ? '확인 중…' : '도구 열기 ↗'}
+                      </button>
                     ) : (
                       <span className="rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-400">
                         {view.status === 'revoked' ? '권한 회수됨' : '체험 종료 · 연장/결제 필요'}
@@ -344,8 +367,8 @@ export default function MyToolsPage() {
         <p className="text-base font-semibold text-slate-700">정식 이용(결제)은 준비 중입니다.</p>
         <p className="mt-1 text-sm text-slate-500">
           최대 {MAX_FREE_DAYS}일 무료 체험 이후에는 결제 또는 관리자 승인을 통해 계속 이용할 수 있도록 제공될
-          예정입니다. 현재 단계에서는 미래 AI 랩 포털 내 권한 관리만 적용되며, 각 도구의 직접 URL 접근 차단은
-          다음 단계에서 도구별 권한 검증 연동 후 적용됩니다.
+          예정입니다. 도구 주소는 이용 권한이 확인된 경우에만 전달되며, 각 도구 앱 자체의 권한 검증은 순차적으로
+          연동하고 있습니다.
         </p>
       </div>
     </PageShell>

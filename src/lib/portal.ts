@@ -10,7 +10,12 @@ export type DbTool = {
   category: string | null
   status: string | null
   access_type: AccessType
-  external_url: string | null
+  /**
+   * 도구 실제 주소. 일반 사용자 조회(fetchTrialTools)에는 포함하지 않는다 —
+   * 만료된 사용자가 응답 본문에서 주소를 주워가는 것을 막기 위해,
+   * 권한 확인을 거치는 openTool() 로만 받는다. (관리자 조회에는 포함)
+   */
+  external_url?: string | null
   is_public: boolean
   is_trial_available: boolean
   created_at: string
@@ -54,11 +59,14 @@ async function post(url: string, body: unknown): Promise<ApiResult> {
 }
 
 // ── 사용자(내 도구함) ────────────────────────────────────────────────────────
+// external_url 은 일부러 제외한다 (권한 확인 후 openTool 로만 전달)
+const TRIAL_TOOL_COLUMNS = 'id, slug, title, category, status, access_type, is_public, is_trial_available, created_at'
+
 export async function fetchTrialTools(): Promise<DbTool[]> {
   if (!supabase) return []
   const { data, error } = await supabase
     .from('tools')
-    .select('*')
+    .select(TRIAL_TOOL_COLUMNS)
     .eq('is_trial_available', true)
     .order('created_at', { ascending: true })
   if (error) throw error
@@ -79,6 +87,14 @@ export const submitReview = (toolId: string, content: string) =>
 export const submitSurvey = (toolId: string, answers: Record<string, string>) =>
   post('/api/trial', { action: 'survey', toolId, answers })
 
+/** 이용 권한을 서버에서 확인한 뒤 도구 주소를 받아온다. 만료·미시작이면 403 으로 실패한다. */
+export async function openTool(toolId: string): Promise<string> {
+  const r = await post('/api/trial', { action: 'open', toolId })
+  const url = typeof r.url === 'string' ? r.url : ''
+  if (!url) throw new Error('도구 주소를 받지 못했습니다.')
+  return url
+}
+
 // ── 관리자 ──────────────────────────────────────────────────────────────────
 export async function fetchAllProfiles(): Promise<Profile[]> {
   if (!supabase) return []
@@ -89,7 +105,8 @@ export async function fetchAllProfiles(): Promise<Profile[]> {
 
 export async function fetchAllTools(): Promise<DbTool[]> {
   if (!supabase) return []
-  const { data, error } = await supabase.from('tools').select('*').order('created_at', { ascending: true })
+  // 관리자 화면도 external_url 은 쓰지 않는다 → 컬럼 권한 회수(tool-url-hardening.sql)와 호환
+  const { data, error } = await supabase.from('tools').select(TRIAL_TOOL_COLUMNS).order('created_at', { ascending: true })
   if (error) throw error
   return (data ?? []) as DbTool[]
 }

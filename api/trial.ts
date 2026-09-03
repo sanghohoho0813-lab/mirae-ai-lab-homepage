@@ -128,6 +128,57 @@ export default async function handler(req: any, res: any) {
       return res.status(200).json({ ok: true, message: `${TRIAL_DAYS}일 무료 체험을 시작했습니다.` })
     }
 
+    // ── 액션: 도구 열기 ──────────────────────────────────────────────
+    // 이용 권한이 살아 있을 때만 external_url 을 내려준다.
+    // (클라이언트는 도구 주소를 미리 갖고 있지 않으므로, 만료되면 주소 자체를 얻지 못한다)
+    if (action === 'open') {
+      const [{ data: userData, error: userErr }, { data: tool, error: toolErr }] = await Promise.all([
+        admin.auth.getUser(token),
+        admin.from('tools').select('id, external_url').eq('id', toolId).maybeSingle(),
+      ])
+      if (userErr || !userData?.user) {
+        return res.status(401).json({ ok: false, message: '세션이 유효하지 않습니다. 다시 로그인해 주세요.', debugCode: 'bad_token', detail: detailOf(userErr) })
+      }
+      const user = userData.user
+      if (toolErr) return res.status(400).json({ ok: false, message: '도구 조회에 실패했습니다.', debugCode: 'no_tool', detail: detailOf(toolErr) })
+      if (!tool) return res.status(404).json({ ok: false, message: '도구를 찾을 수 없습니다.', debugCode: 'no_tool' })
+
+      const { data: rec, error: recErr } = await admin
+        .from('tool_access')
+        .select('trial_started_at, trial_expires_at, review_extension_used, survey_extension_used, paid_until, is_unlimited, access_status')
+        .eq('user_id', user.id)
+        .eq('tool_id', toolId)
+        .maybeSingle()
+      if (recErr) return res.status(500).json({ ok: false, message: '이용 권한을 확인하지 못했습니다.', debugCode: 'access_query', detail: detailOf(recErr) })
+
+      // src/utils/access.ts 의 canUseTool 과 동일한 판정 (서버가 권위)
+      const now = Date.now()
+      let usable = false
+      if (rec) {
+        if (rec.is_unlimited) usable = true
+        else if (rec.access_status === 'revoked') usable = false
+        else if (rec.paid_until && new Date(rec.paid_until).getTime() > now) usable = true
+        else if (rec.trial_started_at) {
+          const formula = new Date(computeExpiry(rec.trial_started_at, rec.review_extension_used, rec.survey_extension_used)).getTime()
+          const manual = rec.trial_expires_at ? new Date(rec.trial_expires_at).getTime() : null
+          usable = (manual == null ? formula : Math.max(formula, manual)) > now
+        }
+      }
+      if (!usable) {
+        return res.status(403).json({
+          ok: false,
+          message: rec?.trial_started_at
+            ? '이용 기간이 종료되었습니다. 리뷰·설문으로 연장하거나 결제 후 이용해 주세요.'
+            : `먼저 ${TRIAL_DAYS}일 무료 체험을 시작해 주세요.`,
+          debugCode: 'no_access',
+        })
+      }
+      if (!tool.external_url) {
+        return res.status(404).json({ ok: false, message: '도구 주소가 등록되어 있지 않습니다. 관리자에게 문의해 주세요.', debugCode: 'no_url' })
+      }
+      return res.status(200).json({ ok: true, url: tool.external_url })
+    }
+
     // ── 액션: 리뷰 연장 ──────────────────────────────────────────────
     if (action === 'review') {
       const text = (body?.content ?? '').trim()

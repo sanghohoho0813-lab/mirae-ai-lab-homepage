@@ -4,7 +4,8 @@ import BrandLogo from './components/BrandLogo'
 import InquiryForm from './components/InquiryForm'
 import HeaderAccount from './components/account/HeaderAccount'
 import LegalFooter from './components/LegalFooter'
-import { accessTypeLabel } from './lib/platform'
+import { TRIAL_DAYS, accessTypeLabel } from './lib/platform'
+import { useAuth } from './lib/auth'
 import { tools, upcomingTools, type Tool, type ToolStatus, type UpcomingTool } from './data/tools'
 
 // 컨설턴트용 AI 도구 소개 (/consultants). 2차 개편: 13섹션 → 5섹션으로 압축.
@@ -95,8 +96,6 @@ const gridBackground = {
   maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%)',
 } as const
 
-const externalLinkProps = { target: '_blank', rel: 'noopener noreferrer' } as const
-
 // 네이비 배너용(어두운 배경) 상태 배지 스타일
 const bannerStatusStyles: Record<ToolStatus, string> = {
   'MVP 베타': 'bg-violet-400/15 text-violet-200 ring-1 ring-inset ring-violet-300/25',
@@ -142,6 +141,10 @@ function ToolBanner({ tool }: { tool: Tool }) {
 
 // 대표 도구 — 컴팩트 카드(3열 그리드 · 모바일 2열). 좁은 폭에서는 features·추천대상을 숨김.
 function ToolCard({ tool }: { tool: Tool }) {
+  const { user } = useAuth()
+  // 도구 주소로 바로 보내지 않는다 — 회원가입 → 체험 시작을 거쳐야 실제 도구가 열린다.
+  const trialHref = user ? '/my-tools' : `/signup?next=${encodeURIComponent('/my-tools')}`
+  const ctaLabel = user ? '내 도구함에서 열기' : `가입하고 ${TRIAL_DAYS}일 무료 체험`
   const cardClass = 'group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 motion-reduce:transition-none'
   const body = (
     <>
@@ -172,8 +175,8 @@ function ToolCard({ tool }: { tool: Tool }) {
           <p className="rounded-lg bg-blue-50 px-3 py-2 text-[0.82rem] font-semibold leading-snug text-blue-700 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-[0.95rem]">“{tool.valueLine}”</p>
           {tool.isPublic ? (
             <span className="mt-3 inline-flex items-center gap-1.5 text-[0.9rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700 sm:text-[1.05rem]">
-              {accessTypeLabel[tool.accessType]}
-              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">↗</span>
+              {ctaLabel}
+              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
             </span>
           ) : (
             <button type="button" disabled className="mt-3 inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[0.85rem] font-semibold text-slate-400 sm:px-4 sm:py-2.5 sm:text-[1rem]">
@@ -186,9 +189,9 @@ function ToolCard({ tool }: { tool: Tool }) {
   )
   if (tool.isPublic) {
     return (
-      <a href={tool.url} {...externalLinkProps} className={`${cardClass} hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl motion-reduce:hover:translate-y-0`}>
+      <Link to={trialHref} className={`${cardClass} hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl motion-reduce:hover:translate-y-0`}>
         {body}
-      </a>
+      </Link>
     )
   }
   return <div className={`${cardClass} opacity-95`}>{body}</div>
@@ -407,7 +410,7 @@ function App() {
           <div className="max-w-3xl">
             <p className="text-base font-bold uppercase tracking-widest text-blue-600">컨설턴트 OS</p>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">업무 흐름으로 연결되는 도구</h2>
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">각 도구는 따로, 또 같이 작동합니다. 카드를 누르면 실제 서비스가 새 탭에서 열립니다.</p>
+            <p className="mt-4 text-lg leading-relaxed text-slate-600">각 도구는 따로, 또 같이 작동합니다. 회원가입 후 도구별로 {TRIAL_DAYS}일 무료 체험을 시작할 수 있습니다.</p>
             <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" aria-hidden />
               지속적으로 수시로 업데이트하고 있습니다

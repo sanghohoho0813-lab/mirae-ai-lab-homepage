@@ -27,7 +27,6 @@ export type Tool = {
   valueLine: string
   /** 완성도(%) — 카드에 진행바로 표시. 없으면 미표시(비공개 검토 도구 등) */
   completion?: number
-  url: string
   isPublic: boolean
   features: string[]
   /** 추천 대상 */
@@ -61,7 +60,6 @@ export const tools: Tool[] = [
       '고객이 받을 수 있는 지원금을 놓치지 않게 챙겨, 더 많은 혜택을 제안할 수 있게 합니다. 입·퇴사와 회차 관리까지 자동으로.',
     valueLine: '받을 수 있는 지원금을 빠짐없이 계산합니다',
     completion: 90,
-    url: 'https://hr-subsidy-pro.vercel.app/',
     isPublic: true,
     features: ['수급 가능액 자동 산정', '회차별 누락 방지', '입·퇴사 변동 관리', '고객 보고 자료화'],
     target: '컨설턴트 · 대표',
@@ -83,7 +81,6 @@ export const tools: Tool[] = [
       '사후관리·월간 알림·보고서까지 대신 챙겨, 고객이 “계속 관리받고 있다”고 느끼게 합니다. 자연스럽게 다음 제안 기회로 이어집니다.',
     valueLine: '끊기지 않는 사후관리를 대신 챙깁니다',
     completion: 90,
-    url: 'https://labcare-rnd-os.vercel.app/dashboard',
     isPublic: true,
     features: ['설립 준비 체크', '월간 관리 알림', '종합보고서 생성', '추가 컨설팅 제안'],
     target: '컨설턴트',
@@ -105,7 +102,6 @@ export const tools: Tool[] = [
       '미팅 전략·잠재고객·후속관리·공고를 한 곳에. 흩어진 메모와 기억을 계약으로 바꾸는 컨설턴트 OS의 중심입니다.',
     valueLine: '흩어진 상담을 계약까지 한 흐름으로 잇습니다',
     completion: 70,
-    url: 'https://corp-sales-os.vercel.app/',
     isPublic: true,
     features: ['미팅 전략 관리', '계약 실패 고객 후속관리', '콘텐츠·교육 아이디어', '최신 법령·공고 체크'],
     target: '컨설턴트',
@@ -127,7 +123,6 @@ export const tools: Tool[] = [
       '크레탑 자료를 올리면 핵심 지표·3개년 증감·미팅 주제까지 몇 초 만에. 미팅 전, 꺼낼 무기와 놓치던 제안거리를 찾아줍니다.',
     valueLine: '미팅 전, 기업 분석을 몇 초 만에 끝냅니다',
     completion: 90,
-    url: 'https://corp-sales-os-git-claude-cretop-mini-app-ksh90813.vercel.app/mini.html',
     isPublic: true,
     features: ['3개년 증감 분석', '핵심 재무지표 정리', '추천 미팅 주제', '임시 가치평가'],
     target: '컨설턴트',
@@ -148,7 +143,6 @@ export const tools: Tool[] = [
     description:
       '이익소각·자사주·배당 등 EXIT 전략을 비교해, 대표의 복잡한 자본거래 결정을 한눈에 정리해 주는 도구입니다.',
     valueLine: '복잡한 자본거래 전략을 한눈에 비교합니다',
-    url: 'https://stock-exit-simulator-a1vm.vercel.app/?review=1',
     isPublic: false,
     features: ['EXIT 전략 비교', '절세효과 시뮬레이션', '자본거래 시나리오', '의사결정 리포트'],
     target: '컨설턴트 · 대표',
@@ -170,7 +164,6 @@ export const tools: Tool[] = [
       '창업·지역·업종·나이 요건을 1분에 점검해, 고객 앞에서 바로 절세 가능성을 보여줍니다. 상담의 설득력이 달라집니다.',
     valueLine: '상담 자리에서 바로 절세 요건을 확인합니다',
     completion: 95,
-    url: 'https://startup-tax-checker.vercel.app/',
     isPublic: true,
     features: ['창업감면 1분 진단', '취등록세 절감 확인', '법령 기준 반영', '상담 즉시 활용'],
     target: '컨설턴트 · 대표',
