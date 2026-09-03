@@ -16,6 +16,8 @@ import { fetchMyAccess, fetchTrialTools, type DbTool } from '../lib/portal'
 import { formatKrw, getOrder, loadLocalOrders, type LocalOrder, type OrderSummary } from '../lib/payments'
 import { activeCouponAmount, formatWon, loadMyCoupons, type UserCoupon } from '../lib/coupons'
 import { EmptyOrders, StatusBadge } from '../components/payment/PaymentUX'
+import NoIndex from '../components/NoIndex'
+import { CUSTOMER_STAGE_LABEL, fetchMyProjects, isPortalNotReady, type MyProject } from '../lib/customerPortal'
 
 type Tab = 'profile' | 'security' | 'products' | 'orders' | 'roles'
 const TABS: { key: Tab; label: string }[] = [
@@ -48,6 +50,16 @@ export default function MyPage() {
 
   const initialTab: Tab = typeof window !== 'undefined' && window.location.hash === '#roles' ? 'roles' : 'profile'
   const [tab, setTab] = useState<Tab>(initialTab)
+  // 컨설팅 고객으로 연결된 경우에만 "내 프로젝트" 히어로를 보여준다 (도구 사용자에게는 빈 실패화면처럼 보이지 않게)
+  const [projects, setProjects] = useState<MyProject[] | null>(null)
+  useEffect(() => {
+    if (!user || !configured) return
+    let alive = true
+    fetchMyProjects()
+      .then((list) => { if (alive) setProjects(list) })
+      .catch((e) => { if (alive) setProjects(isPortalNotReady(e) ? null : []) })
+    return () => { alive = false }
+  }, [user, configured])
 
   useEffect(() => { document.title = '마이페이지 | 미래 AI 랩' }, [])
 
@@ -79,6 +91,40 @@ export default function MyPage() {
           <span className="mt-1 inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-black text-blue-700">{typeLabel}</span>
         </div>
       </div>
+
+      <NoIndex />
+      {projects && projects.length > 0 && (() => {
+        const todo = projects.reduce((n, p) => n + p.pending_actions + p.requested_documents, 0)
+        const docs = projects.reduce((n, p) => n + p.requested_documents, 0)
+        const answered = projects.reduce((n, p) => n + p.open_requests, 0)
+        return (
+          <section aria-label="내 프로젝트" className="mb-6 rounded-2xl border border-slate-900 bg-slate-900 p-5 text-white shadow-sm">
+            <p className="text-xs font-black tracking-[0.16em] text-slate-300">MY MIRAE · 내 프로젝트</p>
+            <p className="mt-1 text-lg font-black">
+              {todo > 0 ? `지금 확인할 내용이 ${todo}건 있습니다` : '진행 중인 프로젝트를 확인하세요'}
+            </p>
+            <p className="mt-1 text-sm text-slate-300">
+              {docs > 0 ? `서류 ${docs}개 요청됨 · ` : ''}{answered > 0 ? `내 요청 ${answered}건 진행 중 · ` : ''}프로젝트 {projects.length}개
+            </p>
+            <ul className="mt-4 space-y-2">
+              {projects.slice(0, 3).map((p) => (
+                <li key={p.link_id}>
+                  <Link to={`/my-projects/${p.link_id}`} className="flex items-center justify-between gap-3 rounded-xl bg-white/10 px-4 py-3 hover:bg-white/15">
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-bold">{p.name}</span>
+                      <span className="block text-xs text-slate-300">{CUSTOMER_STAGE_LABEL[p.stage]}</span>
+                    </span>
+                    {p.pending_actions + p.requested_documents > 0 && (
+                      <span className="shrink-0 rounded-full bg-amber-400 px-2.5 py-0.5 text-xs font-black text-slate-900">할 일 {p.pending_actions + p.requested_documents}</span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Link to="/my-projects" className="mt-4 inline-block text-sm font-bold text-white underline underline-offset-4">내 프로젝트 모두 보기</Link>
+          </section>
+        )
+      })()}
 
       {/* 탭 */}
       <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
