@@ -16,6 +16,7 @@ import {
   AxEffectSection,
   AxErpComparisonSection,
   AxIndustryQuestionSection,
+  AxInfoFlowSection,
   AxNotAlwaysNeededSection,
   AxTogetherScopeSection,
   AxWhyMiraeSection,
@@ -146,14 +147,17 @@ export default function BusinessServicesPage() {
         <AxHeroV2 />
       </div>
 
-      {/* 2. 첫 번째 문제제기 */}
+      {/* 2. AX가 뭐냐면요 — 무슨 말인지부터 알아야 뒤의 이야기가 들어온다 */}
+      <AxDefinitionSection />
+
+      {/* 3. 첫 번째 문제제기 */}
       <AxWhyNowSection />
 
       {/* 샘플 10개 — 기존 섹션 보존 */}
       <AxScreenShowcase />
 
-      {/* 4. AX가 뭐냐면요 */}
-      <AxDefinitionSection />
+      {/* 4. 한 번 생긴 정보가 다음 업무로 이어진다 — 샘플을 본 직후에 놓아야 설득이 된다 */}
+      <AxInfoFlowSection />
 
       {/* 5. ERP와 AX */}
       <AxErpComparisonSection />

@@ -65,9 +65,14 @@ const SECTION_03 = [
   storyImage('section-03-screen-01.png', '미래AI랩이 직접 기획하고 개발한 AX 웹앱 화면을 먼저 보여주는 안내', 'linear-gradient(90deg, #0C0F13 0%, #0C0F13 50%, #EEECEA 50%, #EEECEA 100%)'),
 ] as const
 
-const SECTION_04 = [
+// AX 정의(무엇인가 / 지금 정보가 흩어져 있다)는 히어로 바로 뒤에서 먼저 말한다.
+const SECTION_04_DEFINE = [
   storyImage('section-04-ax-01.png', 'AX는 AI Transformation이며 회사가 일하는 방식을 바꾸는 것이라는 설명 1', '#FCFBF8'),
   storyImage('section-04-ax-02.png', '회사 안의 정보가 엑셀과 카카오톡과 ERP 등에 흩어져 있다는 설명 2', '#FEFDF9'),
+] as const
+
+// "한 번 생긴 정보가 이어진다"는 결론은 샘플을 본 직후에 놓아야 설득이 된다.
+const SECTION_04_FLOW = [
   storyImage('section-04-ax-03.png', '한 번 생긴 정보가 다음 업무와 판단으로 이어지는 AX 구조 설명 3', '#0D1116'),
 ] as const
 
@@ -228,7 +233,12 @@ export function AxScreenIntroSection() {
 }
 
 export function AxDefinitionSection() {
-  return <AxInfographicStack id="ax-definition" images={SECTION_04} />
+  return <AxInfographicStack id="ax-definition" images={SECTION_04_DEFINE} />
+}
+
+/** 샘플을 본 직후 — "한 번 생긴 정보가 다음 업무로 이어진다" */
+export function AxInfoFlowSection() {
+  return <AxInfographicStack images={SECTION_04_FLOW} />
 }
 
 export function AxErpComparisonSection() {
