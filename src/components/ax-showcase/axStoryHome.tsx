@@ -53,11 +53,16 @@ function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
   )
 }
 
-const SECTION_02 = [
+// "무엇이 있어야 할까요?"(04)까지 문제를 세운 뒤, AX가 무엇인지 설명하고(SECTION_04_DEFINE)
+// "2026년, 흐름도 바뀌고 있습니다"(05)로 넘어간다.
+const SECTION_02_A = [
   storyImage('section-02-problem-01.png', '사업계획서만으로는 부족하며 실제 구현이 중요하다는 첫 번째 문제제기 1', '#0C0F15'),
   storyImage('section-02-problem-02.png', '사업계획서 이후 실제 구현 여부를 묻는 첫 번째 문제제기 2', '#FAFAF8'),
   storyImage('section-02-problem-03.png', '정책자금과 투자유치에서 실제 사업의 모습을 보여주는 힘을 설명하는 첫 번째 문제제기 3', '#050B11'),
   storyImage('section-02-problem-04.png', '작동하는 웹앱과 고객 화면과 데이터의 중요성을 설명하는 첫 번째 문제제기 4', '#FDFCFA'),
+] as const
+
+const SECTION_02_B = [
   storyImage('section-02-problem-05.png', '실제 사업을 움직이는 웹앱과 AX의 설명력을 말하는 첫 번째 문제제기 5', '#0F1317'),
 ] as const
 
@@ -225,7 +230,12 @@ function AxIndustryPlatformLinks() {
 }
 
 export function AxWhyNowSection() {
-  return <AxInfographicStack id="why-now" images={SECTION_02} />
+  return <AxInfographicStack id="why-now" images={SECTION_02_A} />
+}
+
+/** AX 정의를 사이에 끼운 뒤 이어지는 "2026년, 흐름도 바뀌고 있습니다" */
+export function AxWhyNowOutroSection() {
+  return <AxInfographicStack images={SECTION_02_B} />
 }
 
 export function AxScreenIntroSection() {

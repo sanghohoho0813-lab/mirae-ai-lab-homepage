@@ -20,6 +20,7 @@ import {
   AxNotAlwaysNeededSection,
   AxTogetherScopeSection,
   AxWhyMiraeSection,
+  AxWhyNowOutroSection,
   AxWhyNowSection,
 } from '../components/ax-showcase/axStoryHome'
 import {
@@ -147,11 +148,14 @@ export default function BusinessServicesPage() {
         <AxHeroV2 />
       </div>
 
-      {/* 2. AX가 뭐냐면요 — 무슨 말인지부터 알아야 뒤의 이야기가 들어온다 */}
+      {/* 2. 첫 번째 문제제기 — "무엇이 있어야 할까요?" 까지 */}
+      <AxWhyNowSection />
+
+      {/* 3. AX가 뭐냐면요 — 무엇이 필요한지 물은 직후에 용어를 풀어준다 */}
       <AxDefinitionSection />
 
-      {/* 3. 첫 번째 문제제기 */}
-      <AxWhyNowSection />
+      {/* 4. 그래서 2026년, 흐름도 바뀌고 있습니다 */}
+      <AxWhyNowOutroSection />
 
       {/* 샘플 10개 — 기존 섹션 보존 */}
       <AxScreenShowcase />
