@@ -1,34 +1,27 @@
 // 홈 — 초기 MVP 레퍼런스 10종. "아이디어를 동작하는 서비스로 만든" 보조 그룹.
 //
-//  - PC: 위 5개 / 아래 5개, 복제 없이 서로 반대 방향으로 좌우 ±10% 범위를 아주 천천히
-//    오간다(핑퐁 드리프트). 광고 배너처럼 흘러가 사라지지 않아 충분히 읽을 수 있다.
-//    줄에 커서를 올리면 그 줄만 멈춘다. "동작 줄이기" 설정이면 움직이지 않는다.
-//  - 모바일: 애니메이션 대신 2열 그리드 — 탐색·가독·터치를 우선한다.
+//  - 위 5개 / 아래 5개로 고정된 격자. 움직이지 않으므로 천천히 훑어보고 고를 수 있다.
+//    (좁은 화면은 2열 → 3열 → 5열로 넓어진다. 대표 샘플 섹션과 같은 격자 규칙.)
 //  - 카드는 가상 브랜드명보다 "무엇을 위한 서비스인지"(브랜드 포인트 라벨)가 먼저 읽히게 한다.
 import { PORTFOLIO_SAMPLES, PORTFOLIO_SECTION, type PortfolioSample } from '../../data/portfolioSamples'
 
-const ROW_A = PORTFOLIO_SAMPLES.slice(0, 5)
-const ROW_B = PORTFOLIO_SAMPLES.slice(5)
-
-function MvpCard({ s, drift = false }: { s: PortfolioSample; drift?: boolean }) {
+function MvpCard({ s }: { s: PortfolioSample }) {
   return (
     <a
       href={s.url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group/card flex flex-col overflow-hidden rounded-xl border border-white/12 bg-[#171B20] transition-colors hover:border-[#D47A4A]/45 sm:rounded-2xl ${
-        drift ? 'w-[280px] shrink-0' : ''
-      }`}
+      className="group/card flex flex-col overflow-hidden rounded-xl border border-white/12 bg-[#171B20] transition-colors hover:border-[#D47A4A]/45 sm:rounded-2xl"
     >
       <span className="block aspect-[16/10] overflow-hidden bg-[#343B44]">
         <img
           src={s.imgSm}
           srcSet={`${s.imgSm} 720w, ${s.img} 1440w`}
-          sizes={drift ? '280px' : '46vw'}
+          sizes="(min-width: 1024px) 20vw, (min-width: 640px) 30vw, 46vw"
           alt={s.alt}
           width={720}
           height={450}
-          // 드리프트는 transform 으로 움직여 lazy 판정이 어긋난다 — 작은 썸네일이라 즉시 로딩한다
+          loading="lazy"
           decoding="async"
           className="h-full w-full object-cover object-top transition-transform duration-500 group-hover/card:scale-[1.02]"
         />
@@ -56,26 +49,8 @@ export default function AxPortfolioSection() {
           </h2>
         </div>
 
-        {/* PC — 5 + 5 반대 방향 드리프트 (복제 없음) */}
-        <div className="mt-8 hidden space-y-4 overflow-hidden sm:mt-10 sm:block">
-          <div className="ax-drift-row overflow-hidden">
-            <div className="ax-drift-track ax-drift-a flex w-max gap-4 pl-6">
-              {ROW_A.map((s) => (
-                <MvpCard key={s.slug} s={s} drift />
-              ))}
-            </div>
-          </div>
-          <div className="ax-drift-row overflow-hidden">
-            <div className="ax-drift-track ax-drift-b ml-auto flex w-max gap-4 pr-6">
-              {ROW_B.map((s) => (
-                <MvpCard key={s.slug} s={s} drift />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* 모바일 — 2열 그리드, 애니메이션 없음 */}
-        <div className="mx-auto mt-7 grid grid-cols-2 gap-3 px-5 sm:hidden">
+        {/* 5개씩 2줄 고정 격자 — 대표 샘플 섹션과 같은 규칙 */}
+        <div className="mx-auto mt-8 grid max-w-[86rem] grid-cols-2 gap-3 px-5 sm:mt-10 sm:grid-cols-3 sm:gap-4 sm:px-6 lg:grid-cols-5">
           {PORTFOLIO_SAMPLES.map((s) => (
             <MvpCard key={s.slug} s={s} />
           ))}

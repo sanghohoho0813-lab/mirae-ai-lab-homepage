@@ -29,7 +29,7 @@ import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { FLAGSHIP } from '../data/corePrograms'
-import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
+import { readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
 
 // 미래AI랩 = 기업의 운영·고객·데이터를 AI로 연결하는 AX 회사.
 // 정책자금·정부지원은 메인 상품이 아니라 AX 실행력을 성장으로 잇는 Growth Layer 로 배치한다.
@@ -39,8 +39,6 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 깊은 설명(정의·프로세스·수행체계·개발방식)은 프로그램 상세페이지가 맡는다.
 // 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다.
 // 가격 · 진행과정 · 업종별 15개 화면 · 비교표 · FAQ 는 정책자금 상세페이지에서 다룬다.
-const DETAIL = '/business-services/funding-consulting'
-
 export default function BusinessServicesPage() {
   const { cart } = useSavedItems()
   const [historyCount] = useState(() => loadHistory().length)
@@ -106,7 +104,6 @@ export default function BusinessServicesPage() {
     return () => io.disconnect()
   }, [])
 
-  const saveReturn = (cardId: string) => saveBusinessReturn(cardId)
   const openPreview = () => setPreviewDevice(window.innerWidth < 768 ? 'desktop' : 'mobile')
 
   return (
@@ -120,7 +117,11 @@ export default function BusinessServicesPage() {
             <a href="#real-projects" className="transition-colors hover:text-slate-900">실제 프로젝트</a>
             <a href="#ax-definition" className="transition-colors hover:text-slate-900">AX란</a>
                         <a href="#growth" className="hidden transition-colors hover:text-slate-900 min-[1360px]:inline">Growth Layer</a>
-            <Link to={DETAIL} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">프로그램</Link>
+            {/* 프로그램 상세페이지 전면 개정 중 — 이동을 막는다 */}
+            <span className="inline-flex cursor-not-allowed items-center gap-1.5 text-slate-400" aria-disabled="true">
+              프로그램
+              <span className="rounded-md bg-slate-200 px-1.5 py-0.5 text-[0.72em] font-black leading-none text-slate-500">업데이트 중</span>
+            </span>
           </nav>
           <div className="flex items-center gap-2 sm:gap-2.5">
             {historyCount > 0 && (
