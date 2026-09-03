@@ -112,8 +112,10 @@ export type PortalProject = {
 
 /** 브릿지 함수가 아직 배포되지 않은 환경(READY 상태)인지 — 화면은 이 경우 "준비 중"으로 안내한다 */
 export function isPortalNotReady(e: unknown): boolean {
-  const msg = e instanceof Error ? e.message : String(e)
-  return /could not find the function|does not exist|schema cache|PGRST202|42883/i.test(msg)
+  // supabase-js 의 PostgrestError 는 Error 인스턴스가 아닐 수 있어 message/code 를 직접 본다
+  const o = e as { message?: unknown; code?: unknown; details?: unknown; hint?: unknown } | null
+  const msg = [o?.message, o?.code, o?.details, o?.hint].filter((v) => typeof v === 'string').join(' ') || String(e)
+  return /could not find the function|does not exist|schema cache|PGRST202|42883|42P01/i.test(msg)
 }
 
 function requireClient() {
