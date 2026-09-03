@@ -69,14 +69,14 @@ export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
   {
     slug: 'lumiere',
     name: 'LUMIÈRE',
-    industry: '미용실',
+    industry: '헤어숍',
     line: '예약·고객·재방문·멤버십과 AI 스타일 추천이 연결된 살롱 AX',
     axUrl: 'https://sample17-lumiere-hair-salon-hybrid.vercel.app/ax',
     customerUrl: 'https://sample17-lumiere-hair-salon-hybrid.vercel.app/',
     img: '/portfolio/ax/lumiere.webp',
     imgSm: '/portfolio/ax/lumiere-sm.webp',
     axImg: '/portfolio/ax/lumiere-ax.webp',
-    alt: 'LUMIÈRE 미용실 고객 예약 플랫폼 첫 화면',
+    alt: 'LUMIÈRE 헤어숍 고객 예약 플랫폼 첫 화면',
   },
   {
     slug: 'seum',

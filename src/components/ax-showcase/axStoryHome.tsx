@@ -115,7 +115,7 @@ const CUSTOMER_PLATFORM_LINKS = [
     sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'gounsot')!,
   },
   {
-    industry: '미용실',
+    industry: '헤어숍',
     flow: '예약, 시술이력, 재예약',
     sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'lumiere')!,
   },
