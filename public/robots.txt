@@ -10,6 +10,7 @@ Disallow: /mypage
 Disallow: /account
 Disallow: /my-tools
 Disallow: /my-orders
+Disallow: /my-projects
 Disallow: /saved
 Disallow: /admin
 Disallow: /checkout/

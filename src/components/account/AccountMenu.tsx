@@ -128,6 +128,9 @@ export default function AccountMenu({ className = '' }: { className?: string }) 
             <Link to="/my-tools" role="menuitem" className={itemClass} onClick={close}>
               <span aria-hidden>🧰</span> 내 도구함
             </Link>
+            <Link to="/my-projects" role="menuitem" className={itemClass} onClick={close}>
+              <span aria-hidden>📁</span> 내 프로젝트
+            </Link>
             <Link to="/mypage#roles" role="menuitem" className={itemClass} onClick={close}>
               <span aria-hidden>🔀</span> {bothRoles ? '역할 전환·관리' : '역할 추가'}
             </Link>

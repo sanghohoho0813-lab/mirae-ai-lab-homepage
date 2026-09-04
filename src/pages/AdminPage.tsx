@@ -290,6 +290,19 @@ export default function AdminPage() {
 
   return (
     <PageShell title="관리자" subtitle="사용자별 도구 이용 기간, 승인 상태, 리뷰·설문 참여 여부, 결제 상태를 관리할 수 있습니다.">
+      {/* 관리자에게만 보이는 내부 운영 OS 진입 — 외부 링크이며 로그인 세션을 공유하지 않는다 */}
+      <a
+        href="https://ax-mvp-factory-os.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition-colors hover:border-slate-400"
+      >
+        <span>
+          <span className="block text-sm font-black text-slate-900">내부 운영 OS 열기</span>
+          <span className="block text-xs text-slate-500">MIRAE AI LAB OS — 고객 운영·이벤트함·업무 일기 (별도 로그인)</span>
+        </span>
+        <span aria-hidden className="text-slate-400">↗</span>
+      </a>
       {err && <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700">{err}</div>}
 
       <div className={`mb-6 rounded-xl border px-5 py-3.5 text-sm ${pendingCount > 0 ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-slate-200 bg-slate-50 text-slate-600'}`}>
