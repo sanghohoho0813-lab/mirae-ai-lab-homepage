@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './index.css'
@@ -48,6 +48,11 @@ import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage'
 import RefundPolicyPage from './pages/legal/RefundPolicyPage'
 import BusinessInfoPage from './pages/legal/BusinessInfoPage'
 
+// 고객 프로젝트 Portal — 로그인 고객 전용이라 공개 마케팅 번들과 분리해 지연 로딩한다
+const MyProjectsPage = lazy(() => import('./pages/MyProjectsPage'))
+const MyProjectDetailPage = lazy(() => import('./pages/MyProjectDetailPage'))
+const portalFallback = <div className="flex min-h-[40vh] items-center justify-center text-sm text-slate-500">불러오는 중…</div>
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
@@ -84,6 +89,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/checkout/:productSlug" element={<CheckoutPage />} />
           <Route path="/payment/complete" element={<PaymentCompletePage />} />
           <Route path="/my-orders" element={<MyOrdersPage />} />
+          <Route path="/my-projects" element={<Suspense fallback={portalFallback}><MyProjectsPage /></Suspense>} />
+          <Route path="/my-projects/:linkId" element={<Suspense fallback={portalFallback}><MyProjectDetailPage /></Suspense>} />
           <Route path="/business-services" element={<BusinessServicesPage />} />
           <Route path="/ax-industries/:slug" element={<AxIndustryDetailPage />} />
           <Route path="/saved" element={<SavedItemsPage />} />
