@@ -149,8 +149,6 @@ function ResultDetail({ resultId }: { resultId: string }) {
         onWantResult={() => navigate('/business-diagnosis')}
         onContinueAfterSubmit={() => navigate('/business-diagnosis')}
         onRestart={() => navigate('/business-diagnosis')}
-        onProductClick={(slug) => trackEvent(result.sessionId, 'product_detail_clicked', slug, { from: 'saved_result' })}
-        onConsultClick={(slug) => trackEvent(result.sessionId, 'consultation_clicked', slug ?? 'general', { from: 'saved_result' })}
         onPrint={() => trackEvent(result.sessionId, 'report_printed', String(result.completedStage))}
       />
     </>

@@ -1,9 +1,7 @@
 // 영역별 준비도 카드 — 점수보다 '현재 상태·지금 할 일'이 먼저. 색상은 심각도 톤을 따릅니다.
 // 기본: 상태 문장 + 핵심 근거 1개 + 지금 할 일. '왜 이런 결과가 나왔나요?'로 상세 펼침.
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import type { AreaResult, SeverityTone } from '../../types/businessDiagnosis'
-import { getPackageBySlug } from '../../data/businessPackages'
 
 const TONE: Record<SeverityTone, { chip: string; bar: string; dot: string; sentence: string }> = {
   green: { chip: 'bg-emerald-100 text-emerald-800', bar: 'bg-emerald-500', dot: 'bg-emerald-500', sentence: 'text-emerald-800' },
@@ -16,7 +14,6 @@ const TONE: Record<SeverityTone, { chip: string; bar: string; dot: string; sente
 export default function ScoreCard({ result, index }: { result: AreaResult; index: number }) {
   const [open, setOpen] = useState(false)
   const t = TONE[result.tone]
-  const pkg = result.linkedProductSlug ? getPackageBySlug(result.linkedProductSlug) : null
 
   return (
     <div className="animate-rise-in rounded-2xl border border-slate-200 bg-white shadow-sm" style={{ animationDelay: `${index * 70}ms` }}>
@@ -73,14 +70,6 @@ export default function ScoreCard({ result, index }: { result: AreaResult; index
           </ul>
           <p className="mt-3 text-xs font-black uppercase tracking-wide text-amber-600">그대로 두면</p>
           <p className="mt-1 text-sm leading-snug text-slate-600">{result.missText}</p>
-          {pkg && (
-            <Link
-              to={`/business-services/${pkg.slug}`}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-sm font-bold text-white transition-colors hover:bg-slate-700"
-            >
-              연결 서비스 · {pkg.name} →
-            </Link>
-          )}
         </div>
       )}
     </div>
