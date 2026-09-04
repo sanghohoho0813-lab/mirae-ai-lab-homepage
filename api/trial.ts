@@ -147,8 +147,11 @@ export default async function handler(req: any, res: any) {
     }
     const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
 
-    // ── 액션: 체험 시작 ──────────────────────────────────────────────
-    if (action === 'start') {
+    // ── 액션: 이용 신청 (관리자 승인 대기) ──────────────────────────
+    // ⚠️ 예전에는 여기서 곧바로 7일 체험이 시작됐다. 지금은 신청만 접수한다.
+    //    실제 이용 권한(trial_started_at)은 관리자가 /admin 에서 승인해야만 생긴다.
+    //    가입만으로는 어떤 도구에도 들어갈 수 없다.
+    if (action === 'request' || action === 'start') {
       // 인증 + 도구 조회를 병렬로 (서로 의존하지 않음)
       const [{ data: userData, error: userErr }, { data: tool, error: toolErr }] = await Promise.all([
         admin.auth.getUser(token),
@@ -167,34 +170,34 @@ export default async function handler(req: any, res: any) {
 
       const { data: existing, error: exErr } = await admin
         .from('tool_access')
-        .select('id, trial_started_at')
+        .select('id, trial_started_at, access_status')
         .eq('user_id', user.id)
         .eq('tool_id', toolId)
         .maybeSingle()
-      if (exErr) return res.status(500).json({ ok: false, message: '기존 체험 정보 조회에 실패했습니다.', debugCode: 'access_query', detail: detailOf(exErr) })
+      if (exErr) return res.status(500).json({ ok: false, message: '기존 신청 정보 조회에 실패했습니다.', debugCode: 'access_query', detail: detailOf(exErr) })
+      if (existing?.access_status === 'revoked') {
+        return res.status(403).json({ ok: false, message: '이용이 제한된 계정입니다. 관리자에게 문의해 주세요.', debugCode: 'revoked' })
+      }
       if (existing?.trial_started_at) {
-        return res.status(409).json({ ok: false, message: '이미 체험을 시작한 도구입니다.', debugCode: 'already_started' })
+        return res.status(409).json({ ok: false, message: '이미 이용 승인이 완료된 도구입니다.', debugCode: 'already_granted' })
+      }
+      if (existing) {
+        return res.status(200).json({ ok: true, message: '이미 신청되어 관리자 승인을 기다리는 중입니다.' })
       }
 
-      const startedMs = Date.now()
+      // 신청 접수 = access_status 'none' 행 생성. 이 상태로는 어떤 도구도 열리지 않는다.
       const { error: upErr } = await admin.from('tool_access').upsert(
-        {
-          user_id: user.id,
-          tool_id: toolId,
-          access_status: 'trial_active',
-          trial_started_at: new Date(startedMs).toISOString(),
-          trial_expires_at: new Date(startedMs + TRIAL_DAYS * DAY).toISOString(),
-        },
+        { user_id: user.id, tool_id: toolId, access_status: 'none' },
         { onConflict: 'user_id,tool_id' },
       )
       if (upErr) {
         if (isFkViolation(upErr)) {
           return res.status(400).json({ ok: false, message: '프로필이 없습니다. 다시 로그인하거나 관리자에게 문의해 주세요.', debugCode: 'no_profile', detail: detailOf(upErr) })
         }
-        return res.status(500).json({ ok: false, message: '체험 시작 저장에 실패했습니다.', debugCode: 'access_upsert', detail: detailOf(upErr) })
+        return res.status(500).json({ ok: false, message: '이용 신청 저장에 실패했습니다.', debugCode: 'access_upsert', detail: detailOf(upErr) })
       }
 
-      return res.status(200).json({ ok: true, message: `${TRIAL_DAYS}일 무료 체험을 시작했습니다.` })
+      return res.status(200).json({ ok: true, message: '이용 신청이 접수되었습니다. 관리자 승인 후 이용할 수 있습니다.' })
     }
 
     // ── 액션: 도구 열기 ──────────────────────────────────────────────

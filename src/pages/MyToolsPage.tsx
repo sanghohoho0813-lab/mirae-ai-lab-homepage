@@ -15,7 +15,7 @@ import {
   fetchMyAccess,
   fetchTrialTools,
   openTool as apiOpenTool,
-  startTrial as apiStartTrial,
+  requestAccess as apiRequestAccess,
   submitReview as apiSubmitReview,
   submitSurvey as apiSubmitSurvey,
   type DbTool,
@@ -231,9 +231,17 @@ export default function MyToolsPage() {
         ))}
       </div>
 
+      <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+        <p className="text-base font-bold text-amber-900">모든 도구는 관리자 승인 후 이용할 수 있습니다.</p>
+        <p className="mt-1.5 text-sm leading-relaxed text-amber-800">
+          정식 출시 전 단계라 신청 내역을 확인한 뒤 순차적으로 열어드리고 있습니다. 신청해 주시면 검토 후
+          연락드리며, 승인 전까지는 도구가 열리지 않습니다.
+        </p>
+      </div>
+
       <p className="mb-8 text-center text-sm leading-relaxed text-slate-500">
-        각 도구는 신청한 시각부터 정확히 {TRIAL_DAYS}일간 체험할 수 있습니다. 리뷰와 설문에 참여하면 최대{' '}
-        {MAX_FREE_DAYS}일까지 무료 체험을 연장할 수 있습니다.
+        각 도구는 <b className="text-slate-700">승인된 시각</b>부터 정확히 {TRIAL_DAYS}일간 이용할 수 있습니다. 리뷰와
+        설문에 참여하면 최대 {MAX_FREE_DAYS}일까지 무료로 연장할 수 있습니다.
       </p>
 
       {dataLoading ? (
@@ -260,19 +268,26 @@ export default function MyToolsPage() {
                             ? 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20'
                             : view.status === 'trial_expired'
                               ? 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20'
-                              : 'bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-400/30'
+                              : view.awaitingApproval
+                                ? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20'
+                                : 'bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-400/30'
                         }`}
                       >
-                        {view.statusLabel}
+                        {view.awaitingApproval ? '승인 대기' : view.statusLabel}
                       </span>
                     </div>
                     <h3 className="mt-3 text-xl font-bold tracking-tight text-slate-900">{tool.title}</h3>
                     <div className="mt-1.5 space-y-1 text-sm text-slate-500">
                       {view.unlimited ? (
                         <p>무제한 이용 권한이 부여되었습니다.</p>
+                      ) : view.awaitingApproval ? (
+                        <p>
+                          이용 신청이 접수되었습니다. <b className="text-slate-700">관리자 승인 후</b> 이용할 수 있으며,
+                          승인된 시각부터 정확히 {TRIAL_DAYS}일 동안 사용할 수 있습니다.
+                        </p>
                       ) : view.status === 'none' ? (
                         <p>
-                          아직 체험을 시작하지 않았습니다. 시작하면 지금 시각부터 정확히 {TRIAL_DAYS}일 동안
+                          이용하려면 먼저 신청해 주세요. 관리자 승인 후 승인 시각부터 정확히 {TRIAL_DAYS}일 동안
                           사용할 수 있습니다.
                         </p>
                       ) : view.blocked ? (
@@ -296,14 +311,18 @@ export default function MyToolsPage() {
                   </div>
 
                   <div className="flex shrink-0 flex-col items-end gap-2">
-                    {view.status === 'none' ? (
+                    {view.awaitingApproval ? (
+                      <span className="rounded-lg bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                        관리자 승인 대기 중
+                      </span>
+                    ) : view.canStart ? (
                       <button
                         type="button"
                         disabled={busy}
-                        onClick={() => run(tool.id, () => apiStartTrial(tool.id))}
+                        onClick={() => run(tool.id, () => apiRequestAccess(tool.id))}
                         className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        {busy ? '처리 중…' : '7일 체험 시작'}
+                        {busy ? '처리 중…' : '이용 신청하기'}
                       </button>
                     ) : view.active ? (
                       <button

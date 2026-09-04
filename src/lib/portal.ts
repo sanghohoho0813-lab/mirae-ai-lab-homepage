@@ -81,7 +81,11 @@ export async function fetchMyAccess(userId: string): Promise<ToolAccess[]> {
 }
 
 // 통합 엔드포인트(/api/trial) — Vercel 서버리스 함수 개수 제한 대응. action 으로 분기.
-export const startTrial = (toolId: string) => post('/api/trial', { action: 'start', toolId })
+/**
+ * 이용 신청. 승인이 아니라 "신청 접수"만 한다 —
+ * 실제 이용 권한은 관리자가 /admin 에서 승인해야 생긴다.
+ */
+export const requestAccess = (toolId: string) => post('/api/trial', { action: 'request', toolId })
 export const submitReview = (toolId: string, content: string) =>
   post('/api/trial', { action: 'review', toolId, content })
 export const submitSurvey = (toolId: string, answers: Record<string, string>) =>
