@@ -114,12 +114,13 @@ export default function BusinessServicesPage() {
       {/* Header — 핵심 메뉴만 */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-5 lg:gap-6">
-          {/* 모바일에서는 태그라인(가로 276px)이 헤더를 밀어내 햄버거가 잘린다 → sm 이상에서만 노출 */}
+          {/* 태그라인은 그대로 두되, 모바일에서 글자·자간을 줄여 햄버거·미리보기 버튼과 겹치지 않게 한다 */}
+          {/* 아주 좁은 화면(320~360px)에서는 남은 폭만큼만 차지하고 태그라인이 …로 줄어든다 */}
           <BrandLogo
             to="/business-services"
-            className="shrink-0"
+            className="min-w-0 max-w-[calc(100vw-148px)] shrink-0 sm:max-w-none"
             imgClassName="h-9 max-w-[132px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]"
-            taglineClassName="hidden sm:block"
+            taglineClassName="text-[0.5rem]! tracking-[0.13em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
           />
           <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
             <a href="#portfolio" className="transition-colors hover:text-slate-900">AX 사례</a>
@@ -151,9 +152,15 @@ export default function BusinessServicesPage() {
                 type="button"
                 onClick={openPreview}
                 aria-label="PC·스마트폰 화면 미리보기"
-                className="shrink-0 whitespace-nowrap rounded-lg border border-[#D47A4A]/40 px-2 py-1.5 text-[0.78rem] font-bold text-[#171B20] transition-colors hover:bg-[#F3D9C8]/50 sm:px-2.5 sm:text-[0.88rem]"
+                title="PC ↔ 스마트폰 화면 미리보기"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#D47A4A]/40 text-[#171B20] transition-colors hover:bg-[#F3D9C8]/50 sm:h-auto sm:w-auto sm:px-2.5 sm:py-1.5 sm:text-[0.88rem] sm:font-bold"
               >
-                <span className="sm:hidden">PC↔폰</span>
+                {/* 모바일은 아이콘만 — 로고 태그라인이 들어갈 자리를 비워준다 */}
+                <svg viewBox="0 0 24 24" className="h-[19px] w-[19px] sm:hidden" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <rect x="1.5" y="4" width="13" height="9.5" rx="1.4" />
+                  <path d="M5 17h6" />
+                  <rect x="16.5" y="9" width="6" height="11" rx="1.4" />
+                </svg>
                 <span className="hidden sm:inline">PC ↔ 스마트폰</span>
               </button>
             )}

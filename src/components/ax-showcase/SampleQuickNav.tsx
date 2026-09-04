@@ -13,28 +13,25 @@ const HEADER_OFFSET = 68
 
 type Group = {
   id: string
-  eyebrow: string
   title: string
   desc: string
-  names: string[]
 }
 
+// 목록을 다 나열하면 훑어야 할 게 너무 많아진다 — 이름 두 개와 한 줄 설명만 크게 보여준다.
 const GROUPS: Group[] = [
   {
     id: 'portfolio',
-    eyebrow: 'AX + PLATFORM',
     title: '업종 AX 10',
     desc: '직원이 쓰는 운영 화면과 고객·거래처가 쓰는 플랫폼을 업종별로 만들어 둔 데모입니다.',
-    names: AX_PLATFORM_SAMPLES.map((s) => s.industry),
   },
   {
     id: 'mvp-refs',
-    eyebrow: 'EARLY MVP',
     title: '아이디어 MVP 10',
     desc: '머릿속에만 있던 아이디어를 일단 움직이는 서비스로 만들어 본 초기 레퍼런스입니다.',
-    names: PORTFOLIO_SAMPLES.map((s) => s.kind),
   },
 ]
+
+const TOTAL = AX_PLATFORM_SAMPLES.length + PORTFOLIO_SAMPLES.length
 
 export default function SampleQuickNav() {
   const [open, setOpen] = useState(false)
@@ -92,14 +89,16 @@ export default function SampleQuickNav() {
           type="button"
           onClick={() => setOpen(true)}
           aria-expanded={false}
-          aria-label="샘플 20개 둘러보기 열기"
-          className="fixed right-0 top-1/2 z-40 -translate-y-1/2 rounded-l-xl border border-r-0 border-white/15 bg-[#171B20]/70 py-3 pl-2.5 pr-2 text-white opacity-60 shadow-lg shadow-black/25 backdrop-blur transition-all hover:bg-[#171B20]/95 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A]"
+          aria-label={`샘플 ${TOTAL}개 둘러보기 열기`}
+          className="fixed right-0 top-[57%] z-40 -translate-y-1/2 rounded-l-xl border border-r-0 border-white/15 bg-[#171B20]/70 py-3 pl-2.5 pr-2 text-white opacity-60 shadow-lg shadow-black/25 backdrop-blur transition-all hover:bg-[#171B20]/95 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A]"
         >
           <span aria-hidden className="block text-center text-[1.05rem] leading-none">▦</span>
-          <span className="mt-1 block text-[0.62rem] font-black leading-tight tracking-tight text-[#E8B89A]">
+          <span className="mt-1 block text-center text-[0.62rem] font-black leading-[1.35] tracking-tight text-[#E8B89A]">
             샘플
             <br />
-            20
+            {TOTAL}개
+            <br />
+            보기
           </span>
         </button>
       )}
@@ -143,24 +142,16 @@ export default function SampleQuickNav() {
                   key={g.id}
                   type="button"
                   onClick={() => goTo(g.id)}
-                  className="block w-full rounded-xl border border-white/12 bg-[#22272E] p-3.5 text-left transition-colors hover:border-[#D47A4A]/50 hover:bg-[#282E36] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A]"
+                  className="block w-full rounded-xl border border-white/12 bg-[#22272E] p-4 text-left transition-colors hover:border-[#D47A4A]/50 hover:bg-[#282E36] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A] sm:p-4.5"
                 >
-                  <p className="text-[0.68rem] font-black tracking-widest text-[#6B7680]">{g.eyebrow}</p>
-                  <p className="mt-1 flex items-center gap-1.5 text-[1.05rem] font-black leading-tight text-white">
+                  <p className="flex items-center gap-2 text-[1.42rem] font-black leading-tight text-white sm:text-[1.5rem]">
                     {g.title}
                     <span aria-hidden className="text-[#D47A4A]">→</span>
                   </p>
-                  <p className="mt-1.5 text-[0.86rem] leading-relaxed text-slate-400">{g.desc}</p>
-                  <p className="mt-2 line-clamp-2 text-[0.8rem] font-bold leading-relaxed text-[#E8B89A]">
-                    {g.names.join(' · ')}
-                  </p>
+                  <p className="mt-2 text-[1.02rem] font-medium leading-relaxed text-slate-300 sm:text-[1.05rem]">{g.desc}</p>
                 </button>
               ))}
             </div>
-
-            <p className="mt-3.5 text-center text-[0.78rem] leading-relaxed text-[#6B7680]">
-              모두 고객사 실적이 아니라 미래AI랩이 직접 기획·개발한 자체 데모입니다.
-            </p>
           </div>
         </>
       )}
