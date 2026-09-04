@@ -334,7 +334,10 @@ export type AccessView = {
   /** 사람이 보기 좋은 남은 기간 (예: "6일", "23시간", "15분", "체험 종료", "무제한") */
   remainingLabel: string
   expiresAt: string | null
+  /** 아직 신청도 하지 않은 상태 — 이용 신청 버튼을 보여줄 수 있다 */
   canStart: boolean
+  /** 신청은 했지만 관리자 승인 전 — 이용 불가 */
+  awaitingApproval: boolean
   canExtendReview: boolean
   canExtendSurvey: boolean
 }
@@ -352,6 +355,7 @@ export function evaluateAccess(rec: ToolAccess | undefined): AccessView {
       remainingLabel: '미시작',
       expiresAt: null,
       canStart: true,
+      awaitingApproval: false,
       canExtendReview: false,
       canExtendSurvey: false,
     }
@@ -397,7 +401,9 @@ export function evaluateAccess(rec: ToolAccess | undefined): AccessView {
     remainingDays,
     remainingLabel,
     expiresAt: rec.is_unlimited ? null : expMs ? new Date(expMs).toISOString() : null,
-    canStart: status === 'none',
+    // 레코드가 있다는 것은 이미 신청했다는 뜻 → 다시 신청할 수 없다
+    canStart: false,
+    awaitingApproval: status === 'none',
     canExtendReview: canExtendByReview(rec),
     canExtendSurvey: canExtendBySurvey(rec),
   }

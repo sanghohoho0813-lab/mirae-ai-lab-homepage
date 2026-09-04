@@ -71,17 +71,21 @@ const trustAwards = [
 
 // 이용 방식 3단계 (기존 요금제 3플랜 → 흐름형 3단계로 압축)
 const useSteps = [
-  { no: '01', title: '도구 선택', desc: '상담 흐름에 맞는 AI 도구를 고릅니다.' },
-  { no: '02', title: '무료 체험', desc: '카드 등록 없이, 신청한 시각부터 정확히 7일 체험합니다.' },
-  { no: '03', title: '결제 후 계속 사용', desc: '정식 이용은 결제 또는 관리자 승인 후 이어집니다.' },
+  { no: '01', title: '가입 후 이용 신청', desc: '상담 흐름에 맞는 도구를 골라 신청합니다.' },
+  { no: '02', title: '관리자 승인', desc: '신청 내역을 확인한 뒤 순차적으로 열어드립니다.' },
+  { no: '03', title: '7일 무료 이용', desc: '카드 등록 없이, 승인된 시각부터 정확히 7일간 사용합니다.' },
 ]
 
 const faqs = [
   {
+    q: '가입하면 바로 쓸 수 있나요?',
+    a: '아니요. 정식 출시 전 단계라 관리자 승인 후에 열립니다. 가입하고 도구별로 이용 신청을 남겨주시면 확인 후 순차적으로 열어드립니다.',
+  },
+  {
     q: '7일 체험 후에는 어떻게 되나요?',
     a: '체험이 끝나면 이용이 제한됩니다. 리뷰·설문 참여 시 최대 21일까지 연장할 수 있고, 정식 이용은 결제 또는 관리자 승인 후 제공됩니다.',
   },
-  { q: '도구별로 따로 체험할 수 있나요?', a: '네. 각 도구는 신청한 시각부터 개별적으로 7일간 체험할 수 있습니다.' },
+  { q: '도구별로 따로 신청하나요?', a: '네. 도구마다 따로 신청하고, 승인된 시각부터 개별적으로 7일간 이용합니다.' },
   {
     q: '중소기업 대표도 사용할 수 있나요?',
     a: '네. 주로 컨설턴트의 상담·검토·제안 업무를 돕지만, 직접 확인하고 싶은 대표님도 기초 검토용으로 활용할 수 있습니다.',
@@ -131,7 +135,7 @@ function ToolBanner({ tool }: { tool: Tool }) {
               tool.isPublic ? 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/25' : 'bg-slate-400/15 text-slate-300 ring-1 ring-inset ring-slate-300/20'
             }`}
           >
-            {tool.isPublic ? '베타 체험 가능' : '공개 준비 중'}
+            {tool.isPublic ? '승인 후 이용 가능' : '공개 준비 중'}
           </span>
         </div>
       </div>
@@ -142,9 +146,9 @@ function ToolBanner({ tool }: { tool: Tool }) {
 // 대표 도구 — 컴팩트 카드(3열 그리드 · 모바일 2열). 좁은 폭에서는 features·추천대상을 숨김.
 function ToolCard({ tool }: { tool: Tool }) {
   const { user } = useAuth()
-  // 도구 주소로 바로 보내지 않는다 — 회원가입 → 체험 시작을 거쳐야 실제 도구가 열린다.
+  // 도구 주소로 바로 보내지 않는다 — 회원가입 → 이용 신청 → 관리자 승인을 거쳐야 열린다.
   const trialHref = user ? '/my-tools' : `/signup?next=${encodeURIComponent('/my-tools')}`
-  const ctaLabel = user ? '내 도구함에서 열기' : `가입하고 ${TRIAL_DAYS}일 무료 체험`
+  const ctaLabel = user ? '내 도구함에서 신청' : '가입하고 이용 신청'
   const cardClass = 'group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 motion-reduce:transition-none'
   const body = (
     <>
@@ -290,7 +294,7 @@ function App() {
                   to="/signup"
                   className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-bold text-slate-900 shadow-xl shadow-black/25 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
                 >
-                  7일 체험 시작하기
+                  이용 신청하기
                 </Link>
                 <a
                   href="#tools"
@@ -305,7 +309,7 @@ function App() {
                 {[
                   { v: `${liveCount}개`, l: '운영 중 실무 도구' },
                   { v: '4개+', l: '개발 중인 도구' },
-                  { v: '7일', l: '카드 없이 무료 체험' },
+                  { v: '7일', l: '승인 후 카드 없이 무료' },
                 ].map((s) => (
                   <div key={s.l}>
                     <dd className="text-2xl font-extrabold tracking-tight text-white">{s.v}</dd>
@@ -410,7 +414,7 @@ function App() {
           <div className="max-w-3xl">
             <p className="text-base font-bold uppercase tracking-widest text-blue-600">컨설턴트 OS</p>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">업무 흐름으로 연결되는 도구</h2>
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">각 도구는 따로, 또 같이 작동합니다. 회원가입 후 도구별로 {TRIAL_DAYS}일 무료 체험을 시작할 수 있습니다.</p>
+            <p className="mt-4 text-lg leading-relaxed text-slate-600">각 도구는 따로, 또 같이 작동합니다. 가입 후 도구별로 이용 신청을 하시면 승인 후 {TRIAL_DAYS}일간 사용할 수 있습니다.</p>
             <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" aria-hidden />
               지속적으로 수시로 업데이트하고 있습니다
@@ -437,7 +441,7 @@ function App() {
         <div className="max-w-3xl">
           <p className="text-base font-bold uppercase tracking-widest text-blue-600">이용 방식</p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">지금은 무료 베타 기간입니다</h2>
-          <p className="mt-4 text-lg leading-relaxed text-slate-600">정식 출시 전, 피드백을 주시는 분들께 먼저 열어드립니다. 지금은 베타로 무료 체험할 수 있습니다.</p>
+          <p className="mt-4 text-lg leading-relaxed text-slate-600">정식 출시 전, 피드백을 주시는 분들께 먼저 열어드립니다. 신청해 주시면 확인 후 순차적으로 승인해 드립니다.</p>
         </div>
 
         <ol className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -478,7 +482,7 @@ function App() {
         <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
           <div className="max-w-3xl">
             <p className="text-base font-bold uppercase tracking-widest text-blue-600">자주 묻는 질문</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">체험 전, 이것만 확인하세요</h2>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">신청 전, 이것만 확인하세요</h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {faqs.map((item) => (

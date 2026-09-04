@@ -53,11 +53,16 @@ function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
   )
 }
 
-const SECTION_02 = [
+// "무엇이 있어야 할까요?"(04)까지 문제를 세운 뒤, AX가 무엇인지 설명하고(SECTION_04_DEFINE)
+// "2026년, 흐름도 바뀌고 있습니다"(05)로 넘어간다.
+const SECTION_02_A = [
   storyImage('section-02-problem-01.png', '사업계획서만으로는 부족하며 실제 구현이 중요하다는 첫 번째 문제제기 1', '#0C0F15'),
   storyImage('section-02-problem-02.png', '사업계획서 이후 실제 구현 여부를 묻는 첫 번째 문제제기 2', '#FAFAF8'),
   storyImage('section-02-problem-03.png', '정책자금과 투자유치에서 실제 사업의 모습을 보여주는 힘을 설명하는 첫 번째 문제제기 3', '#050B11'),
   storyImage('section-02-problem-04.png', '작동하는 웹앱과 고객 화면과 데이터의 중요성을 설명하는 첫 번째 문제제기 4', '#FDFCFA'),
+] as const
+
+const SECTION_02_B = [
   storyImage('section-02-problem-05.png', '실제 사업을 움직이는 웹앱과 AX의 설명력을 말하는 첫 번째 문제제기 5', '#0F1317'),
 ] as const
 
@@ -65,9 +70,14 @@ const SECTION_03 = [
   storyImage('section-03-screen-01.png', '미래AI랩이 직접 기획하고 개발한 AX 웹앱 화면을 먼저 보여주는 안내', 'linear-gradient(90deg, #0C0F13 0%, #0C0F13 50%, #EEECEA 50%, #EEECEA 100%)'),
 ] as const
 
-const SECTION_04 = [
+// AX 정의(무엇인가 / 지금 정보가 흩어져 있다)는 히어로 바로 뒤에서 먼저 말한다.
+const SECTION_04_DEFINE = [
   storyImage('section-04-ax-01.png', 'AX는 AI Transformation이며 회사가 일하는 방식을 바꾸는 것이라는 설명 1', '#FCFBF8'),
   storyImage('section-04-ax-02.png', '회사 안의 정보가 엑셀과 카카오톡과 ERP 등에 흩어져 있다는 설명 2', '#FEFDF9'),
+] as const
+
+// "한 번 생긴 정보가 이어진다"는 결론은 샘플을 본 직후에 놓아야 설득이 된다.
+const SECTION_04_FLOW = [
   storyImage('section-04-ax-03.png', '한 번 생긴 정보가 다음 업무와 판단으로 이어지는 AX 구조 설명 3', '#0D1116'),
 ] as const
 
@@ -105,7 +115,7 @@ const CUSTOMER_PLATFORM_LINKS = [
     sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'gounsot')!,
   },
   {
-    industry: '미용실',
+    industry: '헤어숍',
     flow: '예약, 시술이력, 재예약',
     sample: AX_PLATFORM_SAMPLES.find((sample) => sample.slug === 'lumiere')!,
   },
@@ -220,7 +230,12 @@ function AxIndustryPlatformLinks() {
 }
 
 export function AxWhyNowSection() {
-  return <AxInfographicStack id="why-now" images={SECTION_02} />
+  return <AxInfographicStack id="why-now" images={SECTION_02_A} />
+}
+
+/** AX 정의를 사이에 끼운 뒤 이어지는 "2026년, 흐름도 바뀌고 있습니다" */
+export function AxWhyNowOutroSection() {
+  return <AxInfographicStack images={SECTION_02_B} />
 }
 
 export function AxScreenIntroSection() {
@@ -228,7 +243,12 @@ export function AxScreenIntroSection() {
 }
 
 export function AxDefinitionSection() {
-  return <AxInfographicStack id="ax-definition" images={SECTION_04} />
+  return <AxInfographicStack id="ax-definition" images={SECTION_04_DEFINE} />
+}
+
+/** 샘플을 본 직후 — "한 번 생긴 정보가 다음 업무로 이어진다" */
+export function AxInfoFlowSection() {
+  return <AxInfographicStack images={SECTION_04_FLOW} />
 }
 
 export function AxErpComparisonSection() {

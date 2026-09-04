@@ -39,10 +39,16 @@ function ModuleRow({
       <td className="px-2 py-3">
         <span
           className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-            view.active ? 'bg-emerald-50 text-emerald-700' : view.blocked ? 'bg-rose-50 text-rose-700' : 'bg-slate-100 text-slate-600'
+            view.active
+              ? 'bg-emerald-50 text-emerald-700'
+              : view.blocked
+                ? 'bg-rose-50 text-rose-700'
+                : view.awaitingApproval
+                  ? 'bg-amber-100 text-amber-800'
+                  : 'bg-slate-100 text-slate-600'
           }`}
         >
-          {view.statusLabel}
+          {view.awaitingApproval ? '승인 대기' : view.statusLabel}
         </span>
       </td>
       <td className="px-2 py-3 text-slate-500">{formatDate(rec?.trial_started_at)}</td>
@@ -56,7 +62,12 @@ function ModuleRow({
       </td>
       <td className="py-3 pl-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          <button onClick={() => run({ action: 'grant', userId: user.id, toolId: module.id })} className={btnNeutral}>체험 허용</button>
+          <button
+            onClick={() => run({ action: 'grant', userId: user.id, toolId: module.id })}
+            className={view.awaitingApproval ? `${btn} border-amber-400 bg-amber-500 text-white hover:bg-amber-600` : btnNeutral}
+          >
+            {view.awaitingApproval ? '승인하기 (7일 부여)' : '이용 허용'}
+          </button>
           <button onClick={() => run({ action: 'extend', userId: user.id, toolId: module.id, days: 7 })} className={btnNeutral}>7일 연장</button>
           <button onClick={() => run({ action: 'unlimited', userId: user.id, toolId: module.id })} className={`${btn} border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100`}>무제한 권한</button>
           <button onClick={() => run({ action: 'revoke', userId: user.id, toolId: module.id })} className={`${btn} border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100`}>접근 차단</button>
@@ -272,8 +283,13 @@ export default function AdminPage() {
       (u.phone ?? '').replace(/[^0-9]/g, '').includes(q.replace(/[^0-9]/g, '')),
   )
 
+  // 신청만 하고 아직 승인되지 않은 건수 — 승인 전까지 사용자는 도구를 열 수 없다
+  const pendingCount = access.filter(
+    (a) => !a.trial_started_at && !a.is_unlimited && !a.paid_until && a.access_status !== 'revoked',
+  ).length
+
   return (
-    <PageShell title="관리자" subtitle="사용자별 도구 이용 기간, 체험 상태, 리뷰·설문 참여 여부, 결제 상태를 관리할 수 있습니다.">
+    <PageShell title="관리자" subtitle="사용자별 도구 이용 기간, 승인 상태, 리뷰·설문 참여 여부, 결제 상태를 관리할 수 있습니다.">
       {/* 관리자에게만 보이는 내부 운영 OS 진입 — 외부 링크이며 로그인 세션을 공유하지 않는다 */}
       <a
         href="https://ax-mvp-factory-os.vercel.app/"
@@ -288,6 +304,16 @@ export default function AdminPage() {
         <span aria-hidden className="text-slate-400">↗</span>
       </a>
       {err && <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm text-rose-700">{err}</div>}
+
+      <div className={`mb-6 rounded-xl border px-5 py-3.5 text-sm ${pendingCount > 0 ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-slate-200 bg-slate-50 text-slate-600'}`}>
+        {pendingCount > 0 ? (
+          <>
+            <b>승인 대기 {pendingCount}건</b> — 아래 목록에서 <b>승인하기</b>를 눌러야 해당 사용자가 도구를 열 수 있습니다.
+          </>
+        ) : (
+          <>승인 대기 중인 신청이 없습니다. 가입만 한 사용자는 어떤 도구도 열 수 없습니다.</>
+        )}
+      </div>
 
       <div className="mb-6 flex flex-wrap gap-2.5">
         <Link

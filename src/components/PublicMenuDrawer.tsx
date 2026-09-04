@@ -25,6 +25,8 @@ type MenuItem = {
   /** 항목 넘버링 (예: '1') — 상황형 목차 표시용 */
   no?: string
   match?: (path: string) => boolean
+  /** 개편 중이라 이동을 막는 항목 — 링크 대신 '업데이트 중' 배지로 표시한다 */
+  updating?: boolean
 }
 
 type MenuGroup = {
@@ -78,9 +80,10 @@ const BUSINESS_MENU: MenuConfig = {
       accent: 'cyan',
       items: [
         { no: '1', label: 'Growth Layer', desc: '정책자금·정부지원·벤처·특허 연결', to: '/business-services#growth' },
-        { no: '2', label: '정책자금 × AX 프로그램', desc: '비용·진행방식·결과물까지', to: '/business-services/funding-consulting', match: (p) => p.startsWith('/business-services/funding-consulting') },
-        { no: '3', label: '수행체계', desc: '대표 컨설턴트 · 월 5개사 선별', to: '/business-services/funding-consulting#leader' },
-        { no: '4', label: '자금 이후 성장 로드맵', desc: '인증·IP·복지제도 연계', to: '/business-services/funding-consulting#lifecycle' },
+        // 정책자금 상세페이지 전면 개정 중 — 이동을 막는다
+        { no: '2', label: '정책자금 × AX 프로그램', desc: '비용·진행방식·결과물까지', to: '/business-services/funding-consulting', updating: true },
+        { no: '3', label: '수행체계', desc: '대표 컨설턴트 · 월 5개사 선별', to: '/business-services/funding-consulting#leader', updating: true },
+        { no: '4', label: '자금 이후 성장 로드맵', desc: '인증·IP·복지제도 연계', to: '/business-services/funding-consulting#lifecycle', updating: true },
       ],
     },
     {
@@ -348,6 +351,29 @@ export default function PublicMenuDrawer({
                     <ul className="space-y-0.5">
                       {group.items.map((m) => {
                         const active = m.match ? m.match(path) : false
+                        // 개편 중인 항목 — 이동시키지 않고 '업데이트 중' 만 알린다.
+                        // disabled 버튼이라 탭 순서·포커스 트랩에서도 자동으로 빠진다.
+                        if (m.updating) {
+                          return (
+                            <li key={m.label}>
+                              <button
+                                type="button"
+                                disabled
+                                aria-disabled="true"
+                                className="flex min-h-11 w-full cursor-not-allowed items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left text-slate-400"
+                              >
+                                <span className="flex min-w-0 items-start gap-2">
+                                  {m.no && <span className="mt-0.5 shrink-0 text-[0.85rem] font-black tabular-nums text-slate-300">{m.no}.</span>}
+                                  <span className="min-w-0">
+                                    <span className="block text-[0.95rem] font-semibold leading-snug">{m.label}</span>
+                                    {m.desc && <span className="mt-0.5 block text-xs leading-snug text-slate-300">{m.desc}</span>}
+                                  </span>
+                                </span>
+                                <span className="shrink-0 rounded-md bg-slate-200 px-1.5 py-0.5 text-[10px] font-black text-slate-500">업데이트 중</span>
+                              </button>
+                            </li>
+                          )
+                        }
                         // 사이트 내 상담 폼(이메일) 모달을 여는 항목
                         if (m.to === '#consult') {
                           return (

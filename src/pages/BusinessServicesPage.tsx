@@ -7,6 +7,7 @@ import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
 import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
+import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
 import {
   AxCeoBusySection,
@@ -16,9 +17,11 @@ import {
   AxEffectSection,
   AxErpComparisonSection,
   AxIndustryQuestionSection,
+  AxInfoFlowSection,
   AxNotAlwaysNeededSection,
   AxTogetherScopeSection,
   AxWhyMiraeSection,
+  AxWhyNowOutroSection,
   AxWhyNowSection,
 } from '../components/ax-showcase/axStoryHome'
 import {
@@ -29,7 +32,7 @@ import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { FLAGSHIP } from '../data/corePrograms'
-import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
+import { readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
 
 // 미래AI랩 = 기업의 운영·고객·데이터를 AI로 연결하는 AX 회사.
 // 정책자금·정부지원은 메인 상품이 아니라 AX 실행력을 성장으로 잇는 Growth Layer 로 배치한다.
@@ -39,8 +42,6 @@ import { saveBusinessReturn, readBusinessReturn, clearBusinessReturn } from '../
 // 깊은 설명(정의·프로세스·수행체계·개발방식)은 프로그램 상세페이지가 맡는다.
 // 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다.
 // 가격 · 진행과정 · 업종별 15개 화면 · 비교표 · FAQ 는 정책자금 상세페이지에서 다룬다.
-const DETAIL = '/business-services/funding-consulting'
-
 export default function BusinessServicesPage() {
   const { cart } = useSavedItems()
   const [historyCount] = useState(() => loadHistory().length)
@@ -106,7 +107,6 @@ export default function BusinessServicesPage() {
     return () => io.disconnect()
   }, [])
 
-  const saveReturn = (cardId: string) => saveBusinessReturn(cardId)
   const openPreview = () => setPreviewDevice(window.innerWidth < 768 ? 'desktop' : 'mobile')
 
   return (
@@ -114,13 +114,23 @@ export default function BusinessServicesPage() {
       {/* Header — 핵심 메뉴만 */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-5 lg:gap-6">
-          <BrandLogo to="/business-services" className="shrink-0" imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]" />
+          {/* 모바일에서는 태그라인(가로 276px)이 헤더를 밀어내 햄버거가 잘린다 → sm 이상에서만 노출 */}
+          <BrandLogo
+            to="/business-services"
+            className="shrink-0"
+            imgClassName="h-9 max-w-[132px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]"
+            taglineClassName="hidden sm:block"
+          />
           <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
             <a href="#portfolio" className="transition-colors hover:text-slate-900">AX 사례</a>
             <a href="#real-projects" className="transition-colors hover:text-slate-900">실제 프로젝트</a>
             <a href="#ax-definition" className="transition-colors hover:text-slate-900">AX란</a>
                         <a href="#growth" className="hidden transition-colors hover:text-slate-900 min-[1360px]:inline">Growth Layer</a>
-            <Link to={DETAIL} onClick={() => saveReturn('nav')} className="transition-colors hover:text-slate-900">프로그램</Link>
+            {/* 프로그램 상세페이지 전면 개정 중 — 이동을 막는다 */}
+            <span className="inline-flex cursor-not-allowed items-center gap-1.5 text-slate-400" aria-disabled="true">
+              프로그램
+              <span className="rounded-md bg-slate-200 px-1.5 py-0.5 text-[0.72em] font-black leading-none text-slate-500">업데이트 중</span>
+            </span>
           </nav>
           <div className="flex items-center gap-2 sm:gap-2.5">
             {historyCount > 0 && (
@@ -135,6 +145,18 @@ export default function BusinessServicesPage() {
               </Link>
             )}
             <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-[#D47A4A] px-4 py-2 text-[1.2rem] sm:text-[1.09rem] font-semibold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:inline-flex">3분 AX 진단</Link>
+            {/* 화면 미리보기 — 떠다니지 않고 헤더 안, 햄버거 옆에 둔다 */}
+            {!isPreviewEmbedded && (
+              <button
+                type="button"
+                onClick={openPreview}
+                aria-label="PC·스마트폰 화면 미리보기"
+                className="shrink-0 whitespace-nowrap rounded-lg border border-[#D47A4A]/40 px-2 py-1.5 text-[0.78rem] font-bold text-[#171B20] transition-colors hover:bg-[#F3D9C8]/50 sm:px-2.5 sm:text-[0.88rem]"
+              >
+                <span className="sm:hidden">PC↔폰</span>
+                <span className="hidden sm:inline">PC ↔ 스마트폰</span>
+              </button>
+            )}
             <HeaderAccount variant="business" />
           </div>
         </div>
@@ -145,14 +167,20 @@ export default function BusinessServicesPage() {
         <AxHeroV2 />
       </div>
 
-      {/* 2. 첫 번째 문제제기 */}
+      {/* 2. 첫 번째 문제제기 — "무엇이 있어야 할까요?" 까지 */}
       <AxWhyNowSection />
+
+      {/* 3. AX가 뭐냐면요 — 무엇이 필요한지 물은 직후에 용어를 풀어준다 */}
+      <AxDefinitionSection />
+
+      {/* 4. 그래서 2026년, 흐름도 바뀌고 있습니다 */}
+      <AxWhyNowOutroSection />
 
       {/* 샘플 10개 — 기존 섹션 보존 */}
       <AxScreenShowcase />
 
-      {/* 4. AX가 뭐냐면요 */}
-      <AxDefinitionSection />
+      {/* 4. 한 번 생긴 정보가 다음 업무로 이어진다 — 샘플을 본 직후에 놓아야 설득이 된다 */}
+      <AxInfoFlowSection />
 
       {/* 5. ERP와 AX */}
       <AxErpComparisonSection />
@@ -214,15 +242,8 @@ export default function BusinessServicesPage() {
       <LegalFooter />
       <KakaoFloat />
 
-      {!isPreviewEmbedded && (
-        <button
-          type="button"
-          onClick={openPreview}
-          className="fixed right-3 top-20 z-40 rounded-lg border border-[#D47A4A]/35 bg-white/95 px-3 py-2 text-[0.95rem] font-bold text-[#171B20] shadow-lg shadow-slate-950/15 backdrop-blur transition-colors hover:bg-white sm:right-5 sm:top-24"
-        >
-          PC ↔ 스마트폰
-        </button>
-      )}
+      {/* 스크롤 중 어디서나 샘플 20개로 — 평소엔 비켜서 있는 작은 손잡이 */}
+      {!isPreviewEmbedded && <SampleQuickNav />}
 
       {/* Mobile sticky CTA — 기업진단(카톡은 KakaoFloat) */}
       {!heroVisible && !atEnd && (

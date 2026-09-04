@@ -40,10 +40,14 @@ export type AxPlatformSample = {
   customerUrl?: string
   /** 고객 화면 대신 거래처 화면일 때의 라벨 */
   customerLabel?: string
-  /** 대표 이미지(원본/모바일) — 하이브리드는 고객 화면, 내부형은 AX 대시보드 */
+  /**
+   * 대표 이미지(원본/모바일).
+   * 카드 10장이 한쪽으로 쏠리지 않도록 AX 대시보드 5장 · 고객 화면 5장을 번갈아 배치한다.
+   * (운영 성격이 강한 업종은 AX 화면, 고객 접점이 강한 업종은 고객 화면을 대표로 쓴다)
+   */
   img: string
   imgSm: string
-  /** 하이브리드 카드에 겹쳐 보여줄 AX 대시보드 미니 화면 */
+  /** 대표 이미지가 고객 화면일 때, 함께 보여줄 AX 대시보드 미니 화면 */
   axImg?: string
   alt: string
 }
@@ -60,45 +64,19 @@ export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
     customerLabel: '거래처 화면',
     img: '/portfolio/ax/materix.webp',
     imgSm: '/portfolio/ax/materix-sm.webp',
-    axImg: '/portfolio/ax/materix-ax.webp',
-    alt: 'MATERIX 산업·건축자재 B2B 플랫폼 고객 화면',
+    alt: 'MATERIX 산업·건축자재 유통 AX 대시보드 화면',
   },
   {
     slug: 'lumiere',
     name: 'LUMIÈRE',
-    industry: '미용실',
+    industry: '헤어숍',
     line: '예약·고객·재방문·멤버십과 AI 스타일 추천이 연결된 살롱 AX',
     axUrl: 'https://sample17-lumiere-hair-salon-hybrid.vercel.app/ax',
     customerUrl: 'https://sample17-lumiere-hair-salon-hybrid.vercel.app/',
     img: '/portfolio/ax/lumiere.webp',
     imgSm: '/portfolio/ax/lumiere-sm.webp',
     axImg: '/portfolio/ax/lumiere-ax.webp',
-    alt: 'LUMIÈRE 미용실 고객 예약 플랫폼 첫 화면',
-  },
-  {
-    slug: 'edumaster',
-    name: '에듀마스터',
-    industry: '학원·교육',
-    line: '학생·출결·상담·재등록·이탈 위험과 AI 분석이 연결된 학원 AX',
-    axUrl: 'https://sample16-edumaster-academy-hybrid-a-steel.vercel.app/ax',
-    customerUrl: 'https://sample16-edumaster-academy-hybrid-a-steel.vercel.app/',
-    customerLabel: '학생·학부모 화면',
-    img: '/portfolio/ax/edumaster.webp',
-    imgSm: '/portfolio/ax/edumaster-sm.webp',
-    axImg: '/portfolio/ax/edumaster-ax.webp',
-    alt: '에듀마스터 학원 학생·학부모 플랫폼 첫 화면',
-  },
-  {
-    slug: 'autobridge',
-    name: '오토브릿지 케어',
-    industry: '자동차 정비',
-    line: '차량관리·정비예약·정비이력과 AI 점검 추천이 연결된 정비 AX',
-    axUrl: 'https://sample15-autobridge-auto-service-ax-omega.vercel.app/ax',
-    customerUrl: 'https://sample15-autobridge-auto-service-ax-omega.vercel.app/',
-    img: '/portfolio/ax/autobridge.webp',
-    imgSm: '/portfolio/ax/autobridge-sm.webp',
-    axImg: '/portfolio/ax/autobridge-ax.webp',
-    alt: '오토브릿지 케어 자동차 정비 고객 플랫폼 첫 화면',
+    alt: 'LUMIÈRE 헤어숍 고객 예약 플랫폼 첫 화면',
   },
   {
     slug: 'seum',
@@ -110,20 +88,7 @@ export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
     customerLabel: '거래처 화면',
     img: '/portfolio/ax/seum.webp',
     imgSm: '/portfolio/ax/seum-sm.webp',
-    axImg: '/portfolio/ax/seum-ax.webp',
-    alt: '세움정밀솔루션 거래처 포털 화면',
-  },
-  {
-    slug: 'vitalon',
-    name: 'VITALON',
-    industry: '웰니스·피트니스',
-    line: '회원·예약·재등록·매출과 AI 웰니스 설계가 연결된 피트니스 AX',
-    axUrl: 'https://sample19-vitalon-wellness-fitness-h-swart.vercel.app/business',
-    customerUrl: 'https://sample19-vitalon-wellness-fitness-h-swart.vercel.app/',
-    img: '/portfolio/ax/vitalon.webp',
-    imgSm: '/portfolio/ax/vitalon-sm.webp',
-    axImg: '/portfolio/ax/vitalon-ax.webp',
-    alt: 'VITALON 웰니스 센터 고객 플랫폼 첫 화면',
+    alt: '세움정밀솔루션 제조 AX 대시보드 화면',
   },
   {
     slug: 'veloa',
@@ -138,6 +103,41 @@ export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
     alt: 'VELOA BEAUTY 뷰티 커머스 고객 화면',
   },
   {
+    slug: 'edumaster',
+    name: '에듀마스터',
+    industry: '학원·교육',
+    line: '학생·출결·상담·재등록·이탈 위험과 AI 분석이 연결된 학원 AX',
+    axUrl: 'https://sample16-edumaster-academy-hybrid-a-steel.vercel.app/ax',
+    customerUrl: 'https://sample16-edumaster-academy-hybrid-a-steel.vercel.app/',
+    customerLabel: '학생·학부모 화면',
+    img: '/portfolio/ax/edumaster.webp',
+    imgSm: '/portfolio/ax/edumaster-sm.webp',
+    alt: '에듀마스터 학원 AX 대시보드 화면',
+  },
+  {
+    slug: 'vitalon',
+    name: 'VITALON',
+    industry: '웰니스·피트니스',
+    line: '회원·예약·재등록·매출과 AI 웰니스 설계가 연결된 피트니스 AX',
+    axUrl: 'https://sample19-vitalon-wellness-fitness-h-swart.vercel.app/business',
+    customerUrl: 'https://sample19-vitalon-wellness-fitness-h-swart.vercel.app/',
+    img: '/portfolio/ax/vitalon.webp',
+    imgSm: '/portfolio/ax/vitalon-sm.webp',
+    axImg: '/portfolio/ax/vitalon-ax.webp',
+    alt: 'VITALON 웰니스 센터 고객 플랫폼 첫 화면',
+  },
+  {
+    slug: 'autobridge',
+    name: '오토브릿지 케어',
+    industry: '자동차 정비',
+    line: '차량관리·정비예약·정비이력과 AI 점검 추천이 연결된 정비 AX',
+    axUrl: 'https://sample15-autobridge-auto-service-ax-omega.vercel.app/ax',
+    customerUrl: 'https://sample15-autobridge-auto-service-ax-omega.vercel.app/',
+    img: '/portfolio/ax/autobridge.webp',
+    imgSm: '/portfolio/ax/autobridge-sm.webp',
+    alt: '오토브릿지 케어 자동차 정비 AX 대시보드 화면',
+  },
+  {
     slug: 'livarte',
     name: 'LIVARTÉ',
     industry: '인테리어·리모델링',
@@ -150,6 +150,17 @@ export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
     alt: 'LIVARTÉ 인테리어 고객 플랫폼 첫 화면',
   },
   {
+    slug: 'cleanway',
+    name: 'CLEANWAY',
+    industry: '현장 서비스업',
+    line: '일정·현장·품질·재계약·수익성과 AI 운영센터가 연결된 서비스 AX',
+    axUrl: 'https://sample13-one.vercel.app/',
+    customerUrl: 'https://sample13-one.vercel.app/care',
+    img: '/portfolio/ax/cleanway.webp',
+    imgSm: '/portfolio/ax/cleanway-sm.webp',
+    alt: 'CLEANWAY 현장 서비스 AX 대시보드 화면',
+  },
+  {
     slug: 'gounsot',
     name: '고운솥 식당',
     industry: '음식점 · F&B',
@@ -160,16 +171,6 @@ export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
     imgSm: '/portfolio/ax/gounsot-sm.webp',
     axImg: '/portfolio/ax/gounsot-ax.webp',
     alt: '고운솥 식당 고객 화면',
-  },
-  {
-    slug: 'cleanway',
-    name: 'CLEANWAY',
-    industry: '현장 서비스업',
-    line: '일정·현장·품질·재계약·수익성과 AI 운영센터가 연결된 서비스 AX',
-    axUrl: 'https://sample13-one.vercel.app/',
-    img: '/portfolio/ax/cleanway.webp',
-    imgSm: '/portfolio/ax/cleanway-sm.webp',
-    alt: 'CLEANWAY 현장 서비스 AX 대시보드 화면',
   },
 ]
 

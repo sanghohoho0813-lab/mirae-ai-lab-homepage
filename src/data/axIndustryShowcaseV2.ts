@@ -1133,13 +1133,13 @@ export const AX_V2_INDUSTRIES: AxV2Industry[] = [
   {
     id: 'hair-salon',
     slug: 'hair-salon',
-    displayName: '미용실',
+    displayName: '헤어숍',
     icon: '✂️',
     demoBrand: 'SalonFlow AX',
     shortHook: '시술시간과 재료비까지 반영한 실제 수익을 봅니다.',
     overview:
       '예약매출만 보는 프로그램이 아닙니다. 빈 시간과 저수익 시술을 찾아 가동률을 올리고, 디자이너 개인의 기억에 묶인 고객관리를 매장 중심 구조로 바꿉니다.',
-    stages: buildStages('hair-salon', '미용실', [
+    stages: buildStages('hair-salon', '헤어숍', [
       {
         title: '예약매출이 아니라 시술시간·재료비·재방문까지 반영한 실제 수익을 보여줍니다.',
         desc: '빈 시간, 저수익시술, 장기 미방문 고객을 한 화면에서 확인합니다.',
@@ -1198,10 +1198,10 @@ export const AX_V2_INDUSTRIES: AxV2Industry[] = [
     ],
     taskTags: ['예약·일정', '고객·재구매', '구독·기업계약'],
     policyPoint: '시술·재방문 데이터를 매장 자산으로 축적해 가동률과 반복매출을 설명하는 운영 구조',
-    targetCustomer: '디자이너 개인에게 고객이 묶여 있고 빈 시간과 이탈로 매출이 흔들리는 미용실',
-    seoTitle: '미용실 AX 사업화 | 빈 시간 재판매와 재방문 매출 — 미래 AI 랩',
+    targetCustomer: '디자이너 개인에게 고객이 묶여 있고 빈 시간과 이탈로 매출이 흔들리는 헤어숍',
+    seoTitle: '헤어숍 AX 사업화 | 빈 시간 재판매와 재방문 매출 — 미래 AI 랩',
     seoDescription:
-      '미용실의 당일취소 빈 시간과 시술주기 재방문을 데이터로 관리하고, 고객 뷰티 이력서 앱과 매장 중심 고객관리 플랫폼으로 확장하는 AX 사업화 예시를 확인하세요.',
+      '헤어숍의 당일취소 빈 시간과 시술주기 재방문을 데이터로 관리하고, 고객 뷰티 이력서 앱과 매장 중심 고객관리 플랫폼으로 확장하는 AX 사업화 예시를 확인하세요.',
   },
 ]
 
