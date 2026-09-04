@@ -7,6 +7,7 @@ import LegalFooter from '../components/LegalFooter'
 import ConsultModal from '../components/ConsultModal'
 import KakaoFloat from '../components/KakaoFloat'
 import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
+import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
 import {
   AxCeoBusySection,
@@ -113,7 +114,13 @@ export default function BusinessServicesPage() {
       {/* Header — 핵심 메뉴만 */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-5 lg:gap-6">
-          <BrandLogo to="/business-services" className="shrink-0" imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]" />
+          {/* 모바일에서는 태그라인(가로 276px)이 헤더를 밀어내 햄버거가 잘린다 → sm 이상에서만 노출 */}
+          <BrandLogo
+            to="/business-services"
+            className="shrink-0"
+            imgClassName="h-9 max-w-[132px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]"
+            taglineClassName="hidden sm:block"
+          />
           <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
             <a href="#portfolio" className="transition-colors hover:text-slate-900">AX 사례</a>
             <a href="#real-projects" className="transition-colors hover:text-slate-900">실제 프로젝트</a>
@@ -138,6 +145,18 @@ export default function BusinessServicesPage() {
               </Link>
             )}
             <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-[#D47A4A] px-4 py-2 text-[1.2rem] sm:text-[1.09rem] font-semibold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:inline-flex">3분 AX 진단</Link>
+            {/* 화면 미리보기 — 떠다니지 않고 헤더 안, 햄버거 옆에 둔다 */}
+            {!isPreviewEmbedded && (
+              <button
+                type="button"
+                onClick={openPreview}
+                aria-label="PC·스마트폰 화면 미리보기"
+                className="shrink-0 whitespace-nowrap rounded-lg border border-[#D47A4A]/40 px-2 py-1.5 text-[0.78rem] font-bold text-[#171B20] transition-colors hover:bg-[#F3D9C8]/50 sm:px-2.5 sm:text-[0.88rem]"
+              >
+                <span className="sm:hidden">PC↔폰</span>
+                <span className="hidden sm:inline">PC ↔ 스마트폰</span>
+              </button>
+            )}
             <HeaderAccount variant="business" />
           </div>
         </div>
@@ -223,15 +242,8 @@ export default function BusinessServicesPage() {
       <LegalFooter />
       <KakaoFloat />
 
-      {!isPreviewEmbedded && (
-        <button
-          type="button"
-          onClick={openPreview}
-          className="fixed right-3 top-20 z-40 rounded-lg border border-[#D47A4A]/35 bg-white/95 px-3 py-2 text-[0.95rem] font-bold text-[#171B20] shadow-lg shadow-slate-950/15 backdrop-blur transition-colors hover:bg-white sm:right-5 sm:top-24"
-        >
-          PC ↔ 스마트폰
-        </button>
-      )}
+      {/* 스크롤 중 어디서나 샘플 20개로 — 평소엔 비켜서 있는 작은 손잡이 */}
+      {!isPreviewEmbedded && <SampleQuickNav />}
 
       {/* Mobile sticky CTA — 기업진단(카톡은 KakaoFloat) */}
       {!heroVisible && !atEnd && (
