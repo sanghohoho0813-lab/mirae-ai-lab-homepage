@@ -15,6 +15,10 @@ type Group = {
   id: string
   title: string
   desc: string
+  cta: string
+  /** 두 묶음을 색으로 구분한다 — 운영은 청록, 아이디어는 보라 */
+  card: string
+  accent: string
 }
 
 // 목록을 다 나열하면 훑어야 할 게 너무 많아진다 — 이름 두 개와 한 줄 설명만 크게 보여준다.
@@ -23,11 +27,17 @@ const GROUPS: Group[] = [
     id: 'portfolio',
     title: '업종 AX 10',
     desc: '직원이 쓰는 운영 화면과 고객·거래처가 쓰는 플랫폼을 업종별로 만들어 둔 데모입니다.',
+    cta: '업종 화면 10개 확인하기',
+    card: 'border-[#3FBFB4]/35 bg-gradient-to-br from-[#0E3138] to-[#123F44] hover:border-[#5EEAD4]/60 hover:from-[#113A42] hover:to-[#154A50]',
+    accent: 'text-[#5EEAD4]',
   },
   {
     id: 'mvp-refs',
     title: '아이디어 MVP 10',
     desc: '머릿속에만 있던 아이디어를 일단 움직이는 서비스로 만들어 본 초기 레퍼런스입니다.',
+    cta: '아이디어 10개 확인하기',
+    card: 'border-[#A78BFA]/35 bg-gradient-to-br from-[#241F3D] to-[#2E2652] hover:border-[#C4B5FD]/60 hover:from-[#2A2447] hover:to-[#372D61]',
+    accent: 'text-[#C4B5FD]',
   },
 ]
 
@@ -90,15 +100,12 @@ export default function SampleQuickNav() {
           onClick={() => setOpen(true)}
           aria-expanded={false}
           aria-label={`샘플 ${TOTAL}개 둘러보기 열기`}
-          className="fixed right-0 top-[57%] z-40 -translate-y-1/2 rounded-l-xl border border-r-0 border-white/15 bg-[#171B20]/70 py-3 pl-2.5 pr-2 text-white opacity-60 shadow-lg shadow-black/25 backdrop-blur transition-all hover:bg-[#171B20]/95 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A]"
+          // 본문 옆을 따라다니면 읽는 데 거슬린다 → 카톡 버튼 왼쪽, 같은 높이에 나란히 둔다
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] right-[4.75rem] z-40 inline-flex items-center gap-1.5 rounded-full bg-[#171B20]/92 px-3.5 py-3 text-white shadow-lg shadow-slate-900/25 ring-1 ring-white/15 backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-[#171B20] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A] sm:bottom-6 sm:right-[10.25rem] sm:px-4"
         >
-          <span aria-hidden className="block text-center text-[1.05rem] leading-none">▦</span>
-          <span className="mt-1 block text-center text-[0.62rem] font-black leading-[1.35] tracking-tight text-[#E8B89A]">
-            샘플
-            <br />
-            {TOTAL}개
-            <br />
-            보기
+          <span aria-hidden className="text-[1.05rem] leading-none text-[#E8B89A]">▦</span>
+          <span className="whitespace-nowrap text-[1.05rem] font-black leading-none sm:text-[1.06rem]">
+            샘플 {TOTAL}<span className="hidden sm:inline">개 보기</span>
           </span>
         </button>
       )}
@@ -142,13 +149,14 @@ export default function SampleQuickNav() {
                   key={g.id}
                   type="button"
                   onClick={() => goTo(g.id)}
-                  className="block w-full rounded-xl border border-white/12 bg-[#22272E] p-4 text-left transition-colors hover:border-[#D47A4A]/50 hover:bg-[#282E36] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A] sm:p-4.5"
+                  className={`block w-full rounded-xl border p-4 text-left transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70 ${g.card}`}
                 >
-                  <p className="flex items-center gap-2 text-[1.42rem] font-black leading-tight text-white sm:text-[1.5rem]">
-                    {g.title}
-                    <span aria-hidden className="text-[#D47A4A]">→</span>
-                  </p>
+                  <p className="text-[1.42rem] font-black leading-tight text-white sm:text-[1.5rem]">{g.title}</p>
                   <p className="mt-2 text-[1.02rem] font-medium leading-relaxed text-slate-300 sm:text-[1.05rem]">{g.desc}</p>
+                  <p className={`mt-3 flex items-center gap-1.5 text-[1.02rem] font-black ${g.accent}`}>
+                    {g.cta}
+                    <span aria-hidden>→</span>
+                  </p>
                 </button>
               ))}
             </div>
