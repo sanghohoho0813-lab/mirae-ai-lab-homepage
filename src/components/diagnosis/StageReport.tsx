@@ -1,25 +1,19 @@
 // 단계별 결과 리포트 — 짧은 완료 체크 → 즉시 결과. 모바일(세로 스크롤) 우선.
 // 1·2단계: 간단 요약(강점/확인할 점). 3단계: 종합 보고서.
-//   ① 한눈에 보기  ② 맞춤 서비스(썸네일 카드) + 함께 준비하면 좋은 것들
-//   ③ 지금 먼저 확인할 것들  → 영역별 준비도 한눈에(막대 시각화·항상 노출)
+//   ① 한눈에 보기  ② 지금 먼저 확인할 것들  ③ 영역별 준비도 한눈에(막대 시각화·항상 노출)
 //   → 우대 요소(참고용·접힘)  → 마무리 상담 CTA
+// ⚠️ 상품 추천·상세페이지 링크는 두지 않는다. 진단은 진단만 보여주고,
+//    이후 안내는 접수된 상담(메일 알림)으로 이어간다.
 import { useEffect, useState } from 'react'
-import { paymentsEnabled } from '../../config/commerce'
-import { Link } from 'react-router-dom'
-import ConsultModal from '../ConsultModal'
 import type {
   AdvantageResultItem,
   AreaResult,
-  ProductRecommendation,
   SeverityTone,
   StageReportData,
   TopPriority,
 } from '../../types/businessDiagnosis'
-import { getPackageBySlug } from '../../data/businessPackages'
-import { rememberDiagnosisReturn } from '../../lib/diagnosisReturn'
 import { ADVANTAGE_DISCLAIMER } from '../../data/policyAdvantageFactors'
 import ScoreCard from './ScoreCard'
-import { formatKoreanMoney } from '../ProductCard'
 
 type Props = {
   report: StageReportData
@@ -29,8 +23,6 @@ type Props = {
   onWantResult: () => void
   onContinueAfterSubmit: () => void
   onRestart: () => void
-  onProductClick: (slug: string, rank: string, position: string) => void
-  onConsultClick: (slug?: string) => void
   onPrint?: () => void
 }
 
@@ -41,11 +33,6 @@ const TONE: Record<string, string> = {
   orange: 'text-orange-600',
   red: 'text-red-600',
   slate: 'text-slate-900',
-}
-const RANK_TONE: Record<string, string> = {
-  '1순위': 'bg-blue-600 text-white',
-  '2순위': 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200',
-  '장기 검토': 'bg-slate-100 text-slate-500',
 }
 const ADV_STATUS_TONE: Record<AdvantageResultItem['status'], string> = {
   '보유': 'bg-emerald-100 text-emerald-800',
@@ -97,7 +84,6 @@ function TopPrioritiesSection({ step, items }: { step: string; items: TopPriorit
       <div className="mt-4 space-y-3.5">
         {items.map((p) => {
           const tone = PRIO_TONE[p.tone]
-          const pkg = p.linkedProductSlug ? getPackageBySlug(p.linkedProductSlug) : null
           return (
             <div key={p.rank} className={`rounded-2xl border-2 p-5 sm:p-6 ${tone.card}`}>
               <div className="flex items-start gap-3.5">
@@ -112,15 +98,6 @@ function TopPrioritiesSection({ step, items }: { step: string; items: TopPriorit
                     <p className="text-[0.82rem] font-black text-slate-400">그대로 두면</p>
                     <p className="mt-1 text-[0.98rem] leading-relaxed text-slate-600">{p.ifIgnored}</p>
                   </div>
-                  {pkg && (
-                    <Link
-                      to={`/business-services/${pkg.slug}`}
-                      onClick={() => rememberDiagnosisReturn()}
-                      className="mt-3.5 inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2.5 text-[0.95rem] font-bold text-white transition-colors hover:bg-slate-700"
-                    >
-                      도움되는 서비스 · {pkg.name} →
-                    </Link>
-                  )}
                 </div>
               </div>
             </div>
@@ -247,149 +224,6 @@ function ClosingConsultCTA({ onConsult }: { onConsult: () => void }) {
   )
 }
 
-// ── 맞춤 서비스 (제출 후 공개) — 최종 보고서에서는 우선 확인 항목보다 먼저 노출 ──
-function Recommendations({
-  step,
-  recs,
-  onProductClick,
-  onConsultClick,
-}: {
-  step?: string
-  recs: ProductRecommendation[]
-  onProductClick: Props['onProductClick']
-  onConsultClick: Props['onConsultClick']
-}) {
-  const [consultPkg, setConsultPkg] = useState<{ name: string; price: string } | null>(null)
-  if (recs.length === 0) return null
-  return (
-    <section className="mt-7 sm:mt-9 print:break-inside-avoid">
-      <SectionHeading step={step} title="대표님께 맞는 서비스" sub="진단 답변을 바탕으로 우선순위를 정리했어요." />
-      <div className="mt-4 grid gap-3.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-        {recs.map((rec, idx) => {
-          const pkg = getPackageBySlug(rec.slug)
-          if (!pkg) return null
-          const position = idx === 0 ? 'result_primary' : 'result_secondary'
-          return (
-            <article key={rec.slug} className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              {pkg.imageSrc && (
-                <Link to={`/business-services/${pkg.slug}`} onClick={() => { rememberDiagnosisReturn(); onProductClick(rec.slug, rec.rank, position) }} className="relative block aspect-[3/2] bg-slate-100">
-                  <img src={pkg.imageSrc} alt={pkg.name} loading="lazy" className="absolute inset-0 h-full w-full object-contain" />
-                </Link>
-              )}
-              <div className="flex flex-1 flex-col p-4.5">
-                <span className={`self-start rounded-full px-2.5 py-1 text-xs font-black ${RANK_TONE[rec.rank]}`}>{rec.rank}</span>
-                <h4 className="mt-2 text-lg font-extrabold tracking-tight text-slate-900">{pkg.name}</h4>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{rec.reason}</p>
-                {rec.problems && rec.problems.length > 0 && (
-                  <div className="mt-2.5 rounded-xl bg-slate-50 px-3 py-2.5">
-                    <p className="text-[11px] font-black text-slate-400">이런 점을 도와드려요</p>
-                    <ul className="mt-1 space-y-1">
-                      {rec.problems.map((pr) => (
-                        <li key={pr} className="flex items-start gap-1.5 text-xs leading-snug text-slate-600">
-                          <span aria-hidden className="mt-0.5 text-blue-500">·</span>
-                          {pr}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                <div className="mt-3 flex-1">
-                  <p className="text-xl font-black tracking-tight text-slate-900">{formatKoreanMoney(pkg.price)}</p>
-                  {/* 단계형 상품은 어떤 단계로 나뉘는지 카드에서 바로 보이게 한다 */}
-                  {pkg.priceNote && <p className="mt-1 break-keep text-xs leading-relaxed text-slate-500">{pkg.priceNote}</p>}
-                </div>
-                {/* 선택 액션(상담/결제)과 상세 보기를 분리 — 아래 상세 링크는 진단 상태를 보존한 채 이동 */}
-                <div className="mt-3 flex flex-col gap-2 print:hidden">
-                  {pkg.priceType === 'consult' || !paymentsEnabled ? (
-                    <button type="button" onClick={() => { onConsultClick(rec.slug); setConsultPkg({ name: pkg.name, price: pkg.price }) }} className="flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
-                      이 서비스로 상담 신청
-                    </button>
-                  ) : (
-                    <Link to={`/checkout/${pkg.slug}`} onClick={() => onConsultClick(rec.slug)} className="flex min-h-11 w-full items-center justify-center rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
-                      바로 결제하기
-                    </Link>
-                  )}
-                  <Link
-                    to={`/business-services/${pkg.slug}`}
-                    onClick={() => { rememberDiagnosisReturn(); onProductClick(rec.slug, rec.rank, position) }}
-                    className="flex min-h-11 w-full items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50"
-                  >
-                    상세 페이지에서 더 알아보기 <span aria-hidden>→</span>
-                  </Link>
-                </div>
-              </div>
-            </article>
-          )
-        })}
-      </div>
-      <ConsultModal
-        open={!!consultPkg}
-        onClose={() => setConsultPkg(null)}
-        source="진단 결과 추천"
-        heading="상담 신청"
-        contextRows={
-          consultPkg
-            ? [
-                { label: '상품', value: consultPkg.name },
-                { label: '가격', value: formatKoreanMoney(consultPkg.price) },
-                { label: '신청 위치', value: '기업 성장진단 결과' },
-              ]
-            : []
-        }
-      />
-    </section>
-  )
-}
-
-// ── 함께 준비하면 좋은 것들 — AI 자동화·홈페이지·AX 소프트 추천(고정, 이미 추천된 상품은 제외) ──
-const GROWTH_PICKS: { slug: string; nudge: string }[] = [
-  {
-    slug: 'ai-ax-system',
-    nudge: '반복 업무에 들어가는 시간과 인건비는 줄이지 않는 한 매년 그대로 나갑니다. 회사 규모와 상관없이, 먼저 도입한 회사와의 격차가 점점 벌어지는 영역이에요.',
-  },
-  {
-    slug: 'responsive-homepage',
-    nudge: '거래처도 지원사업 담당자도 계약 전에 회사부터 검색해 봅니다. 모바일에서 깔끔하게 열리는 홈페이지가 없으면, 그 단계에서 신뢰를 잃기 쉬워요.',
-  },
-  {
-    slug: 'ax-full-package',
-    nudge: '디지털 전환을 미리 준비해 두면 정부지원사업·정책자금 평가에서도 준비된 회사라는 인상을 줄 수 있어요. 회사가 오래 성장하기 위한 기반이 되기도 하고요.',
-  },
-]
-
-function GrowthPicksSection({ excludeSlugs, onProductClick }: { excludeSlugs: string[]; onProductClick: Props['onProductClick'] }) {
-  const picks = GROWTH_PICKS.filter((p) => !excludeSlugs.includes(p.slug))
-  if (!picks.length) return null
-  return (
-    <section className="mt-6 rounded-2xl border border-slate-200 bg-gradient-to-b from-sky-50/70 to-white p-4 sm:mt-7 sm:p-5 print:break-inside-avoid">
-      <h3 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">요즘 대표님들이 함께 준비하는 것들</h3>
-      <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-500">당장 급하지는 않지만, 미룰수록 시간과 비용이 더 들어가는 영역이라 함께 보시면 좋아요.</p>
-      <div className="mt-4 space-y-3">
-        {picks.map((p) => {
-          const pkg = getPackageBySlug(p.slug)
-          if (!pkg) return null
-          return (
-            <Link
-              key={p.slug}
-              to={`/business-services/${pkg.slug}`}
-              onClick={() => { rememberDiagnosisReturn(); onProductClick(p.slug, '함께 준비', 'result_growth_pick') }}
-              className="flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-3.5 transition-colors hover:border-blue-300 hover:bg-blue-50/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
-            >
-              {pkg.imageSrc && <img src={pkg.imageSrc} alt="" loading="lazy" className="h-16 w-[96px] shrink-0 rounded-lg bg-slate-100 object-cover sm:h-[72px] sm:w-[108px]" />}
-              <div className="min-w-0 flex-1">
-                <p className="text-[1.05rem] font-extrabold leading-tight text-slate-900">{pkg.name}</p>
-                <p className="mt-1 text-[0.92rem] leading-relaxed text-slate-500">{p.nudge}</p>
-                <p className="mt-1.5 text-[1rem] font-black text-slate-800">{formatKoreanMoney(pkg.price)}</p>
-              </div>
-              <span aria-hidden className="shrink-0 font-black text-slate-300">→</span>
-            </Link>
-          )
-        })}
-      </div>
-    </section>
-  )
-}
-
 export default function StageReport({
   report,
   submitted,
@@ -398,8 +232,6 @@ export default function StageReport({
   onWantResult,
   onContinueAfterSubmit,
   onRestart,
-  onProductClick,
-  onConsultClick,
   onPrint,
 }: Props) {
   const [count, setCount] = useState(0)
@@ -428,8 +260,6 @@ export default function StageReport({
   const canContinue = report.depth < 3
   const isFinal = report.depth === 3
   // 최종 보고서 섹션 번호 — 맞춤 서비스(②)는 제출과 무관하게 결과 화면에서 바로 노출
-  const hasRecsSection = report.recommendations.length > 0
-  const stepPrio = hasRecsSection ? '③' : '②'
 
   function handlePrint() {
     onPrint?.()
@@ -499,13 +329,7 @@ export default function StageReport({
             </div>
           )}
 
-          {/* ② 맞춤 서비스 — 제출 후 공개, 우선 확인 항목보다 먼저(썸네일 카드) */}
-          {hasRecsSection && <Recommendations step="②" recs={report.recommendations} onProductClick={onProductClick} onConsultClick={onConsultClick} />}
-
-          {report.topPriorities && <TopPrioritiesSection step={stepPrio} items={report.topPriorities} />}
-
-          {/* 함께 준비하면 좋은 것들 — '지금 먼저 확인할 것들' 바로 다음에 (이미 추천된 상품은 제외) */}
-          <GrowthPicksSection excludeSlugs={hasRecsSection ? report.recommendations.map((r) => r.slug) : []} onProductClick={onProductClick} />
+          {report.topPriorities && <TopPrioritiesSection step="②" items={report.topPriorities} />}
 
           {/* 영역별 준비도 한눈에 — 6개 영역 막대 시각화(항상 노출) */}
           {report.areas && report.areas.length > 0 && <AreaScoreSummary areas={report.areas} />}
@@ -593,7 +417,6 @@ export default function StageReport({
             </div>
           )}
 
-          {submitted && <Recommendations recs={report.recommendations} onProductClick={onProductClick} onConsultClick={onConsultClick} />}
         </>
       )}
 

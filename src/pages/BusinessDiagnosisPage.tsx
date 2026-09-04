@@ -326,17 +326,6 @@ export default function BusinessDiagnosisPage() {
     }
   }
 
-  function handleProductClick(slug: string, rank: string, position: string) {
-    trackEvent(sRef.current.sessionId, 'product_clicked', slug, { rank, position, leadId: sRef.current.leadId ?? null })
-  }
-  function handleConsultClick(slug?: string) {
-    trackEvent(sRef.current.sessionId, 'consultation_clicked', slug ?? 'general', {
-      leadId: sRef.current.leadId ?? null,
-      topTask: report?.topTask ?? report?.summary ?? null,
-      recommended: report?.recommendations.map((r) => r.slug) ?? [],
-    })
-  }
-
   const submitted = Boolean(session.leadId)
   return (
     <div className="flex min-h-dvh flex-col bg-white text-slate-900 antialiased [word-break:keep-all]">
@@ -406,8 +395,6 @@ export default function BusinessDiagnosisPage() {
             onWantResult={wantResultGate}
             onContinueAfterSubmit={continueToNextStage}
             onRestart={handleRestart}
-            onProductClick={handleProductClick}
-            onConsultClick={handleConsultClick}
             onPrint={() => trackEvent(sRef.current.sessionId, 'report_printed', String(report.depth))}
           />
         )}
