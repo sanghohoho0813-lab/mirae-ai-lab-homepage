@@ -53,6 +53,8 @@ export default function BusinessServicesPage() {
   const location = useLocation()
   const navType = useNavigationType()
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice | null>(null)
+  // 하단 고정 바의 '샘플 20개 보기' 가 같은 패널을 열 수 있도록 상태를 여기서 관리한다
+  const [sampleNavOpen, setSampleNavOpen] = useState(false)
   const isPreviewEmbedded = new URLSearchParams(location.search).has('preview')
 
   useEffect(() => {
@@ -250,14 +252,28 @@ export default function BusinessServicesPage() {
       <KakaoFloat />
 
       {/* 스크롤 중 어디서나 샘플 20개로 — 평소엔 비켜서 있는 작은 손잡이 */}
-      {!isPreviewEmbedded && <SampleQuickNav />}
+      {!isPreviewEmbedded && <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} />}
 
       {/* Mobile sticky CTA — 기업진단(카톡은 KakaoFloat) */}
       {!heroVisible && !atEnd && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
-          <Link to="/business-diagnosis" className="flex items-center justify-center gap-1.5 rounded-xl bg-[#D47A4A] px-4 py-3 text-[1.2rem] sm:text-[1.09rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A]">
-            <span aria-hidden>🩺</span> 3분 AX 가능성 진단
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
+          {/* 진단 60% · 샘플 40% — 모양은 같고 색과 크기만 다르게.
+              basis 0 + min-w-0 이 있어야 글자 길이가 아니라 비율이 폭을 정한다(좁은 화면 56:44 방지). */}
+          <Link
+            to="/business-diagnosis"
+            className="flex min-w-0 flex-[6_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#D47A4A] px-1.5 py-3 text-[0.86rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] min-[360px]:px-2 min-[360px]:text-[0.95rem] min-[400px]:text-[1.02rem]"
+          >
+            <span aria-hidden className="hidden min-[360px]:inline">🩺</span>
+            <span>3분 AX 가능성 진단</span>
           </Link>
+          <button
+            type="button"
+            onClick={() => setSampleNavOpen(true)}
+            className="flex min-w-0 flex-[4_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#171B20] px-1.5 py-3 text-[0.86rem] font-bold text-white shadow-sm transition-colors hover:bg-[#343B44] min-[360px]:px-2 min-[360px]:text-[0.95rem] min-[400px]:text-[1.02rem]"
+          >
+            <span aria-hidden className="hidden min-[370px]:inline text-[#E8B89A]">▦</span>
+            <span>샘플 20개 보기</span>
+          </button>
         </div>
       )}
 
