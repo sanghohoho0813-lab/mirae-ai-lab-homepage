@@ -1,7 +1,7 @@
 // 스크롤 어디에서나 20개 샘플로 바로 갈 수 있는 작은 손잡이.
 //
-//  - 평소에는 오른쪽 가장자리에 반투명하게 비켜서 있어 읽기를 방해하지 않는다.
-//    (카톡 버튼은 아래, 헤더는 위 → 세로 가운데에 둔다)
+//  - PC: 카톡 버튼 왼쪽에 나란히 놓인 알약.
+//    모바일: 하단 고정 바의 오른쪽 40% 버튼이 이 패널을 연다(중복 방지를 위해 알약은 숨김).
 //  - 누르면 두 묶음이 펼쳐지고, 각 묶음이 "어떤 샘플들인지" 한 줄 + 이름으로 보인다.
 //  - 20개를 번호로 부르면 방문자에게 아무 의미가 없어서, 성격으로 나눠 이름을 붙였다.
 //      업종 AX 10   — 실제 업종의 운영 화면과 고객 플랫폼 (페이지 앞쪽)
@@ -43,8 +43,20 @@ const GROUPS: Group[] = [
 
 const TOTAL = AX_PLATFORM_SAMPLES.length + PORTFOLIO_SAMPLES.length
 
-export default function SampleQuickNav() {
-  const [open, setOpen] = useState(false)
+export default function SampleQuickNav({
+  open: openProp,
+  onOpenChange,
+}: {
+  /** 하단 고정 바 버튼처럼 바깥에서 열 때 사용 (미지정이면 스스로 관리) */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+} = {}) {
+  const [ownOpen, setOwnOpen] = useState(false)
+  const open = openProp ?? ownOpen
+  const setOpen = (v: boolean) => {
+    setOwnOpen(v)
+    onOpenChange?.(v)
+  }
   const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -101,7 +113,7 @@ export default function SampleQuickNav() {
           aria-expanded={false}
           aria-label={`샘플 ${TOTAL}개 둘러보기 열기`}
           // 본문 옆을 따라다니면 읽는 데 거슬린다 → 카톡 버튼 왼쪽, 같은 높이에 나란히 둔다
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] right-[4.75rem] z-40 inline-flex items-center gap-1.5 rounded-full bg-[#171B20]/92 px-3.5 py-3 text-white shadow-lg shadow-slate-900/25 ring-1 ring-white/15 backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-[#171B20] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A] sm:bottom-6 sm:right-[10.25rem] sm:px-4"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] right-[4.75rem] z-40 hidden items-center sm:inline-flex gap-1.5 rounded-full bg-[#171B20]/92 px-3.5 py-3 text-white shadow-lg shadow-slate-900/25 ring-1 ring-white/15 backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-[#171B20] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A] sm:bottom-6 sm:right-[10.25rem] sm:px-4"
         >
           <span aria-hidden className="text-[1.05rem] leading-none text-[#E8B89A]">▦</span>
           <span className="whitespace-nowrap text-[1.05rem] font-black leading-none sm:text-[1.06rem]">
