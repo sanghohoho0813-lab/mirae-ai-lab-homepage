@@ -7,7 +7,10 @@ const band = 'px-5 py-16 sm:px-6 sm:py-24'
 const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
-/** SECTION 1 — Hero. 정책자금 대행 첫인상이 아니라 "기업을 AI 기반 운영 구조로 바꾸는 AX 회사"가 5초 안에 읽히게 한다. */
+/** SECTION 1 — Hero. "경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX"가 5초 안에 읽히게 한다.
+ *  시각 구조(배경·버튼 배치·모션)는 유지하고 문구만 브랜드 정의에 맞춘다. 정책자금·지원금·투자 표현은 쓰지 않는다. */
+const HERO_KEYWORDS = ['운영효율', '매출성장', '기업자산화'] as const
+
 export function AxHeroV2() {
   return (
     <section className="relative flex min-h-[calc(100svh-53px)] items-center overflow-hidden bg-[#050B11]">
@@ -16,32 +19,39 @@ export function AxHeroV2() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
       <div className={`relative w-full ${wrap} px-5 pb-24 pt-16 sm:px-6 sm:pb-28 sm:pt-20`}>
-        <span className="inline-flex items-center gap-2 rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-4 py-2 text-[1.16rem] sm:text-[1.05rem] font-bold text-[#E8B89A] backdrop-blur">
-          MIRAE AI LAB · Business AX Company
+        <span className="inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-4 py-2 text-[1.02rem] font-bold leading-snug text-[#E8B89A] backdrop-blur sm:text-[1.05rem]">
+          경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX
         </span>
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
-        <h1 className="mt-10 max-w-4xl break-keep text-[clamp(2.45rem,8.8vw,3.5rem)] font-black leading-[1.28] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-12 sm:text-[clamp(2.8rem,5.3vw,3.95rem)]">
-          기업의 일을,<br />
-          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">AI가 움직이는 구조</span>로 바꿉니다.
+        <h1 className="mt-10 max-w-4xl break-keep text-[clamp(2.05rem,7.6vw,3.2rem)] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-12 sm:text-[clamp(2.5rem,4.8vw,3.6rem)]">
+          대표가 계속 확인해야<br className="sm:hidden" /> 돌아가는 회사를,<br />
+          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">AI와 데이터가 먼저 움직이는 회사</span>로.
         </h1>
-        <p className="mt-7 max-w-2xl break-keep text-[1.28rem] font-medium leading-[1.75] text-[#E7EAEE] sm:mt-8 sm:text-[1.4rem]">
-          고객·업무·매출·재고·현장 데이터를 연결하고,{' '}
-          Business AX와 고객 플랫폼을 직접 구축해{' '}
-          <b className="text-[#FAFAF8]">회사의 다음 운영체계</b>를 만듭니다.
+        <p className="mt-7 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.75] text-[#E7EAEE] sm:mt-8 sm:text-[1.36rem]">
+          미래AI랩은 회사의 사업과 실제 업무를 먼저 분석합니다.<br className="hidden sm:block" />{' '}
+          엑셀·카톡·ERP 사이에 남아 있는 회사 고유의 업무를 연결하고,<br className="hidden sm:block" />{' '}
+          AI가 위험·우선순위·다음 행동까지 판단하는 <b className="text-[#FAFAF8]">전용 AX</b>를 설계·구축합니다.
         </p>
-        <div className="mt-10 flex flex-col gap-3 sm:mt-11 sm:flex-row">
+        <ul className="mt-6 flex flex-wrap gap-2" aria-label="AX 목표">
+          {HERO_KEYWORDS.map((k) => (
+            <li key={k} className="rounded-lg border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[1.0rem] font-bold text-slate-200 sm:text-[1.05rem]">
+              {k}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-9 flex flex-col gap-3 sm:mt-10 sm:flex-row">
           <Link
             to="/business-diagnosis"
             className="shine-cta flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 text-[1.24rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto sm:text-[1.2rem]"
           >
-            3분 AX 가능성 진단
+            우리 회사 AX 가능성 진단
           </Link>
           <a
-            href="#real-projects"
+            href="#portfolio"
             className="flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/50 px-7 text-[1.24rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto sm:text-[1.2rem]"
           >
-            AX 사례 보기 <span aria-hidden>↓</span>
+            실제 AX 구축 화면 보기 <span aria-hidden>↓</span>
           </a>
         </div>
       </div>

@@ -38,6 +38,7 @@ export type SessionRow = {
   scores: Array<{ area: string; score: number; priority: string }> | null
   result_summary: {
     summary?: string
+    headline?: string
     topTask?: string
     overallScore?: number
     ownedAdvantageCount?: number
@@ -45,6 +46,13 @@ export type SessionRow = {
     improvements?: string[]
     prerequisites?: string[]
     actionPlan?: string[]
+    // AX Fit (v5)
+    grade?: string
+    gradeLabel?: string
+    score?: number
+    topProblems?: string[]
+    direction?: string[]
+    readiness?: string
   } | null
   advantage_factors: Array<{ id: string; label: string; status: string; group: string }> | null
   recommended_products: Array<{ slug: string; rank: string; reason: string }> | null
@@ -73,7 +81,7 @@ export type EventRow = { event_type: string; event_key: string | null; payload: 
 export type LeadsListResponse = {
   leads: LeadRow[]
   sessions: SessionRow[]
-  stats: { total: number; today: number; gradeA: number; consented: number; fundingUrgent: number }
+  stats: { total: number; today: number; gradeA: number; consented: number; highPriority: number }
 }
 
 async function getToken(): Promise<string> {

@@ -1,5 +1,7 @@
-// 진단 시작 화면 — 설문지가 아니라 '퀘스트 시작' 느낌 (토스풍 간결 모션).
-import { STAGE_INFO } from '../../data/businessDiagnosisQuestions'
+// 3분 AX Fit 시작 화면 — 설문지가 아니라 '판단 시작' 느낌 (토스풍 간결 모션).
+// 결과 등급 4단계를 미리 보여주어, 무엇을 판단하는 진단인지 먼저 알린다.
+import { AX_FIT_INFO, QUESTION_COUNT } from '../../data/businessDiagnosisQuestions'
+import { GRADE_META } from '../../lib/businessDiagnosisEngine'
 
 type Props = {
   hasSaved: boolean
@@ -7,47 +9,35 @@ type Props = {
   onResume: () => void
 }
 
-const QUEST_CARDS = [
-  { stage: 1 as const, desc: '약 1분 · 여기까지만 해도 결과를 받아요', badge: '먼저 여기부터' },
-  { stage: 2 as const, desc: '원하면 이어서 · 받을 수 있는 자금·지원제도' },
-  { stage: 3 as const, desc: '원하면 이어서 · 인증과 홈페이지·업무시스템' },
-]
+const GRADE_CARDS = (['NO_GO', 'LITE', 'FULL', 'HIGH'] as const).map((g) => ({ key: g, ...GRADE_META[g] }))
 
 export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
   return (
     <div className="mx-auto flex min-h-[calc(100dvh-57px)] max-w-[720px] flex-col justify-center px-5 py-10 sm:py-14">
-      <p className="animate-rise-in text-sm font-black uppercase tracking-widest text-blue-600">3분 기업 성장진단</p>
+      <p className="animate-rise-in text-sm font-black uppercase tracking-widest text-blue-600">{AX_FIT_INFO.name}</p>
       <h1 className="animate-rise-in mt-3 text-[1.6rem] font-black leading-[1.3] tracking-tight text-slate-900 [animation-delay:60ms] sm:text-[2.2rem]">
-        우리 회사에 지금 필요한 지원이<br />무엇인지 모르겠다면?
+        우리 회사는<br className="sm:hidden" /> 어디부터 바꿔야 할까요?
       </h1>
       <p className="animate-rise-in mt-4 max-w-lg text-base leading-relaxed text-slate-600 [animation-delay:120ms] sm:text-lg">
-        몇 가지 질문에 답하면 정책자금·지원금·기업인증·홈페이지·AX 중 먼저 준비할 항목을 알려드립니다.
+        모든 회사에 Full AX가 필요한 것은 아닙니다.
       </p>
-      <p className="animate-rise-in mt-2 max-w-lg text-[0.95rem] leading-relaxed text-slate-500 [animation-delay:150ms]">
-        정책자금, 지원금, 인증, 홈페이지, AX 중 우리 회사가 먼저 준비할 항목을 찾아보세요.
+      <p className="animate-rise-in mt-1.5 max-w-lg text-base leading-relaxed text-slate-600 [animation-delay:150ms] sm:text-lg">
+        현재 업무방식과 시스템을 기준으로<br className="sm:hidden" /> No-Go / Lite / Full AX 가능성을 먼저 판단합니다.
       </p>
 
-      {/* 3개의 퀘스트 카드 */}
+      {/* 결과 등급 4단계 미리보기 */}
       <div className="mt-8 space-y-3">
-        {QUEST_CARDS.map((c, i) => (
+        {GRADE_CARDS.map((c, i) => (
           <div
-            key={c.stage}
-            className={`animate-rise-in flex items-center gap-4 rounded-2xl border bg-white p-4 shadow-sm sm:p-5 ${
-              c.stage === 1 ? 'border-blue-500 ring-1 ring-blue-200' : 'border-slate-200'
-            }`}
+            key={c.key}
+            className="animate-rise-in flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
             style={{ animationDelay: `${140 + i * 70}ms` }}
           >
-            <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl text-base font-black ${c.stage === 1 ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700'}`}>
-              {c.stage}
-            </span>
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-base font-black text-blue-700">{i + 1}</span>
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <p className="text-base font-extrabold text-slate-900">{STAGE_INFO[c.stage].name}</p>
-                {'badge' in c && c.badge && <span className="rounded-md bg-blue-600 px-1.5 py-0.5 text-[10px] font-black text-white">{c.badge}</span>}
-              </div>
+              <p className="text-base font-extrabold text-slate-900">{c.label}</p>
               <p className="mt-0.5 text-sm leading-snug text-slate-500">{c.desc}</p>
             </div>
-            <span aria-hidden className="ml-auto text-slate-300">›</span>
           </div>
         ))}
       </div>
@@ -59,10 +49,10 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
           onClick={onStart}
           className="flex min-h-[56px] items-center justify-center gap-1.5 rounded-2xl bg-blue-600 px-7 py-4 text-lg font-black text-white shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
         >
-          우리 회사에 필요한 서비스 찾기
+          3분 AX Fit 시작하기
           <span aria-hidden>→</span>
         </button>
-        <p className="text-center text-[0.85rem] font-medium text-slate-500">약 3분 · 로그인 없이 시작 · 단계별 결과 확인</p>
+        <p className="text-center text-[0.85rem] font-medium text-slate-500">질문 {QUESTION_COUNT}개 · 약 3분 · 로그인 없이 시작</p>
         {hasSaved && (
           <button
             type="button"

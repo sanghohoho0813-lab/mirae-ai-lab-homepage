@@ -1,4 +1,4 @@
-// /api/business-diagnosis — 기업 성장진단 익명 저장 API (action: session | submit | event).
+// /api/business-diagnosis — 3분 AX Fit 익명 저장 API (action: session | submit | event).
 // 자체 포함(외부 helper import 0개) + 동적 supabase import. service_role 전용.
 // ⚠️ SUPABASE_SERVICE_ROLE_KEY 는 서버에서만 사용 (VITE_ 환경변수 금지, 프론트 노출 금지).
 // 원칙:
@@ -43,18 +43,25 @@ function asLines(v: unknown): string[] {
 }
 
 const bizTypeLabel = (t: string) => (t === 'corp' ? '법인' : t === 'individual' ? '개인사업자' : t === 'pre' ? '예비창업' : t || '-')
-const depthLabel = (d: string) => (d === 'comprehensive' ? '종합(3단계)' : d === 'funding' ? '자금(2단계)' : d === 'basic' ? '기본(1단계)' : d || '-')
+const depthLabel = (d: string) => (d === 'comprehensive' ? 'AX Fit 10문항 완료' : d === 'funding' ? '(구) 자금 단계' : d === 'basic' ? '(구) 기본 단계' : d || '-')
 
 // 리드 플래그 → 한글 라벨
 const FLAG_LABELS: Record<string, string> = {
   hot: '🔥 최우선(핫리드)',
-  funding_urgent: '자금 시급',
-  certification_interest: '인증 관심',
-  employment_interest: '고용지원금 관심',
-  digital_interest: 'AX·디지털 관심',
-  prerequisite_issue: '선결과제(체납 등) 있음',
+  ax_high_priority: 'AX HIGH PRIORITY',
+  ax_full_candidate: 'AX FULL 후보',
+  ax_lite: 'AX LITE',
+  ax_no_go: 'AX NO-GO',
+  growth_interest: '정책·R&D·성장전략 함께 검토 희망',
+  no_internal_owner: '내부 담당자 미정',
   consultation_opt_in: '상담 신청 동의',
-  information_only: '정보만 원함',
+  // 구버전 리드 호환
+  funding_urgent: '자금 시급(구)',
+  certification_interest: '인증 관심(구)',
+  employment_interest: '고용지원금 관심(구)',
+  digital_interest: 'AX·디지털 관심(구)',
+  prerequisite_issue: '선결과제(구)',
+  information_only: '정보만 원함(구)',
 }
 const flagLabel = (f: string) => FLAG_LABELS[f] || f
 
@@ -80,9 +87,12 @@ async function sendDiagnosisEmail(p: {
   const receivedAt = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', dateStyle: 'long', timeStyle: 'short' })
   const s = p.summary || {}
   const str = (k: string) => (typeof s[k] === 'string' ? (s[k] as string) : '')
-  const stageTxt = p.completedStage ? `${p.completedStage}단계까지${p.stoppedAfterStage ? ' (여기서 종료)' : ''}` : '-'
+  const num = (k: string) => (typeof s[k] === 'number' ? String(s[k]) : '')
+  const axGrade = str('gradeLabel') || str('grade')
+  const axScore = num('score') || num('overallScore')
+  const stageTxt = p.completedStage ? (p.depth ? depthLabel(p.depth) : `${p.completedStage}단계 완료`) : '-'
 
-  // 상담 폼에서 고른 기업 정보(업력·업종·연매출·직원수·지역) — 있으면 표에 추가
+  // 상담 폼에서 고른 추가 정보 — 있으면 표에 추가
   const profileRows: Array<[string, string]> = p.companyProfile
     ? Object.entries(p.companyProfile).filter(([, v]) => v).map(([k, v]) => [k, String(v)] as [string, string])
     : []
@@ -92,26 +102,26 @@ async function sendDiagnosisEmail(p: {
     ['대표자명', p.repName],
     ['연락처', p.phone],
     ['이메일', p.email || '-'],
-    ['사업자 유형', bizTypeLabel(p.businessType)],
+    ...(p.businessType ? ([['사업자 유형', bizTypeLabel(p.businessType)]] as Array<[string, string]>) : []),
     ['상담 방식', p.contactMethod || '-'],
     ...profileRows,
     ['상담 동의', p.consultationConsent ? '동의' : '미동의'],
     ['마케팅 동의', p.marketingConsent ? '동의' : '미동의'],
-    ['완료 단계', stageTxt],
-    ['진단 깊이', depthLabel(p.depth || '')],
-    ['리드 점수', `${p.score}점 · ${p.grade}등급`],
+    ['진단', stageTxt],
+    ...(axGrade ? ([['AX Fit 등급', axScore ? `${axGrade} · ${axScore}점` : axGrade]] as Array<[string, string]>) : []),
+    ['상담 우선순위', `${p.score}점 · ${p.grade}등급`],
     ['분류', p.flags.length ? p.flags.map(flagLabel).join(', ') : '-'],
     ['접수 시간', receivedAt],
   ]
 
-  // 고객(잠재고객)용 요약 — 관리자에겐 부차적이라 접어서 노출(지원 클라이언트 한정).
+  // 결과 요약 — 관리자에겐 부차적이라 접어서 노출(지원 클라이언트 한정).
   const foldBlocks: Array<[string, string[]]> = [
-    ['핵심 요약', [str('headline'), str('summary'), str('topTask') ? `가장 먼저: ${str('topTask')}` : ''].filter(Boolean)],
-    ['강점', asLines(s.strengths)],
-    ['보완점', asLines(s.improvements)],
+    ['핵심 요약', [str('headline'), str('summary'), str('readiness')].filter(Boolean)],
+    ['현재 가장 큰 문제 TOP 3', asLines(s.improvements)],
+    ['권장 AX 방향', asLines(s.strengths)],
+    ['다음 행동', asLines(s.actionPlan)],
     ['선결 과제', asLines(s.prerequisites)],
-    ['실행 플랜', asLines(s.actionPlan)],
-    ['추천 상품', asLines(p.recProducts)],
+    ['(구) 추천 상품', asLines(p.recProducts)],
   ]
 
   const kvHtml = kv
@@ -161,25 +171,25 @@ async function sendDiagnosisEmail(p: {
   <div style="font-family:-apple-system,'Apple SD Gothic Neo','Segoe UI',sans-serif;background:#f1f5f9;padding:24px">
     <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden">
       <div style="background:#0f172a;padding:20px 24px">
-        <p style="margin:0;color:#38bdf8;font-size:12px;font-weight:700;letter-spacing:1px">미래 AI 랩 · 기업 성장진단</p>
-        <p style="margin:6px 0 0;color:#ffffff;font-size:18px;font-weight:700">새 진단 접수 · ${escapeHtml(p.companyName)} (${escapeHtml(p.grade)}등급 ${p.score}점)</p>
+        <p style="margin:0;color:#38bdf8;font-size:12px;font-weight:700;letter-spacing:1px">미래 AI 랩 · 3분 AX Fit</p>
+        <p style="margin:6px 0 0;color:#ffffff;font-size:18px;font-weight:700">새 진단 접수 · ${escapeHtml(p.companyName)}${axGrade ? ` (${escapeHtml(axGrade)})` : ''} · 우선순위 ${escapeHtml(p.grade)} ${p.score}점</p>
       </div>
       <table style="width:100%;border-collapse:collapse">${kvHtml}</table>
-      ${answersHtml ? `<div style="padding:14px 16px 4px;border-top:8px solid #f1f5f9"><p style="margin:0;font-size:13px;font-weight:800;color:#2563eb">📋 단계별 진단 응답</p></div>${answersHtml}<div style="height:8px"></div>` : ''}
+      ${answersHtml ? `<div style="padding:14px 16px 4px;border-top:8px solid #f1f5f9"><p style="margin:0;font-size:13px;font-weight:800;color:#2563eb">📋 진단 응답</p></div>${answersHtml}<div style="height:8px"></div>` : ''}
       ${interestsHtml}
       ${foldHtml}
       <div style="padding:14px 24px;background:#f8fafc;color:#64748b;font-size:12px;line-height:1.6">
-        이 메일은 3분 기업 성장진단 제출 시 자동 발송되었습니다. ${p.email ? '회신(Reply) 시 문의자 이메일로 답장됩니다.' : '위 연락처로 직접 연락하실 수 있습니다.'}
+        이 메일은 3분 AX Fit 상담 신청 시 자동 발송되었습니다. ${p.email ? '회신(Reply) 시 문의자 이메일로 답장됩니다.' : '위 연락처로 직접 연락하실 수 있습니다.'}
       </div>
     </div>
   </div>`
 
   const answersText = (p.answersDisplay && p.answersDisplay.length > 0)
-    ? '\n\n[단계별 진단 응답]\n' + p.answersDisplay.map((st) => `\n▶ ${st.stage}단계 · ${st.name}\n` + st.items.map((it) => `- ${it.q}: ${it.a}`).join('\n')).join('\n')
+    ? '\n\n[진단 응답]\n' + p.answersDisplay.map((st) => `\n▶ ${st.name}\n` + st.items.map((it) => `- ${it.q}: ${it.a}`).join('\n')).join('\n')
     : ''
 
   const text =
-    `미래 AI 랩 · 기업 성장진단 접수 — ${p.companyName} (${p.grade}등급 ${p.score}점)\n\n` +
+    `미래 AI 랩 · 3분 AX Fit 접수 — ${p.companyName}${axGrade ? ` (${axGrade})` : ''} · 우선순위 ${p.grade} ${p.score}점\n\n` +
     kv.map(([k, v]) => `■ ${k}\n${v}`).join('\n\n') +
     answersText +
     '\n\n' +
@@ -191,7 +201,7 @@ async function sendDiagnosisEmail(p: {
   const { error } = await resend.emails.send({
     from,
     to: [to],
-    subject: `[미래 AI 랩 진단] ${p.companyName} · ${p.grade}등급 ${p.score}점`,
+    subject: `[미래 AI 랩 AX Fit] ${p.companyName}${axGrade ? ` · ${axGrade}` : ''} · 우선순위 ${p.grade} ${p.score}점`,
     html,
     text,
     ...(p.email && p.email.includes('@') ? { replyTo: p.email } : {}),
@@ -235,66 +245,63 @@ function jsonCap(v: unknown, maxLen: number): unknown {
 }
 
 const one = (a: Record<string, unknown>, id: string) => (typeof a[id] === 'string' ? (a[id] as string) : undefined)
-const many = (a: Record<string, unknown>, id: string) => (Array.isArray(a[id]) ? (a[id] as string[]) : [])
 
-// ── 리드 점수 (서버 기준) — 상담 우선순위 점수 0~100 (승인 가능성 아님) ──
+// ── AX Fit 등급 (서버 재계산) — 프론트 엔진(src/lib/businessDiagnosisEngine.ts)과 같은 규칙 ──
+const DEGREE: Record<string, number> = { no: 0, sometimes: 1, often: 2, always: 3 }
+const OWNER: Record<string, number> = { dedicated: 3, partTime: 2, ceo: 1, none: 0 }
+const AX_PROBLEM_QS = ['repeatInput', 'askProgress', 'toolGaps', 'manualHandoff', 'missDelay', 'priorityByMemory', 'dataUnused', 'ceoLoadGrows']
+const AX_ALL_QS = [...AX_PROBLEM_QS, 'uniqueWork', 'internalOwner']
+
+export function axFitGrade(answers: Record<string, unknown>): { grade: 'NO_GO' | 'LITE' | 'FULL' | 'HIGH'; score: number; pain: number; unique: number; owner: number } {
+  const v = (id: string) => DEGREE[one(answers, id) ?? ''] ?? 0
+  const pain = AX_PROBLEM_QS.reduce((sum, id) => sum + v(id), 0) // 0~24
+  const unique = v('uniqueWork') // 0~3
+  const owner = OWNER[one(answers, 'internalOwner') ?? ''] ?? 0 // 0~3
+  const raw = (pain / 24) * 60 + (unique / 3) * 25 + (owner / 3) * 15
+  const score = Math.max(0, Math.min(100, Math.round(raw / 5) * 5))
+  const ceoDependency = v('askProgress') + v('ceoLoadGrows')
+  const dataPotential = v('dataUnused')
+  let grade: 'NO_GO' | 'LITE' | 'FULL' | 'HIGH'
+  if (score < 35) grade = 'NO_GO'
+  else if (unique <= 1 && score < 70) grade = 'LITE'
+  else if (score < 55) grade = 'LITE'
+  else if (score >= 75 && unique >= 2 && ceoDependency >= 4 && dataPotential >= 2) grade = 'HIGH'
+  else grade = 'FULL'
+  return { grade, score, pain, unique, owner }
+}
+
+// ── 리드 점수 (서버 기준) — 상담 우선순위 점수 0~100 (AX 적합성·승인 가능성 아님) ──
 export function scoreLead(answers: Record<string, unknown>, interests: string[], form: {
   consultationConsent: boolean
   preferredContactTime?: string
   email?: string
   phoneOk: boolean
+  contactMethod?: string
 }) {
   const cap = (n: number, m: number) => Math.min(n, m)
-  const fundingWhen = one(answers, 'fundingWhen')
-  const consultTiming = one(answers, 'consultTiming')
-  const plans = many(answers, 'futurePlans')
-  const website = one(answers, 'website')
-  const workflow = one(answers, 'workflow')
-  const hiring = one(answers, 'hiring')
-  const concerns = many(answers, 'concerns')
-  const bizType = one(answers, 'bizType')
-  const years = one(answers, 'years')
-  const hasIso = many(answers, 'iso').some((v) => ['iso9001', 'iso14001', 'iso45001', 'isoEtc'].includes(v))
-  const wantsBig = plans.some((p) => ['bigCorp', 'bidding', 'export'].includes(p))
-  const arrears = one(answers, 'taxArrears') === 'yes' || one(answers, 'taxArrears') === 'paying'
+  const ax = axFitGrade(answers)
+  const v = (id: string) => DEGREE[one(answers, id) ?? ''] ?? 0
 
-  // A. 실행 긴급도 (25) — 1단계만 완료해도 상담의향/자금고민으로 긴급도 반영 (단계로 과도 감점 금지)
-  let a = 0
-  a += fundingWhen === 'm1' ? 15 : fundingWhen === 'm3' ? 12 : fundingWhen === 'm6' ? 8 : fundingWhen === 'planning' ? 4 : 0
-  // 아직 2단계 전(자금 시점 미응답)이라도 자금 고민 + 즉시 상담이면 긴급으로 인정
-  if (!fundingWhen && (concerns.includes('workingCapital') || concerns.includes('facility')) && consultTiming === 'now') a += 12
-  a += consultTiming === 'now' ? 10 : consultTiming === 'm1' ? 7 : consultTiming === 'm3' ? 4 : 0
-  a = cap(a, 25)
+  // A. 문제 강도 = 실행 긴급도 (25)
+  const a = cap(Math.round((ax.pain / 24) * 25), 25)
 
-  // B. 서비스 적합도 (25)
-  let b = 0
-  if (bizType === 'corp') b += 5
-  if (years && years !== 'pre' && years !== 'lt1') b += 4
-  if (one(answers, 'employees') && one(answers, 'employees') !== 'none') b += 4
-  if (['none', 'snsOnly', 'old'].includes(website ?? '')) b += 4
-  if (['excel', 'kakao', 'paper', 'scattered'].includes(workflow ?? '')) b += 4
-  if (bizType === 'corp' && ['lt1', 'y1to3'].includes(years ?? '') && ['none', 'expired', 'unsure'].includes(one(answers, 'venture') ?? '')) b += 4
-  if (wantsBig && !hasIso) b += 4
-  b = cap(b, 25)
+  // B. 서비스 적합도 (25) — 고유 업무 + 내부 담당자
+  const b = cap(ax.unique * 5 + (ax.owner === 3 ? 10 : ax.owner === 2 ? 7 : ax.owner === 1 ? 3 : 0), 25)
 
-  // C. 문제의 명확성 (20)
-  let c = 0
-  const purposes = many(answers, 'fundingPurpose').filter((x) => x !== 'unknown')
-  if (purposes.length > 0) c += 7
-  if (hiring && hiring !== 'na') c += 5
-  if (plans.some((p) => ['bigCorp', 'bidding', 'export', 'invest', 'newProduct'].includes(p))) c += 5
-  if (concerns.includes('online') || concerns.includes('manualWork')) c += 3
-  c = cap(c, 20)
+  // C. 문제의 명확성 (20) — '거의 항상' 답변 수
+  const alwaysCount = AX_ALL_QS.filter((q) => q !== 'internalOwner' && v(q) === 3).length
+  const c = cap(alwaysCount * 4, 20)
 
   // D. 행동의향 (15)
   let d = 0
   d += cap(interests.length * 4, 8)
   if (form.consultationConsent) d += 5
+  if (form.contactMethod) d += 2
   d = cap(d, 15)
 
   // E. 정보 완성도 (10)
-  let e = 0
-  for (const q of ['revenue', 'years', 'employees', 'consultTiming']) if (answers[q] !== undefined) e += 2
+  const answered = AX_ALL_QS.filter((q) => answers[q] !== undefined).length
+  let e = Math.round((answered / AX_ALL_QS.length) * 8)
   if (form.phoneOk) e += 2
   e = cap(e, 10)
 
@@ -304,22 +311,16 @@ export function scoreLead(answers: Record<string, unknown>, interests: string[],
   if (form.email) f += 2
   f = cap(f, 5)
 
-  // 감점 — 정보만 확인 (체납은 과도하게 감점하지 않음: 선결과제 상담 유형으로 분류)
-  let penalty = 0
-  if (consultTiming === 'infoOnly' && !form.consultationConsent) penalty += 5
-
+  const penalty = 0
   const total = Math.max(0, Math.min(100, a + b + c + d + e + f - penalty))
   const grade = total >= 75 ? 'A' : total >= 50 ? 'B' : 'C'
 
   const flags: string[] = []
-  if (total >= 85 || (fundingWhen === 'm1' && consultTiming === 'now')) flags.push('hot')
-  if (fundingWhen === 'm1' || fundingWhen === 'm3' || (!fundingWhen && consultTiming === 'now' && (concerns.includes('workingCapital') || concerns.includes('facility')))) flags.push('funding_urgent')
-  if (interests.some((k) => ['venture', 'researchLab', 'iso'].includes(k)) || concerns.includes('certification')) flags.push('certification_interest')
-  if (hiring && hiring !== 'na') flags.push('employment_interest')
-  if (['none', 'snsOnly', 'old'].includes(website ?? '') || ['excel', 'kakao', 'paper', 'scattered'].includes(workflow ?? '') || interests.includes('website') || interests.includes('workflow')) flags.push('digital_interest')
-  if (arrears) flags.push('prerequisite_issue')
+  if (total >= 85 || (ax.grade === 'HIGH' && form.consultationConsent)) flags.push('hot')
+  flags.push(ax.grade === 'HIGH' ? 'ax_high_priority' : ax.grade === 'FULL' ? 'ax_full_candidate' : ax.grade === 'LITE' ? 'ax_lite' : 'ax_no_go')
+  if (interests.some((k) => /정책|R&D|성장/.test(k))) flags.push('growth_interest')
+  if (ax.owner === 0) flags.push('no_internal_owner')
   if (form.consultationConsent) flags.push('consultation_opt_in')
-  if (consultTiming === 'infoOnly' && !form.consultationConsent) flags.push('information_only')
 
   return { total, grade, flags, breakdown: { urgency: a, fit: b, clarity: c, intent: d, completeness: e, bonus: f, penalty } }
 }
@@ -498,6 +499,7 @@ export default async function handler(req: any, res: any) {
         preferredContactTime: preferredContactTime || undefined,
         email: email || undefined,
         phoneOk: true,
+        contactMethod: contactMethod || undefined,
       })
 
       const s = await upsertSession('submitted')
@@ -564,10 +566,10 @@ export default async function handler(req: any, res: any) {
             .filter((st: any) => st.items.length)
         : undefined
 
-      // 상담 폼 기업 정보(선택) — 허용 키만, 값 정리
+      // 상담 폼 추가 정보(선택) — 허용 키만, 값 정리
       const companyProfile: Record<string, string> = {}
       if (form.companyProfile && typeof form.companyProfile === 'object') {
-        for (const k of ['관심 상품', '업력', '업종', '연매출', '직원 수', '지역']) {
+        for (const k of ['업력', '업종', '연매출', '직원 수', '지역']) {
           const v = strip((form.companyProfile as any)[k], 200)
           if (v) companyProfile[k] = v
         }

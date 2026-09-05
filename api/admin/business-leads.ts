@@ -100,7 +100,7 @@ export default async function handler(req: any, res: any) {
         today: list.filter((l) => new Date(l.created_at) >= today).length,
         gradeA: list.filter((l) => l.lead_grade === 'A').length,
         consented: list.filter((l) => l.consultation_consent).length,
-        fundingUrgent: list.filter((l) => Array.isArray(l.flags) && l.flags.includes('funding_urgent')).length,
+        highPriority: list.filter((l) => Array.isArray(l.flags) && l.flags.includes('ax_high_priority')).length,
       }
 
       return res.status(200).json({ ok: true, leads: leads ?? [], sessions, stats })

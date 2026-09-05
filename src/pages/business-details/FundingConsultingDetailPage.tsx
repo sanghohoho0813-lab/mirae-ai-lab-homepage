@@ -224,7 +224,7 @@ export default function FundingConsultingDetailPage() {
   const [consultProgram, setConsultProgram] = useState<string | null>(null)
 
   useEffect(() => {
-    document.title = 'AX 사업화·자금조달 프로그램 | 미래 AI 랩 서비스몰'
+    document.title = 'AX 프로그램 안내 (개정 중) | 미래 AI 랩'
     window.scrollTo(0, 0)
   }, [])
 

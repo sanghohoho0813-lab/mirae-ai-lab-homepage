@@ -8,8 +8,9 @@ import AccountMenu from '../components/account/AccountMenu'
 // 루트(/) 역할 선택 게이트웨이. 기존 페이지/컴포넌트는 건드리지 않습니다.
 // 배경은 실제 이미지 대신 CSS/SVG 로만 은은한 "AI 경영지원 네트워크"를 구현합니다.
 
+// 브랜드 정비(0차): 자금조달 실적 대신 AX Architect 포지션을 앞세운다.
 const trustItems = [
-  '누적 자금조달 100억+',
+  '경영컨설턴트 출신 AX Architect',
   '정책자금·인증·사업계획 실무 경험',
   'ISO 인증 심사원',
   'AI 기반 경영지원 도구 개발',
@@ -66,11 +67,11 @@ const choices: Choice[] = [
   {
     to: '/business-services',
     icon: '🏢',
-    label: '경영지원 서비스',
-    title: '자금조달과 기업 성장을 준비하는 대표님',
-    desc: '기업진단부터 정책자금, 인증, AX 운영시스템까지 현재 회사에 필요한 순서로 정리합니다.',
-    cta: '중소기업 대표 서비스 보기',
-    keywords: ['기업진단·자금전략', '정책자금', '기업인증', 'AX 운영시스템'],
+    label: '중소기업 맞춤형 AX',
+    title: '사업과 업무를 먼저 진단하고, 실제 시스템으로 구현하려는 대표님',
+    desc: '엑셀·카톡·ERP 사이에 남아 있는 회사 고유의 업무를 AI와 전용 시스템으로 연결합니다. 운영효율·매출성장·기업자산화까지.',
+    cta: '중소기업 맞춤형 AX 보기',
+    keywords: ['AX Fit 진단', '사업·업무 분석', '전용 시스템 구축', '고객 플랫폼'],
     theme: blueTheme,
   },
   {
@@ -87,7 +88,7 @@ const choices: Choice[] = [
 
 export default function GatewayPage() {
   useEffect(() => {
-    document.title = '미래 AI 랩 | 대표님과 컨설턴트를 위한 AI 경영지원 플랫폼'
+    document.title = '미래AI랩 | 경영컨설턴트가 설계하는 중소기업 맞춤형 AX'
   }, [])
 
   return (
@@ -116,11 +117,11 @@ export default function GatewayPage() {
 
         {/* Main copy */}
         <h1 className="mt-5 text-[1.55rem] font-extrabold leading-[1.25] tracking-tight text-slate-900 sm:mt-7 sm:text-4xl lg:text-[2.7rem] lg:leading-[1.2]">
-          대표님의 성장 전략과 컨설턴트의 실무 도구를
+          대표님의 회사 운영과 컨설턴트의 실무 도구를
           <br className="hidden sm:block" /> <span className="text-blue-600">AI로 연결</span>합니다.
         </h1>
         <p className="mt-3.5 max-w-2xl text-[0.95rem] leading-relaxed text-slate-600 sm:mt-5 sm:text-lg">
-          정책자금·고용지원금·기업인증·AX 시스템·AI 업무도구를 목적에 맞게 나누어 안내합니다.
+          중소기업 맞춤형 AX 설계·구축과 컨설턴트용 AI 업무도구를 목적에 맞게 나누어 안내합니다.
         </p>
 
         {/* Choice cards */}

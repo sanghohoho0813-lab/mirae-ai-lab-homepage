@@ -4,17 +4,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import HeaderAccount from '../components/account/HeaderAccount'
-import StageReport from '../components/diagnosis/StageReport'
+import AxFitReportView from '../components/diagnosis/AxFitReport'
 import { deleteResult, getResultById, loadHistory } from '../lib/businessDiagnosisStorage'
 import { trackEvent } from '../lib/businessDiagnosisApi'
+import { AX_FIT_INFO } from '../data/businessDiagnosisQuestions'
 import type { SavedResult } from '../types/businessDiagnosis'
 import BrandLogo from '../components/BrandLogo'
-
-const DEPTH_LABEL: Record<SavedResult['diagnosisDepth'], string> = {
-  basic: '기초체력 진단 (1단계)',
-  funding: '자금·지원제도 진단 (2단계)',
-  comprehensive: '종합 성장진단 (3단계)',
-}
 
 function formatDate(iso: string): string {
   try {
@@ -58,12 +53,12 @@ function ResultsList() {
       {items.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center">
           <p className="text-base font-bold text-slate-700">아직 저장된 진단 결과가 없어요.</p>
-          <p className="mt-1 text-sm text-slate-500">3분 성장진단을 완료하면 결과가 여기에 저장됩니다.</p>
+          <p className="mt-1 text-sm text-slate-500">{AX_FIT_INFO.name}을 완료하면 결과가 여기에 저장됩니다.</p>
           <Link
             to="/business-diagnosis"
             className="mt-5 inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-base font-bold text-white shadow-sm transition-colors hover:bg-blue-700"
           >
-            진단 시작하기 →
+            우리 회사 AX 가능성 진단 →
           </Link>
         </div>
       ) : (
@@ -76,13 +71,15 @@ function ResultsList() {
                   className="min-w-0 flex-1 p-4.5 transition-colors hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700 ring-1 ring-inset ring-blue-200">{DEPTH_LABEL[r.diagnosisDepth]}</span>
+                    <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700 ring-1 ring-inset ring-blue-200">{AX_FIT_INFO.name}</span>
                     <span className="text-xs font-semibold text-slate-400">{formatDate(r.updatedAt)}</span>
                     {r.leadId && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-black text-emerald-700">상담 접수됨</span>}
                   </div>
                   <p className="mt-2 text-[1.02rem] font-black leading-snug text-slate-900">{r.snapshot.headline}</p>
                   <div className="mt-2 flex items-center gap-3">
-                    <span className="text-sm font-bold text-slate-500">종합 준비도 <span className="tabular-nums text-slate-900">{r.snapshot.overallScore}점</span></span>
+                    <span className="text-sm font-bold text-slate-500">
+                      {r.snapshot.gradeLabel} · AX Fit <span className="tabular-nums text-slate-900">{r.snapshot.score}점</span>
+                    </span>
                     <span className="text-sm font-semibold text-blue-600">결과 다시 보기 →</span>
                   </div>
                 </Link>
@@ -141,13 +138,11 @@ function ResultDetail({ resultId }: { resultId: string }) {
           ← 내 진단 결과 목록
         </Link>
       </div>
-      <StageReport
+      <AxFitReportView
         report={result.snapshot}
         submitted
         consultationConsented={Boolean(result.leadId)}
-        onContinueStage={() => navigate('/business-diagnosis')}
-        onWantResult={() => navigate('/business-diagnosis')}
-        onContinueAfterSubmit={() => navigate('/business-diagnosis')}
+        onWantConsult={() => navigate('/business-diagnosis')}
         onRestart={() => navigate('/business-diagnosis')}
         onPrint={() => trackEvent(result.sessionId, 'report_printed', String(result.completedStage))}
       />

@@ -1,4 +1,4 @@
-// /admin/business-leads — 기업 성장진단 리드 DB 관리 (관리자 전용).
+// /admin/business-leads — 3분 AX Fit 리드 DB 관리 (관리자 전용).
 // 기존 /admin 권한 체계(useAuth.isAdmin) 재사용. 목록·필터·검색·상세·상태관리·CSV.
 // 개인정보 보호: 목록에서는 전화번호 마스킹, 상세에서만 전체 표시. 콘솔 출력 금지.
 import { useEffect, useMemo, useState } from 'react'
@@ -17,7 +17,6 @@ import {
   type SessionRow,
 } from '../lib/businessLeadsAdmin'
 import { questions } from '../data/businessDiagnosisQuestions'
-import { AREA_LABELS } from '../lib/businessDiagnosisEngine'
 import { getPackageBySlug } from '../data/businessPackages'
 
 // ── 라벨 매핑 ──
@@ -43,13 +42,20 @@ const STATUS_LABELS: Record<string, string> = {
 
 const FLAG_LABELS: Record<string, string> = {
   hot: 'HOT',
-  funding_urgent: '자금긴급',
-  certification_interest: '인증관심',
-  employment_interest: '고용관심',
-  digital_interest: '디지털관심',
-  prerequisite_issue: '선결과제',
+  ax_high_priority: 'HIGH PRIORITY',
+  ax_full_candidate: 'FULL 후보',
+  ax_lite: 'LITE',
+  ax_no_go: 'NO-GO',
+  growth_interest: '성장전략 관심',
+  no_internal_owner: '담당자 미정',
   consultation_opt_in: '상담동의',
-  information_only: '정보확인형',
+  // 구버전 리드
+  funding_urgent: '자금긴급(구)',
+  certification_interest: '인증관심(구)',
+  employment_interest: '고용관심(구)',
+  digital_interest: '디지털관심(구)',
+  prerequisite_issue: '선결과제(구)',
+  information_only: '정보확인형(구)',
 }
 
 const GRADE_TONE: Record<string, string> = {
@@ -58,8 +64,15 @@ const GRADE_TONE: Record<string, string> = {
   C: 'bg-slate-200 text-slate-600',
 }
 
+const AX_TONE: Record<string, string> = {
+  'HIGH PRIORITY': 'bg-red-100 text-red-700',
+  'FULL AX CANDIDATE': 'bg-orange-100 text-orange-800',
+  'LITE AX': 'bg-amber-100 text-amber-800',
+  'NO-GO': 'bg-blue-50 text-blue-700',
+}
+
 const BREAKDOWN_LABELS: Record<string, string> = {
-  urgency: '실행 긴급도',
+  urgency: '문제 강도',
   fit: '서비스 적합도',
   clarity: '문제 명확성',
   intent: '행동의향',
@@ -71,32 +84,23 @@ const BREAKDOWN_LABELS: Record<string, string> = {
 // ── 1차 상담 확인 질문 (규칙 기반 — AI 미사용) ──
 function consultationChecklist(answers: Record<string, string | string[]>): string[] {
   const one = (id: string) => (typeof answers[id] === 'string' ? (answers[id] as string) : undefined)
-  const many = (id: string) => (Array.isArray(answers[id]) ? (answers[id] as string[]) : [])
+  const strong = (id: string) => ['often', 'always'].includes(one(id) ?? '')
   const out: string[] = []
-  if (one('fundingWhen') && one('fundingWhen') !== 'none') out.push('기존 정책자금·은행 대출 잔액과 금리를 확인해주세요.')
-  if (['yes', 'paying'].includes(one('taxArrears') ?? '')) out.push('체납 금액·분납 일정과 정리 예상 시점을 확인해주세요.')
-  if (['patent', 'utility'].includes(one('ipRights') ?? '')) out.push('최근 3년 내 등록 특허가 실제 법인(대표) 명의인지 확인해주세요.')
-  if (one('ipRights') === 'filed') out.push('출원 중인 지식재산권의 등록 예상 시점을 확인해주세요.')
-  if (['lab', 'dept'].includes(one('researchLab') ?? '')) out.push('기업부설연구소(전담부서) 인정서 유효상태를 확인해주세요.')
-  if (one('venture') === 'expired') out.push('벤처기업확인 만료 시점과 재확인 계획을 확인해주세요.')
-  if (many('futurePlans').some((p) => ['bigCorp', 'bidding', 'export'].includes(p)))
-    out.push('ISO가 필요한 거래처 요구나 입찰 일정이 있는지 확인해주세요.')
-  if (['none', 'snsOnly', 'old'].includes(one('website') ?? '') && ['excel', 'kakao', 'paper', 'scattered'].includes(one('workflow') ?? ''))
-    out.push('홈페이지와 AX(업무 자동화) 중 어느 쪽이 먼저 필요한지 확인해주세요.')
-  if (['unsure', 'notManaged'].includes(one('rndRatio') ?? '')) out.push('연구개발비 비중은 재무제표로 함께 확인해주세요.')
-  if (['notClosed', 'unsure', 'breakeven'].includes(one('operatingProfit') ?? ''))
-    out.push('업종 평균 대비 수익성은 재무제표·업종 평균자료로 확인해주세요.')
-  if (one('hiring') && one('hiring') !== 'na') out.push('채용 인원·시점과 고용지원금 요건 해당 여부를 확인해주세요.')
+  if (strong('repeatInput') || strong('toolGaps')) out.push('지금 쓰는 도구(엑셀·카톡·ERP 등)와 그 사이에서 사람이 옮겨 적는 구간을 확인해주세요.')
+  if (strong('askProgress') || strong('ceoLoadGrows')) out.push('대표·관리자가 하루에 직접 확인하는 업무가 무엇인지, 몇 번이나 확인하는지 확인해주세요.')
+  if (strong('manualHandoff')) out.push('고객 요청·주문·예약이 어떤 채널로 들어와 누가 어떻게 내부로 넘기는지 확인해주세요.')
+  if (strong('missDelay') || strong('priorityByMemory')) out.push('최근 누락·지연 사례 1~2건과, 우선순위를 정하는 실제 기준을 확인해주세요.')
+  if (strong('dataUnused')) out.push('어떤 데이터가 어디에(엑셀·ERP·수기) 쌓여 있는지, 의사결정에 쓰고 싶은 항목을 확인해주세요.')
+  if (strong('uniqueWork')) out.push('기성 프로그램으로 안 되는 회사 고유 업무가 구체적으로 무엇인지 확인해주세요.')
+  else if (one('uniqueWork') === 'no') out.push('고유 업무가 없다고 답했습니다. 기성 SaaS로 충분한지 먼저 확인해주세요(Lite/NO-GO 가능성).')
+  if (['none', 'ceo'].includes(one('internalOwner') ?? '')) out.push('시스템을 함께 쓸 내부 담당자를 정할 수 있는지 확인해주세요. 정착 여부를 좌우합니다.')
   if (out.length === 0) out.push('진단 답변 전반을 확인하며 우선 과제를 함께 정리해주세요.')
   return out
 }
 
-function stageLabel(s?: SessionRow | null): string {
-  const st = s?.completed_stage
-  if (st === 3) return '종합 완료'
-  if (st === 2) return '2단계 완료'
-  if (st === 1) return '1단계 완료'
-  return '-'
+function axLabel(s?: SessionRow | null): string {
+  const g = s?.result_summary?.gradeLabel
+  return g ? String(g) : s?.completed_stage ? '진단 완료(구버전)' : '-'
 }
 
 const th = 'px-3 py-2.5 text-left text-xs font-black uppercase tracking-wide text-slate-400 whitespace-nowrap'
@@ -113,14 +117,10 @@ export default function AdminBusinessLeadsPage() {
   const [fGrade, setFGrade] = useState('')
   const [fStatus, setFStatus] = useState('')
   const [fConsent, setFConsent] = useState('')
-  const [fIndustry, setFIndustry] = useState('')
-  const [fBizType, setFBizType] = useState('')
   const [fUtm, setFUtm] = useState('')
   const [fFlag, setFFlag] = useState('')
-  const [fProduct, setFProduct] = useState('')
+  const [fAx, setFAx] = useState('')
   const [fAssignee, setFAssignee] = useState('')
-  const [fStage, setFStage] = useState('')
-  const [fNextInterest, setFNextInterest] = useState('')
   const [fFrom, setFFrom] = useState('')
   const [fTo, setFTo] = useState('')
   const [search, setSearch] = useState('')
@@ -161,14 +161,10 @@ export default function AdminBusinessLeadsPage() {
     if (fStatus) rows = rows.filter((l) => l.lead_status === fStatus)
     if (fConsent === 'yes') rows = rows.filter((l) => l.consultation_consent)
     if (fConsent === 'no') rows = rows.filter((l) => !l.consultation_consent)
-    if (fIndustry) rows = rows.filter((l) => l.industry === fIndustry)
-    if (fBizType) rows = rows.filter((l) => l.business_type === fBizType)
     if (fUtm) rows = rows.filter((l) => (s.get(l.id)?.utm_source ?? l.source_channel ?? '') === fUtm)
     if (fFlag) rows = rows.filter((l) => (l.flags ?? []).includes(fFlag))
-    if (fProduct) rows = rows.filter((l) => (s.get(l.id)?.recommended_products ?? []).some((r) => r.slug === fProduct))
+    if (fAx) rows = rows.filter((l) => axLabel(s.get(l.id)) === fAx)
     if (fAssignee) rows = rows.filter((l) => (l.assigned_label ?? '(미배정)') === fAssignee)
-    if (fStage) rows = rows.filter((l) => String(s.get(l.id)?.completed_stage ?? '') === fStage)
-    if (fNextInterest === 'yes') rows = rows.filter((l) => s.get(l.id)?.next_stage_interest)
     if (fFrom) rows = rows.filter((l) => l.created_at >= fFrom)
     if (fTo) rows = rows.filter((l) => l.created_at <= `${fTo}T23:59:59`)
     if (search.trim()) {
@@ -183,20 +179,15 @@ export default function AdminBusinessLeadsPage() {
       )
     }
     return rows
-  }, [data, sessionByLead, fGrade, fStatus, fConsent, fIndustry, fBizType, fUtm, fFlag, fProduct, fAssignee, fStage, fNextInterest, fFrom, fTo, search])
+  }, [data, sessionByLead, fGrade, fStatus, fConsent, fUtm, fFlag, fAx, fAssignee, fFrom, fTo, search])
 
   // 필터 옵션 (데이터 기반)
-  const industryOptions = useMemo(() => [...new Set((data?.leads ?? []).map((l) => l.industry).filter(Boolean))] as string[], [data])
   const utmOptions = useMemo(
     () => [...new Set((data?.leads ?? []).map((l) => sessionByLead.get(l.id)?.utm_source ?? l.source_channel).filter(Boolean))] as string[],
     [data, sessionByLead],
   )
   const assigneeOptions = useMemo(() => [...new Set((data?.leads ?? []).map((l) => l.assigned_label ?? '(미배정)'))], [data])
-  const productOptions = useMemo(() => {
-    const set = new Set<string>()
-    for (const s of data?.sessions ?? []) for (const r of s.recommended_products ?? []) set.add(r.slug)
-    return [...set]
-  }, [data])
+  const axOptions = useMemo(() => [...new Set((data?.leads ?? []).map((l) => axLabel(sessionByLead.get(l.id))).filter((x) => x !== '-'))], [data, sessionByLead])
 
   async function openDetail(id: string) {
     setDetailBusy(true)
@@ -224,32 +215,25 @@ export default function AdminBusinessLeadsPage() {
   }
 
   function exportCsv() {
-    const headers = ['접수일시', '등급', '점수', '회사명', '대표자명', '연락처', '이메일', '사업자유형', '업종', '업력', '매출구간', '직원수', '최우선과제', '보유우대요소', '준비추천요소', '추천상품1', '추천상품2', '추천상품3', '상담동의', '마케팅동의', '상태', '담당자', 'UTM source', 'UTM campaign', 'referrer']
+    const headers = ['접수일시', '우선순위 등급', '점수', 'AX Fit 등급', 'AX Fit Score', '회사명', '대표자명', '연락처', '이메일', '가장 큰 문제', '권장 방향', '다음 행동', '내부 담당자', '상담동의', '마케팅동의', '상태', '담당자', 'UTM source', 'UTM campaign', 'referrer']
     const rows = filtered.map((l) => {
       const s = sessionByLead.get(l.id)
-      const a = s?.answers ?? {}
-      const adv = s?.advantage_factors ?? []
-      const recs = s?.recommended_products ?? []
-      const recName = (i: number) => (recs[i] ? (getPackageBySlug(recs[i].slug)?.name ?? recs[i].slug) : '')
+      const r = s?.result_summary
+      const join = (v: unknown) => (Array.isArray(v) ? v.map(String).join(' / ') : '')
       return [
         new Date(l.created_at).toLocaleString('ko-KR'),
         l.lead_grade,
         String(l.lead_score),
+        axLabel(s),
+        r?.score !== undefined ? String(r.score) : '',
         l.company_name,
         l.representative_name,
         formatPhone(l.phone),
         l.email ?? '',
-        answerLabel('bizType', l.business_type ?? undefined),
-        answerLabel('industry', l.industry ?? undefined),
-        answerLabel('years', a['years']),
-        answerLabel('revenue', a['revenue']),
-        answerLabel('employees', a['employees']),
-        s?.result_summary?.topTask ?? '',
-        adv.filter((x) => x.status === '보유').map((x) => x.label).join(' / '),
-        adv.filter((x) => x.status === '검토 추천').map((x) => x.label).join(' / '),
-        recName(0),
-        recName(1),
-        recName(2),
+        join(r?.topProblems ?? r?.improvements),
+        join(r?.direction ?? r?.strengths),
+        join(r?.actionPlan),
+        answerLabel('internalOwner', s?.answers?.['internalOwner']),
         l.consultation_consent ? 'Y' : 'N',
         l.marketing_consent ? 'Y' : 'N',
         STATUS_LABELS[l.lead_status] ?? l.lead_status,
@@ -260,7 +244,7 @@ export default function AdminBusinessLeadsPage() {
       ]
     })
     const date = new Date().toISOString().slice(0, 10)
-    downloadCsv(`미래AI랩_기업성장진단_DB_${date}.csv`, headers, rows)
+    downloadCsv(`미래AI랩_AX_Fit_DB_${date}.csv`, headers, rows)
   }
 
   if (loading) return <div className="grid min-h-screen place-items-center text-slate-400">확인 중…</div>
@@ -283,7 +267,7 @@ export default function AdminBusinessLeadsPage() {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-5 py-3">
           <div className="flex items-center gap-3">
             <Link to="/admin" className="text-sm font-semibold text-slate-500 hover:text-slate-900">← 관리자 홈</Link>
-            <h1 className="text-lg font-black tracking-tight">기업 성장진단 DB</h1>
+            <h1 className="text-lg font-black tracking-tight">3분 AX Fit 리드 DB</h1>
           </div>
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => void reload()} disabled={busy} className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50">
@@ -306,7 +290,7 @@ export default function AdminBusinessLeadsPage() {
             { label: '오늘 접수', value: stats?.today ?? 0 },
             { label: 'A등급', value: stats?.gradeA ?? 0 },
             { label: '상담동의', value: stats?.consented ?? 0 },
-            { label: '정책자금 긴급', value: stats?.fundingUrgent ?? 0 },
+            { label: 'AX HIGH PRIORITY', value: stats?.highPriority ?? 0 },
           ].map((c) => (
             <div key={c.label} className="rounded-2xl border border-slate-200 bg-white p-4 text-center">
               <p className="text-2xl font-black tabular-nums">{c.value}</p>
@@ -319,8 +303,12 @@ export default function AdminBusinessLeadsPage() {
         <div className="mt-5 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3.5">
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="회사명·대표자·전화·이메일 검색" className="w-56 rounded-lg border border-slate-300 px-3 py-2 text-sm" />
           <select value={fGrade} onChange={(e) => setFGrade(e.target.value)} className={selectCls}>
-            <option value="">등급 전체</option>
+            <option value="">우선순위 전체</option>
             {['A', 'B', 'C'].map((g) => <option key={g} value={g}>{g}등급</option>)}
+          </select>
+          <select value={fAx} onChange={(e) => setFAx(e.target.value)} className={selectCls}>
+            <option value="">AX Fit 전체</option>
+            {axOptions.map((a) => <option key={a} value={a}>{a}</option>)}
           </select>
           <select value={fStatus} onChange={(e) => setFStatus(e.target.value)} className={selectCls}>
             <option value="">상태 전체</option>
@@ -331,23 +319,9 @@ export default function AdminBusinessLeadsPage() {
             <option value="yes">동의</option>
             <option value="no">미동의</option>
           </select>
-          <select value={fBizType} onChange={(e) => setFBizType(e.target.value)} className={selectCls}>
-            <option value="">사업자유형 전체</option>
-            <option value="individual">개인</option>
-            <option value="corp">법인</option>
-            <option value="pre">예비창업</option>
-          </select>
-          <select value={fIndustry} onChange={(e) => setFIndustry(e.target.value)} className={selectCls}>
-            <option value="">업종 전체</option>
-            {industryOptions.map((i) => <option key={i} value={i}>{answerLabel('industry', i)}</option>)}
-          </select>
           <select value={fFlag} onChange={(e) => setFFlag(e.target.value)} className={selectCls}>
             <option value="">플래그 전체</option>
             {Object.entries(FLAG_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-          </select>
-          <select value={fProduct} onChange={(e) => setFProduct(e.target.value)} className={selectCls}>
-            <option value="">추천상품 전체</option>
-            {productOptions.map((p) => <option key={p} value={p}>{getPackageBySlug(p)?.name ?? p}</option>)}
           </select>
           <select value={fUtm} onChange={(e) => setFUtm(e.target.value)} className={selectCls}>
             <option value="">UTM 전체</option>
@@ -356,16 +330,6 @@ export default function AdminBusinessLeadsPage() {
           <select value={fAssignee} onChange={(e) => setFAssignee(e.target.value)} className={selectCls}>
             <option value="">담당자 전체</option>
             {assigneeOptions.map((a) => <option key={a} value={a}>{a}</option>)}
-          </select>
-          <select value={fStage} onChange={(e) => setFStage(e.target.value)} className={selectCls}>
-            <option value="">완료 단계 전체</option>
-            <option value="1">1단계 완료</option>
-            <option value="2">2단계 완료</option>
-            <option value="3">종합 완료</option>
-          </select>
-          <select value={fNextInterest} onChange={(e) => setFNextInterest(e.target.value)} className={selectCls}>
-            <option value="">다음 단계 관심 전체</option>
-            <option value="yes">다음 단계 관심 있음</option>
           </select>
           <input type="date" value={fFrom} onChange={(e) => setFFrom(e.target.value)} className={selectCls} aria-label="접수일 시작" />
           <span className="text-slate-300">~</span>
@@ -377,7 +341,7 @@ export default function AdminBusinessLeadsPage() {
           <table className="min-w-full divide-y divide-slate-100">
             <thead className="bg-slate-50">
               <tr>
-                {['접수일', '등급', '단계', '회사명', '대표자', '연락처', '유형', '업종', '업력', '매출', '최우선 과제', '우대', '추천 1순위', '상담동의', '상태', '담당자', '유입'].map((h) => (
+                {['접수일', '우선순위', 'AX Fit', '회사명', '대표자', '연락처', '가장 큰 문제', '내부 담당자', '상담동의', '상태', '담당자', '유입'].map((h) => (
                   <th key={h} className={th}>{h}</th>
                 ))}
               </tr>
@@ -385,8 +349,9 @@ export default function AdminBusinessLeadsPage() {
             <tbody className="divide-y divide-slate-50">
               {filtered.map((l) => {
                 const s = sessionByLead.get(l.id)
-                const a = s?.answers ?? {}
-                const rec1 = s?.recommended_products?.[0]
+                const r = s?.result_summary
+                const ax = axLabel(s)
+                const firstProblem = Array.isArray(r?.topProblems) ? String(r?.topProblems[0] ?? '') : Array.isArray(r?.improvements) ? String(r?.improvements[0] ?? '') : ''
                 return (
                   <tr key={l.id} onClick={() => void openDetail(l.id)} className="cursor-pointer transition-colors hover:bg-blue-50/40">
                     <td className={td}>{new Date(l.created_at).toLocaleDateString('ko-KR')}</td>
@@ -395,19 +360,14 @@ export default function AdminBusinessLeadsPage() {
                       <span className="ml-1 text-xs text-slate-400">{l.lead_score}</span>
                     </td>
                     <td className={td}>
-                      <span className={`rounded-md px-1.5 py-0.5 text-[11px] font-bold ${s?.completed_stage === 3 ? 'bg-emerald-100 text-emerald-700' : s?.completed_stage === 2 ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>{stageLabel(s)}</span>
-                      {s?.next_stage_interest && s?.completed_stage !== 3 && <span className="ml-1 text-[10px] font-bold text-amber-500">▲</span>}
+                      <span className={`rounded-md px-1.5 py-0.5 text-[11px] font-bold ${AX_TONE[ax] ?? 'bg-slate-100 text-slate-600'}`}>{ax}</span>
+                      {r?.score !== undefined && <span className="ml-1 text-xs text-slate-400">{String(r.score)}</span>}
                     </td>
                     <td className={`${td} font-bold text-slate-900`}>{l.company_name}</td>
                     <td className={td}>{l.representative_name}</td>
                     <td className={td}>{maskPhone(l.phone)}</td>
-                    <td className={td}>{answerLabel('bizType', l.business_type ?? undefined)}</td>
-                    <td className={td}>{answerLabel('industry', l.industry ?? undefined)}</td>
-                    <td className={td}>{answerLabel('years', a['years'])}</td>
-                    <td className={td}>{answerLabel('revenue', a['revenue'])}</td>
-                    <td className={`${td} max-w-[180px] truncate`}>{s?.result_summary?.topTask ?? '-'}</td>
-                    <td className={td}>{s?.result_summary?.ownedAdvantageCount ?? 0}개</td>
-                    <td className={`${td} max-w-[160px] truncate`}>{rec1 ? (getPackageBySlug(rec1.slug)?.name ?? rec1.slug) : '-'}</td>
+                    <td className={`${td} max-w-[220px] truncate`}>{firstProblem || '-'}</td>
+                    <td className={td}>{answerLabel('internalOwner', s?.answers?.['internalOwner'])}</td>
                     <td className={td}>{l.consultation_consent ? '✅' : '—'}</td>
                     <td className={td}>{STATUS_LABELS[l.lead_status] ?? l.lead_status}</td>
                     <td className={td}>{l.assigned_label ?? '—'}</td>
@@ -417,7 +377,7 @@ export default function AdminBusinessLeadsPage() {
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={17} className="px-4 py-10 text-center text-sm text-slate-400">
+                  <td colSpan={12} className="px-4 py-10 text-center text-sm text-slate-400">
                     {busy ? '불러오는 중…' : '조건에 맞는 리드가 없습니다.'}
                   </td>
                 </tr>
@@ -435,7 +395,9 @@ export default function AdminBusinessLeadsPage() {
               {detail && (() => {
                 const { lead, session, events } = detail
                 const a = session?.answers ?? {}
-                const adv = session?.advantage_factors ?? []
+                const r = session?.result_summary
+                const ax = axLabel(session)
+                const list = (v: unknown) => (Array.isArray(v) ? v.map(String) : [])
                 return (
                   <div>
                     <div className="flex items-start justify-between gap-3">
@@ -457,33 +419,46 @@ export default function AdminBusinessLeadsPage() {
                     {/* 플래그 */}
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {(lead.flags ?? []).map((f) => (
-                        <span key={f} className={`rounded-full px-2 py-0.5 text-[11px] font-black ${f === 'hot' ? 'bg-red-100 text-red-700' : f === 'prerequisite_issue' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}`}>
+                        <span key={f} className={`rounded-full px-2 py-0.5 text-[11px] font-black ${f === 'hot' ? 'bg-red-100 text-red-700' : f === 'ax_high_priority' ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-600'}`}>
                           {FLAG_LABELS[f] ?? f}
                         </span>
                       ))}
                       <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
-                        상담 {answerLabel('consultTiming', a['consultTiming'])} · {lead.contact_method ?? '방식 미선택'} {lead.preferred_contact_time ? `· ${lead.preferred_contact_time}` : ''}
+                        {lead.contact_method ?? '상담 방식 미선택'} {lead.preferred_contact_time ? `· ${lead.preferred_contact_time}` : ''}
                       </span>
                     </div>
 
-                    {/* 진단 진행 (점진형) */}
-                    <div className="mt-4 flex flex-wrap gap-1.5 rounded-2xl border border-slate-200 bg-white p-3.5 text-xs">
-                      <span className="rounded-md bg-slate-900 px-2 py-1 font-black text-white">{stageLabel(session)}</span>
-                      {session?.stopped_after_stage && session?.completed_stage !== 3 && (
-                        <span className="rounded-md bg-amber-100 px-2 py-1 font-bold text-amber-700">{session?.completed_stage}단계에서 결과 요청</span>
+                    {/* AX Fit 결과 */}
+                    <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <span className={`rounded-md px-2 py-1 font-black ${AX_TONE[ax] ?? 'bg-slate-900 text-white'}`}>{ax}</span>
+                        {r?.score !== undefined && <span className="rounded-md bg-slate-100 px-2 py-1 font-bold text-slate-700">AX Fit Score {String(r.score)}</span>}
+                        <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-600">
+                          소요 {session?.total_duration_seconds ?? session?.stage1_duration_seconds ?? '-'}s
+                        </span>
+                        {(session?.clicked_benefits?.length ?? 0) > 0 && (
+                          <span className="rounded-md bg-emerald-50 px-2 py-1 font-semibold text-emerald-700">{session?.clicked_benefits?.join(', ')}</span>
+                        )}
+                      </div>
+                      {r?.headline && <p className="mt-3 text-sm font-black text-slate-900">{String(r.headline)}</p>}
+                      {r?.summary && <p className="mt-1 text-sm text-slate-600">{String(r.summary)}</p>}
+                      {list(r?.topProblems ?? r?.improvements).length > 0 && (
+                        <>
+                          <p className="mt-3 text-[11px] font-black uppercase tracking-wide text-slate-400">가장 큰 문제 TOP 3</p>
+                          <ul className="mt-1 space-y-0.5 text-sm text-slate-700">{list(r?.topProblems ?? r?.improvements).map((t) => <li key={t}>· {t}</li>)}</ul>
+                        </>
                       )}
-                      {session?.next_stage_interest && session?.completed_stage !== 3 && (
-                        <span className="rounded-md bg-blue-100 px-2 py-1 font-bold text-blue-700">다음 단계 관심 있음</span>
+                      {list(r?.direction ?? r?.strengths).length > 0 && (
+                        <>
+                          <p className="mt-3 text-[11px] font-black uppercase tracking-wide text-slate-400">권장 AX 방향</p>
+                          <ul className="mt-1 space-y-0.5 text-sm text-slate-700">{list(r?.direction ?? r?.strengths).map((t) => <li key={t}>· {t}</li>)}</ul>
+                        </>
                       )}
-                      <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-600">
-                        소요 {session?.stage1_duration_seconds ?? '-'}s / {session?.stage2_duration_seconds ?? '-'}s / {session?.stage3_duration_seconds ?? '-'}s
-                        {session?.total_duration_seconds ? ` · 합 ${session.total_duration_seconds}s` : ''}
-                      </span>
-                      {(session?.clicked_benefits?.length ?? 0) > 0 && (
-                        <span className="rounded-md bg-emerald-50 px-2 py-1 font-semibold text-emerald-700">추천 담기 {session?.clicked_benefits?.length}건</span>
-                      )}
-                      {(session?.skipped_benefits?.length ?? 0) > 0 && (
-                        <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-500">건너뛰기 {session?.skipped_benefits?.length}건</span>
+                      {list(r?.actionPlan).length > 0 && (
+                        <>
+                          <p className="mt-3 text-[11px] font-black uppercase tracking-wide text-slate-400">다음 행동</p>
+                          <ul className="mt-1 space-y-0.5 text-sm text-slate-700">{list(r?.actionPlan).map((t) => <li key={t}>· {t}</li>)}</ul>
+                        </>
                       )}
                     </div>
 
@@ -535,44 +510,15 @@ export default function AdminBusinessLeadsPage() {
                       ))}
                     </div>
 
-                    {/* 준비도 점수 */}
-                    {session?.scores && (
-                      <>
-                        <h3 className="mt-6 text-sm font-black uppercase tracking-wide text-slate-400">6개 영역 준비도 (내부 지표)</h3>
-                        <div className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-                          {session.scores.map((sc) => (
-                            <div key={sc.area} className="rounded-lg bg-slate-50 px-2.5 py-2">
-                              <p className="text-[11px] font-semibold text-slate-500">{(AREA_LABELS as Record<string, string>)[sc.area] ?? sc.area}</p>
-                              <p className="text-sm font-black tabular-nums">{sc.score} <span className="text-[10px] font-semibold text-slate-400">{sc.priority}</span></p>
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    )}
-
-                    {/* 우대요소 */}
-                    {adv.length > 0 && (
-                      <>
-                        <h3 className="mt-6 text-sm font-black uppercase tracking-wide text-slate-400">우대 참고요소</h3>
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          {adv.map((x) => (
-                            <span key={x.id} className={`rounded-full px-2.5 py-1 text-xs font-bold ${x.status === '보유' ? 'bg-emerald-100 text-emerald-800' : x.status === '검토 추천' ? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200' : 'bg-slate-100 text-slate-600'}`}>
-                              {x.label} · {x.status}
-                            </span>
-                          ))}
-                        </div>
-                      </>
-                    )}
-
-                    {/* 추천 상품 */}
+                    {/* (구버전 리드) 추천 상품 */}
                     {session?.recommended_products && session.recommended_products.length > 0 && (
                       <>
-                        <h3 className="mt-6 text-sm font-black uppercase tracking-wide text-slate-400">추천 상품</h3>
+                        <h3 className="mt-6 text-sm font-black uppercase tracking-wide text-slate-400">(구버전) 추천 상품</h3>
                         <ul className="mt-2 space-y-1.5">
-                          {session.recommended_products.map((r) => (
-                            <li key={r.slug} className="rounded-lg bg-slate-50 px-3 py-2 text-sm">
-                              <b>{r.rank}</b> {getPackageBySlug(r.slug)?.name ?? r.slug}
-                              <p className="mt-0.5 text-xs leading-snug text-slate-500">{r.reason}</p>
+                          {session.recommended_products.map((rp) => (
+                            <li key={rp.slug} className="rounded-lg bg-slate-50 px-3 py-2 text-sm">
+                              <b>{rp.rank}</b> {getPackageBySlug(rp.slug)?.name ?? rp.slug}
+                              <p className="mt-0.5 text-xs leading-snug text-slate-500">{rp.reason}</p>
                             </li>
                           ))}
                         </ul>
@@ -594,10 +540,13 @@ export default function AdminBusinessLeadsPage() {
                     <dl className="mt-2 divide-y divide-slate-100 rounded-xl border border-slate-200">
                       {questions.filter((q) => a[q.id] !== undefined).map((q) => (
                         <div key={q.id} className="flex gap-3 px-3 py-2 text-sm">
-                          <dt className="w-44 shrink-0 text-slate-400">{q.title}</dt>
+                          <dt className="w-56 shrink-0 text-slate-400">{q.title}</dt>
                           <dd className="font-semibold text-slate-800">{answerLabel(q.id, a[q.id])}</dd>
                         </div>
                       ))}
+                      {questions.every((q) => a[q.id] === undefined) && Object.keys(a).length > 0 && (
+                        <div className="px-3 py-2 text-xs text-slate-400">구버전 진단 답변 — 원본 코드값: {JSON.stringify(a).slice(0, 300)}</div>
+                      )}
                     </dl>
 
                     {/* 유입경로 + 이벤트 */}
