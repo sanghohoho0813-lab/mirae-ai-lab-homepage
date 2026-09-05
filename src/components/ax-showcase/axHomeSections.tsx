@@ -19,7 +19,8 @@ export function AxHeroV2() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
       <div className={`relative w-full ${wrap} px-5 pb-24 pt-16 sm:px-6 sm:pb-28 sm:pt-20`}>
-        <span className="inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-4 py-2 text-[1.02rem] font-bold leading-snug text-[#E8B89A] backdrop-blur sm:text-[1.05rem]">
+        {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 */}
+        <span className="inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.9rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[0.98rem] sm:px-4 sm:text-[1.05rem]">
           경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX
         </span>
 
