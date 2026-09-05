@@ -12,6 +12,7 @@ import PasswordInput, { passwordValid } from '../components/auth/PasswordInput'
 import AgreementsField, { EMPTY_CONSENTS, requiredConsentsAgreed, type ConsentState } from '../components/auth/AgreementsField'
 import { useAuth } from '../lib/auth'
 import { AUTH_CONSENTS } from '../config/authConsents'
+import { EMAIL_SIGNUP_ENABLED } from '../config/authFlags'
 import {
   attachIdentityToUser, completeOnboarding, getIdentityHealth, migrateGuestDiagnoses, recordConsents,
   type IdentityHealth, type IdentityVerified,
@@ -169,6 +170,8 @@ export default function SignupPage() {
       <div className="mx-auto w-full max-w-[500px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <SocialAuthButtons mode="signup" next={next} />
 
+        {EMAIL_SIGNUP_ENABLED ? (
+          <>
         <div className="my-6 flex items-center gap-3 text-xs text-slate-400">
           <span className="h-px flex-1 bg-slate-200" />
           또는 이메일로 회원가입
@@ -239,6 +242,13 @@ export default function SignupPage() {
             {busy ? '가입 처리 중…' : '회원가입하고 시작하기'}
           </button>
         </form>
+          </>
+        ) : (
+          <p className="mt-6 text-center text-sm leading-relaxed break-keep text-slate-500">
+            카카오 또는 구글 계정으로 가입해 주세요. 따로 비밀번호를 만들지 않아도 되고,
+            휴대폰 본인인증 절차도 없습니다.
+          </p>
+        )}
 
         <p className="mt-6 text-center text-sm text-slate-500">
           이미 계정이 있으신가요?{' '}
