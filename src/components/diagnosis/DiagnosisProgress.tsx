@@ -1,17 +1,15 @@
-// 진단 상단 진행 표시 — 뒤로가기 · 단계 · 진행률 바 · 질문 카운터.
-import type { DiagnosisStage } from '../../types/businessDiagnosis'
-import { STAGE_INFO } from '../../data/businessDiagnosisQuestions'
+// 진단 상단 진행 표시 — 뒤로가기 · 진단명 · 진행률 바 · 질문 카운터.
+import { AX_FIT_INFO } from '../../data/businessDiagnosisQuestions'
 
 type Props = {
-  stage: DiagnosisStage
   questionNumber: number
-  totalEstimate: number
+  total: number
   percent: number
   onBack: () => void
   backLabel?: string
 }
 
-export default function DiagnosisProgress({ stage, questionNumber, totalEstimate, percent, onBack, backLabel = '이전' }: Props) {
+export default function DiagnosisProgress({ questionNumber, total, percent, onBack, backLabel = '이전' }: Props) {
   return (
     <div className="sticky top-0 z-20 border-b border-slate-100 bg-white/95 backdrop-blur-md">
       <div className="mx-auto max-w-[860px] px-4 pb-2.5 pt-3 sm:px-6">
@@ -27,11 +25,11 @@ export default function DiagnosisProgress({ stage, questionNumber, totalEstimate
             </svg>
           </button>
           <div className="min-w-0 flex-1 text-center">
-            <p className="text-xs font-black uppercase tracking-wide text-blue-600">{stage}단계 / 3단계</p>
-            <p className="truncate text-sm font-bold text-slate-900">{STAGE_INFO[stage].name}</p>
+            <p className="text-xs font-black uppercase tracking-wide text-blue-600">AX FIT</p>
+            <p className="truncate text-sm font-bold text-slate-900">{AX_FIT_INFO.name}</p>
           </div>
           <p className="shrink-0 whitespace-nowrap text-right text-[11px] font-semibold text-slate-400 sm:text-sm">
-            질문 {questionNumber} <span className="text-slate-300">/</span> 예상 {totalEstimate}
+            질문 {questionNumber} <span className="text-slate-300">/</span> {total}
           </p>
         </div>
         {/* 진행률 바 */}

@@ -305,7 +305,7 @@ export const DEEP_PROJECTS: DeepProject[] = [
       {
         name: '현재 단계',
         items: [
-          '시연형 MVP가 아니라 내부 Business AX + MY WELLNESS + 반응형 + 자동회귀 QA가 연결된 Pilot 직전 Hybrid V1',
+          '단순 데모가 아니라 내부 Business AX + MY WELLNESS + 반응형 + 자동회귀 QA가 연결된 Pilot 직전 Hybrid V1',
           '남은 단계 — RLS 실계정 A/B 격리 검증',
           '남은 단계 — 실제 직원·고객 사용',
           '남은 단계 — 재방문·이용권 재등록·업무처리시간·고객 포털 이용률 실증 데이터 축적',

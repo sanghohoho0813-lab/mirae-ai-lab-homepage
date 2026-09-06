@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import BrandLogo from './components/BrandLogo'
 import InquiryForm from './components/InquiryForm'
@@ -236,6 +236,11 @@ function UpcomingCard({ tool }: { tool: UpcomingTool }) {
 
 function App() {
   const liveCount = tools.filter((t) => t.status === 'MVP 베타').length
+
+  // index.html 기본 타이틀은 브랜드(AX)용이므로, 컨설턴트 페이지는 자기 타이틀을 유지한다
+  useEffect(() => {
+    document.title = '미래 AI 랩 | 컨설턴트 업무 OS — 상담부터 재계약까지'
+  }, [])
 
   return (
     <div className="min-h-screen bg-white text-slate-900 antialiased [word-break:keep-all]">

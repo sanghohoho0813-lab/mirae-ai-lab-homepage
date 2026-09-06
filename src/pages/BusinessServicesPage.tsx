@@ -28,20 +28,23 @@ import {
   AxRealProjectsDeep,
   AxScreenShowcase,
 } from '../components/ax-showcase/axFinalHome'
-import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
-import { FLAGSHIP } from '../data/corePrograms'
 import { readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
+import { canonicalUrl } from '../lib/site'
 
-// 미래AI랩 = 기업의 운영·고객·데이터를 AI로 연결하는 AX 회사.
-// 정책자금·정부지원은 메인 상품이 아니라 AX 실행력을 성장으로 잇는 Growth Layer 로 배치한다.
+// 미래AI랩 = 중소기업 맞춤형 실행 AX 설계·구축 전문회사 (경영컨설턴트 출신 AX Architect).
+// 정책·정부지원·자금조달은 AX 의 주목적이 아니라, 실제 AX 성과와 기업자산이 이후 성장 과정에서
+// 활용될 수 있는 2차 가치로만 말한다(Growth Layer). "자금조달을 위해 AX 를 만든다"는 인상을 주지 않는다.
 //
-// 홈 = 히어로 이후 ②~⑭ 인포그래픽 스토리 + 샘플 20개 + 실제 현장 프로젝트 + CTA.
-// 샘플 20개(AxScreenShowcase, AxPortfolioSection)와 실제 현장 프로젝트(AxRealProjectsDeep)는 기존 섹션을 보존한다.
-// 깊은 설명(정의·프로세스·수행체계·개발방식)은 프로그램 상세페이지가 맡는다.
-// 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다.
-// 가격 · 진행과정 · 업종별 15개 화면 · 비교표 · FAQ 는 정책자금 상세페이지에서 다룬다.
+// 홈 = 히어로 이후 인포그래픽 스토리 + Industry AX Preview + 실제 현장 프로젝트 + CTA.
+// Preview(AxScreenShowcase, AxPortfolioSection)와 실제 현장 프로젝트(AxRealProjectsDeep)는 기존 섹션을 보존한다.
+// 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다. 가격표는 두지 않는다.
+
+const PAGE_TITLE = '미래AI랩 | 경영컨설턴트가 설계하는 중소기업 맞춤형 AX'
+const PAGE_DESC =
+  '사업과 실제 업무를 먼저 분석하고, ERP·엑셀·카톡 사이에 남아 있는 회사 고유의 업무를 AI와 전용 시스템으로 연결합니다. 운영효율·매출성장·기업자산화를 만드는 중소기업 맞춤형 AX 설계·구축.'
+
 export default function BusinessServicesPage() {
   const { cart } = useSavedItems()
   const [historyCount] = useState(() => loadHistory().length)
@@ -53,12 +56,31 @@ export default function BusinessServicesPage() {
   const location = useLocation()
   const navType = useNavigationType()
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice | null>(null)
-  // 하단 고정 바의 '샘플 20개 보기' 가 같은 패널을 열 수 있도록 상태를 여기서 관리한다
+  // 하단 고정 바의 '실제 AX 보기' 가 같은 패널을 열 수 있도록 상태를 여기서 관리한다
   const [sampleNavOpen, setSampleNavOpen] = useState(false)
   const isPreviewEmbedded = new URLSearchParams(location.search).has('preview')
 
+  // 브라우저 타이틀 / SEO — 자금조달이 아니라 "중소기업 맞춤형 AX" 가 메인으로 읽히게 한다
   useEffect(() => {
-    document.title = 'AX 사업화·자금조달 프로그램 | 미래 AI 랩'
+    document.title = PAGE_TITLE
+    const setMeta = (selector: string, attr: 'name' | 'property', key: string, content: string) => {
+      let el = document.head.querySelector<HTMLMetaElement>(selector)
+      if (!el) {
+        el = document.createElement('meta')
+        el.setAttribute(attr, key)
+        document.head.appendChild(el)
+      }
+      const prev = el.content
+      el.content = content
+      return () => { el!.content = prev }
+    }
+    const restores = [
+      setMeta('meta[name="description"]', 'name', 'description', PAGE_DESC),
+      setMeta('meta[property="og:title"]', 'property', 'og:title', PAGE_TITLE),
+      setMeta('meta[property="og:description"]', 'property', 'og:description', PAGE_DESC),
+      setMeta('meta[property="og:url"]', 'property', 'og:url', canonicalUrl('/business-services')),
+    ]
+    return () => restores.forEach((r) => r())
   }, [])
 
   useEffect(() => {
@@ -125,7 +147,7 @@ export default function BusinessServicesPage() {
             taglineClassName="text-[0.5rem]! tracking-[0.13em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
           />
           <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.17rem] sm:text-[1.02rem] font-medium text-slate-600 lg:flex">
-            <a href="#portfolio" className="transition-colors hover:text-slate-900">AX 사례</a>
+            <a href="#portfolio" className="transition-colors hover:text-slate-900">AX Preview</a>
             <a href="#real-projects" className="transition-colors hover:text-slate-900">실제 프로젝트</a>
             <a href="#ax-definition" className="transition-colors hover:text-slate-900">AX란</a>
                         <a href="#growth" className="hidden transition-colors hover:text-slate-900 min-[1360px]:inline">Growth Layer</a>
@@ -147,7 +169,7 @@ export default function BusinessServicesPage() {
                 <span className="absolute -right-0.5 -top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white">{cart.length > 99 ? '99+' : cart.length}</span>
               </Link>
             )}
-            <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-[#D47A4A] px-4 py-2 text-[1.2rem] sm:text-[1.09rem] font-semibold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:inline-flex">3분 AX 진단</Link>
+            <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-[#D47A4A] px-4 py-2 text-[1.2rem] sm:text-[1.05rem] font-semibold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:inline-flex">우리 회사 AX 가능성 진단</Link>
             {/* 화면 미리보기 — 떠다니지 않고 헤더 안, 햄버거 옆에 둔다 */}
             {!isPreviewEmbedded && (
               <button
@@ -185,10 +207,10 @@ export default function BusinessServicesPage() {
       {/* 4. 그래서 2026년, 흐름도 바뀌고 있습니다 */}
       <AxWhyNowOutroSection />
 
-      {/* 샘플 10개 — 기존 섹션 보존 */}
+      {/* Industry AX Preview 10개 — 기존 섹션 보존 */}
       <AxScreenShowcase />
 
-      {/* 4. 한 번 생긴 정보가 다음 업무로 이어진다 — 샘플을 본 직후에 놓아야 설득이 된다 */}
+      {/* 4. 한 번 생긴 정보가 다음 업무로 이어진다 — Preview 를 본 직후에 놓아야 설득이 된다 */}
       <AxInfoFlowSection />
 
       {/* 5. ERP와 AX */}
@@ -209,10 +231,10 @@ export default function BusinessServicesPage() {
       {/* 10. 꼭 AX일 필요는 없음 */}
       <AxNotAlwaysNeededSection />
 
-      {/* 샘플 10개 — 기존 섹션 보존 */}
+      {/* 아이디어 MVP Preview 10개 — 기존 섹션 보존 */}
       <AxPortfolioSection />
 
-      {/* REAL · FIELD PROJECTS — 기존 섹션 보존 */}
+      {/* REAL CLIENT AX — 기존 섹션 보존 */}
       <AxRealProjectsDeep />
 
       {/* 12. 왜 미래AI랩인가 */}
@@ -238,12 +260,15 @@ export default function BusinessServicesPage() {
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto">
-                3분 AX 가능성 진단
+                우리 회사 AX 가능성 진단
               </Link>
-              <button type="button" onClick={() => setConsultOpen(true)} className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
-                상담 신청
-              </button>
+              <a href="#portfolio" className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
+                실제 AX 구축 화면 보기
+              </a>
             </div>
+            <button type="button" onClick={() => setConsultOpen(true)} className="mt-4 text-[1.05rem] font-semibold text-slate-400 underline underline-offset-4 transition-colors hover:text-white">
+              상담 신청
+            </button>
           </div>
         </section>
       </div>
@@ -251,42 +276,39 @@ export default function BusinessServicesPage() {
       <LegalFooter />
       <KakaoFloat />
 
-      {/* 스크롤 중 어디서나 샘플 20개로 — 평소엔 비켜서 있는 작은 손잡이 */}
+      {/* 스크롤 중 어디서나 AX Preview 로 — 평소엔 비켜서 있는 작은 손잡이 */}
       {!isPreviewEmbedded && <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} />}
 
-      {/* Mobile sticky CTA — 기업진단(카톡은 KakaoFloat) */}
+      {/* Mobile sticky CTA — Primary(진단) 60% · Secondary(실제 AX 보기) 40% (카톡은 KakaoFloat) */}
       {!heroVisible && !atEnd && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-slate-200 bg-white/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
-          {/* 진단 60% · 샘플 40% — 모양은 같고 색과 크기만 다르게.
-              basis 0 + min-w-0 이 있어야 글자 길이가 아니라 비율이 폭을 정한다(좁은 화면 56:44 방지). */}
+          {/* 모양은 같고 색과 크기만 다르게. basis 0 + min-w-0 이 있어야 글자 길이가 아니라 비율이 폭을 정한다. */}
           <Link
             to="/business-diagnosis"
-            className="flex min-w-0 flex-[6_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#D47A4A] px-1.5 py-3 text-[0.86rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] min-[360px]:px-2 min-[360px]:text-[0.95rem] min-[400px]:text-[1.02rem]"
+            className="flex min-w-0 flex-[6_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#D47A4A] px-1.5 py-3 text-[0.84rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] min-[360px]:px-2 min-[360px]:text-[0.92rem] min-[400px]:text-[1.0rem]"
           >
-            <span aria-hidden className="hidden min-[360px]:inline">🩺</span>
-            <span>3분 AX 가능성 진단</span>
+            <span className="hidden min-[400px]:inline">우리 회사&nbsp;</span>
+            <span>AX 가능성 진단</span>
           </Link>
           <button
             type="button"
             onClick={() => setSampleNavOpen(true)}
-            className="flex min-w-0 flex-[4_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#171B20] px-1.5 py-3 text-[0.86rem] font-bold text-white shadow-sm transition-colors hover:bg-[#343B44] min-[360px]:px-2 min-[360px]:text-[0.95rem] min-[400px]:text-[1.02rem]"
+            className="flex min-w-0 flex-[4_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#171B20] px-1.5 py-3 text-[0.84rem] font-bold text-white shadow-sm transition-colors hover:bg-[#343B44] min-[360px]:px-2 min-[360px]:text-[0.92rem] min-[400px]:text-[1.0rem]"
           >
             <span aria-hidden className="hidden min-[370px]:inline text-[#E8B89A]">▦</span>
-            <span>샘플 20개 보기</span>
+            <span>실제 AX 보기</span>
           </button>
         </div>
       )}
 
+      {/* 브랜드 정비(0차): 정책자금 프로그램 위저드·상품 목록 대신 단순 상담 폼으로 연다 */}
       <ConsultModal
         open={consultOpen}
         onClose={() => setConsultOpen(false)}
-        source="경영지원 서비스몰"
+        source="중소기업 맞춤형 AX 홈"
         heading="상담 신청"
-        topicGroups={CONSULT_TOPIC_GROUPS}
         showContactMethod
         showCompanyFields
-        programSelect
-        preselectProgram={FLAGSHIP.consultName}
       />
 
       {previewDevice && !isPreviewEmbedded && (

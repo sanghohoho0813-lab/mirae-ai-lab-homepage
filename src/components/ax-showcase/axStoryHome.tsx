@@ -55,11 +55,13 @@ function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
 
 // "무엇이 있어야 할까요?"(04)까지 문제를 세운 뒤, AX가 무엇인지 설명하고(SECTION_04_DEFINE)
 // "2026년, 흐름도 바뀌고 있습니다"(05)로 넘어간다.
+//
+// 브랜드 정비(0차): problem-01("사업계획서 하나만 가지고 정책자금·정부지원사업·투자유치를 준비하고 계신가요?")과
+// problem-03("수억 원 단위의 정책자금·정부지원·투자를 준비할수록…")은 자금조달 목적을 AX보다 먼저 제시하는
+// 이미지라 메인 흐름에서 비노출한다. 파일은 그대로 두고, 리뉴얼 때 새 문안으로 교체한다.
 const SECTION_02_A = [
-  storyImage('section-02-problem-01.png', '사업계획서만으로는 부족하며 실제 구현이 중요하다는 첫 번째 문제제기 1', '#0C0F15'),
-  storyImage('section-02-problem-02.png', '사업계획서 이후 실제 구현 여부를 묻는 첫 번째 문제제기 2', '#FAFAF8'),
-  storyImage('section-02-problem-03.png', '정책자금과 투자유치에서 실제 사업의 모습을 보여주는 힘을 설명하는 첫 번째 문제제기 3', '#050B11'),
-  storyImage('section-02-problem-04.png', '작동하는 웹앱과 고객 화면과 데이터의 중요성을 설명하는 첫 번째 문제제기 4', '#FDFCFA'),
+  storyImage('section-02-problem-02.png', '실제로 구현된 것과 직접 보여줄 수 있는 것이 있는지 묻는 첫 번째 문제제기', '#FAFAF8'),
+  storyImage('section-02-problem-04.png', '작동하는 웹앱과 고객 화면과 데이터의 중요성을 설명하는 문제제기', '#FDFCFA'),
 ] as const
 
 const SECTION_02_B = [
@@ -157,11 +159,43 @@ const SECTION_12 = [
   storyImage('section-12-why-03.png', '미래AI랩은 사업 진단부터 Scale-up까지 하나의 흐름으로 본다는 설명 3', 'linear-gradient(180deg, #FAFAF8 0%, #FAFAF8 50%, #171B20 50%, #171B20 100%)'),
 ] as const
 
-const SECTION_13 = [
+// 브랜드 정비(0차): scope-02("성장을 위한 자금을 연결합니다 — 사업계획서/정책자금/정부지원사업/투자 설명자료/인증")는
+// 정책 컨설팅 상품 목록에 가까워 메인 흐름에서 비노출하고, 그 자리에 텍스트(AxGrowthEvidenceNote)를 둔다.
+const SECTION_13_A = [
   storyImage('section-13-scope-01.png', '필요하면 기업 구조와 기술자산과 시장 사업성까지 같이 본다는 설명 1', 'linear-gradient(180deg, #FAFAF8 0%, #FAFAF8 50%, #171B20 50%, #171B20 100%)'),
-  storyImage('section-13-scope-02.png', '사업계획서와 정책자금과 정부지원사업까지 같은 논리 안에서 연결한다는 설명 2', '#0C151F'),
+] as const
+
+const SECTION_13_B = [
   storyImage('section-13-scope-03.png', '사업과 시스템과 근거를 먼저 만들고 사업계획서로 정리한다는 설명 3', '#0D141E'),
 ] as const
+
+/** 성과가 남으면 다음 성장단계에서도 설명할 수 있다 — 정책·지원은 AX 의 2차 가치로만 말한다 */
+function AxGrowthEvidenceNote() {
+  return (
+    <section className="overflow-hidden bg-[#0C151F]">
+      <div className="mx-auto max-w-[989px] px-0 pb-5 sm:px-6 sm:pb-8">
+        <div className="mx-auto max-w-[941px] px-7 py-14 text-white sm:px-12 sm:py-18">
+          <h2 className="break-keep text-[1.9rem] font-black leading-[1.28] tracking-[-0.01em] sm:text-[2.6rem]">
+            성과가 남으면,<br />
+            기업의 <span className="text-[#D47A4A]">다음 성장단계</span>에서도<br className="sm:hidden" /> 설명할 수 있습니다.
+          </h2>
+          <p className="mt-6 max-w-2xl break-keep text-[1.12rem] leading-[1.8] text-slate-300 sm:text-[1.28rem]">
+            미래AI랩은 평가를 위한 화면을 만들지 않습니다.<br className="hidden sm:block" />{' '}
+            실제 업무가 바뀌고 데이터와 활용근거가 쌓이며,<br className="hidden sm:block" />{' '}
+            그 결과가 향후 정책지원·R&D·정책금융·성장전략에서도 설명 가능한 기업자산으로 남도록 설계합니다.
+          </p>
+          <p className="mt-7 break-keep border-l-[3px] border-[#D47A4A] pl-4 text-[1.22rem] font-black leading-[1.55] text-[#FAFAF8] sm:text-[1.45rem]">
+            평가받기 위한 모습을 만드는 것이 아니라,<br />
+            평가받을 수 있는 실체를 만듭니다.
+          </p>
+          <p className="mt-6 max-w-2xl break-keep text-[0.95rem] leading-relaxed text-slate-500 sm:text-[1.0rem]">
+            정책지원·R&D·정책금융의 결과는 각 기관의 독립적인 판단으로 결정됩니다.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 const SECTION_14 = [
   storyImage(
@@ -183,7 +217,10 @@ function AxIndustryPlatformLinks() {
             업종에 맞는<br />
             <span className="text-[#D47A4A]">고객 플랫폼</span>은<br className="sm:hidden" /> 이렇게 달라집니다
           </h2>
-          <div className="mt-9 grid gap-3.5">
+          <p className="mt-4 max-w-2xl break-keep text-[1.0rem] leading-relaxed text-[#6B7680] sm:text-[1.08rem]">
+            업종별 업무를 가정해 구현한 Concept Prototype이며, 실제 구축 시 해당 기업의 업무와 프로세스에 맞춰 새롭게 설계합니다.
+          </p>
+          <div className="mt-8 grid gap-3.5">
             {CUSTOMER_PLATFORM_LINKS.map(({ industry, flow, sample }) => {
               const href = sample.customerUrl ?? sample.axUrl
               const label = sample.customerLabel ?? '고객 화면'
@@ -194,7 +231,7 @@ function AxIndustryPlatformLinks() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block overflow-hidden rounded-xl bg-[#343B44]"
-                    aria-label={`${industry} ${label} 샘플 보기`}
+                    aria-label={`${industry} ${label} Preview 보기`}
                   >
                     <img
                       src={sample.imgSm}
@@ -217,7 +254,7 @@ function AxIndustryPlatformLinks() {
                     rel="noopener noreferrer"
                     className="inline-flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-xl bg-[#D47A4A] px-4 text-[1.02rem] font-black text-[#171B20] shadow-sm shadow-[#D47A4A]/15 transition-colors hover:bg-[#E8B89A] sm:px-5"
                   >
-                    샘플 보기 <span aria-hidden className="ml-1">↗</span>
+                    Preview 보기 <span aria-hidden className="ml-1">↗</span>
                   </a>
                 </article>
               )
@@ -290,7 +327,13 @@ export function AxWhyMiraeSection() {
 }
 
 export function AxTogetherScopeSection() {
-  return <AxInfographicStack images={SECTION_13} />
+  return (
+    <>
+      <AxInfographicStack images={SECTION_13_A} />
+      <AxGrowthEvidenceNote />
+      <AxInfographicStack images={SECTION_13_B} />
+    </>
+  )
 }
 
 export function AxIndustryQuestionSection() {

@@ -7,6 +7,10 @@ import { AX_BUILD_PAYMENT } from '../../data/axPackages'
 
 /* ── HOME 03 — 말 대신 화면: 천천히 흐르는 실제 UI + 직접 눌러보기 ─────────── */
 
+/** Industry AX Preview 공통 설명 — 실제 고객사례가 아니라 Concept Prototype 임을 분명히 한다 */
+export const AX_PREVIEW_NOTE =
+  '업종별 업무를 가정해 미래AI랩의 AX 설계방식을 구현한 Concept Prototype입니다. 실제 구축 시 해당 기업의 업무와 프로세스에 맞춰 새롭게 설계합니다.'
+
 function ShowcaseShot({ s }: { s: AxPlatformSample }) {
   return (
     <figure className="relative w-[380px] shrink-0 overflow-hidden rounded-2xl border border-white/12 bg-[#343B44] shadow-xl shadow-black/30 sm:w-[520px]">
@@ -34,7 +38,8 @@ export function AxScreenShowcase() {
     <section id="portfolio" className="scroll-mt-16 border-t border-white/10 bg-[#171B20]">
       <div className="py-14 sm:py-20">
         <div className="mx-auto max-w-4xl px-5 sm:px-6">
-          <h2 className="break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
+          <p className="text-center text-[1.1rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.2rem]">INDUSTRY AX PREVIEW</p>
+          <h2 className="mt-3 break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
             말로 설명하면 복잡합니다.<br className="sm:hidden" /> 그래서 먼저 보여드릴게요.
           </h2>
         </div>
@@ -62,8 +67,9 @@ export function AxScreenShowcase() {
           <p className="break-keep text-center text-[1.5rem] font-black leading-snug text-white sm:text-[1.8rem]">직접 눌러보세요.</p>
           <p className="mx-auto mt-3 max-w-2xl break-keep text-center text-[1.08rem] leading-[1.7] text-slate-400 sm:text-[1.18rem]">
             직원이 쓰는 <span className="font-bold text-[#D47A4A]">AX 화면</span>과 고객·거래처가 쓰는{' '}
-            <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 각각 열어볼 수 있습니다. 모두 자체 제작 시연 데모입니다.
+            <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 각각 열어볼 수 있습니다.
           </p>
+          <p className="mx-auto mt-2 max-w-2xl break-keep text-center text-[0.98rem] leading-[1.7] text-slate-500 sm:text-[1.05rem]">{AX_PREVIEW_NOTE}</p>
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
             {AX_PLATFORM_SAMPLES.map((s) => (
               <article key={s.slug} className="flex flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#343B44] transition-colors hover:border-[#D47A4A]/45">
@@ -109,8 +115,9 @@ export function AxSamplesGridSection({ title }: { title?: string }) {
         </h2>
         <p className="mx-auto mt-4 max-w-2xl break-keep text-center text-[1.08rem] leading-[1.7] text-slate-400 sm:text-[1.18rem]">
           직원이 쓰는 <span className="font-bold text-[#D47A4A]">AX 화면</span>과 고객·거래처가 쓰는{' '}
-          <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 각각 열어볼 수 있습니다. 모두 자체 제작 시연 데모입니다.
+          <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 각각 열어볼 수 있습니다.
         </p>
+        <p className="mx-auto mt-2 max-w-2xl break-keep text-center text-[0.98rem] leading-[1.7] text-slate-500 sm:text-[1.05rem]">{AX_PREVIEW_NOTE}</p>
         <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
           {AX_PLATFORM_SAMPLES.map((s) => (
             <article key={s.slug} className="flex flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#343B44] transition-colors hover:border-[#D47A4A]/45">
@@ -213,13 +220,9 @@ function DeepProjectCard({ p }: { p: DeepProject }) {
       <div className="p-5 sm:p-6">
         <h3 className="break-keep text-[1.35rem] font-black leading-snug text-slate-900 sm:text-[1.5rem]">{p.industry}</h3>
         <p className="mt-1.5 break-keep text-[1.08rem] font-bold text-slate-600 sm:text-[1.16rem]">{p.summary}</p>
+        {/* 자금조달 진행 배지는 AX 메인 흐름에서 비노출 — 프로젝트 데이터(funding)는 그대로 둔다 */}
         <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <span className="rounded-lg bg-slate-900 px-2.5 py-1 text-[0.95rem] font-black text-teal-300">{p.stage}</span>
-          {p.funding && (
-            <span className="inline-flex items-center gap-1.5 text-[0.92rem] font-bold text-slate-500">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-amber-400" /> 정책자금 조달 신청 진행 중
-            </span>
-          )}
         </div>
       </div>
 
@@ -299,7 +302,7 @@ export function AxRealProjectsDeep() {
   return (
     <section id="real-projects" className="scroll-mt-16 border-t border-slate-200 bg-white">
       <div className="mx-auto max-w-[86rem] px-5 py-14 sm:px-6 sm:py-20">
-        <p className="text-center text-[1.1rem] font-black tracking-tight text-blue-600 sm:text-[1.2rem]">REAL · FIELD PROJECTS</p>
+        <p className="text-center text-[1.1rem] font-black tracking-tight text-blue-600 sm:text-[1.2rem]">REAL CLIENT AX</p>
         <h2 className="mx-auto mt-3 max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-slate-900 sm:text-[2.4rem]">
           그리고 지금,<br className="sm:hidden" /> 실제 현장에서도 만들고 있습니다.
         </h2>

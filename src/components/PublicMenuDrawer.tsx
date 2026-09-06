@@ -12,7 +12,6 @@ import { loginPathWithNext } from '../lib/authRouting'
 import Avatar from './account/Avatar'
 import BrandLogo from './BrandLogo'
 import ConsultModal from './ConsultModal'
-import { CONSULT_TOPIC_GROUPS } from '../lib/consultApi'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
@@ -57,8 +56,8 @@ const BUSINESS_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
   topSub: '중소기업 AX · AI Growth',
   lead: {
-    label: '3분 AX 가능성 진단',
-    desc: '업종과 현재 업무방식만 알려주시면, 내부 AX와 고객 플랫폼 적용 가능성을 먼저 진단합니다.',
+    label: '우리 회사 AX 가능성 진단',
+    desc: '현재 업무방식과 시스템을 기준으로 No-Go / Lite / Full AX 가능성을 먼저 판단합니다.',
     to: '/business-diagnosis',
     match: (p) => p.startsWith('/business-diagnosis'),
   },
@@ -68,7 +67,7 @@ const BUSINESS_MENU: MenuConfig = {
       heading: 'AX 살펴보기',
       accent: 'blue',
       items: [
-        { no: '1', label: 'AX 사례', desc: '실제로 만든 AX·플랫폼 데모 먼저 보기', to: '/business-services#portfolio' },
+        { no: '1', label: '실제 AX 구축 화면', desc: '산업별 AX Preview 먼저 보기', to: '/business-services#portfolio' },
         { no: '2', label: '실제 기업 프로젝트', desc: '현장에서 고도화 중인 프로젝트', to: '/business-services#real-projects' },
         { no: '3', label: 'AX란 무엇인가', desc: '디지털화와 무엇이 다른가', to: '/business-services#ax-definition' },
         { no: '4', label: '왜 미래AI랩인가', desc: '분절이 아니라 하나의 Growth Story', to: '/business-services#why-mirae' },
@@ -79,11 +78,11 @@ const BUSINESS_MENU: MenuConfig = {
       heading: '프로그램 · 성장',
       accent: 'cyan',
       items: [
-        { no: '1', label: 'Growth Layer', desc: '정책자금·정부지원·벤처·특허 연결', to: '/business-services#growth' },
-        // 정책자금 상세페이지 전면 개정 중 — 이동을 막는다
-        { no: '2', label: '정책자금 × AX 프로그램', desc: '비용·진행방식·결과물까지', to: '/business-services/funding-consulting', updating: true },
+        { no: '1', label: 'Growth Layer', desc: 'AX 성과가 다음 성장단계로 이어지는 방법', to: '/business-services#growth' },
+        // 프로그램 상세페이지 전면 개정 중 — 이동을 막는다
+        { no: '2', label: 'AX 프로그램 안내', desc: '진행방식·결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
         { no: '3', label: '수행체계', desc: '대표 컨설턴트 · 월 5개사 선별', to: '/business-services/funding-consulting#leader', updating: true },
-        { no: '4', label: '자금 이후 성장 로드맵', desc: '인증·IP·복지제도 연계', to: '/business-services/funding-consulting#lifecycle', updating: true },
+        { no: '4', label: '성장 로드맵', desc: 'AX 이후 기업자산·성장 연계', to: '/business-services/funding-consulting#lifecycle', updating: true },
       ],
     },
     {
@@ -109,7 +108,7 @@ const BUSINESS_MENU: MenuConfig = {
       ],
     },
   ],
-  cta: { label: '3분 AX 가능성 진단', to: '/business-diagnosis' },
+  cta: { label: '우리 회사 AX 가능성 진단', to: '/business-diagnosis' },
 }
 
 // 컨설턴트용 — /consultants 공개 소개 + 로그인/도구함
@@ -147,8 +146,8 @@ const CONSULTANT_MENU: MenuConfig = {
       heading: '대표님 경영지원',
       accent: 'cyan',
       items: [
-        { label: '경영지원 서비스', to: '/business-services' },
-        { label: '3분 AX 가능성 진단', to: '/business-diagnosis' },
+        { label: '중소기업 맞춤형 AX', to: '/business-services' },
+        { label: '우리 회사 AX 가능성 진단', to: '/business-diagnosis' },
       ],
     },
     {
@@ -498,15 +497,14 @@ export default function PublicMenuDrawer({
         document.body,
       )}
 
+      {/* 브랜드 정비(0차): 정책자금 프로그램 위저드·상품 목록 대신 단순 상담 폼으로 연다 */}
       <ConsultModal
         open={consultOpen}
         onClose={() => setConsultOpen(false)}
         source="메뉴 · 상담 신청"
         heading="상담 신청"
-        topicGroups={variant === 'business' ? CONSULT_TOPIC_GROUPS : undefined}
         showContactMethod={variant === 'business'}
         showCompanyFields={variant === 'business'}
-        programSelect={variant === 'business'}
       />
     </>
   )

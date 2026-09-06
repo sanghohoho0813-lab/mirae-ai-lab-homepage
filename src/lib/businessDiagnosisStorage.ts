@@ -1,7 +1,7 @@
-// 퀘스트형 기업 성장진단 — localStorage 저장.
+// 3분 AX Fit — localStorage 저장.
 // 진행 세션(miraeBusinessDiagnosis) + 완료 결과 기록(miraeBusinessDiagnosisHistory) 분리.
-// v3→v4 는 답변을 유지한 채 버전만 승격합니다(구조 호환). 그 외 불일치만 안전 초기화.
-import type { DiagnosisSession, SavedResult, StageReportData } from '../types/businessDiagnosis'
+// v5(AX Fit)는 이전 종합진단(v3·v4)과 질문이 전혀 달라 호환되지 않으므로, 버전이 다르면 안전 초기화한다.
+import type { AxFitReport, DiagnosisSession, SavedResult } from '../types/businessDiagnosis'
 import { DIAGNOSIS_VERSION } from '../data/businessDiagnosisQuestions'
 
 const KEY = 'miraeBusinessDiagnosis'
@@ -14,13 +14,8 @@ export function loadSession(): DiagnosisSession | null {
     if (!raw) return null
     const parsed = JSON.parse(raw) as DiagnosisSession
     if (parsed.diagnosisVersion !== DIAGNOSIS_VERSION) {
-      // v3 → v4: 질문·세션 구조가 호환되므로 답변을 유지한 채 버전만 승격
-      if (parsed.diagnosisVersion === 3 && parsed.answers && typeof parsed.answers === 'object') {
-        parsed.diagnosisVersion = DIAGNOSIS_VERSION
-      } else {
-        localStorage.removeItem(KEY)
-        return null
-      }
+      localStorage.removeItem(KEY)
+      return null
     }
     if (!parsed.answers || typeof parsed.answers !== 'object') return null
     if (!Array.isArray(parsed.interests)) parsed.interests = []
@@ -62,7 +57,8 @@ export function loadHistory(): SavedResult[] {
     if (!raw) return []
     const arr = JSON.parse(raw)
     if (!Array.isArray(arr)) return []
-    return (arr as SavedResult[]).filter((r) => r && r.resultId && r.snapshot)
+    // 이전 종합진단 스냅샷은 AX Fit 화면으로 그릴 수 없으므로 현재 버전 결과만 보여준다
+    return (arr as SavedResult[]).filter((r) => r && r.resultId && r.snapshot && r.resultVersion === DIAGNOSIS_VERSION)
   } catch {
     return []
   }
@@ -75,7 +71,7 @@ export function saveResultToHistory(input: {
   answers: SavedResult['answers']
   interests: string[]
   foundAdvantages: string[]
-  snapshot: StageReportData
+  snapshot: AxFitReport
   leadId?: string
 }): SavedResult {
   const now = new Date().toISOString()
@@ -96,6 +92,7 @@ export function saveResultToHistory(input: {
     leadId: input.leadId ?? prev?.leadId,
   }
   try {
+    // 구버전 결과는 loadHistory 에서 이미 걸러졌으므로, 여기서 저장하면 자연스럽게 정리된다
     const rest = list.filter((r) => r.sessionId !== input.sessionId)
     const next = [result, ...rest].slice(0, MAX_HISTORY)
     localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
