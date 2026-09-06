@@ -107,7 +107,8 @@ function DocumentRow({
       <div className="flex shrink-0 gap-2">
         {needsUpload && (
           <>
-            <input ref={inputRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png,.hwp,.docx,.xlsx" onChange={(e) => void pick(e.target.files?.[0])} />
+            {/* 형식 제한 없음 — 한글(HWP)·워드·엑셀·압축파일도, 휴대폰 사진도 그대로 올라간다 */}
+            <input ref={inputRef} type="file" className="hidden" onChange={(e) => void pick(e.target.files?.[0])} />
             <button
               type="button"
               disabled={busy}

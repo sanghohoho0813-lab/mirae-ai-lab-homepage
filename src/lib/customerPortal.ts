@@ -152,27 +152,48 @@ export async function completeAction(updateId: string): Promise<void> {
 }
 
 const BUCKET = 'client-documents'
-const MAX_FILE_BYTES = 20 * 1024 * 1024
+
+/**
+ * 올리기 실패 문구를 사람 말로 바꾼다.
+ * 저장소가 돌려주는 영어 메시지는 고객에게 아무 정보도 주지 못한다.
+ */
+function uploadErrorMessage(raw: string): string {
+  const t = raw.toLowerCase()
+  if (t.includes('exceeded') || t.includes('too large') || t.includes('maximum size')) {
+    return '파일이 너무 큽니다. 미래AI랩에 알려 주시면 상한을 올려 드립니다.'
+  }
+  if (t.includes('mime') || t.includes('content type') || t.includes('not allowed')) {
+    return '이 형식은 아직 저장소가 받지 않습니다. 미래AI랩에 알려 주세요.'
+  }
+  if (t.includes('duplicate') || t.includes('already exists')) {
+    return '같은 이름의 파일이 방금 올라갔습니다. 잠시 뒤 다시 시도해 주세요.'
+  }
+  return `파일을 올리지 못했습니다. ${raw}`
+}
 
 /**
  * 서류 업로드 — 1) 서버에서 경로를 받고 2) 그 경로로만 올린 뒤 3) 메타데이터를 등록한다.
  * 경로 규칙은 서버가 정하므로 고객 앱은 내부 구조를 알 필요가 없다.
+ *
+ * 크기·형식 제한은 앱에서 걸지 않는다. 한글(HWP)·워드·엑셀·압축파일이 오가고
+ * 스캔본은 10MB 를 쉽게 넘기 때문이다. 실제 상한은 저장소(프로젝트 전역 설정)
+ * 한 곳에서만 정하고, 걸리면 위 문구로 알린다.
  */
 export async function uploadDocument(
   linkId: string,
   file: File,
   opts: { documentId?: string | null; documentType: string; title: string; note?: string },
 ): Promise<string> {
-  if (file.size > MAX_FILE_BYTES) throw new Error('파일은 20MB 이하만 올릴 수 있습니다.')
   const client = requireClient()
   const { data: path, error: pathError } = await client.rpc('portal_upload_path', { p_link_id: linkId, p_file_name: file.name })
   if (pathError) throw pathError
   const storagePath = String(path)
   const { error: uploadError } = await client.storage.from(BUCKET).upload(storagePath, file, {
-    contentType: file.type || undefined,
+    // 한글(HWP)·압축파일은 브라우저가 형식을 못 알아볼 때가 있다. 그때도 올라가게 둔다.
+    contentType: file.type || 'application/octet-stream',
     upsert: false,
   })
-  if (uploadError) throw new Error(`파일을 올리지 못했습니다. ${uploadError.message}`)
+  if (uploadError) throw new Error(uploadErrorMessage(uploadError.message))
   const { data, error } = await client.rpc('portal_register_document', {
     p_link_id: linkId,
     p_document_id: opts.documentId ?? null,
