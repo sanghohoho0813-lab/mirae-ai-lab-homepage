@@ -1,6 +1,9 @@
-// 홈 스토리 인포그래픽 섹션.
-// 히어로 이후의 설명 흐름은 Drive에서 정리한 이미지 순서를 단일 출처로 사용한다.
+// 홈 스토리 인포그래픽 섹션 (v2).
+// 히어로 이후의 설명 흐름은 Drive 폴더의 번호 순서(1-1 … 10-4)를 단일 출처로 사용한다.
+// 이미지 사이에 끼는 인터랙티브 섹션(Industry AX Preview 10 · 고객 플랫폼 5 · 아이디어 MVP 10 · REAL CLIENT AX 6)은
+// 이미지에 표시된 자리(7-2, 8-5) 바로 다음에 BusinessServicesPage 가 배치한다.
 import { AX_PLATFORM_SAMPLES } from '../../data/portfolioSamples'
+import { AX_STORY_V2_IMAGES, AX_STORY_V2_ROOT } from '../../data/axHomeStoryV2'
 
 type StoryTone = 'dark' | 'light'
 
@@ -17,12 +20,6 @@ type StorySectionProps = {
   id?: string
   tone?: StoryTone
   images: readonly StoryImage[]
-}
-
-const STORY_ROOT = '/ax-home-story-clean'
-
-function storyImage(name: string, alt: string, bg = '#171B20', gapClass?: string, outerClass?: string, innerClass?: string): StoryImage {
-  return { src: `${STORY_ROOT}/${name}`, alt, bg, gapClass, outerClass, innerClass }
 }
 
 function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
@@ -53,62 +50,14 @@ function AxInfographicStack({ id, tone = 'dark', images }: StorySectionProps) {
   )
 }
 
-// "무엇이 있어야 할까요?"(04)까지 문제를 세운 뒤, AX가 무엇인지 설명하고(SECTION_04_DEFINE)
-// "2026년, 흐름도 바뀌고 있습니다"(05)로 넘어간다.
-//
-// 브랜드 정비(0차): problem-01("사업계획서 하나만 가지고 정책자금·정부지원사업·투자유치를 준비하고 계신가요?")과
-// problem-03("수억 원 단위의 정책자금·정부지원·투자를 준비할수록…")은 자금조달 목적을 AX보다 먼저 제시하는
-// 이미지라 메인 흐름에서 비노출한다. 파일은 그대로 두고, 리뉴얼 때 새 문안으로 교체한다.
-const SECTION_02_A = [
-  storyImage('section-02-problem-02.png', '실제로 구현된 것과 직접 보여줄 수 있는 것이 있는지 묻는 첫 번째 문제제기', '#FAFAF8'),
-  storyImage('section-02-problem-04.png', '작동하는 웹앱과 고객 화면과 데이터의 중요성을 설명하는 문제제기', '#FDFCFA'),
-] as const
-
-const SECTION_02_B = [
-  storyImage('section-02-problem-05.png', '실제 사업을 움직이는 웹앱과 AX의 설명력을 말하는 첫 번째 문제제기 5', '#0F1317'),
-] as const
-
-const SECTION_03 = [
-  storyImage('section-03-screen-01.png', '미래AI랩이 직접 기획하고 개발한 AX 웹앱 화면을 먼저 보여주는 안내', 'linear-gradient(90deg, #0C0F13 0%, #0C0F13 50%, #EEECEA 50%, #EEECEA 100%)'),
-] as const
-
-// AX 정의(무엇인가 / 지금 정보가 흩어져 있다)는 히어로 바로 뒤에서 먼저 말한다.
-const SECTION_04_DEFINE = [
-  storyImage('section-04-ax-01.png', 'AX는 AI Transformation이며 회사가 일하는 방식을 바꾸는 것이라는 설명 1', '#FCFBF8'),
-  storyImage('section-04-ax-02.png', '회사 안의 정보가 엑셀과 카카오톡과 ERP 등에 흩어져 있다는 설명 2', '#FEFDF9'),
-] as const
-
-// "한 번 생긴 정보가 이어진다"는 결론은 샘플을 본 직후에 놓아야 설득이 된다.
-const SECTION_04_FLOW = [
-  storyImage('section-04-ax-03.png', '한 번 생긴 정보가 다음 업무와 판단으로 이어지는 AX 구조 설명 3', '#0D1116'),
-] as const
-
-const SECTION_05 = [
-  storyImage('section-05-erp-01.png', 'ERP와 AX의 역할 차이를 설명하는 비교 1', '#FCFBF8', 'pb-2 sm:pb-3'),
-  storyImage('section-05-erp-02.png', 'ERP 위에 판단과 실행의 층을 더하는 AX 설명 2', '#FBF9F6'),
-] as const
-
-const SECTION_06 = [
-  storyImage('section-06-device-01.png', 'PC와 휴대폰으로 회사 전체를 보는 감각 설명 1', '#050B11'),
-  storyImage('section-06-device-02.png', '클라우드 기반 AX에서 핵심 상황을 확인하고 판단하는 구조 설명 2', '#FAFAFA'),
-] as const
-
-const SECTION_07 = [
-  storyImage('section-07-effect-01.png', 'AX 도입 효과 내부 운영이 가벼워지는 변화 1', '#0A1016'),
-  storyImage('section-07-effect-02.png', 'AX 도입 효과 대표의 판단이 빨라지는 변화 2', '#F8F8F8'),
-  storyImage('section-07-effect-03.png', 'AX 도입 효과 기존 고객에서 더 많은 매출을 만드는 변화 3', '#050B12'),
-  storyImage('section-07-effect-04.png', 'AX 도입 효과 외부에도 보여줄 근거가 생기는 변화 4', '#FBFBFB'),
-] as const
-
-const SECTION_08_INTRO = [
-  storyImage('section-08-platform-01.png', '고객 플랫폼이 붙으면 매출 구조가 달라진다는 설명 1', '#0B1117'),
-  storyImage('section-08-platform-02.png', '업종과 규모에 맞는 고객용 플랫폼 예시 설명 2', '#0D1319'),
-] as const
-
-const SECTION_08_OUTRO = [
-  storyImage('section-08-platform-04.png', '고객 플랫폼으로 쿠팡식 재구매 경험을 만드는 설명 4', '#0C1016'),
-  storyImage('section-08-platform-05.png', '고객 플랫폼 화면과 성장 확장 기능 예시', '#0B1218', 'pb-2 sm:pb-3'),
-] as const
+/** v2 이미지 묶음 — names 는 '1-1' 같은 파일 이름. 첫 이미지는 첫 화면에 가까우면 eager 로 바꾸지 않고 브라우저에 맡긴다. */
+export function AxStoryImages({ names, id, tone }: { names: readonly string[]; id?: string; tone?: StoryTone }) {
+  const images: StoryImage[] = names.map((name) => {
+    const meta = AX_STORY_V2_IMAGES[name]
+    return { src: `${AX_STORY_V2_ROOT}/${name}.webp`, alt: meta?.alt ?? name, bg: meta?.bg ?? '#171B20' }
+  })
+  return <AxInfographicStack id={id} tone={tone} images={images} />
+}
 
 const CUSTOMER_PLATFORM_LINKS = [
   {
@@ -138,79 +87,10 @@ const CUSTOMER_PLATFORM_LINKS = [
   },
 ] as const
 
-const SECTION_09 = [
-  storyImage('section-09-ceo-01.png', '대표가 더 바빠지는 회사가 좋은 성장인지 묻는 설명 1', '#0C131A'),
-  storyImage('section-09-ceo-02.png', '사람이 더 바빠지는 회사가 아니라 회사가 더 똑똑해지는 구조 설명 2', '#0B1218'),
-] as const
-
-const SECTION_10 = [
-  storyImage('section-10-not-ax-01.png', '모든 회사에 AX가 꼭 필요한 것은 아니라는 설명 1', '#F9F9F8'),
-  storyImage('section-10-not-ax-02.png', '웹앱으로 구현 가능한 아이디어 예시 설명 2', '#FDFDFC'),
-  storyImage('section-10-not-ax-03.png', '머릿속에 있던 아이디어를 일단 움직이게 만드는 설명 3', '#0D1318'),
-] as const
-
-const SECTION_11 = [
-  storyImage('section-11-real-01.png', '실제 기업 업무와 데이터에도 AX를 적용하고 있다는 안내', 'linear-gradient(90deg, #070D15 0%, #070D15 50%, #FAFAF8 50%, #FAFAF8 100%)'),
-] as const
-
-const SECTION_12 = [
-  storyImage('section-12-why-01.png', '왜 미래AI랩이어야 하는지 하나의 이야기로 연결해야 한다는 설명 1', 'linear-gradient(180deg, #171B20 0%, #171B20 50%, #FAFAF8 50%, #FAFAF8 100%)'),
-  storyImage('section-12-why-02.png', '각자 따로 맡기면 전체 스토리가 어긋나기 쉽다는 설명 2', '#343B44'),
-  storyImage('section-12-why-03.png', '미래AI랩은 사업 진단부터 Scale-up까지 하나의 흐름으로 본다는 설명 3', 'linear-gradient(180deg, #FAFAF8 0%, #FAFAF8 50%, #171B20 50%, #171B20 100%)'),
-] as const
-
-// 브랜드 정비(0차): scope-02("성장을 위한 자금을 연결합니다 — 사업계획서/정책자금/정부지원사업/투자 설명자료/인증")는
-// 정책 컨설팅 상품 목록에 가까워 메인 흐름에서 비노출하고, 그 자리에 텍스트(AxGrowthEvidenceNote)를 둔다.
-const SECTION_13_A = [
-  storyImage('section-13-scope-01.png', '필요하면 기업 구조와 기술자산과 시장 사업성까지 같이 본다는 설명 1', 'linear-gradient(180deg, #FAFAF8 0%, #FAFAF8 50%, #171B20 50%, #171B20 100%)'),
-] as const
-
-const SECTION_13_B = [
-  storyImage('section-13-scope-03.png', '사업과 시스템과 근거를 먼저 만들고 사업계획서로 정리한다는 설명 3', '#0D141E'),
-] as const
-
-/** 성과가 남으면 다음 성장단계에서도 설명할 수 있다 — 정책·지원은 AX 의 2차 가치로만 말한다 */
-function AxGrowthEvidenceNote() {
+/** 업종에 맞는 고객 플랫폼은 이렇게 달라집니다 — 고객 화면 5개 (기존 섹션 보존) */
+export function AxIndustryPlatformLinks() {
   return (
-    <section className="overflow-hidden bg-[#0C151F]">
-      <div className="mx-auto max-w-[989px] px-0 pb-5 sm:px-6 sm:pb-8">
-        <div className="mx-auto max-w-[941px] px-7 py-14 text-white sm:px-12 sm:py-18">
-          <h2 className="break-keep text-[1.9rem] font-black leading-[1.28] tracking-[-0.01em] sm:text-[2.6rem]">
-            성과가 남으면,<br />
-            기업의 <span className="text-[#D47A4A]">다음 성장단계</span>에서도<br className="sm:hidden" /> 설명할 수 있습니다.
-          </h2>
-          <p className="mt-6 max-w-2xl break-keep text-[1.12rem] leading-[1.8] text-slate-300 sm:text-[1.28rem]">
-            미래AI랩은 평가를 위한 화면을 만들지 않습니다.<br className="hidden sm:block" />{' '}
-            실제 업무가 바뀌고 데이터와 활용근거가 쌓이며,<br className="hidden sm:block" />{' '}
-            그 결과가 향후 정책지원·R&D·정책금융·성장전략에서도 설명 가능한 기업자산으로 남도록 설계합니다.
-          </p>
-          <p className="mt-7 break-keep border-l-[3px] border-[#D47A4A] pl-4 text-[1.22rem] font-black leading-[1.55] text-[#FAFAF8] sm:text-[1.45rem]">
-            평가받기 위한 모습을 만드는 것이 아니라,<br />
-            평가받을 수 있는 실체를 만듭니다.
-          </p>
-          <p className="mt-6 max-w-2xl break-keep text-[0.95rem] leading-relaxed text-slate-500 sm:text-[1.0rem]">
-            정책지원·R&D·정책금융의 결과는 각 기관의 독립적인 판단으로 결정됩니다.
-          </p>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-const SECTION_14 = [
-  storyImage(
-    'section-14-industry-01.png',
-    '우리 업종에도 AX나 플랫폼이 가능한지 업종별 화면을 확인하라는 안내',
-    'linear-gradient(90deg, #0F181E 0%, #0F181E 50%, #EFEFEE 50%, #EFEFEE 100%)',
-    'pb-5 sm:pb-8',
-    'mx-auto max-w-[1240px] px-0 sm:px-4 lg:px-6',
-    'mx-auto max-w-[1120px]',
-  ),
-] as const
-
-function AxIndustryPlatformLinks() {
-  return (
-    <section className="overflow-hidden bg-[#FCFCFC]">
+    <section id="customer-platforms" className="scroll-mt-16 overflow-hidden bg-[#FCFCFC]">
       <div className="mx-auto max-w-[989px] px-0 pb-5 sm:px-6 sm:pb-8">
         <div className="mx-auto max-w-[941px] bg-[#FCFCFC] px-7 py-14 sm:px-12 sm:py-18">
           <h2 className="break-keep text-[2.1rem] font-black leading-[1.22] tracking-[-0.01em] text-[#171B20] sm:text-[3.05rem]">
@@ -264,78 +144,4 @@ function AxIndustryPlatformLinks() {
       </div>
     </section>
   )
-}
-
-export function AxWhyNowSection() {
-  return <AxInfographicStack id="why-now" images={SECTION_02_A} />
-}
-
-/** AX 정의를 사이에 끼운 뒤 이어지는 "2026년, 흐름도 바뀌고 있습니다" */
-export function AxWhyNowOutroSection() {
-  return <AxInfographicStack images={SECTION_02_B} />
-}
-
-export function AxScreenIntroSection() {
-  return <AxInfographicStack images={SECTION_03} />
-}
-
-export function AxDefinitionSection() {
-  return <AxInfographicStack id="ax-definition" images={SECTION_04_DEFINE} />
-}
-
-/** 샘플을 본 직후 — "한 번 생긴 정보가 다음 업무로 이어진다" */
-export function AxInfoFlowSection() {
-  return <AxInfographicStack images={SECTION_04_FLOW} />
-}
-
-export function AxErpComparisonSection() {
-  return <AxInfographicStack images={SECTION_05} />
-}
-
-export function AxDeviceOperationSection() {
-  return <AxInfographicStack images={SECTION_06} />
-}
-
-export function AxEffectSection() {
-  return <AxInfographicStack images={SECTION_07} />
-}
-
-export function AxCustomerPlatformSection() {
-  return (
-    <>
-      <AxInfographicStack images={SECTION_08_INTRO} />
-      <AxIndustryPlatformLinks />
-      <AxInfographicStack images={SECTION_08_OUTRO} />
-    </>
-  )
-}
-
-export function AxCeoBusySection() {
-  return <AxInfographicStack images={SECTION_09} />
-}
-
-export function AxNotAlwaysNeededSection() {
-  return <AxInfographicStack images={SECTION_10} />
-}
-
-export function AxRealProjectIntroSection() {
-  return <AxInfographicStack images={SECTION_11} />
-}
-
-export function AxWhyMiraeSection() {
-  return <AxInfographicStack id="why-mirae" images={SECTION_12} />
-}
-
-export function AxTogetherScopeSection() {
-  return (
-    <>
-      <AxInfographicStack images={SECTION_13_A} />
-      <AxGrowthEvidenceNote />
-      <AxInfographicStack images={SECTION_13_B} />
-    </>
-  )
-}
-
-export function AxIndustryQuestionSection() {
-  return <AxInfographicStack tone="light" images={SECTION_14} />
 }
