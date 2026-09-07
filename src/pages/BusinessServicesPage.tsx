@@ -9,7 +9,7 @@ import KakaoFloat from '../components/KakaoFloat'
 import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
 import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
-import { AxIndustryPlatformLinks, AxStoryImages } from '../components/ax-showcase/axStoryHome'
+import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
 import {
   AxRealProjectsDeep,
   AxScreenShowcase,
@@ -181,11 +181,12 @@ export default function BusinessServicesPage() {
         <AxHeroV2 />
       </div>
 
-      {/* ── 스토리 v2 (Drive 1-1 … 10-4 순서) ─────────────────────────────
+      {/* ── 스토리 v2 (Drive 1-1 … 13-5 순서, 여백·장식 사진은 잘라낸 버전) ─────────────
           섹션 01 사업계획서만으로는 / 02 이런 상황은 아니신가요 / 03 차이는 문서 밖 + 업종 예시
           04 AX의 정의 / 05 왜 지금 AX / 06 실제 자금조달 기업 리서치 / 07 직접 만들어서 보여드립니다
           08 아이디어만 있으면? MVP / 09 일반 개발회사와 무엇이 다른가 / 10 혼자 다 하는 회사?
-          인터랙티브 섹션은 이미지에 표시된 자리(7-2, 8-5) 바로 다음에 둔다. 섹션 11~18은 추후 추가. */}
+          11 AX 범위(고객접점) / 12 대표가 없어도 돌아가는 회사 / 13 AX 도입 후 4가지 변화
+          인터랙티브 섹션은 이미지에 표시된 자리(7-2, 8-5) 바로 다음에 둔다. */}
       <AxStoryImages names={S(1)} />
       <AxStoryImages names={S(2)} />
       <AxStoryImages names={S(3)} />
@@ -193,10 +194,9 @@ export default function BusinessServicesPage() {
       <AxStoryImages names={S(5)} />
       <AxStoryImages id="growth" names={S(6)} />
 
-      {/* 07 — 7-2 "Industry AX Preview 안내" 바로 다음에 Preview 10개 + 고객 플랫폼 5개 (기존 섹션 보존) */}
+      {/* 07 — 7-2 "Industry AX Preview 안내" 바로 다음에 Preview 10개 (업종별 고객 플랫폼 5개 섹션은 11번 스토리와 겹쳐 제거) */}
       <AxStoryImages names={S(7, 1, 2)} />
       <AxScreenShowcase />
-      <AxIndustryPlatformLinks />
       <AxStoryImages names={S(7, 3)} />
 
       {/* 08 — 8-5 "직접 만든 10가지 샘플 보기" 바로 다음에 아이디어 MVP 10개, 그 바로 아래 REAL CLIENT AX 6개 (기존 섹션 보존) */}
@@ -204,9 +204,12 @@ export default function BusinessServicesPage() {
       <AxPortfolioSection />
       <AxRealProjectsDeep />
 
-      {/* 09 · 10 */}
+      {/* 09 · 10 · 11 · 12 · 13 — 12-2 는 Drive 폴더에 없어 건너뜀 */}
       <AxStoryImages id="why-mirae" names={S(9)} />
       <AxStoryImages names={S(10)} />
+      <AxStoryImages names={S(11)} />
+      <AxStoryImages names={S(12)} />
+      <AxStoryImages names={S(13)} />
 
       {/* 최종 CTA — 우리 회사라면? */}
       <div ref={finalCtaRef}>
