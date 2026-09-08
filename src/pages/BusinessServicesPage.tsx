@@ -10,11 +10,13 @@ import AxPortfolioSection from '../components/ax-showcase/AxPortfolioSection'
 import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
 import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
+import { AxJudgeVideo, AxPolicySources } from '../components/ax-showcase/AxStoryExtras'
+import AxFaqSection from '../components/ax-showcase/AxFaqSection'
 import {
   AxRealProjectsDeep,
   AxScreenShowcase,
 } from '../components/ax-showcase/axFinalHome'
-import { axStoryV2Section as S } from '../data/axHomeStoryV2'
+import { axStoryV3Section as S } from '../data/axHomeStoryV3'
 import { useSavedItems } from '../lib/savedItems'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { readBusinessReturn, clearBusinessReturn } from '../lib/businessServicesReturn'
@@ -24,8 +26,8 @@ import { canonicalUrl } from '../lib/site'
 // 정책·정부지원·자금조달은 AX 의 주목적이 아니라, 실제 AX 성과와 기업자산이 이후 성장 과정에서
 // 활용될 수 있는 2차 가치로만 말한다(Growth Layer). "자금조달을 위해 AX 를 만든다"는 인상을 주지 않는다.
 //
-// 홈 = 히어로 이후 인포그래픽 스토리 + Industry AX Preview + 실제 현장 프로젝트 + CTA.
-// Preview(AxScreenShowcase, AxPortfolioSection)와 실제 현장 프로젝트(AxRealProjectsDeep)는 기존 섹션을 보존한다.
+// 홈 = 히어로 이후 인포그래픽 스토리(v3, 52장) + Industry AX Preview 10 + 심사위원 영상 + 아이디어 MVP 10 + 실제 현장 프로젝트 6 + FAQ + CTA.
+// 구성은 PDF "AX 상세페이지 카피 14섹션 최종 압축본"을 따른다. Preview·MVP·실제 프로젝트는 기존 섹션을 보존한다.
 // 한 섹션 한 주장, 설명 대신 실제 화면과 구조가 말하게 한다. 가격표는 두지 않는다.
 
 const PAGE_TITLE = '미래AI랩 | 경영컨설턴트가 설계하는 중소기업 맞춤형 AX'
@@ -181,49 +183,50 @@ export default function BusinessServicesPage() {
         <AxHeroV2 />
       </div>
 
-      {/* ── 스토리 v2 (Drive 1-1 … 13-5 순서, 여백·장식 사진은 잘라낸 버전) ─────────────
-          섹션 01 사업계획서만으로는 / 02 이런 상황은 아니신가요 / 03 차이는 문서 밖 + 업종 예시
-          04 AX의 정의 / 05 왜 지금 AX / 06 실제 자금조달 기업 리서치 / 07 직접 만들어서 보여드립니다
-          08 아이디어만 있으면? MVP / 09 일반 개발회사와 무엇이 다른가 / 10 혼자 다 하는 회사?
-          11 AX 범위(고객접점) / 12 대표가 없어도 돌아가는 회사 / 13 AX 도입 후 4가지 변화
-          인터랙티브 섹션은 이미지에 표시된 자리(7-2, 8-5) 바로 다음에 둔다. */}
+      {/* ── 스토리 v3 (Drive 1.1 … 12, 52장) — PDF 14섹션 구성 ──────────────────────
+          01 계획보다 강한 증거 / 02 이런 상황이신가요 / 03 사업계획서의 시대가 달라졌습니다 + 업종 예시(그려진 버튼 → 실제 샘플 AX 화면)
+          04 AX의 정의 / 05 왜 지금 AX (5.2 아래 정책자료 공식 출처) / 06 실제 자금조달 기업 리서치
+          07 Industry AX Preview 10 + "사업 초기라면 다릅니다" / 08 아이디어만 있으면? (8.3 아래 심사위원 인터뷰 영상, 8.4 버튼 → MVP 10)
+          → 아이디어 MVP 10 → REAL CLIENT AX 6 / 09 일반 개발회사와 무엇이 다른가 / 10 대표가 없어도 잘 돌아가는 회사
+          11 AX 하나만 보는 컨설팅이 아닙니다 / 12 처음에 뭘 해주는데요? / 13 FAQ(HTML) / 14 FINAL CTA */}
       <AxStoryImages names={S(1)} />
       <AxStoryImages names={S(2)} />
       <AxStoryImages names={S(3)} />
       <AxStoryImages id="ax-definition" names={S(4)} />
-      <AxStoryImages names={S(5)} />
-      <AxStoryImages id="growth" names={S(6)} />
+      <AxStoryImages id="growth" names={S(5)} after={{ '5-2': <AxPolicySources /> }} />
+      <AxStoryImages names={S(6)} />
 
-      {/* 07 — 7-2 "Industry AX Preview 안내" 바로 다음에 Preview 10개 (업종별 고객 플랫폼 5개 섹션은 11번 스토리와 겹쳐 제거) */}
-      <AxStoryImages names={S(7, 1, 2)} />
+      {/* 07 — 말로만 보면 잘 안 와닿으시죠? → Industry AX Preview 10개, 그다음 "사업 초기라면 다릅니다(MVP)" */}
       <AxScreenShowcase />
-      <AxStoryImages names={S(7, 3)} />
+      <AxStoryImages names={S(7)} />
 
-      {/* 08 — 8-5 "직접 만든 10가지 샘플 보기" 바로 다음에 아이디어 MVP 10개, 그 바로 아래 REAL CLIENT AX 6개 (기존 섹션 보존) */}
-      <AxStoryImages names={S(8)} />
+      {/* 08 — 8.3 심사위원 인터뷰 영상(출처 명시), 8.4 [10가지 샘플 보기] → 아이디어 MVP 10개, 그 바로 아래 REAL CLIENT AX 6개 (기존 섹션 보존) */}
+      <AxStoryImages names={S(8)} after={{ '8-3': <AxJudgeVideo /> }} />
       <AxPortfolioSection />
       <AxRealProjectsDeep />
 
-      {/* 09 · 10 · 11 · 12 · 13 — 12-2 는 Drive 폴더에 없어 건너뜀 */}
+      {/* 09 · 10 · 11 · 12 */}
       <AxStoryImages id="why-mirae" names={S(9)} />
       <AxStoryImages names={S(10)} />
       <AxStoryImages names={S(11)} />
       <AxStoryImages names={S(12)} />
-      <AxStoryImages names={S(13)} />
 
-      {/* 최종 CTA — 우리 회사라면? */}
+      {/* 13 FAQ — 이미지가 아니라 HTML 텍스트 */}
+      <AxFaqSection />
+
+      {/* 14 FINAL — 우리 회사는 지금 무엇을 보여줘야 다음 단계로 갈 수 있을까요? */}
       <div ref={finalCtaRef}>
         <section id="cta" className="border-t border-[#343B44] bg-[#171B20]">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
             <h2 className="break-keep text-[1.7rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.1rem]">
-              우리 회사라면,<br className="sm:hidden" /> 어디부터 바꾸면 될까요?
+              우리 회사는 지금 무엇을 보여줘야<br className="hidden sm:block" /> 다음 단계로 갈 수 있을까요?
             </h2>
             <p className="mx-auto mt-4 max-w-xl break-keep text-[1.18rem] leading-[1.7] text-slate-300 sm:text-[1.26rem]">
-              업종과 현재 업무방식만 알려주시면, 무엇을 AX로 바꿀 수 있고 고객 플랫폼까지 어디까지 연결할 수 있는지 먼저 봅니다.
+              무엇을 개발할지 미리 고르지 않으셔도 됩니다. 지금 회사의 사업, 고객, 업무, 데이터, 성장 계획을 보고 무엇부터 하는 게 가장 효과적인지 함께 판단해드립니다.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto">
-                우리 회사 AX 가능성 진단
+                3분 기업 성장 · AX Fit 진단
               </Link>
               <a href="#portfolio" className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
                 실제 AX 구축 화면 보기
