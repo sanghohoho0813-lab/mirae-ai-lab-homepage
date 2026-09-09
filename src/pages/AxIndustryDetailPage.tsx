@@ -101,7 +101,7 @@ export default function AxIndustryDetailPage() {
             <Link to="/business-diagnosis" className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 text-[1.26rem] sm:text-[1.15rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-400">
               우리 회사 AX 가능성 진단
             </Link>
-            <Link to="/business-services#portfolio" className="flex min-h-[52px] items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10">
+            <Link to="/business-services/ax#portfolio" className="flex min-h-[52px] items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10">
               실제 AX 구축 화면 보기
             </Link>
           </div>

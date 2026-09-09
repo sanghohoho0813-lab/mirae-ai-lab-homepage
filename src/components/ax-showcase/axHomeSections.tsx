@@ -2,6 +2,7 @@
 // 한 섹션에서는 하나의 주장만 전달하고, 주장 바로 아래 증명(화면·산출물·근거)을 배치한다.
 import { Link } from 'react-router-dom'
 import { AX_CORE_VALUES, AX_METHOD_STEPS, AX_SELECTION_DECLINE, AX_SELECTION_PRIORITY } from '../../data/axPackages'
+import { AX_GUIDE_PATH } from '../../lib/businessRoutes'
 
 const band = 'px-5 py-16 sm:px-6 sm:py-24'
 const wrap = 'mx-auto max-w-5xl'
@@ -48,12 +49,12 @@ export function AxHeroV2() {
           >
             우리 회사 AX 가능성 진단
           </Link>
-          <a
-            href="#portfolio"
+          <Link
+            to={`${AX_GUIDE_PATH}#portfolio`}
             className="flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/50 px-7 text-[1.24rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto sm:text-[1.2rem]"
           >
-            실제 AX 구축 화면 보기 <span aria-hidden>↓</span>
-          </a>
+            실제 AX 구축 화면 보기 <span aria-hidden>→</span>
+          </Link>
         </div>
       </div>
     </section>

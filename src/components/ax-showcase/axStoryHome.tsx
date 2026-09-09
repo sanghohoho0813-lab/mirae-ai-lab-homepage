@@ -38,11 +38,14 @@ export function AxStoryImages({
   id,
   tone = 'dark',
   after,
+  eagerFirst = false,
 }: {
   names: readonly string[]
   id?: string
   tone?: StoryTone
   after?: Partial<Record<string, ReactNode>>
+  /** 페이지에서 처음 보이는 묶음이면 첫 장만 즉시 불러온다(첫 화면이 배경색만 보이는 시간을 줄인다) */
+  eagerFirst?: boolean
 }) {
   const sectionClass = tone === 'dark'
     ? 'scroll-mt-16 overflow-hidden border-t border-white/10 bg-[#171B20]'
@@ -50,8 +53,9 @@ export function AxStoryImages({
 
   return (
     <section id={id} className={sectionClass}>
-      {names.map((name) => {
+      {names.map((name, i) => {
         const meta = AX_STORY_V3_IMAGES[name]
+        const eager = eagerFirst && i === 0
         return (
           <div key={name} className="pb-5 sm:pb-8" style={{ background: meta?.bg ?? '#171B20' }}>
             <div className="mx-auto max-w-[1134px] px-0 sm:px-6">
@@ -61,7 +65,8 @@ export function AxStoryImages({
                   alt={meta?.alt ?? name}
                   width={meta?.w ?? 1086}
                   height={meta?.h ?? 1448}
-                  loading="lazy"
+                  loading={eager ? 'eager' : 'lazy'}
+                  fetchPriority={eager ? 'high' : undefined}
                   decoding="async"
                   className="block h-auto w-full"
                 />

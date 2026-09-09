@@ -67,10 +67,10 @@ const BUSINESS_MENU: MenuConfig = {
       heading: 'AX 살펴보기',
       accent: 'blue',
       items: [
-        { no: '1', label: '실제 AX 구축 화면', desc: '산업별 AX Preview 먼저 보기', to: '/business-services#portfolio' },
-        { no: '2', label: '실제 기업 프로젝트', desc: '현장에서 고도화 중인 프로젝트', to: '/business-services#real-projects' },
-        { no: '3', label: 'AX란 무엇인가', desc: '디지털화와 무엇이 다른가', to: '/business-services#ax-definition' },
-        { no: '4', label: '왜 미래AI랩인가', desc: '분절이 아니라 하나의 Growth Story', to: '/business-services#why-mirae' },
+        { no: '1', label: '실제 AX 구축 화면', desc: '산업별 AX Preview 먼저 보기', to: '/business-services/ax#portfolio' },
+        { no: '2', label: '실제 기업 프로젝트', desc: '현장에서 고도화 중인 프로젝트', to: '/business-services/ax#real-projects' },
+        { no: '3', label: 'AX란 무엇인가', desc: '디지털화와 무엇이 다른가', to: '/business-services/ax#ax-definition' },
+        { no: '4', label: '왜 미래AI랩인가', desc: '분절이 아니라 하나의 Growth Story', to: '/business-services/ax#why-mirae' },
       ],
     },
     {
@@ -78,7 +78,7 @@ const BUSINESS_MENU: MenuConfig = {
       heading: '프로그램 · 성장',
       accent: 'cyan',
       items: [
-        { no: '1', label: 'Growth Layer', desc: 'AX 성과가 다음 성장단계로 이어지는 방법', to: '/business-services#growth' },
+        { no: '1', label: 'Growth Layer', desc: 'AX 성과가 다음 성장단계로 이어지는 방법', to: '/business-services/ax#growth' },
         // 프로그램 상세페이지 전면 개정 중 — 이동을 막는다
         { no: '2', label: 'AX 프로그램 안내', desc: '진행방식·결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
         { no: '3', label: '수행체계', desc: '대표 컨설턴트 · 월 5개사 선별', to: '/business-services/funding-consulting#leader', updating: true },

@@ -28,6 +28,7 @@ import MyOrdersPage from './pages/MyOrdersPage'
 import BusinessDiagnosisPage from './pages/BusinessDiagnosisPage'
 import BusinessDiagnosisResultsPage from './pages/BusinessDiagnosisResultsPage'
 import BusinessServicesPage from './pages/BusinessServicesPage'
+import BusinessAxGuidePage from './pages/BusinessAxGuidePage'
 import AxIndustryDetailPage from './pages/AxIndustryDetailPage'
 import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
 import BusinessCatalogPage from './pages/BusinessCatalogPage'
@@ -92,6 +93,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/my-projects" element={<Suspense fallback={portalFallback}><MyProjectsPage /></Suspense>} />
           <Route path="/my-projects/:linkId" element={<Suspense fallback={portalFallback}><MyProjectDetailPage /></Suspense>} />
           <Route path="/business-services" element={<BusinessServicesPage />} />
+          {/* 스토리 04~12 + Preview·MVP·실제 프로젝트·FAQ — :slug 보다 먼저 와야 한다 */}
+          <Route path="/business-services/ax" element={<BusinessAxGuidePage />} />
           <Route path="/ax-industries/:slug" element={<AxIndustryDetailPage />} />
           <Route path="/saved" element={<SavedItemsPage />} />
           <Route path="/business-diagnosis" element={<BusinessDiagnosisPage />} />
