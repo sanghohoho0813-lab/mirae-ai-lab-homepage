@@ -7,17 +7,28 @@ import AccountMenu from '../components/account/AccountMenu'
 
 // 루트(/) 역할 선택 게이트웨이.
 // 이 화면이 하는 일은 하나 — 대표님인지 컨설턴트인지 고르게 하는 것.
-// 그래서 질문 두 개만 남기고 설명·키워드·소개 문구는 두지 않는다.
+// 질문이 주인공이고, 각 카드에는 무엇을 하는 곳인지 한 줄만 덧붙인다.
+// 긴 소개 문장·키워드 칩·큰 CTA 버튼은 두지 않는다.
 // 모바일에서 스크롤 없이 두 선택지가 한눈에 들어오는 것이 기준이다.
+
+// 브랜드 정비(0차): 자금조달 실적 대신 AX Architect 포지션을 앞세운다.
+const trustItems = [
+  '경영컨설턴트 출신 AX Architect',
+  '정책자금·인증·사업계획 실무 경험',
+  'ISO 인증 심사원',
+  'AI 기반 경영지원 도구 개발',
+]
 
 type Choice = {
   to: string
   icon: string
   lines: readonly string[]
+  desc: string
   aria: string
   card: string
   glow: string
   iconBox: string
+  descColor: string
   arrow: string
 }
 
@@ -27,20 +38,24 @@ const choices: readonly Choice[] = [
     to: '/business-services',
     icon: '🏢',
     lines: ['중소기업 대표님 또는', '예비창업가이신가요?'],
+    desc: '사업과 업무를 먼저 분석해 회사 전용 AX를 설계·구축합니다.',
     aria: '중소기업 대표님 또는 예비창업가이신가요? 중소기업 맞춤형 AX 보기',
     card: 'bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30',
     glow: 'bg-white/20',
     iconBox: 'bg-white/15 ring-1 ring-inset ring-white/20',
+    descColor: 'text-blue-50/90',
     arrow: 'text-white',
   },
   {
     to: '/consultants',
     icon: '🧑‍💼',
     lines: ['컨설턴트이신가요?'],
+    desc: '고객 진단·제안서·인증 업무를 더 빠르게 처리하는 AI 실무 도구입니다.',
     aria: '컨설턴트이신가요? 컨설턴트용 AI 실무 도구 보기',
     card: 'bg-gradient-to-br from-slate-800 to-slate-950 shadow-lg shadow-slate-900/30 hover:shadow-2xl hover:shadow-sky-500/20',
     glow: 'bg-sky-400/25',
     iconBox: 'bg-white/10 ring-1 ring-inset ring-white/15',
+    descColor: 'text-slate-300',
     arrow: 'text-sky-300',
   },
 ]
@@ -75,8 +90,12 @@ export default function GatewayPage() {
           taglineClassName="text-center"
           imgClassName="h-11 max-w-[212px] sm:h-14 sm:max-w-[280px]"
         />
+        {/* 360px 에서도 좌우가 빠듯하지 않게 아주 좁은 화면에서만 한 단계 작게 */}
+        <p className="mt-3.5 text-[0.88rem] font-semibold text-slate-500 min-[380px]:text-[0.95rem] sm:mt-4 sm:text-base">
+          경영컨설턴트가 설계하는 중소기업 맞춤형 AX
+        </p>
 
-        <div className="mt-8 grid w-full gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6">
+        <div className="mt-6 grid w-full gap-4 sm:mt-9 sm:grid-cols-2 sm:gap-6">
           {choices.map((c) => (
             <Link
               key={c.to}
@@ -89,17 +108,30 @@ export default function GatewayPage() {
                 {c.icon}
               </span>
               {/* 아이콘을 위로 올려 글줄 폭을 넉넉히 준다 — 좁은 화면에서도 질문이 두 줄 안에 떨어지게 */}
-              <span className="relative mt-5 flex items-end justify-between gap-3">
-                <span className="min-w-0 text-[1.26rem] font-extrabold leading-[1.35] tracking-tight text-white min-[380px]:text-[1.36rem] sm:text-[1.6rem] sm:leading-[1.3]">
-                  {c.lines.map((line) => (
-                    <span key={line} className="block">{line}</span>
-                  ))}
+              <span className="relative mt-4 flex items-end justify-between gap-3 sm:mt-5">
+                <span className="min-w-0">
+                  <span className="block text-[1.26rem] font-extrabold leading-[1.35] tracking-tight text-white min-[380px]:text-[1.36rem] sm:text-[1.6rem] sm:leading-[1.3]">
+                    {c.lines.map((line) => (
+                      <span key={line} className="block">{line}</span>
+                    ))}
+                  </span>
+                  <span className={`mt-2 block text-[0.9rem] leading-relaxed sm:mt-2.5 sm:text-[0.98rem] ${c.descColor}`}>{c.desc}</span>
                 </span>
                 <span aria-hidden className={`shrink-0 text-2xl font-black leading-none transition-transform group-hover:translate-x-1 sm:text-3xl ${c.arrow}`}>
                   →
                 </span>
               </span>
             </Link>
+          ))}
+        </div>
+
+        {/* 누가 만드는지 한 줄 — 자금조달 실적이 아니라 자격·경험만 담백하게 */}
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 text-center text-[0.85rem] font-medium text-slate-500 sm:mt-9 sm:text-sm">
+          {trustItems.map((t, i) => (
+            <span key={t} className="inline-flex items-center gap-2.5">
+              {i > 0 && <span aria-hidden className="text-slate-300">·</span>}
+              {t}
+            </span>
           ))}
         </div>
       </div>
