@@ -18,19 +18,19 @@ export function AxHeroV2() {
 
       {/* 칩·버튼을 뺀 만큼 문장이 화면 가운데에서 넉넉하게 자리잡게 둔다 */}
       <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-14`}>
-        {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 */}
-        <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.9rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[0.98rem] sm:px-4 sm:text-[1.05rem]">
+        {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 (기준 대비 1.1배) */}
+        <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.99rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[1.078rem] sm:px-4 sm:text-[1.155rem]">
           경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX
         </span>
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
-        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-w-4xl break-keep text-[clamp(2.05rem,7.6vw,3.2rem)] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.5rem,4.8vw,3.6rem)]">
+        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
           {/* PC 에서도 같은 자리에서 끊어 "않습니다."만 남는 줄이 생기지 않게 한다 */}
           AI를 도입하는 데서<br /> 끝내지 않습니다.<br />
           <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">회사를 한 단계 더 성장</span>시킵니다.
         </h1>
         {/* 한 문단만 남긴다 — 핵심 키워드만 보조 브랜드 컬러로 아주 얕게 집어준다 */}
-        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-8 sm:text-[1.36rem]">
+        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-2xl break-keep text-[1.32rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-8 sm:text-[1.496rem]">
           고객에게는 더 신뢰받고, 외부 기관과 투자자에게는<br className="hidden sm:block" />{' '}
           <b className="font-bold text-[#E8B89A]">성장 가능성과 경쟁력</b>을 인정받을 수 있는 회사로 만듭니다.
         </p>
