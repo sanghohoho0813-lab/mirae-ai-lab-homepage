@@ -4,6 +4,7 @@ import NetworkBackdrop from '../components/NetworkBackdrop'
 import LegalFooter from '../components/LegalFooter'
 import BrandLogo from '../components/BrandLogo'
 import AccountMenu from '../components/account/AccountMenu'
+import { AX_PATENT_COUNT, AX_PATENT_META, AX_PATENT_PROOF } from '../data/axPatentTech'
 
 // 루트(/) 역할 선택 게이트웨이.
 // 이 화면이 하는 일은 하나 — 대표님인지 컨설턴트인지 고르게 하는 것.
@@ -133,6 +134,23 @@ export default function GatewayPage() {
               {t}
             </span>
           ))}
+        </div>
+
+        {/* 기술자산 한 줄 — 이 화면의 주인공은 위의 선택지다. 배지 없이 얇은 선 하나로만 구분한다. */}
+        <div className="mt-8 w-full border-t border-slate-200/80 pt-6 sm:mt-10 sm:pt-7">
+          <div className="flex flex-col items-center gap-2.5 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-5 sm:text-left">
+            <p className="max-w-md break-keep text-[0.95rem] font-bold leading-relaxed text-slate-600 sm:max-w-none sm:text-[1.0rem]">
+              {AX_PATENT_PROOF.lead}
+            </p>
+            <span aria-hidden className="hidden h-8 w-px bg-slate-200 sm:block" />
+            <p className="max-w-md break-keep text-[0.9rem] leading-relaxed text-slate-500 sm:max-w-none sm:text-[0.95rem]">
+              업무 자동화 · 다음 행동 추천 · 기업 상태 분석 등<br className="sm:hidden" />{' '}
+              AX 핵심기술 특허 <b className="font-black text-[#D47A4A]">{AX_PATENT_COUNT}건</b> 출원
+            </p>
+          </div>
+          <p className="mt-3 text-center text-[0.72rem] font-bold tracking-[0.2em] text-slate-400 sm:mt-3.5 sm:text-[0.76rem]">
+            {AX_PATENT_META}
+          </p>
         </div>
       </div>
 

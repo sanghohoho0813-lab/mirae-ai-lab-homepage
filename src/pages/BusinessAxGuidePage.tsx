@@ -11,6 +11,7 @@ import BusinessStickyCta from '../components/business/BusinessStickyCta'
 import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
 import { AxJudgeVideo, AxPolicySources } from '../components/ax-showcase/AxStoryExtras'
 import AxFaqSection from '../components/ax-showcase/AxFaqSection'
+import AxPatentTechSection from '../components/ax-showcase/AxPatentTechSection'
 import { AxRealProjectsDeep, AxScreenShowcase } from '../components/ax-showcase/axFinalHome'
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
 import { AX_GUIDE_PATH, BUSINESS_NAV } from '../lib/businessRoutes'
@@ -107,6 +108,10 @@ export default function BusinessAxGuidePage() {
       <AxStoryImages names={S(8)} after={{ '8-3': <AxJudgeVideo /> }} />
       <AxPortfolioSection />
       <AxRealProjectsDeep />
+
+      {/* 기술자산 — "이렇게 만든다"(실제 프로젝트) 다음, "일반 개발회사와 무엇이 다른가"(09) 직전.
+          만든 구조를 회사의 기술로 남긴다는 연결고리 역할이다. */}
+      <AxPatentTechSection />
 
       {/* 09 · 10 · 11 · 12 */}
       <AxStoryImages id="why-mirae" names={S(9)} />
