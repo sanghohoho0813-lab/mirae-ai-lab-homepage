@@ -133,11 +133,6 @@
   opacity: 1;
   transform: none;
 }
-/* 스토리 이미지처럼 개수가 많은 곳 — 거슬리지 않게 더 짧고 얕게 */
-.reveal-init.reveal-quick {
-  transform: translateY(12px);
-  transition-duration: 0.32s;
-}
 
 /* ── 첫 화면 등장 — 위에서부터 차례로, 전체 1.2초 안에 끝난다 ── */
 @keyframes hero-rise {

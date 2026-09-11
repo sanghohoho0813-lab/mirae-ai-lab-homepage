@@ -16,7 +16,6 @@ import { AxRealProjectsDeep, AxScreenShowcase } from '../components/ax-showcase/
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
 import { AX_GUIDE_PATH, BUSINESS_NAV } from '../lib/businessRoutes'
 import { useHashScroll, useReturnScroll } from '../lib/businessPageScroll'
-import { useScrollReveal } from '../lib/useScrollReveal'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { canonicalUrl } from '../lib/site'
 
@@ -36,7 +35,6 @@ export default function BusinessAxGuidePage() {
   const [historyCount] = useState(() => loadHistory().length)
   const [atEnd, setAtEnd] = useState(false)
   const finalCtaRef = useRef<HTMLDivElement>(null)
-  const rootRef = useRef<HTMLDivElement>(null)
   const [consultOpen, setConsultOpen] = useState(false)
   const location = useLocation()
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice | null>(null)
@@ -67,7 +65,6 @@ export default function BusinessAxGuidePage() {
 
   useReturnScroll()
   useHashScroll()
-  useScrollReveal(rootRef)
 
   useEffect(() => {
     const el = finalCtaRef.current
@@ -80,7 +77,7 @@ export default function BusinessAxGuidePage() {
   const openPreview = () => setPreviewDevice(window.innerWidth < 768 ? 'desktop' : 'mobile')
 
   return (
-    <div ref={rootRef} className="min-h-screen bg-[#171B20] pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
+    <div className="min-h-screen bg-[#171B20] pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       <BusinessHeader
         navLinks={BUSINESS_NAV}
         historyCount={historyCount}
@@ -104,17 +101,17 @@ export default function BusinessAxGuidePage() {
       <AxStoryImages names={S(6)} />
 
       {/* 07 — 말로만 보면 잘 안 와닿으시죠? → Industry AX Preview 10개, 그다음 "사업 초기라면 다릅니다(MVP)" */}
-      <div data-reveal><AxScreenShowcase /></div>
+      <AxScreenShowcase />
       <AxStoryImages names={S(7)} />
 
       {/* 08 — 8.3 심사위원 인터뷰 영상(출처 명시), 8.4 [10가지 샘플 보기] → 아이디어 MVP 10개, 그 바로 아래 REAL CLIENT AX 6개 */}
       <AxStoryImages names={S(8)} after={{ '8-3': <AxJudgeVideo /> }} />
-      <div data-reveal><AxPortfolioSection /></div>
-      <div data-reveal><AxRealProjectsDeep /></div>
+      <AxPortfolioSection />
+      <AxRealProjectsDeep />
 
       {/* 기술자산 — "이렇게 만든다"(실제 프로젝트) 다음, "일반 개발회사와 무엇이 다른가"(09) 직전.
           만든 구조를 회사의 기술로 남긴다는 연결고리 역할이다. */}
-      <div data-reveal><AxPatentTechSection /></div>
+      <AxPatentTechSection />
 
       {/* 09 · 10 · 11 · 12 */}
       <AxStoryImages id="why-mirae" names={S(9)} />
@@ -123,12 +120,12 @@ export default function BusinessAxGuidePage() {
       <AxStoryImages names={S(12)} />
 
       {/* 13 FAQ — 이미지가 아니라 HTML 텍스트 */}
-      <div data-reveal><AxFaqSection /></div>
+      <AxFaqSection />
 
       {/* 14 FINAL — 우리 회사는 지금 무엇을 보여줘야 다음 단계로 갈 수 있을까요? */}
       <div ref={finalCtaRef}>
         <section id="cta" className="border-t border-[#343B44] bg-[#171B20]">
-          <div data-reveal className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
+          <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
             <h2 className="break-keep text-[1.7rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.1rem]">
               우리 회사는 지금 무엇을 보여줘야<br className="hidden sm:block" /> 다음 단계로 갈 수 있을까요?
             </h2>
