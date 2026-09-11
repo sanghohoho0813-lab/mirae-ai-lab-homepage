@@ -1,17 +1,14 @@
 // 섹션 모음 — Hero·월 5개사는 홈에서, 세 가지 가치·5단계 방법론은 정책자금 상세페이지에서 사용한다.
 // 한 섹션에서는 하나의 주장만 전달하고, 주장 바로 아래 증명(화면·산출물·근거)을 배치한다.
-import { Link } from 'react-router-dom'
 import { AX_CORE_VALUES, AX_METHOD_STEPS, AX_SELECTION_DECLINE, AX_SELECTION_PRIORITY } from '../../data/axPackages'
-import { AX_GUIDE_PATH } from '../../lib/businessRoutes'
 
 const band = 'px-5 py-16 sm:px-6 sm:py-24'
 const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
 /** SECTION 1 — Hero. "경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX"가 5초 안에 읽히게 한다.
- *  시각 구조(배경·버튼 배치·모션)는 유지하고 문구만 브랜드 정의에 맞춘다. 정책자금·지원금·투자 표현은 쓰지 않는다. */
-const HERO_KEYWORDS = ['운영효율', '매출성장', '기업자산화'] as const
-
+ *  배지 · 한 문장 · 두 문단까지만 두고, 키워드 칩과 버튼은 두지 않는다. 문장 자체가 첫인상이 되게 한다.
+ *  정책자금·지원금·투자 표현은 쓰지 않는다. */
 export function AxHeroV2() {
   return (
     <section className="relative flex min-h-[calc(100svh-53px)] items-center overflow-hidden bg-[#050B11]">
@@ -19,7 +16,7 @@ export function AxHeroV2() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
-      {/* 문단이 하나 늘어난 만큼 위아래 여백을 줄여, 히어로 높이와 CTA 위치를 그대로 유지한다 */}
+      {/* 칩·버튼을 뺀 만큼 문장이 화면 가운데에서 넉넉하게 자리잡게 둔다 */}
       <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-14`}>
         {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 */}
         <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.9rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[0.98rem] sm:px-4 sm:text-[1.05rem]">
@@ -32,36 +29,15 @@ export function AxHeroV2() {
           AI를 도입하는 데서<br /> 끝내지 않습니다.<br />
           <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">회사를 한 단계 더 성장</span>시킵니다.
         </h1>
-        {/* 두 문단 — 줄간격·문단간격만 여유를 줘서 길어 보이지 않게 한다 */}
+        {/* 두 문단 — 줄간격·문단간격에 여유를 주고, 핵심 키워드만 보조 브랜드 컬러로 아주 얕게 집어준다 */}
         <p style={{ animationDelay: '0.28s' }} className="hero-anim mt-7 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-8 sm:text-[1.36rem]">
           업무를 바꾸고, 고객 경험을 바꾸고,<br className="hidden sm:block" />{' '}
-          그 변화를 <b className="text-[#FAFAF8]">회사의 경쟁력과 성장 증거</b>로 남깁니다.
+          그 변화를 <b className="font-bold text-[#E8B89A]">회사의 경쟁력과 성장 증거</b>로 남깁니다.
         </p>
         <p style={{ animationDelay: '0.4s' }} className="hero-anim mt-4 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-5 sm:text-[1.36rem]">
           고객에게는 더 신뢰받고, 외부 기관과 투자자에게는<br className="hidden sm:block" />{' '}
-          <b className="text-[#FAFAF8]">성장 가능성과 경쟁력</b>을 인정받을 수 있는 회사로 만듭니다.
+          <b className="font-bold text-[#E8B89A]">성장 가능성과 경쟁력</b>을 인정받을 수 있는 회사로 만듭니다.
         </p>
-        <ul style={{ animationDelay: '0.52s' }} className="hero-anim mt-6 flex flex-wrap gap-2" aria-label="AX 목표">
-          {HERO_KEYWORDS.map((k) => (
-            <li key={k} className="rounded-lg border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[1.0rem] font-bold text-slate-200 sm:text-[1.05rem]">
-              {k}
-            </li>
-          ))}
-        </ul>
-        <div style={{ animationDelay: '0.64s' }} className="hero-anim mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row">
-          <Link
-            to="/business-diagnosis"
-            className="shine-cta flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 text-[1.24rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto sm:text-[1.2rem]"
-          >
-            우리 회사 AX 가능성 진단
-          </Link>
-          <Link
-            to={`${AX_GUIDE_PATH}#portfolio`}
-            className="flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/50 px-7 text-[1.24rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto sm:text-[1.2rem]"
-          >
-            실제 AX 구축 화면 보기 <span aria-hidden>→</span>
-          </Link>
-        </div>
       </div>
     </section>
   )
