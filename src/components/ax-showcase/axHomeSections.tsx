@@ -7,7 +7,7 @@ const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
 /** SECTION 1 — Hero. "경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX"가 5초 안에 읽히게 한다.
- *  배지 · 한 문장 · 두 문단까지만 두고, 키워드 칩과 버튼은 두지 않는다. 문장 자체가 첫인상이 되게 한다.
+ *  배지 · 한 문장 · 한 문단까지만 두고, 키워드 칩과 버튼은 두지 않는다. 문장 자체가 첫인상이 되게 한다.
  *  정책자금·지원금·투자 표현은 쓰지 않는다. */
 export function AxHeroV2() {
   return (
@@ -24,17 +24,13 @@ export function AxHeroV2() {
         </span>
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
-        <h1 style={{ animationDelay: '0.14s' }} className="hero-anim mt-8 max-w-4xl break-keep text-[clamp(2.05rem,7.6vw,3.2rem)] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.5rem,4.8vw,3.6rem)]">
+        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-w-4xl break-keep text-[clamp(2.05rem,7.6vw,3.2rem)] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.5rem,4.8vw,3.6rem)]">
           {/* PC 에서도 같은 자리에서 끊어 "않습니다."만 남는 줄이 생기지 않게 한다 */}
           AI를 도입하는 데서<br /> 끝내지 않습니다.<br />
           <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">회사를 한 단계 더 성장</span>시킵니다.
         </h1>
-        {/* 두 문단 — 줄간격·문단간격에 여유를 주고, 핵심 키워드만 보조 브랜드 컬러로 아주 얕게 집어준다 */}
-        <p style={{ animationDelay: '0.28s' }} className="hero-anim mt-7 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-8 sm:text-[1.36rem]">
-          업무를 바꾸고, 고객 경험을 바꾸고,<br className="hidden sm:block" />{' '}
-          그 변화를 <b className="font-bold text-[#E8B89A]">회사의 경쟁력과 성장 증거</b>로 남깁니다.
-        </p>
-        <p style={{ animationDelay: '0.4s' }} className="hero-anim mt-4 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-5 sm:text-[1.36rem]">
+        {/* 한 문단만 남긴다 — 핵심 키워드만 보조 브랜드 컬러로 아주 얕게 집어준다 */}
+        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-8 sm:text-[1.36rem]">
           고객에게는 더 신뢰받고, 외부 기관과 투자자에게는<br className="hidden sm:block" />{' '}
           <b className="font-bold text-[#E8B89A]">성장 가능성과 경쟁력</b>을 인정받을 수 있는 회사로 만듭니다.
         </p>
