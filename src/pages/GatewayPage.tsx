@@ -75,7 +75,7 @@ export default function GatewayPage() {
       <NetworkBackdrop />
 
       {/* 모바일은 좌상단, PC 는 가운데 — 계정 컨트롤은 PC 에서 오른쪽 끝에 띄운다 */}
-      <div className="relative z-20 flex w-full items-start justify-between gap-2 px-3 pt-3 sm:justify-center sm:px-8 sm:pt-9">
+      <div className="hero-anim relative z-20 flex w-full items-start justify-between gap-2 px-3 pt-3 sm:justify-center sm:px-8 sm:pt-9">
         {/* 모바일은 로고 자체를 키우는 대신 태그라인을 접는다 — 그래야 오른쪽 로그인 버튼이 잘리지 않는다 */}
         <BrandLogo
           to="/"
@@ -94,7 +94,7 @@ export default function GatewayPage() {
 
         {/* 고르기 전에 먼저 읽히는 부분 — 누가 만드는 회사인가.
             배경의 큰 워터마크 글씨와 겹쳐 읽기 어려웠던 곳이라, 옅은 판을 깔아 글자를 살린다. */}
-        <div className="w-full rounded-2xl border border-slate-200/70 bg-white/72 px-4 py-3 backdrop-blur-[3px] sm:px-8 sm:py-6">
+        <div style={{ animationDelay: '0.16s' }} className="hero-anim w-full rounded-2xl border border-slate-200/70 bg-white/72 px-4 py-3 backdrop-blur-[3px] sm:px-8 sm:py-6">
           <p className="text-center text-[0.95rem] font-semibold text-slate-600 min-[380px]:text-[1.0rem] sm:text-[1.25rem]">
             경영컨설턴트가 설계하는 중소기업 맞춤형 AX
           </p>
@@ -127,12 +127,13 @@ export default function GatewayPage() {
 
         {/* 역할 선택 — 이 화면의 목적 */}
         <div className="mt-3 grid w-full gap-2.5 sm:mt-8 sm:grid-cols-2 sm:gap-7">
-          {choices.map((c) => (
+          {choices.map((c, i) => (
             <Link
               key={c.to}
               to={c.to}
               aria-label={c.aria}
-              className={`group relative flex min-h-[8rem] flex-col justify-between overflow-hidden rounded-3xl px-5 py-3.5 transition duration-200 hover:-translate-y-1.5 sm:min-h-[15.5rem] sm:px-9 sm:py-9 ${c.card}`}
+              style={{ animationDelay: `${0.32 + i * 0.12}s` }}
+              className={`hero-anim group relative flex min-h-[8rem] flex-col justify-between overflow-hidden rounded-3xl px-5 py-3.5 transition duration-200 hover:-translate-y-1.5 sm:min-h-[15.5rem] sm:px-9 sm:py-9 ${c.card}`}
             >
               <span aria-hidden className={`pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full blur-2xl ${c.glow}`} />
               <span aria-hidden className={`relative grid h-12 w-12 place-items-center rounded-2xl text-xl sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-3xl sm:text-4xl ${c.iconBox}`}>

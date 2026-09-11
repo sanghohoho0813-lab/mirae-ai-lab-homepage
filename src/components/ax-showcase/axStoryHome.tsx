@@ -57,7 +57,7 @@ export function AxStoryImages({
         const meta = AX_STORY_V3_IMAGES[name]
         const eager = eagerFirst && i === 0
         return (
-          <div key={name} className="pb-5 sm:pb-8" style={{ background: meta?.bg ?? '#171B20' }}>
+          <div key={name} data-reveal className="pb-5 sm:pb-8" style={{ background: meta?.bg ?? '#171B20' }}>
             <div className="mx-auto max-w-[1134px] px-0 sm:px-6">
               <div className="relative mx-auto max-w-[1086px]">
                 <img

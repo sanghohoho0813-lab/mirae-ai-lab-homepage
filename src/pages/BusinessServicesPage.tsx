@@ -11,6 +11,7 @@ import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
 import { AX_GUIDE_PATH, BUSINESS_NAV } from '../lib/businessRoutes'
 import { useHashScroll, useReturnScroll } from '../lib/businessPageScroll'
+import { useScrollReveal } from '../lib/useScrollReveal'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { canonicalUrl } from '../lib/site'
 
@@ -32,6 +33,7 @@ export default function BusinessServicesPage() {
   const [atEnd, setAtEnd] = useState(false)
   const heroRef = useRef<HTMLDivElement>(null)
   const bridgeRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice | null>(null)
   // 하단 고정 바의 '실제 AX 보기' 가 같은 패널을 열 수 있도록 상태를 여기서 관리한다
@@ -63,6 +65,7 @@ export default function BusinessServicesPage() {
 
   useReturnScroll()
   useHashScroll()
+  useScrollReveal(rootRef)
 
   useEffect(() => {
     const el = heroRef.current
@@ -83,7 +86,7 @@ export default function BusinessServicesPage() {
   const openPreview = () => setPreviewDevice(window.innerWidth < 768 ? 'desktop' : 'mobile')
 
   return (
-    <div className="min-h-screen bg-[#171B20] pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
+    <div ref={rootRef} className="min-h-screen bg-[#171B20] pb-16 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       <BusinessHeader
         navLinks={BUSINESS_NAV}
         historyCount={historyCount}
@@ -108,7 +111,7 @@ export default function BusinessServicesPage() {
       <div ref={bridgeRef}>
         <section id="cta" className="border-t border-[#343B44] bg-[#171B20]">
           {/* 설명 문구 없이 버튼 두 개만 — 03 이 이미 "그런데 AX가 정확히 뭘까요?" 로 끝난다 */}
-          <div className="mx-auto max-w-3xl px-5 py-12 text-center sm:px-6 sm:py-16">
+          <div data-reveal className="mx-auto max-w-3xl px-5 py-12 text-center sm:px-6 sm:py-16">
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 to={AX_GUIDE_PATH}

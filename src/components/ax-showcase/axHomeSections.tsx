@@ -19,30 +19,36 @@ export function AxHeroV2() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
-      <div className={`relative w-full ${wrap} px-5 pb-24 pt-16 sm:px-6 sm:pb-28 sm:pt-20`}>
+      {/* 문단이 하나 늘어난 만큼 위아래 여백을 줄여, 히어로 높이와 CTA 위치를 그대로 유지한다 */}
+      <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-14`}>
         {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 */}
-        <span className="inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.9rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[0.98rem] sm:px-4 sm:text-[1.05rem]">
+        <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.9rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[0.98rem] sm:px-4 sm:text-[1.05rem]">
           경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX
         </span>
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
-        <h1 className="mt-10 max-w-4xl break-keep text-[clamp(2.05rem,7.6vw,3.2rem)] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-12 sm:text-[clamp(2.5rem,4.8vw,3.6rem)]">
-          대표가 계속 확인해야<br className="sm:hidden" /> 돌아가는 회사를,<br />
-          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">AI와 데이터가 먼저 움직이는 회사</span>로.
+        <h1 style={{ animationDelay: '0.14s' }} className="hero-anim mt-8 max-w-4xl break-keep text-[clamp(2.05rem,7.6vw,3.2rem)] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.5rem,4.8vw,3.6rem)]">
+          {/* PC 에서도 같은 자리에서 끊어 "않습니다."만 남는 줄이 생기지 않게 한다 */}
+          AI를 도입하는 데서<br /> 끝내지 않습니다.<br />
+          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">회사를 한 단계 더 성장</span>시킵니다.
         </h1>
-        <p className="mt-7 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.75] text-[#E7EAEE] sm:mt-8 sm:text-[1.36rem]">
-          미래AI랩은 회사의 사업과 실제 업무를 먼저 분석합니다.<br className="hidden sm:block" />{' '}
-          엑셀·카톡·ERP 사이에 남아 있는 회사 고유의 업무를 연결하고,<br className="hidden sm:block" />{' '}
-          AI가 위험·우선순위·다음 행동까지 판단하는 <b className="text-[#FAFAF8]">전용 AX</b>를 설계·구축합니다.
+        {/* 두 문단 — 줄간격·문단간격만 여유를 줘서 길어 보이지 않게 한다 */}
+        <p style={{ animationDelay: '0.28s' }} className="hero-anim mt-7 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-8 sm:text-[1.36rem]">
+          업무를 바꾸고, 고객 경험을 바꾸고,<br className="hidden sm:block" />{' '}
+          그 변화를 <b className="text-[#FAFAF8]">회사의 경쟁력과 성장 증거</b>로 남깁니다.
         </p>
-        <ul className="mt-6 flex flex-wrap gap-2" aria-label="AX 목표">
+        <p style={{ animationDelay: '0.4s' }} className="hero-anim mt-4 max-w-2xl break-keep text-[1.2rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-5 sm:text-[1.36rem]">
+          고객에게는 더 신뢰받고, 외부 기관과 투자자에게는<br className="hidden sm:block" />{' '}
+          <b className="text-[#FAFAF8]">성장 가능성과 경쟁력</b>을 인정받을 수 있는 회사로 만듭니다.
+        </p>
+        <ul style={{ animationDelay: '0.52s' }} className="hero-anim mt-6 flex flex-wrap gap-2" aria-label="AX 목표">
           {HERO_KEYWORDS.map((k) => (
             <li key={k} className="rounded-lg border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[1.0rem] font-bold text-slate-200 sm:text-[1.05rem]">
               {k}
             </li>
           ))}
         </ul>
-        <div className="mt-9 flex flex-col gap-3 sm:mt-10 sm:flex-row">
+        <div style={{ animationDelay: '0.64s' }} className="hero-anim mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row">
           <Link
             to="/business-diagnosis"
             className="shine-cta flex min-h-[58px] w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 text-[1.24rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto sm:text-[1.2rem]"

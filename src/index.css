@@ -133,6 +133,21 @@
   opacity: 1;
   transform: none;
 }
+/* 스토리 이미지처럼 개수가 많은 곳 — 거슬리지 않게 더 짧고 얕게 */
+.reveal-init.reveal-quick {
+  transform: translateY(12px);
+  transition-duration: 0.32s;
+}
+
+/* ── 첫 화면 등장 — 위에서부터 차례로, 전체 1.2초 안에 끝난다 ── */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+.hero-anim {
+  opacity: 0;
+  animation: hero-rise 0.58s cubic-bezier(0.22, 0.61, 0.24, 1) both;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
@@ -160,6 +175,10 @@
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  .hero-anim {
+    opacity: 1;
+    animation: none;
   }
 }
 
