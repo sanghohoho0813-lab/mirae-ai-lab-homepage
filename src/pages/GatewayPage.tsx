@@ -7,10 +7,9 @@ import AccountMenu from '../components/account/AccountMenu'
 import { AX_PATENT_COUNT, AX_PATENT_META, AX_PATENT_PROOF } from '../data/axPatentTech'
 
 // 루트(/) 역할 선택 게이트웨이.
-// 이 화면이 하는 일은 하나 — 대표님인지 컨설턴트인지 고르게 하는 것.
-// 질문이 주인공이고, 각 카드에는 무엇을 하는 곳인지 한 줄만 덧붙인다.
-// 긴 소개 문장·키워드 칩·큰 CTA 버튼은 두지 않는다.
-// 모바일에서 스크롤 없이 두 선택지가 한눈에 들어오는 것이 기준이다.
+// 화면 순서: 로고(좌상단) → 우리가 누구인지(자격·경험 + 기술자산) → 역할 선택 카드.
+// 선택 카드가 주인공이되, 고르기 전에 누가 만드는 회사인지 먼저 읽히게 위쪽에 붙였다.
+// 좁은 화면에서도 카드가 첫 화면 안에 남도록 위쪽 블록은 최대한 조밀하게 둔다.
 
 // 브랜드 정비(0차): 자금조달 실적 대신 AX Architect 포지션을 앞세운다.
 const trustItems = [
@@ -75,59 +74,27 @@ export default function GatewayPage() {
       </div>
       <NetworkBackdrop />
 
-      {/* 우상단 계정 컨트롤 — 로그인 상태를 홈에서도 동일하게 노출(로그아웃: 로그인/회원가입, 로그인: 아바타) */}
-      <div className="absolute right-4 top-4 z-20 rounded-full bg-white/70 px-1 shadow-sm ring-1 ring-slate-200 backdrop-blur">
-        <AccountMenu />
+      {/* 로고는 좌상단 고정 — 계정 컨트롤은 그 반대편에 둔다 */}
+      <div className="relative z-20 flex w-full items-start justify-between gap-3 px-4 pt-4 sm:px-6 sm:pt-5">
+        <BrandLogo
+          to="/"
+          imgClassName="h-12 max-w-[236px] sm:h-14 sm:max-w-[280px]"
+          taglineClassName="text-[0.62rem]! tracking-[0.14em]! sm:text-[0.7rem]!"
+        />
+        <div className="shrink-0 rounded-full bg-white/70 px-1 shadow-sm ring-1 ring-slate-200 backdrop-blur">
+          <AccountMenu />
+        </div>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-5 py-10 sm:px-6 sm:py-14">
-        {/* 화면에는 로고와 질문만 두고, 페이지가 무엇인지는 보조기기에만 알린다 */}
+      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-5 py-6 sm:px-6 sm:py-10">
         <h1 className="sr-only">미래AI랩 — 중소기업 맞춤형 AX와 컨설턴트용 AI 실무 도구</h1>
 
-        <BrandLogo
-          to="/business-services"
-          className="items-center"
-          taglineClassName="text-center"
-          imgClassName="h-11 max-w-[212px] sm:h-14 sm:max-w-[280px]"
-        />
-        {/* 360px 에서도 좌우가 빠듯하지 않게 아주 좁은 화면에서만 한 단계 작게 */}
-        <p className="mt-3.5 text-[0.88rem] font-semibold text-slate-500 min-[380px]:text-[0.95rem] sm:mt-4 sm:text-base">
+        {/* 고르기 전에 먼저 읽히는 부분 — 누가 만드는 회사인가 */}
+        <p className="text-center text-[0.92rem] font-semibold text-slate-500 min-[380px]:text-[0.98rem] sm:text-[1.05rem]">
           경영컨설턴트가 설계하는 중소기업 맞춤형 AX
         </p>
-
-        <div className="mt-6 grid w-full gap-4 sm:mt-9 sm:grid-cols-2 sm:gap-6">
-          {choices.map((c) => (
-            <Link
-              key={c.to}
-              to={c.to}
-              aria-label={c.aria}
-              className={`group relative flex min-h-[10.5rem] flex-col justify-between overflow-hidden rounded-3xl px-6 py-6 transition duration-200 hover:-translate-y-1.5 sm:min-h-[13.5rem] sm:px-8 sm:py-8 ${c.card}`}
-            >
-              <span aria-hidden className={`pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full blur-2xl ${c.glow}`} />
-              <span aria-hidden className={`relative grid h-14 w-14 place-items-center rounded-2xl text-2xl sm:h-16 sm:w-16 sm:text-3xl ${c.iconBox}`}>
-                {c.icon}
-              </span>
-              {/* 아이콘을 위로 올려 글줄 폭을 넉넉히 준다 — 좁은 화면에서도 질문이 두 줄 안에 떨어지게 */}
-              <span className="relative mt-4 flex items-end justify-between gap-3 sm:mt-5">
-                <span className="min-w-0">
-                  <span className="block text-[1.26rem] font-extrabold leading-[1.35] tracking-tight text-white min-[380px]:text-[1.36rem] sm:text-[1.6rem] sm:leading-[1.3]">
-                    {c.lines.map((line) => (
-                      <span key={line} className="block">{line}</span>
-                    ))}
-                  </span>
-                  <span className={`mt-2 block text-[0.9rem] leading-relaxed sm:mt-2.5 sm:text-[0.98rem] ${c.descColor}`}>{c.desc}</span>
-                </span>
-                <span aria-hidden className={`shrink-0 text-2xl font-black leading-none transition-transform group-hover:translate-x-1 sm:text-3xl ${c.arrow}`}>
-                  →
-                </span>
-              </span>
-            </Link>
-          ))}
-        </div>
-
-        {/* 누가 만드는지 한 줄 — 자금조달 실적이 아니라 자격·경험만 담백하게 */}
-        <div className="mt-7 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 text-center text-[0.85rem] font-medium text-slate-500 sm:mt-9 sm:text-sm">
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[0.8rem] font-medium text-slate-500 min-[380px]:text-[0.85rem] sm:mt-3 sm:gap-x-2.5 sm:text-sm">
           {trustItems.map((t, i) => (
             <span key={t} className="inline-flex items-center gap-2.5">
               {i > 0 && <span aria-hidden className="text-slate-300">·</span>}
@@ -136,9 +103,9 @@ export default function GatewayPage() {
           ))}
         </div>
 
-        {/* 기술자산 한 줄 — 이 화면의 주인공은 위의 선택지다. 배지 없이 얇은 선 하나로만 구분한다. */}
-        <div className="mt-8 w-full border-t border-slate-200/80 pt-6 sm:mt-10 sm:pt-7">
-          <div className="flex flex-col items-center gap-2.5 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-5 sm:text-left">
+        {/* 기술자산 — 배지 없이 얇은 선 사이에만 둔다 */}
+        <div className="mt-3.5 w-full border-y border-slate-200/80 py-3.5 sm:mt-5 sm:py-5">
+          <div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-5 sm:text-left">
             <p className="max-w-md break-keep text-[0.95rem] font-bold leading-relaxed text-slate-600 sm:max-w-none sm:text-[1.0rem]">
               {AX_PATENT_PROOF.lead}
             </p>
@@ -148,9 +115,40 @@ export default function GatewayPage() {
               AX 핵심기술 특허 <b className="font-black text-[#D47A4A]">{AX_PATENT_COUNT}건</b> 출원
             </p>
           </div>
-          <p className="mt-3 text-center text-[0.72rem] font-bold tracking-[0.2em] text-slate-400 sm:mt-3.5 sm:text-[0.76rem]">
+          <p className="mt-2.5 text-center text-[0.72rem] font-bold tracking-[0.2em] text-slate-400 sm:mt-3 sm:text-[0.76rem]">
             {AX_PATENT_META}
           </p>
+        </div>
+
+        {/* 역할 선택 — 이 화면의 목적 */}
+        <div className="mt-4 grid w-full gap-3 sm:mt-7 sm:grid-cols-2 sm:gap-6">
+          {choices.map((c) => (
+            <Link
+              key={c.to}
+              to={c.to}
+              aria-label={c.aria}
+              className={`group relative flex min-h-[8.5rem] flex-col justify-between overflow-hidden rounded-3xl px-5 py-4 transition duration-200 hover:-translate-y-1.5 sm:min-h-[13.5rem] sm:px-8 sm:py-8 ${c.card}`}
+            >
+              <span aria-hidden className={`pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full blur-2xl ${c.glow}`} />
+              <span aria-hidden className={`relative grid h-12 w-12 place-items-center rounded-2xl text-xl sm:h-16 sm:w-16 sm:text-3xl ${c.iconBox}`}>
+                {c.icon}
+              </span>
+              {/* 아이콘을 위로 올려 글줄 폭을 넉넉히 준다 — 좁은 화면에서도 질문이 두 줄 안에 떨어지게 */}
+              <span className="relative mt-3.5 flex items-end justify-between gap-3 sm:mt-5">
+                <span className="min-w-0">
+                  <span className="block text-[1.26rem] font-extrabold leading-[1.35] tracking-tight text-white min-[380px]:text-[1.36rem] sm:text-[1.6rem] sm:leading-[1.3]">
+                    {c.lines.map((line) => (
+                      <span key={line} className="block">{line}</span>
+                    ))}
+                  </span>
+                  <span className={`mt-1.5 block text-[0.9rem] leading-relaxed sm:mt-2.5 sm:text-[0.98rem] ${c.descColor}`}>{c.desc}</span>
+                </span>
+                <span aria-hidden className={`shrink-0 text-2xl font-black leading-none transition-transform group-hover:translate-x-1 sm:text-3xl ${c.arrow}`}>
+                  →
+                </span>
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 // 대표님용 페이지(홈 · AX 상세 안내)가 함께 쓰는 헤더.
 // 헤더는 폭이 빠듯해 한 번 어긋나면 가로 스크롤이 생기므로, 두 페이지가 같은 코드를 쓰게 한다.
+import type { MouseEventHandler } from 'react'
 import { Link } from 'react-router-dom'
 import BrandLogo from '../BrandLogo'
 import HeaderAccount from '../account/HeaderAccount'
@@ -20,13 +21,23 @@ export default function BusinessHeader({
 }) {
   const { cart } = useSavedItems()
 
+  // 로고는 두 단계로 동작한다 — 아래에 있으면 먼저 맨 위로, 이미 맨 위면 처음 선택화면으로 나간다.
+  const onLogoClick: MouseEventHandler<HTMLAnchorElement> = (e) => {
+    if (window.scrollY > 8) {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-[88rem] items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-5 lg:gap-6">
         {/* 태그라인은 그대로 두되, 모바일에서 글자·자간을 줄여 햄버거·미리보기 버튼과 겹치지 않게 한다 */}
         {/* 아주 좁은 화면(320~360px)에서는 남은 폭만큼만 차지하고 태그라인이 …로 줄어든다 */}
         <BrandLogo
-          to="/business-services"
+          to="/"
+          onClick={onLogoClick}
+          ariaLabel="미래에이아이랩 — 누르면 맨 위로, 맨 위에서 한 번 더 누르면 처음 선택화면으로"
           className="min-w-0 max-w-[calc(100vw-148px)] shrink-0 sm:max-w-none"
           imgClassName="h-9 max-w-[132px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]"
           taglineClassName="text-[0.5rem]! tracking-[0.13em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
