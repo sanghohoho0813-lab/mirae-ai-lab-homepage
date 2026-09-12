@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import NetworkBackdrop from '../components/NetworkBackdrop'
 import LegalFooter from '../components/LegalFooter'
 import BrandLogo from '../components/BrandLogo'
 import AccountMenu from '../components/account/AccountMenu'
-import { AX_PATENT_COUNT, AX_PATENT_META, AX_PATENT_PROOF } from '../data/axPatentTech'
+import { AX_PATENT_COUNT, AX_PATENT_META, AX_PATENT_PROOF, AX_PATENT_TECHS } from '../data/axPatentTech'
 
 // 루트(/) 역할 선택 게이트웨이.
 // 화면 순서: 로고(좌상단) → 우리가 누구인지(자격·경험 + 기술자산) → 역할 선택 카드.
@@ -61,6 +61,9 @@ const choices: readonly Choice[] = [
 ]
 
 export default function GatewayPage() {
+  // 기술 5건은 기본으로 접어 둔다 — 이 화면의 목적은 역할 선택이라 길어지면 안 된다
+  const [techOpen, setTechOpen] = useState(false)
+
   useEffect(() => {
     document.title = '미래AI랩 | 경영컨설턴트가 설계하는 중소기업 맞춤형 AX'
   }, [])
@@ -107,19 +110,51 @@ export default function GatewayPage() {
             ))}
           </div>
 
-          {/* 기술자산 — 배지 없이 얇은 선 아래에만 둔다 */}
+          {/* 기술자산 — 배지 없이 얇은 선 아래에만 둔다.
+              강조는 왼쪽 가는 선과 "특허 5건 출원" 한 곳에만 주고, 자세한 기술은 접어 둔다.
+              펼쳐도 발명의 명칭 원문이 아니라 상세페이지와 같은 쉬운 말로 보여준다
+              (출원번호·명칭 원문은 공개하지 않는다). */}
           <div className="mt-3 border-t border-slate-200/80 pt-3 sm:mt-5 sm:pt-5">
-            <div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-6 sm:text-left">
-              <p className="max-w-md break-keep text-[0.95rem] font-bold leading-relaxed text-slate-700 sm:max-w-none sm:text-[1.15rem]">
-                {AX_PATENT_PROOF.lead}
-              </p>
-              <span aria-hidden className="hidden h-9 w-px bg-slate-200 sm:block" />
-              <p className="max-w-md break-keep text-[0.9rem] leading-relaxed text-slate-600 sm:max-w-none sm:text-[1.08rem]">
-                업무 자동화 · 다음 행동 추천 · 기업 상태 분석 등<br className="sm:hidden" />{' '}
-                AX 핵심기술 특허 <b className="font-black text-[#D47A4A]">{AX_PATENT_COUNT}건</b> 출원
-              </p>
+            <div className="border-l-2 border-[#D47A4A]/45 pl-3.5 sm:pl-5">
+              <div className="flex flex-col items-start gap-1.5 text-left sm:flex-row sm:items-center sm:gap-6">
+                <p className="max-w-md break-keep text-[0.95rem] font-bold leading-relaxed text-slate-700 sm:max-w-none sm:text-[1.15rem]">
+                  {AX_PATENT_PROOF.lead}
+                </p>
+                <span aria-hidden className="hidden h-9 w-px bg-slate-200 sm:block" />
+                <p className="max-w-md break-keep text-[0.9rem] leading-relaxed text-slate-600 sm:max-w-none sm:text-[1.08rem]">
+                  업무 자동화 · 다음 행동 추천 · 기업 상태 분석 등{' '}
+                  <b className="whitespace-nowrap font-black text-[#D47A4A]">AX 핵심기술 특허 {AX_PATENT_COUNT}건 출원</b>
+                </p>
+                {/* PC 에서는 같은 줄에 붙여 첫 화면 높이를 늘리지 않는다 (역할 선택 카드가 밀리면 안 된다) */}
+                <button
+                  type="button"
+                  onClick={() => setTechOpen((v) => !v)}
+                  aria-expanded={techOpen}
+                  aria-controls="gateway-patent-techs"
+                  className="inline-flex min-h-9 shrink-0 items-center gap-1.5 text-[0.84rem] font-bold text-slate-500 underline underline-offset-4 transition-colors hover:text-[#D47A4A] sm:ml-1 sm:text-[0.95rem]"
+                >
+                  어떤 기술인지 보기
+                  <span aria-hidden className={techOpen ? 'rotate-180 transition-transform' : 'transition-transform'}>▾</span>
+                </button>
+              </div>
+
+              {techOpen && (
+                <ol id="gateway-patent-techs" className="animate-fade-in mt-2 space-y-1.5 sm:mt-3 sm:space-y-2">
+                  {AX_PATENT_TECHS.map((t) => (
+                    <li key={t.no} className="flex items-baseline gap-2.5 break-keep text-left sm:gap-3.5">
+                      <span className="shrink-0 text-[0.74rem] font-black tabular-nums text-[#D47A4A]/70 sm:text-[0.85rem]">{t.no}</span>
+                      <span className="text-[0.86rem] leading-snug text-slate-600 sm:text-[1.0rem]">
+                        <b className="font-bold text-slate-800">{t.name}</b>
+                        <span className="text-slate-400"> · {t.sub}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              )}
             </div>
-            <p className="mt-2 text-center text-[0.74rem] font-bold tracking-[0.2em] text-slate-500 sm:mt-3.5 sm:text-[0.85rem]">
+            {/* 영문 메타는 장식이라 좁은 화면에서는 뺀다 — 바로 위 한글 줄이 같은 내용을 말한다.
+                첫 화면에서 역할 선택 카드가 밀리지 않는 게 우선이다. */}
+            <p className="mt-3.5 hidden text-center text-[0.85rem] font-bold tracking-[0.2em] text-slate-500 sm:block">
               {AX_PATENT_META}
             </p>
           </div>
