@@ -7,8 +7,9 @@ const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
 /** SECTION 1 — Hero. "경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX"가 5초 안에 읽히게 한다.
- *  배지 · 한 문장 · 한 문단까지만 두고, 키워드 칩과 버튼은 두지 않는다. 문장 자체가 첫인상이 되게 한다.
- *  정책자금·지원금·투자 표현은 쓰지 않는다. */
+ *  배지 · 한 문장 · 두 문단까지만 두고, 키워드 칩과 버튼은 두지 않는다. 문장 자체가 첫인상이 되게 한다.
+ *  정책자금·정부지원사업·투자는 AX 의 목적이 아니라 "그 변화를 더 강하게 설명할 수 있는 자리"로만 말한다.
+ *  승인·선정을 약속하는 표현은 절대 쓰지 않는다. */
 export function AxHeroV2() {
   return (
     <section className="relative flex min-h-[calc(100svh-53px)] items-center overflow-hidden bg-[#050B11]">
@@ -16,23 +17,29 @@ export function AxHeroV2() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
-      {/* 칩·버튼을 뺀 만큼 문장이 화면 가운데에서 넉넉하게 자리잡게 둔다 */}
-      <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-14`}>
+      {/* 칩·버튼을 뺀 만큼 문장이 화면 가운데에서 넉넉하게 자리잡게 둔다.
+          320px 같은 작은 화면에서는 문단이 두 개라 여백부터 줄여 한 화면에 담는다. */}
+      <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 max-[359px]:pb-9 max-[359px]:pt-7 sm:px-6 sm:pb-20 sm:pt-14`}>
         {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 (기준 대비 1.1배) */}
         <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.99rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[1.078rem] sm:px-4 sm:text-[1.155rem]">
           경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX
         </span>
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
-        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
+        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-[359px]:mt-6 max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] max-[359px]:text-[2.0rem] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
           {/* PC 에서도 같은 자리에서 끊어 "않습니다."만 남는 줄이 생기지 않게 한다 */}
           AI를 도입하는 데서<br /> 끝내지 않습니다.<br />
           <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">회사를 한 단계 더 성장</span>시킵니다.
         </h1>
-        {/* 한 문단만 남긴다 — 핵심 키워드만 보조 브랜드 컬러로 아주 얕게 집어준다 */}
-        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-2xl break-keep text-[1.32rem] font-medium leading-[1.8] text-[#E7EAEE] sm:mt-8 sm:text-[1.496rem]">
-          고객에게는 더 신뢰받고, 외부 기관과 투자자에게는<br className="hidden sm:block" />{' '}
-          <b className="font-bold text-[#E8B89A]">성장 가능성과 경쟁력</b>을 인정받을 수 있는 회사로 만듭니다.
+        {/* 두 문단 — 문단마다 흰 글자(구체적인 대상) 하나와 브랜드색(남는 결과) 하나만 집어,
+            읽는 눈이 어디에 멈출지 분명하게 한다. 줄간격은 1.85 로 넉넉히 둔다. */}
+        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-[359px]:mt-5 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-8 sm:text-[1.44rem]">
+          <b className="font-bold text-[#FAFAF8]">엑셀·카톡·ERP</b>에 흩어진 업무와 고객접점을 AX로 연결하고,<br className="hidden sm:block" />{' '}
+          실제 사용과 성과를 <b className="font-bold text-[#E8B89A]">데이터로 남깁니다</b>.
+        </p>
+        <p style={{ animationDelay: '0.46s' }} className="hero-anim mt-5 max-[359px]:mt-4 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-6 sm:text-[1.44rem]">
+          그 변화를 <b className="font-bold text-[#E8B89A]">정책자금 · 정부지원사업 · 투자</b>에서<br className="hidden sm:block" />{' '}
+          더 강하게 설명할 수 있는 <b className="font-bold text-[#FAFAF8]">회사의 성장 증거</b>로 만듭니다.
         </p>
       </div>
     </section>

@@ -4,7 +4,7 @@ import NetworkBackdrop from '../components/NetworkBackdrop'
 import LegalFooter from '../components/LegalFooter'
 import BrandLogo from '../components/BrandLogo'
 import AccountMenu from '../components/account/AccountMenu'
-import { AX_PATENT_COUNT, AX_PATENT_META, AX_PATENT_PROOF, AX_PATENT_TECHS } from '../data/axPatentTech'
+import { AX_PATENT_COUNT, AX_PATENT_FILED_LABEL, AX_PATENT_META, AX_PATENT_PROOF, AX_PATENT_TECHS } from '../data/axPatentTech'
 
 // 루트(/) 역할 선택 게이트웨이.
 // 화면 순서: 로고(좌상단) → 우리가 누구인지(자격·경험 + 기술자산) → 역할 선택 카드.
@@ -152,10 +152,10 @@ export default function GatewayPage() {
                 </ol>
               )}
             </div>
-            {/* 영문 메타는 장식이라 좁은 화면에서는 뺀다 — 바로 위 한글 줄이 같은 내용을 말한다.
-                첫 화면에서 역할 선택 카드가 밀리지 않는 게 우선이다. */}
-            <p className="mt-3.5 hidden text-center text-[0.85rem] font-bold tracking-[0.2em] text-slate-500 sm:block">
-              {AX_PATENT_META}
+            {/* 좁은 화면에서는 장식용 영문을 빼고 날짜만 남긴다 — 한 줄 높이를 지켜야 역할 선택 카드가 안 밀린다 */}
+            <p className="mt-2.5 text-center text-[0.76rem] font-bold tracking-[0.14em] text-slate-500 sm:mt-3.5 sm:text-[0.85rem] sm:tracking-[0.2em]">
+              <span className="sm:hidden">{AX_PATENT_FILED_LABEL}</span>
+              <span className="hidden sm:inline">{AX_PATENT_META} 출원 완료</span>
             </p>
           </div>
         </div>

@@ -6,7 +6,11 @@
 //  - 특허 자체를 자랑하지 않고, "업무구조까지 설계하는 회사"라는 근거로만 쓴다.
 
 export const AX_PATENT_COUNT = 5
-export const AX_PATENT_META = `PATENT APPLICATIONS · ${AX_PATENT_COUNT}`
+
+/** 5건 출원이 모두 끝난 날짜. 출원번호는 쓰지 않고 이 날짜까지만 밝힌다. */
+export const AX_PATENT_FILED_ON = '2026. 9. 11.'
+export const AX_PATENT_FILED_LABEL = `${AX_PATENT_FILED_ON} 출원 완료`
+export const AX_PATENT_META = `PATENT APPLICATIONS · ${AX_PATENT_COUNT} · ${AX_PATENT_FILED_ON}`
 
 /** 첫 진입화면 신뢰영역 문구 */
 export const AX_PATENT_PROOF = {

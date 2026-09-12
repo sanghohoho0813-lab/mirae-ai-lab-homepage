@@ -38,7 +38,7 @@ export default function AxPatentTechSection() {
           ))}
         </ol>
 
-        <p className="mt-7 text-center text-[0.85rem] font-bold tracking-[0.22em] text-[#6B7680] sm:mt-8 sm:text-[0.92rem]">{AX_PATENT_META}</p>
+        <p className="mt-7 text-center text-[0.85rem] font-bold tracking-[0.22em] text-[#6B7680] sm:mt-8 sm:text-[0.92rem]">{AX_PATENT_META} 출원 완료</p>
       </div>
     </section>
   )
