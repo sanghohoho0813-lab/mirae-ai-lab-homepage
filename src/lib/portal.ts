@@ -147,6 +147,32 @@ export type ToolPass = {
   revoked: boolean
   created_at: string
   last_used_at: string | null
+  /** 처음 연 브라우저에 링크를 묶는다 — 전달받은 다른 사람은 열 수 없다 */
+  single_device: boolean
+  claimed_by: string | null
+  claimed_at: string | null
+}
+
+/**
+ * 이 브라우저의 기기 식별자. 1인 고정 링크가 "처음 연 사람"을 알아보는 데만 쓴다.
+ * miraeailab.com 저장소에만 있고 링크·주소에는 들어가지 않는다.
+ * 저장을 못 하는 환경(시크릿 모드 등)이면 이번 방문에만 쓰는 임시 값을 만든다.
+ */
+const DEVICE_KEY = 'mirae:device-id'
+let memoryDeviceId = ''
+export function deviceId(): string {
+  const make = () =>
+    typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `d${Date.now()}-${Math.random().toString(36).slice(2)}`
+  try {
+    const saved = localStorage.getItem(DEVICE_KEY)
+    if (saved) return saved
+    const next = make()
+    localStorage.setItem(DEVICE_KEY, next)
+    return next
+  } catch {
+    if (!memoryDeviceId) memoryDeviceId = make()
+    return memoryDeviceId
+  }
 }
 
 export type AdminAction =
@@ -158,9 +184,10 @@ export type AdminAction =
   | { action: 'paid'; userId: string; toolId: string; paid: boolean }
   | { action: 'memo'; userId: string; memo: string }
   | { action: 'reviewStatus'; reviewId: string; status: 'approved' | 'rejected' }
-  | { action: 'createPass'; toolId: string; days: number; label?: string; maxUses?: number | null }
+  | { action: 'createPass'; toolId: string; days: number; label?: string; maxUses?: number | null; singleDevice?: boolean }
   | { action: 'listPasses' }
   | { action: 'revokePass'; passId: string }
+  | { action: 'releasePass'; passId: string }
 
 export const adminAccessAction = (payload: AdminAction) => post('/api/admin/access', payload)
 
@@ -174,7 +201,7 @@ export async function fetchToolPasses(): Promise<ToolPass[]> {
  * 초대 링크 발급 (관리자). 토큰 원문은 이 응답에서만 볼 수 있다 —
  * DB 에는 해시만 저장되므로 다시 꺼낼 수 없다.
  */
-export async function createToolPass(input: { toolId: string; days: number; label?: string; maxUses?: number | null }) {
+export async function createToolPass(input: { toolId: string; days: number; label?: string; maxUses?: number | null; singleDevice?: boolean }) {
   const r = await adminAccessAction({ action: 'createPass', ...input })
   return { token: String(r.token ?? ''), passId: String(r.passId ?? ''), expiresAt: String(r.expiresAt ?? '') }
 }
@@ -187,7 +214,7 @@ export async function openToolPass(token: string): Promise<{ url: string; toolTi
   const res = await fetch('/api/trial', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ action: 'pass', token }),
+    body: JSON.stringify({ action: 'pass', token, device: deviceId() }),
   })
   let data: ApiResult = {}
   try {

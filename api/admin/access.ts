@@ -23,6 +23,7 @@ type Body = {
   label?: string
   maxUses?: number | null
   passId?: string
+  singleDevice?: boolean
 }
 
 // 초대 링크 기간 한도 — 정식 런칭 전 임시 공개용이므로 길게 열어두지 않는다
@@ -104,7 +105,7 @@ export default async function handler(req: any, res: any) {
     if (action === 'listPasses') {
       const { data, error } = await admin
         .from('tool_passes')
-        .select('id, tool_id, label, expires_at, max_uses, use_count, revoked, created_at, last_used_at')
+        .select('id, tool_id, label, expires_at, max_uses, use_count, revoked, created_at, last_used_at, single_device, claimed_by, claimed_at')
         .order('created_at', { ascending: false })
         .limit(100)
       if (error) return res.status(500).json({ ok: false, message: '초대 링크 목록을 불러오지 못했습니다.', debugCode: 'pass_list', detail: detailOf(error) })
@@ -129,6 +130,7 @@ export default async function handler(req: any, res: any) {
           token_hash: tokenHash,
           expires_at: expiresAt,
           max_uses: maxUses,
+          single_device: body.singleDevice !== false,
           created_by: user.id,
         })
         .select('id')
@@ -136,6 +138,15 @@ export default async function handler(req: any, res: any) {
       if (error) return res.status(500).json({ ok: false, message: '초대 링크 발급에 실패했습니다.', debugCode: 'pass_insert', detail: detailOf(error) })
 
       return res.status(200).json({ ok: true, passId: created.id, token: passToken, expiresAt, days, message: `${days}일 동안 쓸 수 있는 초대 링크를 만들었습니다.` })
+    }
+
+    // 1인 고정을 풀어 다시 "처음 여는 사람"에게 묶이게 한다.
+    // (고정된 분이 브라우저 데이터를 지웠거나, 다른 분에게 넘길 때)
+    if (action === 'releasePass') {
+      if (!body.passId) return res.status(400).json({ ok: false, message: 'passId가 필요합니다.', debugCode: 'bad_body' })
+      const { error } = await admin.from('tool_passes').update({ claimed_by: null, claimed_at: null }).eq('id', body.passId)
+      if (error) return res.status(500).json({ ok: false, message: '고정 해제에 실패했습니다.', debugCode: 'pass_release', detail: detailOf(error) })
+      return res.status(200).json({ ok: true, message: '고정을 해제했습니다. 다음에 링크를 여는 분에게 다시 묶입니다.' })
     }
 
     if (action === 'revokePass') {

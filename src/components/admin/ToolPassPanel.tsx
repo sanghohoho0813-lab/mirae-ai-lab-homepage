@@ -22,7 +22,9 @@ function passState(p: ToolPass): { label: string; tone: string } {
   if (p.revoked) return { label: '회수됨', tone: 'bg-rose-50 text-rose-700' }
   if (new Date(p.expires_at).getTime() <= Date.now()) return { label: '기간 종료', tone: 'bg-slate-100 text-slate-600' }
   if (p.max_uses != null && p.use_count >= p.max_uses) return { label: '횟수 소진', tone: 'bg-slate-100 text-slate-600' }
-  return { label: '사용 가능', tone: 'bg-emerald-50 text-emerald-700' }
+  if (p.single_device && p.claimed_by) return { label: '사용 중 (1인 고정)', tone: 'bg-blue-50 text-blue-700' }
+  if (p.single_device) return { label: '대기 — 처음 여는 분에게 고정', tone: 'bg-amber-50 text-amber-800' }
+  return { label: '사용 가능 (범용)', tone: 'bg-emerald-50 text-emerald-700' }
 }
 
 export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
@@ -35,7 +37,9 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
   const [label, setLabel] = useState('')
   const [days, setDays] = useState(14)
   const [maxUses, setMaxUses] = useState('')
-  const [issued, setIssued] = useState<{ url: string; expiresAt: string } | null>(null)
+  // 기본은 1인 고정 — 링크가 이 사람 저 사람에게 퍼지는 걸 막는 쪽이 안전한 실수다
+  const [singleDevice, setSingleDevice] = useState(true)
+  const [issued, setIssued] = useState<{ url: string; expiresAt: string; singleDevice: boolean } | null>(null)
   const [copied, setCopied] = useState(false)
 
   const load = useCallback(async () => {
@@ -67,8 +71,9 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
         days,
         label: label.trim() || undefined,
         maxUses: maxUses.trim() ? Number(maxUses) : null,
+        singleDevice,
       })
-      setIssued({ url: passUrl(r.token), expiresAt: r.expiresAt })
+      setIssued({ url: passUrl(r.token), expiresAt: r.expiresAt, singleDevice })
       setLabel('')
       setMaxUses('')
       await load()
@@ -81,6 +86,16 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
     setErr('')
     try {
       await adminAccessAction({ action: 'revokePass', passId })
+      await load()
+    } catch (e) {
+      setErr(errMsg(e))
+    }
+  }
+
+  const release = async (passId: string) => {
+    setErr('')
+    try {
+      await adminAccessAction({ action: 'releasePass', passId })
       await load()
     } catch (e) {
       setErr(errMsg(e))
@@ -169,6 +184,22 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
             </button>
           </div>
 
+          <label className="mt-3 flex cursor-pointer items-start gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <input
+              type="checkbox"
+              checked={singleDevice}
+              onChange={(e) => setSingleDevice(e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-slate-900"
+            />
+            <span className="text-sm text-slate-700">
+              <b>한 사람만 사용 (처음 연 기기에 고정)</b>
+              <span className="mt-0.5 block text-xs text-slate-500">
+                링크를 처음 연 브라우저에 묶습니다. 그 뒤로 링크를 전달받은 다른 사람은 열 수 없습니다.
+                끄면 링크를 가진 누구나 열 수 있는 범용 링크가 됩니다.
+              </span>
+            </span>
+          </label>
+
           {issued && (
             <div className="mt-4 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3.5">
               <p className="text-sm font-bold text-emerald-900">
@@ -176,6 +207,9 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
               </p>
               <p className="mt-1 text-xs text-emerald-800">
                 이 주소는 <b>지금 한 번만</b> 표시됩니다. 창을 닫으면 다시 볼 수 없으니 지금 복사해 두세요.
+                {issued.singleDevice
+                  ? ' 처음 이 링크를 연 분에게 고정되며, 그 뒤 다른 분은 열 수 없습니다.'
+                  : ' 링크를 가진 누구나 열 수 있는 범용 링크입니다.'}
               </p>
               <div className="mt-2.5 flex flex-wrap items-center gap-2">
                 <input
@@ -205,6 +239,7 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
                     <th className="px-2 py-2">상태</th>
                     <th className="px-2 py-2">만료</th>
                     <th className="px-2 py-2">사용</th>
+                    <th className="px-2 py-2">고정</th>
                     <th className="px-2 py-2">마지막 사용</th>
                     <th className="py-2 pl-2">관리</th>
                   </tr>
@@ -224,14 +259,28 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
                           {p.use_count}
                           {p.max_uses != null ? ` / ${p.max_uses}` : '회'}
                         </td>
+                        <td className="px-2 py-2.5 text-slate-500">
+                          {!p.single_device ? '범용' : p.claimed_at ? `${fmt(p.claimed_at)} 고정` : '대기'}
+                        </td>
                         <td className="px-2 py-2.5 text-slate-500">{fmt(p.last_used_at)}</td>
                         <td className="py-2.5 pl-2">
                           {p.revoked ? (
                             <span className="text-xs text-slate-400">–</span>
                           ) : (
-                            <button onClick={() => void revoke(p.id)} className={`${btn} border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100`}>
-                              링크 회수
-                            </button>
+                            <span className="flex flex-wrap gap-1.5">
+                              {p.single_device && p.claimed_by && (
+                                <button
+                                  onClick={() => void release(p.id)}
+                                  title="고정된 분이 브라우저를 바꿨거나 데이터를 지웠을 때 누르세요"
+                                  className={`${btn} border-slate-300 text-slate-700 hover:bg-slate-50`}
+                                >
+                                  고정 해제
+                                </button>
+                              )}
+                              <button onClick={() => void revoke(p.id)} className={`${btn} border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100`}>
+                                링크 회수
+                              </button>
+                            </span>
                           )}
                         </td>
                       </tr>
@@ -243,7 +292,8 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
           </div>
 
           <p className="mt-4 text-xs leading-relaxed text-slate-400">
-            링크를 가진 사람은 누구나 열 수 있습니다(전달 가능). 기간을 짧게 두고, 필요하면 사용 횟수를 제한하거나 <b>링크 회수</b>로 즉시 막으세요.
+            <b>한 사람만 사용</b>을 켜면 처음 연 브라우저에 묶여, 링크가 퍼져도 다른 사람은 열지 못합니다. 그 분이 브라우저를 바꾸거나 기록을 지우면 <b>고정 해제</b>를 눌러 다시 열어주세요.
+            끄면 링크를 가진 누구나 열 수 있으니 기간을 짧게 두세요. 회수는 브라우저에 저장된 권한 때문에 최대 하루 뒤에 적용됩니다.
             계정이 있는 분께는 초대 링크 대신 아래 사용자 목록에서 <b>연장</b>으로 열어주는 편이 추적·회수에 더 좋습니다.
           </p>
         </div>

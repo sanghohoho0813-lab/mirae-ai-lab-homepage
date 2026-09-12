@@ -76,7 +76,15 @@ type PassRow = {
   max_uses: number | null
   use_count: number
   revoked: boolean
+  // 1인 고정 — 처음 연 브라우저에 링크를 묶는다 (tool-passes-single-device.sql)
+  single_device?: boolean
+  claimed_by?: string | null
 }
+
+const PASS_COLS = 'id, tool_id, expires_at, max_uses, use_count, revoked, single_device, claimed_by'
+
+const PASS_CLAIMED_MSG =
+  '이 링크는 이미 다른 분이 사용 중입니다. 한 사람만 쓸 수 있는 링크예요. 링크를 보내주신 분에게 문의해 주세요.'
 
 /** 초대 링크를 지금 쓸 수 있으면 null, 못 쓰면 사용자에게 보여줄 이유를 돌려준다 */
 function passDenyReason(pass: PassRow | null | undefined, now: number, checkUses: boolean): string | null {
@@ -141,7 +149,7 @@ export default async function handler(req: any, res: any) {
     }
 
     // 2) body 파싱 (네트워크 전)
-    let body: { action?: string; toolId?: string; content?: string; answers?: Record<string, string>; ticket?: string; token?: string } = {}
+    let body: { action?: string; toolId?: string; content?: string; answers?: Record<string, string>; ticket?: string; token?: string; device?: string } = {}
     try {
       body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body ?? {}
     } catch (e) {
@@ -287,7 +295,7 @@ export default async function handler(req: any, res: any) {
 
       const { data: pass, error: passErr } = await admin
         .from('tool_passes')
-        .select('id, tool_id, expires_at, max_uses, use_count, revoked')
+        .select(PASS_COLS)
         .eq('token_hash', tokenHash)
         .maybeSingle()
       if (passErr) {
@@ -298,6 +306,34 @@ export default async function handler(req: any, res: any) {
         return res.status(403).json({ ok: false, message: deny, debugCode: 'pass_denied' })
       }
       const row = pass as PassRow
+
+      // 1인 고정 링크 — 처음 연 브라우저에 묶고, 그 뒤로는 같은 브라우저에서만 열어준다.
+      // 기기 식별자는 miraeailab.com 의 저장소에만 있고 링크에는 들어 있지 않다.
+      if (row.single_device) {
+        const device = typeof body?.device === 'string' ? body.device.trim().slice(0, 120) : ''
+        if (!device) {
+          return res.status(400).json({ ok: false, message: '브라우저 정보를 확인하지 못했습니다. 다른 브라우저에서 다시 열어주세요.', debugCode: 'no_device' })
+        }
+        if (!row.claimed_by) {
+          // 아직 주인이 없다 → 먼저 도착한 사람에게 묶는다.
+          // claimed_by 가 비어 있을 때만 갱신되므로 동시에 둘이 열어도 한 명만 주인이 된다.
+          const { data: claimed } = await admin
+            .from('tool_passes')
+            .update({ claimed_by: device, claimed_at: new Date().toISOString() })
+            .eq('id', row.id)
+            .is('claimed_by', null)
+            .select('id')
+          if (!claimed || claimed.length === 0) {
+            // 그 찰나에 다른 사람이 먼저 가져갔다 → 다시 읽어 내 기기인지 확인한다
+            const { data: again } = await admin.from('tool_passes').select('claimed_by').eq('id', row.id).maybeSingle()
+            if (again?.claimed_by !== device) {
+              return res.status(403).json({ ok: false, message: PASS_CLAIMED_MSG, debugCode: 'pass_claimed' })
+            }
+          }
+        } else if (row.claimed_by !== device) {
+          return res.status(403).json({ ok: false, message: PASS_CLAIMED_MSG, debugCode: 'pass_claimed' })
+        }
+      }
 
       const { data: tool, error: toolErr } = await admin.from('tools').select('id, title, external_url').eq('id', row.tool_id).maybeSingle()
       if (toolErr) return res.status(500).json({ ok: false, message: '도구 조회에 실패했습니다.', debugCode: 'no_tool', detail: detailOf(toolErr) })
@@ -335,7 +371,7 @@ export default async function handler(req: any, res: any) {
       if (claim.u.startsWith(PASS_PREFIX)) {
         const passId = claim.u.slice(PASS_PREFIX.length)
         const [{ data: pass, error: passErr }, { data: passTool }] = await Promise.all([
-          admin.from('tool_passes').select('id, tool_id, expires_at, max_uses, use_count, revoked').eq('id', passId).maybeSingle(),
+          admin.from('tool_passes').select(PASS_COLS).eq('id', passId).maybeSingle(),
           admin.from('tools').select('slug').eq('id', claim.t).maybeSingle(),
         ])
         if (passErr) {
