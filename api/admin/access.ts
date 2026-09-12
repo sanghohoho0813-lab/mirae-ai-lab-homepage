@@ -20,7 +20,13 @@ type Body = {
   memo?: string
   reviewId?: string
   status?: string
+  label?: string
+  maxUses?: number | null
+  passId?: string
 }
+
+// 초대 링크 기간 한도 — 정식 런칭 전 임시 공개용이므로 길게 열어두지 않는다
+const PASS_MAX_DAYS = 90
 
 async function ensureRow(admin: any, userId: string, toolId: string) {
   const { data } = await admin.from('tool_access').select('*').eq('user_id', userId).eq('tool_id', toolId).maybeSingle()
@@ -76,6 +82,7 @@ export default async function handler(req: any, res: any) {
     }
 
     const { action, userId, toolId } = body
+    const now = Date.now()
 
     if (action === 'memo') {
       if (!userId) return res.status(400).json({ ok: false, message: 'userId가 필요합니다.', debugCode: 'bad_body' })
@@ -91,12 +98,58 @@ export default async function handler(req: any, res: any) {
       return res.status(200).json({ ok: true, message: '리뷰 상태를 변경했습니다.' })
     }
 
+    // ── 초대 링크(게스트 패스) ────────────────────────────────────────
+    // 로그인 없이 특정 도구를 정해진 기간 동안 열 수 있는 링크. 토큰 원문은 저장하지
+    // 않고(해시만) 이 응답에서 딱 한 번만 돌려준다 — 다시는 볼 수 없다.
+    if (action === 'listPasses') {
+      const { data, error } = await admin
+        .from('tool_passes')
+        .select('id, tool_id, label, expires_at, max_uses, use_count, revoked, created_at, last_used_at')
+        .order('created_at', { ascending: false })
+        .limit(100)
+      if (error) return res.status(500).json({ ok: false, message: '초대 링크 목록을 불러오지 못했습니다.', debugCode: 'pass_list', detail: detailOf(error) })
+      return res.status(200).json({ ok: true, passes: data ?? [] })
+    }
+
+    if (action === 'createPass') {
+      if (!toolId) return res.status(400).json({ ok: false, message: '도구를 선택해 주세요.', debugCode: 'bad_body' })
+      const days = Math.min(PASS_MAX_DAYS, Math.max(1, Math.round(Number(body.days) || 14)))
+      const maxUses = body.maxUses == null || body.maxUses === 0 ? null : Math.max(1, Math.round(Number(body.maxUses)))
+
+      const { randomBytes, createHash } = await import('node:crypto')
+      const passToken = randomBytes(24).toString('base64url')
+      const tokenHash = createHash('sha256').update(passToken).digest('hex')
+      const expiresAt = new Date(now + days * DAY).toISOString()
+
+      const { data: created, error } = await admin
+        .from('tool_passes')
+        .insert({
+          tool_id: toolId,
+          label: (body.label ?? '').trim() || null,
+          token_hash: tokenHash,
+          expires_at: expiresAt,
+          max_uses: maxUses,
+          created_by: user.id,
+        })
+        .select('id')
+        .single()
+      if (error) return res.status(500).json({ ok: false, message: '초대 링크 발급에 실패했습니다.', debugCode: 'pass_insert', detail: detailOf(error) })
+
+      return res.status(200).json({ ok: true, passId: created.id, token: passToken, expiresAt, days, message: `${days}일 동안 쓸 수 있는 초대 링크를 만들었습니다.` })
+    }
+
+    if (action === 'revokePass') {
+      if (!body.passId) return res.status(400).json({ ok: false, message: 'passId가 필요합니다.', debugCode: 'bad_body' })
+      const { error } = await admin.from('tool_passes').update({ revoked: true }).eq('id', body.passId)
+      if (error) return res.status(500).json({ ok: false, message: '초대 링크 회수에 실패했습니다.', debugCode: 'pass_revoke', detail: detailOf(error) })
+      return res.status(200).json({ ok: true, message: '초대 링크를 회수했습니다. 이 링크로는 더 이상 열리지 않습니다.' })
+    }
+
     if (!userId || !toolId) return res.status(400).json({ ok: false, message: 'userId, toolId가 필요합니다.', debugCode: 'bad_body' })
     const rec = await ensureRow(admin, userId, toolId)
     if (!rec) return res.status(500).json({ ok: false, message: '접근 레코드 생성에 실패했습니다.', debugCode: 'ensure_row' })
 
     let patch: Record<string, unknown> = { granted_by_admin: true }
-    const now = Date.now()
 
     switch (action) {
       case 'grant':

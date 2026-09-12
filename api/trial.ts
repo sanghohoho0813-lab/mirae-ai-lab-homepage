@@ -65,6 +65,30 @@ function accessUntil(rec: AccessRow | null | undefined, now: number): number | n
 // 그 티켓을 이 엔드포인트로 되물어 확인한다. 서명 키는 서버에만 있는 service_role 키다.
 const TICKET_TTL_MS = 3 * 60 * 1000
 
+// 초대 링크(게스트 패스)로 들어온 사람은 계정이 없다. 티켓의 u 에 이 접두사를 붙여
+// "이건 사용자가 아니라 초대 링크다"를 표시하고, 권한은 tool_passes 행에서 읽는다.
+const PASS_PREFIX = 'pass:'
+
+type PassRow = {
+  id: string
+  tool_id: string
+  expires_at: string
+  max_uses: number | null
+  use_count: number
+  revoked: boolean
+}
+
+/** 초대 링크를 지금 쓸 수 있으면 null, 못 쓰면 사용자에게 보여줄 이유를 돌려준다 */
+function passDenyReason(pass: PassRow | null | undefined, now: number, checkUses: boolean): string | null {
+  if (!pass) return '사용할 수 없는 링크입니다. 주소가 정확한지 확인해 주세요.'
+  if (pass.revoked) return '이 링크는 회수되었습니다. 링크를 보내주신 분에게 문의해 주세요.'
+  if (new Date(pass.expires_at).getTime() <= now) return '이 링크의 이용 기간이 끝났습니다.'
+  if (checkUses && pass.max_uses != null && pass.use_count >= pass.max_uses) {
+    return '이 링크의 사용 가능 횟수를 모두 사용했습니다.'
+  }
+  return null
+}
+
 async function signTicket(secret: string, payload: { u: string; t: string; e: number }): Promise<string> {
   const { createHmac } = await import('node:crypto')
   const b = Buffer.from(JSON.stringify(payload)).toString('base64url')
@@ -117,7 +141,7 @@ export default async function handler(req: any, res: any) {
     }
 
     // 2) body 파싱 (네트워크 전)
-    let body: { action?: string; toolId?: string; content?: string; answers?: Record<string, string>; ticket?: string } = {}
+    let body: { action?: string; toolId?: string; content?: string; answers?: Record<string, string>; ticket?: string; token?: string } = {}
     try {
       body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body ?? {}
     } catch (e) {
@@ -126,10 +150,11 @@ export default async function handler(req: any, res: any) {
     const action = body?.action
     const toolId = body?.toolId
 
-    // 3) Authorization — verify 는 도구 앱이 티켓만 들고 호출하므로 세션이 없다
+    // 3) Authorization — verify 는 도구 앱이 티켓만 들고, pass 는 초대받은 사람이
+    //    링크만 들고 호출하므로 둘 다 세션이 없다.
     const authHeader: unknown = req.headers?.authorization ?? req.headers?.Authorization
     const token = typeof authHeader === 'string' && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
-    if (action !== 'verify') {
+    if (action !== 'verify' && action !== 'pass') {
       if (!token) {
         return res.status(401).json({ ok: false, message: '인증 토큰이 없습니다. 다시 로그인해 주세요.', debugCode: 'no_auth' })
       }
@@ -249,6 +274,54 @@ export default async function handler(req: any, res: any) {
       return res.status(200).json({ ok: true, url: target })
     }
 
+    // ── 액션: 초대 링크 열기 (로그인 없음) ────────────────────────────
+    // 관리자가 발급한 링크(/pass/:token)로 들어온 사람. 계정도 tool_access 행도 없다.
+    // 토큰은 해시로만 저장돼 있으므로 해시를 계산해 찾는다.
+    if (action === 'pass') {
+      const raw = typeof body?.token === 'string' ? body.token.trim() : ''
+      if (!raw) {
+        return res.status(400).json({ ok: false, message: '링크가 올바르지 않습니다.', debugCode: 'bad_pass' })
+      }
+      const { createHash } = await import('node:crypto')
+      const tokenHash = createHash('sha256').update(raw).digest('hex')
+
+      const { data: pass, error: passErr } = await admin
+        .from('tool_passes')
+        .select('id, tool_id, expires_at, max_uses, use_count, revoked')
+        .eq('token_hash', tokenHash)
+        .maybeSingle()
+      if (passErr) {
+        return res.status(500).json({ ok: false, message: '링크를 확인하지 못했습니다.', debugCode: 'pass_query', detail: detailOf(passErr) })
+      }
+      const deny = passDenyReason(pass as PassRow | null, Date.now(), true)
+      if (deny) {
+        return res.status(403).json({ ok: false, message: deny, debugCode: 'pass_denied' })
+      }
+      const row = pass as PassRow
+
+      const { data: tool, error: toolErr } = await admin.from('tools').select('id, title, external_url').eq('id', row.tool_id).maybeSingle()
+      if (toolErr) return res.status(500).json({ ok: false, message: '도구 조회에 실패했습니다.', debugCode: 'no_tool', detail: detailOf(toolErr) })
+      if (!tool?.external_url) {
+        return res.status(404).json({ ok: false, message: '도구 주소가 등록되어 있지 않습니다. 링크를 보내주신 분에게 문의해 주세요.', debugCode: 'no_url' })
+      }
+
+      // 사용 기록 — 실패해도 링크는 열어준다(기록은 부가 정보다)
+      await admin
+        .from('tool_passes')
+        .update({ use_count: row.use_count + 1, last_used_at: new Date().toISOString() })
+        .eq('id', row.id)
+
+      let target = tool.external_url
+      try {
+        const parsed = new URL(tool.external_url)
+        parsed.searchParams.set('mlt', await signTicket(serviceKey, { u: `${PASS_PREFIX}${row.id}`, t: row.tool_id, e: Date.now() + TICKET_TTL_MS }))
+        target = parsed.toString()
+      } catch {
+        /* 주소 형식이 이상하면 티켓 없이 원본을 그대로 보낸다 */
+      }
+      return res.status(200).json({ ok: true, url: target, toolTitle: tool.title ?? null, expiresAt: row.expires_at })
+    }
+
     // ── 액션: 티켓 검증 (도구 앱이 호출) ──────────────────────────────
     // 세션이 아니라 티켓만으로 호출된다. 티켓 서명·만료를 확인한 뒤,
     // DB 의 현재 권한을 다시 읽어 "지금" 이용 가능한지 판정한다.
@@ -257,6 +330,39 @@ export default async function handler(req: any, res: any) {
       if (!claim) {
         return res.status(401).json({ ok: true, allowed: false, reason: 'bad_ticket', message: '진입 티켓이 유효하지 않거나 만료되었습니다. 미래 AI 랩에서 다시 열어주세요.' })
       }
+      // 초대 링크로 들어온 티켓은 계정이 아니라 tool_passes 행에서 권한을 읽는다.
+      // 사용 횟수는 링크를 열 때 이미 셌으므로 여기서는 회수·기간만 다시 본다.
+      if (claim.u.startsWith(PASS_PREFIX)) {
+        const passId = claim.u.slice(PASS_PREFIX.length)
+        const [{ data: pass, error: passErr }, { data: passTool }] = await Promise.all([
+          admin.from('tool_passes').select('id, tool_id, expires_at, max_uses, use_count, revoked').eq('id', passId).maybeSingle(),
+          admin.from('tools').select('slug').eq('id', claim.t).maybeSingle(),
+        ])
+        if (passErr) {
+          return res.status(500).json({ ok: false, allowed: false, message: '이용 권한을 확인하지 못했습니다.', debugCode: 'pass_query', detail: detailOf(passErr) })
+        }
+        const row = pass as PassRow | null
+        const deny = passDenyReason(row, Date.now(), false)
+        if (deny || row!.tool_id !== claim.t) {
+          return res.status(200).json({ ok: true, allowed: false, reason: 'pass_invalid', message: deny ?? '이 링크로는 열 수 없는 도구입니다.' })
+        }
+        // 도구 앱은 이 값을 브라우저에 저장해 두고, 그 기간에는 다시 묻지 않는다.
+        // 초대 링크는 회수될 수 있으므로 저장 기간을 하루로 끊는다 —
+        // 초대받은 사람은 어차피 링크로 다시 들어오고, 그때 회수 여부를 다시 확인한다.
+        const passEnd = new Date(row!.expires_at).getTime()
+        const recheckAt = Math.min(passEnd, Date.now() + DAY)
+        return res.status(200).json({
+          ok: true,
+          allowed: true,
+          guest: true,
+          toolId: claim.t,
+          toolSlug: passTool?.slug ?? null,
+          userId: claim.u,
+          expiresAt: new Date(recheckAt).toISOString(),
+          passExpiresAt: new Date(passEnd).toISOString(),
+        })
+      }
+
       // 슬러그도 함께 돌려준다 — 도구 앱이 "이 티켓이 나를 위한 것인지" 확인할 수 있게.
       // (A 도구용 티켓을 B 도구 주소에 붙여 넣는 우회를 막는다)
       const [{ data: rec, error: recErr }, { data: toolRow }] = await Promise.all([

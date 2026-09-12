@@ -17,6 +17,7 @@ import { AuthProvider } from './lib/auth'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import MyToolsPage from './pages/MyToolsPage'
+import ToolPassPage from './pages/ToolPassPage'
 import AdminPage from './pages/AdminPage'
 import AdminBusinessLeadsPage from './pages/AdminBusinessLeadsPage'
 import AdminMembersPage from './pages/AdminMembersPage'
@@ -82,6 +83,8 @@ createRoot(document.getElementById('root')!).render(
             }
           />
           <Route path="/dashboard" element={<Navigate to="/my-tools" replace />} />
+          {/* 초대 링크 — 로그인 없이 들어오는 자리라 인증 가드를 두지 않는다 */}
+          <Route path="/pass/:token" element={<ToolPassPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/business-leads" element={<AdminBusinessLeadsPage />} />
           <Route path="/admin/members" element={<AdminMembersPage />} />

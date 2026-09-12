@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import PageShell from '../components/PageShell'
+import ToolPassPanel from '../components/admin/ToolPassPanel'
 import { useAuth } from '../lib/auth'
 import { evaluateAccess, formatDate, type Profile, type Review, type Survey, type ToolAccess } from '../lib/platform'
 import {
@@ -335,6 +336,8 @@ export default function AdminPage() {
           ⭐ 상품 후기 관리 →
         </Link>
       </div>
+
+      <ToolPassPanel tools={modulesAll} />
 
       <div className="mb-6 grid grid-cols-3 gap-3">
         {[

@@ -136,6 +136,19 @@ export async function fetchAllSurveys(): Promise<Survey[]> {
   return (data ?? []) as Survey[]
 }
 
+/** 초대 링크(게스트 패스) — 로그인 없이 정해진 기간 동안만 도구를 여는 링크 */
+export type ToolPass = {
+  id: string
+  tool_id: string
+  label: string | null
+  expires_at: string
+  max_uses: number | null
+  use_count: number
+  revoked: boolean
+  created_at: string
+  last_used_at: string | null
+}
+
 export type AdminAction =
   | { action: 'extend'; userId: string; toolId: string; days: number }
   | { action: 'setExpiry'; userId: string; toolId: string; date: string }
@@ -145,5 +158,49 @@ export type AdminAction =
   | { action: 'paid'; userId: string; toolId: string; paid: boolean }
   | { action: 'memo'; userId: string; memo: string }
   | { action: 'reviewStatus'; reviewId: string; status: 'approved' | 'rejected' }
+  | { action: 'createPass'; toolId: string; days: number; label?: string; maxUses?: number | null }
+  | { action: 'listPasses' }
+  | { action: 'revokePass'; passId: string }
 
 export const adminAccessAction = (payload: AdminAction) => post('/api/admin/access', payload)
+
+/** 발급된 초대 링크 목록 (관리자) */
+export async function fetchToolPasses(): Promise<ToolPass[]> {
+  const r = await adminAccessAction({ action: 'listPasses' })
+  return Array.isArray(r.passes) ? (r.passes as ToolPass[]) : []
+}
+
+/**
+ * 초대 링크 발급 (관리자). 토큰 원문은 이 응답에서만 볼 수 있다 —
+ * DB 에는 해시만 저장되므로 다시 꺼낼 수 없다.
+ */
+export async function createToolPass(input: { toolId: string; days: number; label?: string; maxUses?: number | null }) {
+  const r = await adminAccessAction({ action: 'createPass', ...input })
+  return { token: String(r.token ?? ''), passId: String(r.passId ?? ''), expiresAt: String(r.expiresAt ?? '') }
+}
+
+/**
+ * 초대 링크로 도구 열기. 로그인하지 않은 사람이 부르므로 Authorization 헤더가 없다.
+ * (post() 는 세션 토큰을 요구하기 때문에 여기서는 직접 fetch 한다)
+ */
+export async function openToolPass(token: string): Promise<{ url: string; toolTitle: string | null; expiresAt: string | null }> {
+  const res = await fetch('/api/trial', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action: 'pass', token }),
+  })
+  let data: ApiResult = {}
+  try {
+    data = (await res.json()) as ApiResult
+  } catch {
+    throw new Error(`요청 실패 (HTTP ${res.status}). 잠시 후 다시 시도해 주세요.`)
+  }
+  if (!res.ok || data.ok === false || typeof data.url !== 'string' || !data.url) {
+    throw new Error(String(data.message || '링크를 열 수 없습니다.'))
+  }
+  return {
+    url: data.url,
+    toolTitle: typeof data.toolTitle === 'string' ? data.toolTitle : null,
+    expiresAt: typeof data.expiresAt === 'string' ? data.expiresAt : null,
+  }
+}

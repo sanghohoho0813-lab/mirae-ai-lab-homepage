@@ -106,6 +106,8 @@
     state = 'denied'
     var title = '이용 기간이 아닙니다'
     var desc = '미래 AI 랩에서 무료 체험을 시작하면 바로 이용할 수 있습니다.'
+    // 초대 링크로 들어온 사람은 계정이 없다 — 도구함으로 보내면 안 된다
+    var guest = reason === 'pass_invalid'
     if (reason === 'expired') {
       title = '체험 기간이 종료되었습니다'
       desc = '리뷰·설문으로 기간을 연장하거나, 정식 이용으로 계속 사용할 수 있습니다.'
@@ -115,6 +117,9 @@
     } else if (reason === 'network') {
       title = '권한을 확인하지 못했습니다'
       desc = '네트워크 상태를 확인한 뒤 다시 시도해 주세요.'
+    } else if (guest) {
+      title = '초대 링크를 사용할 수 없습니다'
+      desc = '링크의 이용 기간이 끝났거나 회수되었습니다. 링크를 보내주신 분에게 문의해 주세요.'
     }
     mount()
     overlay.innerHTML =
@@ -122,7 +127,9 @@
       '<div style="font-size:34px">🔒</div>' +
       '<h1 style="margin:14px 0 0;font-size:21px;font-weight:800;letter-spacing:-.02em">' + title + '</h1>' +
       '<p style="margin:10px 0 0;font-size:15px;color:#9AA4AF">' + desc + '</p>' +
-      '<a href="' + PORTAL + '/my-tools" style="display:inline-flex;align-items:center;justify-content:center;margin-top:22px;min-height:48px;padding:0 22px;border-radius:12px;background:#D47A4A;color:#fff;font-size:15px;font-weight:800;text-decoration:none">미래 AI 랩에서 열기</a>' +
+      (guest
+        ? ''
+        : '<a href="' + PORTAL + '/my-tools" style="display:inline-flex;align-items:center;justify-content:center;margin-top:22px;min-height:48px;padding:0 22px;border-radius:12px;background:#D47A4A;color:#fff;font-size:15px;font-weight:800;text-decoration:none">미래 AI 랩에서 열기</a>') +
       '<p style="margin:14px 0 0;font-size:13px;color:#6B7680">문의: 미래 AI 랩 고객센터</p>' +
       '</div>'
   }
