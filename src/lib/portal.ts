@@ -203,7 +203,14 @@ export async function fetchToolPasses(): Promise<ToolPass[]> {
  */
 export async function createToolPass(input: { toolId: string; days: number; label?: string; maxUses?: number | null; singleDevice?: boolean }) {
   const r = await adminAccessAction({ action: 'createPass', ...input })
-  return { token: String(r.token ?? ''), passId: String(r.passId ?? ''), expiresAt: String(r.expiresAt ?? '') }
+  return {
+    token: String(r.token ?? ''),
+    passId: String(r.passId ?? ''),
+    expiresAt: String(r.expiresAt ?? ''),
+    // 서버가 실제로 1인 고정으로 만들었는지 — DB 컬럼이 없으면 범용으로 내려온다
+    singleDevice: r.singleDevice === true,
+    message: typeof r.message === 'string' ? r.message : '',
+  }
 }
 
 /**

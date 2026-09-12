@@ -73,7 +73,9 @@ export default function ToolPassPanel({ tools }: { tools: DbTool[] }) {
         maxUses: maxUses.trim() ? Number(maxUses) : null,
         singleDevice,
       })
-      setIssued({ url: passUrl(r.token), expiresAt: r.expiresAt, singleDevice })
+      // 서버가 알려준 실제 상태를 쓴다 — DB 에 1인 고정 컬럼이 없으면 범용으로 만들어진다
+      setIssued({ url: passUrl(r.token), expiresAt: r.expiresAt, singleDevice: r.singleDevice })
+      if (singleDevice && !r.singleDevice && r.message) setErr(r.message)
       setLabel('')
       setMaxUses('')
       await load()

@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { businessInfo, legalLinks } from '../../config/businessInfo'
 import LegalFooter from '../LegalFooter'
 import BrandLogo from '../BrandLogo'
+import { runPrint } from '../../lib/printPage'
 
 export type LegalSection = {
   id: string
@@ -56,7 +57,12 @@ export default function LegalPageLayout({
           <BrandLogo to="/" tagline="약관 및 정책" imgClassName="h-9 max-w-[168px] sm:h-10 sm:max-w-[190px]" />
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={() => {
+              // 인쇄가 안 되는 브라우저(카톡·네이버 앱 안 등)에서는 아무 반응 없이 끝나지 않게 안내한다
+              void runPrint().then((ok) => {
+                if (!ok) window.alert('이 브라우저에서는 인쇄 창을 열 수 없어요.\n오른쪽 위 더보기(⋯) → 다른 브라우저로 열기 를 눌러 크롬이나 사파리에서 열어주세요.')
+              })
+            }}
             className="rounded-lg border border-slate-300 px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100"
           >
             인쇄 · PDF 저장

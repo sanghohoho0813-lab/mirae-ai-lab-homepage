@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react'
 import type { AxFitProblem, AxFitReport as Report, SeverityTone } from '../../types/businessDiagnosis'
 import { GRADE_META } from '../../lib/businessDiagnosisEngine'
+import { isInAppBrowser, isIos, runPrint } from '../../lib/printPage'
 
 type Props = {
   report: Report
@@ -118,6 +119,8 @@ export default function AxFitReportView({
   onPrint,
 }: Props) {
   const [count, setCount] = useState(0)
+  const [printHelp, setPrintHelp] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) {
@@ -142,9 +145,22 @@ export default function AxFitReportView({
   const meta = GRADE_META[report.grade]
   const tone = GRADE_TONE[meta.tone]
 
-  function handlePrint() {
+  // 인쇄가 실제로 시작됐는지 확인해, 안 되는 브라우저(카톡·네이버 앱 안 등)에서는 다른 방법을 안내한다
+  async function handlePrint() {
     onPrint?.()
-    window.print()
+    setPrintHelp(false)
+    const ok = await runPrint()
+    if (!ok) setPrintHelp(true)
+  }
+
+  async function copyPageLink() {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      setLinkCopied(true)
+      window.setTimeout(() => setLinkCopied(false), 2000)
+    } catch {
+      setLinkCopied(false)
+    }
   }
 
   return (
@@ -273,6 +289,34 @@ export default function AxFitReportView({
               처음부터 다시 진단하기
             </button>
           </div>
+
+          {/* 인쇄창이 뜨지 않는 브라우저(카카오톡·네이버 앱 안 등) — 대신 어떻게 하면 되는지 알려준다 */}
+          {printHelp && (
+            <div className="animate-rise-in mt-3 rounded-xl border border-amber-300 bg-amber-50 p-4 print:hidden">
+              <p className="text-sm font-black text-amber-900">인쇄 창이 열리지 않았어요</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-amber-900">
+                {isInAppBrowser()
+                  ? '카카오톡·네이버 같은 앱 안의 브라우저는 인쇄를 지원하지 않아요. 아래 주소를 복사해 크롬이나 사파리에서 열면 PDF로 저장할 수 있어요.'
+                  : '이 브라우저에서는 인쇄 창을 열 수 없어요. 아래 방법으로 저장해 주세요.'}
+              </p>
+              <ul className="mt-2.5 space-y-1 text-sm leading-relaxed text-amber-900">
+                {isInAppBrowser() && <li>· 오른쪽 위 <b>⋯ (더보기)</b> → <b>다른 브라우저로 열기</b></li>}
+                {isIos() ? (
+                  <li>· 사파리: 아래 <b>공유</b> → <b>프린트</b> → 미리보기를 두 손가락으로 벌리면 PDF로 저장돼요</li>
+                ) : (
+                  <li>· 크롬: 오른쪽 위 <b>⋮</b> → <b>공유</b> → <b>인쇄</b> → 대상을 <b>PDF로 저장</b></li>
+                )}
+                <li>· PC에서 열었다면 <b>Ctrl</b>(맥은 <b>⌘</b>) + <b>P</b> 로도 저장할 수 있어요</li>
+              </ul>
+              <button
+                type="button"
+                onClick={copyPageLink}
+                className="mt-3 inline-flex min-h-11 items-center justify-center rounded-lg border border-amber-400 bg-white px-4 py-2 text-sm font-bold text-amber-900 transition-colors hover:bg-amber-100"
+              >
+                {linkCopied ? '주소를 복사했어요 ✓' : '이 결과 페이지 주소 복사'}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

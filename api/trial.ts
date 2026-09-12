@@ -81,7 +81,25 @@ type PassRow = {
   claimed_by?: string | null
 }
 
-const PASS_COLS = 'id, tool_id, expires_at, max_uses, use_count, revoked, single_device, claimed_by'
+const PASS_COLS_BASE = 'id, tool_id, expires_at, max_uses, use_count, revoked'
+const PASS_COLS = `${PASS_COLS_BASE}, single_device, claimed_by`
+
+/** 1인 고정 컬럼(tool-passes-single-device.sql)이 아직 없는 DB 인가? */
+function isMissingPassColumn(e: unknown): boolean {
+  const msg = e && typeof e === 'object' && 'message' in e ? String((e as { message?: unknown }).message) : ''
+  return /does not exist|schema cache/i.test(msg) && /single_device|claimed_by|claimed_at/.test(msg)
+}
+
+/**
+ * 초대 링크 한 건 읽기. 1인 고정 컬럼이 아직 없는 DB 에서는 기존 컬럼만으로 다시 읽는다 —
+ * 마이그레이션을 돌리기 전이라고 해서 이미 나눠준 링크가 죽으면 안 된다.
+ * (컬럼이 없으면 single_device 가 undefined 라 자연히 "범용 링크"로 동작한다)
+ */
+async function selectPass(admin: any, column: string, value: string) {
+  const first = await admin.from('tool_passes').select(PASS_COLS).eq(column, value).maybeSingle()
+  if (!first.error || !isMissingPassColumn(first.error)) return first
+  return admin.from('tool_passes').select(PASS_COLS_BASE).eq(column, value).maybeSingle()
+}
 
 const PASS_CLAIMED_MSG =
   '이 링크는 이미 다른 분이 사용 중입니다. 한 사람만 쓸 수 있는 링크예요. 링크를 보내주신 분에게 문의해 주세요.'
@@ -293,11 +311,7 @@ export default async function handler(req: any, res: any) {
       const { createHash } = await import('node:crypto')
       const tokenHash = createHash('sha256').update(raw).digest('hex')
 
-      const { data: pass, error: passErr } = await admin
-        .from('tool_passes')
-        .select(PASS_COLS)
-        .eq('token_hash', tokenHash)
-        .maybeSingle()
+      const { data: pass, error: passErr } = await selectPass(admin, 'token_hash', tokenHash)
       if (passErr) {
         return res.status(500).json({ ok: false, message: '링크를 확인하지 못했습니다.', debugCode: 'pass_query', detail: detailOf(passErr) })
       }
@@ -371,7 +385,7 @@ export default async function handler(req: any, res: any) {
       if (claim.u.startsWith(PASS_PREFIX)) {
         const passId = claim.u.slice(PASS_PREFIX.length)
         const [{ data: pass, error: passErr }, { data: passTool }] = await Promise.all([
-          admin.from('tool_passes').select(PASS_COLS).eq('id', passId).maybeSingle(),
+          selectPass(admin, 'id', passId),
           admin.from('tools').select('slug').eq('id', claim.t).maybeSingle(),
         ])
         if (passErr) {

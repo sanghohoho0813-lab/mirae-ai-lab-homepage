@@ -29,6 +29,15 @@ type Body = {
 // 초대 링크 기간 한도 — 정식 런칭 전 임시 공개용이므로 길게 열어두지 않는다
 const PASS_MAX_DAYS = 90
 
+const PASS_LIST_BASE = 'id, tool_id, label, expires_at, max_uses, use_count, revoked, created_at, last_used_at'
+const PASS_LIST_COLS = `${PASS_LIST_BASE}, single_device, claimed_by, claimed_at`
+
+/** 1인 고정 컬럼(tool-passes-single-device.sql)이 아직 없는 DB 인가? */
+function isMissingPassColumn(e: unknown): boolean {
+  const msg = e && typeof e === 'object' && 'message' in e ? String((e as { message?: unknown }).message) : ''
+  return /does not exist|schema cache/i.test(msg) && /single_device|claimed_by|claimed_at/.test(msg)
+}
+
 async function ensureRow(admin: any, userId: string, toolId: string) {
   const { data } = await admin.from('tool_access').select('*').eq('user_id', userId).eq('tool_id', toolId).maybeSingle()
   if (data) return data
@@ -103,11 +112,10 @@ export default async function handler(req: any, res: any) {
     // 로그인 없이 특정 도구를 정해진 기간 동안 열 수 있는 링크. 토큰 원문은 저장하지
     // 않고(해시만) 이 응답에서 딱 한 번만 돌려준다 — 다시는 볼 수 없다.
     if (action === 'listPasses') {
-      const { data, error } = await admin
-        .from('tool_passes')
-        .select('id, tool_id, label, expires_at, max_uses, use_count, revoked, created_at, last_used_at, single_device, claimed_by, claimed_at')
-        .order('created_at', { ascending: false })
-        .limit(100)
+      const q = (cols: string) => admin.from('tool_passes').select(cols).order('created_at', { ascending: false }).limit(100)
+      let { data, error } = await q(PASS_LIST_COLS)
+      // 1인 고정 컬럼이 아직 없는 DB 면 기존 컬럼만으로 다시 읽는다
+      if (error && isMissingPassColumn(error)) ({ data, error } = await q(PASS_LIST_BASE))
       if (error) return res.status(500).json({ ok: false, message: '초대 링크 목록을 불러오지 못했습니다.', debugCode: 'pass_list', detail: detailOf(error) })
       return res.status(200).json({ ok: true, passes: data ?? [] })
     }
@@ -122,22 +130,37 @@ export default async function handler(req: any, res: any) {
       const tokenHash = createHash('sha256').update(passToken).digest('hex')
       const expiresAt = new Date(now + days * DAY).toISOString()
 
-      const { data: created, error } = await admin
-        .from('tool_passes')
-        .insert({
-          tool_id: toolId,
-          label: (body.label ?? '').trim() || null,
-          token_hash: tokenHash,
-          expires_at: expiresAt,
-          max_uses: maxUses,
-          single_device: body.singleDevice !== false,
-          created_by: user.id,
-        })
-        .select('id')
-        .single()
+      const base = {
+        tool_id: toolId,
+        label: (body.label ?? '').trim() || null,
+        token_hash: tokenHash,
+        expires_at: expiresAt,
+        max_uses: maxUses,
+        created_by: user.id,
+      }
+      const singleDevice = body.singleDevice !== false
+      const ins = (row: Record<string, unknown>) => admin.from('tool_passes').insert(row).select('id').single()
+
+      let { data: created, error } = await ins({ ...base, single_device: singleDevice })
+      // 1인 고정 컬럼이 아직 없는 DB 면 그 값 없이 만든다(범용 링크가 된다)
+      let degraded = false
+      if (error && isMissingPassColumn(error)) {
+        ;({ data: created, error } = await ins(base))
+        degraded = !error
+      }
       if (error) return res.status(500).json({ ok: false, message: '초대 링크 발급에 실패했습니다.', debugCode: 'pass_insert', detail: detailOf(error) })
 
-      return res.status(200).json({ ok: true, passId: created.id, token: passToken, expiresAt, days, message: `${days}일 동안 쓸 수 있는 초대 링크를 만들었습니다.` })
+      return res.status(200).json({
+        ok: true,
+        passId: created.id,
+        token: passToken,
+        expiresAt,
+        days,
+        singleDevice: singleDevice && !degraded,
+        message: degraded
+          ? `${days}일 초대 링크를 만들었습니다. 다만 DB에 1인 고정 컬럼이 없어 범용 링크로 만들어졌습니다 — supabase/tool-passes-single-device.sql 을 실행해 주세요.`
+          : `${days}일 동안 쓸 수 있는 초대 링크를 만들었습니다.`,
+      })
     }
 
     // 1인 고정을 풀어 다시 "처음 여는 사람"에게 묶이게 한다.
