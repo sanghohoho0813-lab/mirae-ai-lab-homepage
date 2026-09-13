@@ -14,7 +14,8 @@ export const AX_PATENT_META = `PATENT APPLICATIONS · ${AX_PATENT_COUNT} · ${AX
 
 /** 첫 진입화면 신뢰영역 문구 */
 export const AX_PATENT_PROOF = {
-  lead: '미래AI랩은 AX를 단순 개발이 아닌 회사의 기술자산으로 설계합니다.',
+  // "단순 개발이 아닌 … 기술자산으로 설계" 는 두 번 꺾여 읽혀서, 한 번에 읽히는 문장으로 바꿨다.
+  lead: '만들어 드리고 끝나는 개발이 아니라, 회사에 남는 기술로 설계합니다.',
   sub: '업무 자동화 · 다음 행동 추천 · 기업 상태 분석 등 AX 핵심기술 특허 5건 출원',
 } as const
 

@@ -97,11 +97,21 @@ export default function GatewayPage() {
 
         {/* 고르기 전에 먼저 읽히는 부분 — 누가 만드는 회사인가.
             배경의 큰 워터마크 글씨와 겹쳐 읽기 어려웠던 곳이라, 옅은 판을 깔아 글자를 살린다. */}
-        <div style={{ animationDelay: '0.16s' }} className="hero-anim w-full rounded-2xl border border-slate-200/70 bg-white/72 px-4 py-3 backdrop-blur-[3px] sm:px-8 sm:py-6">
+        <div style={{ animationDelay: '0.16s' }} className="hero-anim w-full rounded-2xl border border-slate-200/70 bg-white/72 px-4 py-2 backdrop-blur-[3px] sm:px-8 sm:py-5">
           <p className="text-center text-[0.95rem] font-semibold text-slate-600 min-[380px]:text-[1.0rem] sm:text-[1.25rem]">
             경영컨설턴트가 설계하는 중소기업 맞춤형 AX
           </p>
-          <div className="mt-1.5 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-center text-[0.78rem] font-medium leading-snug text-slate-500 min-[380px]:gap-x-2 min-[380px]:text-[0.86rem] sm:mt-3.5 sm:gap-x-3 sm:text-[1.0rem] sm:leading-normal">
+          {/* AX 를 처음 보는 분이 대부분이라, 첫 등장 바로 아래에서 뜻을 밝힌다.
+              좁은 화면에서는 한 줄에 들어가도록 정의만 두고, 풀어 쓴 설명은 PC 에서만 붙인다.
+              (이 화면은 역할 선택이 목적이라 한 줄이라도 더 늘리면 카드가 접힘 아래로 간다) */}
+          <p className="mt-1 text-center text-[0.8rem] leading-snug min-[380px]:text-[0.86rem] sm:mt-2 sm:text-[1.02rem]">
+            <span className="inline-block rounded-full bg-slate-100/90 px-2.5 text-[0.8rem] font-semibold leading-snug text-slate-600 ring-1 ring-inset ring-slate-200/70 min-[380px]:text-[0.86rem] sm:px-3.5 sm:py-0.5 sm:text-[1.02rem]">
+              AX는 <b className="font-bold text-slate-800">인공지능 전환</b>
+              <span className="text-slate-400">(AI Transformation)</span>
+              <span className="hidden sm:inline"> — 일하는 방식을 AI로 바꾸는 일입니다</span>
+            </span>
+          </p>
+          <div className="mt-1 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-center text-[0.78rem] font-medium leading-snug text-slate-500 min-[380px]:gap-x-2 min-[380px]:text-[0.86rem] sm:mt-3.5 sm:gap-x-3 sm:text-[1.0rem] sm:leading-normal">
             {trustItems.map((t, i) => (
               <span key={t} className="inline-flex items-center gap-2 sm:gap-3">
                 {i > 0 && <span aria-hidden className="text-slate-300">·</span>}
@@ -114,7 +124,7 @@ export default function GatewayPage() {
               강조는 왼쪽 가는 선과 "특허 5건 출원" 한 곳에만 주고, 자세한 기술은 접어 둔다.
               펼쳐도 발명의 명칭 원문이 아니라 상세페이지와 같은 쉬운 말로 보여준다
               (출원번호·명칭 원문은 공개하지 않는다). */}
-          <div className="mt-3 border-t border-slate-200/80 pt-3 sm:mt-5 sm:pt-5">
+          <div className="mt-2 border-t border-slate-200/80 pt-2 sm:mt-4 sm:pt-4">
             <div className="border-l-2 border-[#D47A4A]/45 pl-3.5 sm:pl-5">
               <div className="flex flex-col items-start gap-1.5 text-left sm:flex-row sm:items-center sm:gap-6">
                 <p className="max-w-md break-keep text-[0.95rem] font-bold leading-relaxed text-slate-700 sm:max-w-none sm:text-[1.15rem]">
@@ -153,7 +163,7 @@ export default function GatewayPage() {
               )}
             </div>
             {/* 좁은 화면에서는 장식용 영문을 빼고 날짜만 남긴다 — 한 줄 높이를 지켜야 역할 선택 카드가 안 밀린다 */}
-            <p className="mt-2.5 text-center text-[0.76rem] font-bold tracking-[0.14em] text-slate-500 sm:mt-3.5 sm:text-[0.85rem] sm:tracking-[0.2em]">
+            <p className="mt-1.5 text-center text-[0.76rem] font-bold tracking-[0.14em] text-slate-500 sm:mt-2.5 sm:text-[0.85rem] sm:tracking-[0.2em]">
               <span className="sm:hidden">{AX_PATENT_FILED_LABEL}</span>
               <span className="hidden sm:inline">{AX_PATENT_META} 출원 완료</span>
             </p>
@@ -161,7 +171,7 @@ export default function GatewayPage() {
         </div>
 
         {/* 역할 선택 — 이 화면의 목적 */}
-        <div className="mt-3 grid w-full gap-2.5 sm:mt-8 sm:grid-cols-2 sm:gap-7">
+        <div className="mt-2 grid w-full gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-7">
           {choices.map((c, i) => (
             <Link
               key={c.to}
