@@ -19,10 +19,12 @@ export function AxHeroV2() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
-      {/* 문장 묶음이 첫 화면을 가득 채운다 — 샘플은 화면 경계 바로 아래에서 시작해,
+      {/* 문장 묶음이 첫 화면을 가득 채운다 — 샘플은 화면 경계 아래에서 시작해,
           스크롤을 조금만 내리면 "업종별 AX…" 줄부터 눈에 들어온다.
+          폰에서는 첫 화면에 그 줄이 보이지 않게 한 화면을 통째로 쓰고,
+          PC 는 3.5rem 만 덜어 제목이 경계에 살짝 걸치게 둔다.
           320px 같은 작은 화면에서는 문단이 두 개라 여백부터 줄여 한 화면에 담는다. */}
-      <div className={`relative flex min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-10 pt-12 max-[359px]:pb-6 max-[359px]:pt-7 sm:px-6 sm:pb-12 sm:pt-14`}>
+      <div className={`relative flex min-h-[calc(100svh-53px)] sm:min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-10 pt-12 max-[359px]:pb-6 max-[359px]:pt-7 [@media(max-height:700px)]:pb-5 [@media(max-height:700px)]:pt-7 sm:px-6 sm:pb-12 sm:pt-14`}>
         {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 (기준 대비 1.1배) */}
         <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.99rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[1.078rem] sm:px-4 sm:text-[1.155rem]">
           경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX
