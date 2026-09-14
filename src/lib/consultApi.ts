@@ -52,20 +52,39 @@ export const CONSULT_COMPANY_FIELDS: { key: string; label: string; options: stri
  *    (요건 충족 시 / 가점 / 대상 처럼 조건을 남긴다.)
  * ⚠️ 서버는 interests 항목을 30자까지만 저장하고, '정책|R&D|성장' 이 있으면 growth_interest 플래그를 붙인다.
  */
+export type ConsultInterestTone = 'blue' | 'sky' | 'emerald' | 'amber' | 'orange' | 'violet'
 export type ConsultInterestItem = { name: string; note: string }
-export type ConsultInterestGroup = { title: string; items: ConsultInterestItem[] }
+export type ConsultInterestGroup = {
+  /** 화면·메일에 함께 쓰는 번호 */
+  no: number
+  title: string
+  /** 목차 제목 옆 괄호 안내 (전문가 협업이 필요한 분야에 붙인다) */
+  hint?: string
+  tone: ConsultInterestTone
+  items: ConsultInterestItem[]
+}
 
 export const CONSULT_INTEREST_GROUPS: ConsultInterestGroup[] = [
   {
+    no: 1,
     title: '연 2%대 · 최대 10억 — 성장자금이 필요하다면',
+    tone: 'blue',
+    items: [{ name: '정책자금', note: '연 2%대 저금리 · 최대 10억 원' }],
+  },
+  {
+    no: 2,
+    title: '정부지원사업 · 정부지원금을 놓치고 있다면',
+    tone: 'sky',
     items: [
-      { name: '정책자금', note: '연 2%대 저금리 · 최대 10억 원' },
       { name: '정부지원사업', note: '사업화·판로·마케팅 지원금 공고 대응' },
       { name: 'R&D 과제', note: '개발비 일부를 정부가 부담' },
+      { name: '고용지원금', note: '신규채용 · 고용유지 · 육아대체 인력 지원제도' },
     ],
   },
   {
+    no: 3,
     title: '외부에서 볼 때 좋은 회사로 보이고 싶다면',
+    tone: 'emerald',
     items: [
       { name: '벤처기업 인증', note: '창업 3년 이내 확인 시 법인세·소득세 5년 50% 감면(요건 충족 시)' },
       { name: '기업부설연구소', note: '정책자금·정부지원사업 가점 · R&D 세액공제 대상' },
@@ -75,28 +94,34 @@ export const CONSULT_INTEREST_GROUPS: ConsultInterestGroup[] = [
     ],
   },
   {
+    no: 4,
     title: '사람을 뽑고, 오래 다니게 하고 싶다면',
+    tone: 'amber',
     items: [
-      { name: '고용지원금', note: '신규채용 · 고용유지 · 육아대체 인력 지원제도' },
-      { name: '근로복지기금', note: '출연금 손금 인정 · 직원 복지는 늘리고 세부담은 낮추는 구조' },
+      { name: '사내(공동)근로복지기금', note: '출연금 손금 인정 · 직원 복지는 늘리고 세부담은 낮추는 구조' },
     ],
   },
   {
-    title: '세금을 줄이고 회사 자산을 정리하고 싶다면',
-    items: [
-      { name: '가지급금 정리', note: '쌓인 가지급금, 세부담이 커지기 전에 계획적으로' },
-      { name: '이익잉여금 처분', note: '배당·급여·퇴직금 조합으로 계획 있게' },
-      { name: '가업승계 증여특례', note: '자녀에게 물려줄 회사, 증여세 과세특례로 준비' },
-      { name: '배우자 증여 이익소각', note: '배우자 증여공제를 활용한 법인 자금 회수 설계' },
-    ],
-  },
-  {
+    no: 5,
     title: '일하는 방식을 바꾸고 싶다면',
+    tone: 'orange',
     items: [
       { name: 'AX 풀 패키지', note: '회사 돌아가는 모든 것을 내 PC·스마트폰에서 한눈에' },
       { name: '소형 업무자동화', note: 'AX까지는 아니어도, 반복업무 하나만 빠르게 자동화' },
       { name: '사업화 아이디어 MVP', note: '아이디어를 최소 기능 제품으로 먼저 검증' },
       { name: '반응형 홈페이지', note: '24시간 일하는 온라인 영업사원' },
+    ],
+  },
+  {
+    no: 6,
+    title: '세금을 줄이고 회사 자산을 정리하고 싶다면',
+    hint: '세무사 등 각 분야 전문가와 함께 검토',
+    tone: 'violet',
+    items: [
+      { name: '가지급금 정리', note: '쌓인 가지급금, 세부담이 커지기 전에 계획적으로' },
+      { name: '이익잉여금 처분', note: '배당·급여·퇴직금 조합으로 계획 있게' },
+      { name: '가업승계 증여특례', note: '자녀에게 물려줄 회사, 증여세 과세특례로 준비' },
+      { name: '배우자 증여 이익소각', note: '배우자 증여공제를 활용한 법인 자금 회수 설계' },
     ],
   },
 ]

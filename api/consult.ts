@@ -86,6 +86,62 @@ function escapeHtml(value: string): string {
     .replace(/"/g, '&quot;')
 }
 
+// ── 관심 분야 목차 ────────────────────────────────────────
+// 화면(src/lib/consultApi.ts CONSULT_INTEREST_GROUPS)과 같은 순서·묶음으로 메일에도 박스로 보여준다.
+// ⚠️ 이 파일은 외부 helper 를 import 하지 않는 규칙이라 목록을 여기에 한 벌 더 둔다. 화면 쪽을 고치면 여기도 같이 고칠 것.
+const INTEREST_LABEL = '관심 분야'
+const INTEREST_GROUPS: Array<{ no: number; title: string; hint?: string; color: string; items: string[] }> = [
+  { no: 1, title: '연 2%대 · 최대 10억 — 성장자금이 필요하다면', color: '#2563eb', items: ['정책자금'] },
+  { no: 2, title: '정부지원사업 · 정부지원금을 놓치고 있다면', color: '#0284c7', items: ['정부지원사업', 'R&D 과제', '고용지원금'] },
+  { no: 3, title: '외부에서 볼 때 좋은 회사로 보이고 싶다면', color: '#059669', items: ['벤처기업 인증', '기업부설연구소', '이노비즈 인증', '메인비즈 인증', 'ISO 인증'] },
+  { no: 4, title: '사람을 뽑고, 오래 다니게 하고 싶다면', color: '#d97706', items: ['사내(공동)근로복지기금'] },
+  { no: 5, title: '일하는 방식을 바꾸고 싶다면', color: '#ea580c', items: ['AX 풀 패키지', '소형 업무자동화', '사업화 아이디어 MVP', '반응형 홈페이지'] },
+  { no: 6, title: '세금을 줄이고 회사 자산을 정리하고 싶다면', hint: '세무사 등 각 분야 전문가와 함께 검토', color: '#7c3aed', items: ['가지급금 정리', '이익잉여금 처분', '가업승계 증여특례', '배우자 증여 이익소각'] },
+]
+
+/** '관심 분야' 값(쉼표로 이어진 이름들)을 목차별 박스로 */
+function renderInterestBoxes(value: string): string {
+  const picked = value.split(',').map((x) => x.trim()).filter(Boolean)
+  if (!picked.length) return ''
+  const known = new Set<string>()
+  const boxes = INTEREST_GROUPS.map((g) => {
+    const hit = g.items.filter((i) => picked.includes(i))
+    hit.forEach((i) => known.add(i))
+    if (!hit.length) return ''
+    return `
+      <div style="border:1px solid #e2e8f0;border-left:4px solid ${g.color};border-radius:8px;padding:10px 12px;margin:0 0 8px">
+        <p style="margin:0;font-size:11px;font-weight:800;color:${g.color};line-height:1.5">${g.no}. ${escapeHtml(g.title)}${g.hint ? ` <span style="font-weight:500;color:#94a3b8">(${escapeHtml(g.hint)})</span>` : ''}</p>
+        <p style="margin:5px 0 0;font-size:14px;font-weight:700;color:#0f172a;line-height:1.6">${hit.map((i) => escapeHtml(i)).join(' · ')}</p>
+      </div>`
+  }).join('')
+  const rest = picked.filter((x) => !known.has(x))
+  const restBox = rest.length
+    ? `<div style="border:1px solid #e2e8f0;border-left:4px solid #94a3b8;border-radius:8px;padding:10px 12px;margin:0 0 8px">
+        <p style="margin:0;font-size:11px;font-weight:800;color:#64748b">기타</p>
+        <p style="margin:5px 0 0;font-size:14px;font-weight:700;color:#0f172a;line-height:1.6">${rest.map((i) => escapeHtml(i)).join(' · ')}</p>
+      </div>`
+    : ''
+  return `<div style="padding:14px 16px;border-top:8px solid #f1f5f9">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:800;color:#2563eb">🔖 ${INTEREST_LABEL} (${picked.length}개)</p>
+      ${boxes}${restBox}
+    </div>`
+}
+
+/** 같은 내용을 텍스트 메일용으로 */
+function interestLines(value: string): string {
+  const picked = value.split(',').map((x) => x.trim()).filter(Boolean)
+  if (!picked.length) return ''
+  const known = new Set<string>()
+  const lines = INTEREST_GROUPS.map((g) => {
+    const hit = g.items.filter((i) => picked.includes(i))
+    hit.forEach((i) => known.add(i))
+    return hit.length ? `${g.no}. ${g.title}${g.hint ? ` (${g.hint})` : ''}\n   - ${hit.join(' · ')}` : ''
+  }).filter(Boolean)
+  const rest = picked.filter((x) => !known.has(x))
+  if (rest.length) lines.push(`기타\n   - ${rest.join(' · ')}`)
+  return `■ ${INTEREST_LABEL}\n` + lines.join('\n')
+}
+
 // context 배열을 [label, value] 로 정규화 (문자열만, 길이 제한).
 function normalizeContext(raw: unknown): Array<[string, string]> {
   if (!Array.isArray(raw)) return []
@@ -185,19 +241,30 @@ export default async function handler(req: any, res: any) {
       context,
     })
 
+    // 관심 분야는 표 한 줄로 흘리지 않고, 아래에서 목차별 박스로 따로 보여준다
+    const interestValue = context.find(([label]) => label === INTEREST_LABEL)?.[1] || ''
+    const tableContext = context.filter(([label]) => label !== INTEREST_LABEL)
+
     const rows: Array<[string, string]> = [
       ['성함', name],
       ['연락처', contact],
       ['회사명', company || '-'],
       ...(source ? ([['신청 경로', source]] as Array<[string, string]>) : []),
       // 담긴 상품·선택 항목·체크한 내용 등
-      ...context,
+      ...tableContext,
       ['문의 내용', message || '-'],
       ['접수 시간', receivedAt],
       ['접수 페이지', siteUrl],
     ]
 
-    const text = `${SITE_NAME} 새 상담 신청\n\n` + rows.map(([k, v]) => `■ ${k}\n${v}`).join('\n\n') + '\n'
+    const interestsHtml = renderInterestBoxes(interestValue)
+    const interestsText = interestLines(interestValue)
+
+    const text =
+      `${SITE_NAME} 새 상담 신청\n\n` +
+      rows.map(([k, v]) => `■ ${k}\n${v}`).join('\n\n') +
+      (interestsText ? '\n\n' + interestsText : '') +
+      '\n'
 
     const tableRows = rows
       .map(
@@ -221,6 +288,7 @@ export default async function handler(req: any, res: any) {
           <p style="margin:6px 0 0;color:#ffffff;font-size:18px;font-weight:700">새 상담 신청 (${escapeHtml(source || '사이트 문의')})</p>
         </div>
         <table style="width:100%;border-collapse:collapse">${tableRows}</table>
+        ${interestsHtml}
         <div style="padding:16px 24px;background:#f8fafc;color:#64748b;font-size:12px;line-height:1.6">
           이 메일은 미래 AI 랩 사이트 상담 폼에서 자동 발송되었습니다.<br/>
           ${

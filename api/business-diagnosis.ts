@@ -21,6 +21,63 @@ function escapeHtml(v: string): string {
   return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
+// ── 관심 분야 목차 ────────────────────────────────────────
+// 화면(src/lib/consultApi.ts CONSULT_INTEREST_GROUPS)과 같은 순서·묶음으로 메일에도 박스로 보여준다.
+// ⚠️ 이 파일은 외부 helper 를 import 하지 않는 규칙이라 목록을 여기에 한 벌 더 둔다. 화면 쪽을 고치면 여기도 같이 고칠 것.
+const INTEREST_GROUPS: Array<{ no: number; title: string; hint?: string; color: string; items: string[] }> = [
+  { no: 1, title: '연 2%대 · 최대 10억 — 성장자금이 필요하다면', color: '#2563eb', items: ['정책자금'] },
+  { no: 2, title: '정부지원사업 · 정부지원금을 놓치고 있다면', color: '#0284c7', items: ['정부지원사업', 'R&D 과제', '고용지원금'] },
+  { no: 3, title: '외부에서 볼 때 좋은 회사로 보이고 싶다면', color: '#059669', items: ['벤처기업 인증', '기업부설연구소', '이노비즈 인증', '메인비즈 인증', 'ISO 인증'] },
+  { no: 4, title: '사람을 뽑고, 오래 다니게 하고 싶다면', color: '#d97706', items: ['사내(공동)근로복지기금'] },
+  { no: 5, title: '일하는 방식을 바꾸고 싶다면', color: '#ea580c', items: ['AX 풀 패키지', '소형 업무자동화', '사업화 아이디어 MVP', '반응형 홈페이지'] },
+  { no: 6, title: '세금을 줄이고 회사 자산을 정리하고 싶다면', hint: '세무사 등 각 분야 전문가와 함께 검토', color: '#7c3aed', items: ['가지급금 정리', '이익잉여금 처분', '가업승계 증여특례', '배우자 증여 이익소각'] },
+]
+// 화면에서 자동으로 덧붙는 내부 표기 — 고른 항목과 겹쳐서 메일에는 싣지 않는다
+const INTEREST_INTERNAL = ['정책·R&D·기업성장 전략 검토 희망']
+
+/** 고른 분야를 목차별 박스로. 고르지 않았으면 빈 문자열. */
+function renderInterestBoxes(interests: string[]): string {
+  const picked = interests.filter((x) => typeof x === 'string' && x && !INTEREST_INTERNAL.includes(x)).slice(0, 40)
+  if (!picked.length) return ''
+  const known = new Set<string>()
+  const boxes = INTEREST_GROUPS.map((g) => {
+    const hit = g.items.filter((i) => picked.includes(i))
+    hit.forEach((i) => known.add(i))
+    if (!hit.length) return ''
+    return `
+      <div style="border:1px solid #e2e8f0;border-left:4px solid ${g.color};border-radius:8px;padding:10px 12px;margin:0 0 8px">
+        <p style="margin:0;font-size:11px;font-weight:800;color:${g.color};line-height:1.5">${g.no}. ${escapeHtml(g.title)}${g.hint ? ` <span style="font-weight:500;color:#94a3b8">(${escapeHtml(g.hint)})</span>` : ''}</p>
+        <p style="margin:5px 0 0;font-size:14px;font-weight:700;color:#0f172a;line-height:1.6">${hit.map((i) => escapeHtml(i)).join(' · ')}</p>
+      </div>`
+  }).join('')
+  const rest = picked.filter((x) => !known.has(x))
+  const restBox = rest.length
+    ? `<div style="border:1px solid #e2e8f0;border-left:4px solid #94a3b8;border-radius:8px;padding:10px 12px;margin:0 0 8px">
+        <p style="margin:0;font-size:11px;font-weight:800;color:#64748b">기타</p>
+        <p style="margin:5px 0 0;font-size:14px;font-weight:700;color:#0f172a;line-height:1.6">${rest.map((i) => escapeHtml(i)).join(' · ')}</p>
+      </div>`
+    : ''
+  return `<div style="padding:14px 16px;border-top:8px solid #f1f5f9">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:800;color:#2563eb">🔖 함께 검토하고 싶은 분야 (${picked.length}개)</p>
+      ${boxes}${restBox}
+    </div>`
+}
+
+/** 같은 내용을 텍스트 메일용으로 */
+function interestLines(interests: string[]): string {
+  const picked = interests.filter((x) => typeof x === 'string' && x && !INTEREST_INTERNAL.includes(x)).slice(0, 40)
+  if (!picked.length) return ''
+  const known = new Set<string>()
+  const lines = INTEREST_GROUPS.map((g) => {
+    const hit = g.items.filter((i) => picked.includes(i))
+    hit.forEach((i) => known.add(i))
+    return hit.length ? `${g.no}. ${g.title}${g.hint ? ` (${g.hint})` : ''}\n   - ${hit.join(' · ')}` : ''
+  }).filter(Boolean)
+  const rest = picked.filter((x) => !known.has(x))
+  if (rest.length) lines.push(`기타\n   - ${rest.join(' · ')}`)
+  return '\n\n[함께 검토하고 싶은 분야]\n' + lines.join('\n')
+}
+
 // 문자열/객체 배열을 사람이 읽을 수 있는 줄 목록으로 (라벨 매핑 불필요)
 function asLines(v: unknown): string[] {
   if (!Array.isArray(v)) return []
@@ -149,9 +206,7 @@ async function sendDiagnosisEmail(p: {
         </div>`).join('')
     : ''
 
-  const interestsHtml = (p.interests && p.interests.length)
-    ? `<div style="padding:10px 16px"><p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#2563eb">관심 항목</p><p style="margin:0;font-size:13px;color:#0f172a;line-height:1.6">${escapeHtml(p.interests.slice(0, 40).join(', '))}</p></div>`
-    : ''
+  const interestsHtml = renderInterestBoxes(p.interests || [])
 
   // 접이식 고객용 요약 — details 미지원 클라이언트에선 펼쳐진 채 하단 노출
   const foldHtml = foldBlocks
@@ -192,6 +247,7 @@ async function sendDiagnosisEmail(p: {
     `미래 AI 랩 · 3분 AX Fit 접수 — ${p.companyName}${axGrade ? ` (${axGrade})` : ''} · 우선순위 ${p.grade} ${p.score}점\n\n` +
     kv.map(([k, v]) => `■ ${k}\n${v}`).join('\n\n') +
     answersText +
+    interestLines(p.interests || []) +
     '\n\n' +
     foldBlocks.filter(([, l]) => l.length > 0).map(([t, l]) => `[${t}]\n` + l.map((x) => `- ${x}`).join('\n')).join('\n\n') +
     '\n'
