@@ -102,7 +102,7 @@ export default function GatewayPage() {
               "설계자가 설계하는" 이 되지 않게 뒤 동사는 "만드는" 으로 둔다. */}
           <p className="text-center text-[0.95rem] font-semibold leading-snug text-slate-600 min-[380px]:text-[1.0rem] sm:text-[1.25rem]">
             9년차 경영컨설턴트 &amp; AX 설계자가 만드는 중소기업 맞춤형 AX
-            <span className="font-medium text-slate-500">(AI 트랜스포메이션 · 인공지능 전환)</span>
+            <span className="font-medium text-slate-500">(AI Transformation : 인공지능 전환)</span>
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-center text-[0.78rem] font-medium leading-snug text-slate-500 min-[380px]:gap-x-2 min-[380px]:text-[0.86rem] sm:mt-3.5 sm:gap-x-3 sm:text-[1.0rem] sm:leading-normal">
             {trustItems.map((t, i) => (
