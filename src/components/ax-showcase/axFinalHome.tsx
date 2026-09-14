@@ -32,8 +32,10 @@ function ShowcaseShot({ s }: { s: AxPlatformSample }) {
 }
 
 export function AxScreenShowcase() {
-  const rowA = AX_PLATFORM_SAMPLES.slice(0, 5)
-  const rowB = AX_PLATFORM_SAMPLES.slice(5)
+  // 샘플이 늘어도 두 줄이 한쪽으로 쏠리지 않게 반으로 나눈다
+  const halfAt = Math.ceil(AX_PLATFORM_SAMPLES.length / 2)
+  const rowA = AX_PLATFORM_SAMPLES.slice(0, halfAt)
+  const rowB = AX_PLATFORM_SAMPLES.slice(halfAt)
   return (
     <section id="portfolio" className="scroll-mt-16 border-t border-white/10 bg-[#171B20]">
       <div className="py-14 sm:py-20">

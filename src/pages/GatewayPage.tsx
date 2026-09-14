@@ -11,7 +11,7 @@ import { AX_PATENT_COUNT, AX_PATENT_FILED_LABEL, AX_PATENT_META, AX_PATENT_TECHS
 // 선택 카드가 주인공이되, 고르기 전에 누가 만드는 회사인지 먼저 읽히게 위쪽에 붙였다.
 // 좁은 화면에서도 카드가 첫 화면 안에 남도록 위쪽 블록은 최대한 조밀하게 둔다.
 
-// 맨 윗줄에 "9년차 경영컨설턴트이자 AX Architect가" 로 합쳤으므로 목록에서는 뺀다
+// 맨 윗줄에 "9년차 경영컨설턴트 & AX 설계자가" 로 합쳤으므로 목록에서는 뺀다
 const trustItems = [
   '정책자금·인증·사업계획 실무 경험',
   'ISO 인증 심사원',
@@ -98,18 +98,11 @@ export default function GatewayPage() {
         {/* 고르기 전에 먼저 읽히는 부분 — 누가 만드는 회사인가.
             배경의 큰 워터마크 글씨와 겹쳐 읽기 어려웠던 곳이라, 옅은 판을 깔아 글자를 살린다. */}
         <div style={{ animationDelay: '0.16s' }} className="hero-anim w-full rounded-2xl border border-slate-200/70 bg-white/72 px-4 py-2.5 backdrop-blur-[3px] sm:px-8 sm:py-6">
-          <p className="text-center text-[0.95rem] font-semibold text-slate-600 min-[380px]:text-[1.0rem] sm:text-[1.25rem]">
-            9년차 경영컨설턴트이자 AX Architect가 설계하는 중소기업 맞춤형 AX
-          </p>
-          {/* AX 를 처음 보는 분이 대부분이라, 첫 등장 바로 아래에서 뜻을 밝힌다.
-              좁은 화면에서는 한 줄에 들어가도록 정의만 두고, 풀어 쓴 설명은 PC 에서만 붙인다.
-              (이 화면은 역할 선택이 목적이라 한 줄이라도 더 늘리면 카드가 접힘 아래로 간다) */}
-          <p className="mt-1 text-center text-[0.8rem] leading-snug min-[380px]:text-[0.86rem] sm:mt-2 sm:text-[1.02rem]">
-            <span className="inline-block rounded-full bg-slate-100/90 px-2.5 text-[0.8rem] font-semibold leading-snug text-slate-600 ring-1 ring-inset ring-slate-200/70 min-[380px]:text-[0.86rem] sm:px-3.5 sm:py-0.5 sm:text-[1.02rem]">
-              <b className="font-bold text-slate-800">인공지능 전환</b>
-              <span className="text-slate-400">(AI Transformation)</span>
-              <span className="hidden sm:inline"> — 일하는 방식을 AI로 바꾸는 일입니다</span>
-            </span>
+          {/* AX 를 처음 보는 분이 대부분이라 단어 바로 옆 괄호로 뜻을 밝힌다.
+              "설계자가 설계하는" 이 되지 않게 뒤 동사는 "만드는" 으로 둔다. */}
+          <p className="text-center text-[0.95rem] font-semibold leading-snug text-slate-600 min-[380px]:text-[1.0rem] sm:text-[1.25rem]">
+            9년차 경영컨설턴트 &amp; AX 설계자가 만드는 중소기업 맞춤형 AX
+            <span className="font-medium text-slate-500">(AI 트랜스포메이션 · 인공지능 전환)</span>
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-center text-[0.78rem] font-medium leading-snug text-slate-500 min-[380px]:gap-x-2 min-[380px]:text-[0.86rem] sm:mt-3.5 sm:gap-x-3 sm:text-[1.0rem] sm:leading-normal">
             {trustItems.map((t, i) => (
@@ -126,23 +119,20 @@ export default function GatewayPage() {
               (출원번호·명칭 원문은 공개하지 않는다). */}
           <div className="mt-2.5 border-t border-slate-200/80 pt-2.5 sm:mt-5 sm:pt-5">
             <div className="border-l-2 border-[#D47A4A]/45 pl-3.5 sm:pl-5">
-              <div className="flex flex-col items-start gap-1.5 text-left sm:flex-row sm:items-center sm:gap-6">
-                <p className="max-w-md break-keep text-[0.9rem] leading-relaxed text-slate-600 sm:max-w-none sm:text-[1.08rem]">
-                  업무 자동화 · 다음 행동 추천 · 기업 상태 분석 등{' '}
-                  <b className="whitespace-nowrap font-black text-[#D47A4A]">AX 핵심기술 특허 {AX_PATENT_COUNT}건 출원</b>
-                </p>
-                {/* PC 에서는 같은 줄에 붙여 첫 화면 높이를 늘리지 않는다 (역할 선택 카드가 밀리면 안 된다) */}
+              {/* 별도 안내 버튼 없이, 주황색 특허 문구 자체를 눌러 5건을 펼친다 */}
+              <p className="max-w-md break-keep text-[0.9rem] leading-relaxed text-slate-600 sm:max-w-none sm:text-[1.08rem]">
+                업무 자동화 · 다음 행동 추천 · 기업 상태 분석 등{' '}
                 <button
                   type="button"
                   onClick={() => setTechOpen((v) => !v)}
                   aria-expanded={techOpen}
                   aria-controls="gateway-patent-techs"
-                  className="inline-flex min-h-9 shrink-0 items-center gap-1.5 text-[0.84rem] font-bold text-slate-500 underline underline-offset-4 transition-colors hover:text-[#D47A4A] sm:ml-1 sm:text-[0.95rem]"
+                  className="inline-flex items-baseline gap-1 whitespace-nowrap rounded font-black text-[#D47A4A] underline decoration-[#D47A4A]/35 underline-offset-4 transition-colors hover:text-[#B35E32] hover:decoration-[#B35E32]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D47A4A]/60"
                 >
-                  어떤 기술인지 보기
-                  <span aria-hidden className={techOpen ? 'rotate-180 transition-transform' : 'transition-transform'}>▾</span>
+                  AX 핵심기술 특허 {AX_PATENT_COUNT}건 출원
+                  <span aria-hidden className={techOpen ? 'inline-block rotate-180 transition-transform' : 'inline-block transition-transform'}>▾</span>
                 </button>
-              </div>
+              </p>
 
               {techOpen && (
                 <ol id="gateway-patent-techs" className="animate-fade-in mt-2 space-y-1.5 sm:mt-3 sm:space-y-2">

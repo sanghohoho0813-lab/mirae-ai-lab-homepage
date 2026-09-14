@@ -1,6 +1,6 @@
 // 미래AI랩이 직접 기획·개발한 레퍼런스 — 홈 포트폴리오의 단일 소스.
 //
-//  - AX_PLATFORM_SAMPLES: 대표 포트폴리오 10종. 내부 운영 AX + 고객/거래처 플랫폼 + AI 기능이
+//  - AX_PLATFORM_SAMPLES: 대표 포트폴리오 12종. 내부 운영 AX + 고객/거래처 플랫폼 + AI 기능이
 //    한 시스템으로 연결된 데모. 카드에서 AX 화면·고객 화면을 각각 열 수 있다.
 //  - PORTFOLIO_SAMPLES: 초기 MVP 레퍼런스 10종. 업종·아이디어의 폭을 보여주는 보조 그룹.
 //
@@ -52,7 +52,7 @@ export type AxPlatformSample = {
   alt: string
 }
 
-/** 대표 포트폴리오 — 내부 AX + 플랫폼 + AI가 한 세트인 데모 10종 */
+/** 대표 포트폴리오 — 내부 AX + 플랫폼 + AI가 한 세트인 데모 12종 */
 export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
   {
     slug: 'materix',
@@ -171,6 +171,30 @@ export const AX_PLATFORM_SAMPLES: AxPlatformSample[] = [
     imgSm: '/portfolio/ax/gounsot-sm.webp',
     axImg: '/portfolio/ax/gounsot-ax.webp',
     alt: '고운솥 식당 고객 화면',
+  },
+  {
+    slug: 'nexmart',
+    name: 'NEXMART',
+    industry: '유통·커머스',
+    line: '재고·배송예정·발주·재구매와 AI 추천이 연결된 종합유통 AX',
+    axUrl: 'https://sample22-theta.vercel.app/ax',
+    customerUrl: 'https://sample22-theta.vercel.app/',
+    img: '/portfolio/ax/nexmart.webp',
+    imgSm: '/portfolio/ax/nexmart-sm.webp',
+    axImg: '/portfolio/ax/nexmart-ax.webp',
+    alt: 'NEXMART 종합유통 고객 화면',
+  },
+  {
+    slug: 'morfit',
+    name: 'MORFIT',
+    industry: '패션·의류',
+    line: '상품·재입고·핏/반품·기획전과 AI 스타일 추천이 연결된 멀티브랜드 패션 AX',
+    axUrl: 'https://sample21-eight.vercel.app/ax',
+    customerUrl: 'https://sample21-eight.vercel.app/',
+    img: '/portfolio/ax/morfit.webp',
+    imgSm: '/portfolio/ax/morfit-sm.webp',
+    axImg: '/portfolio/ax/morfit-ax.webp',
+    alt: 'MORFIT 멀티브랜드 패션 플랫폼 고객 화면',
   },
 ]
 
