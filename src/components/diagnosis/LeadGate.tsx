@@ -6,7 +6,8 @@
 import { useEffect, useRef, useState } from 'react'
 import type { LeadFormData } from '../../types/businessDiagnosis'
 import { PRIVACY_CONSENT, PRIVACY_CONSENT_VERSION } from '../../config/privacyConsent'
-import { CONSULT_COMPANY_FIELDS, CONSULT_INTEREST_AREAS, CONSULT_METHODS } from '../../lib/consultApi'
+import { CONSULT_COMPANY_FIELDS, CONSULT_METHODS } from '../../lib/consultApi'
+import InterestPicker from '../consult/InterestPicker'
 
 type Props = {
   submitting: boolean
@@ -137,23 +138,8 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         {/* 함께 검토하고 싶은 분야 — 결과화면에서 고른 값이 그대로 이어진다 */}
         <div>
           <label className={labelCls}>함께 검토하고 싶은 분야 (선택)</label>
-          <div className="mt-1.5 flex flex-wrap gap-2">
-            {CONSULT_INTEREST_AREAS.map((area) => {
-              const on = interests.includes(area)
-              return (
-                <button
-                  key={area}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => onInterestsChange(on ? interests.filter((x) => x !== area) : [...interests, area])}
-                  className={`min-h-11 rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
-                    on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  {on ? '✓ ' : ''}{area}
-                </button>
-              )
-            })}
+          <div className="mt-1.5">
+            <InterestPicker idPrefix="lg" value={interests} onChange={onInterestsChange} />
           </div>
         </div>
 

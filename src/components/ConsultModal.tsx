@@ -3,7 +3,8 @@
 // programSelect(핵심 프로그램 신청) 모드는 3단계 위저드로, 그 외(상세·장바구니 등)는 기존 단일 화면으로 렌더합니다.
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_INTEREST_AREAS, CONSULT_METHODS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
+import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_METHODS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
+import InterestPicker from './consult/InterestPicker'
 import {
   PROGRAM_CHOICES,
   BUILD_LEVEL_CHOICES,
@@ -672,27 +673,12 @@ export default function ConsultModal({
     </div>
   )
 
-  // 상품 목록이 넘어오지 않는 상담(예: AX 상세 안내)에서는 분야만 체크하게 둔다
+  // 상품 목록이 넘어오지 않는 상담(예: AX 상세 안내)에서는 목차별 분야만 체크하게 둔다
   const areasBlock = topicGroups.length === 0 && (
     <div>
       <p className={labelClass}>함께 검토하고 싶은 분야 <span className="font-normal text-slate-400">(선택)</span></p>
-      <div className="mt-1.5 flex flex-wrap gap-2">
-        {CONSULT_INTEREST_AREAS.map((area) => {
-          const on = areas.includes(area)
-          return (
-            <button
-              key={area}
-              type="button"
-              aria-pressed={on}
-              onClick={() => setAreas((v) => (on ? v.filter((x) => x !== area) : [...v, area]))}
-              className={`min-h-11 rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
-                on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              {on ? '✓ ' : ''}{area}
-            </button>
-          )
-        })}
+      <div className="mt-1.5">
+        <InterestPicker idPrefix="cm" value={areas} onChange={setAreas} />
       </div>
     </div>
   )

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import type { AxFitProblem, AxFitReport as Report, SeverityTone } from '../../types/businessDiagnosis'
 import { GRADE_META } from '../../lib/businessDiagnosisEngine'
 import { isInAppBrowser, isIos, runPrint } from '../../lib/printPage'
-import { CONSULT_INTEREST_AREAS } from '../../lib/consultApi'
+import InterestPicker from '../consult/InterestPicker'
 
 type Props = {
   report: Report
@@ -251,30 +251,15 @@ export default function AxFitReportView({
         </ol>
       </section>
 
-      {/* 함께 검토하고 싶은 분야 — 메인 결과와 분리된 선택 항목. 썸네일 없이 분야 이름만 고른다. */}
+      {/* 함께 검토하고 싶은 분야 — 메인 결과와 분리된 선택 항목. 썸네일·가격 없이 목차별로 고른다. */}
       {onGrowthInterestsChange && !submitted && (
-        <section className="mt-6 rounded-xl border border-slate-200 bg-white px-4 py-4 print:hidden">
+        <section className="mt-6 rounded-2xl border border-slate-200 bg-white px-4 py-4 print:hidden sm:px-5">
           <p className="text-[0.95rem] font-bold text-slate-800">함께 검토하고 싶은 분야가 있으신가요? (선택)</p>
           <p className="mt-0.5 text-xs leading-snug text-slate-500">
             AX 과정에서 만들어지는 데이터·기술·실증성과는 다른 분야에서도 근거로 쓰일 수 있습니다. 고르신 분야는 상담 때 함께 다룹니다.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {CONSULT_INTEREST_AREAS.map((area) => {
-              const on = growthInterests.includes(area)
-              return (
-                <button
-                  key={area}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => onGrowthInterestsChange(on ? growthInterests.filter((x) => x !== area) : [...growthInterests, area])}
-                  className={`min-h-11 rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
-                    on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  {on ? '✓ ' : ''}{area}
-                </button>
-              )
-            })}
+          <div className="mt-3">
+            <InterestPicker idPrefix="fit" value={growthInterests} onChange={onGrowthInterestsChange} />
           </div>
         </section>
       )}
