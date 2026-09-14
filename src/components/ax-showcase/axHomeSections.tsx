@@ -1,5 +1,6 @@
 // 섹션 모음 — Hero·월 5개사는 홈에서, 세 가지 가치·5단계 방법론은 정책자금 상세페이지에서 사용한다.
 // 한 섹션에서는 하나의 주장만 전달하고, 주장 바로 아래 증명(화면·산출물·근거)을 배치한다.
+import AxSampleStrip from './AxSampleStrip'
 import { AX_CORE_VALUES, AX_METHOD_STEPS, AX_SELECTION_DECLINE, AX_SELECTION_PRIORITY } from '../../data/axPackages'
 
 const band = 'px-5 py-16 sm:px-6 sm:py-24'
@@ -7,7 +8,8 @@ const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
 /** SECTION 1 — Hero. "경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX"가 5초 안에 읽히게 한다.
- *  배지 · 한 문장 · 두 문단까지만 두고, 키워드 칩과 버튼은 두지 않는다. 문장 자체가 첫인상이 되게 한다.
+ *  배지 · 한 문장 · 두 문단, 그리고 바로 아래 직접 만든 화면 22개까지가 첫인상이다.
+ *  키워드 칩과 버튼은 두지 않는다.
  *  정책자금·정부지원사업·투자는 AX 의 목적이 아니라 "그 변화를 더 강하게 설명할 수 있는 자리"로만 말한다.
  *  승인·선정을 약속하는 표현은 절대 쓰지 않는다. */
 export function AxHeroV2() {
@@ -41,6 +43,12 @@ export function AxHeroV2() {
           그 변화를 <b className="font-bold text-[#E8B89A]">정책자금 · 정부지원사업 · 투자</b>에서<br className="hidden sm:block" />{' '}
           더 강하게 설명할 수 있는 <b className="font-bold text-[#FAFAF8]">회사의 성장 증거</b>로 만듭니다.
         </p>
+
+        {/* 문장 바로 아래 — 설명 대신 실제로 만든 화면 22개.
+            좌우 여백을 걷어내 화면 끝까지 흐르게 하되, 배경은 히어로 그대로라 경계가 보이지 않는다. */}
+        <div style={{ animationDelay: '0.58s' }} className="hero-anim -mx-5 mt-8 max-[359px]:mt-6 sm:-mx-6 sm:mt-10">
+          <AxSampleStrip />
+        </div>
       </div>
     </section>
   )

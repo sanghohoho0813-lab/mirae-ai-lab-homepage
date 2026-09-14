@@ -8,7 +8,6 @@ import BusinessHeader from '../components/business/BusinessHeader'
 import BusinessStickyCta from '../components/business/BusinessStickyCta'
 import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
 import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
-import AxSampleStrip from '../components/ax-showcase/AxSampleStrip'
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
 import { AX_GUIDE_PATH, BUSINESS_NAV } from '../lib/businessRoutes'
 import { useHashScroll, useReturnScroll } from '../lib/businessPageScroll'
@@ -96,10 +95,6 @@ export default function BusinessServicesPage() {
       <div ref={heroRef}>
         <AxHeroV2 />
       </div>
-
-      {/* 히어로 다음은 글이 아니라 화면 — 직접 만든 22개를 가로 한 줄로 스쳐 지나가게 둔다.
-          세로 공간을 적게 쓰면서 "아 이런 걸 만드는 회사구나"가 바로 오게 하는 자리다. */}
-      <AxSampleStrip />
 
       {/* ── 스토리 01~03 (Drive 1.1 … 3.7) ───────────────────────────────────────
           01 계획보다 강한 증거 / 02 이런 상황이신가요
