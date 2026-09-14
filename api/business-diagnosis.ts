@@ -461,13 +461,20 @@ export default async function handler(req: any, res: any) {
       updated_at: new Date().toISOString(),
     }
 
-    async function upsertSession(status?: string, currentStage?: number) {
+    // 응답 뒤로 미룬 쓰기 작업 — 제출 응답을 붙잡아 둘 이유가 없는 것들
+    const deferredWrites: Array<Promise<unknown>> = []
+
+    // deferUpdate: 세션 스냅샷 갱신을 응답 뒤로 미룬다. 제출 경로에서는 이 갱신이
+    // 리드 저장을 막을 이유가 없고(새 리드일 때는 뒤에서 어차피 다시 갱신한다) 왕복 한 번을 줄인다.
+    async function upsertSession(status?: string, currentStage?: number, deferUpdate = false) {
       const { data: existing } = await admin.from('business_diagnosis_sessions').select('id, lead_id, status, utm_source').eq('session_token', sessionToken).maybeSingle()
       if (existing) {
         const patch: Record<string, unknown> = { ...sessionRow }
         if (status && SESSION_STATUS.includes(status) && existing.status !== 'submitted') patch.status = status
         if (currentStage) patch.current_stage = Math.min(3, Math.max(1, Number(currentStage) || 1))
-        await admin.from('business_diagnosis_sessions').update(patch).eq('id', existing.id)
+        const write = admin.from('business_diagnosis_sessions').update(patch).eq('id', existing.id)
+        if (deferUpdate) deferredWrites.push(Promise.resolve(write))
+        else await write
         return existing
       }
       const { data: created, error } = await admin
@@ -569,7 +576,7 @@ export default async function handler(req: any, res: any) {
         contactMethod: contactMethod || undefined,
       })
 
-      const s = await upsertSession('submitted')
+      const s = await upsertSession('submitted', undefined, true)
 
       const leadFields = {
         company_name: companyName,
@@ -643,6 +650,7 @@ export default async function handler(req: any, res: any) {
       res.status(200).json({ ok: true, leadId })
 
       const after = await Promise.allSettled([
+        withTimeout(Promise.allSettled(deferredWrites), 5000, '세션 갱신'),
         withTimeout(
           Promise.resolve(
             admin.from('business_diagnosis_events').insert({
@@ -684,10 +692,9 @@ export default async function handler(req: any, res: any) {
           '알림 메일',
         ),
       ])
+      const afterLabels = ['세션 갱신', '이벤트 기록', '알림 메일']
       for (const [i, r] of after.entries()) {
-        if (r.status === 'rejected') {
-          console.error(`[business-diagnosis] 응답 후 작업 실패(${i === 0 ? '이벤트 기록' : '알림 메일'}):`, detailOf(r.reason))
-        }
+        if (r.status === 'rejected') console.error(`[business-diagnosis] 응답 후 작업 실패(${afterLabels[i]}):`, detailOf(r.reason))
       }
       return
     }
