@@ -934,8 +934,8 @@ export default function ConsultModal({
                   <path d="M4 12.5l5 5L20 6.5" />
                 </svg>
               </div>
-              <p className="mt-4 text-base font-bold text-slate-900">{serverMessage || '상담 신청이 접수되었습니다.'}</p>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">담당자가 확인 후 남겨주신 연락처로 연락드리겠습니다.</p>
+              <p className="mt-4 text-lg font-black text-slate-900">상담 신청이 완료되었습니다</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">담당 컨설턴트가 순차적으로 연락드리겠습니다.</p>
               <button
                 type="button"
                 onClick={onClose}

@@ -300,18 +300,30 @@ export default async function handler(req: any, res: any) {
       </div>
     </div>`
 
-    // 4) Resend 모듈 동적 import
+    // 4) 저장이 끝났으면 응답을 먼저 보낸다.
+    //    메일(Resend 왕복 + 모듈 로드)을 기다리느라 제출이 몇 초씩 걸렸고, 함수 실행시간 상한에
+    //    걸리면 저장은 됐는데 화면에는 오류가 뜨는 일이 있었다. Node 런타임은 핸들러가 끝날 때까지
+    //    살아 있으므로 응답 뒤에도 메일은 그대로 나간다.
+    //    ⚠️ 저장에 실패했다면(leadId 없음) 메일이 유일한 전달 수단이므로 예전처럼 끝까지 기다렸다가 결과를 알린다.
+    const respondedEarly = !!leadId
+    if (respondedEarly) {
+      res.status(200).json({ ok: true, message: '상담 신청이 접수되었습니다. 확인 후 빠르게 연락드리겠습니다.', leadId })
+    }
+
+    // 5) Resend 모듈 동적 import
     let resend: { emails: { send: (opts: unknown) => Promise<{ data?: { id?: string }; error?: unknown }> } }
     try {
       const mod: any = await import('resend')
       resend = new mod.Resend(apiKey)
     } catch (e) {
+      console.error('[consult] resend import error:', detailOf(e))
+      if (respondedEarly) return
       return res
         .status(500)
         .json({ ok: false, message: '메일 모듈 로드에 실패했습니다.', debugCode: 'resend_import', detail: detailOf(e) })
     }
 
-    // 5) 발송
+    // 6) 발송
     const subjectTag = source ? `상담·${source}` : '상담'
     const { data, error } = await resend.emails.send({
       from,
@@ -324,16 +336,19 @@ export default async function handler(req: any, res: any) {
 
     if (error) {
       console.error('[consult] resend send error:', detailOf(error))
+      if (respondedEarly) return
       return res
         .status(502)
         .json({ ok: false, message: '메일 전송에 실패했습니다. 잠시 후 다시 시도해주세요.', debugCode: 'resend_error', detail: detailOf(error) })
     }
 
+    if (respondedEarly) return
     return res
       .status(200)
       .json({ ok: true, message: '상담 신청이 접수되었습니다. 확인 후 빠르게 연락드리겠습니다.', id: data?.id, leadId })
   } catch (error) {
     console.error('[consult] unhandled error:', detailOf(error))
+    if (res.headersSent) return
     return res.status(500).json({
       ok: false,
       message: '메일 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',

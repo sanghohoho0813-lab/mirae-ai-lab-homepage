@@ -11,6 +11,7 @@ import DiagnosisQuestion from '../components/diagnosis/DiagnosisQuestion'
 import DiagnosisProgress from '../components/diagnosis/DiagnosisProgress'
 import AxFitReportView from '../components/diagnosis/AxFitReport'
 import LeadGate from '../components/diagnosis/LeadGate'
+import SubmitDoneOverlay from '../components/diagnosis/SubmitDoneOverlay'
 import { AX_FIT_INFO, getInlineFeedback, stageQuestions } from '../data/businessDiagnosisQuestions'
 import { computeAxFit } from '../lib/businessDiagnosisEngine'
 import { GROWTH_INTEREST_KEY, submitLead, syncSession, trackEvent } from '../lib/businessDiagnosisApi'
@@ -30,6 +31,8 @@ export default function BusinessDiagnosisPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [consultationConsented, setConsultationConsented] = useState(false)
+  // 제출 직후 한 번만 뜨는 접수 완료 알림
+  const [submitDone, setSubmitDone] = useState(false)
   const [hasSaved, setHasSaved] = useState<boolean>(() => {
     const s = loadSession()
     return Boolean(s && !s.completed && Object.keys(s.answers).length > 0)
@@ -249,6 +252,7 @@ export default function BusinessDiagnosisPage() {
       trackEvent(sRef.current.sessionId, 'result_unlocked', leadId)
       setScreen('report')
       window.scrollTo(0, 0)
+      setSubmitDone(true)
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : '저장 중 문제가 발생했습니다.')
     } finally {
@@ -346,6 +350,8 @@ export default function BusinessDiagnosisPage() {
       </main>
 
       {screen === 'start' && <LegalFooter />}
+
+      <SubmitDoneOverlay open={submitDone} onClose={() => setSubmitDone(false)} consultationConsented={consultationConsented} />
     </div>
   )
 }

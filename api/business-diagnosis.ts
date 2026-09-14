@@ -13,6 +13,17 @@ function detailOf(e: unknown): string {
   return String(e).slice(0, 180)
 }
 
+/** 뒷정리 작업이 함수 실행시간 상한까지 매달리지 않도록 상한을 둔다. */
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>
+  return Promise.race([
+    p,
+    new Promise<T>((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} 시간 초과 (${ms}ms)`)), ms)
+    }),
+  ]).finally(() => clearTimeout(timer)) as Promise<T>
+}
+
 // ── 진단 결과 알림 메일 (Resend) ──────────────────────────
 // submit 시점에 대표자에게 진단 요약을 이메일로 발송. inquiry.ts 와 동일한 env 사용.
 //   RESEND_API_KEY(필수) · INQUIRY_TO_EMAIL(기본 sanghohoho0813@gmail.com) · INQUIRY_FROM_EMAIL
@@ -601,13 +612,6 @@ export default async function handler(req: any, res: any) {
           .eq('id', s.id)
       }
 
-      await admin.from('business_diagnosis_events').insert({
-        session_id: s.id,
-        event_type: 'lead_submitted',
-        event_key: leadId,
-        payload: { grade: scored.grade, score: scored.total },
-      })
-
       // 단계별 한글 응답(클라이언트가 라벨 변환) — HTML 제거·길이 제한
       const answersDisplay = Array.isArray(body.answersDisplay)
         ? body.answersDisplay
@@ -631,42 +635,68 @@ export default async function handler(req: any, res: any) {
         }
       }
 
-      // 진단 결과 알림 메일 (실패해도 저장/응답은 정상 처리)
-      try {
-        await sendDiagnosisEmail({
-          companyName,
-          repName,
-          phone,
-          email,
-          businessType,
-          industry,
-          contactMethod,
-          preferredContactTime,
-          consultationConsent,
-          marketingConsent,
-          grade: scored.grade,
-          score: scored.total,
-          flags: scored.flags,
-          completedStage: sm.completedStage !== undefined ? clampStage(sm.completedStage) : undefined,
-          stoppedAfterStage: sm.stoppedAfterStage === true,
-          depth: sm.diagnosisDepth !== undefined ? strip(sm.diagnosisDepth, 20) : undefined,
-          summary: body.resultSummary && typeof body.resultSummary === 'object' ? body.resultSummary : {},
-          interests,
-          recProducts: body.recommendedProducts,
-          answers,
-          answersDisplay,
-          companyProfile: Object.keys(companyProfile).length ? companyProfile : undefined,
-        })
-      } catch (mailErr) {
-        console.error('[business-diagnosis] 알림 메일 발송 실패:', detailOf(mailErr))
-      }
+      // 리드는 위에서 이미 저장됐으므로 여기서 바로 응답한다.
+      // 알림 메일·이벤트 기록은 응답 뒤에 처리한다 — 메일(Resend 왕복 + 모듈 로드)을 기다리느라
+      // 제출 응답이 몇 초씩 걸렸고, 함수 실행시간 상한에 걸리면 저장은 됐는데 화면에는
+      // 오류가 뜨는 일이 있었다. Node 런타임은 핸들러가 끝날 때까지 살아 있으므로
+      // 응답 이후의 작업도 그대로 수행된다.
+      res.status(200).json({ ok: true, leadId })
 
-      return res.status(200).json({ ok: true, leadId })
+      const after = await Promise.allSettled([
+        withTimeout(
+          Promise.resolve(
+            admin.from('business_diagnosis_events').insert({
+              session_id: s.id,
+              event_type: 'lead_submitted',
+              event_key: leadId,
+              payload: { grade: scored.grade, score: scored.total },
+            }),
+          ),
+          5000,
+          '이벤트 기록',
+        ),
+        withTimeout(
+          sendDiagnosisEmail({
+            companyName,
+            repName,
+            phone,
+            email,
+            businessType,
+            industry,
+            contactMethod,
+            preferredContactTime,
+            consultationConsent,
+            marketingConsent,
+            grade: scored.grade,
+            score: scored.total,
+            flags: scored.flags,
+            completedStage: sm.completedStage !== undefined ? clampStage(sm.completedStage) : undefined,
+            stoppedAfterStage: sm.stoppedAfterStage === true,
+            depth: sm.diagnosisDepth !== undefined ? strip(sm.diagnosisDepth, 20) : undefined,
+            summary: body.resultSummary && typeof body.resultSummary === 'object' ? body.resultSummary : {},
+            interests,
+            recProducts: body.recommendedProducts,
+            answers,
+            answersDisplay,
+            companyProfile: Object.keys(companyProfile).length ? companyProfile : undefined,
+          }),
+          9000,
+          '알림 메일',
+        ),
+      ])
+      for (const [i, r] of after.entries()) {
+        if (r.status === 'rejected') {
+          console.error(`[business-diagnosis] 응답 후 작업 실패(${i === 0 ? '이벤트 기록' : '알림 메일'}):`, detailOf(r.reason))
+        }
+      }
+      return
     }
 
     return res.status(400).json({ ok: false, message: '알 수 없는 요청입니다.', debugCode: 'bad_action' })
   } catch (error) {
     console.error('[business-diagnosis] error:', detailOf(error)) // 개인정보 미포함
+    // 이미 성공 응답을 보낸 뒤(메일·이벤트 단계)라면 응답을 덮어쓰지 않는다
+    if (res.headersSent) return
     return res.status(500).json({ ok: false, message: '저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', debugCode: 'unhandled', detail: detailOf(error) })
   }
 }
