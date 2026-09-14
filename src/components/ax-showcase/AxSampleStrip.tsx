@@ -5,7 +5,7 @@ import { AX_PLATFORM_SAMPLES, PORTFOLIO_SAMPLES } from '../../data/portfolioSamp
 // 히어로 안에 들어가는 블록이라 배경을 따로 깔지 않는다(경계선이 보이면 안 된다).
 //
 // 두 줄이 서로 반대 방향으로 아주 천천히 흐른다.
-//   위: 업종별 AX + 고객 플랫폼 12
+//   위: 업종별 AX+고객플랫폼, 고객포털 12
 //   아래: 사업화 아이디어 MVP 10
 // 손을 대면(스와이프·휠·클릭) 그 줄은 멈추고 평범한 가로 스크롤이 된다.
 //
@@ -155,7 +155,7 @@ function Row({ items, dir, label, count }: { items: StripItem[]; dir: 1 | -1; la
 export default function AxSampleStrip() {
   return (
     <div id="samples" className="scroll-mt-16 space-y-4 sm:space-y-5">
-      <Row label="업종별 AX + 고객 플랫폼" count={axItems.length} items={axItems} dir={1} />
+      <Row label="업종별 AX+고객플랫폼, 고객포털" count={axItems.length} items={axItems} dir={1} />
       <Row label="사업화 아이디어 MVP(최소 기능 제품)" count={mvpItems.length} items={mvpItems} dir={-1} />
       <p className="px-5 text-[0.82rem] leading-relaxed text-slate-500 sm:px-6 sm:text-[0.9rem]">
         눌러보시면 실제 화면이 열립니다. 모두 미래AI랩이 직접 만든 자체 레퍼런스이며, 화면 속 수치는 가상의 시연 데이터입니다.

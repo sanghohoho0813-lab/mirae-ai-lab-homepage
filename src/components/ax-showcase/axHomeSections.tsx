@@ -14,14 +14,15 @@ const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-90
  *  승인·선정을 약속하는 표현은 절대 쓰지 않는다. */
 export function AxHeroV2() {
   return (
-    <section className="relative flex min-h-[calc(100svh-53px)] items-center overflow-hidden bg-[#050B11]">
+    <section className="relative overflow-hidden bg-[#050B11]">
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#050B11_0%,#111820_48%,#050B11_100%)]" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
-      {/* 칩·버튼을 뺀 만큼 문장이 화면 가운데에서 넉넉하게 자리잡게 둔다.
+      {/* 문장 묶음이 첫 화면을 가득 채운다 — 샘플은 화면 경계 바로 아래에서 시작해,
+          스크롤을 조금만 내리면 "업종별 AX…" 줄부터 눈에 들어온다.
           320px 같은 작은 화면에서는 문단이 두 개라 여백부터 줄여 한 화면에 담는다. */}
-      <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 max-[359px]:pb-9 max-[359px]:pt-7 sm:px-6 sm:pb-20 sm:pt-14`}>
+      <div className={`relative flex min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-10 pt-12 max-[359px]:pb-6 max-[359px]:pt-7 sm:px-6 sm:pb-12 sm:pt-14`}>
         {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 (기준 대비 1.1배) */}
         <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.99rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[1.078rem] sm:px-4 sm:text-[1.155rem]">
           경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX
@@ -43,10 +44,12 @@ export function AxHeroV2() {
           그 변화를 <b className="font-bold text-[#E8B89A]">정책자금 · 정부지원사업 · 투자</b>에서<br className="hidden sm:block" />{' '}
           더 강하게 설명할 수 있는 <b className="font-bold text-[#FAFAF8]">회사의 성장 증거</b>로 만듭니다.
         </p>
+      </div>
 
-        {/* 문장 바로 아래 — 설명 대신 실제로 만든 화면 22개.
-            좌우 여백을 걷어내 화면 끝까지 흐르게 하되, 배경은 히어로 그대로라 경계가 보이지 않는다. */}
-        <div style={{ animationDelay: '0.58s' }} className="hero-anim -mx-5 mt-8 max-[359px]:mt-6 sm:-mx-6 sm:mt-10">
+      {/* 첫 화면 경계 바로 아래 — 설명 대신 실제로 만든 화면 22개.
+          히어로 안이라 배경 경계가 보이지 않지만, 자리로는 "다음 장"처럼 읽힌다. */}
+      <div className={`relative w-full ${wrap} px-5 pb-16 pt-4 sm:px-6 sm:pb-20 sm:pt-6`}>
+        <div className="-mx-5 sm:-mx-6">
           <AxSampleStrip />
         </div>
       </div>
