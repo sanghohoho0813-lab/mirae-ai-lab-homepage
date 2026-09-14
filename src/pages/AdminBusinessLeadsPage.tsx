@@ -64,7 +64,12 @@ const GRADE_TONE: Record<string, string> = {
   C: 'bg-slate-200 text-slate-600',
 }
 
+// 한글 표기로 바꾸기 전에 저장된 리드도 계속 색이 붙도록 영문 키를 함께 남겨 둔다
 const AX_TONE: Record<string, string> = {
+  '최우선 검토': 'bg-red-100 text-red-700',
+  '전면 구축 후보': 'bg-orange-100 text-orange-800',
+  '작게 시작': 'bg-amber-100 text-amber-800',
+  '지금은 정비 먼저': 'bg-blue-50 text-blue-700',
   'HIGH PRIORITY': 'bg-red-100 text-red-700',
   'FULL AX CANDIDATE': 'bg-orange-100 text-orange-800',
   'LITE AX': 'bg-amber-100 text-amber-800',

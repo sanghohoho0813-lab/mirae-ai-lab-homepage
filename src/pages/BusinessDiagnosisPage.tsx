@@ -14,6 +14,7 @@ import LeadGate from '../components/diagnosis/LeadGate'
 import { AX_FIT_INFO, getInlineFeedback, stageQuestions } from '../data/businessDiagnosisQuestions'
 import { computeAxFit } from '../lib/businessDiagnosisEngine'
 import { GROWTH_INTEREST_KEY, submitLead, syncSession, trackEvent } from '../lib/businessDiagnosisApi'
+import { CONSULT_INTEREST_AREAS } from '../lib/consultApi'
 import { captureUtmOnce, clearSession, loadSession, newSession, saveResultToHistory, saveSession } from '../lib/businessDiagnosisStorage'
 import type { AxFitReport, DiagnosisSession, InlineFeedback, LeadFormData } from '../types/businessDiagnosis'
 
@@ -202,12 +203,14 @@ export default function BusinessDiagnosisPage() {
     setScreen('start')
   }
 
-  // 성장·정책 관심 — 메인 결과와 분리된 확인 항목. interests 에 라벨로 저장해 상담 메일에 그대로 전달.
-  const growthInterest = session.interests.includes(GROWTH_INTEREST_KEY)
-  function setGrowthInterest(v: boolean) {
+  // 함께 검토하고 싶은 분야 — 메인 결과와 분리된 선택 항목. interests 에 분야 이름으로 저장해
+  // 상담 메일에 그대로 전달한다. 하나라도 고르면 예전 단일 키도 같이 남겨 서버 플래그와 호환시킨다.
+  const AREAS = CONSULT_INTEREST_AREAS as readonly string[]
+  const growthInterests = session.interests.filter((k) => AREAS.includes(k))
+  function setGrowthInterests(v: string[]) {
     const s = sRef.current
-    const rest = s.interests.filter((k) => k !== GROWTH_INTEREST_KEY)
-    persist({ ...s, interests: v ? [...rest, GROWTH_INTEREST_KEY] : rest })
+    const rest = s.interests.filter((k) => k !== GROWTH_INTEREST_KEY && !AREAS.includes(k))
+    persist({ ...s, interests: v.length ? [...rest, ...v, GROWTH_INTEREST_KEY] : rest })
   }
 
   // 상담 신청 폼(게이트)으로 이동
@@ -318,8 +321,8 @@ export default function BusinessDiagnosisPage() {
             report={report}
             submitted={submitted}
             consultationConsented={consultationConsented}
-            growthInterest={growthInterest}
-            onGrowthInterestChange={setGrowthInterest}
+            growthInterests={growthInterests}
+            onGrowthInterestsChange={setGrowthInterests}
             onWantConsult={openGate}
             onRestart={handleRestart}
             onPrint={() => trackEvent(sRef.current.sessionId, 'report_printed', '1')}
@@ -331,7 +334,13 @@ export default function BusinessDiagnosisPage() {
             <button type="button" onClick={() => setScreen('report')} className="mb-2 text-sm font-semibold text-slate-500 hover:text-slate-900">
               ← 결과로 돌아가기
             </button>
-            <LeadGate submitting={submitting} errorMessage={submitError} onSubmit={handleSubmitLead} />
+            <LeadGate
+              submitting={submitting}
+              errorMessage={submitError}
+              interests={growthInterests}
+              onInterestsChange={setGrowthInterests}
+              onSubmit={handleSubmitLead}
+            />
           </div>
         )}
       </main>

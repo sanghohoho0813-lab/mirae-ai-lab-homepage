@@ -8,10 +8,10 @@
 //  - 내부 담당자 (10번, 최대 3)         → 15점
 //
 // 등급
-//  - NO-GO            : 점수 35 미만
-//  - LITE AX          : 35~54, 또는 고유 업무가 약해(9번 ≤ 1) 기성 도구로 해결될 가능성이 큰 경우(점수 70 미만)
-//  - FULL AX CANDIDATE: 55 이상이고 고유 업무가 분명한 경우
-//  - HIGH PRIORITY    : 75 이상 + 고유 업무 분명 + 대표 의존(2·8번 합 ≥ 4) + 데이터 축적 가능성(7번 ≥ 2)
+//  - NO_GO  '지금은 정비 먼저'   : 점수 35 미만
+//  - LITE   '작게 시작'         : 35~54, 또는 고유 업무가 약해(9번 ≤ 1) 기성 도구로 해결될 가능성이 큰 경우(점수 70 미만)
+//  - FULL   '전면 구축 후보'    : 55 이상이고 고유 업무가 분명한 경우
+//  - HIGH   '최우선 검토'       : 75 이상 + 고유 업무 분명 + 대표 의존(2·8번 합 ≥ 4) + 데이터 축적 가능성(7번 ≥ 2)
 import type { AxFitGrade, AxFitProblem, AxFitReport, DiagnosisAnswers, SeverityTone } from '../types/businessDiagnosis'
 import { DEGREE_VALUE, DIAGNOSIS_VERSION, OWNER_VALUE } from '../data/businessDiagnosisQuestions'
 
@@ -31,25 +31,25 @@ const round5 = (n: number) => Math.max(0, Math.min(100, Math.round(n / 5) * 5))
 
 export const GRADE_META: Record<AxFitGrade, { label: string; desc: string; headline: string; tone: SeverityTone }> = {
   NO_GO: {
-    label: 'NO-GO',
+    label: '지금은 정비 먼저',
     desc: '현재는 별도 AX 구축보다 기존 업무와 도구를 먼저 정리하는 편이 적합합니다.',
     headline: '지금은 AX 구축보다 정리가 먼저입니다.',
     tone: 'blue',
   },
   LITE: {
-    label: 'LITE AX',
+    label: '작게 시작',
     desc: '전체 시스템보다 일부 반복업무 또는 연결구간부터 작게 개선하는 것을 권장합니다.',
     headline: '작게 시작하는 Lite AX가 맞습니다.',
     tone: 'amber',
   },
   FULL: {
-    label: 'FULL AX CANDIDATE',
+    label: '전면 구축 후보',
     desc: '회사 고유의 업무흐름을 시스템화하고 AI 판단을 연결할 가치가 높은 상태입니다.',
     headline: 'Full AX를 검토할 가치가 높은 회사입니다.',
     tone: 'orange',
   },
   HIGH: {
-    label: 'HIGH PRIORITY',
+    label: '최우선 검토',
     desc: '업무복잡도·대표 의존·데이터 축적 가능성을 볼 때 우선적으로 AX를 검토할 가치가 높습니다.',
     headline: '우선적으로 AX를 검토할 가치가 높습니다.',
     tone: 'red',

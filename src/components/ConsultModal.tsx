@@ -3,7 +3,7 @@
 // programSelect(핵심 프로그램 신청) 모드는 3단계 위저드로, 그 외(상세·장바구니 등)는 기존 단일 화면으로 렌더합니다.
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_METHODS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
+import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_INTEREST_AREAS, CONSULT_METHODS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
 import {
   PROGRAM_CHOICES,
   BUILD_LEVEL_CHOICES,
@@ -22,6 +22,11 @@ const CONTACT_EMAIL = 'sanghohoho0813@gmail.com'
 const inputClass =
   'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
 const labelClass = 'mb-1.5 block text-sm font-semibold text-slate-800'
+
+// ⚠️ 기본값을 인라인 []/{} 로 두면 렌더마다 새 참조가 되어, 아래 "열릴 때 초기화" effect 가
+//    매 입력마다 다시 돌면서 폼을 비우고 스크롤을 맨 위로 되돌린다. 반드시 모듈 상수로 둔다.
+const NO_TOPIC_GROUPS: ConsultTopicGroup[] = []
+const NO_CONTEXT_ROWS: ConsultContextRow[] = []
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -96,22 +101,28 @@ export default function ConsultModal({
   open,
   onClose,
   source,
-  contextRows = [],
+  contextRows = NO_CONTEXT_ROWS,
   heading = '상담 신청',
   intro = '연락처를 남겨주시면 담당자가 확인 후 빠르게 연락드립니다. 남겨주신 상품·선택 내용은 그대로 함께 전달됩니다.',
   submitLabel = '상담 신청하기',
-  topicGroups = [],
+  topicGroups = NO_TOPIC_GROUPS,
   preselectProduct,
   showContactMethod = false,
   showCompanyFields = false,
   programSelect = false,
   preselectProgram,
 }: ConsultModalProps) {
+  // 부모가 onClose 를 인라인 함수로 넘겨도 초기화 effect 가 다시 돌지 않도록 ref 로 붙잡는다
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+
   const [status, setStatus] = useState<Status>('idle')
   const [serverMessage, setServerMessage] = useState('')
   const [agree, setAgree] = useState(false)
   const [agreeError, setAgreeError] = useState(false)
   const [topics, setTopics] = useState<string[]>([])
+  // 상품 목록이 없는 일반 상담에서는 썸네일 없이 분야 이름만 고르게 한다
+  const [areas, setAreas] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
   const [method, setMethod] = useState('')
   const [company, setCompany] = useState<Record<string, string>>({})
@@ -192,6 +203,7 @@ export default function ConsultModal({
     // 현재 상품은 미리 선택하고, 그 상품이 속한 목차를 펼쳐 둠
     const preGroup = preselectProduct ? topicGroups.find((g) => g.products.some((p) => p.name === preselectProduct)) : undefined
     setTopics(preselectProduct ? [preselectProduct] : [])
+    setAreas([])
     setExpanded(preGroup ? [preGroup.title] : topicGroups.length ? [topicGroups[0].title] : [])
     setMethod('')
     setCompany({})
@@ -226,7 +238,7 @@ export default function ConsultModal({
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose()
+        onCloseRef.current()
         return
       }
       // 포커스 트랩 — Tab 이 모달 밖으로 나가지 않도록(숨긴 단계 필드는 offsetParent 로 제외)
@@ -253,7 +265,7 @@ export default function ConsultModal({
       document.body.style.overflow = prevOverflow
       window.removeEventListener('keydown', onKey)
     }
-  }, [open, onClose, preselectProduct, topicGroups, preselectProgram])
+  }, [open, preselectProduct, topicGroups, preselectProgram])
 
   // 단계 전환 시 내부 스크롤 최상단 + 해당 단계 제목으로 포커스 이동(입력창 자동 포커스는 피해 모바일 키보드 방지)
   useEffect(() => {
@@ -359,6 +371,7 @@ export default function ConsultModal({
       ...programRows,
       ...axRows,
       ...(topics.length ? [{ label: '관심 상품', value: topics.join(', ') }] : []),
+      ...(areas.length ? [{ label: '관심 분야', value: areas.join(', ') }] : []),
       ...(method ? [{ label: '상담 희망 방식', value: method }] : []),
       ...companyRows,
     ]
@@ -655,6 +668,31 @@ export default function ConsultModal({
           <Chips label={AX_FORM.interestModules.label} options={AX_FORM.interestModules.options} values={axModules} onToggle={toggleIn(setAxModules)} />
           <p className="mt-2 rounded-lg bg-white px-3 py-2 text-[0.75rem] leading-relaxed text-slate-500 ring-1 ring-blue-100">{AX_FORM.interestModules.note}</p>
         </div>
+      </div>
+    </div>
+  )
+
+  // 상품 목록이 넘어오지 않는 상담(예: AX 상세 안내)에서는 분야만 체크하게 둔다
+  const areasBlock = topicGroups.length === 0 && (
+    <div>
+      <p className={labelClass}>함께 검토하고 싶은 분야 <span className="font-normal text-slate-400">(선택)</span></p>
+      <div className="mt-1.5 flex flex-wrap gap-2">
+        {CONSULT_INTEREST_AREAS.map((area) => {
+          const on = areas.includes(area)
+          return (
+            <button
+              key={area}
+              type="button"
+              aria-pressed={on}
+              onClick={() => setAreas((v) => (on ? v.filter((x) => x !== area) : [...v, area]))}
+              className={`min-h-11 rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
+                on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              {on ? '✓ ' : ''}{area}
+            </button>
+          )
+        })}
       </div>
     </div>
   )
@@ -959,6 +997,7 @@ export default function ConsultModal({
                     </div>
                     {methodBlock}
                     {topicsBlock}
+                    {areasBlock}
                     {axConsentBlock}
                     {reviewBlock}
                     {agreeBlock}
@@ -973,6 +1012,7 @@ export default function ConsultModal({
                   {companyNameBlock}
                   {companyFieldsBlock}
                   {topicsBlock}
+                  {areasBlock}
                   {messageBlock}
                   {agreeBlock}
                   {errorBlock}

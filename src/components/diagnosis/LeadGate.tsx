@@ -1,14 +1,19 @@
-// AX Fit 상담 신청 — 결과를 본 뒤 연락처만 남기는 폼. 상담 신청 모달(ConsultModal)과 동일한 톤/필드.
+// AX Fit 상담 신청 — 일반 상담 신청(ConsultModal)과 같은 항목을 받는다.
+// 연락처 + 회사 정보(업력·업종·연매출·직원 수·지역) + 함께 검토하고 싶은 분야까지 한 폼에서 받고,
+// 제출은 진단 리드(/api/business-diagnosis)로 보내 10문항 답변·AX Fit 결과와 함께 남긴다.
 // 개인정보 동의(필수)와 상담/마케팅 동의(선택)는 분리, 기본 미체크.
-// ⚠️ 10문항 답변과 AX Fit 결과는 제출 시 함께 넘어간다. 상품 선택은 두지 않는다(진단은 진단만).
+// 상품(썸네일) 선택은 두지 않는다 — 분야 이름만 고른다.
 import { useEffect, useRef, useState } from 'react'
 import type { LeadFormData } from '../../types/businessDiagnosis'
 import { PRIVACY_CONSENT, PRIVACY_CONSENT_VERSION } from '../../config/privacyConsent'
-import { CONSULT_METHODS } from '../../lib/consultApi'
+import { CONSULT_COMPANY_FIELDS, CONSULT_INTEREST_AREAS, CONSULT_METHODS } from '../../lib/consultApi'
 
 type Props = {
   submitting: boolean
   errorMessage: string | null
+  /** 결과화면에서 이미 고른 분야 — 이 폼에서 이어서 고칠 수 있다 */
+  interests: string[]
+  onInterestsChange: (v: string[]) => void
   onSubmit: (form: LeadFormData & { privacyConsentVersion: string; honeypot?: string; formElapsedMs: number }) => void
 }
 
@@ -16,12 +21,14 @@ const inputCls =
   'w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
 const labelCls = 'block text-sm font-bold text-slate-700'
 
-export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) {
+export default function LeadGate({ submitting, errorMessage, interests, onInterestsChange, onSubmit }: Props) {
   const [companyName, setCompanyName] = useState('')
   const [repName, setRepName] = useState('')
   const [phone, setPhone] = useState('010-')
   const [email, setEmail] = useState('')
   const [contactMethod, setContactMethod] = useState('')
+  // 일반 상담 신청과 같은 회사 정보 — 서버가 허용하는 다섯 개 키 그대로 보낸다
+  const [company, setCompany] = useState<Record<string, string>>({})
   const [privacyOk, setPrivacyOk] = useState(false)
   const [consultOk, setConsultOk] = useState(false)
   const [marketingOk, setMarketingOk] = useState(false)
@@ -47,6 +54,7 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
       phone: phoneDigits,
       email: email.trim().slice(0, 120) || undefined,
       contactMethod: contactMethod || undefined,
+      companyProfile: Object.keys(company).length ? company : undefined,
       privacyConsent: privacyOk,
       consultationConsent: consultOk,
       marketingConsent: marketingOk,
@@ -92,6 +100,60 @@ export default function LeadGate({ submitting, errorMessage, onSubmit }: Props) 
           <div>
             <label htmlFor="lg-email" className={labelCls}>이메일 (선택)</label>
             <input id="lg-email" className={`${inputCls} mt-1.5`} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@company.com" inputMode="email" maxLength={120} />
+          </div>
+        </div>
+
+        {/* 회사 정보 — 일반 상담 신청과 같은 항목. 모두 선택이라 부담 없이 넘어갈 수 있다. */}
+        <div className="rounded-2xl border border-slate-200 p-4">
+          <p className={labelCls}>회사 정보 (선택)</p>
+          <p className="mt-0.5 text-xs text-slate-500">알려주시면 상담 전에 맞는 방향을 미리 준비해 둡니다.</p>
+          <div className="mt-3 space-y-3">
+            {CONSULT_COMPANY_FIELDS.map((f) => (
+              <div key={f.key}>
+                <p className="text-[0.82rem] font-semibold text-slate-500">{f.label}</p>
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {f.options.map((opt) => {
+                    const on = company[f.key] === opt
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => setCompany((c) => ({ ...c, [f.key]: on ? '' : opt }))}
+                        className={`min-h-10 rounded-lg border px-3 py-1.5 text-[0.86rem] font-semibold transition ${
+                          on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 함께 검토하고 싶은 분야 — 결과화면에서 고른 값이 그대로 이어진다 */}
+        <div>
+          <label className={labelCls}>함께 검토하고 싶은 분야 (선택)</label>
+          <div className="mt-1.5 flex flex-wrap gap-2">
+            {CONSULT_INTEREST_AREAS.map((area) => {
+              const on = interests.includes(area)
+              return (
+                <button
+                  key={area}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => onInterestsChange(on ? interests.filter((x) => x !== area) : [...interests, area])}
+                  className={`min-h-11 rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
+                    on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {on ? '✓ ' : ''}{area}
+                </button>
+              )
+            })}
           </div>
         </div>
 

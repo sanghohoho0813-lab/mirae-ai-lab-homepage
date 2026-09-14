@@ -44,6 +44,20 @@ export const CONSULT_COMPANY_FIELDS: { key: string; label: string; options: stri
   { key: '지역', label: '사업장 지역', options: ['서울', '경기', '강원', '충청', '전라', '경상', '그 외'] },
 ]
 
+/**
+ * 함께 검토하고 싶은 분야 — 썸네일·상품 없이 분야 이름만 고른다.
+ * AX Fit 결과화면과 상담 폼이 같은 목록을 쓴다.
+ * ⚠️ 서버는 interests 에 '정책|R&D|성장' 이 있으면 growth_interest 플래그를 붙인다.
+ */
+export const CONSULT_INTEREST_AREAS = [
+  '정책자금',
+  '고용지원금',
+  'R&D 과제',
+  '기업인증',
+  '복지기금',
+  '절세',
+] as const
+
 export type ConsultPayload = {
   name: string
   contact: string

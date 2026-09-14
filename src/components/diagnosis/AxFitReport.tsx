@@ -7,14 +7,15 @@ import { useEffect, useState } from 'react'
 import type { AxFitProblem, AxFitReport as Report, SeverityTone } from '../../types/businessDiagnosis'
 import { GRADE_META } from '../../lib/businessDiagnosisEngine'
 import { isInAppBrowser, isIos, runPrint } from '../../lib/printPage'
+import { CONSULT_INTEREST_AREAS } from '../../lib/consultApi'
 
 type Props = {
   report: Report
   submitted: boolean
   consultationConsented: boolean
-  /** 성장·정책 전략 함께 검토 관심 (메인 결과와 분리) */
-  growthInterest?: boolean
-  onGrowthInterestChange?: (v: boolean) => void
+  /** 함께 검토하고 싶은 분야 — 메인 결과와 분리해서, 분야 이름만 여러 개 고른다 */
+  growthInterests?: string[]
+  onGrowthInterestsChange?: (v: string[]) => void
   onWantConsult: () => void
   onRestart: () => void
   onPrint?: () => void
@@ -112,8 +113,8 @@ export default function AxFitReportView({
   report,
   submitted,
   consultationConsented,
-  growthInterest = false,
-  onGrowthInterestChange,
+  growthInterests = [],
+  onGrowthInterestsChange,
   onWantConsult,
   onRestart,
   onPrint,
@@ -250,22 +251,32 @@ export default function AxFitReportView({
         </ol>
       </section>
 
-      {/* 성장·정책 관심 — 메인 결과와 분리된 작은 확인 항목 */}
-      {onGrowthInterestChange && !submitted && (
-        <label className="mt-6 flex cursor-pointer items-start gap-2.5 rounded-xl border border-slate-200 bg-white px-4 py-3.5 print:hidden">
-          <input
-            type="checkbox"
-            checked={growthInterest}
-            onChange={(e) => onGrowthInterestChange(e.target.checked)}
-            className="mt-0.5 h-5 w-5 shrink-0 accent-slate-900"
-          />
-          <span className="min-w-0">
-            <span className="block text-[0.95rem] font-bold text-slate-800">정책·R&D·기업성장 전략도 함께 검토하시겠습니까?</span>
-            <span className="mt-0.5 block text-xs leading-snug text-slate-500">
-              AX 도입 과정에서 만들어지는 데이터·기술·실증성과는 향후 정책지원·R&D·기업성장 전략에서도 활용 가능한 근거가 될 수 있습니다. 상담 시 함께 다룹니다.
-            </span>
-          </span>
-        </label>
+      {/* 함께 검토하고 싶은 분야 — 메인 결과와 분리된 선택 항목. 썸네일 없이 분야 이름만 고른다. */}
+      {onGrowthInterestsChange && !submitted && (
+        <section className="mt-6 rounded-xl border border-slate-200 bg-white px-4 py-4 print:hidden">
+          <p className="text-[0.95rem] font-bold text-slate-800">함께 검토하고 싶은 분야가 있으신가요? (선택)</p>
+          <p className="mt-0.5 text-xs leading-snug text-slate-500">
+            AX 과정에서 만들어지는 데이터·기술·실증성과는 다른 분야에서도 근거로 쓰일 수 있습니다. 고르신 분야는 상담 때 함께 다룹니다.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {CONSULT_INTEREST_AREAS.map((area) => {
+              const on = growthInterests.includes(area)
+              return (
+                <button
+                  key={area}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => onGrowthInterestsChange(on ? growthInterests.filter((x) => x !== area) : [...growthInterests, area])}
+                  className={`min-h-11 rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
+                    on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {on ? '✓ ' : ''}{area}
+                </button>
+              )
+            })}
+          </div>
+        </section>
       )}
 
       {/* 상담 CTA — 제출 전에만 */}
