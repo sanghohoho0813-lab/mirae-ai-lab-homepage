@@ -18,11 +18,12 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
       <h1 className="animate-rise-in mt-3 text-[1.6rem] font-black leading-[1.3] tracking-tight text-slate-900 [animation-delay:60ms] sm:text-[2.2rem]">
         우리 회사는<br className="sm:hidden" /> 어디부터 바꿔야 할까요?
       </h1>
-      <p className="animate-rise-in mt-4 max-w-lg text-base leading-relaxed text-slate-600 [animation-delay:120ms] sm:text-lg">
-        모든 회사에 Full AX가 필요한 것은 아닙니다.
+      <p className="animate-rise-in mt-4 max-w-lg break-keep text-base leading-relaxed text-slate-600 [animation-delay:120ms] sm:text-lg">
+        모든 회사가 <b className="font-bold text-slate-900">전면 구축</b>까지 갈 필요는 없습니다.
       </p>
-      <p className="animate-rise-in mt-1.5 max-w-lg text-base leading-relaxed text-slate-600 [animation-delay:150ms] sm:text-lg">
-        현재 업무방식과 시스템을 기준으로<br className="sm:hidden" /> No-Go / Lite / Full AX 가능성을 먼저 판단합니다.
+      <p className="animate-rise-in mt-1.5 max-w-lg break-keep text-base leading-relaxed text-slate-600 [animation-delay:150ms] sm:text-lg">
+        지금 쓰는 업무방식과 시스템을 먼저 보고,<br className="sm:hidden" />{' '}
+        <b className="font-bold text-slate-900">정비가 먼저인지 · 작게 시작할지 · 전면 구축이 맞는지</b>부터 판단합니다.
       </p>
 
       {/* 결과 등급 4단계 미리보기 */}

@@ -61,7 +61,7 @@ export type AxFitProblem = {
 export type AxFitReport = {
   version: number
   grade: AxFitGrade
-  /** 화면 표기 — NO-GO / LITE AX / FULL AX CANDIDATE / HIGH PRIORITY */
+  /** 화면 표기 — 지금은 정비 먼저 / 작게 시작 / 전면 구축 후보 / 최우선 검토 */
   gradeLabel: string
   /** 등급 설명 한 문장 */
   gradeDesc: string

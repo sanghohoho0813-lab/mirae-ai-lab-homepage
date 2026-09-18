@@ -39,13 +39,13 @@ export const GRADE_META: Record<AxFitGrade, { label: string; desc: string; headl
   LITE: {
     label: '작게 시작',
     desc: '전체 시스템보다 일부 반복업무 또는 연결구간부터 작게 개선하는 것을 권장합니다.',
-    headline: '작게 시작하는 Lite AX가 맞습니다.',
+    headline: '작게 시작하는 편이 맞습니다.',
     tone: 'amber',
   },
   FULL: {
     label: '전면 구축 후보',
     desc: '회사 고유의 업무흐름을 시스템화하고 AI 판단을 연결할 가치가 높은 상태입니다.',
-    headline: 'Full AX를 검토할 가치가 높은 회사입니다.',
+    headline: '전면 구축을 검토할 가치가 높은 회사입니다.',
     tone: 'orange',
   },
   HIGH: {
@@ -167,21 +167,21 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
           title: '지금은 구축보다 정리',
           points: [
             '지금 쓰는 도구(엑셀·카톡·ERP)가 각각 무엇을 맡는지 역할부터 정리합니다.',
-            '반복 입력이나 확인 업무가 눈에 띄게 늘어나는 시점에 Lite AX부터 검토합니다.',
+            '반복 입력이나 확인 업무가 눈에 띄게 늘어나는 시점에, 작게 시작하는 범위부터 검토합니다.',
           ],
         }
       : grade === 'LITE'
         ? {
-            title: 'Lite AX — 가장 자주 끊기는 구간부터 작게',
+            title: '작게 시작 — 가장 자주 끊기는 구간부터',
             points: [...clusterPoints, '전체 시스템이 아니라 가장 자주 끊기는 한 구간부터 연결합니다.'],
           }
         : grade === 'FULL'
           ? {
-              title: 'Full AX 후보 — 회사 고유 업무흐름의 시스템화',
+              title: '전면 구축 후보 — 회사 고유 업무흐름의 시스템화',
               points: [...clusterPoints, 'AI 판단(위험·우선순위·다음 행동)을 붙일 업무를 함께 선정합니다.'],
             }
           : {
-              title: '우선 검토 — Full AX 설계',
+              title: '최우선 검토 — 전면 구축 설계',
               points: [...clusterPoints, '대표 의존을 줄이는 운영 화면과 AI 판단 구조를 함께 설계합니다.'],
             }
 
@@ -201,7 +201,7 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
     grade === 'NO_GO'
       ? ['지금 쓰는 도구를 정리하고, 반복 입력이 늘어나는 시점에 다시 진단해 보세요.', '필요하면 상담으로 현재 도구 구성만 짧게 점검할 수 있습니다.']
       : grade === 'LITE'
-        ? ['가장 자주 끊기는 업무 구간 1개를 정해, Lite AX 범위를 상담으로 확인하세요.', '내부에서 함께 쓸 담당자를 먼저 정해두면 진행이 빨라집니다.']
+        ? ['가장 자주 끊기는 업무 구간 1개를 정해, 작게 시작할 범위를 상담으로 확인하세요.', '내부에서 함께 쓸 담당자를 먼저 정해두면 진행이 빨라집니다.']
         : grade === 'FULL'
           ? ['AX Blueprint(사업·업무 분석, AX 우선순위, 구축범위, KPI 설계)부터 상담으로 시작하세요.', '1차 AX Build는 효과가 가장 큰 핵심업무 하나로 시작합니다.']
           : ['AX Fit 상담을 신청해 사업·업무 분석 일정을 먼저 잡으세요.', '대표 확인 업무를 줄이는 운영 화면부터 1차 구축 범위로 검토합니다.']

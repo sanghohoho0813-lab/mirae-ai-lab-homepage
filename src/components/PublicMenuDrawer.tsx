@@ -57,7 +57,7 @@ const BUSINESS_MENU: MenuConfig = {
   topSub: '중소기업 AX · AI Growth',
   lead: {
     label: '우리 회사 AX 가능성 진단',
-    desc: '현재 업무방식과 시스템을 기준으로 No-Go / Lite / Full AX 가능성을 먼저 판단합니다.',
+    desc: '지금 쓰는 업무방식과 시스템을 먼저 보고, 정비가 먼저인지 · 작게 시작할지 · 전면 구축이 맞는지부터 판단합니다.',
     to: '/business-diagnosis',
     match: (p) => p.startsWith('/business-diagnosis'),
   },
