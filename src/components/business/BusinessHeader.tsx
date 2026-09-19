@@ -13,11 +13,14 @@ export default function BusinessHeader({
   historyCount,
   isPreviewEmbedded,
   onOpenPreview,
+  diagnosisHref = '/business-diagnosis',
 }: {
   navLinks: readonly BusinessNavLink[]
   historyCount: number
   isPreviewEmbedded: boolean
   onOpenPreview: () => void
+  /** 진단 CTA 목적지 — 트랙 페이지는 ?interest= 를 붙여 유입을 구분한다 */
+  diagnosisHref?: string
 }) {
   const { cart } = useSavedItems()
 
@@ -63,7 +66,7 @@ export default function BusinessHeader({
             </Link>
           )}
           {/* 헤더는 폭이 빠듯해 Primary 라벨을 줄여 쓴다(1280px 에서 우측 그룹이 밀려 가로 스크롤이 생겼던 것 방지) */}
-          <Link to="/business-diagnosis" className="hidden whitespace-nowrap rounded-lg bg-[#D47A4A] px-4 py-2 text-[1.2rem] sm:text-[1.05rem] font-semibold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:inline-flex">AX 가능성 진단</Link>
+          <Link to={diagnosisHref} className="hidden whitespace-nowrap rounded-lg bg-[#D47A4A] px-4 py-2 text-[1.2rem] sm:text-[1.05rem] font-semibold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:inline-flex">AX 가능성 진단</Link>
           {/* 화면 미리보기 — 떠다니지 않고 헤더 안, 햄버거 옆에 둔다 */}
           {!isPreviewEmbedded && (
             <button

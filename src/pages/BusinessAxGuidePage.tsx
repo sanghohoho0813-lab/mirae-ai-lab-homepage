@@ -14,9 +14,10 @@ import AxFaqSection from '../components/ax-showcase/AxFaqSection'
 import AxPatentTechSection from '../components/ax-showcase/AxPatentTechSection'
 import { AxRealProjectsDeep, AxScreenShowcase } from '../components/ax-showcase/axFinalHome'
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
-import { AX_GUIDE_PATH, BUSINESS_NAV } from '../lib/businessRoutes'
+import { AX_GUIDE_PATH, AX_START_PATH, BUSINESS_NAV } from '../lib/businessRoutes'
 import { useHashScroll, useReturnScroll } from '../lib/businessPageScroll'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
+import { rememberInterest, withInterest } from '../lib/interestTrack'
 import { canonicalUrl } from '../lib/site'
 
 // AX 상세 안내 — 홈(스토리 01~03) 다음에 오는 페이지.
@@ -30,6 +31,9 @@ import { canonicalUrl } from '../lib/site'
 const PAGE_TITLE = 'AX 상세 안내 | 미래AI랩 — AX란 무엇이고, 무엇이 남는가'
 const PAGE_DESC =
   'AX의 정의부터 정책기관이 보는 기준, 실제 자금조달 기업 리서치, 미래AI랩이 직접 만든 업종별 AX 화면과 진행 중인 프로젝트, 자주 묻는 질문까지 한곳에 정리했습니다.'
+
+// AX 트랙에서 진단으로 갈 때는 ?interest=ax 를 붙여 유입을 구분한다
+const AX_DIAG_HREF = withInterest('/business-diagnosis', 'ax')
 
 export default function BusinessAxGuidePage() {
   const [historyCount] = useState(() => loadHistory().length)
@@ -66,6 +70,11 @@ export default function BusinessAxGuidePage() {
   useReturnScroll()
   useHashScroll()
 
+  // 상세 안내로 바로 들어와도(검색 유입 등) AX 트랙으로 기억한다
+  useEffect(() => {
+    rememberInterest('ax')
+  }, [])
+
   useEffect(() => {
     const el = finalCtaRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -83,12 +92,13 @@ export default function BusinessAxGuidePage() {
         historyCount={historyCount}
         isPreviewEmbedded={isPreviewEmbedded}
         onOpenPreview={openPreview}
+        diagnosisHref={AX_DIAG_HREF}
       />
 
       {/* 앞 이야기로 돌아가는 길 — 상세 안내로 바로 들어온 사람도 흐름을 알 수 있게 */}
       <div className="border-b border-white/10 bg-[#171B20]">
         <div className="mx-auto flex max-w-[1134px] items-center justify-between gap-3 px-5 py-3 sm:px-6 sm:py-4">
-          <Link to="/business-services" className="inline-flex items-center gap-1.5 text-[0.98rem] font-bold text-slate-400 transition-colors hover:text-white sm:text-[1.05rem]">
+          <Link to={AX_START_PATH} className="inline-flex items-center gap-1.5 text-[0.98rem] font-bold text-slate-400 transition-colors hover:text-white sm:text-[1.05rem]">
             <span aria-hidden>←</span> 앞 이야기 보기
           </Link>
           <span className="text-[0.9rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.0rem]">AX 상세 안내</span>
@@ -133,7 +143,7 @@ export default function BusinessAxGuidePage() {
               무엇을 개발할지 미리 고르지 않으셔도 됩니다. 지금 회사의 사업, 고객, 업무, 데이터, 성장 계획을 보고 무엇부터 하는 게 가장 효과적인지 함께 판단해드립니다.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link to="/business-diagnosis" className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto">
+              <Link to={AX_DIAG_HREF} className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto">
                 3분 기업 성장 · AX Fit 진단
               </Link>
               <a href="#portfolio" className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
@@ -153,7 +163,7 @@ export default function BusinessAxGuidePage() {
       {!isPreviewEmbedded && <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} />}
 
       {/* 이 페이지는 히어로가 없어 처음부터 하단 바를 띄운다 */}
-      <BusinessStickyCta visible={!atEnd} onOpenSampleNav={() => setSampleNavOpen(true)} />
+      <BusinessStickyCta visible={!atEnd} onOpenSampleNav={() => setSampleNavOpen(true)} diagnosisHref={AX_DIAG_HREF} />
 
       <ConsultModal
         open={consultOpen}

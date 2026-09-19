@@ -3,11 +3,20 @@
 // 답변은 localStorage 즉시 저장, 서버 동기화는 완료·제출 시점 중심. 이벤트는 중요 행동만.
 import type { AxFitReport, DiagnosisAnswers, DiagnosisSession, LeadFormData } from '../types/businessDiagnosis'
 import { AX_FIT_INFO, questions } from '../data/businessDiagnosisQuestions'
+import { interestTrackLabel, loadInterest } from './interestTrack'
 
 const API = '/api/business-diagnosis'
 
 /** 결과 화면의 "정책·R&D·기업성장 전략도 함께 검토" 관심 — 라벨 그대로 서버·메일에 전달된다 */
 export const GROWTH_INTEREST_KEY = '정책·R&D·기업성장 전략 검토 희망'
+
+// 유입 트랙(Full AX / 기술사업·MVP)을 interests[] 라벨로 함께 보낸다 — DB 마이그레이션 없이 리드·메일·관리자에 남는다
+function withTrackLabel(interests: string[]): string[] {
+  const track = loadInterest()
+  if (!track) return interests
+  const label = interestTrackLabel(track)
+  return interests.includes(label) ? interests : [...interests, label]
+}
 
 // 답변(원본 코드값)을 한글 질문/답변으로 변환 — 이메일 본문에서 그대로 사용.
 export type AnswersDisplayStage = { stage: number; name: string; items: { q: string; a: string }[] }
@@ -90,7 +99,7 @@ export async function syncSession(
       diagnosisVersion: session.diagnosisVersion,
       startedAt: session.startedAt,
       answers: session.answers,
-      interests: session.interests,
+      interests: withTrackLabel(session.interests),
       foundAdvantages: [],
       skippedBenefits: [],
       currentQuestionId: session.currentQuestionId,
@@ -130,7 +139,7 @@ export async function submitLead(
     diagnosisVersion: session.diagnosisVersion,
     startedAt: session.startedAt,
     answers: session.answers,
-    interests: session.interests,
+    interests: withTrackLabel(session.interests),
     foundAdvantages: [],
     skippedBenefits: [],
     utm: session.utm ?? null,

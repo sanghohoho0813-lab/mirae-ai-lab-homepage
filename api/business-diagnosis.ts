@@ -45,10 +45,18 @@ const INTEREST_GROUPS: Array<{ no: number; title: string; hint?: string; color: 
 ]
 // 화면에서 자동으로 덧붙는 내부 표기 — 고른 항목과 겹쳐서 메일에는 싣지 않는다
 const INTEREST_INTERNAL = ['정책·R&D·기업성장 전략 검토 희망']
+// 유입 트랙(Full AX / 기술사업·MVP) — 클라이언트가 interests[] 에 이 접두로 넣어 보낸다(src/lib/interestTrack.ts).
+// 분야 박스가 아니라 위쪽 표에 한 줄로 보여준다.
+const INTEREST_TRACK_PREFIX = '유입 트랙: '
+const isTrackLabel = (x: unknown): x is string => typeof x === 'string' && x.startsWith(INTEREST_TRACK_PREFIX)
+const trackOf = (interests: unknown[]): string => {
+  const hit = interests.find(isTrackLabel)
+  return hit ? hit.slice(INTEREST_TRACK_PREFIX.length) : ''
+}
 
 /** 고른 분야를 목차별 박스로. 고르지 않았으면 빈 문자열. */
 function renderInterestBoxes(interests: string[]): string {
-  const picked = interests.filter((x) => typeof x === 'string' && x && !INTEREST_INTERNAL.includes(x)).slice(0, 40)
+  const picked = interests.filter((x) => typeof x === 'string' && x && !INTEREST_INTERNAL.includes(x) && !isTrackLabel(x)).slice(0, 40)
   if (!picked.length) return ''
   const known = new Set<string>()
   const boxes = INTEREST_GROUPS.map((g) => {
@@ -76,7 +84,7 @@ function renderInterestBoxes(interests: string[]): string {
 
 /** 같은 내용을 텍스트 메일용으로 */
 function interestLines(interests: string[]): string {
-  const picked = interests.filter((x) => typeof x === 'string' && x && !INTEREST_INTERNAL.includes(x)).slice(0, 40)
+  const picked = interests.filter((x) => typeof x === 'string' && x && !INTEREST_INTERNAL.includes(x) && !isTrackLabel(x)).slice(0, 40)
   if (!picked.length) return ''
   const known = new Set<string>()
   const lines = INTEREST_GROUPS.map((g) => {
@@ -172,6 +180,7 @@ async function sendDiagnosisEmail(p: {
     ['이메일', p.email || '-'],
     ...(p.businessType ? ([['사업자 유형', bizTypeLabel(p.businessType)]] as Array<[string, string]>) : []),
     ['상담 방식', p.contactMethod || '-'],
+    ...((t) => (t ? ([['유입 트랙', t]] as Array<[string, string]>) : []))(trackOf(p.interests || [])),
     ...profileRows,
     ['상담 동의', p.consultationConsent ? '동의' : '미동의'],
     ['마케팅 동의', p.marketingConsent ? '동의' : '미동의'],

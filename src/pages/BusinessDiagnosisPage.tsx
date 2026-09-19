@@ -17,6 +17,8 @@ import { computeAxFit } from '../lib/businessDiagnosisEngine'
 import { GROWTH_INTEREST_KEY, submitLead, syncSession, trackEvent } from '../lib/businessDiagnosisApi'
 import { CONSULT_INTEREST_AREAS } from '../lib/consultApi'
 import { captureUtmOnce, clearSession, loadSession, newSession, saveResultToHistory, saveSession } from '../lib/businessDiagnosisStorage'
+import { AX_START_PATH, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
+import { syncInterestFromUrl } from '../lib/interestTrack'
 import type { AxFitReport, DiagnosisSession, InlineFeedback, LeadFormData } from '../types/businessDiagnosis'
 
 type Screen = 'start' | 'question' | 'report' | 'gate'
@@ -46,6 +48,10 @@ export default function BusinessDiagnosisPage() {
   const homeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const navigate = useNavigate()
   const [homeConfirm, setHomeConfirm] = useState(false)
+
+  // 유입 트랙 — 주소의 ?interest= 를 우선 적용해 기억한다. "홈으로" 는 온 트랙으로 되돌려 보낸다.
+  const [track] = useState(() => syncInterestFromUrl(window.location.search))
+  const backHref = track === 'venture-mvp' ? VENTURE_MVP_PATH : track === 'ax' ? AX_START_PATH : BUSINESS_CHOOSER_PATH
 
   // 진단 중 좌상단 로고 → 실수로 홈 이탈 방지: 첫 탭은 안내, 두 번째 탭에 이동.
   const handleBrandClick = (e: MouseEvent) => {
@@ -104,6 +110,8 @@ export default function BusinessDiagnosisPage() {
   function handleStart() {
     const fresh = newSession()
     fresh.utm = captureUtmOnce()
+    // 유입 트랙을 세션 행(utm_content)에도 남긴다 — 실제 캠페인 값이 이미 있으면 덮지 않는다
+    if (track && !fresh.utm.utmContent) fresh.utm = { ...fresh.utm, utmContent: `interest=${track}` }
     trackEvent(fresh.sessionId, 'diagnosis_started')
     void syncSession(fresh, { status: 'in_progress', currentStage: 1 })
     enter(fresh)
@@ -266,7 +274,7 @@ export default function BusinessDiagnosisPage() {
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
           <div className="flex min-w-0 items-center gap-2">
-            <BrandLogo to="/business-services" onClick={handleBrandClick} tagline={AX_FIT_INFO.name} imgClassName="h-9 max-w-[150px] sm:h-10 sm:max-w-[180px]" />
+            <BrandLogo to={backHref} onClick={handleBrandClick} tagline={AX_FIT_INFO.name} imgClassName="h-9 max-w-[150px] sm:h-10 sm:max-w-[180px]" />
             {homeConfirm && screen !== 'start' && (
               <span className="animate-fade-in whitespace-nowrap text-[0.7rem] font-bold leading-tight text-amber-600">
                 한 번 더 누르면<br className="sm:hidden" /> 홈으로 이동
@@ -276,7 +284,7 @@ export default function BusinessDiagnosisPage() {
           <div className="flex items-center gap-1.5">
             {screen === 'start' && (
               <Link
-                to="/business-services"
+                to={backHref}
                 className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 sm:inline"
               >
                 홈으로

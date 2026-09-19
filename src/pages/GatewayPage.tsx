@@ -38,8 +38,9 @@ const choices: readonly Choice[] = [
     to: '/business-services',
     icon: '🏢',
     lines: ['중소기업 대표님 또는', '예비창업가이신가요?'],
-    desc: '사업과 업무를 먼저 분석해 회사 전용 AX를 설계·구축합니다.',
-    aria: '중소기업 대표님 또는 예비창업가이신가요? 중소기업 맞춤형 AX 보기',
+    // AX 하나만 파는 것처럼 읽히지 않게 — 선택 페이지에서 AX 도입 / 기술사업·MVP 로 갈린다
+    desc: '현재 사업을 분석해 AX 도입부터 기술사업·MVP까지, 회사에 맞는 다음 성장 방향을 설계합니다.',
+    aria: '중소기업 대표님 또는 예비창업가이신가요? AX 도입과 기술사업·MVP 중 고르기',
     card: 'bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30',
     glow: 'bg-white/20',
     iconBox: 'bg-white/15 ring-1 ring-inset ring-white/20',

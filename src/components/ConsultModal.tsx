@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_METHODS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
 import InterestPicker from './consult/InterestPicker'
+import { INTEREST_LABEL, loadInterest } from '../lib/interestTrack'
 import {
   PROGRAM_CHOICES,
   BUILD_LEVEL_CHOICES,
@@ -375,6 +376,8 @@ export default function ConsultModal({
       ...(areas.length ? [{ label: '관심 분야', value: areas.join(', ') }] : []),
       ...(method ? [{ label: '상담 희망 방식', value: method }] : []),
       ...companyRows,
+      // 어느 트랙(Full AX / 기술사업·MVP)에서 온 상담인지 — 선택 페이지에서 고른 값이 여기까지 따라온다
+      ...((t) => (t ? [{ label: '유입 트랙', value: INTEREST_LABEL[t] }] : []))(loadInterest()),
     ]
     // Supabase 저장용 구조화 데이터 (다중선택은 배열 그대로)
     const structured = programSelect

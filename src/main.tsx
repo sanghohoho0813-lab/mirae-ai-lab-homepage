@@ -29,6 +29,8 @@ import MyOrdersPage from './pages/MyOrdersPage'
 import BusinessDiagnosisPage from './pages/BusinessDiagnosisPage'
 import BusinessDiagnosisResultsPage from './pages/BusinessDiagnosisResultsPage'
 import BusinessServicesPage from './pages/BusinessServicesPage'
+import AxStartPage from './pages/AxStartPage'
+import VentureMvpPage from './pages/VentureMvpPage'
 import BusinessAxGuidePage from './pages/BusinessAxGuidePage'
 import AxIndustryDetailPage from './pages/AxIndustryDetailPage'
 import BusinessServiceDetailPage from './pages/BusinessServiceDetailPage'
@@ -95,8 +97,11 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/my-orders" element={<MyOrdersPage />} />
           <Route path="/my-projects" element={<Suspense fallback={portalFallback}><MyProjectsPage /></Suspense>} />
           <Route path="/my-projects/:linkId" element={<Suspense fallback={portalFallback}><MyProjectDetailPage /></Suspense>} />
+          {/* 대표님 2-Track 선택 → ① AX 홈(ax-start) → AX 상세 안내(ax) / ② 기술사업·MVP(venture-mvp) — 모두 :slug 보다 먼저 */}
           <Route path="/business-services" element={<BusinessServicesPage />} />
-          {/* 스토리 04~12 + Preview·MVP·실제 프로젝트·FAQ — :slug 보다 먼저 와야 한다 */}
+          <Route path="/business-services/ax-start" element={<AxStartPage />} />
+          <Route path="/business-services/venture-mvp" element={<VentureMvpPage />} />
+          {/* 스토리 04~12 + Preview·MVP·실제 프로젝트·FAQ */}
           <Route path="/business-services/ax" element={<BusinessAxGuidePage />} />
           <Route path="/ax-industries/:slug" element={<AxIndustryDetailPage />} />
           <Route path="/saved" element={<SavedItemsPage />} />
