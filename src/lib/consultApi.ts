@@ -88,6 +88,9 @@ export const CONSULT_INTEREST_GROUPS: ConsultInterestGroup[] = [
     items: [
       { name: '벤처기업 인증', note: '창업 3년 이내 확인 시 법인세·소득세 5년 50% 감면(요건 충족 시)' },
       { name: '기업부설연구소', note: '정책자금·정부지원사업 가점 · R&D 세액공제 대상' },
+      // 기존 목록에 없던 항목 — 기술사업·MVP 유입에서 가장 자주 함께 묻는 분야라 추가한다.
+      // 등록·권리화 결과를 단정하지 않는다(출원과 등록은 다르다).
+      { name: '특허·IP', note: '만든 기술을 출원으로 남겨 두는 방향 검토' },
       { name: '이노비즈 인증', note: '기술혁신형 — 정책자금 우대 · 정부지원사업 선정 가점' },
       { name: '메인비즈 인증', note: '경영혁신형 — 정책자금 우대평가 · 선정 가점' },
       { name: 'ISO 인증', note: '9001·14001·45001 — 대기업 거래 · 공공입찰 · 수출 준비' },
@@ -126,8 +129,17 @@ export const CONSULT_INTEREST_GROUPS: ConsultInterestGroup[] = [
   },
 ]
 
+/**
+ * 아직 고르기 어려운 분들을 위한 항목 — 목차 밖에 따로 둔다.
+ * ⚠️ 다른 구체 항목과 함께 고를 수 없다(상호배타). 처리는 InterestPicker 한곳에서 한다.
+ */
+export const CONSULT_INTEREST_UNSURE = '아직 모르겠음'
+
 /** 위 목록을 평평하게 편 이름만 — 저장·판정용 */
-export const CONSULT_INTEREST_AREAS: readonly string[] = CONSULT_INTEREST_GROUPS.flatMap((g) => g.items.map((i) => i.name))
+export const CONSULT_INTEREST_AREAS: readonly string[] = [
+  ...CONSULT_INTEREST_GROUPS.flatMap((g) => g.items.map((i) => i.name)),
+  CONSULT_INTEREST_UNSURE,
+]
 
 /** 분야 목록 아래에 항상 붙이는 안내 — 제도 일반 정보임을 분명히 한다 */
 export const CONSULT_INTEREST_NOTE =

@@ -97,6 +97,12 @@ export type ConsultModalProps = {
   programSelect?: boolean
   /** 진행방식 초기 선택값 (PROGRAM_CHOICES 중 하나) */
   preselectProgram?: string
+  /**
+   * 신청 서비스 고정 — 방금 그 상품 상세를 다 읽고 온 유입에서, 상품을 다시 고르게 하지 않는다.
+   * 주면 상단에 "신청 서비스 ✓ …" 를 이미 선택된 상태로 보여주고, 입력 순서도 그 흐름에 맞춘다.
+   * 상품 썸네일 선택(topicGroups)은 이 모드에서 쓰지 않는다.
+   */
+  presetService?: string
 }
 
 export default function ConsultModal({
@@ -113,6 +119,7 @@ export default function ConsultModal({
   showCompanyFields = false,
   programSelect = false,
   preselectProgram,
+  presetService,
 }: ConsultModalProps) {
   // 부모가 onClose 를 인라인 함수로 넘겨도 초기화 effect 가 다시 돌지 않도록 ref 로 붙잡는다
   const onCloseRef = useRef(onClose)
@@ -372,13 +379,26 @@ export default function ConsultModal({
       ...contextRows,
       ...programRows,
       ...axRows,
+      // 신청 서비스(메인)는 맨 위에 — 추가 관심 분야와 절대 섞이지 않는다
+      ...(presetService ? [{ label: '신청 서비스', value: presetService }] : []),
       ...(topics.length ? [{ label: '관심 상품', value: topics.join(', ') }] : []),
-      ...(areas.length ? [{ label: '관심 분야', value: areas.join(', ') }] : []),
+      ...(areas.length ? [{ label: presetService ? '추가 관심 항목' : '관심 분야', value: areas.join(', ') }] : []),
       ...(method ? [{ label: '상담 희망 방식', value: method }] : []),
       ...companyRows,
-      // 어느 트랙(Full AX / 기술사업·MVP)에서 온 상담인지 — 선택 페이지에서 고른 값이 여기까지 따라온다
-      ...((t) => (t ? [{ label: '유입 트랙', value: INTEREST_LABEL[t] }] : []))(loadInterest()),
+      // 어느 트랙(Full AX / 기술사업·MVP)에서 온 상담인지 — 선택 페이지에서 고른 값이 여기까지 따라온다.
+      // 신청 서비스를 고정한 유입에서는 source·신청 서비스가 이미 같은 말을 하므로 생략한다.
+      ...((t) => (t && !presetService ? [{ label: '유입 트랙', value: INTEREST_LABEL[t] }] : []))(loadInterest()),
     ]
+    // 신청 서비스를 고정한 유입 — 기존 jsonb(structured) 안에만 담는다(스키마 변경 없음)
+    const presetStructured = presetService
+      ? {
+          service: presetService,
+          entryPoint: source,
+          companyProfile: Object.fromEntries(companyRows.map((r) => [r.label, r.value])),
+          additionalInterests: areas,
+          contactMethod: method || null,
+        }
+      : undefined
     // Supabase 저장용 구조화 데이터 (다중선택은 배열 그대로)
     const structured = programSelect
       ? {
@@ -408,7 +428,7 @@ export default function ConsultModal({
               }
             : {}),
         }
-      : undefined
+      : presetStructured
     try {
       const res = await submitConsult({ name: fullName, contact: contactVal, company: companyNameVal, message: messageVal, source, context, structured })
       setServerMessage(res.message)
@@ -676,10 +696,25 @@ export default function ConsultModal({
     </div>
   )
 
+  // 신청 서비스 고정 — 방금 그 상세페이지를 다 읽고 온 사람에게 다시 고르라고 하지 않는다.
+  // 선택 UI 가 아니라 "이미 선택됨" 표시다(다른 상품으로 바꾸는 드롭다운을 두지 않는다).
+  const serviceBlock = presetService && (
+    <div className="rounded-2xl border-2 border-[#D47A4A]/35 bg-[#E8B89A]/15 p-4">
+      <p className="text-[0.78rem] font-black uppercase tracking-wide text-[#B35E32]">신청 서비스</p>
+      <p className="mt-1.5 flex items-start gap-2 text-[1.02rem] font-black leading-snug text-[#171B20]">
+        <span aria-hidden className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#D47A4A] text-[0.72rem] text-white">✓</span>
+        {presetService}
+      </p>
+    </div>
+  )
+
   // 상품 목록이 넘어오지 않는 상담(예: AX 상세 안내)에서는 목차별 분야만 체크하게 둔다
   const areasBlock = topicGroups.length === 0 && (
     <div>
-      <p className={labelClass}>함께 검토하고 싶은 분야 <span className="font-normal text-slate-400">(선택)</span></p>
+      <p className={labelClass}>
+        {presetService ? '추가로 관심 있는 항목' : '함께 검토하고 싶은 분야'} <span className="font-normal text-slate-400">(선택)</span>
+      </p>
+      {presetService && <p className="-mt-0.5 mb-2 text-[0.8rem] leading-snug text-slate-400">복수 선택 가능합니다. 고르지 않으셔도 상담 신청됩니다.</p>}
       <div className="mt-1.5">
         <InterestPicker idPrefix="cm" value={areas} onChange={setAreas} />
       </div>
@@ -993,6 +1028,21 @@ export default function ConsultModal({
                     {errorBlock}
                   </div>
                 </>
+              ) : presetService ? (
+                // 신청 서비스가 정해진 유입 — 읽고 온 흐름 그대로:
+                // 신청 서비스 → 회사(이름·업력·업종…) → 현재 상황 → 추가 관심 → 연락처 → 동의
+                <div className="space-y-4">
+                  {contextBlock}
+                  {serviceBlock}
+                  {companyNameBlock}
+                  {companyFieldsBlock}
+                  {messageBlock}
+                  {areasBlock}
+                  {nameContactBlock}
+                  {methodBlock}
+                  {agreeBlock}
+                  {errorBlock}
+                </div>
               ) : (
                 <div className="space-y-4">
                   {contextBlock}

@@ -3,7 +3,7 @@
 // 썸네일·가격은 두지 않는다. 목차마다 번호와 색을 주어 눈으로 구분되게 하고,
 // 항목 수가 많아 목차는 접어두되 고른 목차는 계속 펼쳐 둔다.
 import { useState } from 'react'
-import { CONSULT_INTEREST_GROUPS, CONSULT_INTEREST_NOTE, type ConsultInterestTone } from '../../lib/consultApi'
+import { CONSULT_INTEREST_GROUPS, CONSULT_INTEREST_NOTE, CONSULT_INTEREST_UNSURE, type ConsultInterestTone } from '../../lib/consultApi'
 
 type Props = {
   value: string[]
@@ -44,8 +44,16 @@ export default function InterestPicker({ value, onChange, idPrefix = 'ip' }: Pro
   // 첫 목차만 펼쳐 두고, 고른 항목이 있는 목차는 항상 펼친다
   const [opened, setOpened] = useState<string[]>([CONSULT_INTEREST_GROUPS[0].title])
 
+  // '아직 모르겠음' 은 구체 항목과 같이 고를 수 없다 — 서로가 서로를 해제한다
+  const unsureOn = value.includes(CONSULT_INTEREST_UNSURE)
+
   function toggleItem(name: string) {
-    onChange(value.includes(name) ? value.filter((x) => x !== name) : [...value, name])
+    if (value.includes(name)) return onChange(value.filter((x) => x !== name))
+    onChange([...value.filter((x) => x !== CONSULT_INTEREST_UNSURE), name])
+  }
+
+  function toggleUnsure() {
+    onChange(unsureOn ? [] : [CONSULT_INTEREST_UNSURE])
   }
 
   return (
@@ -103,6 +111,35 @@ export default function InterestPicker({ value, onChange, idPrefix = 'ip' }: Pro
           </div>
         )
       })}
+      {/* 목차 밖 — 아직 고르기 어려우면 이것만 */}
+      <button
+        type="button"
+        data-interest={CONSULT_INTEREST_UNSURE}
+        aria-pressed={unsureOn}
+        onClick={toggleUnsure}
+        className={`flex min-h-12 w-full items-center gap-2.5 rounded-xl border px-3.5 py-3 text-left transition ${
+          unsureOn ? 'border-slate-500 bg-slate-100' : 'border-slate-200 bg-white hover:bg-slate-50'
+        }`}
+      >
+        <span
+          aria-hidden
+          className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-[0.78rem] font-black ${
+            unsureOn ? 'bg-slate-700 text-white' : 'bg-slate-100 text-slate-400'
+          }`}
+        >
+          ?
+        </span>
+        <span className="min-w-0">
+          <span className={`block text-[0.92rem] font-bold leading-snug ${unsureOn ? 'text-slate-900' : 'text-slate-800'}`}>
+            {unsureOn ? '✓ ' : ''}
+            {CONSULT_INTEREST_UNSURE}
+          </span>
+          <span className="mt-0.5 block break-keep text-[0.76rem] font-medium leading-snug text-slate-500">
+            무엇이 필요한지는 상담에서 함께 찾아드립니다
+          </span>
+        </span>
+      </button>
+
       <p className="pt-0.5 text-[0.72rem] leading-relaxed text-slate-400">{CONSULT_INTEREST_NOTE}</p>
     </div>
   )

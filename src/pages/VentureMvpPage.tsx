@@ -3,22 +3,28 @@
 //  - 01→15 순서 고정, 원본 비율 그대로(width:100%; height:auto), 이미지 사이 여백 없음
 //  - 첫 장만 우선 로딩, 나머지는 lazy. width/height 로 자리를 미리 잡아 CLS 를 막는다
 //  - 이미지 안에 그려진 버튼은 그림일 뿐이라, 실제 CTA 는 하단(+모바일 하단 고정)에 따로 둔다
-//  - AX 트랙과 같은 3분 진단 → 결과 → 상담 퍼널로 합류한다. ?interest=venture-mvp 로 유입을 구분한다
+//  - ⚠️ 이 페이지는 3분 AX Fit 진단으로 보내지 않는다. 상세페이지를 끝까지 읽은 사람에게
+//    다시 AX 적합도 진단을 시키지 않고, 기존 상담카드(ConsultModal)를 바로 열어 회사 정보를 받는다.
+//    (Full AX 트랙은 기존대로 진단 → 결과 → 상담 퍼널을 그대로 쓴다.)
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import BrandLogo from '../components/BrandLogo'
 import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import KakaoFloat from '../components/KakaoFloat'
+import ConsultModal from '../components/ConsultModal'
 import { VENTURE_MVP_DIR, VENTURE_MVP_IMAGES } from '../data/ventureMvpImages'
 import { AX_GUIDE_PATH, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
-import { rememberInterest, withInterest } from '../lib/interestTrack'
+import { rememberInterest } from '../lib/interestTrack'
 import { usePageMeta } from '../lib/pageMeta'
 
 const PAGE_TITLE = '기술사업 · MVP · 벤처기업확인 | 미래AI랩'
 const PAGE_DESC = '기존 사업을 분석해 기술사업 아이디어, 실제 작동하는 MVP, 벤처기업확인 신청까지 하나의 성장 스토리로 연결합니다.'
 
-const DIAG_HREF = withInterest('/business-diagnosis', 'venture-mvp')
+/** 상담 리드의 신청 경로 — consult_leads.source 와 알림 메일 제목에 그대로 들어간다 */
+const CONSULT_SOURCE = '기술사업·MVP 상세페이지 (venture-mvp)'
+/** 상담카드에 이미 선택된 상태로 표시할 메인 신청 서비스 — 추가 관심 항목과 섞이지 않는다 */
+const PRESET_SERVICE = '기술사업 · MVP · 벤처기업확인 패키지'
 // 22개 샘플(업종별 AX 12 + 아이디어 MVP 10)은 AX 상세 안내의 Preview 묶음에 이미 있다 — 같은 곳으로 보낸다
 const SAMPLES_HREF = `${AX_GUIDE_PATH}#portfolio`
 
@@ -26,6 +32,7 @@ export default function VentureMvpPage() {
   usePageMeta(PAGE_TITLE, PAGE_DESC, VENTURE_MVP_PATH)
   const [pastTop, setPastTop] = useState(false)
   const [atEnd, setAtEnd] = useState(false)
+  const [consultOpen, setConsultOpen] = useState(false)
   const ctaRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -49,7 +56,7 @@ export default function VentureMvpPage() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-[#FAFAF8] pb-[4.5rem] text-[#171B20] antialiased [word-break:keep-all] sm:pb-0">
-      {/* 작은 헤더 — 로고 · 뒤로 · 3분 체크. 이미지가 주인공이라 메뉴는 두지 않는다 */}
+      {/* 작은 헤더 — 로고 · 뒤로 · 상담 신청. 이미지가 주인공이라 메뉴는 두지 않는다 */}
       <header className="sticky top-0 z-30 border-b border-[#E7EAEE] bg-[#FAFAF8]/92 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-2 sm:px-6 sm:py-2.5">
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">
@@ -67,12 +74,13 @@ export default function VentureMvpPage() {
             </Link>
           </div>
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
-            <Link
-              to={DIAG_HREF}
+            <button
+              type="button"
+              onClick={() => setConsultOpen(true)}
               className="inline-flex min-h-9 items-center whitespace-nowrap rounded-lg bg-[#D47A4A] px-3 text-[0.86rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:min-h-10 sm:px-4 sm:text-[1rem]"
             >
-              3분 가능성 체크
-            </Link>
+              상담 신청
+            </button>
             <HeaderAccount variant="business" />
           </div>
         </div>
@@ -100,27 +108,35 @@ export default function VentureMvpPage() {
           ))}
         </div>
 
-        {/* 실제로 눌리는 CTA — 이미지 안의 버튼은 그림이다 */}
+        {/* 실제로 눌리는 CTA — 이미지 안의 버튼은 그림이다.
+            마지막 이미지가 끝나자마자 이어지도록 위쪽 경계선·여백을 두지 않는다. */}
         <div ref={ctaRef}>
-          <section className="border-t border-[#E7EAEE] bg-[#FAFAF8]">
-            <div className="mx-auto max-w-[880px] px-5 py-12 text-center sm:px-6 sm:py-16">
-              <p className="text-[0.78rem] font-black uppercase tracking-[0.2em] text-[#D47A4A]">Next Step</p>
-              <h2 className="mt-3 text-[1.5rem] font-black leading-tight tracking-tight sm:text-[2rem]">우리 회사도 가능할까요?</h2>
-              <p className="mt-2 text-[0.98rem] text-[#6B7680] sm:text-[1.05rem]">3분 · 무료 · 로그인 없이. 결과를 보고 상담 여부를 정하시면 됩니다.</p>
-              <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Link
-                  to={DIAG_HREF}
-                  className="shine-cta flex w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/25 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto"
-                >
-                  우리 회사도 가능한지 3분 체크 <span aria-hidden>→</span>
-                </Link>
+          <section className="bg-[#171B20] text-white">
+            <div className="mx-auto max-w-[880px] px-5 py-14 text-center sm:px-6 sm:py-16">
+              <p className="text-[1.02rem] font-bold text-[#E8B89A] sm:text-[1.1rem]">우리 회사도 가능할까요?</p>
+              <h2 className="mt-2.5 text-[1.65rem] font-black leading-tight tracking-tight sm:text-[2.1rem]">대표님 회사를 알려주세요.</h2>
+              <p className="mx-auto mt-3.5 max-w-md break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
+                회사명 · 업종 · 업력 등 간단한 정보만 남겨주시면<br className="hidden sm:block" /> 현재 사업을 기준으로 살펴보겠습니다.
+              </p>
+
+              {/* Primary 하나만 압도적으로 — Secondary 는 아래 텍스트 링크로 위계를 낮춘다 */}
+              <button
+                type="button"
+                onClick={() => setConsultOpen(true)}
+                className="shine-cta mx-auto mt-7 flex w-full max-w-md items-center justify-center gap-2 rounded-2xl bg-[#D47A4A] px-8 py-[1.15rem] text-[1.2rem] font-black text-[#171B20] shadow-xl shadow-[#D47A4A]/25 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:text-[1.3rem]"
+              >
+                우리 회사 기준으로 검토받기 <span aria-hidden>→</span>
+              </button>
+              <p className="mt-3 text-[0.86rem] text-slate-400">1~2분 · 무료 · 진단 없이 바로 신청</p>
+
+              <p className="mt-8">
                 <Link
                   to={SAMPLES_HREF}
-                  className="flex w-full max-w-sm items-center justify-center gap-2 rounded-xl border border-[#343B44]/25 bg-white px-7 py-4 text-[1.15rem] font-bold text-[#171B20] transition-colors hover:bg-[#E7EAEE]/60 sm:w-auto"
+                  className="inline-flex items-center gap-1.5 text-[0.95rem] font-semibold text-slate-400 underline decoration-slate-600 underline-offset-4 transition-colors hover:text-white hover:decoration-slate-300"
                 >
-                  <span aria-hidden className="text-[#D47A4A]">▦</span> 22개 샘플 먼저 보기
+                  22개 샘플 더 보기 <span aria-hidden>→</span>
                 </Link>
-              </div>
+              </p>
             </div>
           </section>
         </div>
@@ -135,14 +151,28 @@ export default function VentureMvpPage() {
           data-mvp-sticky
           className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E7EAEE] bg-[#FAFAF8]/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(23,27,32,0.08)] backdrop-blur-md sm:hidden"
         >
-          <Link
-            to={DIAG_HREF}
-            className="flex min-h-12 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-[#D47A4A] px-4 text-[1rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A]"
+          <button
+            type="button"
+            onClick={() => setConsultOpen(true)}
+            className="flex min-h-12 w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-[#D47A4A] px-4 text-[1rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A]"
           >
-            우리 회사도 가능한지 3분 체크 <span aria-hidden>→</span>
-          </Link>
+            우리 회사 기준으로 검토받기 <span aria-hidden>→</span>
+          </button>
         </div>
       )}
+
+      {/* 사이트 공통 상담카드를 그대로 재사용 — 신청 서비스만 이미 선택된 상태로 넘긴다 */}
+      <ConsultModal
+        open={consultOpen}
+        onClose={() => setConsultOpen(false)}
+        source={CONSULT_SOURCE}
+        presetService={PRESET_SERVICE}
+        heading="대표님 회사를 알려주세요."
+        intro="현재 사업을 바탕으로 어떤 기술사업과 MVP를 만들 수 있을지 상담에서 함께 살펴보겠습니다."
+        submitLabel="상담 신청하기"
+        showContactMethod
+        showCompanyFields
+      />
     </div>
   )
 }
