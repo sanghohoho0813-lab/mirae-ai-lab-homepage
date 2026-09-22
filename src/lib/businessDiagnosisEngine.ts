@@ -13,13 +13,20 @@
 //  - FULL   '전면 구축 후보'    : 55 이상이고 고유 업무가 분명한 경우
 //  - HIGH   '최우선 검토'       : 75 이상 + 고유 업무 분명 + 대표 의존(2·8번 합 ≥ 4) + 데이터 축적 가능성(7번 ≥ 2)
 import type { AxFitGrade, AxFitProblem, AxFitReport, DiagnosisAnswers, SeverityTone } from '../types/businessDiagnosis'
-import { DEGREE_VALUE, DIAGNOSIS_VERSION, OWNER_VALUE } from '../data/businessDiagnosisQuestions'
+import { DEGREE_OPTIONS, DEGREE_VALUE, DIAGNOSIS_VERSION, OWNER_VALUE } from '../data/businessDiagnosisQuestions'
 
 const PROBLEM_IDS = ['repeatInput', 'askProgress', 'toolGaps', 'manualHandoff', 'missDelay', 'priorityByMemory', 'dataUnused', 'ceoLoadGrows'] as const
+/** 점수에 들어가는 업무 문항 — 결과지의 "9개 중 N개" 는 이 목록 기준이다 */
+const PAIN_IDS = [...PROBLEM_IDS, 'uniqueWork'] as const
 
 const val = (a: DiagnosisAnswers, id: string): number => {
   const v = a[id]
   return typeof v === 'string' ? (DEGREE_VALUE[v] ?? 0) : 0
+}
+/** 고른 답을 그대로 (예: '거의 항상 그렇다') — 결과지에서 대표님 답을 되돌려 보여준다 */
+const answerLabel = (a: DiagnosisAnswers, id: string): string => {
+  const v = a[id]
+  return typeof v === 'string' ? (DEGREE_OPTIONS.find((o) => o.value === v)?.label ?? '') : ''
 }
 const ownerVal = (a: DiagnosisAnswers): number => {
   const v = a['internalOwner']
@@ -147,8 +154,7 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
   const meta = GRADE_META[grade]
 
   // 현재 가장 큰 문제 TOP 3 — 1~9번 중 강도 높은 순(동점은 질문 순서)
-  const ranked = [...PROBLEM_IDS, 'uniqueWork']
-    .map((id, i) => ({ id, i, v: val(answers, id) }))
+  const ranked = PAIN_IDS.map((id, i) => ({ id, i, v: val(answers, id) }))
     .filter((x) => x.v >= 1)
     .sort((x, y) => y.v - x.v || x.i - y.i)
     .slice(0, 3)
@@ -157,7 +163,12 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
     questionId: x.id,
     ...PROBLEM_COPY[x.id],
     tone: idx === 0 ? 'orange' : 'amber',
+    severity: x.v,
+    answerLabel: answerLabel(answers, x.id),
   }))
+
+  // '자주 그렇다' 이상으로 답한 문항 수 — 문제가 몇 군데에 퍼져 있는지 한 숫자로 보여준다
+  const painCount = PAIN_IDS.filter((id) => val(answers, id) >= 2).length
 
   // 권장 AX 방향
   const clusterPoints = topClusterPoints(answers, 2)
@@ -205,7 +216,8 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
         : grade === 'FULL'
           ? ['AX Blueprint(사업·업무 분석, AX 우선순위, 구축범위, KPI 설계)부터 상담으로 시작하세요.', '1차 AX Build는 효과가 가장 큰 핵심업무 하나로 시작합니다.']
           : ['AX Fit 상담을 신청해 사업·업무 분석 일정을 먼저 잡으세요.', '대표 확인 업무를 줄이는 운영 화면부터 1차 구축 범위로 검토합니다.']
-  if (owner === 'none' || owner === 'ceo') nextActions.push(readiness.note)
+  // ⚠️ 담당자 안내(readiness.note)는 결과지에서 '내부 담당자' 칸으로 따로 보여준다 —
+  //    여기에 또 넣으면 같은 문장이 바로 위아래에 두 번 나온다.
 
   return {
     version: DIAGNOSIS_VERSION,
@@ -216,6 +228,8 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
     headline: meta.headline,
     summary: meta.desc,
     topProblems,
+    painCount,
+    painTotal: PAIN_IDS.length,
     direction,
     nextActions,
     readiness,

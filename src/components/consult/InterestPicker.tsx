@@ -78,7 +78,7 @@ export default function InterestPicker({ value, onChange, idPrefix = 'ip' }: Pro
               </span>
               <span className="min-w-0 flex-1">
                 <span className={`block break-keep text-[0.9rem] font-bold leading-snug ${t.title}`}>{g.title}</span>
-                {g.hint && <span className="mt-0.5 block break-keep text-[0.74rem] font-medium leading-snug text-slate-500">({g.hint})</span>}
+                {g.hint && <span className="mt-0.5 block break-keep text-[0.78rem] font-medium leading-snug text-slate-500">({g.hint})</span>}
               </span>
               <span className="flex shrink-0 items-center gap-2 pt-0.5">
                 {picked > 0 && <span className={`rounded-full px-2 py-0.5 text-[0.7rem] font-black text-white ${t.num}`}>{picked}</span>}
@@ -140,7 +140,7 @@ export default function InterestPicker({ value, onChange, idPrefix = 'ip' }: Pro
         </span>
       </button>
 
-      <p className="pt-0.5 text-[0.72rem] leading-relaxed text-slate-400">{CONSULT_INTEREST_NOTE}</p>
+      <p className="pt-0.5 text-[0.78rem] leading-relaxed text-slate-500">{CONSULT_INTEREST_NOTE}</p>
     </div>
   )
 }

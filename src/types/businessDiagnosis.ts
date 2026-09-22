@@ -55,6 +55,11 @@ export type AxFitProblem = {
   /** 그대로 두면 */
   ifIgnored: string
   tone: SeverityTone
+  /** 답변 강도 1~3 (가끔·자주·거의 항상) — 없는 수치를 만들지 않고 고른 답을 그대로 쓴다.
+   *  구버전 저장 결과에는 없을 수 있어 선택값이다. */
+  severity?: number
+  /** 대표님이 고른 답 그대로 (예: '거의 항상 그렇다') */
+  answerLabel?: string
 }
 
 /** 3분 AX Fit 결과 보고서 */
@@ -71,6 +76,10 @@ export type AxFitReport = {
   summary: string
   /** 현재 가장 큰 문제 TOP 3 */
   topProblems: AxFitProblem[]
+  /** 업무 문항 중 '자주 그렇다' 이상으로 답한 개수 — 구버전 저장 결과에는 없다 */
+  painCount?: number
+  /** 업무 문항 총 개수 (현재 9) */
+  painTotal?: number
   /** 권장 AX 방향 */
   direction: { title: string; points: string[] }
   /** 다음 행동 */
