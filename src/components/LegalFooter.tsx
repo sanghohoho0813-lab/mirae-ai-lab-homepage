@@ -37,12 +37,13 @@ export default function LegalFooter({
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <BrandLogo to="/" tone={dark ? 'dark' : 'light'} imgClassName="h-9 max-w-[168px] sm:h-10 sm:max-w-[190px]" />
 
-          <nav aria-label="약관 및 정책" className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.96rem] font-semibold sm:text-sm">
+          {/* 링크마다 세로 40px 이상 탭 영역 — 폰에서 글자 높이(23px)만 눌리던 것 보완 */}
+          <nav aria-label="약관 및 정책" className="flex flex-wrap items-center gap-x-4 gap-y-0.5 text-[0.96rem] font-semibold sm:text-sm">
             {legalLinks.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
-                className={`transition-colors ${dark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'}`}
+                className={`inline-flex min-h-10 items-center transition-colors ${dark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'}`}
               >
                 {l.label}
               </Link>
@@ -63,7 +64,7 @@ export default function LegalFooter({
           </p>
           <p className="mt-1">
             고객 문의{' '}
-            <a href={`mailto:${b.contactEmail}`} className={`font-medium underline underline-offset-2 ${dark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'}`}>
+            <a href={`mailto:${b.contactEmail}`} className={`py-2.5 font-medium underline underline-offset-2 ${dark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'}`}>
               {b.contactEmail}
             </a>
             {b.contactPhone && <span> · 전화 {b.contactPhone}</span>}

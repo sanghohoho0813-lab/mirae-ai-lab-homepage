@@ -53,6 +53,30 @@ export default function BusinessDiagnosisPage() {
   const [track] = useState(() => syncInterestFromUrl(window.location.search))
   const backHref = track === 'venture-mvp' ? VENTURE_MVP_PATH : track === 'ax' ? AX_START_PATH : BUSINESS_CHOOSER_PATH
 
+  // 결과 화면 폰 하단 고정 CTA — 결과가 길어(약 4천px) 상담 버튼이 맨 아래에만 있으면 읽는 동안 행동할 곳이 없다.
+  // 첫 화면(등급)은 그대로 보여주고 조금 내린 뒤에 띄우며, 원래 CTA 카드가 보이면 숨긴다.
+  const submitted = Boolean(session.leadId)
+  const [reportScrolled, setReportScrolled] = useState(false)
+  const [closingCtaInView, setClosingCtaInView] = useState(false)
+  useEffect(() => {
+    if (screen !== 'report' || submitted) return
+    const onScroll = () => setReportScrolled(window.scrollY > 240)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    const el = document.querySelector('[data-closing-cta]')
+    const io =
+      el && typeof IntersectionObserver !== 'undefined'
+        ? new IntersectionObserver((entries) => setClosingCtaInView(entries[0]?.isIntersecting ?? false), { rootMargin: '0px 0px -48px 0px' })
+        : null
+    if (el && io) io.observe(el)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      io?.disconnect()
+      setReportScrolled(false)
+      setClosingCtaInView(false)
+    }
+  }, [screen, submitted])
+
   // 진단 중 좌상단 로고 → 실수로 홈 이탈 방지: 첫 탭은 안내, 두 번째 탭에 이동.
   const handleBrandClick = (e: MouseEvent) => {
     if (screen === 'start') return
@@ -268,7 +292,6 @@ export default function BusinessDiagnosisPage() {
     }
   }
 
-  const submitted = Boolean(session.leadId)
   return (
     <div className="flex min-h-dvh flex-col bg-white text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
@@ -343,7 +366,7 @@ export default function BusinessDiagnosisPage() {
 
         {screen === 'gate' && report && (
           <div className="mx-auto w-full max-w-[860px] px-5 pb-20 pt-6">
-            <button type="button" onClick={() => setScreen('report')} className="mb-2 text-sm font-semibold text-slate-500 hover:text-slate-900">
+            <button type="button" onClick={() => setScreen('report')} className="mb-1 inline-flex min-h-11 items-center text-sm font-semibold text-slate-500 hover:text-slate-900">
               ← 결과로 돌아가기
             </button>
             <LeadGate
@@ -358,6 +381,21 @@ export default function BusinessDiagnosisPage() {
       </main>
 
       {screen === 'start' && <LegalFooter />}
+
+      {screen === 'report' && report && !submitted && reportScrolled && !closingCtaInView && !submitDone && (
+        <div
+          data-report-sticky
+          className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-100 bg-white/95 px-5 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur-md sm:hidden print:hidden"
+        >
+          <button
+            type="button"
+            onClick={openGate}
+            className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-5 text-[1rem] font-black text-white shadow-sm transition-colors hover:bg-blue-700"
+          >
+            AX Fit 상담 신청하기 <span aria-hidden>→</span>
+          </button>
+        </div>
+      )}
 
       <SubmitDoneOverlay open={submitDone} onClose={() => setSubmitDone(false)} consultationConsented={consultationConsented} />
     </div>

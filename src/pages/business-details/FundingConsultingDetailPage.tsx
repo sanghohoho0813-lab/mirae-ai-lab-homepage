@@ -289,12 +289,17 @@ export default function FundingConsultingDetailPage() {
     <div ref={rootRef} className="min-h-screen bg-white pb-24 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          {/* 로고는 좁은 화면에서 줄어들 수 있게(min-w-0 + truncate), 우측 버튼은 줄어들지 않게(shrink-0) */}
-          <BrandLogo to="/business-services" imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]" />
-          <div className="flex shrink-0 items-center gap-2.5 sm:gap-4">
-            <Link to="/business-services" className="hidden text-[1.2rem] sm:text-[1.417rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
-            <Link to="/business-diagnosis" className="whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-[1.2rem] sm:px-4 sm:text-[1.417rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-2.5 sm:px-5">
+          {/* 로고는 좁은 화면에서 줄어들 수 있게(min-w-0 + max-w + truncate), 우측 버튼은 줄어들지 않게(shrink-0) */}
+          <BrandLogo
+            to="/business-services"
+            className="min-w-0 max-w-[calc(100vw-190px)] sm:max-w-none"
+            imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]"
+            taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+          />
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <Link to="/business-services" className="hidden text-[1.02rem] font-medium text-slate-600 transition-colors hover:text-slate-900 lg:inline">서비스몰 홈</Link>
+            <Link to="/business-diagnosis" className="whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-[0.95rem] sm:px-4 sm:text-[1.02rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700">
               3분 AX 진단
             </Link>
             <HeaderAccount />
@@ -305,7 +310,7 @@ export default function FundingConsultingDetailPage() {
       {/* Breadcrumb */}
       <div className="border-b border-slate-100 bg-slate-50/60">
         <div className="mx-auto max-w-6xl px-5 py-2.5 text-[1.1rem] text-slate-500 sm:px-6 sm:text-[1.3rem]">
-          <Link to="/business-services" className="font-medium hover:text-slate-900">서비스몰</Link>
+          <Link to="/business-services" className="py-2 font-medium hover:text-slate-900">서비스몰</Link>
           <span className="mx-1.5 text-slate-300">/</span>
           <span className="font-semibold text-slate-700">자금·지원금</span>
           <span className="mx-1.5 text-slate-300">/</span>
@@ -854,7 +859,7 @@ export default function FundingConsultingDetailPage() {
       {/* Footer */}
       <LegalFooter
         topSlot={
-          <Link to="/business-services" className="text-[0.96rem] font-semibold text-slate-500 transition-colors hover:text-slate-900 sm:text-[1.137rem]">
+          <Link to="/business-services" className="inline-flex min-h-11 items-center text-[0.96rem] font-semibold text-slate-500 transition-colors hover:text-slate-900 sm:text-[1.137rem]">
             ← 서비스몰 홈으로
           </Link>
         }

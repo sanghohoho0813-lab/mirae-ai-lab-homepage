@@ -233,9 +233,14 @@ export default function BusinessServiceDetailPage() {
     <div className="min-h-screen bg-white pb-24 text-slate-900 antialiased [word-break:keep-all] sm:pb-0">
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <BrandLogo to="/business-services" imgClassName="h-9 max-w-[160px] sm:h-10 sm:max-w-[190px]" />
-          <div className="flex items-center gap-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-5">
+          <BrandLogo
+            to="/business-services"
+            className="min-w-0 max-w-[calc(100vw-190px)] sm:max-w-none"
+            imgClassName="h-9 max-w-[150px] sm:h-10 sm:max-w-[190px]"
+            taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+          />
+          <div className="flex shrink-0 items-center gap-2 sm:gap-4">
             <Link to="/business-services" className="hidden text-[0.95rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
             <button
               type="button"
@@ -268,7 +273,7 @@ export default function BusinessServiceDetailPage() {
       {/* Breadcrumb */}
       <div className="border-b border-slate-100 bg-slate-50/60">
         <div className="mx-auto max-w-6xl px-5 py-3 text-sm text-slate-500 sm:px-6">
-          <Link to="/business-services" className="font-medium hover:text-slate-900">서비스몰</Link>
+          <Link to="/business-services" className="py-2 font-medium hover:text-slate-900">서비스몰</Link>
           <span className="mx-1.5 text-slate-300">/</span>
           <span className="font-semibold text-slate-700">{pkg.categoryLabel ?? pkg.category}</span>
           <span className="mx-1.5 text-slate-300">/</span>
@@ -685,7 +690,7 @@ export default function BusinessServiceDetailPage() {
       {/* Footer */}
       <LegalFooter
         topSlot={
-          <Link to="/business-services" className="text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900">
+          <Link to="/business-services" className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900">
             ← 서비스몰 홈으로
           </Link>
         }

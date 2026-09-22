@@ -40,18 +40,24 @@ export default function BusinessCatalogPage() {
   return (
     <div className="min-h-screen bg-white text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
-          <BrandLogo to="/business-services" imgClassName="h-9 max-w-[160px] sm:h-11 sm:max-w-[204px]" />
-          <div className="flex shrink-0 items-center gap-2.5 sm:gap-4">
+        {/* 로고(태그라인 포함)가 남은 폭만큼만 차지해야 폰·태블릿에서 가로 스크롤이 생기지 않는다 */}
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-2.5 sm:px-5">
+          <BrandLogo
+            to="/business-services"
+            className="min-w-0 max-w-[calc(100vw-190px)] sm:max-w-none"
+            imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px]"
+            taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+          />
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <Link
               to={DETAIL}
-              className="hidden text-[1.42rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline"
+              className="hidden text-[1.02rem] font-medium text-slate-600 transition-colors hover:text-slate-900 lg:inline"
             >
               정책자금 × AX
             </Link>
             <Link
               to="/business-diagnosis"
-              className="whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-[1.2rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 sm:px-4 sm:text-[1.42rem]"
+              className="whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-[0.95rem] font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 sm:px-4 sm:text-[1.02rem]"
             >
               3분 AX 진단
             </Link>
@@ -62,10 +68,10 @@ export default function BusinessCatalogPage() {
 
       {/* Breadcrumb */}
       <div className="border-b border-slate-100 bg-slate-50/60">
-        <div className="mx-auto max-w-6xl px-5 py-2.5 text-[1.1rem] text-slate-500 sm:px-6 sm:text-[1.3rem]">
-          <Link to="/business-services" className="font-medium hover:text-slate-900">서비스몰</Link>
+        <div className="mx-auto max-w-6xl px-5 py-2.5 text-[0.95rem] text-slate-500 sm:px-6 sm:text-[1.05rem]">
+          <Link to="/business-services" className="py-2 font-medium hover:text-slate-900">서비스몰</Link>
           <span className="mx-1.5 text-slate-300">/</span>
-          <Link to={DETAIL} className="font-medium hover:text-slate-900">정책자금 × AX</Link>
+          <Link to={DETAIL} className="py-2 font-medium hover:text-slate-900">정책자금 × AX</Link>
           <span className="mx-1.5 text-slate-300">/</span>
           <span className="font-semibold text-slate-700">컨설팅 상품 전체</span>
         </div>
@@ -156,7 +162,7 @@ export default function BusinessCatalogPage() {
 
       <LegalFooter
         topSlot={
-          <Link to={DETAIL} className="text-[0.96rem] font-semibold text-slate-500 transition-colors hover:text-slate-900 sm:text-sm">
+          <Link to={DETAIL} className="inline-flex min-h-11 items-center text-[0.96rem] font-semibold text-slate-500 transition-colors hover:text-slate-900 sm:text-sm">
             ← 정책자금 × AX 상세로
           </Link>
         }

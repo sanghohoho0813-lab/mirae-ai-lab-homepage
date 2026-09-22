@@ -173,7 +173,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
             <span className="min-w-0">
               <span className="text-sm font-bold text-slate-800">{PRIVACY_CONSENT.required.label}</span>
               <span className="mt-0.5 block text-xs leading-snug text-slate-500">{PRIVACY_CONSENT.required.summary}</span>
-              <button type="button" onClick={() => setPrivacyOpen((o) => !o)} className="mt-1 text-xs font-semibold text-blue-600 underline underline-offset-2">
+              <button type="button" onClick={() => setPrivacyOpen((o) => !o)} className="mt-0.5 inline-flex min-h-9 items-center text-xs font-semibold text-blue-600 underline underline-offset-2">
                 {privacyOpen ? '내용 접기' : '자세히 보기'}
               </button>
               {privacyOpen && (

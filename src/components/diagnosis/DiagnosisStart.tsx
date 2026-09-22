@@ -12,8 +12,9 @@ type Props = {
 const GRADE_CARDS = (['NO_GO', 'LITE', 'FULL', 'HIGH'] as const).map((g) => ({ key: g, ...GRADE_META[g] }))
 
 export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
+  // 폰에서는 위에서부터 읽히게(가운데 정렬은 위쪽이 비어 보인다), PC 는 세로 가운데
   return (
-    <div className="mx-auto flex min-h-[calc(100dvh-57px)] max-w-[720px] flex-col justify-center px-5 py-10 sm:py-14">
+    <div className="mx-auto flex min-h-[calc(100dvh-57px)] max-w-[720px] flex-col justify-start px-5 py-8 sm:justify-center sm:py-14">
       <p className="animate-rise-in text-sm font-black uppercase tracking-widest text-blue-600">{AX_FIT_INFO.name}</p>
       <h1 className="animate-rise-in mt-3 text-[1.6rem] font-black leading-[1.3] tracking-tight text-slate-900 [animation-delay:60ms] sm:text-[2.2rem]">
         우리 회사는<br className="sm:hidden" /> 어디부터 바꿔야 할까요?
@@ -26,18 +27,18 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
         <b className="font-bold text-slate-900">정비가 먼저인지 · 작게 시작할지 · 전면 구축이 맞는지</b>부터 판단합니다.
       </p>
 
-      {/* 결과 등급 4단계 미리보기 */}
-      <div className="mt-8 space-y-3">
+      {/* 결과 등급 4단계 미리보기 — 폰에서는 2×2 로 접어(설명 생략) 시작 버튼이 첫 화면 안에 들어오게 한다 */}
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:grid-cols-1 sm:gap-3">
         {GRADE_CARDS.map((c, i) => (
           <div
             key={c.key}
-            className="animate-rise-in flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+            className="animate-rise-in flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm sm:gap-4 sm:rounded-2xl sm:p-5"
             style={{ animationDelay: `${140 + i * 70}ms` }}
           >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-base font-black text-blue-700">{i + 1}</span>
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-blue-50 text-sm font-black text-blue-700 sm:h-11 sm:w-11 sm:rounded-xl sm:text-base">{i + 1}</span>
             <div className="min-w-0">
-              <p className="text-base font-extrabold text-slate-900">{c.label}</p>
-              <p className="mt-0.5 text-sm leading-snug text-slate-500">{c.desc}</p>
+              <p className="break-keep text-[0.92rem] font-extrabold leading-snug text-slate-900 sm:text-base">{c.label}</p>
+              <p className="mt-0.5 hidden text-sm leading-snug text-slate-500 sm:block">{c.desc}</p>
             </div>
           </div>
         ))}

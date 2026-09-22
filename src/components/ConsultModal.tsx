@@ -62,7 +62,7 @@ function Chips({
               type="button"
               onClick={() => (single ? onPick?.(opt) : onToggle?.(opt))}
               aria-pressed={on}
-              className={`rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
+              className={`min-h-10 rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
                 on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -498,7 +498,7 @@ export default function ConsultModal({
                 const on = buildLevel === lv
                 return (
                   <button key={lv} type="button" onClick={() => setBuildLevel(on ? '' : lv)} aria-pressed={on}
-                    className={`rounded-lg border px-2.5 py-1.5 text-left text-[0.8rem] leading-snug transition ${on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'}`}>
+                    className={`min-h-10 rounded-lg border px-2.5 py-1.5 text-left text-[0.8rem] leading-snug transition ${on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'}`}>
                     {lv}
                   </button>
                 )
@@ -585,7 +585,7 @@ export default function ConsultModal({
                     type="button"
                     onClick={() => pickCompany(f.key, opt)}
                     aria-pressed={on}
-                    className={`rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
+                    className={`min-h-10 rounded-lg border px-2.5 py-1.5 text-[0.85rem] transition ${
                       on ? 'border-blue-500 bg-blue-50 font-bold text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'
                     }`}
                   >
@@ -664,7 +664,7 @@ export default function ConsultModal({
                 setAxConsentAnon(e.target.checked)
                 if (e.target.checked && axConsentFb) setAxConsentError(false)
               }}
-              className="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
+              className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600"
             />
             <span className="text-[0.82rem] leading-snug text-slate-600">[필수] {AX_FORM.requiredConsents[0]}</span>
           </label>
@@ -676,7 +676,7 @@ export default function ConsultModal({
                 setAxConsentFb(e.target.checked)
                 if (e.target.checked && axConsentAnon) setAxConsentError(false)
               }}
-              className="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
+              className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600"
             />
             <span className="text-[0.82rem] leading-snug text-slate-600">[필수] {AX_FORM.requiredConsents[1]}</span>
           </label>
@@ -867,7 +867,7 @@ export default function ConsultModal({
           setAgree(e.target.checked)
           if (e.target.checked) setAgreeError(false)
         }}
-        className="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
+        className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600"
       />
       <span className={`text-[0.86rem] leading-relaxed ${agreeError ? 'text-rose-600' : 'text-slate-500'}`}>
         <b className="font-bold">[필수]</b> 상담 목적의 개인정보 수집·이용에 동의합니다.{' '}

@@ -88,7 +88,7 @@ export default function LegalPageLayout({
             <ol className="mt-3 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
               {sections.map((s, i) => (
                 <li key={s.id}>
-                  <a href={`#${s.id}`} className="text-[0.95rem] leading-snug text-slate-700 underline-offset-2 hover:text-blue-700 hover:underline">
+                  <a href={`#${s.id}`} className="inline-flex min-h-9 items-center text-[0.95rem] leading-snug text-slate-700 underline-offset-2 hover:text-blue-700 hover:underline">
                     {numbered && <span className="font-semibold text-slate-400">{i + 1}. </span>}
                     {s.heading}
                   </a>
@@ -134,7 +134,7 @@ export default function LegalPageLayout({
         </div>
 
         <div className="mt-8 print:hidden">
-          <Link to="/" className="text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900">
+          <Link to="/" className="inline-flex min-h-11 items-center text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900">
             ← 홈으로 돌아가기
           </Link>
         </div>

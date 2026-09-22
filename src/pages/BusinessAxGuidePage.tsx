@@ -95,10 +95,13 @@ export default function BusinessAxGuidePage() {
         diagnosisHref={AX_DIAG_HREF}
       />
 
+      {/* 이 페이지는 이미지 스토리라 보이는 제목이 없다 — 검색엔진·스크린리더용 h1 만 둔다 */}
+      <h1 className="sr-only">AX 상세 안내 — 경영컨설턴트가 설계하는 중소기업 맞춤형 AX</h1>
+
       {/* 앞 이야기로 돌아가는 길 — 상세 안내로 바로 들어온 사람도 흐름을 알 수 있게 */}
       <div className="border-b border-white/10 bg-[#171B20]">
-        <div className="mx-auto flex max-w-[1134px] items-center justify-between gap-3 px-5 py-3 sm:px-6 sm:py-4">
-          <Link to={AX_START_PATH} className="inline-flex items-center gap-1.5 text-[0.98rem] font-bold text-slate-400 transition-colors hover:text-white sm:text-[1.05rem]">
+        <div className="mx-auto flex max-w-[1134px] items-center justify-between gap-3 px-5 py-1.5 sm:px-6 sm:py-2.5">
+          <Link to={AX_START_PATH} className="inline-flex min-h-11 items-center gap-1.5 text-[0.98rem] font-bold text-slate-400 transition-colors hover:text-white sm:text-[1.05rem]">
             <span aria-hidden>←</span> 앞 이야기 보기
           </Link>
           <span className="text-[0.9rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.0rem]">AX 상세 안내</span>
@@ -150,7 +153,7 @@ export default function BusinessAxGuidePage() {
                 실제 AX 구축 화면 보기
               </a>
             </div>
-            <button type="button" onClick={() => setConsultOpen(true)} className="mt-4 text-[1.05rem] font-semibold text-slate-400 underline underline-offset-4 transition-colors hover:text-white">
+            <button type="button" onClick={() => setConsultOpen(true)} className="mt-3 inline-flex min-h-11 items-center px-4 text-[1.05rem] font-semibold text-slate-400 underline underline-offset-4 transition-colors hover:text-white">
               상담 신청
             </button>
           </div>

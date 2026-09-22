@@ -28,7 +28,7 @@ export default function DiagnosisProgress({ questionNumber, total, percent, onBa
             <p className="text-xs font-black uppercase tracking-wide text-blue-600">AX FIT</p>
             <p className="truncate text-sm font-bold text-slate-900">{AX_FIT_INFO.name}</p>
           </div>
-          <p className="shrink-0 whitespace-nowrap text-right text-[11px] font-semibold text-slate-400 sm:text-sm">
+          <p className="shrink-0 whitespace-nowrap text-right text-[12px] font-semibold text-slate-500 sm:text-sm">
             질문 {questionNumber} <span className="text-slate-300">/</span> {total}
           </p>
         </div>

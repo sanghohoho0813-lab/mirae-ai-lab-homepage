@@ -128,7 +128,7 @@ export default function GatewayPage() {
                   onClick={() => setTechOpen((v) => !v)}
                   aria-expanded={techOpen}
                   aria-controls="gateway-patent-techs"
-                  className="inline-flex items-baseline gap-1 whitespace-nowrap rounded font-black text-[#D47A4A] underline decoration-[#D47A4A]/35 underline-offset-4 transition-colors hover:text-[#B35E32] hover:decoration-[#B35E32]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D47A4A]/60"
+                  className="-my-2 inline-flex items-baseline gap-1 whitespace-nowrap rounded py-2 font-black text-[#D47A4A] underline decoration-[#D47A4A]/35 underline-offset-4 transition-colors hover:text-[#B35E32] hover:decoration-[#B35E32]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D47A4A]/60"
                 >
                   AX 핵심기술 특허 {AX_PATENT_COUNT}건 출원
                   <span aria-hidden className={techOpen ? 'inline-block rotate-180 transition-transform' : 'inline-block transition-transform'}>▾</span>

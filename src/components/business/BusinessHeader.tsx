@@ -43,7 +43,7 @@ export default function BusinessHeader({
           ariaLabel="미래에이아이랩 — 누르면 맨 위로, 맨 위에서 한 번 더 누르면 처음 선택화면으로"
           className="min-w-0 max-w-[calc(100vw-148px)] shrink-0 sm:max-w-none"
           imgClassName="h-9 max-w-[132px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]"
-          taglineClassName="text-[0.5rem]! tracking-[0.13em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+          taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
         />
         {/* 헤더 폭이 빠듯해 xl 이상에서 핵심 3개만 보인다. 나머지는 햄버거 메뉴에 있다. */}
         <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.02rem] font-medium text-slate-600 xl:flex">

@@ -368,7 +368,7 @@ export default function PublicMenuDrawer({
                                     {m.desc && <span className="mt-0.5 block text-xs leading-snug text-slate-300">{m.desc}</span>}
                                   </span>
                                 </span>
-                                <span className="shrink-0 rounded-md bg-slate-200 px-1.5 py-0.5 text-[10px] font-black text-slate-500">업데이트 중</span>
+                                <span className="shrink-0 rounded-md bg-slate-200 px-1.5 py-0.5 text-[11px] font-black text-slate-500">업데이트 중</span>
                               </button>
                             </li>
                           )

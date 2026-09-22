@@ -26,7 +26,8 @@ function Hotspot({ name, h }: { name: string; h: AxStoryV3Hotspot }) {
       aria-label={h.label}
       title={h.label}
       data-hotspot={name}
-      className="absolute block rounded-2xl transition-shadow hover:shadow-[0_0_0_3px_rgba(212,122,74,0.6)] focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(212,122,74,0.95)]"
+      // 그림 버튼이 폰에서 30px 안팎으로 작아지므로 최소 36px 는 눌리게 아래로 조금 키운다
+      className="absolute block min-h-9 rounded-2xl transition-shadow hover:shadow-[0_0_0_3px_rgba(212,122,74,0.6)] focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(212,122,74,0.95)]"
       style={{ left: `${h.x}%`, top: `${h.y}%`, width: `${h.w}%`, height: `${h.h}%` }}
     />
   )

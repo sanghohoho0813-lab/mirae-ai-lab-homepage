@@ -90,7 +90,7 @@ function TopProblemsSection({ items }: { items: AxFitProblem[] }) {
 // 마무리 상담 CTA — 결과를 본 뒤 바로 상담으로 (설문 응답까지 함께 전달)
 function ClosingConsultCTA({ onConsult }: { onConsult: () => void }) {
   return (
-    <section className="mt-8 print:hidden">
+    <section data-closing-cta className="mt-8 print:hidden">
       <div className="rounded-2xl border-2 border-blue-200 bg-gradient-to-b from-blue-50 to-white p-6 text-center sm:p-7">
         <h3 className="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">우리 회사 AX 방향을 함께 확인해보세요</h3>
         <p className="mx-auto mt-2 max-w-md text-[0.98rem] leading-relaxed text-slate-600">
@@ -203,7 +203,7 @@ export default function AxFitReportView({
             const on = g === report.grade
             const gt = GRADE_TONE[GRADE_META[g].tone]
             return (
-              <li key={g} className={`rounded-lg px-1.5 py-2 text-center text-[0.7rem] font-black leading-tight sm:text-[0.78rem] ${on ? gt.chip : 'bg-slate-100 text-slate-400'}`}>
+              <li key={g} className={`rounded-lg px-1 py-2 text-center text-[0.75rem] font-black leading-tight sm:text-[0.8rem] ${on ? gt.chip : 'bg-slate-100 text-slate-400'}`}>
                 {GRADE_META[g].label}
               </li>
             )

@@ -36,9 +36,7 @@ const AX_DIAG_HREF = withInterest('/business-diagnosis', 'ax')
 
 export default function AxStartPage() {
   const [historyCount] = useState(() => loadHistory().length)
-  const [heroVisible, setHeroVisible] = useState(true)
   const [atEnd, setAtEnd] = useState(false)
-  const heroRef = useRef<HTMLDivElement>(null)
   const bridgeRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice | null>(null)
@@ -78,14 +76,6 @@ export default function AxStartPage() {
   }, [])
 
   useEffect(() => {
-    const el = heroRef.current
-    if (!el || typeof IntersectionObserver === 'undefined') return
-    const io = new IntersectionObserver((entries) => setHeroVisible(entries[0]?.isIntersecting ?? false), { rootMargin: '-40px 0px 0px 0px' })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-
-  useEffect(() => {
     const el = bridgeRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
     const io = new IntersectionObserver((entries) => setAtEnd(entries[0]?.isIntersecting ?? false), { rootMargin: '0px 0px -40px 0px' })
@@ -106,9 +96,7 @@ export default function AxStartPage() {
       />
 
       {/* 1. Hero — 무엇을 파는 회사인지 5초 안에 */}
-      <div ref={heroRef}>
-        <AxHeroV2 />
-      </div>
+      <AxHeroV2 />
 
       {/* ── 스토리 01~03 (Drive 1.1 … 3.7) ───────────────────────────────────────
           01 계획보다 강한 증거 / 02 이런 상황이신가요
@@ -147,7 +135,9 @@ export default function AxStartPage() {
       {/* 스크롤 중 어디서나 AX Preview 로 — 평소엔 비켜서 있는 작은 손잡이 */}
       {!isPreviewEmbedded && <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} />}
 
-      <BusinessStickyCta visible={!heroVisible && !atEnd} onOpenSampleNav={() => setSampleNavOpen(true)} diagnosisHref={AX_DIAG_HREF} />
+      {/* 히어로에는 버튼이 없어(문장만) 폰 첫 화면에 행동할 곳이 없었다 — 상세 안내처럼 처음부터 하단 바를 띄운다.
+          히어로 아래 여백(pb-24)이 바 높이만큼 확보돼 문장이 가려지지 않는다. */}
+      <BusinessStickyCta visible={!atEnd} onOpenSampleNav={() => setSampleNavOpen(true)} diagnosisHref={AX_DIAG_HREF} />
 
       {/* 홈에는 상담 폼을 여는 곳이 없다(이어보기는 버튼 두 개만). 상담은 카톡 버튼과 상세 안내의 CTA 에서 연다. */}
       {previewDevice && !isPreviewEmbedded && (

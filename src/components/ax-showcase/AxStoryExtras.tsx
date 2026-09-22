@@ -75,7 +75,7 @@ export function AxJudgeVideo() {
       <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#0F1318] shadow-[0_16px_40px_rgba(0,0,0,0.35)]">
         <div className="flex items-center justify-between gap-3 px-5 pt-4 sm:px-6">
           <p className="text-[0.95rem] font-black tracking-[0.12em] text-[#E8B89A] sm:text-[1.0rem]">심사위원 인터뷰 영상</p>
-          <a href={JUDGE_VIDEO.url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-[0.92rem] font-bold text-slate-400 underline underline-offset-4 transition-colors hover:text-white sm:text-[0.98rem]">
+          <a href={JUDGE_VIDEO.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 shrink-0 items-center text-[0.92rem] font-bold text-slate-400 underline underline-offset-4 transition-colors hover:text-white sm:text-[0.98rem]">
             YouTube에서 보기 ↗
           </a>
         </div>
@@ -84,7 +84,7 @@ export function AxJudgeVideo() {
             src={`https://www.youtube-nocookie.com/embed/${JUDGE_VIDEO.id}?rel=0`}
             title={JUDGE_VIDEO.title}
             loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
             className="h-full w-full"

@@ -5,8 +5,14 @@ import { businessInfo, legalLinks } from '../config/businessInfo'
 import AccountMenu from './account/AccountMenu'
 
 function BrandMark() {
+  // 태그라인이 남은 폭만큼만 차지해야 폰(360px)에서 로그인·회원가입 버튼이 화면 밖으로 밀리지 않는다
   return (
-    <BrandLogo to="/" imgClassName="h-9 max-w-[168px] sm:h-11 sm:max-w-[204px]" />
+    <BrandLogo
+      to="/"
+      className="min-w-0 max-w-[calc(100vw-200px)] sm:max-w-none"
+      imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[204px]"
+      taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+    />
   )
 }
 
@@ -25,9 +31,9 @@ export default function PageShell({
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 antialiased [word-break:keep-all]">
       <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-6 sm:py-4">
           <BrandMark />
-          <nav className="flex items-center gap-2 text-sm font-medium sm:gap-3">
+          <nav className="flex shrink-0 items-center gap-2 text-sm font-medium sm:gap-3">
             <Link to="/" className="hidden text-slate-600 transition-colors hover:text-slate-900 sm:inline">
               홈
             </Link>

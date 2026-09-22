@@ -100,7 +100,7 @@ function ResultsList() {
       )}
 
       <div className="mt-8">
-        <Link to="/business-diagnosis" className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-slate-900">
+        <Link to="/business-diagnosis" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-slate-900">
           ← 진단 페이지로 돌아가기
         </Link>
       </div>
