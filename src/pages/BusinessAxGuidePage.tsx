@@ -96,7 +96,7 @@ export default function BusinessAxGuidePage() {
       />
 
       {/* 이 페이지는 이미지 스토리라 보이는 제목이 없다 — 검색엔진·스크린리더용 h1 만 둔다 */}
-      <h1 className="sr-only">AX 상세 안내 — 경영컨설턴트가 설계하는 중소기업 맞춤형 AX</h1>
+      <h1 className="sr-only">AX 상세 안내 — 경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤형 AX</h1>
 
       {/* 앞 이야기로 돌아가는 길 — 상세 안내로 바로 들어온 사람도 흐름을 알 수 있게 */}
       <div className="border-b border-white/10 bg-[#171B20]">

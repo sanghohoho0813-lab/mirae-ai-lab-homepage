@@ -67,7 +67,7 @@ export default function GatewayPage() {
   const [techOpen, setTechOpen] = useState(false)
 
   useEffect(() => {
-    document.title = '미래AI랩 | 경영컨설턴트가 설계하는 중소기업 맞춤형 AX'
+    document.title = '미래AI랩 | 경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤형 AX'
   }, [])
 
   return (
@@ -95,7 +95,7 @@ export default function GatewayPage() {
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-5 py-4 sm:px-8 sm:py-10">
-        <h1 className="sr-only">미래AI랩 — 중소기업 맞춤형 AX와 컨설턴트용 AI 실무 도구</h1>
+        <h1 className="sr-only">미래AI랩 — 50인 미만 중소기업 맞춤형 AX와 컨설턴트용 AI 실무 도구</h1>
 
         {/* 고르기 전에 먼저 읽히는 부분 — 누가 만드는 회사인가.
             배경의 큰 워터마크 글씨와 겹쳐 읽기 어려웠던 곳이라, 옅은 판을 깔아 글자를 살린다. */}
@@ -103,7 +103,7 @@ export default function GatewayPage() {
           {/* AX 를 처음 보는 분이 대부분이라 단어 바로 옆 괄호로 뜻을 밝힌다.
               "설계자가 설계하는" 이 되지 않게 뒤 동사는 "만드는" 으로 둔다. */}
           <p className="text-center text-[0.95rem] font-semibold leading-snug text-slate-600 min-[380px]:text-[1.0rem] sm:text-[1.25rem]">
-            9년차 경영컨설턴트 &amp; AX 설계자가 만드는 중소기업 맞춤형 AX
+            9년차 경영컨설턴트 &amp; AX 설계자가 만드는 <b className="font-bold text-slate-800">50인 미만 중소기업</b> 맞춤형 AX
             <span className="font-medium text-slate-500">(AI Transformation : 인공지능 전환)</span>
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-center text-[0.78rem] font-medium leading-snug text-slate-500 min-[380px]:gap-x-2 min-[380px]:text-[0.86rem] sm:mt-3.5 sm:gap-x-3 sm:text-[1.0rem] sm:leading-normal">

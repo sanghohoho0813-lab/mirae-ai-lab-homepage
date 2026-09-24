@@ -27,9 +27,9 @@ import { canonicalUrl } from '../lib/site'
 // AX 상세 안내(/business-services/ax)로 넘긴다. 03 이 "그런데 AX가 정확히 뭘까요?"로 끝나므로
 // 그 질문을 그대로 받아 상세 안내로 넘어가게 한다.
 
-const PAGE_TITLE = '미래AI랩 | 경영컨설턴트가 설계하는 중소기업 맞춤형 AX'
+const PAGE_TITLE = '미래AI랩 | 경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤형 AX'
 const PAGE_DESC =
-  '사업과 실제 업무를 먼저 분석하고, ERP·엑셀·카톡 사이에 남아 있는 회사 고유의 업무를 AI와 전용 시스템으로 연결합니다. 운영효율·매출성장·기업자산화를 만드는 중소기업 맞춤형 AX 설계·구축.'
+  '사업과 실제 업무를 먼저 분석하고, ERP·엑셀·카톡 사이에 남아 있는 회사 고유의 업무를 AI와 전용 시스템으로 연결합니다. 운영효율·매출성장·기업자산화를 만드는 50인 미만 중소기업 맞춤형 AX 설계·구축.'
 
 // 이 트랙에서 진단으로 갈 때는 ?interest=ax 를 붙여 유입을 구분한다
 const AX_DIAG_HREF = withInterest('/business-diagnosis', 'ax')
