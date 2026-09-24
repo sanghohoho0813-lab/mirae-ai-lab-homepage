@@ -86,8 +86,9 @@ export default function BusinessServicesPage() {
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-6">
         <div className="text-center">
           {/* 첫 줄부터 누구를 위한 서비스인지 못 박는다 — AX 를 대기업 얘기로 넘겨짚지 않게 */}
-          <p className="hero-anim inline-flex items-center gap-2 rounded-full border border-[#D47A4A]/35 bg-white px-3.5 py-1.5 text-[0.84rem] font-black text-[#171B20] shadow-sm sm:text-[0.9rem]">
-            <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#D47A4A]" />
+          {/* 글자 1.2배 (0.84 → 1.01rem · PC 0.9 → 1.08rem). Pretendard 기준 360px 폰에서도 한 줄 */}
+          <p className="hero-anim inline-flex items-center gap-2 rounded-full border border-[#D47A4A]/35 bg-white px-3.5 py-2 text-[1.01rem] font-black text-[#171B20] shadow-sm min-[380px]:px-4 sm:text-[1.08rem]">
+            <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[#D47A4A]" />
             {/* 한 덩어리로 묶는다 — 나누면 gap-2 가 '중소기업'과 '을' 사이에 끼어든다 */}
             <span className="break-keep">
               <span className="text-[#B35A2A]">50인 미만 중소기업</span>을 위한 AX · 기술사업
@@ -181,34 +182,45 @@ export default function BusinessServicesPage() {
           어느 쪽을 골라도 <b className="font-semibold text-[#343B44]">3분 진단 → 결과 → 상담</b>으로 이어집니다.
         </p>
 
-        {/* 중소기업이 기준이라는 것을 고르고 난 뒤에 한 번 더 — 선택을 늦추지 않도록 카드 아래에 둔다 */}
-        <section data-sme className="mt-8 rounded-3xl border border-[#E7EAEE] bg-white/70 p-5 sm:mt-10 sm:p-7">
-          <div className="text-center">
-            <h2 className="break-keep text-[1.2rem] font-black leading-tight tracking-tight sm:text-[1.45rem]">
-              AX는 대기업만 하는 일이 아닙니다.
-            </h2>
-            <p className="mx-auto mt-2.5 max-w-2xl break-keep text-[0.95rem] leading-relaxed text-[#646E78] sm:text-[1.02rem]">
+        {/* 중소기업이 기준이라는 것 — 대부분은 여기까지 읽지 않고 두 카드 중 하나를 바로 고른다.
+            그래서 한 줄로 접어 두고, 궁금한 분만 펼쳐 본다(내용은 그대로). */}
+        <details data-sme className="group mx-auto mt-6 w-full max-w-3xl rounded-2xl border border-[#E7EAEE] bg-white/70 sm:mt-8">
+          <summary className="flex min-h-[3.25rem] cursor-pointer list-none items-center justify-between gap-3 rounded-2xl px-4 py-2.5 transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D47A4A] sm:px-6 [&::-webkit-details-marker]:hidden">
+            <span className="min-w-0 break-keep text-[0.98rem] font-black leading-snug text-[#171B20] sm:text-[1.06rem]">
+              AX는 대기업만 하는 일이 아닙니다
+            </span>
+            <span className="inline-flex shrink-0 items-center gap-1 text-[0.88rem] font-bold text-[#B35A2A]">
+              <span className="group-open:hidden">펼쳐보기</span>
+              <span className="hidden group-open:inline">접기</span>
+              <svg viewBox="0 0 20 20" className="h-4 w-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M5 8l5 5 5-5" />
+              </svg>
+            </span>
+          </summary>
+
+          <div className="border-t border-[#E7EAEE] px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
+            <p className="break-keep text-[0.95rem] leading-relaxed text-[#646E78] sm:text-[1.02rem]">
               미래AI랩은 <b className="font-bold text-[#171B20]">50인 미만 중소기업</b>을 위한 AX·플랫폼을 주로 만드는 회사입니다.
               대기업 시스템을 줄여 파는 것이 아니라, 지금 회사가 일하는 방식에서 시작합니다.
             </p>
+
+            <ul className="mt-4 grid gap-3 sm:grid-cols-3 sm:gap-4">
+              {SME_POINTS.map((s) => (
+                <li key={s.t} className="rounded-2xl bg-[#FAFAF8] p-4 ring-1 ring-inset ring-[#E7EAEE]">
+                  <p className="flex items-start gap-2 break-keep text-[1rem] font-black leading-snug text-[#171B20]">
+                    <span aria-hidden className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#D47A4A]" />
+                    {s.t}
+                  </p>
+                  <p className="mt-2 break-keep pl-3.5 text-[0.9rem] leading-relaxed text-[#646E78]">{s.d}</p>
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-4 text-[0.88rem] leading-relaxed text-[#646E78] sm:text-[0.95rem]">
+              9년차 경영컨설턴트가 <b className="font-semibold text-[#343B44]">중소기업 실무 기준</b>으로 직접 설계합니다.
+            </p>
           </div>
-
-          <ul className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-3 sm:gap-4">
-            {SME_POINTS.map((s) => (
-              <li key={s.t} className="rounded-2xl bg-[#FAFAF8] p-4 ring-1 ring-inset ring-[#E7EAEE] sm:p-5">
-                <p className="flex items-start gap-2 break-keep text-[1rem] font-black leading-snug text-[#171B20]">
-                  <span aria-hidden className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#D47A4A]" />
-                  {s.t}
-                </p>
-                <p className="mt-2 break-keep pl-3.5 text-[0.9rem] leading-relaxed text-[#646E78]">{s.d}</p>
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-5 text-center text-[0.88rem] leading-relaxed text-[#646E78] sm:text-[0.95rem]">
-            9년차 경영컨설턴트가 <b className="font-semibold text-[#343B44]">중소기업 실무 기준</b>으로 직접 설계합니다.
-          </p>
-        </section>
+        </details>
       </main>
 
       <LegalFooter />
