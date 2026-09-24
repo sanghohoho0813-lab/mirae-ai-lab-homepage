@@ -23,6 +23,8 @@ import type { AxFitReport, DiagnosisSession, InlineFeedback, LeadFormData } from
 
 type Screen = 'start' | 'question' | 'report' | 'gate'
 const AUTO_MS = 180 // 단일선택 자동 전환 (빠르게)
+// 서버의 '너무 빠른 제출' 차단(2.5초)보다 조금 길게
+const MIN_FORM_ELAPSED_MS = 2700
 
 export default function BusinessDiagnosisPage() {
   const [session, setSession] = useState<DiagnosisSession>(() => loadSession() ?? newSession())
@@ -318,10 +320,17 @@ export default function BusinessDiagnosisPage() {
     window.scrollTo(0, 0)
   }
 
-  async function handleSubmitLead(form: LeadFormData & { privacyConsentVersion: string; honeypot?: string; formElapsedMs: number }) {
+  async function handleSubmitLead(input: LeadFormData & { privacyConsentVersion: string; honeypot?: string; formElapsedMs: number }) {
     if (!report || submitting) return
     setSubmitting(true)
     setSubmitError(null)
+    // 서버는 폼을 연 지 2.5초 안에 온 제출을 봇으로 보고 거절한다. 자동완성으로 빨리 채운 사람이
+    // "다시 제출해주세요" 에 막히지 않게, 모자란 시간만큼 '보내는 중' 으로 실제로 기다렸다가 보낸다.
+    let form = input
+    if (form.formElapsedMs > 0 && form.formElapsedMs < MIN_FORM_ELAPSED_MS) {
+      await new Promise((r) => setTimeout(r, MIN_FORM_ELAPSED_MS - form.formElapsedMs))
+      form = { ...form, formElapsedMs: MIN_FORM_ELAPSED_MS }
+    }
     const s = sRef.current
     try {
       const { leadId } = await submitLead(s, form, report, {
