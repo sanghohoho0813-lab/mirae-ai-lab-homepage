@@ -68,9 +68,9 @@ export default function VentureMvpPage() {
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">
             <BrandLogo
               to="/"
-              tagline="기술사업 · MVP"
+              tagline="중소기업 기술사업 · MVP"
               imgClassName="h-8 max-w-[132px] sm:h-10 sm:max-w-[190px]"
-              taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+              taglineClassName="text-[0.64rem]! tracking-[0.08em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
             />
             <Link
               to={BUSINESS_CHOOSER_PATH}

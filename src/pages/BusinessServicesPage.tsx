@@ -15,12 +15,31 @@ import KakaoFloat from '../components/KakaoFloat'
 import { AX_START_PATH, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { usePageMeta } from '../lib/pageMeta'
 
-const PAGE_TITLE = '대표님 서비스 선택 | 미래AI랩 — 2주 기술사업·MVP · AX 도입'
+const PAGE_TITLE = '대표님 서비스 선택 | 미래AI랩 — 50인 미만 중소기업 AX · 기술사업·MVP'
 const PAGE_DESC =
-  '회사에 없던 기술사업 하나를 2주 안에 만드는 MVP·벤처기업확인 패키지부터, 회사 전체를 바꾸는 AX 도입까지. 지금 필요한 방향을 고르면 맞는 안내로 바로 이어집니다.'
+  '미래AI랩은 50인 미만 중소기업을 위한 AX·플랫폼을 주로 만듭니다. 회사에 없던 기술사업 하나를 2주 안에 만드는 MVP·벤처기업확인 패키지부터, 회사 전체를 바꾸는 AX 도입까지.'
 
 const MVP_STEPS = ['기술사업', 'MVP', '벤처기업확인'] as const
 const AX_KEYWORDS = ['내부 업무', '고객접점', '데이터', '자동화', '매출성장'] as const
+
+// "AX = 대기업" 이라는 인상을 먼저 걷어내는 자리.
+// 새로 지어낸 말은 두지 않는다 — 셋 다 이미 사이트에 있는 사실을 끌어올린 것이다.
+//   · 50인 미만 중소기업 / ERP·POS 그대로 사용 → AX 상세 안내 FAQ
+//   · '지금은 정비 먼저' → 3분 AX Fit 결과 등급
+const SME_POINTS = [
+  {
+    t: '지금 쓰는 방식 그대로에서',
+    d: '엑셀·카톡·수기로 하던 업무를 기준으로 설계합니다. 쓰던 ERP·POS는 없애지 않고 그대로 씁니다.',
+  },
+  {
+    t: '전담 IT 인력이 없어도',
+    d: '대표님과 직원이 따로 배우지 않고 바로 쓸 수 있는 화면으로 만듭니다.',
+  },
+  {
+    t: '전면 구축이 답이 아닐 수도',
+    d: '3분 진단 결과가 ‘지금은 정비 먼저’로 나오면, 구축을 권하지 않고 그렇게 말씀드립니다.',
+  },
+] as const
 
 /** 카드 머리 — 큰 번호 + 상태 배지 / 상품 이름 / 무엇이 다른지 한 줄.
  *  배지를 absolute 로 띄우면 360px 에서 상품명 위로 겹쳐서, 번호와 같은 줄에 흐름대로 둔다. */
@@ -63,10 +82,18 @@ export default function BusinessServicesPage() {
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-7 sm:px-6 sm:pb-12 sm:pt-9">
+      {/* 위 여백을 넉넉히 두면 768px(태블릿)에서 두 카드 CTA 가 첫 화면 밖으로 밀린다 */}
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-6">
         <div className="text-center">
-          <p className="hero-anim text-[0.78rem] font-black uppercase tracking-[0.22em] text-[#D47A4A]">For CEO · 2 Tracks</p>
-          <h1 className="hero-anim mt-2.5 text-[1.7rem] font-black leading-[1.25] tracking-tight [animation-delay:60ms] sm:text-[2.4rem]">
+          {/* 첫 줄부터 누구를 위한 서비스인지 못 박는다 — AX 를 대기업 얘기로 넘겨짚지 않게 */}
+          <p className="hero-anim inline-flex items-center gap-2 rounded-full border border-[#D47A4A]/35 bg-white px-3.5 py-1.5 text-[0.84rem] font-black text-[#171B20] shadow-sm sm:text-[0.9rem]">
+            <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#D47A4A]" />
+            {/* 한 덩어리로 묶는다 — 나누면 gap-2 가 '중소기업'과 '을' 사이에 끼어든다 */}
+            <span className="break-keep">
+              <span className="text-[#D47A4A]">50인 미만 중소기업</span>을 위한 AX · 기술사업
+            </span>
+          </p>
+          <h1 className="hero-anim mt-3.5 text-[1.7rem] font-black leading-[1.25] tracking-tight [animation-delay:60ms] sm:text-[2.4rem]">
             대표님, 지금 필요한 변화는<br className="sm:hidden" /> 어느 쪽인가요?
           </h1>
           <p className="hero-anim mx-auto mt-3 max-w-2xl text-[1.02rem] leading-relaxed text-[#6B7680] [animation-delay:120ms] sm:text-[1.12rem]">
@@ -153,6 +180,35 @@ export default function BusinessServicesPage() {
         <p className="mt-5 text-center text-[0.86rem] text-[#6B7680] sm:mt-7 sm:text-[0.95rem]">
           어느 쪽을 골라도 <b className="font-semibold text-[#343B44]">3분 진단 → 결과 → 상담</b>으로 이어집니다.
         </p>
+
+        {/* 중소기업이 기준이라는 것을 고르고 난 뒤에 한 번 더 — 선택을 늦추지 않도록 카드 아래에 둔다 */}
+        <section data-sme className="mt-8 rounded-3xl border border-[#E7EAEE] bg-white/70 p-5 sm:mt-10 sm:p-7">
+          <div className="text-center">
+            <h2 className="break-keep text-[1.2rem] font-black leading-tight tracking-tight sm:text-[1.45rem]">
+              AX는 대기업만 하는 일이 아닙니다.
+            </h2>
+            <p className="mx-auto mt-2.5 max-w-2xl break-keep text-[0.95rem] leading-relaxed text-[#6B7680] sm:text-[1.02rem]">
+              미래AI랩은 <b className="font-bold text-[#171B20]">50인 미만 중소기업</b>을 위한 AX·플랫폼을 주로 만드는 회사입니다.
+              대기업 시스템을 줄여 파는 것이 아니라, 지금 회사가 일하는 방식에서 시작합니다.
+            </p>
+          </div>
+
+          <ul className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-3 sm:gap-4">
+            {SME_POINTS.map((s) => (
+              <li key={s.t} className="rounded-2xl bg-[#FAFAF8] p-4 ring-1 ring-inset ring-[#E7EAEE] sm:p-5">
+                <p className="flex items-start gap-2 break-keep text-[1rem] font-black leading-snug text-[#171B20]">
+                  <span aria-hidden className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#D47A4A]" />
+                  {s.t}
+                </p>
+                <p className="mt-2 break-keep pl-3.5 text-[0.9rem] leading-relaxed text-[#6B7680]">{s.d}</p>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-5 text-center text-[0.88rem] leading-relaxed text-[#6B7680] sm:text-[0.95rem]">
+            9년차 경영컨설턴트가 <b className="font-semibold text-[#343B44]">중소기업 실무 기준</b>으로 직접 설계합니다.
+          </p>
+        </section>
       </main>
 
       <LegalFooter />
