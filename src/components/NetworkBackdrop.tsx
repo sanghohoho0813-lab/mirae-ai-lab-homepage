@@ -1,6 +1,8 @@
 // 공개 페이지용 배경 시각 장치 — CSS/SVG 기반의 은은한 "AI 경영지원 네트워크".
 // 실제 이미지 없이 노드+연결선으로 데이터가 흐르는 느낌만 담담하게 표현합니다.
 // prefers-reduced-motion 시 애니메이션은 멈춥니다.
+// 글자 이름표(자금·인증·제안서 …)는 그리지 않는다 — 앞의 카드·반투명 상자 뒤로 비치거나 모서리에 반쯤 걸려
+// 흘린 글자처럼 보였다. 점과 연결선만으로 네트워크 느낌은 충분하다.
 
 type Node = { x: number; y: number; label?: string; accent?: boolean }
 
@@ -70,17 +72,6 @@ export default function NetworkBackdrop() {
         {nodes.map((n, i) => (
           <g key={`n-${i}`} className="nb-node" style={{ animationDelay: `${(i % 6) * 0.6}s` }}>
             <circle cx={n.x} cy={n.y} r={n.accent ? 6 : 4} fill={n.accent ? '#3b82f6' : '#94a3b8'} />
-            {n.label && (
-              <text
-                x={n.x + 12}
-                y={n.y + 4}
-                fontSize="15"
-                fontWeight="700"
-                fill={n.accent ? '#60a5fa' : '#cbd5e1'}
-              >
-                {n.label}
-              </text>
-            )}
           </g>
         ))}
       </svg>
