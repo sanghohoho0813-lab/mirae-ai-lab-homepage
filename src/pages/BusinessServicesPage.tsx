@@ -56,7 +56,7 @@ function CardHead({ no, name, diff, badge, tone }: { no: string; name: string; d
         </span>
         <span
           className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.76rem] font-black ${
-            dark ? 'bg-[#D47A4A] text-[#171B20]' : 'bg-[#171B20]/[0.06] text-[#6B7680]'
+            dark ? 'bg-[#D47A4A] text-[#171B20]' : 'bg-[#171B20]/[0.06] text-[#646E78]'
           }`}
         >
           {dark && <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#171B20]" />}
@@ -64,7 +64,7 @@ function CardHead({ no, name, diff, badge, tone }: { no: string; name: string; d
         </span>
       </div>
       <p className={`mt-3 break-keep text-[1.08rem] font-black leading-tight tracking-tight sm:text-[1.18rem] ${dark ? 'text-white' : 'text-[#171B20]'}`}>{name}</p>
-      <p className={`mt-1 break-keep text-[0.88rem] font-bold leading-snug ${dark ? 'text-[#E8B89A]' : 'text-[#D47A4A]'}`}>{diff}</p>
+      <p className={`mt-1 break-keep text-[0.88rem] font-bold leading-snug ${dark ? 'text-[#E8B89A]' : 'text-[#B35A2A]'}`}>{diff}</p>
     </>
   )
 }
@@ -90,13 +90,13 @@ export default function BusinessServicesPage() {
             <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#D47A4A]" />
             {/* 한 덩어리로 묶는다 — 나누면 gap-2 가 '중소기업'과 '을' 사이에 끼어든다 */}
             <span className="break-keep">
-              <span className="text-[#D47A4A]">50인 미만 중소기업</span>을 위한 AX · 기술사업
+              <span className="text-[#B35A2A]">50인 미만 중소기업</span>을 위한 AX · 기술사업
             </span>
           </p>
           <h1 className="hero-anim mt-3.5 text-[1.7rem] font-black leading-[1.25] tracking-tight [animation-delay:60ms] sm:text-[2.4rem]">
             대표님, 지금 필요한 변화는<br className="sm:hidden" /> 어느 쪽인가요?
           </h1>
-          <p className="hero-anim mx-auto mt-3 max-w-2xl text-[1.02rem] leading-relaxed text-[#6B7680] [animation-delay:120ms] sm:text-[1.12rem]">
+          <p className="hero-anim mx-auto mt-3 max-w-2xl text-[1.02rem] leading-relaxed text-[#646E78] [animation-delay:120ms] sm:text-[1.12rem]">
             회사에 없던 기술사업 하나를 새로 만들지,<br className="sm:hidden" /> 지금 하고 있는 일을 회사 전체 단위로 바꿀지.
           </p>
         </div>
@@ -166,7 +166,7 @@ export default function BusinessServicesPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-[0.9rem] font-semibold leading-relaxed text-[#6B7680]">
+              <p className="mt-4 text-[0.9rem] font-semibold leading-relaxed text-[#646E78]">
                 먼저 <b className="font-bold text-[#343B44]">3분 진단</b>으로 전면 구축이 맞는지부터 판단합니다.
               </p>
             </div>
@@ -177,7 +177,7 @@ export default function BusinessServicesPage() {
           </Link>
         </div>
 
-        <p className="mt-5 text-center text-[0.86rem] text-[#6B7680] sm:mt-7 sm:text-[0.95rem]">
+        <p className="mt-5 text-center text-[0.86rem] text-[#646E78] sm:mt-7 sm:text-[0.95rem]">
           어느 쪽을 골라도 <b className="font-semibold text-[#343B44]">3분 진단 → 결과 → 상담</b>으로 이어집니다.
         </p>
 
@@ -187,7 +187,7 @@ export default function BusinessServicesPage() {
             <h2 className="break-keep text-[1.2rem] font-black leading-tight tracking-tight sm:text-[1.45rem]">
               AX는 대기업만 하는 일이 아닙니다.
             </h2>
-            <p className="mx-auto mt-2.5 max-w-2xl break-keep text-[0.95rem] leading-relaxed text-[#6B7680] sm:text-[1.02rem]">
+            <p className="mx-auto mt-2.5 max-w-2xl break-keep text-[0.95rem] leading-relaxed text-[#646E78] sm:text-[1.02rem]">
               미래AI랩은 <b className="font-bold text-[#171B20]">50인 미만 중소기업</b>을 위한 AX·플랫폼을 주로 만드는 회사입니다.
               대기업 시스템을 줄여 파는 것이 아니라, 지금 회사가 일하는 방식에서 시작합니다.
             </p>
@@ -200,12 +200,12 @@ export default function BusinessServicesPage() {
                   <span aria-hidden className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#D47A4A]" />
                   {s.t}
                 </p>
-                <p className="mt-2 break-keep pl-3.5 text-[0.9rem] leading-relaxed text-[#6B7680]">{s.d}</p>
+                <p className="mt-2 break-keep pl-3.5 text-[0.9rem] leading-relaxed text-[#646E78]">{s.d}</p>
               </li>
             ))}
           </ul>
 
-          <p className="mt-5 text-center text-[0.88rem] leading-relaxed text-[#6B7680] sm:text-[0.95rem]">
+          <p className="mt-5 text-center text-[0.88rem] leading-relaxed text-[#646E78] sm:text-[0.95rem]">
             9년차 경영컨설턴트가 <b className="font-semibold text-[#343B44]">중소기업 실무 기준</b>으로 직접 설계합니다.
           </p>
         </section>

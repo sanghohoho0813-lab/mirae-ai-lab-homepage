@@ -129,7 +129,7 @@ export default function GatewayPage() {
                   onClick={() => setTechOpen((v) => !v)}
                   aria-expanded={techOpen}
                   aria-controls="gateway-patent-techs"
-                  className="-my-2 inline-flex items-baseline gap-1 whitespace-nowrap rounded py-2 font-black text-[#D47A4A] underline decoration-[#D47A4A]/35 underline-offset-4 transition-colors hover:text-[#B35E32] hover:decoration-[#B35E32]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D47A4A]/60"
+                  className="-my-2 inline-flex items-baseline gap-1 whitespace-nowrap rounded py-2 font-black text-[#B35A2A] underline decoration-[#D47A4A]/45 underline-offset-4 transition-colors hover:text-[#8F4520] hover:decoration-[#8F4520]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D47A4A]/60"
                 >
                   AX 핵심기술 특허 {AX_PATENT_COUNT}건 출원
                   <span aria-hidden className={techOpen ? 'inline-block rotate-180 transition-transform' : 'inline-block transition-transform'}>▾</span>
@@ -140,7 +140,7 @@ export default function GatewayPage() {
                 <ol id="gateway-patent-techs" className="animate-fade-in mt-2 space-y-1.5 sm:mt-3 sm:space-y-2">
                   {AX_PATENT_TECHS.map((t) => (
                     <li key={t.no} className="flex items-baseline gap-2.5 break-keep text-left sm:gap-3.5">
-                      <span className="shrink-0 text-[0.74rem] font-black tabular-nums text-[#D47A4A]/70 sm:text-[0.85rem]">{t.no}</span>
+                      <span className="shrink-0 text-[0.74rem] font-black tabular-nums text-[#B35A2A] sm:text-[0.85rem]">{t.no}</span>
                       <span className="text-[0.86rem] leading-snug text-slate-600 sm:text-[1.0rem]">
                         <b className="font-bold text-slate-800">{t.name}</b>
                         <span className="text-slate-400"> · {t.sub}</span>
