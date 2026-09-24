@@ -118,20 +118,20 @@ function ToolBanner({ tool }: { tool: Tool }) {
       <div className="relative flex h-full flex-col justify-between p-3 sm:p-4">
         {/* 좌상단 카테고리 */}
         <div className="flex items-start justify-between gap-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.72rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25 sm:px-2.5 sm:text-[0.82rem]">
+          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.78rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25 sm:px-2.5 sm:text-[0.82rem]">
             {tool.category}
           </span>
         </div>
         {/* 도구명 — 가운데 정렬 */}
         <div className="px-1 text-center">
-          <p className="text-[0.72rem] font-medium tracking-wide text-slate-400 sm:text-[0.82rem]">{tool.stage}</p>
+          <p className="text-[0.78rem] font-medium tracking-wide text-slate-400 sm:text-[0.82rem]">{tool.stage}</p>
           <h3 className="mt-1 text-lg font-black leading-tight tracking-tight text-white sm:text-xl lg:text-[1.4rem]">{tool.title}</h3>
         </div>
         {/* 상태 배지 — 가운데 정렬 */}
         <div className="flex flex-wrap items-center justify-center gap-1.5">
-          <span className={`rounded-full px-2 py-0.5 text-[0.68rem] font-bold sm:text-[0.76rem] ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
+          <span className={`rounded-full px-2 py-0.5 text-[0.76rem] font-bold sm:text-[0.76rem] ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
           <span
-            className={`rounded-full px-2 py-0.5 text-[0.68rem] font-bold sm:text-[0.76rem] ${
+            className={`rounded-full px-2 py-0.5 text-[0.76rem] font-bold sm:text-[0.76rem] ${
               tool.isPublic ? 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/25' : 'bg-slate-400/15 text-slate-300 ring-1 ring-inset ring-slate-300/20'
             }`}
           >
@@ -210,15 +210,15 @@ function UpcomingCard({ tool }: { tool: UpcomingTool }) {
         <div aria-hidden className="absolute -right-6 -top-8 h-24 w-24 rounded-full bg-teal-500/15 blur-2xl" />
         <div className="relative flex h-full flex-col justify-between p-3 sm:p-4">
           <div className="flex items-start justify-between gap-2">
-            <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.72rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25 sm:px-2.5 sm:text-[0.82rem]">{tool.category}</span>
+            <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.78rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25 sm:px-2.5 sm:text-[0.82rem]">{tool.category}</span>
           </div>
           <div className="px-1 text-center">
-            <p className="text-[0.72rem] font-medium tracking-wide text-slate-400 sm:text-[0.82rem]">개발 예정</p>
+            <p className="text-[0.78rem] font-medium tracking-wide text-slate-400 sm:text-[0.82rem]">개발 예정</p>
             <h3 className="mt-1 text-lg font-black leading-tight tracking-tight text-white sm:text-xl lg:text-[1.4rem]">{tool.title}</h3>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-1.5">
-            <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[0.68rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-300/25 sm:text-[0.76rem]">개발중</span>
-            <span className="rounded-full bg-slate-400/15 px-2 py-0.5 text-[0.68rem] font-bold text-slate-300 ring-1 ring-inset ring-slate-300/20 sm:text-[0.76rem]">공개 준비 중</span>
+            <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[0.76rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-300/25 sm:text-[0.76rem]">개발중</span>
+            <span className="rounded-full bg-slate-400/15 px-2 py-0.5 text-[0.76rem] font-bold text-slate-300 ring-1 ring-inset ring-slate-300/20 sm:text-[0.76rem]">공개 준비 중</span>
           </div>
         </div>
       </div>
@@ -336,7 +336,7 @@ function App() {
                   <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
                     <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
                     <dt className="mt-1.5 text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
-                    {s.sub && <p className="mt-0.5 text-[0.72rem] font-semibold leading-snug text-amber-300/90">{s.sub}</p>}
+                    {s.sub && <p className="mt-0.5 text-[0.78rem] font-semibold leading-snug text-amber-300/90">{s.sub}</p>}
                   </div>
                 ))}
               </dl>
@@ -363,7 +363,7 @@ function App() {
                       href="https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 font-bold text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+                      className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 font-bold text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
                       aria-label="유튜브 김팀장의 경영노트 채널 (새 탭에서 열림)"
                     >
                       <svg viewBox="0 0 24 24" className="h-4.5 w-4.5 shrink-0" aria-hidden>
@@ -377,7 +377,7 @@ function App() {
                   <div className="mt-3 space-y-1.5">
                     {trustAwards.map((a) => (
                       <div key={a.title} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
-                        <span className="mt-px shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.7rem] font-black text-slate-900">{a.year}</span>
+                        <span className="mt-px shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.76rem] font-black text-slate-900">{a.year}</span>
                         <p className="min-w-0 text-[0.82rem] font-semibold leading-snug text-slate-100">
                           {a.title}
                           <span className="font-normal text-slate-400"> · {a.detail}</span>
@@ -569,10 +569,10 @@ function App() {
             <p className="max-w-md text-base leading-relaxed text-slate-500">
               컨설턴트의 상담·분석·제안·사후관리를 하나로 잇는 업무 OS. 대표님의 경영지원과 컨설턴트의 실무를 AI로 연결합니다.
             </p>
-            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-base font-medium text-slate-600">
-              <Link to="/business-services" className="transition-colors hover:text-slate-900">대표님용 경영지원</Link>
+            <nav className="-my-2.5 flex flex-wrap gap-x-6 text-base font-medium text-slate-600">
+              <Link to="/business-services" className="inline-flex min-h-11 items-center transition-colors hover:text-slate-900">대표님용 경영지원</Link>
               {navItems.map((item) => (
-                <a key={item.href} href={item.href} className="transition-colors hover:text-slate-900">
+                <a key={item.href} href={item.href} className="-mx-1.5 inline-flex min-h-11 items-center px-1.5 transition-colors hover:text-slate-900">
                   {item.label}
                 </a>
               ))}

@@ -5,7 +5,9 @@
 //  - 누르면 두 묶음이 펼쳐지고, 각 묶음이 "어떤 화면인지" 한 줄로 보인다.
 //  - 개수(20개)를 핵심 메시지처럼 강조하지 않는다. 산업별 AX Preview 는 Concept Prototype 임을 함께 알린다.
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AX_PREVIEW_NOTE } from './axFinalHome'
+import { AX_GUIDE_PATH } from '../../lib/businessRoutes'
 
 const HEADER_OFFSET = 68
 
@@ -53,19 +55,65 @@ export default function SampleQuickNav({
     onOpenChange?.(v)
   }
   const panelRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  const setOpenRef = useRef(setOpen)
+  setOpenRef.current = setOpen
+
+  // 폰 뒤로가기 → 페이지를 떠나지 않고 이 창만 닫는다 (메뉴·상담 팝업과 같은 히스토리 센티넬 방식).
+  // 이 창을 쓰는 페이지는 스크롤 복원을 직접 하므로(scrollRestoration=manual) 기록을 되돌려도 화면이 튀지 않는다.
+  useEffect(() => {
+    if (!open) return
+    window.history.pushState({ ...(window.history.state ?? {}), miraeSampleNav: true }, '')
+    const onPop = () => setOpenRef.current(false)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [open])
+
+  const hasEntry = () => Boolean((window.history.state as { miraeSampleNav?: boolean } | null)?.miraeSampleNav)
+  // 닫기 — 쌓아 둔 기록을 뒤로가기로 소비한다(→ popstate → 닫힘). 기록이 없으면 바로 닫는다
+  const requestClose = () => {
+    if (hasEntry()) window.history.back()
+    else setOpen(false)
+  }
 
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') requestClose()
     }
     document.addEventListener('keydown', onKey)
     panelRef.current?.querySelector<HTMLElement>('a, button')?.focus()
     return () => document.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
+  // 묶음을 고르면 창을 닫고 그 구간으로 이동 — 기록을 먼저 되돌린 뒤(popstate) 스크롤해야 이동이 덮이지 않는다
   const goTo = (id: string) => {
-    setOpen(false)
+    if (!hasEntry()) {
+      setOpen(false)
+      scrollToGroup(id)
+      return
+    }
+    let done = false
+    const run = () => {
+      if (done) return
+      done = true
+      window.removeEventListener('popstate', run)
+      window.clearTimeout(fallback)
+      setOpen(false)
+      scrollToGroup(id)
+    }
+    window.addEventListener('popstate', run)
+    const fallback = window.setTimeout(run, 400)
+    window.history.back()
+  }
+
+  const scrollToGroup = (id: string) => {
+    // AX 시작 페이지(스토리 01~03)에는 샘플 구간이 없다 — 샘플이 있는 AX 상세 안내의 그 구간으로 보낸다
+    if (!document.getElementById(id)) {
+      navigate(`${AX_GUIDE_PATH}#${id}`)
+      return
+    }
     const targetY = () => {
       const el = document.getElementById(id)
       if (!el) return null
@@ -120,7 +168,7 @@ export default function SampleQuickNav({
           <button
             type="button"
             aria-label="AX Preview 닫기"
-            onClick={() => setOpen(false)}
+            onClick={requestClose}
             className="fixed inset-0 z-50 h-full w-full cursor-default bg-slate-950/50 backdrop-blur-[2px]"
           />
           <div
@@ -137,9 +185,9 @@ export default function SampleQuickNav({
               </div>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={requestClose}
                 aria-label="닫기"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                className="-mr-1.5 -mt-1.5 grid h-11 w-11 shrink-0 place-items-center rounded-lg text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
                   <path d="m6 6 12 12M18 6 6 18" />

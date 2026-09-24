@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react'
+import { businessInfo, consultLinks } from '../config/businessInfo'
+import { postJson } from '../lib/apiFetch'
 
-const CONTACT_EMAIL = 'sanghohoho0813@gmail.com'
+const CONTACT_EMAIL = businessInfo.contactEmail
 
 const inputClass =
   'w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
@@ -14,28 +16,20 @@ const SUCCESS_MESSAGE = '문의가 접수되었습니다. 확인 후 연락드�
 function InquiryForm() {
   const [status, setStatus] = useState<Status>('idle')
   const [serverMessage, setServerMessage] = useState('')
+  // 실패 시 "이메일로 보내기" 에 그대로 채워 넣을 마지막 입력값
+  const [lastPayload, setLastPayload] = useState<Record<string, string>>({})
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (status === 'submitting') return
     const form = event.currentTarget
-    const payload = Object.fromEntries(new FormData(form).entries())
+    const payload = Object.fromEntries([...new FormData(form).entries()].map(([k, v]) => [k, String(v)]))
+    setLastPayload(payload)
     setStatus('submitting')
     setServerMessage('')
     try {
-      const res = await fetch('/api/inquiry', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      const data = (await res.json().catch(() => ({}))) as {
-        ok?: boolean
-        message?: string
-        debugCode?: string
-      }
-      if (!res.ok || data.ok === false) {
-        const code = data.debugCode ? ` [${data.debugCode}]` : ''
-        throw new Error(data.message ? `${data.message}${code}` : `요청 실패 (HTTP ${res.status})`)
-      }
+      // 시간 제한·오류 안내는 postJson 이 맡는다 (실패 시 사람이 읽을 한국어만 담은 ApiError)
+      const data = await postJson<{ ok?: boolean; message?: string }>('/api/inquiry', payload)
       setServerMessage(data.message || SUCCESS_MESSAGE)
       setStatus('success')
       form.reset()
@@ -44,6 +38,19 @@ function InquiryForm() {
       setStatus('error')
     }
   }
+
+  const mailBody = [
+    ['이름', lastPayload.name],
+    ['연락처', lastPayload.contact],
+    ['직업/소속', lastPayload.role],
+    ['만들고 싶은 도구 유형', lastPayload.toolType],
+    ['가장 시간이 오래 걸리는 반복 업무', lastPayload.repetitiveTask],
+    ['문의 내용', lastPayload.message],
+  ]
+    .filter(([, v]) => v && v.trim())
+    .map(([k, v]) => `${k}: ${v!.trim()}`)
+    .join('\n')
+  const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`[컨설턴트 문의] ${(lastPayload.name || '').trim()}`.trim())}&body=${encodeURIComponent(mailBody)}`
 
   const submitting = status === 'submitting'
 
@@ -54,7 +61,7 @@ function InquiryForm() {
           <label htmlFor="name" className={labelClass}>
             이름 <span className="text-rose-500">*</span>
           </label>
-          <input id="name" name="name" type="text" required placeholder="예: 김대표" className={inputClass} />
+          <input id="name" name="name" type="text" required autoComplete="name" placeholder="예: 김대표" className={inputClass} />
         </div>
         <div>
           <label htmlFor="contact" className={labelClass}>
@@ -77,6 +84,7 @@ function InquiryForm() {
             id="role"
             name="role"
             type="text"
+            autoComplete="organization-title"
             placeholder="예: 법인컨설턴트 / 중소기업 대표"
             className={inputClass}
           />
@@ -133,17 +141,22 @@ function InquiryForm() {
       )}
 
       {status === 'error' && (
-        <div
-          role="status"
-          className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-base font-medium text-amber-800"
-        >
-          문의 전송에 문제가 발생했습니다. 아래 이메일로 직접 보내주세요.{' '}
-          <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold underline">
-            {CONTACT_EMAIL}
-          </a>
-          {serverMessage && (
-            <span className="mt-1.5 block text-sm font-normal text-amber-700/80">사유: {serverMessage}</span>
-          )}
+        <div role="alert" className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-amber-900">
+          <p className="text-base font-bold leading-snug">{serverMessage || '보내지 못했어요. 잠시 후 다시 눌러 주세요.'}</p>
+          <p className="mt-1.5 text-[0.95rem] leading-relaxed text-amber-800">입력하신 내용은 그대로 남아 있어요. 급하시면 아래로 바로 연결하세요.</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <a
+              href={consultLinks.kakaoChat}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center rounded-lg bg-[#FEE500] px-4 text-[0.95rem] font-bold text-[#181600]"
+            >
+              카카오톡 문의 ↗
+            </a>
+            <a href={mailHref} className="inline-flex min-h-11 items-center rounded-lg border border-amber-300 bg-white px-4 text-[0.95rem] font-bold text-amber-900">
+              입력 내용 이메일로 보내기
+            </a>
+          </div>
         </div>
       )}
 
