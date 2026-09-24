@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { submitConsult, CONSULT_COMPANY_FIELDS, CONSULT_METHODS, type ConsultContextRow, type ConsultTopicGroup } from '../lib/consultApi'
 import InterestPicker from './consult/InterestPicker'
 import { INTEREST_LABEL, loadInterest } from '../lib/interestTrack'
+import { consultLinks } from '../config/businessInfo'
 import {
   PROGRAM_CHOICES,
   BUILD_LEVEL_CHOICES,
@@ -876,11 +877,37 @@ export default function ConsultModal({
     </label>
   )
 
+  // 보내지 못했을 때 — 무엇이 문제인지 한 줄(한국어만, 기술 코드는 콘솔로), 입력은 남아 있다는 것,
+  // 그리고 바로 쓸 수 있는 다른 길(카카오톡·이메일). 이메일은 입력하신 내용을 미리 채워 열어서,
+  // 서버가 멈춰 있어도 상담 요청이 사라지지 않게 한다.
+  const mailBody = [
+    name.trim() && `성함: ${name.trim()}`,
+    contact.replace(/\D/g, '').length > 3 && `연락처: ${contact.trim()}`,
+    companyName.trim() && `회사명: ${companyName.trim()}`,
+    presetService && `신청 서비스: ${presetService}`,
+    message.trim() && `문의 내용: ${message.trim()}`,
+    `신청 경로: ${source}`,
+  ]
+    .filter(Boolean)
+    .join('\n')
+  const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`[상담 신청] ${companyName.trim() || name.trim()}`.trim())}&body=${encodeURIComponent(mailBody)}`
   const errorBlock = status === 'error' && (
-    <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
-      전송에 문제가 발생했습니다. 잠시 후 다시 시도하시거나 아래로 직접 보내주세요.{' '}
-      <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold underline">{CONTACT_EMAIL}</a>
-      {serverMessage && <span className="mt-1 block text-xs font-normal text-amber-700/80">사유: {serverMessage}</span>}
+    <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3.5 text-amber-900">
+      <p className="break-keep text-[0.95rem] font-bold leading-snug">{serverMessage || '보내지 못했어요. 잠시 후 다시 눌러 주세요.'}</p>
+      <p className="mt-1 break-keep text-[0.86rem] leading-relaxed text-amber-800">입력하신 내용은 그대로 남아 있어요. 급하시면 아래로 바로 연결하세요.</p>
+      <div className="mt-2.5 flex flex-wrap gap-2">
+        <a
+          href={consultLinks.kakaoChat}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-10 items-center gap-1 rounded-lg bg-[#FEE500] px-3.5 text-[0.88rem] font-bold text-[#181600]"
+        >
+          카카오톡 상담 <span aria-hidden>↗</span>
+        </a>
+        <a href={mailHref} className="inline-flex min-h-10 items-center rounded-lg border border-amber-300 bg-white px-3.5 text-[0.88rem] font-bold text-amber-900">
+          입력 내용 이메일로 보내기
+        </a>
+      </div>
     </div>
   )
 

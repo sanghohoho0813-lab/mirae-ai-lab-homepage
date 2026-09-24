@@ -4,6 +4,7 @@
 import type { AxFitReport, DiagnosisAnswers, DiagnosisSession, LeadFormData } from '../types/businessDiagnosis'
 import { AX_FIT_INFO, questions } from '../data/businessDiagnosisQuestions'
 import { interestTrackLabel, loadInterest } from './interestTrack'
+import { postJson } from './apiFetch'
 
 const API = '/api/business-diagnosis'
 
@@ -39,21 +40,9 @@ export function buildAnswersDisplay(answers: DiagnosisAnswers): AnswersDisplaySt
 }
 
 type ApiOk = { ok: true; [k: string]: unknown }
-type ApiErr = { ok: false; message?: string; debugCode?: string }
 
-async function post(body: Record<string, unknown>): Promise<ApiOk> {
-  const res = await fetch(API, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
-  let data: ApiOk | ApiErr
-  try {
-    data = (await res.json()) as ApiOk | ApiErr
-  } catch {
-    throw new Error(`저장 요청에 실패했습니다 (HTTP ${res.status}). 잠시 후 다시 시도해주세요.`)
-  }
-  if (!res.ok || data.ok === false) {
-    throw new Error((data as ApiErr).message || `저장 요청에 실패했습니다 (HTTP ${res.status}).`)
-  }
-  return data as ApiOk
-}
+// 시간 제한·오류 안내는 postJson 이 맡는다 (실패 시 사람이 읽을 한국어만 담은 ApiError)
+const post = (body: Record<string, unknown>) => postJson<ApiOk>(API, body)
 
 export type StageMeta = {
   completedStage: 1

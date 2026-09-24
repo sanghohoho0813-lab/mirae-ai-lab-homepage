@@ -160,7 +160,6 @@ const KEY = {
 } as const
 
 function read<T>(key: string): T[] {
-  if (typeof localStorage === 'undefined') return []
   try {
     return JSON.parse(localStorage.getItem(key) ?? '[]') as T[]
   } catch {
@@ -168,9 +167,14 @@ function read<T>(key: string): T[] {
   }
 }
 
+// 저장소가 막힌 브라우저(일부 인앱 브라우저·저장 공간 가득)에서는 접근 자체가 오류를 던진다.
+// typeof 검사로는 막을 수 없어(검사하면서 이미 던진다) try 로 감싼다 — 저장만 건너뛰고 화면은 계속 동작한다.
 function write<T>(key: string, value: T[]): void {
-  if (typeof localStorage === 'undefined') return
-  localStorage.setItem(key, JSON.stringify(value))
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    /* 저장 불가 환경 — 무시 */
+  }
 }
 
 function uid(): string {
@@ -244,14 +248,20 @@ export function touchLogin(id: string): void {
 
 // ── 세션 (mock 로그인) ──────────────────────────────────────────────────────
 export function getSessionUserId(): string | null {
-  if (typeof localStorage === 'undefined') return null
-  return localStorage.getItem(KEY.session)
+  try {
+    return localStorage.getItem(KEY.session)
+  } catch {
+    return null
+  }
 }
 
 export function setSession(userId: string | null): void {
-  if (typeof localStorage === 'undefined') return
-  if (userId) localStorage.setItem(KEY.session, userId)
-  else localStorage.removeItem(KEY.session)
+  try {
+    if (userId) localStorage.setItem(KEY.session, userId)
+    else localStorage.removeItem(KEY.session)
+  } catch {
+    /* 저장 불가 환경 — 무시 */
+  }
 }
 
 // ── 도구 접근(tool_access) ──────────────────────────────────────────────────

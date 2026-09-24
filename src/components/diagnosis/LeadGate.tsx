@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { LeadFormData } from '../../types/businessDiagnosis'
 import { PRIVACY_CONSENT, PRIVACY_CONSENT_VERSION } from '../../config/privacyConsent'
 import { CONSULT_COMPANY_FIELDS, CONSULT_METHODS } from '../../lib/consultApi'
+import { consultLinks } from '../../config/businessInfo'
 import InterestPicker from '../consult/InterestPicker'
 
 type Props = {
@@ -202,9 +203,21 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
           </label>
         </div>
 
+        {/* 보내지 못했을 때 — 한국어 안내 한 줄 + 답변·입력이 남아 있다는 것 + 바로 쓸 수 있는 카카오톡 */}
         {errorMessage && (
-          <div role="alert" className="rounded-xl bg-amber-50 px-4 py-3 text-sm font-semibold leading-snug text-amber-800 ring-1 ring-inset ring-amber-200">
-            {errorMessage} <span className="font-medium">작성하신 답변은 안전하게 보관되어 있으니, 잠시 후 다시 시도해주세요.</span>
+          <div role="alert" className="rounded-xl bg-amber-50 px-4 py-3.5 text-amber-900 ring-1 ring-inset ring-amber-300">
+            <p className="break-keep text-[0.95rem] font-bold leading-snug">{errorMessage}</p>
+            <p className="mt-1 break-keep text-[0.86rem] leading-relaxed text-amber-800">
+              작성하신 답변은 안전하게 보관되어 있고, 입력하신 연락처도 그대로 남아 있어요.
+            </p>
+            <a
+              href={consultLinks.kakaoChat}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2.5 inline-flex min-h-10 items-center gap-1 rounded-lg bg-[#FEE500] px-3.5 text-[0.88rem] font-bold text-[#181600]"
+            >
+              급하시면 카카오톡으로 바로 상담 <span aria-hidden>↗</span>
+            </a>
           </div>
         )}
 

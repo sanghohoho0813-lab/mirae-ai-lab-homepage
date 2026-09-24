@@ -1,6 +1,7 @@
 // 사이트 내 상담 신청/문의 폼 → /api/consult (Resend 이메일) 클라이언트.
 // 담긴 상품·선택 옵션·진단 체크 항목 등을 context 로 함께 실어 관리자 지메일로 보냅니다.
 import { businessPackages } from '../data/businessPackages'
+import { postJson } from './apiFetch'
 
 export type ConsultContextRow = { label: string; value: string }
 
@@ -167,15 +168,7 @@ export async function submitConsult(payload: ConsultPayload): Promise<ConsultRes
     ...payload,
     page: typeof window !== 'undefined' ? window.location.href : undefined,
   }
-  const res = await fetch('/api/consult', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
-  })
-  const data = (await res.json().catch(() => ({}))) as { ok?: boolean; message?: string; debugCode?: string }
-  if (!res.ok || data.ok === false) {
-    const code = data.debugCode ? ` [${data.debugCode}]` : ''
-    throw new Error(data.message ? `${data.message}${code}` : `요청 실패 (HTTP ${res.status})`)
-  }
+  // 시간 제한·오류 안내는 postJson 이 맡는다 (실패 시 사람이 읽을 한국어만 담은 ApiError)
+  const data = await postJson<{ ok?: boolean; message?: string }>('/api/consult', body)
   return { ok: true, message: data.message || SUCCESS_FALLBACK }
 }

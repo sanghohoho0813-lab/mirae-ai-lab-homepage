@@ -17,6 +17,19 @@
       content="사업과 실제 업무를 먼저 분석하고, ERP·엑셀·카톡 사이에 남아 있는 회사 고유의 업무를 AI와 전용 시스템으로 연결합니다. 운영효율·매출성장·기업자산화를 만드는 50인 미만 중소기업 맞춤형 AX 설계·구축."
     />
     <meta property="og:type" content="website" />
+    <!-- 기술사업·MVP 상세는 첫 화면이 그림 한 장이다. 화면 코드(JS)를 다 받은 뒤에 요청하면 늦으므로
+         HTML 을 읽는 즉시 그 그림부터 받기 시작한다. 주소가 다르면 아무것도 하지 않는다. -->
+    <script>
+      if (location.pathname.replace(/\/+$/, '') === '/business-services/venture-mvp') {
+        var l = document.createElement('link')
+        l.rel = 'preload'
+        l.as = 'image'
+        l.type = 'image/webp'
+        l.href = '/business/venture-mvp/01.webp'
+        l.setAttribute('fetchpriority', 'high')
+        document.head.appendChild(l)
+      }
+    </script>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link
       rel="stylesheet"
