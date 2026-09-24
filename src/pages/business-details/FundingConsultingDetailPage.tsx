@@ -155,7 +155,7 @@ function Tip({ term, children, className = '' }: { term: string; children: React
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="inline-flex items-center gap-0.5 font-bold underline decoration-dotted underline-offset-2"
+        className="-my-2.5 inline-flex items-center gap-0.5 py-2.5 font-bold underline decoration-dotted underline-offset-2"
       >
         {term}
         <span aria-hidden className="text-[0.72em] opacity-70">ⓘ</span>
@@ -295,7 +295,7 @@ export default function FundingConsultingDetailPage() {
             to="/business-services"
             className="min-w-0 max-w-[calc(100vw-190px)] sm:max-w-none"
             imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]"
-            taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+            taglineClassName="text-[0.64rem]! tracking-[0.14em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
           />
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <Link to="/business-services" className="hidden text-[1.02rem] font-medium text-slate-600 transition-colors hover:text-slate-900 lg:inline">서비스몰 홈</Link>
@@ -310,7 +310,7 @@ export default function FundingConsultingDetailPage() {
       {/* Breadcrumb */}
       <div className="border-b border-slate-100 bg-slate-50/60">
         <div className="mx-auto max-w-6xl px-5 py-2.5 text-[1.1rem] text-slate-500 sm:px-6 sm:text-[1.3rem]">
-          <Link to="/business-services" className="py-2 font-medium hover:text-slate-900">서비스몰</Link>
+          <Link to="/business-services" className="-my-3 inline-block py-3 font-medium hover:text-slate-900">서비스몰</Link>
           <span className="mx-1.5 text-slate-300">/</span>
           <span className="font-semibold text-slate-700">자금·지원금</span>
           <span className="mx-1.5 text-slate-300">/</span>

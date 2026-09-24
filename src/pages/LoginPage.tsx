@@ -95,14 +95,14 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-5 flex items-center justify-between text-sm">
-          <Link to="/forgot-password" className="font-semibold text-slate-500 hover:text-slate-800">
+          <Link to="/forgot-password" className="-my-3 inline-block py-3 font-semibold text-slate-500 hover:text-slate-800">
             비밀번호 찾기
           </Link>
           <span className="text-slate-500">
             아직 계정이 없으신가요?{' '}
             <Link
               to={`/signup${next ? `?next=${encodeURIComponent(next)}` : ''}`}
-              className="font-semibold text-blue-600 hover:text-blue-700"
+              className="-mx-1 -my-3 inline-block px-1 py-3 font-semibold text-blue-600 hover:text-blue-700"
             >
               회원가입
             </Link>

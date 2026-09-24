@@ -122,7 +122,7 @@ export default function ProductCard({ pkg }: { pkg: BusinessPackage }) {
 
         {/* 대표 상품 라벨 — 상품명 위 (썸네일 대신 콘텐츠 영역에 배치) */}
         {flagship && (
-          <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[0.68rem] font-black text-amber-700 sm:text-[0.74rem]">
+          <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[0.76rem] font-black text-amber-700 sm:text-[0.78rem]">
             <span aria-hidden>★</span> 대표 상품
           </span>
         )}

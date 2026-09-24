@@ -6,6 +6,9 @@ const LOGO_SRC = '/brand/mirae-ai-lab-logo-transparent.png'
 /** 어두운 배경용 — 무채색 글자만 흰색으로 바꾼 버전 */
 const LOGO_SRC_LIGHT = '/brand/mirae-ai-lab-logo-light.png'
 const DEFAULT_TAGLINE = 'MIRAE AI LAB · Business AX Company'
+// 폰에서는 헤더 폭이 모자라 긴 태그라인이 'Business A…' 로 잘린다. 로고 그림에 이미 MIRAE AI LAB 이 있으니
+// 폰(sm 미만)에서는 뒷부분만 온전히 보여 준다.
+const DEFAULT_TAGLINE_SHORT = 'Business AX Company'
 
 export default function BrandLogo({
   to = '/',
@@ -13,6 +16,7 @@ export default function BrandLogo({
   imgClassName = '',
   taglineClassName = '',
   tagline = DEFAULT_TAGLINE,
+  taglineShort = tagline === DEFAULT_TAGLINE ? DEFAULT_TAGLINE_SHORT : undefined,
   showTagline = true,
   ariaLabel = '미래에이아이랩 홈으로',
   onClick,
@@ -23,6 +27,8 @@ export default function BrandLogo({
   imgClassName?: string
   taglineClassName?: string
   tagline?: string
+  /** 폰(sm 미만)에서 대신 보여 줄 짧은 태그라인. 기본 태그라인이면 자동으로 짧은 판을 쓴다 */
+  taglineShort?: string
   showTagline?: boolean
   ariaLabel?: string
   onClick?: MouseEventHandler<HTMLAnchorElement>
@@ -56,7 +62,14 @@ export default function BrandLogo({
       </span>
       {showTagline && (
         <span className={`mt-0.5 block max-w-full truncate text-[0.65rem] font-black tracking-[0.16em] sm:text-[0.7rem] ${tone === 'dark' ? 'text-slate-400' : 'text-slate-500'} ${taglineClassName}`}>
-          {tagline}
+          {taglineShort ? (
+            <>
+              <span className="sm:hidden">{taglineShort}</span>
+              <span className="hidden sm:inline">{tagline}</span>
+            </>
+          ) : (
+            tagline
+          )}
         </span>
       )}
     </Link>

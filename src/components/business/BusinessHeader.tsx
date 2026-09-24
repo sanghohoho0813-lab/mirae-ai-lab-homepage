@@ -35,15 +35,15 @@ export default function BusinessHeader({
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-[88rem] items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-5 lg:gap-6">
-        {/* 태그라인은 그대로 두되, 모바일에서 글자·자간을 줄여 햄버거·미리보기 버튼과 겹치지 않게 한다 */}
-        {/* 아주 좁은 화면(320~360px)에서는 남은 폭만큼만 차지하고 태그라인이 …로 줄어든다 */}
+        {/* 태그라인은 그대로 두되, 폰에서는 짧은 판(Business AX Company)을 온전히 보여 준다 */}
+        {/* 아주 좁은 화면(320px)에서는 남은 폭만큼만 차지하고 태그라인이 …로 줄어든다 */}
         <BrandLogo
           to="/"
           onClick={onLogoClick}
           ariaLabel="미래에이아이랩 — 누르면 맨 위로, 맨 위에서 한 번 더 누르면 처음 선택화면으로"
           className="min-w-0 max-w-[calc(100vw-148px)] shrink-0 sm:max-w-none"
           imgClassName="h-9 max-w-[132px] sm:h-11 sm:max-w-[196px] lg:h-12 lg:max-w-[224px]"
-          taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+          taglineClassName="text-[0.64rem]! tracking-[0.14em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
         />
         {/* 헤더 폭이 빠듯해 xl 이상에서 핵심 3개만 보인다. 나머지는 햄버거 메뉴에 있다. */}
         <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.02rem] font-medium text-slate-600 xl:flex">

@@ -46,7 +46,7 @@ export default function BusinessCatalogPage() {
             to="/business-services"
             className="min-w-0 max-w-[calc(100vw-190px)] sm:max-w-none"
             imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[196px]"
-            taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+            taglineClassName="text-[0.64rem]! tracking-[0.14em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
           />
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <Link
@@ -69,9 +69,9 @@ export default function BusinessCatalogPage() {
       {/* Breadcrumb */}
       <div className="border-b border-slate-100 bg-slate-50/60">
         <div className="mx-auto max-w-6xl px-5 py-2.5 text-[0.95rem] text-slate-500 sm:px-6 sm:text-[1.05rem]">
-          <Link to="/business-services" className="py-2 font-medium hover:text-slate-900">서비스몰</Link>
+          <Link to="/business-services" className="-my-3 inline-block py-3 font-medium hover:text-slate-900">서비스몰</Link>
           <span className="mx-1.5 text-slate-300">/</span>
-          <Link to={DETAIL} className="py-2 font-medium hover:text-slate-900">정책자금 × AX</Link>
+          <Link to={DETAIL} className="-my-3 inline-block py-3 font-medium hover:text-slate-900">정책자금 × AX</Link>
           <span className="mx-1.5 text-slate-300">/</span>
           <span className="font-semibold text-slate-700">컨설팅 상품 전체</span>
         </div>

@@ -11,7 +11,7 @@ function BrandMark() {
       to="/"
       className="min-w-0 max-w-[calc(100vw-200px)] sm:max-w-none"
       imgClassName="h-9 max-w-[150px] sm:h-11 sm:max-w-[204px]"
-      taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+      taglineClassName="text-[0.64rem]! tracking-[0.14em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
     />
   )
 }
@@ -54,9 +54,9 @@ export default function PageShell({
 
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-6 py-8">
-          <nav aria-label="약관 및 정책" className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-slate-600">
+          <nav aria-label="약관 및 정책" className="-my-3 flex flex-wrap gap-x-4 text-sm font-semibold text-slate-600">
             {legalLinks.map((l) => (
-              <Link key={l.to} to={l.to} className="transition-colors hover:text-slate-900">
+              <Link key={l.to} to={l.to} className="inline-flex min-h-11 items-center transition-colors hover:text-slate-900">
                 {l.label}
               </Link>
             ))}

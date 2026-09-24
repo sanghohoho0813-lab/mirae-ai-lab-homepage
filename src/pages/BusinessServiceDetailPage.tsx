@@ -211,7 +211,7 @@ export default function BusinessServiceDetailPage() {
               >
                 {v.label}
                 {v.badge && (
-                  <span className={`ml-1.5 rounded px-1.5 py-0.5 text-[11px] font-black ${active ? 'bg-amber-400 text-slate-900' : 'bg-amber-100 text-amber-700'}`}>
+                  <span className={`ml-1.5 rounded px-1.5 py-0.5 text-xs font-black ${active ? 'bg-amber-400 text-slate-900' : 'bg-amber-100 text-amber-700'}`}>
                     {v.badge}
                   </span>
                 )}
@@ -238,7 +238,7 @@ export default function BusinessServiceDetailPage() {
             to="/business-services"
             className="min-w-0 max-w-[calc(100vw-190px)] sm:max-w-none"
             imgClassName="h-9 max-w-[150px] sm:h-10 sm:max-w-[190px]"
-            taglineClassName="text-[0.56rem]! tracking-[0.12em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
+            taglineClassName="text-[0.64rem]! tracking-[0.14em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
           />
           <div className="flex shrink-0 items-center gap-2 sm:gap-4">
             <Link to="/business-services" className="hidden text-[0.95rem] font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline">서비스몰 홈</Link>
@@ -273,7 +273,7 @@ export default function BusinessServiceDetailPage() {
       {/* Breadcrumb */}
       <div className="border-b border-slate-100 bg-slate-50/60">
         <div className="mx-auto max-w-6xl px-5 py-3 text-sm text-slate-500 sm:px-6">
-          <Link to="/business-services" className="py-2 font-medium hover:text-slate-900">서비스몰</Link>
+          <Link to="/business-services" className="-my-3 inline-block py-3 font-medium hover:text-slate-900">서비스몰</Link>
           <span className="mx-1.5 text-slate-300">/</span>
           <span className="font-semibold text-slate-700">{pkg.categoryLabel ?? pkg.category}</span>
           <span className="mx-1.5 text-slate-300">/</span>
@@ -460,11 +460,11 @@ export default function BusinessServiceDetailPage() {
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {content.afters.map((a) => (
               <div key={a.after} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-                <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">진행 전</p>
+                <p className="text-xs font-black uppercase tracking-wide text-slate-500">진행 전</p>
                 <p className="mt-1 text-[0.95rem] font-semibold leading-snug text-slate-400">{a.before}</p>
                 <p className="my-2.5 text-center text-slate-300" aria-hidden>↓</p>
                 <div className={`rounded-xl px-4 py-3 ${flagship ? 'bg-amber-50' : 'bg-blue-50'}`}>
-                  <p className={`text-[11px] font-black uppercase tracking-wide ${accentText}`}>진행 후</p>
+                  <p className={`text-xs font-black uppercase tracking-wide ${accentText}`}>진행 후</p>
                   <p className="mt-1 text-[1.08rem] font-extrabold leading-snug text-slate-900">{a.after}</p>
                 </div>
               </div>

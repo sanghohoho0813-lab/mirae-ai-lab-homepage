@@ -150,7 +150,7 @@ export default function SignupPage() {
             >
               {resendCooldown > 0 ? `재전송 (${resendCooldown}초)` : '확인 메일 재전송'}
             </button>
-            <Link to="/login" className="text-sm font-semibold text-emerald-700 underline underline-offset-2">
+            <Link to="/login" className="-my-3 inline-block py-3 text-sm font-semibold text-emerald-700 underline underline-offset-2">
               로그인 화면으로
             </Link>
           </div>
@@ -252,7 +252,7 @@ export default function SignupPage() {
 
         <p className="mt-6 text-center text-sm text-slate-500">
           이미 계정이 있으신가요?{' '}
-          <Link to={`/login${next ? `?next=${encodeURIComponent(next)}` : ''}`} className="font-semibold text-blue-600 hover:text-blue-700">
+          <Link to={`/login${next ? `?next=${encodeURIComponent(next)}` : ''}`} className="-mx-1 -my-3 inline-block px-1 py-3 font-semibold text-blue-600 hover:text-blue-700">
             로그인
           </Link>
         </p>
