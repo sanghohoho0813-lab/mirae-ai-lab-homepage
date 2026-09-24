@@ -166,14 +166,15 @@ export default function GatewayPage() {
               to={c.to}
               aria-label={c.aria}
               style={{ animationDelay: `${0.32 + i * 0.12}s` }}
-              className={`hero-anim group relative flex min-h-[8rem] flex-col justify-between overflow-hidden rounded-3xl px-5 py-3.5 transition duration-200 hover:-translate-y-1.5 sm:min-h-[15.5rem] sm:px-9 sm:py-9 ${c.card}`}
+              className={`hero-anim group relative flex min-h-[8rem] flex-col overflow-hidden rounded-3xl px-5 py-3.5 transition duration-200 hover:-translate-y-1.5 sm:min-h-[15.5rem] sm:px-9 sm:py-9 ${c.card}`}
             >
               <span aria-hidden className={`pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full blur-2xl ${c.glow}`} />
               <span aria-hidden className={`relative grid h-12 w-12 place-items-center rounded-2xl text-xl sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-3xl sm:text-4xl ${c.iconBox}`}>
                 {c.icon}
               </span>
-              {/* 아이콘을 위로 올려 글줄 폭을 넉넉히 준다 — 좁은 화면에서도 질문이 두 줄 안에 떨어지게 */}
-              <span className="relative mt-3.5 flex items-end justify-between gap-3 sm:mt-6 sm:gap-5">
+              {/* 아이콘을 위로 올려 글줄 폭을 넉넉히 준다 — 좁은 화면에서도 질문이 두 줄 안에 떨어지게.
+                  질문은 아이콘 바로 아래에서 시작한다(두 카드의 질문 높이가 같게). 화살표만 카드 아래 오른쪽에 둔다 */}
+              <span className="relative mt-3.5 flex flex-1 items-start justify-between gap-3 sm:mt-6 sm:gap-5">
                 <span className="min-w-0">
                   <span className="block text-[1.26rem] font-extrabold leading-[1.35] tracking-tight text-white min-[380px]:text-[1.36rem] sm:text-[1.85rem] sm:leading-[1.28]">
                     {c.lines.map((line) => (
@@ -182,7 +183,7 @@ export default function GatewayPage() {
                   </span>
                   <span className={`mt-1.5 block text-[0.9rem] leading-relaxed sm:mt-3 sm:text-[1.1rem] ${c.descColor}`}>{c.desc}</span>
                 </span>
-                <span aria-hidden className={`shrink-0 text-2xl font-black leading-none transition-transform group-hover:translate-x-1 sm:text-[2.4rem] ${c.arrow}`}>
+                <span aria-hidden className={`shrink-0 self-end text-2xl font-black leading-none transition-transform group-hover:translate-x-1 sm:text-[2.4rem] ${c.arrow}`}>
                   →
                 </span>
               </span>
