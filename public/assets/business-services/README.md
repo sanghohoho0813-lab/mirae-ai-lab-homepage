@@ -10,17 +10,22 @@
 ## 상품 ↔ 파일명 매칭 (코드에 이미 연결됨)
 | # | 상품 | 파일명 | slug |
 | --- | --- | --- | --- |
-| 1 | 정책자금 컨설팅 | `funding-consulting.png` | `funding-consulting` |
-| 2 | 고용지원금 패키지 | `employment-subsidy.png` | `employment-subsidy` |
-| 3 | 벤처인증 패키지(혁신성장형) | `venture-innovation.png` | `venture-innovation` |
-| 4 | 벤처인증 패키지(투자유형) | `venture-investment.png` | `venture-investment` |
-| 5 | 반응형 홈페이지 제작 | `responsive-homepage.png` | `responsive-homepage` |
-| 6 | AI 기반 회사 운영시스템 구축 | `ai-ax-system.png` | `ai-ax-system` |
-| 7 | 기업부설연구소 설립 | `rnd-center.png` | `rnd-center` |
-| 8 | ISO 인증 패키지 | `iso-certification.png` | `iso-certification` |
-| 9 | 메인비즈 인증 | `mainbiz-certification.png` | `mainbiz-certification` |
-| 10 | 이노비즈 인증 | `innobiz-certification.png` | `innobiz-certification` |
-| 11 | 성장 로드맵 풀패키지 (대표 상품) | `growth-roadmap-package.png` | `growth-roadmap-package` |
+| 1 | 정책자금 컨설팅 | `funding-consulting.webp` | `funding-consulting` |
+| 2 | 고용지원금 패키지 | `employment-subsidy.webp` | `employment-subsidy` |
+| 3 | 벤처인증 패키지(혁신성장형) | `venture-innovation.webp` | `venture-innovation` |
+| 4 | 벤처인증 패키지(투자유형) | `venture-investment.webp` | `venture-investment` |
+| 5 | 반응형 홈페이지 제작 | `responsive-homepage.webp` | `responsive-homepage` |
+| 6 | AI 기반 회사 운영시스템 구축 | `ai-ax-system.webp` | `ai-ax-system` |
+| 7 | 기업부설연구소 설립 | `rnd-center.webp` | `rnd-center` |
+| 8 | ISO 인증 패키지 | `iso-certification.webp` | `iso-certification` |
+| 9 | 메인비즈 인증 | `mainbiz-certification.webp` | `mainbiz-certification` |
+| 10 | 이노비즈 인증 | `innobiz-certification.webp` | `innobiz-certification` |
+| 11 | 성장 로드맵 풀패키지 (대표 상품) | `growth-roadmap-package.webp` | `growth-roadmap-package` |
+
+## 화면에 쓰는 파일은 WebP
+코드는 `.webp` 를 읽습니다(폰 데이터 절약 — PNG 한 장 약 550KB → WebP 약 35KB).
+같은 이름의 `.png` 는 원본 보관용입니다. 이미지를 바꿀 때는 PNG 를 넣은 뒤 WebP 로 변환해 함께 올려 주세요.
+(예: 가로 1200px, 품질 85)
 
 ## 권장 사양
 - 비율: **1:1(정사각형)** — 카드/상세 썸네일이 `aspect-square` + `object-cover` 라 정사각형이 가장 깔끔합니다.

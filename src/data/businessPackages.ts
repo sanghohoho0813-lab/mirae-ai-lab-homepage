@@ -73,7 +73,7 @@ export type BusinessPackage = {
   why: string
   faqs: Faq[]
   visualType: BusinessVisualType
-  /** 실제 이미지 경로 (예: '/assets/business-services/funding-consulting.png') */
+  /** 실제 이미지 경로 (예: '/assets/business-services/funding-consulting.webp') */
   imageSrc?: string
   /** 상품별 유의사항 (없으면 공통 DISCLAIMER 사용) */
   notice?: string
@@ -173,7 +173,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '얼마나 걸리나요?', a: '자료 접수와 의사결정이 원활한 경우 최대 2주 안에 결과물 완성을 목표로 합니다. 선택한 단계와 외부 연동 범위에 따라 달라질 수 있습니다.' },
     ],
     visualType: 'funding',
-    imageSrc: '/assets/business-services/funding-consulting.png',
+    imageSrc: '/assets/business-services/funding-consulting.webp',
     notice:
       '정책자금 승인, 대출 실행, 금리, 한도는 보장하지 않습니다. 기업의 업종·재무상태·신청 시점·기관 심사 기준에 따라 결과는 달라질 수 있습니다. 컨설팅 비용과 개발비는 별도이며, 개발비는 자금조달 이후 정산합니다.',
     featured: true,
@@ -207,7 +207,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '어떤 지원금이 대상인가요?', a: '채용·고용유지 등 기업 상황에 맞는 제도를 검토해 신청 대상을 정리합니다.' },
     ],
     visualType: 'gov',
-    imageSrc: '/assets/business-services/employment-subsidy.png',
+    imageSrc: '/assets/business-services/employment-subsidy.webp',
     notice:
       '지원금 지급 여부와 금액은 기업 및 요건에 따라 달라질 수 있으며 특정 결과를 보장하지 않습니다. 요건 충족과 기관 심사에 따라 결과가 달라질 수 있습니다.',
     featured: true,
@@ -241,7 +241,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '기술기업이 아니어도 되나요?', a: '업종에 맞는 기술성·성장성 관점을 함께 찾아 정리합니다.' },
     ],
     visualType: 'venture',
-    imageSrc: '/assets/business-services/venture-innovation.png',
+    imageSrc: '/assets/business-services/venture-innovation.webp',
     featured: true,
     notice:
       '벤처기업확인 취득을 보장하지 않습니다. 기업의 기술성·성장성 평가와 기관 심사 기준에 따라 결과는 달라질 수 있습니다.',
@@ -275,7 +275,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '누가 많이 활용하나요?', a: '연봉 1억 이상 전문직·자산가 대표님들이 절세 전략으로 많이 검토합니다.' },
     ],
     visualType: 'venture',
-    imageSrc: '/assets/business-services/venture-investment.png',
+    imageSrc: '/assets/business-services/venture-investment.webp',
     notice:
       '벤처투자에 따른 소득공제·절세 효과는 개인의 소득 구조와 세법, 투자 조건에 따라 달라질 수 있으며 특정 결과를 보장하지 않습니다. 벤처기업확인 취득 역시 기관 심사 사항입니다.',
   },
@@ -307,7 +307,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '문의는 어떻게 받나요?', a: '문의 섹션을 구성해 방문자가 바로 상담을 남길 수 있도록 만듭니다.' },
     ],
     visualType: 'mvp',
-    imageSrc: '/assets/business-services/responsive-homepage.png',
+    imageSrc: '/assets/business-services/responsive-homepage.webp',
   },
   {
     id: 'ai-ax-system',
@@ -339,7 +339,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: 'AX 결합 성장자금형과는 무엇이 다른가요?', a: '「AX 결합 성장자금형」은 자금조달 전략과 업무혁신(프로토타입·MVP·KPI)을 함께 진행하는 선별형 프로그램입니다. 이 상품은 자금조달 컨설팅이 포함되지 않는 독립 소형 프로젝트로, 기존 고객의 추가 자동화나 핵심 기능 하나만 만드는 경우에 적합합니다.' },
     ],
     visualType: 'mvp',
-    imageSrc: '/assets/business-services/ai-ax-system.png',
+    imageSrc: '/assets/business-services/ai-ax-system.webp',
     notice:
       '표시 금액(299만원~)은 시작 기준 금액이며, 최종 견적은 기업 규모와 자동화 범위에 따라 상담 후 확정됩니다. 이 상품은 자금조달 컨설팅이 포함되지 않는 독립 소형 프로젝트로, 자금조달 전략과 업무혁신을 함께 진행하는 「AX 결합 성장자금형」과는 별개 상품입니다.',
     featured: false,
@@ -373,7 +373,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '한 번에 다 구축하나요?', a: '우선순위를 정해 단계적으로 진행합니다. 무엇부터 할지는 종합 진단에서 함께 정합니다.' },
     ],
     visualType: 'mvp',
-    imageSrc: '/assets/business-services/ax-full-package.png',
+    imageSrc: '/assets/business-services/ax-full-package.webp',
     notice:
       'AX 풀 패키지의 구축 범위·산출물·비용은 기업 상황에 따라 달라지며, 상담을 통해 확정됩니다.',
   },
@@ -407,7 +407,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '설립이 어렵지 않나요?', a: '정관 작성, 고용노동부 인가 등 절차가 있어 처음엔 복잡하게 느껴질 수 있습니다. 설립부터 운영 규정까지 순서대로 함께 진행합니다.' },
     ],
     visualType: 'gov',
-    imageSrc: '/assets/business-services/welfare-fund.png',
+    imageSrc: '/assets/business-services/welfare-fund.webp',
     notice:
       '기금 설립·운영과 세제 혜택은 근로복지기본법 등 관련 법령의 요건 충족을 전제로 하며, 기업 상황에 따라 달라질 수 있습니다. 노무·세무 판단이 필요한 부분은 관련 분야 전문 자격사와 협업하여 진행합니다.',
   },
@@ -440,7 +440,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '인력 요건이 걱정됩니다.', a: '설립 요건과 인력 기준을 함께 점검해 준비 방향을 안내드립니다.' },
     ],
     visualType: 'lab',
-    imageSrc: '/assets/business-services/rnd-center.png',
+    imageSrc: '/assets/business-services/rnd-center.webp',
   },
   {
     id: 'iso-certification',
@@ -476,7 +476,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '문서화가 어렵습니다.', a: '요구사항에 맞는 문서화 방향과 심사 준비 자료를 정리해 안내드립니다.' },
     ],
     visualType: 'lab',
-    imageSrc: '/assets/business-services/iso-certification.png',
+    imageSrc: '/assets/business-services/iso-certification.webp',
   },
   {
     id: 'mainbiz-certification',
@@ -506,7 +506,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '가점이 얼마나 되나요?', a: '가점 폭은 사업·기관 기준에 따라 달라질 수 있어, 가능성 중심으로 안내드립니다.' },
     ],
     visualType: 'lab',
-    imageSrc: '/assets/business-services/mainbiz-certification.png',
+    imageSrc: '/assets/business-services/mainbiz-certification.webp',
   },
   {
     id: 'innobiz-certification',
@@ -536,7 +536,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '기술 자료가 부족합니다.', a: '기술혁신 평가 항목에 맞춰 준비 방향과 자료를 함께 정리합니다.' },
     ],
     visualType: 'lab',
-    imageSrc: '/assets/business-services/innobiz-certification.png',
+    imageSrc: '/assets/business-services/innobiz-certification.webp',
   },
   {
     id: 'growth-roadmap-package',
@@ -583,7 +583,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '필요한 것만 골라도 되나요?', a: '네. 성장 로드맵을 기준으로 필요한 부분부터 진행할 수 있습니다.' },
     ],
     visualType: 'full',
-    imageSrc: '/assets/business-services/growth-roadmap-package.png',
+    imageSrc: '/assets/business-services/growth-roadmap-package.webp',
     featured: true,
     flagship: true,
   },
@@ -617,7 +617,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '정리하면 세금이 무조건 줄어드나요?', a: '아니요. 기업 상황과 관련 법령에 따라 달라질 수 있어, 사전 검토 후 가능한 범위를 안내드립니다.' },
     ],
     visualType: 'funding',
-    imageSrc: '/assets/business-services/provisional-payment.png',
+    imageSrc: '/assets/business-services/provisional-payment.webp',
     notice:
       '본 서비스는 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 절세 효과와 적용 가능 여부는 기업 상황과 관련 법령·과세관청 해석에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.',
   },
@@ -650,7 +650,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '비용은 어떻게 되나요?', a: '이익잉여금 규모와 설계 범위에 따라 달라 협의 후 결정됩니다.' },
     ],
     visualType: 'venture',
-    imageSrc: '/assets/business-services/retained-earnings.png',
+    imageSrc: '/assets/business-services/retained-earnings.webp',
     notice:
       '본 서비스는 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 절세 효과와 적용 가능 여부는 기업 상황과 관련 법령·과세관청 해석에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.',
   },
@@ -683,7 +683,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '직접 진행하나요?', a: '세무 판단이 필요한 부분은 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다.' },
     ],
     visualType: 'full',
-    imageSrc: '/assets/business-services/business-succession.png',
+    imageSrc: '/assets/business-services/business-succession.webp',
     notice:
       '본 서비스는 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 특례 적용 여부와 절세 효과는 기업 상황과 관련 법령·과세관청 해석에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.',
   },
@@ -716,7 +716,7 @@ export const businessPackages: BusinessPackage[] = [
       { q: '비용은 어떻게 되나요?', a: '지분 구조와 설계 범위에 따라 협의 후 결정됩니다.' },
     ],
     visualType: 'lab',
-    imageSrc: '/assets/business-services/spouse-stock-retirement.png',
+    imageSrc: '/assets/business-services/spouse-stock-retirement.webp',
     notice:
       '본 서비스는 세무사 등 관련 분야 전문 자격사와 협업하여 진행합니다. 절세 효과와 적용 가능 여부는 기업 상황과 관련 법령·과세관청 해석에 따라 달라질 수 있으며, 특정 결과를 보장하지 않습니다.',
   },
