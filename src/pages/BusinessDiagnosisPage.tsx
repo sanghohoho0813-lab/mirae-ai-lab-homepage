@@ -35,6 +35,8 @@ export default function BusinessDiagnosisPage() {
   const [consultationConsented, setConsultationConsented] = useState(false)
   // 제출 직후 한 번만 뜨는 접수 완료 알림
   const [submitDone, setSubmitDone] = useState(false)
+  // 신청 폼을 한 번 열면 결과로 돌아가도 숨겨 둔 채 남겨, 다시 열 때 쓰던 내용이 그대로 있게 한다
+  const [gateMounted, setGateMounted] = useState(false)
   const [hasSaved, setHasSaved] = useState<boolean>(() => {
     const s = loadSession()
     return Boolean(s && !s.completed && Object.keys(s.answers).length > 0)
@@ -160,6 +162,7 @@ export default function BusinessDiagnosisPage() {
     setHasSaved(false)
     setConsultationConsented(false)
     setSubmitError(null)
+    setGateMounted(false)
     setScreen('start')
     window.scrollTo(0, 0)
   }
@@ -238,6 +241,64 @@ export default function BusinessDiagnosisPage() {
     setScreen('start')
   }
 
+  // ── 폰 뒤로가기 ──
+  // 이 페이지는 주소 하나에서 화면(시작·질문·결과·신청)만 바꾼다. 그대로 두면 뒤로가기 한 번에 진단 밖으로 나가
+  // (예: 신청 폼에서 결과를 다시 보려다 이탈) 돌아와도 결과 대신 시작 화면이 뜬다.
+  // 시작 화면이 아닐 땐 기록을 하나 쌓아 두고, 뒤로가기가 오면 진단 안에서 한 단계 되돌린다.
+  //   질문 → 이전 질문(첫 질문이면 시작 화면) · 신청 폼 → 결과 · 접수 완료 알림 → 닫기 · 결과·시작 → 진단 밖으로
+  const pagePathRef = useRef(window.location.pathname)
+  const leavingRef = useRef(false)
+  const isDiagEntry = () => Boolean((window.history.state as { miraeDiag?: boolean } | null)?.miraeDiag)
+  const armBack = () => {
+    if (!isDiagEntry()) window.history.pushState({ ...(window.history.state ?? {}), miraeDiag: true }, '')
+  }
+  useEffect(() => {
+    if (screen !== 'start') armBack()
+  }, [screen])
+  // popstate 는 한 번만 붙이고, 그때그때 최신 화면 상태로 판단한다
+  const onBackRef = useRef<() => void>(() => {})
+  onBackRef.current = () => {
+    if (screen === 'question') {
+      if (qRef.current > 0) {
+        handlePrev()
+        armBack()
+      } else {
+        setScreen('start')
+        window.scrollTo(0, 0)
+      }
+      return
+    }
+    if (screen === 'gate') {
+      setScreen('report')
+      window.scrollTo(0, 0)
+      armBack()
+      return
+    }
+    if (screen === 'report' && submitDone) {
+      setSubmitDone(false)
+      armBack()
+      return
+    }
+    leavingRef.current = true
+    window.history.back()
+  }
+  useEffect(() => {
+    const onPop = () => {
+      // 진단 밖으로 나가려고 우리가 부른 뒤로가기
+      if (leavingRef.current) {
+        leavingRef.current = false
+        return
+      }
+      // 메뉴 같은 다른 창의 기록이 빠진 것 — 진단 기록은 그대로 남아 있다
+      if (isDiagEntry()) return
+      // 이미 다른 페이지로 나갔다
+      if (window.location.pathname !== pagePathRef.current) return
+      onBackRef.current()
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
   // 함께 검토하고 싶은 분야 — 메인 결과와 분리된 선택 항목. interests 에 분야 이름으로 저장해
   // 상담 메일에 그대로 전달한다. 하나라도 고르면 예전 단일 키도 같이 남겨 서버 플래그와 호환시킨다.
   const AREAS = CONSULT_INTEREST_AREAS as readonly string[]
@@ -252,6 +313,7 @@ export default function BusinessDiagnosisPage() {
   function openGate() {
     trackEvent(sRef.current.sessionId, 'lead_form_viewed')
     setSubmitError(null)
+    setGateMounted(true)
     setScreen('gate')
     window.scrollTo(0, 0)
   }
@@ -364,8 +426,8 @@ export default function BusinessDiagnosisPage() {
           />
         )}
 
-        {screen === 'gate' && report && (
-          <div className="mx-auto w-full max-w-[860px] px-5 pb-20 pt-6">
+        {report && (screen === 'gate' || (gateMounted && !submitted && screen === 'report')) && (
+          <div className={`mx-auto w-full max-w-[860px] px-5 pb-20 pt-6 ${screen === 'gate' ? '' : 'hidden'}`}>
             <button type="button" onClick={() => setScreen('report')} className="mb-1 inline-flex min-h-11 items-center text-sm font-semibold text-slate-500 hover:text-slate-900">
               ← 결과로 돌아가기
             </button>

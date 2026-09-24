@@ -77,18 +77,19 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
       </p>
 
       <div className="mt-6 space-y-4">
-        {/* honeypot — 화면에 보이지 않는 봇 차단 필드 */}
-        <input ref={honeypotRef} type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
+        {/* honeypot — 화면에 보이지 않는 봇 차단 필드.
+            이름에 company·website 같은 말을 넣지 않는다 — 브라우저 자동완성이 회사명을 채워 넣으면 사람도 봇으로 막힌다 */}
+        <input ref={honeypotRef} type="text" name="mirae_hp_field" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="lg-company" className={labelCls}>회사명 *</label>
-            <input id="lg-company" className={`${inputCls} mt-1.5`} value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="예: 미래상사" maxLength={80} />
+            <input id="lg-company" autoComplete="organization" className={`${inputCls} mt-1.5`} value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="예: 미래상사" maxLength={80} />
             {touched && !companyName.trim() && <p className="mt-1 text-xs font-semibold text-red-500">회사명을 입력해주세요.</p>}
           </div>
           <div>
             <label htmlFor="lg-name" className={labelCls}>대표자명 *</label>
-            <input id="lg-name" className={`${inputCls} mt-1.5`} value={repName} onChange={(e) => setRepName(e.target.value)} placeholder="예: 홍길동" maxLength={40} />
+            <input id="lg-name" autoComplete="name" className={`${inputCls} mt-1.5`} value={repName} onChange={(e) => setRepName(e.target.value)} placeholder="예: 홍길동" maxLength={40} />
             {touched && !repName.trim() && <p className="mt-1 text-xs font-semibold text-red-500">대표자명을 입력해주세요.</p>}
           </div>
         </div>
@@ -96,12 +97,12 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="lg-phone" className={labelCls}>휴대전화번호 *</label>
-            <input id="lg-phone" className={`${inputCls} mt-1.5`} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="휴대폰 번호" inputMode="tel" maxLength={13} />
+            <input id="lg-phone" className={`${inputCls} mt-1.5`} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="휴대폰 번호" inputMode="tel" autoComplete="tel-national" maxLength={13} />
             {touched && !phoneOk && <p className="mt-1 text-xs font-semibold text-red-500">올바른 휴대전화번호를 입력해주세요.</p>}
           </div>
           <div>
             <label htmlFor="lg-email" className={labelCls}>이메일 (선택)</label>
-            <input id="lg-email" className={`${inputCls} mt-1.5`} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@company.com" inputMode="email" maxLength={120} />
+            <input id="lg-email" className={`${inputCls} mt-1.5`} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@company.com" inputMode="email" autoComplete="email" maxLength={120} />
           </div>
         </div>
 

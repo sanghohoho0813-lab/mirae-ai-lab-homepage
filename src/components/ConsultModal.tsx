@@ -125,6 +125,10 @@ export default function ConsultModal({
   // 부모가 onClose 를 인라인 함수로 넘겨도 초기화 effect 가 다시 돌지 않도록 ref 로 붙잡는다
   const onCloseRef = useRef(onClose)
   onCloseRef.current = onClose
+  // 같은 버튼으로 다시 열면 쓰던 내용을 그대로 이어서 — 바깥을 잘못 눌러 닫혀도 처음부터 다시 쓰지 않게.
+  // 신청을 마쳤거나 다른 상품·경로에서 열면 새로 시작한다.
+  const draftKeyRef = useRef('')
+  const submittedRef = useRef(false)
 
   const [status, setStatus] = useState<Status>('idle')
   const [serverMessage, setServerMessage] = useState('')
@@ -203,13 +207,87 @@ export default function ConsultModal({
     }
   }
 
-  // 열릴 때마다 상태 초기화 + 스크롤 잠금 + ESC 닫기 + 포커스 트랩
+  // 열릴 때마다 상태 초기화(이어쓰기면 입력값은 유지) + 스크롤 잠금 + ESC 닫기 + 포커스 트랩
   useEffect(() => {
     if (!open) return
-    setStatus('idle')
+    const draftKey = JSON.stringify([source, preselectProduct ?? '', preselectProgram ?? '', presetService ?? ''])
+    const resume = draftKeyRef.current === draftKey && !submittedRef.current
+    draftKeyRef.current = draftKey
+    submittedRef.current = false
+    // 보내는 중에 닫았다 다시 연 경우엔 '보내는 중'을 유지해 두 번 보내지 않게 한다
+    setStatus((s) => (resume && s === 'submitting' ? s : 'idle'))
     setServerMessage('')
-    setAgree(false)
     setAgreeError(false)
+    setStepError('')
+    if (!resume) resetFields()
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        requestClose()
+        return
+      }
+      // 포커스 트랩 — Tab 이 모달 밖으로 나가지 않도록(숨긴 단계 필드는 offsetParent 로 제외)
+      const panel = panelRef.current
+      if (e.key === 'Tab' && panel) {
+        const nodes = panel.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        )
+        const visible = [...nodes].filter((n) => n.offsetParent !== null || n === document.activeElement)
+        if (visible.length === 0) return
+        const first = visible[0]
+        const last = visible[visible.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', onKey)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, preselectProduct, topicGroups, preselectProgram, source, presetService])
+
+  // 폰 뒤로가기 → 페이지를 떠나지 않고 이 팝업만 닫는다 (메뉴 드로어와 같은 히스토리 센티넬 방식).
+  // 열 때 기록을 하나 쌓고, 뒤로가기(popstate)가 오면 팝업을 닫는다.
+  useEffect(() => {
+    if (!open) return
+    const onPop = () => onCloseRef.current()
+    let armed = false
+    const arm = () => {
+      if (armed) return
+      armed = true
+      window.history.pushState({ ...(window.history.state ?? {}), miraeDrawer: undefined, miraeConsult: true }, '')
+      window.addEventListener('popstate', onPop)
+    }
+    // 메뉴 드로어에서 열면, 드로어가 닫히며 부른 history.back() 이 아직 끝나지 않았다 — 그게 끝난 뒤에 쌓는다
+    let timer = 0
+    const afterDrawer = () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('popstate', afterDrawer)
+      arm()
+    }
+    if ((window.history.state as { miraeDrawer?: boolean } | null)?.miraeDrawer) {
+      window.addEventListener('popstate', afterDrawer)
+      timer = window.setTimeout(afterDrawer, 400)
+    } else {
+      arm()
+    }
+    return () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('popstate', afterDrawer)
+      window.removeEventListener('popstate', onPop)
+    }
+  }, [open])
+
+  function resetFields() {
+    setAgree(false)
     // 현재 상품은 미리 선택하고, 그 상품이 속한 목차를 펼쳐 둠
     const preGroup = preselectProduct ? topicGroups.find((g) => g.products.some((p) => p.name === preselectProduct)) : undefined
     setTopics(preselectProduct ? [preselectProduct] : [])
@@ -242,40 +320,14 @@ export default function ConsultModal({
     setAxModules([])
     setStep(1)
     setMaxStep(1)
-    setStepError('')
     if (scrollRef.current) scrollRef.current.scrollTop = 0
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onCloseRef.current()
-        return
-      }
-      // 포커스 트랩 — Tab 이 모달 밖으로 나가지 않도록(숨긴 단계 필드는 offsetParent 로 제외)
-      const panel = panelRef.current
-      if (e.key === 'Tab' && panel) {
-        const nodes = panel.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        )
-        const visible = [...nodes].filter((n) => n.offsetParent !== null || n === document.activeElement)
-        if (visible.length === 0) return
-        const first = visible[0]
-        const last = visible[visible.length - 1]
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault()
-          last.focus()
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault()
-          first.focus()
-        }
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = prevOverflow
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [open, preselectProduct, topicGroups, preselectProgram])
+  }
+
+  // 닫기 요청 — 쌓아 둔 기록을 뒤로가기로 소비한다(→ popstate → 닫힘). 기록이 없으면 바로 닫는다
+  function requestClose() {
+    if ((window.history.state as { miraeConsult?: boolean } | null)?.miraeConsult) window.history.back()
+    else onCloseRef.current()
+  }
 
   // 단계 전환 시 내부 스크롤 최상단 + 해당 단계 제목으로 포커스 이동(입력창 자동 포커스는 피해 모바일 키보드 방지)
   useEffect(() => {
@@ -433,6 +485,7 @@ export default function ConsultModal({
     try {
       const res = await submitConsult({ name: fullName, contact: contactVal, company: companyNameVal, message: messageVal, source, context, structured })
       setServerMessage(res.message)
+      submittedRef.current = true
       setStatus('success')
     } catch (e) {
       setServerMessage(e instanceof Error ? e.message : '')
@@ -518,13 +571,13 @@ export default function ConsultModal({
           <label htmlFor="consult-name" className={labelClass}>
             성함 <span className="text-rose-500">*</span>
           </label>
-          <input id="consult-name" ref={nameRef} name="name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="예: 김대표" className={inputClass} />
+          <input id="consult-name" ref={nameRef} name="name" type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="예: 김대표" className={inputClass} />
         </div>
         <div>
           <label htmlFor="consult-contact" className={labelClass}>
             연락처 <span className="text-rose-500">*</span>
           </label>
-          <input id="consult-contact" ref={contactRef} name="contact" type="tel" inputMode="tel" value={contact} onChange={(e) => setContact(e.target.value)} placeholder="휴대폰 번호" className={inputClass} />
+          <input id="consult-contact" ref={contactRef} name="contact" type="tel" inputMode="tel" autoComplete="tel-national" value={contact} onChange={(e) => setContact(e.target.value)} placeholder="휴대폰 번호" className={inputClass} />
         </div>
       </div>
       {stepError && <p role="alert" className="mt-2 text-[0.82rem] font-bold text-rose-600">{stepError}</p>}
@@ -560,7 +613,7 @@ export default function ConsultModal({
       <label htmlFor="consult-company" className={labelClass}>
         회사명 <span className="font-normal text-slate-400">(선택)</span>
       </label>
-      <input id="consult-company" name="company" type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="예: (주)미래상사" className={inputClass} />
+      <input id="consult-company" name="company" type="text" autoComplete="organization" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="예: (주)미래상사" className={inputClass} />
     </div>
   )
 
@@ -919,7 +972,7 @@ export default function ConsultModal({
       role="dialog"
       aria-modal="true"
       aria-label={heading}
-      onClick={onClose}
+      onClick={requestClose}
     >
       <div
         ref={panelRef}
@@ -934,7 +987,7 @@ export default function ConsultModal({
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={requestClose}
             aria-label="닫기"
             className="-mr-1.5 -mt-1.5 grid h-9 w-9 shrink-0 place-items-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
           >
@@ -1003,7 +1056,7 @@ export default function ConsultModal({
               <p className="mt-1.5 text-sm leading-relaxed text-slate-500">담당 컨설턴트가 순차적으로 연락드리겠습니다.</p>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={requestClose}
                 className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-slate-700"
               >
                 확인
