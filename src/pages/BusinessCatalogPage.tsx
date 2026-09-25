@@ -81,10 +81,10 @@ export default function BusinessCatalogPage() {
         <div className="mx-auto max-w-6xl">
           <p className="text-[1.1rem] font-black tracking-tight text-blue-600 sm:text-[1.3rem]">컨설팅 상품 전체</p>
           <h1 className="mt-2 break-keep text-[1.65rem] font-black leading-[1.3] tracking-tight text-slate-900 sm:text-[2.6rem]">
-            지금 진행 가능한 컨설팅을<br className="sm:hidden" /> 한 화면에서 확인하세요.
+            어떤 컨설팅이 있나요?<br className="sm:hidden" /> 한 화면에 모았어요.
           </h1>
           <p className="mt-4 max-w-3xl break-keep text-[1.2rem] leading-relaxed text-slate-600 sm:text-[1.43rem]">
-            모두 진행해야 하는 것이 아닙니다. 3분 AX 진단으로 지금 회사에 필요한 순서를 먼저 정하고, 그 순서대로 하나씩 준비하시면 됩니다.
+            전부 하실 필요는 없어요. 3분 AX 진단으로 우리 회사에 필요한 순서부터 정하고, 하나씩 준비하시면 됩니다.
           </p>
 
           {/* 카테고리(상황) 탭 */}
@@ -133,7 +133,7 @@ export default function BusinessCatalogPage() {
           </div>
 
           <p className="mt-8 break-keep text-[1.1rem] leading-relaxed text-slate-500 sm:text-[1.3rem]">
-            표기된 가격은 기준 가격입니다. 기업 상황과 진행 범위에 따라 달라질 수 있어 상담에서 확정합니다. 특허·세무·노무·법률처럼 자격이 필요한 업무는 해당 자격 전문가와 함께 진행합니다.
+            표시된 가격은 기준 가격이에요. 회사 상황과 진행 범위에 따라 달라질 수 있어 상담에서 확정합니다. 특허·세무·노무·법률처럼 자격이 필요한 일은 해당 자격 전문가와 함께 진행합니다.
           </p>
 
           <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">
