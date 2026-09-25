@@ -176,7 +176,7 @@ export default async function handler(req: any, res: any) {
 
     return res
       .status(200)
-      .json({ ok: true, message: '문의가 접수되었습니다. 확인 후 연락드리겠습니다.', id: data?.id })
+      .json({ ok: true, message: '문의가 접수됐어요. 확인하고 연락드릴게요.', id: data?.id })
   } catch (error) {
     console.error('[inquiry] unhandled error:', detailOf(error))
     return res.status(500).json({

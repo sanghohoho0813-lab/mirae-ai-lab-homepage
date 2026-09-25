@@ -13,10 +13,10 @@ import { AX_PATENT_COUNT, AX_PATENT_FILED_LABEL, AX_PATENT_META, AX_PATENT_TECHS
 
 // 맨 윗줄에 "9년차 경영컨설턴트 & AX 설계자가" 로 합쳤으므로 목록에서는 뺀다
 const trustItems = [
-  '정책자금·인증·사업계획 실무 경험',
+  '정책자금·인증·사업계획 실무',
   'ISO 인증 심사원',
-  'AI 기반 경영지원 도구 개발',
-  '누적 지원금·환급·자금 진행 100억 원 이상',
+  'AI 경영지원 도구 직접 개발',
+  '지원금·환급·자금 누적 100억 원 이상',
 ]
 
 type Choice = {
@@ -40,7 +40,7 @@ const choices: readonly Choice[] = [
     lines: ['중소기업 대표님 또는', '예비창업가이신가요?'],
     // AX 하나만 파는 것처럼 읽히지 않게 — 선택 페이지에서 AX 도입 / 기술사업·MVP 로 갈린다
     // 선택 페이지의 순서(01 기술사업·MVP → 02 AX 도입)와 같은 순서로 읽히게 한다
-    desc: '현재 사업을 분석해 기술사업·MVP부터 회사 전체 AX 도입까지, 회사에 맞는 다음 성장 방향을 설계합니다.',
+    desc: '우리 회사에 맞는 다음 한 걸음을 찾아 드려요. 새 기술사업(MVP)부터 회사 전체 AX까지요.',
     aria: '중소기업 대표님 또는 예비창업가이신가요? AX 도입과 기술사업·MVP 중 고르기',
     card: 'bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30',
     glow: 'bg-white/20',
@@ -52,7 +52,7 @@ const choices: readonly Choice[] = [
     to: '/consultants',
     icon: '🧑‍💼',
     lines: ['컨설턴트이신가요?'],
-    desc: '여러 고객사의 할 일·서류·수금을 한 화면에 모으는 컨설턴트 운영 OS입니다.',
+    desc: '여러 고객사의 할 일, 서류, 수금을 한 화면에서 챙겨요. 컨설턴트를 위한 운영 OS예요.',
     aria: '컨설턴트이신가요? 컨설턴트 운영 OS 보기',
     card: 'bg-gradient-to-br from-slate-800 to-slate-950 shadow-lg shadow-slate-900/30 hover:shadow-2xl hover:shadow-sky-500/20',
     glow: 'bg-sky-400/25',
@@ -103,8 +103,8 @@ export default function GatewayPage() {
           {/* AX 를 처음 보는 분이 대부분이라 단어 바로 옆 괄호로 뜻을 밝힌다.
               "설계자가 설계하는" 이 되지 않게 뒤 동사는 "만드는" 으로 둔다. */}
           <p className="text-center text-[0.95rem] font-semibold leading-snug text-slate-600 min-[380px]:text-[1.0rem] sm:text-[1.25rem]">
-            9년차 경영컨설턴트 &amp; AX 설계자가 만드는 <b className="font-bold text-slate-800">50인 미만 중소기업</b> 맞춤형 AX
-            <span className="font-medium text-slate-500">(AI Transformation : 인공지능 전환)</span>
+            9년 차 경영컨설턴트가 설계하는 <b className="whitespace-nowrap font-bold text-slate-800">50인 미만 중소기업</b> AX
+            <span className="mt-0.5 block text-[0.84em] font-medium text-slate-500">AX = AI로 회사가 일하는 방식을 바꾸는 것</span>
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-center text-[0.78rem] font-medium leading-snug text-slate-500 min-[380px]:gap-x-2 min-[380px]:text-[0.86rem] sm:mt-3.5 sm:gap-x-3 sm:text-[1.0rem] sm:leading-normal">
             {trustItems.map((t, i) => (
@@ -123,7 +123,7 @@ export default function GatewayPage() {
             <div className="border-l-2 border-[#D47A4A]/45 pl-3.5 sm:pl-5">
               {/* 별도 안내 버튼 없이, 주황색 특허 문구 자체를 눌러 5건을 펼친다 */}
               <p className="max-w-md break-keep text-[0.9rem] leading-relaxed text-slate-600 sm:max-w-none sm:text-[1.08rem]">
-                업무 자동화 · 다음 행동 추천 · 기업 상태 분석 등{' '}
+                업무 자동화, 다음 할 일 추천 같은{' '}
                 <button
                   type="button"
                   onClick={() => setTechOpen((v) => !v)}

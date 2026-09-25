@@ -58,7 +58,7 @@ const BUSINESS_MENU: MenuConfig = {
   topSub: '중소기업 AX · 기술사업',
   lead: {
     label: '우리 회사 AX 가능성 진단',
-    desc: '지금 쓰는 업무방식과 시스템을 먼저 보고, 정비가 먼저인지 · 작게 시작할지 · 전면 구축이 맞는지부터 판단합니다.',
+    desc: '3분이면 돼요. 정비가 먼저인지, 작게 시작할지, 크게 만들지부터 알려 드려요.',
     to: '/business-diagnosis',
     match: (p) => p.startsWith('/business-diagnosis'),
   },
@@ -69,8 +69,8 @@ const BUSINESS_MENU: MenuConfig = {
       accent: 'blue',
       // 이름·한 줄 설명은 선택 페이지 카드와 같게
       items: [
-        { no: '1', label: '2주 기술사업 빌드', desc: '회사에 없던 것을 새로 만듭니다 · 기술사업·MVP·벤처기업확인', to: '/business-services/venture-mvp', match: (p) => p.startsWith('/business-services/venture-mvp') },
-        { no: '2', label: '풀 AX 구축', desc: '지금 하고 있는 일을 바꿉니다 · 회사 전체 AX', to: '/business-services/ax-start', match: (p) => p.startsWith('/business-services/ax-start') },
+        { no: '1', label: '2주 기술사업 빌드', desc: '없던 사업을 새로 만들어요 · 기술사업·MVP·벤처기업확인', to: '/business-services/venture-mvp', match: (p) => p.startsWith('/business-services/venture-mvp') },
+        { no: '2', label: '풀 AX 구축', desc: '하던 일을 더 편하게 바꿔요 · 회사 전체 AX', to: '/business-services/ax-start', match: (p) => p.startsWith('/business-services/ax-start') },
         { no: '3', label: '두 서비스 비교하기', desc: '어느 쪽이 맞는지 한 화면에서', to: '/business-services', match: (p) => p === '/business-services' },
       ],
     },
@@ -79,13 +79,13 @@ const BUSINESS_MENU: MenuConfig = {
       heading: 'AX 살펴보기',
       accent: 'cyan',
       items: [
-        { no: '1', label: '실제 AX 구축 화면', desc: '산업별 AX Preview 먼저 보기', to: '/business-services/ax#portfolio' },
-        { no: '2', label: '실제 기업 프로젝트', desc: '현장에서 고도화 중인 프로젝트', to: '/business-services/ax#real-projects' },
-        { no: '3', label: 'AX란 무엇인가', desc: '디지털화와 무엇이 다른가', to: '/business-services/ax#ax-definition' },
-        { no: '4', label: 'Growth Layer', desc: 'AX 성과가 다음 성장단계로 이어지는 방법', to: '/business-services/ax#growth' },
-        { no: '5', label: '왜 미래AI랩인가', desc: '분절이 아니라 하나의 Growth Story', to: '/business-services/ax#why-mirae' },
+        { no: '1', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: '/business-services/ax#portfolio' },
+        { no: '2', label: '실제 기업 프로젝트', desc: '지금 현장에서 만들고 있는 프로젝트', to: '/business-services/ax#real-projects' },
+        { no: '3', label: 'AX가 뭐예요?', desc: '디지털화와 뭐가 다른지', to: '/business-services/ax#ax-definition' },
+        { no: '4', label: '성과를 성장으로', desc: 'AX 성과를 다음 단계로 잇는 방법', to: '/business-services/ax#growth' },
+        { no: '5', label: '왜 미래AI랩이에요?', desc: '따로따로가 아니라 한 흐름으로', to: '/business-services/ax#why-mirae' },
         // 프로그램 상세페이지 전면 개정 중 — 이동을 막고 한 줄로만 알린다 (프로그램 안내·수행체계·성장 로드맵)
-        { no: '6', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행방식·결과물 안내 (개정 중)', to: '/business-services/funding-consulting', updating: true },
+        { no: '6', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
       ],
     },
     {
@@ -131,7 +131,7 @@ const CONSULTANT_MENU: MenuConfig = {
       heading: '컨설턴트 OS',
       accent: 'violet',
       items: [
-        { label: '대시보드 미리보기', desc: '아침에 열면 할 일이 이유와 함께', to: '/consultants#dashboard' },
+        { label: '대시보드 미리보기', desc: '아침에 열면 할 일이 정리돼 있어요', to: '/consultants#dashboard' },
         { label: '운영 방식', desc: '고객 화면과 이어지는 흐름 · 쌓이는 기록', to: '/consultants#how' },
         { label: '7개 모듈', desc: '지금 쓰는 도구와 완성되면 들어갈 기능', to: '/consultants#modules' },
         { label: '출시 일정', desc: '2026년 10월부터 차례로 · 정식 출시 후 월 구독', to: '/consultants#launch' },

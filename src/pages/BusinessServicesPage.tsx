@@ -17,10 +17,10 @@ import { usePageMeta } from '../lib/pageMeta'
 
 const PAGE_TITLE = '대표님 서비스 선택 | 미래AI랩 — 50인 미만 중소기업 AX · 기술사업·MVP'
 const PAGE_DESC =
-  '미래AI랩은 50인 미만 중소기업을 위한 AX·플랫폼을 주로 만듭니다. 회사에 없던 기술사업 하나를 2주 안에 만드는 MVP·벤처기업확인 패키지부터, 회사 전체를 바꾸는 AX 도입까지.'
+  '50인 미만 중소기업을 위한 AX와 기술사업을 만들어요. 기술사업 하나를 2주 안에 만드는 MVP·벤처기업확인 패키지부터, 회사 전체를 바꾸는 AX 도입까지.'
 
 const MVP_STEPS = ['기술사업', 'MVP', '벤처기업확인'] as const
-const AX_KEYWORDS = ['내부 업무', '고객접점', '데이터', '자동화', '매출성장'] as const
+const AX_KEYWORDS = ['내부 업무', '고객 응대', '데이터', '자동화', '매출 성장'] as const
 
 // "AX = 대기업" 이라는 인상을 먼저 걷어내는 자리.
 // 새로 지어낸 말은 두지 않는다 — 셋 다 이미 사이트에 있는 사실을 끌어올린 것이다.
@@ -29,15 +29,15 @@ const AX_KEYWORDS = ['내부 업무', '고객접점', '데이터', '자동화', 
 const SME_POINTS = [
   {
     t: '지금 쓰는 방식 그대로에서',
-    d: '엑셀·카톡·수기로 하던 업무를 기준으로 설계합니다. 쓰던 ERP·POS는 없애지 않고 그대로 씁니다.',
+    d: '엑셀, 카톡, 수기로 하던 일에서 시작해요. 쓰던 ERP·POS도 그대로 둡니다.',
   },
   {
     t: '전담 IT 인력이 없어도',
-    d: '대표님과 직원이 따로 배우지 않고 바로 쓸 수 있는 화면으로 만듭니다.',
+    d: '따로 배우지 않아도 바로 쓰는 화면으로 만들어요.',
   },
   {
-    t: '전면 구축이 답이 아닐 수도',
-    d: '3분 진단 결과가 ‘지금은 정비 먼저’로 나오면, 구축을 권하지 않고 그렇게 말씀드립니다.',
+    t: '크게 만드는 게 답이 아닐 수도',
+    d: '진단 결과가 ‘지금은 정비 먼저’라면, 만들자고 권하지 않고 솔직하게 말씀드려요.',
   },
 ] as const
 
@@ -98,7 +98,7 @@ export default function BusinessServicesPage() {
             대표님, 지금 필요한 변화는<br className="sm:hidden" /> 어느 쪽인가요?
           </h1>
           <p className="hero-anim mx-auto mt-3 max-w-2xl text-[1.02rem] leading-relaxed text-[#646E78] [animation-delay:120ms] sm:text-[1.12rem]">
-            회사에 없던 기술사업을 새로 하나 만들지,<br className="sm:hidden" /> 지금 하는 일을 회사 전체로 바꿀지 골라 주세요.
+            없던 사업을 새로 만들지,<br className="sm:hidden" /> 하던 일을 바꿀지만 고르시면 돼요.
           </p>
         </div>
 
@@ -107,19 +107,19 @@ export default function BusinessServicesPage() {
           <Link
             to={VENTURE_MVP_PATH}
             data-track="venture-mvp"
-            aria-label="01 2주 기술사업 빌드 — 기술사업 하나를 2주 안에 만듭니다. 2주 기술사업 패키지 보기"
+            aria-label="01 2주 기술사업 빌드 — 기술사업 하나를 2주 안에 만들어요. 2주 기술사업 패키지 보기"
             className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#D47A4A]/30 bg-gradient-to-br from-[#171B20] via-[#1F252C] to-[#343B44] p-5 pt-6 text-white shadow-lg shadow-[#171B20]/25 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/70 hover:shadow-2xl hover:shadow-[#171B20]/35 [animation-delay:200ms] sm:p-7"
           >
             <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#D47A4A]/25 opacity-70 blur-3xl transition-opacity group-hover:opacity-100" />
 
             <div className="relative">
-              <CardHead no="01" name="2주 기술사업 빌드" diff="회사에 없던 것을 새로 만듭니다" badge="선착순 5개사" tone="dark" />
+              <CardHead no="01" name="2주 기술사업 빌드" diff="없던 사업을 새로 만들어요" badge="선착순 5개사" tone="dark" />
               <h2 className="mt-4 text-[1.5rem] font-black leading-[1.25] tracking-tight sm:text-[1.8rem]">
-                기술사업 하나를<br />2주 안에 만듭니다
+                기술사업 하나를<br />2주 안에 만들어요
               </h2>
               <p className="mt-3 text-[0.96rem] leading-relaxed text-slate-300 sm:text-[1.02rem]">
-                지금 하는 사업에서 출발해{' '}
-                <b className="font-bold text-white">기술사업 아이디어를 잡고, 실제로 돌아가는 MVP를 만들고, 벤처기업확인 신청</b>까지 한 번에 이어 갑니다.
+                지금 사업에서 아이디어를 찾고, <b className="font-bold text-white">바로 써 볼 수 있는 첫 버전(MVP)</b>을 만들어요.
+                벤처기업확인 신청까지 한 번에 해요.
               </p>
               <ul className="mt-4 flex flex-wrap items-center gap-1.5" aria-label="패키지 구성">
                 {MVP_STEPS.map((s, i) => (
@@ -146,19 +146,19 @@ export default function BusinessServicesPage() {
           <Link
             to={AX_START_PATH}
             data-track="ax"
-            aria-label="02 풀 AX 구축 — 회사 전체를 AX로 바꿉니다. AX 도입 알아보기"
+            aria-label="02 풀 AX 구축 — 회사 전체를 AX로 바꿔요. AX 도입 알아보기"
             className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#E7EAEE] bg-[#FFFDF9] p-5 pt-6 text-[#171B20] shadow-lg shadow-[#D47A4A]/10 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/50 hover:shadow-2xl hover:shadow-[#D47A4A]/20 [animation-delay:300ms] sm:p-7"
           >
             <span aria-hidden className="pointer-events-none absolute -left-16 -top-20 h-56 w-56 rounded-full bg-[#E8B89A]/45 blur-3xl" />
 
             <div className="relative">
-              <CardHead no="02" name="풀 AX 구축" diff="지금 하고 있는 일을 바꿉니다" badge="상담 후 범위 결정" tone="light" />
+              <CardHead no="02" name="풀 AX 구축" diff="하던 일을 더 편하게 바꿔요" badge="상담 후 범위 결정" tone="light" />
               <h2 className="mt-4 text-[1.5rem] font-black leading-[1.25] tracking-tight sm:text-[1.8rem]">
-                회사 전체를<br />AX로 바꿉니다
+                회사 전체를<br />AX로 바꿔요
               </h2>
               <p className="mt-3 text-[0.96rem] leading-relaxed text-[#343B44] sm:text-[1.02rem]">
-                반복 업무와 고객 응대, 흩어진 데이터를 하나로 이어{' '}
-                <b className="font-bold text-[#171B20]">일은 덜고 매출은 키우는, 우리 회사에 맞춘 AX</b>입니다.
+                반복 업무, 고객 응대, 흩어진 데이터를 하나로 이어요.{' '}
+                <b className="font-bold text-[#171B20]">일은 덜고, 놓치던 매출은 챙기게요.</b>
               </p>
               <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="핵심 키워드">
                 {AX_KEYWORDS.map((k) => (
@@ -168,7 +168,7 @@ export default function BusinessServicesPage() {
                 ))}
               </ul>
               <p className="mt-4 text-[0.9rem] font-semibold leading-relaxed text-[#646E78]">
-                먼저 <b className="font-bold text-[#343B44]">3분 진단</b>으로 전면 구축이 맞는지부터 판단합니다.
+                먼저 <b className="font-bold text-[#343B44]">3분 진단</b>으로 우리 회사에 맞는지부터 볼게요.
               </p>
             </div>
 
@@ -179,7 +179,7 @@ export default function BusinessServicesPage() {
         </div>
 
         <p className="mt-5 text-center text-[0.86rem] text-[#646E78] sm:mt-7 sm:text-[0.95rem]">
-          어느 쪽을 골라도 <b className="font-semibold text-[#343B44]">3분 진단 → 결과 → 상담</b>으로 이어집니다.
+          어느 쪽이든 <b className="font-semibold text-[#343B44]">3분 진단 → 결과 → 상담</b> 순서로 진행돼요.
         </p>
 
         {/* 중소기업이 기준이라는 것 — 대부분은 여기까지 읽지 않고 두 카드 중 하나를 바로 고른다.
@@ -187,7 +187,7 @@ export default function BusinessServicesPage() {
         <details data-sme className="group mx-auto mt-6 w-full max-w-3xl rounded-2xl border border-[#E7EAEE] bg-white/70 sm:mt-8">
           <summary className="flex min-h-[3.25rem] cursor-pointer list-none items-center justify-between gap-3 rounded-2xl px-4 py-2.5 transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D47A4A] sm:px-6 [&::-webkit-details-marker]:hidden">
             <span className="min-w-0 break-keep text-[0.98rem] font-black leading-snug text-[#171B20] sm:text-[1.06rem]">
-              AX는 대기업만 하는 일이 아닙니다
+              AX, 대기업만 하는 거 아닌가요?
             </span>
             <span className="inline-flex shrink-0 items-center gap-1 text-[0.88rem] font-bold text-[#B35A2A]">
               <span className="group-open:hidden">펼쳐보기</span>
@@ -200,8 +200,8 @@ export default function BusinessServicesPage() {
 
           <div className="border-t border-[#E7EAEE] px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
             <p className="break-keep text-[0.95rem] leading-relaxed text-[#646E78] sm:text-[1.02rem]">
-              미래AI랩은 주로 <b className="font-bold text-[#171B20]">50인 미만 중소기업</b>의 AX와 플랫폼을 만듭니다.
-              대기업 시스템을 작게 줄여 파는 게 아니라, 지금 회사가 실제로 일하는 방식에서 시작합니다.
+              아니에요. 미래AI랩은 주로 <b className="font-bold text-[#171B20]">50인 미만 중소기업</b>의 AX와 플랫폼을 만들어요.
+              대기업 시스템을 줄여 파는 게 아니라, 지금 일하는 방식에서 시작합니다.
             </p>
 
             <ul className="mt-4 grid gap-3 sm:grid-cols-3 sm:gap-4">
@@ -217,7 +217,7 @@ export default function BusinessServicesPage() {
             </ul>
 
             <p className="mt-4 text-[0.88rem] leading-relaxed text-[#646E78] sm:text-[0.95rem]">
-              9년차 경영컨설턴트가 <b className="font-semibold text-[#343B44]">중소기업 실무 기준</b>으로 직접 설계합니다.
+              설계는 9년 차 경영컨설턴트가 <b className="font-semibold text-[#343B44]">중소기업 현장 기준</b>으로 직접 해요.
             </p>
           </div>
         </details>

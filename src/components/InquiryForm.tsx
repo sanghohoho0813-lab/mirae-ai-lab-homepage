@@ -11,7 +11,7 @@ const labelClass = 'mb-2 block text-base font-semibold text-slate-800'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
-const SUCCESS_MESSAGE = '문의가 접수되었습니다. 확인 후 연락드리겠습니다.'
+const SUCCESS_MESSAGE = '문의가 접수됐어요. 확인하고 연락드릴게요.'
 
 function InquiryForm() {
   const [status, setStatus] = useState<Status>('idle')
@@ -91,7 +91,7 @@ function InquiryForm() {
         </div>
         <div>
           <label htmlFor="toolType" className={labelClass}>
-            만들고 싶은 도구 유형
+            관심 있는 기능
           </label>
           <input
             id="toolType"
@@ -105,7 +105,7 @@ function InquiryForm() {
 
       <div className="mt-6">
         <label htmlFor="repetitiveTask" className={labelClass}>
-          가장 시간이 오래 걸리는 반복 업무 <span className="text-rose-500">*</span>
+          가장 시간이 많이 드는 일 <span className="text-rose-500">*</span>
         </label>
         <input
           id="repetitiveTask"
@@ -126,7 +126,7 @@ function InquiryForm() {
           name="message"
           rows={5}
           required
-          placeholder="자동화하고 싶은 업무 흐름을 편하게 적어주세요."
+          placeholder="궁금한 점이나 바라는 기능을 편하게 적어 주세요."
           className={`${inputClass} resize-y`}
         />
       </div>

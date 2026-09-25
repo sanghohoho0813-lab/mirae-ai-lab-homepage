@@ -307,7 +307,7 @@ export default async function handler(req: any, res: any) {
     //    ⚠️ 저장에 실패했다면(leadId 없음) 메일이 유일한 전달 수단이므로 예전처럼 끝까지 기다렸다가 결과를 알린다.
     const respondedEarly = !!leadId
     if (respondedEarly) {
-      res.status(200).json({ ok: true, message: '상담 신청이 접수되었습니다. 확인 후 빠르게 연락드리겠습니다.', leadId })
+      res.status(200).json({ ok: true, message: '상담 신청이 접수됐어요. 확인하고 빠르게 연락드릴게요.', leadId })
     }
 
     // 5) Resend 모듈 동적 import
@@ -345,7 +345,7 @@ export default async function handler(req: any, res: any) {
     if (respondedEarly) return
     return res
       .status(200)
-      .json({ ok: true, message: '상담 신청이 접수되었습니다. 확인 후 빠르게 연락드리겠습니다.', id: data?.id, leadId })
+      .json({ ok: true, message: '상담 신청이 접수됐어요. 확인하고 빠르게 연락드릴게요.', id: data?.id, leadId })
   } catch (error) {
     console.error('[consult] unhandled error:', detailOf(error))
     if (res.headersSent) return
