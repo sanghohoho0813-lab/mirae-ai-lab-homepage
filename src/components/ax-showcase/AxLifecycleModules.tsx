@@ -85,7 +85,7 @@ export default function AxLifecycleModules() {
         ))}
       </ol>
       <p className="mt-4 break-keep text-[1.26rem] sm:text-[1.495rem] leading-relaxed text-slate-500">
-        모든 서비스를 한꺼번에 권하지 않습니다. 지금 회사에 가장 필요한 순서부터 하나씩 설계합니다.
+        한꺼번에 권하지 않아요. 지금 가장 필요한 것부터 하나씩 설계합니다.
       </p>
 
       <div className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
@@ -99,7 +99,7 @@ export default function AxLifecycleModules() {
           to="/business-services/all"
           className="flex min-h-[56px] w-full items-center justify-center gap-2 break-keep rounded-xl bg-slate-900 px-6 text-center text-[1.26rem] sm:text-[1.495rem] font-black text-white transition-transform hover:-translate-y-0.5 sm:w-auto"
         >
-          우리 회사에 맞는 컨설팅 상품 한눈에 보기 <span aria-hidden>→</span>
+          우리 회사에 맞는 상품 한눈에 보기 <span aria-hidden>→</span>
         </Link>
       </div>
 

@@ -55,7 +55,7 @@ export default function AxPackageComparison({ onConsult }: { onConsult?: (code: 
             </ul>
 
             <p className="mt-4 break-keep rounded-xl bg-white/5 px-3 py-2.5 text-[1.1rem] sm:text-[1.3rem] leading-snug text-slate-300 ring-1 ring-inset ring-white/10">
-              <span className="font-black text-white">이런 기업에 맞습니다</span><br />
+              <span className="font-black text-white">이런 회사에 맞아요</span><br />
               {p.fit}
             </p>
 
@@ -85,7 +85,7 @@ export default function AxPackageComparison({ onConsult }: { onConsult?: (code: 
                 to={`/business-diagnosis?program=${p.code}`}
                 className="flex min-h-[54px] w-full items-center justify-center break-keep rounded-xl border border-teal-400/40 bg-teal-400/10 px-4 text-center text-[1.17rem] sm:text-[1.378rem] font-bold leading-snug text-teal-200 transition-colors hover:bg-teal-400/20"
               >
-                더 정확한 결과를 위해<br className="sm:hidden" /> 자가진단 + 상담 한 번에
+                자가진단 + 상담 한 번에
               </Link>
             </div>
           </article>

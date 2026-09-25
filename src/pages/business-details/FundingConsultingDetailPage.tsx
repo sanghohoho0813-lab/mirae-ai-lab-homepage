@@ -73,8 +73,7 @@ const CASE_A = {
   changes: [
     '요청 접수부터 배정, 완료까지 한 화면에서 처리해요.',
     '현장 직원은 폰으로 사진과 결과를 올리고, 관리자는 빠진 일을 바로 봅니다.',
-    '이력이 날짜별로 쌓여 처리량과 단가를 숫자로 보여 줘요.',
-    '이 구조를 그대로 사업계획서와 심사 자료에 담습니다.',
+    '쌓인 이력으로 처리량과 단가를 숫자로 보여 주고, 그대로 사업계획서에 담아요.',
   ],
   before: '인력과 운영비가 필요합니다.',
   after: '현장 업무를 데이터로 남기는 관리 시스템을 만들어, 서비스 범위와 처리량을 늘립니다.',
@@ -409,7 +408,7 @@ export default function FundingConsultingDetailPage() {
             ))}
           </ul>
           <Example>
-            시설관리 회사라면 점검·보수 요청 받는 방식부터 화면으로 바꾸고, 그 화면을 사업계획서와 한 세트로 묶어요.
+            시설관리 회사라면 점검·보수 요청 받는 화면부터 만들어, 사업계획서와 한 세트로 묶어요.
           </Example>
         </div>
       </section>
@@ -632,7 +631,7 @@ export default function FundingConsultingDetailPage() {
             시연형 MVP 다음,<br className="sm:hidden" /> 운영형 개발은 어디까지 만드나요?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-center text-[1.26rem] sm:text-[1.495rem] leading-relaxed text-slate-600">
-            필요한 수준만 고르세요. 개발비는 정책자금 조달 뒤에 정산합니다.
+            필요한 수준만 골라 단계별로 만들어요.
           </p>
 
           <div className="mt-8">
@@ -754,7 +753,7 @@ export default function FundingConsultingDetailPage() {
             </h2>
             <p className="mt-3 break-keep text-[1.26rem] sm:text-[1.495rem] leading-relaxed text-slate-600">
               어떤 일을 AX로 바꿀지 직접 정하고,{' '}
-              <b className="text-slate-900">내부 개발자와 함께 직접 설계합니다.</b> 그래서 계획서와 결과물이 따로 놀지 않아요. 자금 이후엔 지원금, 인증, 복지제도, 절세까지 순서대로 잇습니다.
+              <b className="text-slate-900">내부 개발자와 함께 직접 설계합니다.</b> 자금 이후엔 지원금, 인증, 복지제도, 절세까지 순서대로 잇습니다.
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
               {AWARDS.map((a) => (
@@ -795,11 +794,11 @@ export default function FundingConsultingDetailPage() {
             {[
               {
                 q: '우리 회사는 AI 회사가 아닌데요.',
-                a: <>괜찮아요. AI를 도입·활용하는 중소기업도 지원대상으로 봅니다. 업종이 아니라 일하는 방식을 바꾸는 거예요.</>,
+                a: <>괜찮아요. AI를 도입·활용하는 중소기업도 지원대상이에요. 업종이 아니라 일하는 방식을 바꿉니다.</>,
               },
               {
                 q: '화면을 만든다고 정책자금이 나오나요?',
-                a: <>화면만으로 자금이 나오진 않습니다. 다만 심사자는 계획이 정말 실행될지 봐요. 화면이 있으면 그걸 구체적으로 보여 줄 수 있습니다.</>,
+                a: <>화면만으로 자금이 나오진 않습니다. 다만 심사자는 계획이 정말 실행될지 보고, 화면은 그걸 구체적으로 보여 줘요.</>,
               },
               {
                 q: '또 컨설팅비만 내고 끝나는 것 아닌가요?',
@@ -807,15 +806,15 @@ export default function FundingConsultingDetailPage() {
               },
               {
                 q: '왜 다른 곳보다 빠른가요?',
-                a: <>한 팀이 자금전략과 화면 설계를 동시에 하거든요. 개발사를 따로 찾아 처음부터 다시 설명할 일이 없습니다.</>,
+                a: <>한 팀이 자금전략과 화면 설계를 동시에 하거든요. 개발사에 처음부터 다시 설명할 일이 없습니다.</>,
               },
               {
                 q: '정말 2주 안에 되나요?',
-                a: <>자료 접수와 결정이 원활할 때의 목표 일정입니다. 외부 시스템 연동과 복잡한 데이터 이전은 별도 일정이며, 정책기관 심사기간은 포함하지 않습니다.</>,
+                a: <>목표 일정이에요. 자료 접수와 결정이 원활해야 하고, 외부 시스템 연동·복잡한 데이터 이전과 정책기관 심사기간은 포함하지 않습니다.</>,
               },
               {
                 q: '개발비가 너무 큰 것 아닌가요?',
-                a: <>먼저 100만원으로 방향과 화면부터 봐요. 본개발비는 정책자금 조달 이후 정산하며, 자금이 실행되지 않으면 선택하지 않은 본개발비는 발생하지 않습니다.</>,
+                a: <>100만원으로 방향과 화면부터 봐요. 본개발비는 정책자금 조달 뒤 정산하고, 자금이 실행되지 않으면 선택하지 않은 본개발비는 발생하지 않습니다.</>,
               },
               {
                 q: '왜 월 5개 회사만 하나요?',
@@ -842,7 +841,7 @@ export default function FundingConsultingDetailPage() {
             이번에도 몇천만원일지,<br /><span className="text-amber-300">1억원 이상을 설명할 구조</span>가 있는지<br />먼저 확인해 보세요.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[1.26rem] sm:text-[1.495rem] leading-relaxed text-slate-300">
-            3분 AX 진단으로 지금 상황을 정리하고, <b className="text-white">{FLAGSHIP.name}</b> 상담으로 이어 가세요.
+            3분 AX 진단으로 시작해, <b className="text-white">{FLAGSHIP.name}</b> 상담으로 이어 가세요.
           </p>
           <CtaButtons dark onConsult={openConsult} />
           <p className="mt-5 text-[1.1rem] sm:text-[1.3rem] leading-relaxed text-slate-400">진단만 받는 데는 비용이 들지 않아요.</p>

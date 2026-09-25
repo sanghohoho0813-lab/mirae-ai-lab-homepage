@@ -113,11 +113,11 @@ export function AxSamplesGridSection({ title }: { title?: string }) {
     <section id="ax-showcase-v2" className="scroll-mt-16 border-t border-white/10 bg-[#171B20]">
       <div className="mx-auto max-w-[86rem] px-5 py-14 sm:px-6 sm:py-20">
         <h2 className="mx-auto max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-          {title ?? '우리 업종이라면 어떤 모습이 되는지 직접 눌러보세요.'}
+          {title ?? '우리 업종이라면 어떨까요? 직접 눌러 보세요.'}
         </h2>
         <p className="mx-auto mt-4 max-w-2xl break-keep text-center text-[1.08rem] leading-[1.7] text-slate-400 sm:text-[1.18rem]">
-          직원이 쓰는 <span className="font-bold text-[#D47A4A]">AX 화면</span>과 고객·거래처가 쓰는{' '}
-          <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 각각 열어볼 수 있습니다.
+          직원용 <span className="font-bold text-[#D47A4A]">AX 화면</span>과 고객·거래처용{' '}
+          <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 따로 열어 보세요.
         </p>
         <p className="mx-auto mt-2 max-w-2xl break-keep text-center text-[0.98rem] leading-[1.7] text-slate-500 sm:text-[1.05rem]">{AX_PREVIEW_NOTE}</p>
         <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">

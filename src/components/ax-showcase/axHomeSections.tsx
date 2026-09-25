@@ -65,7 +65,7 @@ export function AxCoreValuesSection() {
   return (
     <section className={`${band} border-t border-slate-200 bg-white`}>
       <div className={wrap}>
-        <h2 className={h2Light}>미래AI랩이 만드는 세 가지</h2>
+        <h2 className={h2Light}>무엇을 만들어 드리나요?</h2>
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
           {AX_CORE_VALUES.map((v) => (
             <div key={v.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
@@ -86,7 +86,7 @@ export function AxMethodSection() {
     <section id="ax-method" className={`${band} scroll-mt-16 border-t border-slate-200 bg-slate-50`}>
       <div className={wrap}>
         <h2 className={h2Light}>
-          평범한 업무를<br className="hidden sm:block" /> 정책자금에서 설명할 수 있는 <span className="text-blue-600">AX 사업</span>으로 바꿉니다.
+          평범한 업무를<br className="hidden sm:block" /> 정책자금에서 설명할 수 있는 <span className="text-blue-600">AX 사업</span>으로 바꿔요.
         </h2>
         <ol className="mt-8 space-y-3">
           {AX_METHOD_STEPS.map((s) => (
@@ -118,15 +118,15 @@ export function AxSelectionSection() {
             <span className="text-[1.65rem] font-black text-white sm:text-[1.9rem]">만 진행합니다</span>
           </p>
           <p className="mx-auto mt-8 max-w-2xl break-keep text-[1.32rem] leading-[1.75] text-slate-200 sm:text-[1.36rem]">
-            업종이 다르고, 지금 막힌 지점이 다르고, 쌓여 있는 데이터도 다릅니다.<br className="hidden sm:block" />{' '}
-            같은 자료를 돌려 쓰는 방식으로는 만들 수 없습니다.
+            회사마다 업종도, 막힌 곳도, 쌓인 데이터도 달라요.<br className="hidden sm:block" />{' '}
+            같은 자료를 돌려 쓸 수 없습니다.
           </p>
           <p className="mx-auto mt-6 max-w-2xl break-keep text-[1.32rem] font-bold leading-[1.75] text-white sm:text-[1.36rem]">
-            대표님 회사에 <span className="text-amber-300">완전히 맞춘 사업구조와 화면</span>을 만들어야 하기 때문에,<br className="hidden sm:block" />{' '}
-            결과물의 수준을 지키려면 한 달에 5개사가 현실적인 한계입니다.
+            대표님 회사에 <span className="text-amber-300">꼭 맞춘 사업구조와 화면</span>을 만들려면,<br className="hidden sm:block" />{' '}
+            한 달에 5개사가 현실적인 한계예요.
           </p>
           <p className="mx-auto mt-6 max-w-2xl break-keep text-[1.32rem] leading-[1.75] text-slate-200 sm:text-[1.36rem]">
-            그래서 자금만 신청하고 끝나는 기업보다,<br className="hidden sm:block" /> 자금을 통해 사업을 실제로 바꾸려는 기업을 우선합니다.
+            그래서 자금만 받고 끝낼 회사보다,<br className="hidden sm:block" /> 자금으로 사업을 실제로 바꾸려는 회사를 먼저 받습니다.
           </p>
         </div>
 

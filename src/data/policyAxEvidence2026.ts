@@ -27,7 +27,7 @@ export const AX_POLICY_EVIDENCE_2026: AxPolicyEvidence[] = [
   {
     id: 'ax-sprint',
     title: '2026 AX 스프린트 우대트랙 신설',
-    shortDescription: 'AI를 실제 업무에 도입·활용하려는 기업을 위한 별도 트랙이 새로 생겼습니다.',
+    shortDescription: 'AI를 업무에 도입·활용하려는 기업을 위한 트랙이 새로 생겼어요.',
     sourceName: '2026년도 중소기업 정책자금 운용계획',
     officialDate: '2026년도',
     sourceType: '운용계획',
@@ -36,7 +36,7 @@ export const AX_POLICY_EVIDENCE_2026: AxPolicyEvidence[] = [
   {
     id: 'ax-joint-notice',
     title: '주요 AX 사업 3개 부처 통합공고',
-    shortDescription: '중기부·과기정통부·산업부가 AX 관련 지원사업을 함께 공고했습니다.',
+    shortDescription: '중기부·과기정통부·산업부가 AX 지원사업을 함께 공고했어요.',
     sourceName: '2026년도 중기부·과기정통부·산업부 주요 AX 사업 통합공고',
     officialDate: '2026년도',
     sourceType: '통합공고',
@@ -45,7 +45,7 @@ export const AX_POLICY_EVIDENCE_2026: AxPolicyEvidence[] = [
   {
     id: 'kosmes-priority',
     title: '정책우선도 평가에 혁신성장·IP·기술경영혁신 반영',
-    shortDescription: '우선검토 과정에서 혁신성장분야, 지식재산권, 기술·경영혁신, 성장잠재력 AI평가가 지표로 활용됩니다.',
+    shortDescription: '혁신성장분야, 지식재산권, 기술·경영혁신, 성장잠재력 AI평가가 우선검토 지표로 쓰입니다.',
     sourceName: '중소벤처기업진흥공단 정책자금 신청·정책우선도 평가 안내',
     officialDate: '2026년도',
     sourceType: '평가안내',
@@ -54,7 +54,7 @@ export const AX_POLICY_EVIDENCE_2026: AxPolicyEvidence[] = [
   {
     id: 'kodit-ai',
     title: '신용보증기금 AI혁신부 신설',
-    shortDescription: '정책금융기관 조직에도 AI 전담 부서가 새로 만들어졌습니다.',
+    shortDescription: '정책금융기관에도 AI 전담 부서가 생겼어요.',
     sourceName: '신용보증기금 2026년 상반기 조직개편·정기인사 보도자료',
     officialDate: '2026년 상반기',
     sourceType: '보도자료',
@@ -115,10 +115,9 @@ export const AX_PURPOSE = {
  *  ⚠️ 특정 결과·승인을 단정하지 않는다. 비교는 준비 상태의 차이만 말한다. */
 export const AX_JUDGE = {
   setupLines: [
-    '정책자금과 정부지원사업의 예산은 한정돼 있습니다.',
-    '그런데 신청하는 기업은 그보다 훨씬 많습니다.',
+    '정책자금과 정부지원사업 예산은 한정돼 있는데, 신청하는 기업은 훨씬 많아요.',
   ],
-  question: '대표님이 심사위원이라면,\n어떤 기업에 지원해 주고 싶으신가요?',
+  question: '대표님이 심사위원이라면,\n어느 기업을 지원하시겠어요?',
   left: {
     label: 'A 기업',
     tag: '사업계획서만 준비',
@@ -139,16 +138,16 @@ export const AX_JUDGE = {
       '화면과 숫자로 보여주는 실행 근거',
     ],
   },
-  conclusion: '이제 AX를 결합한 웹·앱은\n선택이 아니라 필수입니다.',
+  conclusion: '이제 AX 웹·앱은\n선택이 아니라 필수예요.',
 } as const
 
 /** 업계에 알려진 전환 사례 — 재구성한 예시.
  *  ⚠️ 미래AI랩의 자체 실적이 아니다. 반드시 하단 고지와 함께 노출하고,
  *  금액은 "~대"로만 말하며 승인·결과를 보장하는 표현을 쓰지 않는다. */
 export const AX_INDUSTRY_CASES = {
-  title: '실제로 이런 전환이\n계속 일어나고 있습니다.',
+  title: '실제로 이런 전환이\n계속 일어나고 있어요.',
   intro:
-    '평범한 소상공인·중소기업이 사업을 정부가 밀어주는 혁신성장 유형으로 재구성해, 정책자금·정부지원사업에서 좋은 결과를 낸 사례들이 업계에 계속 알려지고 있습니다.',
+    '소상공인·중소기업이 사업을 혁신성장 유형으로 바꿔, 정책자금·정부지원사업에서 좋은 결과를 낸 사례가 업계에 알려지고 있어요.',
   items: [
     {
       icon: '🥩',
@@ -184,7 +183,7 @@ export const AX_INDUSTRY_CASES = {
     },
   ],
   disclaimer:
-    '업계에 공개된 사례들을 재구성한 예시이며 미래AI랩의 자체 실적이 아닙니다. 실제 조달 금액과 승인 여부는 기업 상황과 기관 심사에 따라 달라지며, 특정 결과를 보장하지 않습니다.',
+    '업계에 공개된 사례를 재구성한 예시이며, 미래AI랩의 실적이 아닙니다. 실제 조달 금액과 승인 여부는 기업 상황과 기관 심사에 따라 달라지며, 특정 결과를 보장하지 않습니다.',
 } as const
 
 /** AX를 중학생도 이해할 수 있게 설명하는 문장 — 전문용어를 쓰지 않는다. */
