@@ -4,7 +4,7 @@
 //      색·크기·정보량으로 차등한다. 무게는 대표님이 고른 답(거의 항상/자주/가끔)을
 //      그대로 되돌려 보여주는 것으로 만든다 — 없는 수치나 금액을 만들지 않는다.
 //   ③ 같은 박스 아래 어두운 띠: "이대로 두면" 을 한 곳에 모은다(긴박감은 여기 한 번만).
-//   ④ 그래서 무엇부터: 권장 방향과 다음 행동을 한 섹션으로 합친다.
+//   ④ 그럼, 무엇부터: 권장 방향과 다음 행동을 한 섹션으로 합친다.
 //   → 함께 검토할 분야 → 상담 CTA
 // ⚠️ 정책자금·지원금 상품, 금액, 상세페이지 링크는 두지 않는다.
 //    성장·정책 관심은 메인 결과와 분리된 선택 항목으로만 받는다.
@@ -116,9 +116,9 @@ function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; 
       <h2 className={h2Cls}>지금 회사에서 가장 크게<br className="sm:hidden" /> 걸려 있는 3가지</h2>
       {painCount != null && painTotal != null && (
         <p className="mt-3 inline-flex flex-wrap items-baseline gap-x-1.5 rounded-xl bg-slate-100 px-3.5 py-2 text-[0.95rem] font-semibold text-slate-600">
-          업무 문항 <b className="text-[1.05rem] font-black text-slate-900">{painTotal}개</b> 중
-          <b className="text-[1.05rem] font-black text-red-600">{painCount}개</b>에서
-          <span className="font-bold text-slate-700">‘자주 그렇다’ 이상</span>
+          업무 질문 <b className="text-[1.05rem] font-black text-slate-900">{painTotal}개</b> 중
+          <b className="text-[1.05rem] font-black text-red-600">{painCount}개</b>에
+          <span className="font-bold text-slate-700">‘자주 그렇다’ 이상으로 답하셨어요</span>
         </p>
       )}
 
@@ -162,11 +162,11 @@ function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; 
   )
 }
 
-/** ④ 그래서 무엇부터 — 권장 방향 + 다음 행동을 한 섹션으로 */
+/** ④ 그럼, 무엇부터 — 권장 방향 + 다음 행동을 한 섹션으로 */
 function ActionPlan({ report }: { report: Report }) {
   return (
     <section className="mt-9 print:break-inside-avoid">
-      <p className={`${eyebrow} text-blue-600`}>그래서 무엇부터</p>
+      <p className={`${eyebrow} text-blue-600`}>그럼, 무엇부터 할까요?</p>
       <h2 className={h2Cls}>{report.direction.title}</h2>
 
       <ul className="mt-4 space-y-2">
@@ -339,14 +339,14 @@ export default function AxFitReportView({
           })}
         </ol>
         <p className="mt-3 break-keep text-[0.82rem] leading-relaxed text-slate-400 print:text-slate-500">
-          이 점수는 승인·선정 확률이 아니라, 현재 업무방식 기준으로 별도 AX가 맞는지 가늠하는 내부 판단 지표입니다.
+          이 점수는 승인이나 선정 가능성을 뜻하지 않습니다. 지금 일하는 방식으로 볼 때 우리 회사에 따로 AX를 만드는 게 맞는지 가늠해 보는 내부 기준입니다.
         </p>
       </section>
 
       {/* ② 지금 걸려 있는 3가지 + ③ 이대로 두면 */}
       <ProblemsCard items={report.topProblems} painCount={report.painCount} painTotal={report.painTotal} />
 
-      {/* ④ 그래서 무엇부터 */}
+      {/* ④ 그럼, 무엇부터 */}
       <ActionPlan report={report} />
 
       {/* 함께 검토하고 싶은 분야 — 메인 결과와 분리된 선택 항목. 썸네일·가격 없이 목차별로 고른다. */}

@@ -21,49 +21,49 @@ export const OS_MODULES: OsModule[] = [
   {
     name: '컨설턴트 운영 모듈',
     base: true,
-    desc: '매일 여는 바탕 화면. 여러 고객사의 할 일·서류·수금을 한 화면에 모으고, 고객 화면(My MIRAE)과 한 바퀴로 이어 관리합니다.',
+    desc: '매일 가장 먼저 여는 화면입니다. 여러 고객사의 할 일과 서류, 수금을 한곳에 모으고, 고객 화면(My MIRAE)과 이어서 관리합니다.',
     features: ['고객관리', '일정', '상담이력', '문서', '기성고', '정산', '리포트'],
     now: ['오늘 화면', '업체별 현황표', '상담신청함', '업무 일기', '고객 발행'],
     when: '10월 중 완성 예정',
   },
   {
     name: '기업성장 모듈',
-    desc: '인증·자금·인력 지원처럼 회사가 커 가는 단계마다 필요한 일을, 요건 확인부터 사후관리까지 끊기지 않게 이어 갑니다.',
+    desc: '인증, 자금, 인력 지원처럼 회사가 커 가면서 필요한 일을 요건 확인부터 사후관리까지 빠짐없이 챙깁니다.',
     features: ['기업인증', '정책자금', '보증', '고용지원금', '연구소', '성장 로드맵'],
     now: ['고용지원금 매니저', '기업부설연구소 OS', '정책자금 진단', '특허+벤처'],
     when: '10월 중 완성 예정',
   },
   {
     name: '정부지원사업 모듈',
-    desc: '공고를 고객사 조건과 맞춰 보고, 신청부터 결과까지 마감을 놓치지 않게 관리합니다.',
+    desc: '고객사에 맞는 공고를 찾아 주고, 신청부터 결과 발표까지 마감을 놓치지 않게 챙깁니다.',
     features: ['사업화', 'R&D', '바우처', '수출', '지자체 공고 매칭·관리'],
     now: ['자금·지원사업'],
     when: '11월 이후',
   },
   {
     name: '절세·재무 모듈',
-    desc: '세금 계산과 감면 판정, 절세 시뮬레이션으로 상담 자리에서 숫자로 설명할 수 있게 돕습니다.',
+    desc: '세금 계산과 감면 판정, 절세 시뮬레이션으로 상담 자리에서 바로 숫자로 설명할 수 있게 돕습니다.',
     features: ['세금계산기', '창업감면', '절세 시뮬레이션', '가업승계', '재무기초 분석'],
     now: ['세금 계산기', '창업감면 판정기', '크레탑 분석기'],
     when: '11월 이후',
   },
   {
     name: 'IP·R&D 모듈',
-    desc: '기술 아이디어를 특허 출원 준비와 연구개발 기획으로 정리해, 기술사업화까지 한 흐름으로 잇습니다.',
+    desc: '기술 아이디어를 특허 출원 준비와 연구개발 계획으로 정리하고, 기술사업화까지 이어 갑니다.',
     features: ['특허 아이디어 정리', '출원준비', '연구개발 기획', '기술사업화'],
     now: ['특허+벤처'],
     when: '11월 이후',
   },
   {
     name: 'AX 구축 모듈',
-    desc: '고객사의 업무를 진단하고 MVP·화면·자동화 설계까지, AX 프로젝트의 앞단을 표준화합니다.',
+    desc: '고객사 업무를 진단하고 MVP와 화면, 자동화 설계까지 AX 프로젝트의 첫 단계를 정해진 틀로 진행합니다.',
     features: ['AX 진단', 'MVP 기획', '화면 설계', '업무 자동화 설계'],
     now: ['AX STUDIO · 기업 진단'],
     when: '11월 이후',
   },
   {
     name: 'WEB STUDIO',
-    desc: '고객사의 홈페이지·랜딩페이지를 기획부터 카피·디자인·배포까지 한 번에 진행합니다.',
+    desc: '고객사 홈페이지와 랜딩페이지를 기획부터 문구, 디자인, 배포까지 한 번에 만듭니다.',
     features: ['홈페이지·랜딩페이지 기획', '카피', '디자인', '배포'],
     when: '11월 이후',
   },
@@ -82,7 +82,7 @@ export default function OsModules() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-black tabular-nums text-slate-400">{String(i + 1).padStart(2, '0')}</span>
               <h3 className="text-[1.2rem] font-black tracking-tight text-slate-900 sm:text-[1.3rem]">{m.name}</h3>
-              {m.base && <span className="rounded-md bg-slate-900 px-1.5 py-0.5 text-xs font-black text-white">모든 모듈의 바탕</span>}
+              {m.base && <span className="rounded-md bg-slate-900 px-1.5 py-0.5 text-xs font-black text-white">기본 모듈</span>}
               <span
                 className={`ml-auto rounded-full px-2.5 py-1 text-xs font-black ${
                   soon ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200'
@@ -93,7 +93,7 @@ export default function OsModules() {
             </div>
             <p className="mt-2.5 break-keep text-[1rem] leading-relaxed text-slate-600">{m.desc}</p>
 
-            <p className="mt-4 text-xs font-black tracking-wide text-slate-400">포함 기능</p>
+            <p className="mt-4 text-xs font-black tracking-wide text-slate-400">들어갈 기능</p>
             <ul className="mb-4 mt-1.5 flex flex-wrap gap-1.5">
               {m.features.map((f) => (
                 <li key={f} className="rounded-lg bg-slate-50 px-2.5 py-1 text-[0.88rem] font-semibold text-slate-700 ring-1 ring-inset ring-slate-200">

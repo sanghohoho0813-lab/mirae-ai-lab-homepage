@@ -30,9 +30,9 @@ const svg = (d: ReactNode) => (
 // 왜 만들었나 — 병목은 하나: 일이 많아서가 아니라 흩어져 있어서 시간과 돈이 샌다
 const leaks: { tag: string; title: string; desc: string; icon: ReactNode }[] = [
   {
-    tag: 'TIME LEAK',
+    tag: '시간 손실',
     title: '시간이 샙니다',
-    desc: '카톡을 거슬러 올라가 어제 대화를 떠올리고, 파일함에서 빠진 서류를 찾고, 달력에서 마감을 확인한 뒤에야 첫 전화를 겁니다.',
+    desc: '카톡을 한참 올려 어제 나눈 얘기를 떠올리고, 파일함에서 빠진 서류를 찾고, 달력으로 마감을 확인하고 나서야 첫 전화를 겁니다.',
     icon: svg(
       <>
         <circle cx="12" cy="12" r="8.5" />
@@ -41,9 +41,9 @@ const leaks: { tag: string; title: string; desc: string; icon: ReactNode }[] = [
     ),
   },
   {
-    tag: 'REVENUE LEAK',
+    tag: '매출 손실',
     title: '돈이 샙니다',
-    desc: '그 틈에 수금 예정일과 신청 마감이 지나갑니다. 서류 한 장이면 며칠이 늦어지고, 신청 마감이면 그 해의 기회가 사라집니다.',
+    desc: '그러다 보면 수금일과 신청 마감을 놓치기 쉽습니다. 서류 한 장을 놓치면 며칠이 밀리고, 마감을 놓치면 그해 기회가 통째로 사라집니다.',
     icon: svg(
       <>
         <path d="M4 7h16v10H4z" />
@@ -54,8 +54,8 @@ const leaks: { tag: string; title: string; desc: string; icon: ReactNode }[] = [
   },
   {
     tag: '고객의 기대',
-    title: '고객은 화면으로 보고 싶어 합니다',
-    desc: '“진행 어떻게 되고 있어요?” 를 카톡으로 되묻는 대신, 직접 서류를 올리고 진행 단계를 확인하고 싶어 합니다.',
+    title: '고객은 직접 확인하고 싶어 합니다',
+    desc: '‘진행 어떻게 되고 있어요?’라고 카톡으로 묻기보다, 직접 서류를 올리고 어디까지 왔는지 화면으로 보고 싶어 합니다.',
     icon: svg(
       <>
         <rect x="3.5" y="4.5" width="17" height="11.5" rx="1.5" />
@@ -67,39 +67,39 @@ const leaks: { tag: string; title: string; desc: string; icon: ReactNode }[] = [
 
 // 고객과 내부가 한 바퀴로 — 화면보다 이 순환이 핵심이다
 const loop = [
-  { who: '고객', text: 'My MIRAE 에서 서류를 올리거나 요청을 보냅니다' },
-  { who: '자동', text: '내 상담신청함에 “누가 · 무엇을 · 언제” 가 들어옵니다' },
-  { who: '나', text: '업체에 연결해 처리합니다 — 활동 기록이 남습니다' },
-  { who: '나', text: '결과를 고객에게 “발행” 합니다 — 초안은 보이지 않습니다' },
-  { who: '고객', text: '진행 단계가 바뀐 화면을 보고, 다음 행동을 합니다' },
+  { who: '고객', text: 'My MIRAE에서 서류를 올리거나 요청을 남깁니다' },
+  { who: '자동', text: '누가, 무엇을, 언제 했는지가 내 상담신청함에 바로 들어옵니다' },
+  { who: '나', text: '해당 업체에 연결해 처리하면, 처리한 기록이 그대로 남습니다' },
+  { who: '나', text: '정리가 끝난 결과만 고객 화면에 올립니다. 쓰다 만 초안은 보이지 않습니다' },
+  { who: '고객', text: '바뀐 진행 단계를 확인하고, 다음 서류나 요청으로 이어 갑니다' },
 ]
 
 const principles = [
   {
-    title: '나쁜 절차는 자동화하지 않습니다',
-    desc: '없애기 → 표준화 → 기록으로 바꾸기 → 자동화 → 필요할 때만 AI. 카톡으로 진행 상태를 되묻는 일, 받은 서류를 다시 요청하는 일부터 없앴습니다.',
+    title: '자동화하기 전에, 필요 없는 일부터 없앴습니다',
+    desc: '없앨 일은 없애고, 순서를 정하고, 기록으로 남긴 다음에야 자동화했습니다. AI는 꼭 필요한 곳에만 씁니다. 그래서 카톡으로 진행 상황을 다시 묻거나, 받은 서류를 또 요청하는 일부터 사라졌습니다.',
   },
   {
-    title: '판단은 규칙으로, 이유가 보이게',
-    desc: '우선순위·경고·하루 정리는 조건과 수식으로 움직여 “왜” 를 설명할 수 있습니다. 사람 승인 없이 실행하는 자동화는 두지 않습니다.',
+    title: '왜 그런지 언제든 설명할 수 있게',
+    desc: '우선순위와 경고, 하루 정리는 모두 정해진 규칙으로 움직입니다. 그래서 이 일이 왜 먼저인지 늘 설명할 수 있습니다. 사람이 확인하지 않은 채 저절로 실행되는 자동화는 넣지 않았습니다.',
   },
   {
-    title: '고객에게는 발행한 것만',
-    desc: '내부 메모와 수임료는 어떤 경로로도 고객 화면에 나가지 않습니다. 주민등록번호와 공동인증서 비밀번호는 저장하지 않습니다.',
+    title: '고객에게는 보여 줄 것만 보입니다',
+    desc: '내부 메모와 수임료는 어떤 경우에도 고객 화면에 나가지 않습니다. 주민등록번호나 공동인증서 비밀번호는 아예 저장하지 않습니다.',
   },
 ]
 
 // 1 → 2 → 3단계 — 3단계가 곧 다른 컨설팅 회사가 쓰는 구독형 OS 다
 const stages = [
-  { no: '1단계', when: '지금', title: '대표가 매일 직접 씁니다', desc: '고객과의 왕복이 실제로 돌고, 무엇이 얼마나 빨라지는지 기준선을 재고 있습니다.' },
-  { no: '2단계', when: '다음', title: '고객 알림 · 결과자료 공유 · 직원 계정', desc: '고객이 스스로 확인하고 처리하는 비율을 늘립니다.' },
-  { no: '3단계', when: '확장', title: '다른 컨설팅 회사도 같은 구조로', desc: '브랜드·업무 종류·메뉴만 바꿔 쓸 수 있도록 처음부터 그렇게 짜여 있습니다.' },
+  { no: '1단계', when: '지금', title: '대표가 매일 직접 씁니다', desc: '고객과 주고받는 흐름을 실제로 돌려 보면서, 얼마나 빨라지는지 잴 기준을 잡고 있습니다.' },
+  { no: '2단계', when: '다음', title: '고객 알림과 결과 공유, 직원 계정을 더합니다', desc: '고객이 묻지 않고도 스스로 확인하고 처리하는 일이 늘어납니다.' },
+  { no: '3단계', when: '확장', title: '다른 컨설팅 회사도 그대로 쓸 수 있게', desc: '회사 이름과 업무 종류, 메뉴만 바꾸면 되도록 처음부터 그렇게 만들었습니다.' },
 ]
 
 // 신뢰 지표(히어로 우측 패널) — 실제 확인된 정보만. 대표님용 서비스몰과 동일 축.
 const trustStats: { value: string; label: string; sub?: string }[] = [
   { value: '100억원+', label: '누적 자금조달 지원', sub: '지원금·세금 환급 포함' },
-  { value: '9년', label: '세무·노무·법무·자금 현장' },
+  { value: '9년', label: '세무·노무·법무·자금 현장 경력' },
   { value: 'ISO 3종', label: '9001·14001·45001 심사원' },
   { value: '2개 수상', label: '경영컨설팅·벤처 부문' },
 ]
@@ -112,19 +112,19 @@ const trustAwards = [
 const faqs = [
   {
     q: '지금 바로 쓸 수 있나요?',
-    a: '아직은 아닙니다. 2026년 10월부터 컨설턴트 운영 · 기업성장 모듈을 먼저 열고, 나머지 모듈은 11월 이후 차례로 엽니다. 문의를 남겨 주시면 오픈 순서에 맞춰 연락드립니다.',
+    a: '아직은 어렵습니다. 2026년 10월에 컨설턴트 운영·기업성장 모듈을 먼저 열고, 나머지는 11월 이후에 차례로 엽니다. 문의를 남겨 주시면 여는 순서에 맞춰 연락드리겠습니다.',
   },
   {
     q: '요금은 어떻게 되나요?',
-    a: '정식 출시 후 월 구독으로 제공할 예정입니다. 구체적인 금액과 구성은 오픈 시점에 안내드립니다.',
+    a: '정식 출시 후 월 구독으로 제공할 예정입니다. 금액과 구성은 오픈할 때 안내해 드리겠습니다.',
   },
   {
     q: '고객 정보는 안전한가요?',
-    a: '개인정보는 최소로 둡니다. 주민등록번호와 공동인증서 비밀번호는 저장하지 않고, 내부 메모와 수임료는 어떤 경로로도 고객 화면에 나가지 않습니다.',
+    a: '개인정보는 꼭 필요한 만큼만 둡니다. 주민등록번호와 공동인증서 비밀번호는 저장하지 않고, 내부 메모와 수임료는 고객 화면에 절대 나가지 않습니다.',
   },
   {
-    q: 'AI 가 알아서 판단하나요?',
-    a: '아니요. 우선순위·경고·하루 정리는 전부 규칙(조건과 수식)이라 이유를 설명할 수 있습니다. AI 는 하루 정리를 문장으로 풀어 주는 것처럼 정해 둔 자리에만, 근거가 된 기록과 함께 씁니다.',
+    q: 'AI가 알아서 판단하나요?',
+    a: '아니요. 우선순위와 경고, 하루 정리는 모두 정해진 규칙으로 움직여서 이유를 설명할 수 있습니다. AI는 하루 정리를 문장으로 풀어 주는 것처럼 정해 둔 곳에만, 근거가 된 기록과 함께 씁니다.',
   },
 ]
 
@@ -191,7 +191,7 @@ function App() {
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-sky-400" />
-                MIRAE AI LAB OS · 2026년 10월부터 차례로 오픈
+                MIRAE AI LAB OS · 10월부터 하나씩 오픈
               </span>
 
               <h1 className="mt-6 text-[1.9rem] font-extrabold leading-[1.18] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]">
@@ -202,12 +202,11 @@ function App() {
 
               {/* 추가 계약의 명분 — 꼼꼼하게 관리한 기록이 있어야 다음 제안이 설득력을 갖는다 */}
               <p data-hero-renewal className="mt-6 break-keep text-[1.3rem] font-bold leading-snug text-white sm:text-[1.6rem]">
-                꼼꼼한 관리가, <span className="text-sky-300">다음 계약의 명분</span>이 됩니다.
+                꼼꼼한 관리가,<br className="sm:hidden" /> <span className="text-sky-300">다음 계약의 명분</span>이 됩니다.
               </p>
               <p className="mt-3 break-keep text-base leading-relaxed text-slate-300 sm:text-lg">
-                여러 고객사의 일을 매일 아침 머릿속에서 다시 조합하던 시간을 없애고, 고객이 한 행동이 내 일감이 되어 돌아오게 만든
-                <span className="font-semibold text-white"> 컨설턴트 운영 OS</span>. 업체마다 처리한 일·받은 서류·수금이 날짜와 함께 쌓여,
-                지금까지 해 온 일과 다음 단계를 근거 있게 제안할 수 있습니다.
+                매일 아침 ‘오늘은 누구 일부터 하지?’를 머릿속으로 다시 짜지 않아도 됩니다. 고객이 서류를 올리면 바로 내 할 일로 들어오고,
+                처리한 기록은 업체별로 차곡차곡 쌓입니다. 그 기록이 있으니 <span className="font-semibold text-white">다음 제안도 자신 있게</span> 할 수 있습니다.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -226,15 +225,15 @@ function App() {
               </div>
 
               {/* 현황 — 실제 운영 OS 기준(기능 상태표 LIVE 13) · 모듈 7 · 월 구독 예정 */}
-              <dl className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-6">
+              <dl className="mt-8 grid grid-cols-3 gap-x-4 border-t border-white/10 pt-6 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-3">
                 {[
-                  { v: '13개', l: '대표가 매일 쓰는 기능' },
-                  { v: '7개', l: '모듈로 확장 중' },
-                  { v: '월 구독', l: '정식 출시 후 제공 예정' },
+                  { v: '13개', l: '매일 쓰는 기능' },
+                  { v: '7개', l: '준비 중인 모듈' },
+                  { v: '월 구독', l: '정식 출시 후 예정' },
                 ].map((s) => (
                   <div key={s.l}>
                     <dd className="text-2xl font-extrabold tracking-tight text-white">{s.v}</dd>
-                    <dt className="mt-0.5 text-sm text-slate-400">{s.l}</dt>
+                    <dt className="mt-0.5 break-keep text-sm leading-snug text-slate-400">{s.l}</dt>
                   </div>
                 ))}
               </dl>
@@ -251,7 +250,7 @@ function App() {
                 {trustStats.map((s) => (
                   <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
                     <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
-                    <dt className="mt-1.5 text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
+                    <dt className="mt-1.5 break-keep text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
                     {s.sub && <p className="mt-0.5 text-[0.78rem] font-semibold leading-snug text-amber-300/90">{s.sub}</p>}
                   </div>
                 ))}
@@ -294,7 +293,7 @@ function App() {
                     {trustAwards.map((a) => (
                       <div key={a.title} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
                         <span className="mt-px shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.76rem] font-black text-slate-900">{a.year}</span>
-                        <p className="min-w-0 text-[0.82rem] font-semibold leading-snug text-slate-100">
+                        <p className="min-w-0 break-keep text-[0.82rem] font-semibold leading-snug text-slate-100">
                           {a.title}
                           <span className="font-normal text-slate-400"> · {a.detail}</span>
                         </p>
@@ -312,8 +311,8 @@ function App() {
       <section id="value" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
         <SectionHead
           eyebrow="왜 만들었나"
-          title="일이 많아서가 아니라, 흩어져 있어서 새고 있었습니다"
-          desc="고객 서너 곳이 동시에 돌아가면 업체마다 진행 중인 업무 두세 개, 서류 열 종류, 받을 돈과 신청 마감이 따로 있습니다. 그 일이 머릿속·카톡·파일·여러 화면에 흩어져 있으면, 매일 아침 “오늘 뭐부터, 누구한테 뭘 받아야 하지” 를 처음부터 다시 조합해야 합니다."
+          title="문제는 일이 많은 게 아니라, 여기저기 흩어져 있다는 거였습니다"
+          desc="고객사 서너 곳을 함께 맡으면 업체마다 진행 중인 일이 두세 개, 챙길 서류가 열 가지, 받을 돈과 신청 마감도 제각각입니다. 이게 머릿속과 카톡, 파일, 여러 화면에 나뉘어 있으면 매일 아침 ‘오늘 뭐부터 하지, 누구한테 뭘 받아야 하지?’를 처음부터 다시 따져 봐야 합니다."
         />
         <div className="mt-10 grid gap-5 sm:grid-cols-3">
           {leaks.map((v) => (
@@ -334,8 +333,8 @@ function App() {
         <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
           <SectionHead
             eyebrow="대시보드 미리보기"
-            title="아침에 열면, 오늘 할 일이 이유와 함께 나옵니다"
-            desc="‘반드시 처리할 것’ 과 그중 먼저 할 세 가지가 이유와 함께 뜹니다. 업체를 누르면 지금 할 일·막힌 서류·못 받은 돈이 한 화면에 있고, 통화를 마치면 한 줄 남기면 됩니다."
+            title="아침에 열면, 오늘 할 일이 이유와 함께 정리돼 있습니다"
+            desc="꼭 처리해야 할 일과, 그중 먼저 할 세 가지를 왜 먼저인지와 함께 보여 줍니다. 업체를 누르면 할 일과 막혀 있는 서류, 아직 못 받은 돈이 한 화면에 모여 있고, 통화가 끝나면 한 줄만 적어 두면 됩니다."
           />
           <div className="mt-8 sm:mt-10">
             <OsDashboardPreview />
@@ -347,8 +346,8 @@ function App() {
       <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
         <SectionHead
           eyebrow="운영 방식"
-          title="고객과 내부가 한 바퀴로 이어집니다"
-          desc="고객이 한 일이 내 일감으로 들어오고, 내가 처리한 결과가 고객 화면으로 돌아갑니다. 카톡으로 되묻고 다시 옮겨 적는 일이 줄어듭니다."
+          title="고객 화면과 내 화면이 하나로 이어집니다"
+          desc="고객이 올린 서류와 요청은 곧바로 내 할 일이 되고, 내가 처리한 결과는 고객 화면에 바로 보입니다. 카톡으로 다시 묻고, 받은 걸 또 옮겨 적는 일이 줄어듭니다."
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
@@ -365,17 +364,17 @@ function App() {
               ))}
             </ol>
             <p className="mt-5 rounded-xl bg-slate-50 px-4 py-3 text-[0.92rem] leading-relaxed text-slate-600 ring-1 ring-inset ring-slate-200">
-              ↺ 다시 처음으로 — 이 순환이 화면보다 중요합니다.
+              ↺ 그리고 다시 1번으로. 화면보다 이 흐름이 핵심입니다.
             </p>
           </div>
 
           <div className="grid gap-4">
             {/* 추가 계약의 근거 */}
             <article data-os-renewal className="rounded-2xl bg-slate-900 p-5 text-white shadow-sm sm:p-6">
-              <p className="text-xs font-black tracking-wide text-sky-300">기록이 남기는 것</p>
-              <h3 className="mt-1.5 break-keep text-xl font-bold">꼼꼼한 기록이, 다음 계약의 근거가 됩니다</h3>
+              <p className="text-xs font-black tracking-wide text-sky-300">쌓이는 기록</p>
+              <h3 className="mt-1.5 break-keep text-xl font-bold">꼼꼼히 쌓인 기록이, 다음 계약으로 이어집니다</h3>
               <p className="mt-2 break-keep text-[1rem] leading-relaxed text-slate-300">
-                업체마다 업무·서류·수금·자금·판단의 이력이 날짜와 함께 쌓입니다. 무엇을 언제 처리했는지 보여 주며, 지금까지 해 온 일과 다음 단계를 근거 있게 제안할 수 있습니다.
+                업체마다 무슨 일을 언제 처리했는지, 어떤 서류를 받았는지, 수금은 어디까지 됐는지가 날짜별로 남습니다. 이 기록을 보여 드리면 ‘지금까지 이만큼 해 왔고, 다음엔 이걸 하면 됩니다’라고 자신 있게 제안할 수 있습니다.
               </p>
             </article>
             {principles.map((p) => (
@@ -393,12 +392,12 @@ function App() {
         <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
           <SectionHead
             eyebrow="모듈"
-            title="지금 쓰는 도구를, 7개 모듈로 묶어 넓혀 갑니다"
-            desc="컨설턴트 운영 모듈을 바탕으로, 필요한 업무 영역의 모듈이 같은 화면에 이어 붙습니다. 모듈마다 지금 실제로 쓰고 있는 도구와 완성되면 들어갈 기능을 함께 적었습니다."
+            title={<>지금 쓰는 도구를<br className="sm:hidden" /> 7개 모듈로 키워 갑니다</>}
+            desc="컨설턴트 운영 모듈을 기본으로 두고, 필요한 분야의 모듈을 같은 화면에 더해 쓰는 방식입니다. 모듈마다 지금 실제로 쓰고 있는 도구와, 완성되면 들어갈 기능을 함께 정리했습니다."
           />
           <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
             <span className="h-1.5 w-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" aria-hidden />
-            실사용 테스트와 UI/UX 개선을 계속하고 있습니다
+            지금도 직접 쓰면서 계속 다듬고 있습니다
           </p>
           <div className="mt-8 sm:mt-10">
             <OsModules />
@@ -410,10 +409,10 @@ function App() {
       <section id="launch" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
         <SectionHead
           eyebrow="출시 일정"
-          title="2026년 10월부터, 차례로 엽니다"
+          title={<>2026년 10월부터<br className="sm:hidden" /> 하나씩 엽니다</>}
           desc={
             <>
-              개발은 거의 마무리됐고, 지금은 실사용 테스트와 UI/UX 개선으로 완성도를 끌어올리고 있습니다. 정식 출시 후에는{' '}
+              개발은 거의 끝났고, 지금은 직접 써 보면서 완성도를 높이고 화면을 다듬는 중입니다. 정식 출시 후에는{' '}
               <b className="font-bold text-slate-900">월 구독</b>으로 제공할 예정입니다.
             </>
           }
@@ -437,7 +436,7 @@ function App() {
 
         <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="break-keep text-[0.98rem] leading-relaxed text-slate-600">
-            얼마나 빨라졌는지는 아직 숫자로 말하지 않습니다. <span className="font-semibold text-slate-800">기준선을 재는 중</span>이기 때문입니다.
+            얼마나 빨라졌는지는 아직 숫자로 말씀드리지 않습니다. 정확히 비교할 <span className="font-semibold text-slate-800">기준을 지금 재고 있기</span> 때문입니다.
           </p>
           <a
             href="#inquiry"
@@ -518,7 +517,7 @@ function App() {
               <p className="text-base font-bold uppercase tracking-widest text-blue-600">문의</p>
               <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">오픈 소식 · 도입 문의</h2>
               <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
-                모듈을 여는 순서에 맞춰 먼저 연락드립니다. 지금 가장 시간이 오래 걸리는 업무를 함께 남겨 주시면, 김팀장이 직접 검토해 답해드립니다.
+                모듈을 열 때마다 먼저 연락드리겠습니다. 지금 가장 시간이 많이 드는 업무를 함께 적어 주시면, 김팀장이 직접 읽고 답해 드립니다.
               </p>
             </div>
             <div className="mx-auto mt-8 max-w-3xl">
@@ -533,7 +532,7 @@ function App() {
         topSlot={
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <p className="max-w-md text-base leading-relaxed text-slate-500">
-              여러 고객사의 일을 한 화면에 모으고, 고객이 한 행동이 내 일감으로 돌아오게 만드는 컨설턴트 운영 OS — MIRAE AI LAB OS.
+              여러 고객사의 일을 한 화면에 모으고, 고객이 한 일이 곧바로 내 할 일로 이어지는 컨설턴트 운영 OS, MIRAE AI LAB OS.
             </p>
             <nav className="-my-2.5 flex flex-wrap gap-x-6 text-base font-medium text-slate-600">
               <Link to="/business-services" className="inline-flex min-h-11 items-center transition-colors hover:text-slate-900">대표님용 경영지원</Link>

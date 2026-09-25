@@ -98,7 +98,7 @@ export default function BusinessServicesPage() {
             대표님, 지금 필요한 변화는<br className="sm:hidden" /> 어느 쪽인가요?
           </h1>
           <p className="hero-anim mx-auto mt-3 max-w-2xl text-[1.02rem] leading-relaxed text-[#646E78] [animation-delay:120ms] sm:text-[1.12rem]">
-            회사에 없던 기술사업 하나를 새로 만들지,<br className="sm:hidden" /> 지금 하고 있는 일을 회사 전체 단위로 바꿀지.
+            회사에 없던 기술사업을 새로 하나 만들지,<br className="sm:hidden" /> 지금 하는 일을 회사 전체로 바꿀지 골라 주세요.
           </p>
         </div>
 
@@ -118,8 +118,8 @@ export default function BusinessServicesPage() {
                 기술사업 하나를<br />2주 안에 만듭니다
               </h2>
               <p className="mt-3 text-[0.96rem] leading-relaxed text-slate-300 sm:text-[1.02rem]">
-                기존 사업을 분석해{' '}
-                <b className="font-bold text-white">기술사업 아이디어 → 작동하는 MVP → 벤처기업확인 신청</b>까지 하나의 흐름으로 만듭니다.
+                지금 하는 사업에서 출발해{' '}
+                <b className="font-bold text-white">기술사업 아이디어를 잡고, 실제로 돌아가는 MVP를 만들고, 벤처기업확인 신청</b>까지 한 번에 이어 갑니다.
               </p>
               <ul className="mt-4 flex flex-wrap items-center gap-1.5" aria-label="패키지 구성">
                 {MVP_STEPS.map((s, i) => (
@@ -157,8 +157,8 @@ export default function BusinessServicesPage() {
                 회사 전체를<br />AX로 바꿉니다
               </h2>
               <p className="mt-3 text-[0.96rem] leading-relaxed text-[#343B44] sm:text-[1.02rem]">
-                반복업무·고객접점·데이터를 연결해{' '}
-                <b className="font-bold text-[#171B20]">운영효율과 매출성장을 함께 만드는 회사 맞춤형 AX</b>
+                반복 업무와 고객 응대, 흩어진 데이터를 하나로 이어{' '}
+                <b className="font-bold text-[#171B20]">일은 덜고 매출은 키우는, 우리 회사에 맞춘 AX</b>입니다.
               </p>
               <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="핵심 키워드">
                 {AX_KEYWORDS.map((k) => (
@@ -200,8 +200,8 @@ export default function BusinessServicesPage() {
 
           <div className="border-t border-[#E7EAEE] px-4 pb-5 pt-4 sm:px-6 sm:pb-6">
             <p className="break-keep text-[0.95rem] leading-relaxed text-[#646E78] sm:text-[1.02rem]">
-              미래AI랩은 <b className="font-bold text-[#171B20]">50인 미만 중소기업</b>을 위한 AX·플랫폼을 주로 만드는 회사입니다.
-              대기업 시스템을 줄여 파는 것이 아니라, 지금 회사가 일하는 방식에서 시작합니다.
+              미래AI랩은 주로 <b className="font-bold text-[#171B20]">50인 미만 중소기업</b>의 AX와 플랫폼을 만듭니다.
+              대기업 시스템을 작게 줄여 파는 게 아니라, 지금 회사가 실제로 일하는 방식에서 시작합니다.
             </p>
 
             <ul className="mt-4 grid gap-3 sm:grid-cols-3 sm:gap-4">

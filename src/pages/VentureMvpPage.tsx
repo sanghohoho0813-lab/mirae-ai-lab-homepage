@@ -20,7 +20,7 @@ import { rememberInterest } from '../lib/interestTrack'
 import { usePageMeta } from '../lib/pageMeta'
 
 const PAGE_TITLE = '기술사업 · MVP · 벤처기업확인 | 미래AI랩'
-const PAGE_DESC = '기존 사업을 분석해 기술사업 아이디어, 실제 작동하는 MVP, 벤처기업확인 신청까지 하나의 성장 스토리로 연결합니다.'
+const PAGE_DESC = '지금 하는 사업에서 출발해 기술사업 아이디어를 잡고, 실제로 돌아가는 MVP를 만들고, 벤처기업확인 신청까지 한 번에 이어 갑니다.'
 
 /** 상담 리드의 신청 경로 — consult_leads.source 와 알림 메일 제목에 그대로 들어간다 */
 const CONSULT_SOURCE = '기술사업·MVP 상세페이지 (venture-mvp)'

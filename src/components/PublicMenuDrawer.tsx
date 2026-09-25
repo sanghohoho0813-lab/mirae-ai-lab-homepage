@@ -122,7 +122,7 @@ const CONSULTANT_MENU: MenuConfig = {
   topSub: 'MIRAE AI LAB OS · 컨설턴트 운영 OS',
   lead: {
     label: '오픈 소식 받기',
-    desc: '2026년 10월부터 모듈을 차례로 엽니다. 여는 순서에 맞춰 먼저 연락드려요.',
+    desc: '2026년 10월부터 모듈을 하나씩 엽니다. 열 때마다 먼저 연락드릴게요.',
     to: '/consultants#inquiry',
   },
   groups: [
@@ -132,7 +132,7 @@ const CONSULTANT_MENU: MenuConfig = {
       accent: 'violet',
       items: [
         { label: '대시보드 미리보기', desc: '아침에 열면 할 일이 이유와 함께', to: '/consultants#dashboard' },
-        { label: '운영 방식', desc: '고객과 내부가 한 바퀴로 · 기록이 계약의 근거로', to: '/consultants#how' },
+        { label: '운영 방식', desc: '고객 화면과 이어지는 흐름 · 쌓이는 기록', to: '/consultants#how' },
         { label: '7개 모듈', desc: '지금 쓰는 도구와 완성되면 들어갈 기능', to: '/consultants#modules' },
         { label: '출시 일정', desc: '2026년 10월부터 차례로 · 정식 출시 후 월 구독', to: '/consultants#launch' },
       ],
