@@ -356,7 +356,7 @@ export default function FundingConsultingDetailPage() {
             </button>
           </div>
           <p className="mt-5 text-[1.1rem] sm:text-[1.3rem] font-semibold leading-relaxed text-teal-200">
-            월 5개사 선별 · 김팀장 직접 참여 · 개발자 함께 참여
+            월 5개사 선별 · 김팀장과 개발자가 직접 참여
           </p>
           <Guarantee dark />
         </div>

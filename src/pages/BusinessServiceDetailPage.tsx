@@ -390,7 +390,7 @@ export default function BusinessServiceDetailPage() {
           </h2>
           <p className="mx-auto mt-6 max-w-md text-[1.02rem] font-medium leading-relaxed text-slate-300 sm:text-[1.08rem]">{content.realBuyDesc}</p>
           <p className="mx-auto mt-6 max-w-md border-t border-white/10 pt-5 text-sm leading-relaxed text-slate-400">
-            미래 AI 랩은 필요한 것을 팔기 전에, <b className="text-slate-200">지금 무엇부터 해야 손실을 막을 수 있는지</b>부터 진단합니다.
+            미래 AI 랩은 팔기 전에 <b className="text-slate-200">무엇부터 해야 손해를 막는지</b> 먼저 진단해요.
           </p>
         </div>
       </section>
@@ -398,11 +398,11 @@ export default function BusinessServiceDetailPage() {
       {/* ── 섹션1: 혜택 — 정리하고 나면, 회사는 이렇게 유리해집니다 ── */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <SectionTitle chip="💡 정리하고 나면" tone={CHIP.emerald}>
-            회사는 이렇게<br /><span className={accentText}>유리해집니다</span>
+          <SectionTitle chip="💡 그래서 뭐가 좋아지나요?" tone={CHIP.emerald}>
+            회사가 이렇게<br /><span className={accentText}>유리해져요</span>
           </SectionTitle>
           <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
-            단순한 제도상의 혜택이 아니라, 실제 경영에서 달라지는 변화를 확인해보세요.
+            제도 설명보다, 경영에서 실제로 달라지는 점부터 보여 드릴게요.
           </p>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {content.benefits.map((b, i) => (
@@ -426,11 +426,11 @@ export default function BusinessServiceDetailPage() {
       {!trimmed && (
         <section className={`bg-slate-900 ${band}`}>
           <div className={inner}>
-            <SectionTitle chip="🧭 왜 전문가와 함께 하나요" tone={CHIP.dark} dark>
-              문제는 신청이 아니라,<br /><span className="text-amber-300">통과하고 활용할 구조입니다</span>
+            <SectionTitle chip="🧭 혼자 해도 되지 않나요?" tone={CHIP.dark} dark>
+              신청보다 어려운 건,<br /><span className="text-amber-300">통과하고 제대로 쓰는 거예요</span>
             </SectionTitle>
             <p className="mx-auto mt-4 max-w-lg text-center text-[1rem] font-medium leading-relaxed text-slate-400">
-              혼자 하기 어려운 이유는 서류가 많아서가 아니라, 무엇을 어떤 순서로 증명해야 하는지 판단하기 어렵기 때문입니다.
+              서류가 많아서 어려운 게 아니에요. 무엇을 어떤 순서로 증명할지 판단하기가 어렵습니다.
             </p>
             <div className="mt-9 grid gap-4 sm:grid-cols-2">
               {content.whyPoints.map((w, i) => (
@@ -455,7 +455,7 @@ export default function BusinessServiceDetailPage() {
             회사는 이렇게<br /><span className={accentText}>달라집니다</span>
           </SectionTitle>
           <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
-            대표의 설명과 개인의 경험에 의존하던 내용을 회사의 자료·제도·시스템으로 바꿉니다.
+            대표님 말과 기억에 기대던 것을, 회사의 자료와 제도, 시스템으로 바꿔요.
           </p>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {content.afters.map((a) => (
@@ -501,10 +501,10 @@ export default function BusinessServiceDetailPage() {
           <section className={`bg-slate-50 ${band}`}>
             <div className={inner}>
               <SectionTitle chip="🙋 지금 우리 회사 이야기라면" tone={CHIP.sky}>
-                아래 항목 중 2개 이상이라면<br /><span className={accentText}>지금 점검해볼 시점입니다</span>
+                2개 이상 해당되나요?<br /><span className={accentText}>지금 점검할 때예요</span>
               </SectionTitle>
               <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
-                준비가 급해진 뒤보다 선택지가 있을 때 시작하는 편이 유리합니다.
+                급해진 뒤보다, 고를 수 있을 때 시작하는 게 유리합니다.
               </p>
               <div className="mx-auto mt-9 max-w-xl space-y-2.5">
                 {content.checklist.map((r) => (
@@ -521,7 +521,7 @@ export default function BusinessServiceDetailPage() {
                   회사 안에는 <span className={accentText}>이것이 남습니다</span>
                 </h3>
                 <p className="mx-auto mt-3 max-w-md text-[1rem] font-medium leading-relaxed text-slate-500">
-                  한 번 쓰고 버리는 서류가 아니라, 다음 자금·인증·지원사업·영업에도 활용할 회사의 자산을 만듭니다.
+                  한 번 쓰고 버리는 서류가 아니에요. 다음 자금, 인증, 지원사업, 영업에 다시 쓸 회사 자산을 만듭니다.
                 </p>
               </div>
               <div className={`mt-8 grid gap-4 ${content.outcomes.length >= 3 ? 'lg:grid-cols-3 sm:grid-cols-2' : 'sm:grid-cols-2'}`}>
@@ -551,7 +551,7 @@ export default function BusinessServiceDetailPage() {
                 서류만 처리하는<br /><span className={accentText}>대행과는 다릅니다</span>
               </SectionTitle>
               <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
-                현재 신청 한 건만 처리하는 것이 아니라, 이후 자금·인증·세제·성장 단계까지 연결합니다.
+                이번 신청 한 건으로 끝내지 않아요. 다음 자금, 인증, 세금, 성장 단계까지 이어 드립니다.
               </p>
 
               {!NO_TRUST_IDS.has(pkg.id) && (
@@ -600,7 +600,7 @@ export default function BusinessServiceDetailPage() {
               <div className="mt-6 rounded-3xl bg-slate-900 p-7 text-center">
                 <p className="text-[1.1rem] font-black text-white sm:text-xl">감이 아니라, <span className="text-sky-300">데이터로 진단합니다</span></p>
                 <p className="mx-auto mt-3 max-w-md text-[0.98rem] leading-relaxed text-slate-300">
-                  직접 개발하고 전문가 검증을 거친 <b className="text-white">자체 SaaS</b>가 인증·자금 심사 데이터를 반영해 진단 기준을 계속 다듬어 갑니다.
+                  직접 만들고 전문가가 검증한 <b className="text-white">자체 SaaS</b>(온라인 진단 프로그램)가 있어요. 인증과 자금 심사 데이터를 반영해 진단 기준을 계속 다듬습니다.
                 </p>
                 <div className="mt-4 flex flex-wrap justify-center gap-2">
                   <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-slate-200">🧠 데이터 학습</span>
@@ -701,7 +701,7 @@ export default function BusinessServiceDetailPage() {
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
           {inquiryOnly ? (
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[0.92rem] font-black text-slate-900">우리 회사, 적용 가능 여부 확인</span>
+              <span className="block truncate text-[0.92rem] font-black text-slate-900">우리 회사도 될까요?</span>
               <span className="block truncate text-xs font-medium text-slate-500">가능성 진단 · 신청 1~2분</span>
             </span>
           ) : (
