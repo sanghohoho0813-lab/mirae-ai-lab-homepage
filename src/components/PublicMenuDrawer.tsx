@@ -1,7 +1,7 @@
 // 공개 페이지 공용 햄버거 메뉴 — 대표자용/컨설턴트용 variant 분리.
 // 공통 shell(overlay·ESC·focus·body scroll lock·safe-area)만 재사용하고, 메뉴·CTA는 variant 로 나눕니다.
 // 목차형 구조: 상단 계정 → 대표 CTA → 넘버링·색상 구분 그룹(01~04) → 하단 고정 CTA.
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
@@ -9,6 +9,7 @@ import { getCart, getLikes } from '../lib/savedItems'
 import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
 import { loginPathWithNext } from '../lib/authRouting'
+import { scrollToSection } from '../lib/businessPageScroll'
 import Avatar from './account/Avatar'
 import BrandLogo from './BrandLogo'
 import ConsultModal from './ConsultModal'
@@ -51,10 +52,10 @@ const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; active
   slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-200', activeBg: 'bg-slate-200', activeText: 'text-slate-900', badge: 'bg-slate-600', groupBg: 'bg-slate-100' },
 }
 
-// 대표자용 — 현재 홈 내비게이션과 1:1 동기화. 실제 존재하는 라우트·앵커만 사용한다.
+// 대표자용 — 선택 페이지의 두 서비스(기술사업·MVP / 풀 AX)와 1:1. 실제 존재하는 라우트·앵커만 사용한다.
 const BUSINESS_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
-  topSub: '중소기업 AX · AI Growth',
+  topSub: '중소기업 AX · 기술사업',
   lead: {
     label: '우리 회사 AX 가능성 진단',
     desc: '지금 쓰는 업무방식과 시스템을 먼저 보고, 정비가 먼저인지 · 작게 시작할지 · 전면 구축이 맞는지부터 판단합니다.',
@@ -64,25 +65,27 @@ const BUSINESS_MENU: MenuConfig = {
   groups: [
     {
       no: '01',
-      heading: 'AX 살펴보기',
+      heading: '서비스 선택',
       accent: 'blue',
+      // 이름·한 줄 설명은 선택 페이지 카드와 같게
       items: [
-        { no: '1', label: '실제 AX 구축 화면', desc: '산업별 AX Preview 먼저 보기', to: '/business-services/ax#portfolio' },
-        { no: '2', label: '실제 기업 프로젝트', desc: '현장에서 고도화 중인 프로젝트', to: '/business-services/ax#real-projects' },
-        { no: '3', label: 'AX란 무엇인가', desc: '디지털화와 무엇이 다른가', to: '/business-services/ax#ax-definition' },
-        { no: '4', label: '왜 미래AI랩인가', desc: '분절이 아니라 하나의 Growth Story', to: '/business-services/ax#why-mirae' },
+        { no: '1', label: '2주 기술사업 빌드', desc: '회사에 없던 것을 새로 만듭니다 · 기술사업·MVP·벤처기업확인', to: '/business-services/venture-mvp', match: (p) => p.startsWith('/business-services/venture-mvp') },
+        { no: '2', label: '풀 AX 구축', desc: '지금 하고 있는 일을 바꿉니다 · 회사 전체 AX', to: '/business-services/ax-start', match: (p) => p.startsWith('/business-services/ax-start') },
+        { no: '3', label: '두 서비스 비교하기', desc: '어느 쪽이 맞는지 한 화면에서', to: '/business-services', match: (p) => p === '/business-services' },
       ],
     },
     {
       no: '02',
-      heading: '프로그램 · 성장',
+      heading: 'AX 살펴보기',
       accent: 'cyan',
       items: [
-        { no: '1', label: 'Growth Layer', desc: 'AX 성과가 다음 성장단계로 이어지는 방법', to: '/business-services/ax#growth' },
-        // 프로그램 상세페이지 전면 개정 중 — 이동을 막는다
-        { no: '2', label: 'AX 프로그램 안내', desc: '진행방식·결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
-        { no: '3', label: '수행체계', desc: '대표 컨설턴트 · 월 5개사 선별', to: '/business-services/funding-consulting#leader', updating: true },
-        { no: '4', label: '성장 로드맵', desc: 'AX 이후 기업자산·성장 연계', to: '/business-services/funding-consulting#lifecycle', updating: true },
+        { no: '1', label: '실제 AX 구축 화면', desc: '산업별 AX Preview 먼저 보기', to: '/business-services/ax#portfolio' },
+        { no: '2', label: '실제 기업 프로젝트', desc: '현장에서 고도화 중인 프로젝트', to: '/business-services/ax#real-projects' },
+        { no: '3', label: 'AX란 무엇인가', desc: '디지털화와 무엇이 다른가', to: '/business-services/ax#ax-definition' },
+        { no: '4', label: 'Growth Layer', desc: 'AX 성과가 다음 성장단계로 이어지는 방법', to: '/business-services/ax#growth' },
+        { no: '5', label: '왜 미래AI랩인가', desc: '분절이 아니라 하나의 Growth Story', to: '/business-services/ax#why-mirae' },
+        // 프로그램 상세페이지 전면 개정 중 — 이동을 막고 한 줄로만 알린다 (프로그램 안내·수행체계·성장 로드맵)
+        { no: '6', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행방식·결과물 안내 (개정 중)', to: '/business-services/funding-consulting', updating: true },
       ],
     },
     {
@@ -100,7 +103,8 @@ const BUSINESS_MENU: MenuConfig = {
       heading: '고객지원',
       accent: 'slate',
       items: [
-        { label: '자주 묻는 질문', to: '/business-services/funding-consulting#faq' },
+        // 정책자금 상세(개정 중) 대신 AX 상세 안내의 FAQ 로
+        { label: '자주 묻는 질문', to: '/business-services/ax#faq' },
         { label: '이용약관', to: '/terms', match: (p) => p === '/terms' },
         { label: '개인정보처리방침', to: '/privacy', match: (p) => p === '/privacy' },
         { label: '환불·취소 정책', to: '/refund-policy', match: (p) => p === '/refund-policy' },
@@ -111,7 +115,7 @@ const BUSINESS_MENU: MenuConfig = {
   cta: { label: '우리 회사 AX 가능성 진단', to: '/business-diagnosis' },
 }
 
-// 컨설턴트용 — /consultants 공개 소개 + 로그인/도구함
+// 컨설턴트용 — /consultants 공개 소개 + 로그인/도구함. 대표님용 안내는 한 줄로만 둔다.
 const CONSULTANT_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
   topSub: '컨설턴트의 진단·제안·고객관리를 돕는 AI 업무도구',
@@ -127,9 +131,10 @@ const CONSULTANT_MENU: MenuConfig = {
       heading: '컨설턴트 OS',
       accent: 'violet',
       items: [
-        { label: 'AI 도구 전체', to: '/consultants#tools', match: (p) => p.startsWith('/consultants') },
-        { label: '핵심 가치', to: '/consultants#value' },
-        { label: '이용 방식', to: '/consultants#pricing' },
+        { label: '대시보드 예시', desc: '도구가 모이는 운영 화면 미리보기', to: '/consultants#dashboard' },
+        { label: 'AI 도구 전체', desc: '운영 중 · 곧 추가될 도구', to: '/consultants#tools' },
+        { label: '핵심 가치', desc: '상담 전·중·후를 돕는 방식', to: '/consultants#value' },
+        { label: '이용 방식', desc: '가입 → 승인 → 7일 무료 이용', to: '/consultants#pricing' },
       ],
     },
     {
@@ -143,12 +148,9 @@ const CONSULTANT_MENU: MenuConfig = {
     },
     {
       no: '03',
-      heading: '대표님 경영지원',
+      heading: '대표님이신가요?',
       accent: 'cyan',
-      items: [
-        { label: '중소기업 맞춤형 AX', to: '/business-services' },
-        { label: '우리 회사 AX 가능성 진단', to: '/business-diagnosis' },
-      ],
+      items: [{ label: '대표님 서비스 보기', desc: '기술사업·MVP · 회사 전체 AX', to: '/business-services' }],
     },
     {
       no: '04',
@@ -271,6 +273,50 @@ export default function PublicMenuDrawer({
     }
   }, [open])
 
+  // 메뉴 항목으로 이동.
+  //  - 같은 페이지의 구간(#)이면: 메뉴를 닫고(쌓아 둔 기록을 뒤로가기로 소비) 그 구간으로 스크롤한다.
+  //    라우터는 같은 페이지 안 #이동에 스크롤을 해 주지 않아, 전에는 메뉴만 닫히고 제자리였다.
+  //  - 다른 페이지면: 메뉴가 쌓아 둔 기록 자리에 새 페이지를 바꿔 끼운다 — 뒤로가기 한 번에 원래 페이지로.
+  const goItem = (e: MouseEvent<HTMLAnchorElement>, to: string) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+    e.preventDefault()
+    const url = new URL(to, window.location.origin)
+    const target = url.pathname + url.search + url.hash
+    const hasEntry = Boolean((window.history.state as { miraeDrawer?: boolean } | null)?.miraeDrawer)
+    if (url.pathname === location.pathname && url.hash) {
+      const id = decodeURIComponent(url.hash.slice(1))
+      const go = () => {
+        navigate(target, { replace: true })
+        // 메뉴가 닫히고 스크롤 잠금이 풀린 뒤, 늦게 뜨는 이미지로 위치가 밀려도 다시 맞춘다
+        ;[30, 200, 550].forEach((d) => window.setTimeout(() => scrollToSection(id), d))
+      }
+      if (hasEntry) {
+        let done = false
+        const once = () => {
+          if (done) return
+          done = true
+          window.removeEventListener('popstate', once)
+          go()
+        }
+        window.addEventListener('popstate', once)
+        window.setTimeout(once, 400)
+        window.history.back()
+      } else {
+        setOpen(false)
+        go()
+      }
+      return
+    }
+    // 지금 보고 있는 페이지를 다시 누르면 — 기록을 더 쌓지 않고 메뉴만 닫은 뒤 맨 위로
+    if (url.pathname === location.pathname && url.search === location.search) {
+      requestClose()
+      window.setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 30)
+      return
+    }
+    setOpen(false)
+    navigate(target, { replace: hasEntry })
+  }
+
   const path = location.pathname
   const leadActive = config.lead.match ? config.lead.match(path) : false
 
@@ -327,6 +373,7 @@ export default function PublicMenuDrawer({
               {/* 대표 CTA (넘버 그룹 위) */}
               <Link
                 to={config.lead.to}
+                onClick={(e) => goItem(e, config.lead.to)}
                 aria-current={leadActive ? 'page' : undefined}
                 className="mb-4 flex min-h-[52px] items-center gap-3 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-3.5 text-white shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
               >
@@ -414,6 +461,7 @@ export default function PublicMenuDrawer({
                           <li key={m.label}>
                             <Link
                               to={m.to}
+                              onClick={(e) => goItem(e, m.to)}
                               aria-current={active ? 'page' : undefined}
                               className={`flex min-h-11 items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 ${
                                 active ? `${acc.activeBg} ${acc.activeText}` : 'text-slate-700 hover:bg-white/70 hover:text-slate-900'
@@ -453,14 +501,14 @@ export default function PublicMenuDrawer({
                   </div>
                   <div className="mt-3 grid grid-cols-2 gap-1.5">
                     {needsOnboarding && (
-                      <Link to="/auth/onboarding" className="col-span-2 flex items-center justify-center gap-1.5 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-bold text-white hover:bg-amber-600">
+                      <Link to="/auth/onboarding" onClick={(e) => goItem(e, '/auth/onboarding')} className="col-span-2 flex items-center justify-center gap-1.5 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-bold text-white hover:bg-amber-600">
                         가입 완료하기 →
                       </Link>
                     )}
-                    <Link to="/mypage" className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">마이페이지</Link>
-                    <Link to="/my-tools" className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">내 도구함</Link>
+                    <Link to="/mypage" onClick={(e) => goItem(e, '/mypage')} className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">마이페이지</Link>
+                    <Link to="/my-tools" onClick={(e) => goItem(e, '/my-tools')} className="flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">내 도구함</Link>
                     {isAdmin && (
-                      <Link to="/admin" className="col-span-2 flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">관리자</Link>
+                      <Link to="/admin" onClick={(e) => goItem(e, '/admin')} className="col-span-2 flex items-center justify-center rounded-lg bg-white px-3 py-2.5 text-sm font-bold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-100">관리자</Link>
                     )}
                     <button
                       type="button"
@@ -473,8 +521,8 @@ export default function PublicMenuDrawer({
                 </div>
               ) : (
                 <div className="mt-4 grid grid-cols-2 gap-2">
-                  <Link to={loginPathWithNext(location.pathname + location.search)} className="flex min-h-11 items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50">로그인</Link>
-                  <Link to="/signup" className="flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-700">회원가입</Link>
+                  <Link to={loginPathWithNext(location.pathname + location.search)} onClick={(e) => goItem(e, loginPathWithNext(location.pathname + location.search))} className="flex min-h-11 items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50">로그인</Link>
+                  <Link to="/signup" onClick={(e) => goItem(e, '/signup')} className="flex min-h-11 items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-700">회원가입</Link>
                 </div>
               )}
 
@@ -484,6 +532,7 @@ export default function PublicMenuDrawer({
             <div className="shrink-0 border-t border-slate-100 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <Link
                 to={config.cta.to}
+                onClick={(e) => goItem(e, config.cta.to)}
                 className={`flex min-h-[52px] items-center justify-center gap-1.5 rounded-xl px-5 py-3.5 text-base font-bold shadow-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
                   variant === 'business' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-700'
                 }`}

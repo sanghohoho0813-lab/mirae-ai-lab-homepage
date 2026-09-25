@@ -6,6 +6,8 @@ import HeaderAccount from './components/account/HeaderAccount'
 import LegalFooter from './components/LegalFooter'
 import { TRIAL_DAYS, accessTypeLabel } from './lib/platform'
 import { useAuth } from './lib/auth'
+import { useHashScroll } from './lib/businessPageScroll'
+import OsDashboardPreview from './components/consultant/OsDashboardPreview'
 import { tools, upcomingTools, type Tool, type ToolStatus, type UpcomingTool } from './data/tools'
 
 // 컨설턴트용 AI 도구 소개 (/consultants). 2차 개편: 13섹션 → 5섹션으로 압축.
@@ -241,6 +243,8 @@ function App() {
   useEffect(() => {
     document.title = '미래 AI 랩 | 컨설턴트 업무 OS — 상담부터 재계약까지'
   }, [])
+  // /consultants#tools 처럼 구간 주소로 들어오면 그 구간으로 (메뉴·다른 페이지에서 올 때)
+  useHashScroll()
 
   return (
     <div className="min-h-screen bg-white text-slate-900 antialiased [word-break:keep-all]">
@@ -410,6 +414,22 @@ function App() {
               <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{v.desc}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      {/* 2-1. 운영 OS 미리보기 — 도구가 모이는 한 화면(예시·가상 데이터) */}
+      <section id="dashboard" className="scroll-mt-20 border-t border-slate-200 bg-gradient-to-b from-white to-slate-50">
+        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+          <div className="max-w-3xl">
+            <p className="text-base font-bold uppercase tracking-widest text-blue-600">운영 OS 미리보기</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 [word-break:keep-all] sm:text-4xl">도구가 하나씩 모여, 하나의 운영 화면이 됩니다</h2>
+            <p className="mt-4 text-lg leading-relaxed text-slate-600 [word-break:keep-all]">
+              고객사 현황과 오늘 할 일, 검토·제안·사후관리를 한 화면에서 봅니다. 새 도구가 추가될 때마다 같은 화면에 이어 붙습니다.
+            </p>
+          </div>
+          <div className="mt-8 sm:mt-10">
+            <OsDashboardPreview />
+          </div>
         </div>
       </section>
 

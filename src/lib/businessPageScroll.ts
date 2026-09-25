@@ -5,16 +5,31 @@ import { useEffect } from 'react'
 import { useLocation, useNavigationType } from 'react-router-dom'
 import { readBusinessReturn, clearBusinessReturn } from './businessServicesReturn'
 
+/**
+ * 구간(id)으로 바로 이동 — 위에 붙어 있는 헤더 높이(페이지마다 다르다)와 구간의 scroll-margin 중 큰 만큼 비켜서,
+ * 구간 제목이 헤더 밑에 가려지지 않게 한다. 구간이 없으면 false.
+ */
+export function scrollToSection(id: string): boolean {
+  const el = document.getElementById(id)
+  if (!el) return false
+  const header = [...document.querySelectorAll('header')].find((h) => {
+    const pos = getComputedStyle(h).position
+    return pos === 'sticky' || pos === 'fixed'
+  })
+  const headerBottom = header ? Math.max(0, header.getBoundingClientRect().bottom) : 0
+  const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0
+  const y = el.getBoundingClientRect().top + window.scrollY - Math.max(headerBottom, margin)
+  window.scrollTo({ top: Math.max(0, y), left: 0, behavior: 'instant' })
+  return true
+}
+
 export function useHashScroll() {
   const location = useLocation()
   useEffect(() => {
     if (!location.hash) return
-    const id = location.hash.slice(1)
+    const id = decodeURIComponent(location.hash.slice(1))
     const go = () => {
-      const el = document.getElementById(id)
-      if (!el) return
-      const y = el.getBoundingClientRect().top + window.scrollY - 68
-      window.scrollTo({ top: Math.max(0, y), behavior: 'instant' })
+      scrollToSection(id)
     }
     go()
     const timers = [80, 250, 600].map((d) => window.setTimeout(go, d))
