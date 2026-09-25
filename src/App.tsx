@@ -7,7 +7,7 @@ import LegalFooter from './components/LegalFooter'
 import { TRIAL_DAYS, accessTypeLabel } from './lib/platform'
 import { useAuth } from './lib/auth'
 import { useHashScroll } from './lib/businessPageScroll'
-import OsDashboardPreview from './components/consultant/OsDashboardPreview'
+import OsDashboardPreview, { OsLaunchSteps } from './components/consultant/OsDashboardPreview'
 import { tools, upcomingTools, type Tool, type ToolStatus, type UpcomingTool } from './data/tools'
 
 // 컨설턴트용 AI 도구 소개 (/consultants). 2차 개편: 13섹션 → 5섹션으로 압축.
@@ -427,6 +427,7 @@ function App() {
               고객사 현황과 오늘 할 일, 검토·제안·사후관리를 한 화면에서 봅니다. 새 도구가 추가될 때마다 같은 화면에 이어 붙습니다.
             </p>
           </div>
+          <OsLaunchSteps />
           <div className="mt-8 sm:mt-10">
             <OsDashboardPreview />
           </div>
@@ -467,6 +468,9 @@ function App() {
           <p className="text-base font-bold uppercase tracking-widest text-blue-600">이용 방식</p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">지금은 무료 베타 기간입니다</h2>
           <p className="mt-4 text-lg leading-relaxed text-slate-600">정식 출시 전, 피드백을 주시는 분들께 먼저 열어드립니다. 신청해 주시면 확인 후 순차적으로 승인해 드립니다.</p>
+          <p className="mt-2 text-[1.05rem] font-semibold leading-relaxed text-slate-700 [word-break:keep-all]">
+            정식 출시 후에는 <b className="font-bold text-slate-900">월 구독</b>으로 제공할 예정입니다.
+          </p>
         </div>
 
         <ol className="mt-10 grid gap-4 sm:grid-cols-3">

@@ -176,3 +176,43 @@ export default function OsDashboardPreview() {
     </figure>
   )
 }
+
+// 출시 일정 — 대표님이 정한 문구 그대로(개발 거의 완료 → 테스트·UI/UX 다듬기 → 2026년 10월부터 순차 오픈 → 정식 출시 후 월 구독).
+// 날짜·상태가 바뀌면 여기만 고친다.
+const LAUNCH: { title: string; desc: string; state: 'done' | 'now' | 'next' }[] = [
+  { title: '개발', desc: '모듈 개발은 거의 마무리됐습니다', state: 'done' },
+  { title: '다듬는 중', desc: '실사용 테스트와 UI/UX 개선으로 완성도를 끌어올리고 있습니다', state: 'now' },
+  { title: '2026년 10월부터', desc: '모듈을 하나씩 순서대로 엽니다', state: 'next' },
+  { title: '정식 출시 후', desc: '월 구독으로 제공할 예정입니다', state: 'next' },
+]
+
+export function OsLaunchSteps() {
+  return (
+    <ol data-os-launch className="mt-6 grid gap-2 sm:mt-8 sm:grid-cols-4 sm:gap-3" aria-label="출시 일정">
+      {LAUNCH.map((l) => (
+        <li
+          key={l.title}
+          className={`flex items-start gap-3 rounded-xl p-3.5 ring-1 ring-inset sm:flex-col sm:gap-2 sm:p-4 ${
+            l.state === 'now' ? 'bg-violet-50 ring-violet-200' : 'bg-white ring-slate-200'
+          }`}
+        >
+          <span
+            aria-hidden
+            className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[0.8rem] font-black ${
+              l.state === 'done' ? 'bg-emerald-500 text-white' : l.state === 'now' ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-400'
+            }`}
+          >
+            {l.state === 'done' ? '✓' : l.state === 'now' ? '●' : '○'}
+          </span>
+          <span className="min-w-0">
+            <span className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[0.98rem] font-black text-slate-900">{l.title}</span>
+              {l.state === 'now' && <span className="rounded-md bg-violet-600 px-1.5 py-0.5 text-xs font-black text-white">지금</span>}
+            </span>
+            <span className="mt-0.5 block break-keep text-[0.9rem] leading-snug text-slate-600">{l.desc}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
+  )
+}
