@@ -209,7 +209,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
           <div role="alert" className="rounded-xl bg-amber-50 px-4 py-3.5 text-amber-900 ring-1 ring-inset ring-amber-300">
             <p className="break-keep text-[0.95rem] font-bold leading-snug">{errorMessage}</p>
             <p className="mt-1 break-keep text-[0.86rem] leading-relaxed text-amber-800">
-              작성하신 답변과 연락처는 그대로 남아 있어요. 잠시 후 다시 눌러 주세요.
+              작성하신 답변과 연락처는 그대로 남아 있어요.
             </p>
             <a
               href={consultLinks.kakaoChat}
