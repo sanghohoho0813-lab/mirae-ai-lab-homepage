@@ -115,15 +115,15 @@ const BUSINESS_MENU: MenuConfig = {
   cta: { label: '우리 회사 AX 가능성 진단', to: '/business-diagnosis' },
 }
 
-// 컨설턴트용 — /consultants 공개 소개 + 로그인/도구함. 대표님용 안내는 한 줄로만 둔다.
+// 컨설턴트용 — /consultants(MIRAE AI LAB OS) 소개 + 로그인/도구함. 대표님용 안내는 한 줄로만 둔다.
+// 무료 체험 안내는 두지 않는다(지금은 막아 둠).
 const CONSULTANT_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
-  topSub: '컨설턴트의 진단·제안·고객관리를 돕는 AI 업무도구',
+  topSub: 'MIRAE AI LAB OS · 컨설턴트 운영 OS',
   lead: {
-    label: '7일 무료 체험 시작',
-    desc: '카드 등록 없이, 신청한 시각부터 정확히 7일 체험할 수 있어요.',
-    to: '/signup',
-    match: (p) => p === '/signup',
+    label: '오픈 소식 받기',
+    desc: '2026년 10월부터 모듈을 차례로 엽니다. 여는 순서에 맞춰 먼저 연락드려요.',
+    to: '/consultants#inquiry',
   },
   groups: [
     {
@@ -131,10 +131,10 @@ const CONSULTANT_MENU: MenuConfig = {
       heading: '컨설턴트 OS',
       accent: 'violet',
       items: [
-        { label: '대시보드 예시', desc: '도구가 모이는 운영 화면 미리보기', to: '/consultants#dashboard' },
-        { label: 'AI 도구 전체', desc: '운영 중 · 곧 추가될 도구', to: '/consultants#tools' },
-        { label: '핵심 가치', desc: '상담 전·중·후를 돕는 방식', to: '/consultants#value' },
-        { label: '이용 방식', desc: '가입 → 승인 → 7일 무료 이용', to: '/consultants#pricing' },
+        { label: '대시보드 미리보기', desc: '아침에 열면 할 일이 이유와 함께', to: '/consultants#dashboard' },
+        { label: '운영 방식', desc: '고객과 내부가 한 바퀴로 · 기록이 계약의 근거로', to: '/consultants#how' },
+        { label: '7개 모듈', desc: '지금 쓰는 도구와 완성되면 들어갈 기능', to: '/consultants#modules' },
+        { label: '출시 일정', desc: '2026년 10월부터 차례로 · 정식 출시 후 월 구독', to: '/consultants#launch' },
       ],
     },
     {

@@ -4,58 +4,96 @@ import BrandLogo from './components/BrandLogo'
 import InquiryForm from './components/InquiryForm'
 import HeaderAccount from './components/account/HeaderAccount'
 import LegalFooter from './components/LegalFooter'
-import { TRIAL_DAYS, accessTypeLabel } from './lib/platform'
-import { useAuth } from './lib/auth'
 import { useHashScroll } from './lib/businessPageScroll'
 import OsDashboardPreview, { OsLaunchSteps } from './components/consultant/OsDashboardPreview'
-import { tools, upcomingTools, type Tool, type ToolStatus, type UpcomingTool } from './data/tools'
+import OsModules from './components/consultant/OsModules'
 
-// 컨설턴트용 AI 도구 소개 (/consultants). 2차 개편: 13섹션 → 5섹션으로 압축.
-// 메시지는 유지하고 중복 섹션만 정리. 도구 썸네일은 브랜드 공통 코드 배너로 통일.
+// 컨설턴트용 소개 (/consultants) — MIRAE AI LAB OS.
+// 3차 개편: 기획의도(왜 만들었나 · 무엇을 바꾸나 · 무엇이 남나)에서 고객(컨설턴트)에게 필요한 것만 뽑았다.
+//  ⚠️ 무료 체험 안내는 두지 않는다(지금은 막아 둠). 가격·완성도 % 도 적지 않는다.
+//  ⚠️ '얼마나 빨라졌는지' 같은 성과 숫자는 기준선을 재는 중이라 말하지 않는다.
 
 const navItems = [
-  { label: '핵심 가치', href: '#value' },
-  { label: '도구', href: '#tools' },
-  { label: '이용 방식', href: '#pricing' },
+  { label: '대시보드', href: '#dashboard' },
+  { label: '모듈', href: '#modules' },
+  { label: '출시 일정', href: '#launch' },
   { label: '전자책', href: '#resources' },
   { label: '문의', href: '#inquiry' },
 ]
 
-// 핵심 가치 3 — 컨설턴트의 하루(상담 전·중·후) 흐름으로 재구성.
-const values: { phase: string; title: string; desc: string; icon: ReactNode }[] = [
+const svg = (d: ReactNode) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    {d}
+  </svg>
+)
+
+// 왜 만들었나 — 병목은 하나: 일이 많아서가 아니라 흩어져 있어서 시간과 돈이 샌다
+const leaks: { tag: string; title: string; desc: string; icon: ReactNode }[] = [
   {
-    phase: '상담 전',
-    title: '고객을 미리 파악합니다',
-    desc: '크레탑·재무 자료를 몇 초 만에 분석해, 고객을 만나기 전에 꺼낼 이야기를 미리 준비해 둡니다.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-      </svg>
+    tag: 'TIME LEAK',
+    title: '시간이 샙니다',
+    desc: '카톡을 거슬러 올라가 어제 대화를 떠올리고, 파일함에서 빠진 서류를 찾고, 달력에서 마감을 확인한 뒤에야 첫 전화를 겁니다.',
+    icon: svg(
+      <>
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7.5V12l3 2" />
+      </>,
     ),
   },
   {
-    phase: '상담 중',
-    title: '그 자리에서 제안합니다',
-    desc: '검토 결과를 고객이 바로 이해할 수 있는 자료로 정리해, 상담 자리에서 곧장 보여주고 설득합니다.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M6 3h8l4 4v14H6z" />
-        <path d="M14 3v4h4M9 13h6M9 17h6" />
-      </svg>
+    tag: 'REVENUE LEAK',
+    title: '돈이 샙니다',
+    desc: '그 틈에 수금 예정일과 신청 마감이 지나갑니다. 서류 한 장이면 며칠이 늦어지고, 신청 마감이면 그 해의 기회가 사라집니다.',
+    icon: svg(
+      <>
+        <path d="M4 7h16v10H4z" />
+        <circle cx="12" cy="12" r="2.4" />
+        <path d="M7 10v4M17 10v4" />
+      </>,
     ),
   },
   {
-    phase: '상담 후',
-    title: '관리가 끊기지 않습니다',
-    desc: '계산·문서·사후관리처럼 손이 많이 가는 일은 도구가 대신 맡고, 컨설턴트는 고객에게 집중합니다.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
-        <circle cx="12" cy="12" r="3.2" />
-      </svg>
+    tag: '고객의 기대',
+    title: '고객은 화면으로 보고 싶어 합니다',
+    desc: '“진행 어떻게 되고 있어요?” 를 카톡으로 되묻는 대신, 직접 서류를 올리고 진행 단계를 확인하고 싶어 합니다.',
+    icon: svg(
+      <>
+        <rect x="3.5" y="4.5" width="17" height="11.5" rx="1.5" />
+        <path d="M9 20h6M12 16v4" />
+      </>,
     ),
   },
+]
+
+// 고객과 내부가 한 바퀴로 — 화면보다 이 순환이 핵심이다
+const loop = [
+  { who: '고객', text: 'My MIRAE 에서 서류를 올리거나 요청을 보냅니다' },
+  { who: '자동', text: '내 상담신청함에 “누가 · 무엇을 · 언제” 가 들어옵니다' },
+  { who: '나', text: '업체에 연결해 처리합니다 — 활동 기록이 남습니다' },
+  { who: '나', text: '결과를 고객에게 “발행” 합니다 — 초안은 보이지 않습니다' },
+  { who: '고객', text: '진행 단계가 바뀐 화면을 보고, 다음 행동을 합니다' },
+]
+
+const principles = [
+  {
+    title: '나쁜 절차는 자동화하지 않습니다',
+    desc: '없애기 → 표준화 → 기록으로 바꾸기 → 자동화 → 필요할 때만 AI. 카톡으로 진행 상태를 되묻는 일, 받은 서류를 다시 요청하는 일부터 없앴습니다.',
+  },
+  {
+    title: '판단은 규칙으로, 이유가 보이게',
+    desc: '우선순위·경고·하루 정리는 조건과 수식으로 움직여 “왜” 를 설명할 수 있습니다. 사람 승인 없이 실행하는 자동화는 두지 않습니다.',
+  },
+  {
+    title: '고객에게는 발행한 것만',
+    desc: '내부 메모와 수임료는 어떤 경로로도 고객 화면에 나가지 않습니다. 주민등록번호와 공동인증서 비밀번호는 저장하지 않습니다.',
+  },
+]
+
+// 1 → 2 → 3단계 — 3단계가 곧 다른 컨설팅 회사가 쓰는 구독형 OS 다
+const stages = [
+  { no: '1단계', when: '지금', title: '대표가 매일 직접 씁니다', desc: '고객과의 왕복이 실제로 돌고, 무엇이 얼마나 빨라지는지 기준선을 재고 있습니다.' },
+  { no: '2단계', when: '다음', title: '고객 알림 · 결과자료 공유 · 직원 계정', desc: '고객이 스스로 확인하고 처리하는 비율을 늘립니다.' },
+  { no: '3단계', when: '확장', title: '다른 컨설팅 회사도 같은 구조로', desc: '브랜드·업무 종류·메뉴만 바꿔 쓸 수 있도록 처음부터 그렇게 짜여 있습니다.' },
 ]
 
 // 신뢰 지표(히어로 우측 패널) — 실제 확인된 정보만. 대표님용 서비스몰과 동일 축.
@@ -71,26 +109,22 @@ const trustAwards = [
   { year: '2025', title: '대한민국을 빛낸 사회공헌 K-컬처 나눔봉사공헌대상', detail: '벤처부문' },
 ]
 
-// 이용 방식 3단계 (기존 요금제 3플랜 → 흐름형 3단계로 압축)
-const useSteps = [
-  { no: '01', title: '가입 후 이용 신청', desc: '상담 흐름에 맞는 도구를 골라 신청합니다.' },
-  { no: '02', title: '관리자 승인', desc: '신청 내역을 확인한 뒤 순차적으로 열어드립니다.' },
-  { no: '03', title: '7일 무료 이용', desc: '카드 등록 없이, 승인된 시각부터 정확히 7일간 사용합니다.' },
-]
-
 const faqs = [
   {
-    q: '가입하면 바로 쓸 수 있나요?',
-    a: '아니요. 정식 출시 전 단계라 관리자 승인 후에 열립니다. 가입하고 도구별로 이용 신청을 남겨주시면 확인 후 순차적으로 열어드립니다.',
+    q: '지금 바로 쓸 수 있나요?',
+    a: '아직은 아닙니다. 2026년 10월부터 컨설턴트 운영 · 기업성장 모듈을 먼저 열고, 나머지 모듈은 11월 이후 차례로 엽니다. 문의를 남겨 주시면 오픈 순서에 맞춰 연락드립니다.',
   },
   {
-    q: '7일 체험 후에는 어떻게 되나요?',
-    a: '체험이 끝나면 이용이 제한됩니다. 리뷰·설문 참여 시 최대 21일까지 연장할 수 있고, 정식 이용은 결제 또는 관리자 승인 후 제공됩니다.',
+    q: '요금은 어떻게 되나요?',
+    a: '정식 출시 후 월 구독으로 제공할 예정입니다. 구체적인 금액과 구성은 오픈 시점에 안내드립니다.',
   },
-  { q: '도구별로 따로 신청하나요?', a: '네. 도구마다 따로 신청하고, 승인된 시각부터 개별적으로 7일간 이용합니다.' },
   {
-    q: '중소기업 대표도 사용할 수 있나요?',
-    a: '네. 주로 컨설턴트의 상담·검토·제안 업무를 돕지만, 직접 확인하고 싶은 대표님도 기초 검토용으로 활용할 수 있습니다.',
+    q: '고객 정보는 안전한가요?',
+    a: '개인정보는 최소로 둡니다. 주민등록번호와 공동인증서 비밀번호는 저장하지 않고, 내부 메모와 수임료는 어떤 경로로도 고객 화면에 나가지 않습니다.',
+  },
+  {
+    q: 'AI 가 알아서 판단하나요?',
+    a: '아니요. 우선순위·경고·하루 정리는 전부 규칙(조건과 수식)이라 이유를 설명할 수 있습니다. AI 는 하루 정리를 문장으로 풀어 주는 것처럼 정해 둔 자리에만, 근거가 된 기록과 함께 씁니다.',
   },
 ]
 
@@ -102,148 +136,23 @@ const gridBackground = {
   maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%)',
 } as const
 
-// 네이비 배너용(어두운 배경) 상태 배지 스타일
-const bannerStatusStyles: Record<ToolStatus, string> = {
-  'MVP 베타': 'bg-violet-400/15 text-violet-200 ring-1 ring-inset ring-violet-300/25',
-  '비공개 검토중': 'bg-rose-400/15 text-rose-200 ring-1 ring-inset ring-rose-300/25',
-  개발중: 'bg-amber-400/15 text-amber-200 ring-1 ring-inset ring-amber-300/25',
-}
-
-// 브랜드 공통 코드 배너 — 실제 스크린샷 대신 네이비+청록 텍스트 배너로 통일(완성도 편차 제거).
-// 3열 그리드용으로 컴팩트하게(모바일 2열까지 대응): 좁은 폭에서 글자·여백을 줄이고 sm 이상에서 확대.
-function ToolBanner({ tool }: { tool: Tool }) {
+// 섹션 머리 — 작은 라벨 + 제목 + 설명
+function SectionHead({ eyebrow, title, desc }: { eyebrow: string; title: ReactNode; desc?: ReactNode }) {
   return (
-    <div className="relative aspect-[16/10] overflow-hidden border-b border-slate-800 bg-slate-900">
-      <div aria-hidden className="absolute inset-0 opacity-40" style={gridBackground} />
-      <div aria-hidden className="absolute -right-6 -top-8 h-24 w-24 rounded-full bg-teal-500/20 blur-2xl" />
-      <div aria-hidden className="absolute -bottom-8 -left-6 h-24 w-24 rounded-full bg-blue-600/20 blur-2xl" />
-      <div className="relative flex h-full flex-col justify-between p-3 sm:p-4">
-        {/* 좌상단 카테고리 */}
-        <div className="flex items-start justify-between gap-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.78rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25 sm:px-2.5 sm:text-[0.82rem]">
-            {tool.category}
-          </span>
-        </div>
-        {/* 도구명 — 가운데 정렬 */}
-        <div className="px-1 text-center">
-          <p className="text-[0.78rem] font-medium tracking-wide text-slate-400 sm:text-[0.82rem]">{tool.stage}</p>
-          <h3 className="mt-1 text-lg font-black leading-tight tracking-tight text-white sm:text-xl lg:text-[1.4rem]">{tool.title}</h3>
-        </div>
-        {/* 상태 배지 — 가운데 정렬 */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5">
-          <span className={`rounded-full px-2 py-0.5 text-[0.76rem] font-bold sm:text-[0.76rem] ${bannerStatusStyles[tool.status]}`}>{tool.status}</span>
-          <span
-            className={`rounded-full px-2 py-0.5 text-[0.76rem] font-bold sm:text-[0.76rem] ${
-              tool.isPublic ? 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/25' : 'bg-slate-400/15 text-slate-300 ring-1 ring-inset ring-slate-300/20'
-            }`}
-          >
-            {tool.isPublic ? '승인 후 이용 가능' : '공개 준비 중'}
-          </span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// 대표 도구 — 컴팩트 카드(3열 그리드 · 모바일 2열). 좁은 폭에서는 features·추천대상을 숨김.
-function ToolCard({ tool }: { tool: Tool }) {
-  const { user } = useAuth()
-  // 도구 주소로 바로 보내지 않는다 — 회원가입 → 이용 신청 → 관리자 승인을 거쳐야 열린다.
-  const trialHref = user ? '/my-tools' : `/signup?next=${encodeURIComponent('/my-tools')}`
-  const ctaLabel = user ? '내 도구함에서 신청' : '가입하고 이용 신청'
-  const cardClass = 'group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 motion-reduce:transition-none'
-  const body = (
-    <>
-      <ToolBanner tool={tool} />
-      <div className="flex flex-1 flex-col p-3 sm:p-5">
-        <p className="text-[0.82rem] leading-relaxed text-slate-600 sm:text-[0.98rem]">{tool.description}</p>
-        {tool.completion !== undefined && (
-          <div className="mt-2.5 sm:mt-4">
-            <div className="flex items-center justify-between text-[0.76rem] font-bold sm:text-[0.9rem]">
-              <span className="text-slate-500">완성도</span>
-              <span className="text-blue-600">{tool.completion}%</span>
-            </div>
-            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100 sm:mt-1.5 sm:h-2" role="progressbar" aria-valuenow={tool.completion} aria-valuemin={0} aria-valuemax={100}>
-              <div className="h-full rounded-full bg-blue-600" style={{ width: `${tool.completion}%` }} />
-            </div>
-          </div>
-        )}
-        {/* features·추천대상 — 좁은 모바일(2열)에서는 숨기고 sm 이상에서 노출 */}
-        <div className="mt-4 hidden flex-wrap gap-1.5 sm:flex">
-          {tool.features.slice(0, 3).map((feature) => (
-            <span key={feature} className="rounded-lg bg-slate-50 px-2.5 py-1 text-[0.82rem] font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
-              {feature}
-            </span>
-          ))}
-        </div>
-        <p className="mt-3 hidden text-[0.82rem] font-medium text-slate-400 sm:block">추천 대상 · {tool.target}</p>
-        <div className="mt-auto pt-3 sm:pt-4">
-          <p className="rounded-lg bg-blue-50 px-3 py-2 text-[0.82rem] font-semibold leading-snug text-blue-700 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-[0.95rem]">“{tool.valueLine}”</p>
-          {tool.isPublic ? (
-            <span className="mt-3 inline-flex items-center gap-1.5 text-[0.9rem] font-bold text-blue-600 transition-colors group-hover:text-blue-700 sm:text-[1.05rem]">
-              {ctaLabel}
-              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
-            </span>
-          ) : (
-            <button type="button" disabled className="mt-3 inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[0.85rem] font-semibold text-slate-400 sm:px-4 sm:py-2.5 sm:text-[1rem]">
-              🔒 {accessTypeLabel[tool.accessType]}
-            </button>
-          )}
-        </div>
-      </div>
-    </>
-  )
-  if (tool.isPublic) {
-    return (
-      <Link to={trialHref} className={`${cardClass} hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl motion-reduce:hover:translate-y-0`}>
-        {body}
-      </Link>
-    )
-  }
-  return <div className={`${cardClass} opacity-95`}>{body}</div>
-}
-
-// 곧 추가될 도구 — 대표 도구와 같은 크기의 컴팩트 카드(클릭 불가 · 공개 준비 중)
-function UpcomingCard({ tool }: { tool: UpcomingTool }) {
-  return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white opacity-95 shadow-sm">
-      <div className="relative aspect-[16/10] overflow-hidden border-b border-slate-800 bg-slate-900">
-        <div aria-hidden className="absolute inset-0 opacity-40" style={gridBackground} />
-        <div aria-hidden className="absolute -right-6 -top-8 h-24 w-24 rounded-full bg-teal-500/15 blur-2xl" />
-        <div className="relative flex h-full flex-col justify-between p-3 sm:p-4">
-          <div className="flex items-start justify-between gap-2">
-            <span className="inline-flex items-center gap-1 rounded-md bg-teal-400/15 px-2 py-0.5 text-[0.78rem] font-bold text-teal-200 ring-1 ring-inset ring-teal-300/25 sm:px-2.5 sm:text-[0.82rem]">{tool.category}</span>
-          </div>
-          <div className="px-1 text-center">
-            <p className="text-[0.78rem] font-medium tracking-wide text-slate-400 sm:text-[0.82rem]">개발 예정</p>
-            <h3 className="mt-1 text-lg font-black leading-tight tracking-tight text-white sm:text-xl lg:text-[1.4rem]">{tool.title}</h3>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-1.5">
-            <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[0.76rem] font-bold text-amber-200 ring-1 ring-inset ring-amber-300/25 sm:text-[0.76rem]">개발중</span>
-            <span className="rounded-full bg-slate-400/15 px-2 py-0.5 text-[0.76rem] font-bold text-slate-300 ring-1 ring-inset ring-slate-300/20 sm:text-[0.76rem]">공개 준비 중</span>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-1 flex-col p-3 sm:p-5">
-        <p className="text-[0.82rem] leading-relaxed text-slate-600 sm:text-[0.98rem]">{tool.description}</p>
-        <div className="mt-auto pt-3 sm:pt-4">
-          <button type="button" disabled className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[0.85rem] font-semibold text-slate-400 sm:px-4 sm:py-2.5 sm:text-[1rem]">
-            🔒 공개 준비 중
-          </button>
-        </div>
-      </div>
+    <div className="max-w-3xl">
+      <p className="text-base font-bold uppercase tracking-widest text-blue-600">{eyebrow}</p>
+      <h2 className="mt-3 break-keep text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">{title}</h2>
+      {desc && <p className="mt-4 break-keep text-lg leading-relaxed text-slate-600">{desc}</p>}
     </div>
   )
 }
 
 function App() {
-  const liveCount = tools.filter((t) => t.status === 'MVP 베타').length
-
   // index.html 기본 타이틀은 브랜드(AX)용이므로, 컨설턴트 페이지는 자기 타이틀을 유지한다
   useEffect(() => {
-    document.title = '미래 AI 랩 | 컨설턴트 업무 OS — 상담부터 재계약까지'
+    document.title = 'MIRAE AI LAB OS | 컨설턴트 운영 OS — 꼼꼼한 관리가 다음 계약으로'
   }, [])
-  // /consultants#tools 처럼 구간 주소로 들어오면 그 구간으로 (메뉴·다른 페이지에서 올 때)
+  // /consultants#modules 처럼 구간 주소로 들어오면 그 구간으로 (메뉴·다른 페이지에서 올 때)
   useHashScroll()
 
   return (
@@ -282,7 +191,7 @@ function App() {
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-sky-400" />
-                컨설턴트 업무 OS · 정식 출시 전 베타
+                MIRAE AI LAB OS · 2026년 10월부터 차례로 오픈
               </span>
 
               <h1 className="mt-6 text-[1.9rem] font-extrabold leading-[1.18] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]">
@@ -291,34 +200,37 @@ function App() {
                 <span className="bg-linear-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">더 전문가처럼.</span>
               </h1>
 
-              <p className="mt-6 text-lg font-semibold leading-relaxed text-white sm:text-xl">
-                놓치는 제안을 줄이고, 상담이 계약으로 이어지도록 직접 만들었습니다.
+              {/* 추가 계약의 명분 — 꼼꼼하게 관리한 기록이 있어야 다음 제안이 설득력을 갖는다 */}
+              <p data-hero-renewal className="mt-6 break-keep text-[1.3rem] font-bold leading-snug text-white sm:text-[1.6rem]">
+                꼼꼼한 관리가, <span className="text-sky-300">다음 계약의 명분</span>이 됩니다.
               </p>
-              <p className="mt-3 text-base leading-relaxed text-slate-300 sm:text-lg">
-                상담·분석·제안·사후관리까지, 흩어진 컨설팅 업무를 하나로 잇는 <span className="font-semibold text-white">컨설턴트 OS</span>. 9년간 현장에서 쌓은 방식을 그대로 담았습니다.
+              <p className="mt-3 break-keep text-base leading-relaxed text-slate-300 sm:text-lg">
+                여러 고객사의 일을 매일 아침 머릿속에서 다시 조합하던 시간을 없애고, 고객이 한 행동이 내 일감이 되어 돌아오게 만든
+                <span className="font-semibold text-white"> 컨설턴트 운영 OS</span>. 업체마다 처리한 일·받은 서류·수금이 날짜와 함께 쌓여,
+                지금까지 해 온 일과 다음 단계를 근거 있게 제안할 수 있습니다.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  to="/signup"
+                <a
+                  href="#inquiry"
                   className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-bold text-slate-900 shadow-xl shadow-black/25 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
                 >
-                  이용 신청하기
-                </Link>
+                  오픈 소식 받기
+                </a>
                 <a
-                  href="#tools"
+                  href="#dashboard"
                   className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white/10"
                 >
-                  AI 도구 둘러보기
+                  대시보드 미리보기
                 </a>
               </div>
 
-              {/* 신뢰 스탯 — 도구 운영 현황(경력·수상은 우측 신뢰 패널에서) */}
+              {/* 현황 — 실제 운영 OS 기준(기능 상태표 LIVE 13) · 모듈 7 · 월 구독 예정 */}
               <dl className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-6">
                 {[
-                  { v: `${liveCount}개`, l: '운영 중 실무 도구' },
-                  { v: '4개+', l: '개발 중인 도구' },
-                  { v: '7일', l: '승인 후 카드 없이 무료' },
+                  { v: '13개', l: '대표가 매일 쓰는 기능' },
+                  { v: '7개', l: '모듈로 확장 중' },
+                  { v: '월 구독', l: '정식 출시 후 제공 예정' },
                 ].map((s) => (
                   <div key={s.l}>
                     <dd className="text-2xl font-extrabold tracking-tight text-white">{s.v}</dd>
@@ -328,7 +240,7 @@ function App() {
               </dl>
               {/* 진정성 한 줄 (얼굴은 우측 신뢰 패널에 1회만) */}
               <p className="mt-6 border-l-2 border-sky-400/50 pl-3.5 text-sm leading-relaxed text-slate-400 sm:text-base">
-                제가 실제 업무에서 직접 써 보고, 도움이 됐다고 확인한 도구만 공개합니다.
+                제가 실제 업무에서 매일 쓰고, 도움이 됐다고 확인한 기능만 공개합니다.
               </p>
             </div>
 
@@ -396,113 +308,143 @@ function App() {
         </div>
       </section>
 
-      {/* 2. 핵심 가치 3 */}
+      {/* 2. 왜 만들었나 — 병목 하나 */}
       <section id="value" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
-        <div className="max-w-3xl">
-          <p className="text-base font-bold uppercase tracking-widest text-blue-600">핵심 가치</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">상담 전·중·후, 매 순간을 돕습니다</h2>
-          <p className="mt-4 text-lg leading-relaxed text-slate-600">고객을 만나기 전 준비부터 만난 뒤 관리까지. 매일 반복되는 상담의 흐름을 그대로 도구에 담았습니다.</p>
-        </div>
+        <SectionHead
+          eyebrow="왜 만들었나"
+          title="일이 많아서가 아니라, 흩어져 있어서 새고 있었습니다"
+          desc="고객 서너 곳이 동시에 돌아가면 업체마다 진행 중인 업무 두세 개, 서류 열 종류, 받을 돈과 신청 마감이 따로 있습니다. 그 일이 머릿속·카톡·파일·여러 화면에 흩어져 있으면, 매일 아침 “오늘 뭐부터, 누구한테 뭘 받아야 하지” 를 처음부터 다시 조합해야 합니다."
+        />
         <div className="mt-10 grid gap-5 sm:grid-cols-3">
-          {values.map((v) => (
-            <article key={v.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md motion-reduce:hover:translate-y-0 sm:p-7">
+          {leaks.map((v) => (
+            <article key={v.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
               <div className="flex items-center gap-3">
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-sky-300 [&_svg]:h-5 [&_svg]:w-5">{v.icon}</div>
-                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold tracking-wide text-blue-700">{v.phase}</span>
+                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold tracking-wide text-blue-700">{v.tag}</span>
               </div>
-              <h3 className="mt-4 text-xl font-bold text-slate-900">{v.title}</h3>
-              <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{v.desc}</p>
+              <h3 className="mt-4 break-keep text-xl font-bold text-slate-900">{v.title}</h3>
+              <p className="mt-2 break-keep text-[1.05rem] leading-relaxed text-slate-600">{v.desc}</p>
             </article>
           ))}
         </div>
       </section>
 
-      {/* 2-1. 운영 OS 미리보기 — 도구가 모이는 한 화면(예시·가상 데이터) */}
+      {/* 3. 대시보드 미리보기 — 아침에 열면 할 일이 이유와 함께 (예시·가상 데이터) */}
       <section id="dashboard" className="scroll-mt-20 border-t border-slate-200 bg-gradient-to-b from-white to-slate-50">
         <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <p className="text-base font-bold uppercase tracking-widest text-blue-600">운영 OS 미리보기</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 [word-break:keep-all] sm:text-4xl">도구가 하나씩 모여, 하나의 운영 화면이 됩니다</h2>
-            <p className="mt-4 text-lg leading-relaxed text-slate-600 [word-break:keep-all]">
-              고객사 현황과 오늘 할 일, 검토·제안·사후관리를 한 화면에서 봅니다. 새 도구가 추가될 때마다 같은 화면에 이어 붙습니다.
-            </p>
-          </div>
-          <OsLaunchSteps />
+          <SectionHead
+            eyebrow="대시보드 미리보기"
+            title="아침에 열면, 오늘 할 일이 이유와 함께 나옵니다"
+            desc="‘반드시 처리할 것’ 과 그중 먼저 할 세 가지가 이유와 함께 뜹니다. 업체를 누르면 지금 할 일·막힌 서류·못 받은 돈이 한 화면에 있고, 통화를 마치면 한 줄 남기면 됩니다."
+          />
           <div className="mt-8 sm:mt-10">
             <OsDashboardPreview />
           </div>
         </div>
       </section>
 
-      {/* 3. 판매 중인 도구 — 대표 도구(큰 카드) + 보조 도구(작은 카드) */}
-      <section id="tools" className="scroll-mt-20 border-y border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <p className="text-base font-bold uppercase tracking-widest text-blue-600">컨설턴트 OS</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">업무 흐름으로 연결되는 도구</h2>
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">각 도구는 따로, 또 같이 작동합니다. 가입 후 도구별로 이용 신청을 하시면 승인 후 {TRIAL_DAYS}일간 사용할 수 있습니다.</p>
-            <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" aria-hidden />
-              지속적으로 수시로 업데이트하고 있습니다
+      {/* 4. 운영 방식 — 고객과 내부가 한 바퀴 + 원칙 + 기록이 남기는 것 */}
+      <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
+        <SectionHead
+          eyebrow="운영 방식"
+          title="고객과 내부가 한 바퀴로 이어집니다"
+          desc="고객이 한 일이 내 일감으로 들어오고, 내가 처리한 결과가 고객 화면으로 돌아갑니다. 카톡으로 되묻고 다시 옮겨 적는 일이 줄어듭니다."
+        />
+        <div className="mt-10 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+            <ol data-os-loop>
+              {loop.map((l, i) => (
+                <li key={l.text} className="relative flex gap-3.5 pb-5 last:pb-0">
+                  {i < loop.length - 1 && <span aria-hidden className="absolute left-[1.05rem] top-9 h-[calc(100%-2.25rem)] w-px bg-slate-200" />}
+                  <span className="grid h-[2.1rem] w-[2.1rem] shrink-0 place-items-center rounded-full bg-slate-900 text-[0.85rem] font-black text-white">{i + 1}</span>
+                  <div className="min-w-0 pt-0.5">
+                    <span className={`text-xs font-black tracking-wide ${l.who === '고객' ? 'text-violet-600' : l.who === '자동' ? 'text-sky-600' : 'text-slate-500'}`}>{l.who}</span>
+                    <p className="break-keep text-[1.02rem] font-semibold leading-snug text-slate-800">{l.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-5 rounded-xl bg-slate-50 px-4 py-3 text-[0.92rem] leading-relaxed text-slate-600 ring-1 ring-inset ring-slate-200">
+              ↺ 다시 처음으로 — 이 순환이 화면보다 중요합니다.
             </p>
           </div>
 
-          {/* 도구 — 전부 같은 크기의 카드(운영 중 + 공개 준비 중) · 모바일 2열 / 데스크톱 3열 */}
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-5 lg:grid-cols-3">
-            {tools.map((tool) => (
-              <ToolCard key={tool.id} tool={tool} />
-            ))}
-            <p className="col-span-full mt-4 flex items-center gap-2 text-[0.95rem] font-bold uppercase tracking-widest text-amber-600 sm:mt-6">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden /> 곧 추가될 도구
-            </p>
-            {upcomingTools.map((t) => (
-              <UpcomingCard key={t.id} tool={t} />
+          <div className="grid gap-4">
+            {/* 추가 계약의 근거 */}
+            <article data-os-renewal className="rounded-2xl bg-slate-900 p-5 text-white shadow-sm sm:p-6">
+              <p className="text-xs font-black tracking-wide text-sky-300">기록이 남기는 것</p>
+              <h3 className="mt-1.5 break-keep text-xl font-bold">꼼꼼한 기록이, 다음 계약의 근거가 됩니다</h3>
+              <p className="mt-2 break-keep text-[1rem] leading-relaxed text-slate-300">
+                업체마다 업무·서류·수금·자금·판단의 이력이 날짜와 함께 쌓입니다. 무엇을 언제 처리했는지 보여 주며, 지금까지 해 온 일과 다음 단계를 근거 있게 제안할 수 있습니다.
+              </p>
+            </article>
+            {principles.map((p) => (
+              <article key={p.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <h3 className="break-keep text-lg font-bold text-slate-900">{p.title}</h3>
+                <p className="mt-1.5 break-keep text-[0.98rem] leading-relaxed text-slate-600">{p.desc}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 4. 이용 방식 3단계 */}
-      <section id="pricing" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
-        <div className="max-w-3xl">
-          <p className="text-base font-bold uppercase tracking-widest text-blue-600">이용 방식</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">지금은 무료 베타 기간입니다</h2>
-          <p className="mt-4 text-lg leading-relaxed text-slate-600">정식 출시 전, 피드백을 주시는 분들께 먼저 열어드립니다. 신청해 주시면 확인 후 순차적으로 승인해 드립니다.</p>
-          <p className="mt-2 text-[1.05rem] font-semibold leading-relaxed text-slate-700 [word-break:keep-all]">
-            정식 출시 후에는 <b className="font-bold text-slate-900">월 구독</b>으로 제공할 예정입니다.
+      {/* 5. 7개 모듈 — 지금 쓰는 도구를 모듈로 묶어 확장 */}
+      <section id="modules" className="scroll-mt-20 border-y border-slate-200 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+          <SectionHead
+            eyebrow="모듈"
+            title="지금 쓰는 도구를, 7개 모듈로 묶어 넓혀 갑니다"
+            desc="컨설턴트 운영 모듈을 바탕으로, 필요한 업무 영역의 모듈이 같은 화면에 이어 붙습니다. 모듈마다 지금 실제로 쓰고 있는 도구와 완성되면 들어갈 기능을 함께 적었습니다."
+          />
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" aria-hidden />
+            실사용 테스트와 UI/UX 개선을 계속하고 있습니다
           </p>
+          <div className="mt-8 sm:mt-10">
+            <OsModules />
+          </div>
+        </div>
+      </section>
+
+      {/* 6. 출시 일정 — 무료 체험 없음, 정식 출시 후 월 구독 예정 */}
+      <section id="launch" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
+        <SectionHead
+          eyebrow="출시 일정"
+          title="2026년 10월부터, 차례로 엽니다"
+          desc={
+            <>
+              개발은 거의 마무리됐고, 지금은 실사용 테스트와 UI/UX 개선으로 완성도를 끌어올리고 있습니다. 정식 출시 후에는{' '}
+              <b className="font-bold text-slate-900">월 구독</b>으로 제공할 예정입니다.
+            </>
+          }
+        />
+        <div className="mt-8 sm:mt-10">
+          <OsLaunchSteps />
         </div>
 
-        <ol className="mt-10 grid gap-4 sm:grid-cols-3">
-          {useSteps.map((s, i) => (
-            <li key={s.no} className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <span className="text-base font-extrabold tracking-widest text-blue-600">{s.no}</span>
-              <h3 className="mt-2 text-xl font-bold text-slate-900">{s.title}</h3>
-              <p className="mt-2 text-[1.05rem] leading-relaxed text-slate-600">{s.desc}</p>
-              {i < useSteps.length - 1 && (
-                <span aria-hidden className="absolute right-0 top-1/2 hidden -translate-y-1/2 translate-x-1/2 text-lg font-bold text-slate-300 sm:block">
-                  →
-                </span>
-              )}
+        <ol className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
+          {stages.map((s) => (
+            <li key={s.no} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <p className="flex items-center gap-2 text-sm font-black text-blue-600">
+                {s.no}
+                <span className={`rounded-md px-1.5 py-0.5 text-xs font-black ${s.when === '지금' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}`}>{s.when}</span>
+              </p>
+              <h3 className="mt-2 break-keep text-lg font-bold text-slate-900">{s.title}</h3>
+              <p className="mt-1.5 break-keep text-[0.98rem] leading-relaxed text-slate-600">{s.desc}</p>
             </li>
           ))}
         </ol>
 
         <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-slate-600">
-            {['카드 등록 없이 시작', '신청한 시각부터 정확히 7일', '리뷰·설문 참여 시 최대 21일'].map((t) => (
-              <span key={t} className="inline-flex items-center gap-1.5">
-                <span className="text-emerald-500" aria-hidden>✓</span>
-                {t}
-              </span>
-            ))}
-          </div>
-          <Link
-            to="/signup"
+          <p className="break-keep text-[0.98rem] leading-relaxed text-slate-600">
+            얼마나 빨라졌는지는 아직 숫자로 말하지 않습니다. <span className="font-semibold text-slate-800">기준선을 재는 중</span>이기 때문입니다.
+          </p>
+          <a
+            href="#inquiry"
             className="inline-flex shrink-0 items-center justify-center rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700"
           >
-            지금 무료로 시작
-          </Link>
+            오픈 소식 받기
+          </a>
         </div>
       </section>
 
@@ -511,9 +453,9 @@ function App() {
         <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
           <div className="max-w-3xl">
             <p className="text-base font-bold uppercase tracking-widest text-blue-600">자주 묻는 질문</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">신청 전, 이것만 확인하세요</h2>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">도입 전, 이것만 확인하세요</h2>
           </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
             {faqs.map((item) => (
               <article key={item.q} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p className="text-lg font-bold text-slate-900">Q. {item.q}</p>
@@ -574,9 +516,9 @@ function App() {
           <div id="inquiry" className="mt-12 scroll-mt-20">
             <div className="mx-auto max-w-3xl text-center">
               <p className="text-base font-bold uppercase tracking-widest text-blue-600">문의</p>
-              <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">업무 자동화 제작 문의</h2>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">오픈 소식 · 도입 문의</h2>
               <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
-                반복 업무는 AI가 대신하고, 상담과 판단은 컨설턴트가 직접 합니다. 자동화하고 싶은 업무를 남겨주시면 김팀장이 직접 검토해 답해드립니다.
+                모듈을 여는 순서에 맞춰 먼저 연락드립니다. 지금 가장 시간이 오래 걸리는 업무를 함께 남겨 주시면, 김팀장이 직접 검토해 답해드립니다.
               </p>
             </div>
             <div className="mx-auto mt-8 max-w-3xl">
@@ -591,7 +533,7 @@ function App() {
         topSlot={
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <p className="max-w-md text-base leading-relaxed text-slate-500">
-              컨설턴트의 상담·분석·제안·사후관리를 하나로 잇는 업무 OS. 대표님의 경영지원과 컨설턴트의 실무를 AI로 연결합니다.
+              여러 고객사의 일을 한 화면에 모으고, 고객이 한 행동이 내 일감으로 돌아오게 만드는 컨설턴트 운영 OS — MIRAE AI LAB OS.
             </p>
             <nav className="-my-2.5 flex flex-wrap gap-x-6 text-base font-medium text-slate-600">
               <Link to="/business-services" className="inline-flex min-h-11 items-center transition-colors hover:text-slate-900">대표님용 경영지원</Link>
