@@ -39,15 +39,15 @@ export const DEEP_PROJECTS: DeepProject[] = [
   {
     slug: 'medwaste',
     industry: '의료폐기물 수거·운반 기업',
-    summary: 'Business AX + 병원 Customer Platform',
+    summary: '내부 AX + 병원이 직접 쓰는 고객 플랫폼',
     stage: '개발·고도화 진행',
     funding: true,
     expandLabel: '어디까지 개발하는지 보기',
     intro: [
-      '어디까지 개발하냐면요 — 단순 관리화면보다 훨씬 깊게 들어갑니다.',
-      '병원이 요청하면 내부 AX에 실제 업무가 생기고, 직원이 처리하면 그 결과가 다시 병원 화면에 돌아갑니다.',
+      '관리 화면 몇 장이 아니에요. 훨씬 깊게 들어갑니다.',
+      '병원이 요청하면 내부 AX에 할 일이 생기고, 직원이 처리하면 결과가 다시 병원 화면에 반영돼요.',
     ],
-    honesty: '아래는 이번 고도화에서 구현·검증하는 범위입니다. 전 항목이 이미 실운영 완료된 상태를 뜻하지 않습니다.',
+    honesty: '아래는 이번 고도화에서 만들고 검증하는 범위입니다. 모든 항목이 이미 실제 운영 중이라는 뜻은 아닙니다.',
     categories: [
       {
         name: '로그인 · 역할 · 데이터 권한',
@@ -190,20 +190,20 @@ export const DEEP_PROJECTS: DeepProject[] = [
       },
     ],
     outro: [
-      '이 프로젝트는 화면 수를 늘리는 프로젝트가 아닙니다.',
-      '현장 + 돈 + 재고 + 권한 + 고객 + 데이터 + 복구가 동시에 맞아야 하는 운영 시스템을 만드는 프로젝트입니다.',
+      '화면 수를 늘리는 프로젝트가 아니에요.',
+      '현장, 돈, 재고, 권한, 고객, 데이터, 복구가 한꺼번에 맞아야 하는 운영 시스템을 만듭니다.',
     ],
   },
   {
     slug: 'wellness',
     industry: 'Wellness Care 기업',
-    summary: 'Wellness Business AX + MY WELLNESS 고객 포털',
-    stage: 'Pilot 준비 단계',
+    summary: '내부 AX + 고객 포털 MY WELLNESS',
+    stage: '시범 운영(Pilot) 준비 중',
     funding: true,
     expandLabel: '어디까지 개발됐는지 보기',
     intro: [
-      '어디까지 개발됐냐면요 — 고객관리 화면을 만든 수준은 이미 넘어갔습니다.',
-      '고객 기록이 우선순위와 재방문 판단으로 이어지고, 직원이 실행한 결과가 다시 MY WELLNESS와 다음 관리로 연결됩니다.',
+      '고객관리 화면을 만드는 수준은 이미 넘어섰어요.',
+      '고객 기록을 보고 먼저 챙길 고객과 재방문을 판단해요. 직원이 처리한 결과는 다시 MY WELLNESS와 다음 관리로 이어집니다.',
     ],
     categories: [
       {
@@ -316,10 +316,10 @@ export const DEEP_PROJECTS: DeepProject[] = [
   {
     slug: 'leather',
     industry: '피혁 제조·도소매 기업',
-    summary: '제품·재고·견적·재구매·거래처 영업기회를 연결한 B2B AX',
+    summary: '제품·재고·견적을 잇고, 다시 영업할 거래처를 찾아 주는 AX',
     stage: 'MVP 고도화 진행',
     expandLabel: '무엇을 설계했는지 보기',
-    intro: ['이 기업만의 제품·재고·거래처 데이터를 기준으로 설계한 MVP입니다.'],
+    intro: ['이 회사의 제품, 재고, 거래처 데이터에 맞춰 설계한 MVP예요.'],
     categories: [
       {
         name: '설계 범위',
@@ -336,10 +336,10 @@ export const DEEP_PROJECTS: DeepProject[] = [
   {
     slug: 'metrology',
     industry: '산업계측·장비유통 기업',
-    summary: '재고·수요·견적·재구매와 영업 Action을 연결한 Business AX',
+    summary: '재고·견적을 잇고, 재구매 시기에 맞춰 영업을 챙기는 AX',
     stage: 'Business AX MVP 진행',
     expandLabel: '무엇을 설계했는지 보기',
-    intro: ['재구매 주기가 긴 B2B 장비 유통의 영업 흐름을 데이터로 옮긴 MVP입니다.'],
+    intro: ['재구매 주기가 긴 B2B 장비 유통의 영업 흐름을 데이터로 옮긴 MVP예요.'],
     categories: [
       {
         name: '설계 범위',
@@ -355,10 +355,10 @@ export const DEEP_PROJECTS: DeepProject[] = [
   {
     slug: 'elec',
     industry: '전기·정보통신 · 프로젝트관리 기업',
-    summary: '현장·프로젝트·견적·원가·수금과 고객 서비스 흐름을 연결한 Hybrid AX',
+    summary: '현장 프로젝트의 견적부터 수금까지, 고객 화면과 함께 잇는 AX',
     stage: 'Hybrid AX MVP 진행',
     expandLabel: '무엇을 설계했는지 보기',
-    intro: ['업무지시부터 준공·수금까지, 현장형 프로젝트 회사의 하루를 기준으로 설계한 MVP입니다.'],
+    intro: ['업무 지시부터 준공, 수금까지 현장 프로젝트 회사의 하루에 맞춰 설계한 MVP입니다.'],
     categories: [
       {
         name: '설계 범위',
@@ -375,10 +375,10 @@ export const DEEP_PROJECTS: DeepProject[] = [
   {
     slug: 'pump',
     industry: '산업용 설비·펌프 기업',
-    summary: '설비·AS·설치·재고·발주·정산을 연결한 운영 AX',
+    summary: '설비 이력과 AS, 재고, 정산을 한 흐름으로 잇는 AX',
     stage: 'Business AX MVP 진행',
     expandLabel: '무엇을 설계했는지 보기',
-    intro: ['설비 이력과 수리·정산이 끊기지 않게, 현장 운영 순서 그대로 설계한 MVP입니다.'],
+    intro: ['설비 이력과 수리, 정산이 끊기지 않게 현장 순서 그대로 설계했어요.'],
     categories: [
       {
         name: '설계 범위',

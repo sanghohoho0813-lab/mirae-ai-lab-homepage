@@ -1,7 +1,7 @@
 // 3분 AX Fit — 질문 데이터 (화면 로직과 분리).
 // 10문항, 모두 정도 선택형. 질문을 추가/수정할 때 이 파일만 고치면 됩니다.
 //
-// 1~9번: 현재 업무방식의 문제·복잡도 신호 (아니다 0 → 거의 항상 3)
+// 1~9번: 현재 업무방식의 문제·복잡도 신호 (아니요 0 → 거의 항상 그래요 3)
 // 10번:  새 시스템을 실제로 함께 쓸 내부 담당자 유무 (준비도)
 import type { DiagnosisAnswers, DiagnosisQuestion, DiagnosisStage, InlineFeedback } from '../types/businessDiagnosis'
 
@@ -10,7 +10,7 @@ export const DIAGNOSIS_VERSION = 5
 
 export const AX_FIT_INFO = {
   name: '3분 AX Fit',
-  copy: '현재 업무방식과 시스템을 기준으로, 우리 회사에 어떤 AX가 맞는지 먼저 판단합니다.',
+  copy: '지금 일하는 방식을 보고, 우리 회사에 어떤 AX가 맞는지 먼저 판단해 드려요.',
 } as const
 
 /** 서버·저장 호환용 단계 정보 — AX Fit 은 1단계 하나 */
@@ -20,10 +20,10 @@ export const STAGE_INFO: Record<DiagnosisStage, { name: string; copy: string }> 
 
 /** 정도 선택형 공통 보기 — 값은 점수 계산에서 0·1·2·3 으로 읽는다 */
 export const DEGREE_OPTIONS = [
-  { value: 'no', label: '아니다' },
-  { value: 'sometimes', label: '가끔 그렇다' },
-  { value: 'often', label: '자주 그렇다' },
-  { value: 'always', label: '거의 항상 그렇다' },
+  { value: 'no', label: '아니요' },
+  { value: 'sometimes', label: '가끔 그래요' },
+  { value: 'often', label: '자주 그래요' },
+  { value: 'always', label: '거의 항상 그래요' },
 ] as const
 
 export const DEGREE_VALUE: Record<string, number> = { no: 0, sometimes: 1, often: 2, always: 3 }
@@ -41,26 +41,26 @@ const degree = (id: string, title: string, desc?: string): DiagnosisQuestion => 
 })
 
 export const questions: DiagnosisQuestion[] = [
-  degree('repeatInput', '직원들이 같은 정보를 여러 곳에 반복해서 입력하고 있다.', '예: 주문을 카톡에서 받아 엑셀에 적고, 다시 ERP에 넣는 식이요.'),
-  degree('askProgress', '대표나 관리자가 직원에게 진행상황을 자주 직접 물어봐야 한다.'),
-  degree('toolGaps', 'Excel·카카오톡·전화·ERP 등 여러 도구 사이에서 업무가 끊긴다.'),
-  degree('manualHandoff', '고객 요청·주문·예약·문의가 내부 업무로 수동 전달된다.'),
-  degree('missDelay', '업무 누락·지연·재확인이 반복된다.'),
-  degree('priorityByMemory', '어떤 일을 먼저 처리할지 담당자의 경험이나 기억에 의존한다.'),
-  degree('dataUnused', '거래처·고객·업무 데이터는 있지만 의사결정에 충분히 활용하지 못한다.'),
-  degree('ceoLoadGrows', '직원이나 거래량이 늘면서 대표 또는 관리자의 확인업무도 함께 늘고 있다.'),
-  degree('uniqueWork', '기존 ERP·POS·SaaS만으로 해결되지 않는 회사 고유의 업무가 있다.', '기성 프로그램에 없는 기능을 엑셀이나 사람 손으로 메우고 있다면 여기에 해당해요.'),
+  degree('repeatInput', '같은 정보를 여러 곳에 반복해서 입력하고 있나요?', '예: 카톡으로 받은 주문을 엑셀에 적고, ERP에 또 넣는 식이요.'),
+  degree('askProgress', '일이 어디까지 됐는지, 대표님이나 관리자가 직접 물어봐야 아나요?'),
+  degree('toolGaps', '엑셀, 카톡, 전화, ERP를 오가다 일이 중간에 끊기나요?'),
+  degree('manualHandoff', '고객의 요청이나 주문, 예약, 문의를 사람이 직접 담당자에게 전달하나요?'),
+  degree('missDelay', '일을 빠뜨리거나 늦어져서, 다시 확인하는 일이 반복되나요?'),
+  degree('priorityByMemory', '무슨 일을 먼저 할지, 담당자의 경험이나 기억에 맡기고 있나요?'),
+  degree('dataUnused', '거래처, 고객, 업무 기록은 있는데 결정할 때 잘 활용하지 못하나요?'),
+  degree('ceoLoadGrows', '직원이나 거래가 늘수록, 대표님이나 관리자가 확인할 일도 같이 늘고 있나요?'),
+  degree('uniqueWork', '기존 ERP, POS, SaaS로는 해결이 안 되는 우리 회사만의 일이 있나요?', '시중 프로그램에 없는 기능을 엑셀이나 사람 손으로 메우고 있다면 해당돼요.'),
   {
     id: 'internalOwner',
     stage: 1,
     type: 'single',
-    title: '새 시스템을 실제로 함께 사용할 내부 담당자 또는 관리자가 있다.',
-    desc: '구축보다 정착이 어렵습니다. 함께 쓸 사람이 있는지가 진행 속도를 좌우해요.',
+    title: '새 시스템을 회사 안에서 함께 쓸 담당자나 관리자가 있나요?',
+    desc: '만드는 것보다 자리 잡게 하는 게 더 어렵습니다. 함께 쓸 사람이 있으면 진행이 빨라져요.',
     options: [
-      { value: 'dedicated', label: '있다', desc: '전담으로 맡을 담당자가 있어요' },
-      { value: 'partTime', label: '겸임으로 맡을 사람이 있다' },
-      { value: 'ceo', label: '대표가 직접 해야 한다' },
-      { value: 'none', label: '아직 없다' },
+      { value: 'dedicated', label: '있어요', desc: '이 일을 전담으로 맡을 사람이 있어요' },
+      { value: 'partTime', label: '다른 일과 함께 맡을 사람이 있어요' },
+      { value: 'ceo', label: '대표가 직접 해야 해요' },
+      { value: 'none', label: '아직 없어요' },
     ],
   },
 ]
@@ -76,10 +76,10 @@ export function stageQuestions(stage: DiagnosisStage, answers: DiagnosisAnswers)
 export function getInlineFeedback(questionId: string, answers: DiagnosisAnswers): InlineFeedback | null {
   const v = answers[questionId]
   if (questionId === 'uniqueWork' && v === 'always') {
-    return { tone: 'info', text: '기성 솔루션이 비워둔 자리가 있군요. 그 업무가 AX 설계의 출발점이 됩니다.' }
+    return { tone: 'info', text: '시중 프로그램이 못 채우는 일이 있군요. 그 일이 AX 설계의 출발점이 됩니다.' }
   }
   if (questionId === 'internalOwner' && v === 'none') {
-    return { tone: 'warn', text: '괜찮아요. 함께 쓸 담당자를 정하는 것부터 결과에서 안내드릴게요.' }
+    return { tone: 'warn', text: '괜찮아요. 담당자를 정하는 일부터 결과에서 안내해 드릴게요.' }
   }
   return null
 }

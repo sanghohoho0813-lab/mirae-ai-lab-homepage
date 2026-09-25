@@ -48,7 +48,7 @@ function ResultsList() {
   return (
     <div className="mx-auto w-full max-w-[860px] px-5 pb-24 pt-8">
       <h1 className="text-2xl font-black tracking-tight text-slate-900">내 진단 결과</h1>
-      <p className="mt-1.5 text-sm leading-relaxed text-slate-500">이 기기에 저장된 최근 진단 결과예요 (최대 5개). 진단을 다시 시작해도 지워지지 않아요.</p>
+      <p className="mt-1.5 text-sm leading-relaxed text-slate-500">이 기기에 저장된 최근 결과예요(최대 5개). 진단을 다시 해도 지워지지 않습니다.</p>
 
       {items.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center">
@@ -58,7 +58,7 @@ function ResultsList() {
             to="/business-diagnosis"
             className="mt-5 inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-base font-bold text-white shadow-sm transition-colors hover:bg-blue-700"
           >
-            우리 회사 AX 가능성 진단 →
+            3분 AX Fit 시작하기 →
           </Link>
         </div>
       ) : (

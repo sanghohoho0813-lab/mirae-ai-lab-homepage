@@ -25,7 +25,7 @@ const GROUPS: Group[] = [
   {
     id: 'portfolio',
     title: '산업별 AX Preview',
-    desc: '직원이 쓰는 운영 화면과 고객·거래처가 쓰는 플랫폼을 업종별 업무를 가정해 구현한 Concept Prototype입니다.',
+    desc: '직원용 운영 화면과 고객·거래처용 플랫폼을 업종별로 만들어 본 예시예요.',
     cta: '산업별 AX 화면 보기',
     card: 'border-[#3FBFB4]/35 bg-gradient-to-br from-[#0E3138] to-[#123F44] hover:border-[#5EEAD4]/60 hover:from-[#113A42] hover:to-[#154A50]',
     accent: 'text-[#5EEAD4]',
@@ -33,7 +33,7 @@ const GROUPS: Group[] = [
   {
     id: 'mvp-refs',
     title: '아이디어 MVP Preview',
-    desc: '머릿속에만 있던 아이디어를 일단 움직이는 서비스로 만들어 본 초기 레퍼런스입니다.',
+    desc: '머릿속 아이디어를 실제로 눌러 보는 서비스로 만든 초기 레퍼런스예요.',
     cta: 'MVP 화면 보기',
     card: 'border-[#A78BFA]/35 bg-gradient-to-br from-[#241F3D] to-[#2E2652] hover:border-[#C4B5FD]/60 hover:from-[#2A2447] hover:to-[#372D61]',
     accent: 'text-[#C4B5FD]',

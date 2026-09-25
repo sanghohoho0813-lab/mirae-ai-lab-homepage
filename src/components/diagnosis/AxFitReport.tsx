@@ -45,7 +45,7 @@ const RANK_SKIN = [
     edge: 'bg-red-500',
     num: 'h-11 w-11 bg-red-500 text-[1.15rem] text-white ring-4 ring-red-100',
     tag: 'bg-red-600 text-white',
-    tagText: '가장 크게 걸려 있는 문제',
+    tagText: '가장 큰 문제',
     title: 'text-[1.2rem] sm:text-[1.32rem]',
   },
   {
@@ -67,7 +67,7 @@ const RANK_SKIN = [
 ]
 
 // 강도 막대·답변 글자색은 '순위'가 아니라 '고른 답'을 따라간다.
-// (3순위여도 '거의 항상 그렇다'면 빨강 — 순위 색을 따르면 답과 어긋나 보인다)
+// (3순위여도 '거의 항상 그래요'면 빨강 — 순위 색을 따르면 답과 어긋나 보인다)
 const SEV_SKIN: Record<number, { bar: string; text: string }> = {
   1: { bar: 'bg-amber-400', text: 'text-amber-700' },
   2: { bar: 'bg-orange-500', text: 'text-orange-700' },
@@ -102,9 +102,9 @@ function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; 
     return (
       <section className="mt-8">
         <p className={`${eyebrow} text-slate-400`}>대표님이 답하신 내용</p>
-        <h2 className={h2Cls}>지금은 뚜렷하게 걸리는 지점이 없습니다.</h2>
+        <h2 className={h2Cls}>지금은 크게 걸리는 곳이 없어요.</h2>
         <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-[1rem] leading-relaxed text-slate-600">
-          답변에서 뚜렷한 문제 신호가 보이지 않아요. 지금 방식이 잘 맞고 있다는 뜻이니, 규모가 커질 때 다시 확인해보세요.
+          지금 방식이 잘 맞고 있다는 뜻입니다. 회사가 커질 때 다시 확인해 보세요.
         </p>
       </section>
     )
@@ -118,7 +118,7 @@ function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; 
         <p className="mt-3 inline-flex flex-wrap items-baseline gap-x-1.5 rounded-xl bg-slate-100 px-3.5 py-2 text-[0.95rem] font-semibold text-slate-600">
           업무 질문 <b className="text-[1.05rem] font-black text-slate-900">{painTotal}개</b> 중
           <b className="text-[1.05rem] font-black text-red-600">{painCount}개</b>에
-          <span className="font-bold text-slate-700">‘자주 그렇다’ 이상으로 답하셨어요</span>
+          <span className="font-bold text-slate-700">‘자주 그래요’ 이상으로 답하셨어요</span>
         </p>
       )}
 
@@ -181,7 +181,7 @@ function ActionPlan({ report }: { report: Report }) {
       </ul>
 
       {/* 다음 행동 — 세로 연결선으로 '순서'가 보이게 */}
-      <p className="mt-7 text-[1.02rem] font-black text-slate-900">다음 행동</p>
+      <p className="mt-7 text-[1.02rem] font-black text-slate-900">다음에 할 일</p>
       <ol className="relative mt-3 space-y-3 border-l-2 border-dashed border-slate-200 pl-5">
         {report.nextActions.map((t, i) => (
           <li key={t} className="relative">
@@ -217,7 +217,7 @@ function ClosingConsultCTA({ onConsult, hasProblems }: { onConsult: () => void; 
           )}
         </h3>
         <p className="mx-auto mt-2.5 max-w-md break-keep text-[0.98rem] leading-relaxed text-slate-600">
-          방금 답하신 10개 문항과 진단 결과가 함께 전달됩니다. 연락처만 남겨주시면 담당자가 확인 후 연락드립니다.
+          연락처만 남겨 주세요. 답하신 10개 질문과 결과를 보고 담당자가 연락드려요.
         </p>
         <button
           type="button"
@@ -226,7 +226,7 @@ function ClosingConsultCTA({ onConsult, hasProblems }: { onConsult: () => void; 
         >
           AX Fit 상담 신청하기 <span aria-hidden>→</span>
         </button>
-        <p className="mt-2.5 text-[0.82rem] text-slate-400">상담은 무료이며, 진행 여부는 상담 후 결정하시면 됩니다.</p>
+        <p className="mt-2.5 text-[0.82rem] text-slate-400">상담은 무료예요. 진행 여부는 상담 후에 정하시면 됩니다.</p>
       </div>
     </section>
   )
@@ -339,7 +339,7 @@ export default function AxFitReportView({
           })}
         </ol>
         <p className="mt-3 break-keep text-[0.82rem] leading-relaxed text-slate-400 print:text-slate-500">
-          이 점수는 승인이나 선정 가능성을 뜻하지 않습니다. 지금 일하는 방식으로 볼 때 우리 회사에 따로 AX를 만드는 게 맞는지 가늠해 보는 내부 기준입니다.
+          이 점수는 승인이나 선정 가능성을 뜻하지 않습니다. 지금 일하는 방식으로 볼 때, 우리 회사에 따로 AX를 만드는 게 맞는지 가늠하는 내부 기준입니다.
         </p>
       </section>
 
@@ -354,7 +354,7 @@ export default function AxFitReportView({
         <section className="mt-9 rounded-2xl border border-slate-200 bg-white px-4 py-4 print:hidden sm:px-5">
           <p className="text-[1rem] font-black text-slate-900">함께 검토하고 싶은 분야가 있으신가요? (선택)</p>
           <p className="mt-1 text-[0.85rem] leading-snug text-slate-500">
-            AX 과정에서 만들어지는 데이터·기술·실증성과는 다른 분야에서도 근거로 쓰일 수 있습니다. 고르신 분야는 상담 때 함께 다룹니다.
+            AX를 하며 쌓인 데이터와 기술, 실제 성과는 다른 분야에서도 근거가 될 수 있어요. 고르신 분야는 상담 때 함께 봅니다.
           </p>
           <div className="mt-3">
             <InterestPicker idPrefix="fit" value={growthInterests} onChange={onGrowthInterestsChange} />
@@ -369,7 +369,7 @@ export default function AxFitReportView({
         <div className="mt-9">
           <div className="animate-pop-in mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700 ring-1 ring-inset ring-emerald-200 print:hidden">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12.5 10 17.5 19 7" /></svg>
-            {consultationConsented ? '상담 요청이 함께 접수되었습니다' : '진단 결과가 저장되었습니다'}
+            {consultationConsented ? '상담 요청도 함께 접수됐어요' : '진단 결과를 저장했어요'}
           </div>
           <div className="mt-6 flex flex-col gap-2.5 sm:flex-row print:hidden">
             <button
@@ -390,7 +390,7 @@ export default function AxFitReportView({
               <p className="text-sm font-black text-amber-900">인쇄 창이 열리지 않았어요</p>
               <p className="mt-1.5 text-sm leading-relaxed text-amber-900">
                 {isInAppBrowser()
-                  ? '카카오톡·네이버 같은 앱 안의 브라우저는 인쇄를 지원하지 않아요. 아래 주소를 복사해 크롬이나 사파리에서 열면 PDF로 저장할 수 있어요.'
+                  ? '카카오톡이나 네이버 앱 안에서는 인쇄가 안 돼요. 아래 주소를 복사해 크롬이나 사파리에서 열면 PDF로 저장할 수 있습니다.'
                   : '이 브라우저에서는 인쇄 창을 열 수 없어요. 아래 방법으로 저장해 주세요.'}
               </p>
               <ul className="mt-2.5 space-y-1 text-sm leading-relaxed text-amber-900">

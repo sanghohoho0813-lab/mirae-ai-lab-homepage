@@ -10,13 +10,13 @@ export default function AxPatentTechSection() {
       <div className="mx-auto max-w-[86rem] px-5 py-14 sm:px-6 sm:py-20">
         <p className="text-center text-[1.1rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.2rem]">TECHNOLOGY &amp; IP</p>
         <h2 className="mx-auto mt-3 max-w-3xl break-keep text-center text-[1.7rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.2rem]">
-          미래AI랩은 화면만 만드는<br className="sm:hidden" /> 개발이 아닙니다.
+          화면만 만들어 주는<br className="sm:hidden" /> 곳이 아닙니다.
         </h2>
         <p className="mx-auto mt-5 max-w-2xl break-keep text-center text-[1.15rem] leading-[1.75] text-slate-300 sm:text-[1.25rem]">
-          회사의 업무가 어떻게 판단되고, 어떻게 연결되고, <span className="font-bold text-[#E8B89A]">어떤 다음 행동으로 이어지는지까지</span> 설계합니다.
+          일이 어떻게 판단되고 이어지는지, <span className="font-bold text-[#E8B89A]">다음에 무엇을 할지까지</span> 설계해요.
         </p>
         <p className="mx-auto mt-4 max-w-2xl break-keep text-center text-[1.15rem] leading-[1.75] text-white sm:text-[1.25rem]">
-          이 과정에서 만든 핵심 기술을 정리해 <b className="font-black text-[#D47A4A]">2026년 9월, AX 관련 특허 5건을 출원</b>했습니다.
+          이렇게 만든 기술로 <b className="font-black text-[#D47A4A]">2026년 9월, AX 핵심기술 특허 5건을 출원</b>했습니다.
         </p>
 
         {/* 5가지 기술영역 — 한 줄에 하나씩, 얇은 구분선으로만 나눈다(카드 반복 대신 밀도감) */}

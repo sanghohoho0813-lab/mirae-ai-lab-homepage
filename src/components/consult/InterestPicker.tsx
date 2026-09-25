@@ -135,7 +135,7 @@ export default function InterestPicker({ value, onChange, idPrefix = 'ip' }: Pro
             {CONSULT_INTEREST_UNSURE}
           </span>
           <span className="mt-0.5 block break-keep text-[0.76rem] font-medium leading-snug text-slate-500">
-            무엇이 필요한지는 상담에서 함께 찾아드립니다
+            필요한 건 상담에서 함께 찾아 드려요
           </span>
         </span>
       </button>

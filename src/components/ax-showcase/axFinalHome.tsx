@@ -9,7 +9,7 @@ import { AX_BUILD_PAYMENT } from '../../data/axPackages'
 
 /** Industry AX Preview 공통 설명 — 실제 고객사례가 아니라 Concept Prototype 임을 분명히 한다 */
 export const AX_PREVIEW_NOTE =
-  '업종별 업무를 가정해 미래AI랩의 AX 설계방식을 구현한 Concept Prototype입니다. 실제 구축 시 해당 기업의 업무와 프로세스에 맞춰 새롭게 설계합니다.'
+  '업종별 업무를 가정해 만든 예시 화면(Concept Prototype)입니다. 실제로 만들 때는 그 회사의 일하는 방식에 맞춰 새로 설계해요.'
 
 function ShowcaseShot({ s }: { s: AxPlatformSample }) {
   return (
@@ -42,7 +42,7 @@ export function AxScreenShowcase() {
         <div className="mx-auto max-w-4xl px-5 sm:px-6">
           <p className="text-center text-[1.1rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.2rem]">INDUSTRY AX PREVIEW</p>
           <h2 className="mt-3 break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-            말로 설명하면 복잡합니다.<br className="sm:hidden" /> 그래서 먼저 보여드릴게요.
+            말로 하면 복잡하죠.<br className="sm:hidden" /> 그래서 화면부터 보여 드릴게요.
           </h2>
         </div>
 
@@ -68,8 +68,8 @@ export function AxScreenShowcase() {
         <div className="mx-auto mt-12 max-w-[86rem] px-5 sm:mt-16 sm:px-6">
           <p className="break-keep text-center text-[1.5rem] font-black leading-snug text-white sm:text-[1.8rem]">직접 눌러보세요.</p>
           <p className="mx-auto mt-3 max-w-2xl break-keep text-center text-[1.08rem] leading-[1.7] text-slate-400 sm:text-[1.18rem]">
-            직원이 쓰는 <span className="font-bold text-[#D47A4A]">AX 화면</span>과 고객·거래처가 쓰는{' '}
-            <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 각각 열어볼 수 있습니다.
+            직원용 <span className="font-bold text-[#D47A4A]">AX 화면</span>과 고객·거래처용{' '}
+            <span className="font-bold text-[#D47A4A]">플랫폼 화면</span>을 따로 열어 볼 수 있어요.
           </p>
           <p className="mx-auto mt-2 max-w-2xl break-keep text-center text-[0.98rem] leading-[1.7] text-slate-500 sm:text-[1.05rem]">{AX_PREVIEW_NOTE}</p>
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
@@ -306,10 +306,10 @@ export function AxRealProjectsDeep() {
       <div className="mx-auto max-w-[86rem] px-5 py-14 sm:px-6 sm:py-20">
         <p className="text-center text-[1.1rem] font-black tracking-tight text-blue-600 sm:text-[1.2rem]">REAL CLIENT AX</p>
         <h2 className="mx-auto mt-3 max-w-3xl break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-slate-900 sm:text-[2.4rem]">
-          그리고 지금,<br className="sm:hidden" /> 실제 현장에서도 만들고 있습니다.
+          그리고 지금,<br className="sm:hidden" /> 실제 기업에서도 만들고 있어요.
         </h2>
         <p className="mx-auto mt-4 max-w-2xl break-keep text-center text-[1.15rem] leading-[1.7] text-slate-600 sm:text-[1.25rem]">
-          실제 기업의 업무와 데이터를 연결하며 운영 가능한 수준으로 고도화하고 있는 프로젝트들입니다. 고객사 보호를 위해 업종으로만 표기합니다.
+          실제 업무와 데이터를 이어, 현장에서 쓸 수 있는 수준까지 다듬고 있는 프로젝트예요. 고객사 보호를 위해 업종만 적었습니다.
         </p>
 
         {/* 대표 2건 — 깊은 아코디언 */}
@@ -324,7 +324,7 @@ export function AxRealProjectsDeep() {
           ))}
         </div>
         <p className="mx-auto mt-5 max-w-2xl break-keep text-center text-[0.98rem] leading-relaxed text-slate-400 sm:text-[1.05rem]">
-          업체명·실화면·내부 자료는 공개하지 않습니다. 펼쳐본 범위는 각 프로젝트에서 실제 구현했거나 고도화 범위로 정의된 것입니다.
+          업체명과 실제 화면, 내부 자료는 공개하지 않습니다. 펼친 목록은 실제로 구현했거나 고도화 범위로 정한 항목이에요.
         </p>
       </div>
     </section>

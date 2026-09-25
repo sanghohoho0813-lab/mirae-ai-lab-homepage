@@ -122,7 +122,7 @@ export default function AxStartPage() {
                 to={AX_DIAG_HREF}
                 className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto"
               >
-                3분 AX Fit 진단
+                3분 AX Fit 진단 받기
               </Link>
             </div>
           </div>

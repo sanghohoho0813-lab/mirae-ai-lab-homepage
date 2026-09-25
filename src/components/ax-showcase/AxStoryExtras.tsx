@@ -32,7 +32,7 @@ export function AxPolicySources() {
       <div className="rounded-2xl border border-[#E7EAEE] bg-white/92 p-5 shadow-[0_10px_30px_rgba(23,27,32,0.08)] backdrop-blur sm:p-7">
         <p className="text-[0.95rem] font-black tracking-[0.12em] text-[#A36A4B] sm:text-[1.0rem]">정책자료 원문 보기</p>
         <p className="mt-1.5 break-keep text-[1.08rem] font-black leading-snug text-[#171B20] sm:text-[1.22rem]">
-          위 내용은 아래 기관의 공식 자료를 요약한 것입니다.
+          위 내용은 아래 기관의 공식 자료를 요약한 거예요.
         </p>
         <ul className="mt-4 divide-y divide-[#E7EAEE]">
           {POLICY_SOURCES.map((s) => (
@@ -53,7 +53,7 @@ export function AxPolicySources() {
           ))}
         </ul>
         <p className="mt-4 break-keep text-[0.92rem] leading-relaxed text-[#6B7680] sm:text-[0.98rem]">
-          정책 내용은 각 기관의 공식 발표를 요약한 것으로, 미래AI랩의 실적이나 고객사 성과와는 관계가 없습니다. 지원·선정 여부는 각 기관의 심사 기준과 절차에 따라 결정됩니다.
+          기관 발표를 요약한 것으로, 미래AI랩의 실적이나 고객사 성과가 아닙니다. 지원·선정 여부는 각 기관의 심사로 결정됩니다.
         </p>
       </div>
     </div>
@@ -97,7 +97,7 @@ export function AxJudgeVideo() {
             <a href={JUDGE_VIDEO.channelUrl} target="_blank" rel="noopener noreferrer" className="font-bold text-[#E8B89A] underline underline-offset-4 hover:text-white">
               「{JUDGE_VIDEO.channel}」
             </a>
-            . 미래AI랩과 관계없는 제3자의 공개 영상이며, 심사 현장의 관점을 참고하기 위해 인용합니다. 영상의 내용과 저작권은 해당 채널에 있습니다.
+            . 미래AI랩과 관계없는 제3자의 공개 영상으로, 심사 현장의 시각을 참고하려고 소개해요. 내용과 저작권은 해당 채널에 있습니다.
           </p>
         </figcaption>
       </div>

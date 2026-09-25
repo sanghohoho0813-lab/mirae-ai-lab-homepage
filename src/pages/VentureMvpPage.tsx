@@ -147,7 +147,7 @@ export default function VentureMvpPage() {
               <p className="text-[1.02rem] font-bold text-[#E8B89A] sm:text-[1.1rem]">우리 회사도 가능할까요?</p>
               <h2 className="mt-2.5 text-[1.65rem] font-black leading-tight tracking-tight sm:text-[2.1rem]">대표님 회사를 알려주세요.</h2>
               <p className="mx-auto mt-3.5 max-w-md break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
-                회사명 · 업종 · 업력 등 간단한 정보만 남겨주시면<br className="hidden sm:block" /> 현재 사업을 기준으로 살펴보겠습니다.
+                회사명, 업종, 업력 같은 간단한 정보만 남겨 주세요.<br className="hidden sm:block" /> 지금 하는 사업을 기준으로 살펴봐 드릴게요.
               </p>
 
               {/* Primary 하나만 압도적으로 — Secondary 는 아래 텍스트 링크로 위계를 낮춘다 */}
@@ -199,7 +199,7 @@ export default function VentureMvpPage() {
         source={CONSULT_SOURCE}
         presetService={PRESET_SERVICE}
         heading="대표님 회사를 알려주세요."
-        intro="현재 사업을 바탕으로 어떤 기술사업과 MVP를 만들 수 있을지 상담에서 함께 살펴보겠습니다."
+        intro="지금 하는 사업에서 어떤 기술사업과 MVP를 만들 수 있을지, 상담에서 함께 살펴봐요."
         submitLabel="상담 신청하기"
         showContactMethod
         showCompanyFields

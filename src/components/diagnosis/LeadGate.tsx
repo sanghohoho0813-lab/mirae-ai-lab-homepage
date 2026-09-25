@@ -70,10 +70,10 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
     <div className="animate-rise-in mx-auto mt-8 w-full max-w-[640px] rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5 sm:p-8">
       <p className="text-sm font-black uppercase tracking-widest text-blue-600">AX Fit 상담 신청</p>
       <h2 className="mt-2 text-xl font-black leading-[1.3] tracking-tight text-slate-900 sm:text-2xl">
-        진단 결과를 바탕으로<br className="sm:hidden" /> 우리 회사 AX 방향을 함께 확인해보세요
+        진단 결과를 보고,<br className="sm:hidden" /> AX 방향을 함께 잡아 드려요
       </h2>
       <p className="mt-2.5 text-[0.95rem] leading-relaxed text-slate-600">
-        방금 답하신 10개 문항과 AX Fit 결과가 함께 전달됩니다. 담당자가 확인한 뒤 연락드립니다.
+        답하신 10개 질문과 AX Fit 결과가 함께 전달돼요. 담당자가 확인하고 연락드립니다.
       </p>
 
       <div className="mt-6 space-y-4">
@@ -109,7 +109,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         {/* 회사 정보 — 일반 상담 신청과 같은 항목. 모두 선택이라 부담 없이 넘어갈 수 있다. */}
         <div className="rounded-2xl border border-slate-200 p-4">
           <p className={labelCls}>회사 정보 (선택)</p>
-          <p className="mt-0.5 text-xs text-slate-500">알려주시면 상담 전에 맞는 방향을 미리 준비해 둡니다.</p>
+          <p className="mt-0.5 text-xs text-slate-500">알려 주시면 상담 전에 맞는 방향을 미리 준비해 둘게요.</p>
           <div className="mt-3 space-y-3">
             {CONSULT_COMPANY_FIELDS.map((f) => (
               <div key={f.key}>
@@ -209,7 +209,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
           <div role="alert" className="rounded-xl bg-amber-50 px-4 py-3.5 text-amber-900 ring-1 ring-inset ring-amber-300">
             <p className="break-keep text-[0.95rem] font-bold leading-snug">{errorMessage}</p>
             <p className="mt-1 break-keep text-[0.86rem] leading-relaxed text-amber-800">
-              작성하신 답변은 안전하게 보관되어 있고, 입력하신 연락처도 그대로 남아 있어요.
+              작성하신 답변과 연락처는 그대로 남아 있어요. 잠시 후 다시 눌러 주세요.
             </p>
             <a
               href={consultLinks.kakaoChat}
@@ -230,7 +230,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         >
           {submitting ? '접수하고 있어요…' : 'AX Fit 상담 신청하기'}
         </button>
-        <p className="text-center text-sm font-medium text-slate-400">연락처는 상담 목적으로만 사용합니다. 답하신 진단 내용이 함께 전달됩니다.</p>
+        <p className="text-center text-sm font-medium text-slate-400">연락처는 상담 목적으로만 사용합니다. 진단 답변도 함께 전달돼요.</p>
       </div>
     </div>
   )

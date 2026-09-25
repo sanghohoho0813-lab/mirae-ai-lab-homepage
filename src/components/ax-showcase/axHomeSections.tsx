@@ -28,24 +28,24 @@ export function AxHeroV2() {
       <div className={`relative flex min-h-[calc(100svh-53px)] sm:min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-24 pt-12 max-[359px]:pb-20 max-[359px]:pt-7 [@media(max-height:700px)]:pb-20 [@media(max-height:700px)]:pt-7 sm:px-6 sm:pb-12 sm:pt-14`}>
         {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 (기준 대비 1.1배) */}
         <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.99rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[1.078rem] sm:px-4 sm:text-[1.155rem]">
-          경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤형 실행 AX
+          경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤 AX
         </span>
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
         <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-[359px]:mt-6 max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] max-[359px]:text-[2.0rem] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
-          {/* PC 에서도 같은 자리에서 끊어 "않습니다."만 남는 줄이 생기지 않게 한다 */}
-          AI를 도입하는 데서<br /> 끝내지 않습니다.<br />
-          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">회사를 한 단계 더 성장</span>시킵니다.
+          {/* PC 에서도 같은 자리에서 끊어 "않아요."만 남는 줄이 생기지 않게 한다 */}
+          AI 도입으로<br /> 끝내지 않아요.<br />
+          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">회사를 한 단계 더</span> 키웁니다.
         </h1>
         {/* 두 문단 — 문단마다 흰 글자(구체적인 대상) 하나와 브랜드색(남는 결과) 하나만 집어,
             읽는 눈이 어디에 멈출지 분명하게 한다. 줄간격은 1.85 로 넉넉히 둔다. */}
         <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-[359px]:mt-5 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-8 sm:text-[1.44rem]">
-          <b className="font-bold text-[#FAFAF8]">엑셀·카톡·ERP</b>에 흩어진 업무와 고객접점을 AX로 연결하고,<br className="hidden sm:block" />{' '}
-          실제 사용과 성과를 <b className="font-bold text-[#E8B89A]">데이터로 남깁니다</b>.
+          <b className="font-bold text-[#FAFAF8]">엑셀, 카톡, ERP</b>에 흩어진 일을 한 화면으로 모아요.<br className="hidden sm:block" />{' '}
+          누가 무엇을 했는지, 성과까지 <b className="font-bold text-[#E8B89A]">데이터로 남습니다</b>.
         </p>
         <p style={{ animationDelay: '0.46s' }} className="hero-anim mt-5 max-[359px]:mt-4 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-6 sm:text-[1.44rem]">
-          그 변화를 <b className="font-bold text-[#E8B89A]">정책자금 · 정부지원사업 · 투자</b>에서<br className="hidden sm:block" />{' '}
-          더 강하게 설명할 수 있는 <b className="font-bold text-[#FAFAF8]">회사의 성장 증거</b>로 만듭니다.
+          이 기록은 <b className="font-bold text-[#E8B89A]">정책자금, 정부지원사업, 투자</b>에서<br className="hidden sm:block" />{' '}
+          회사를 설명하는 <b className="font-bold text-[#FAFAF8]">성장 증거</b>가 돼요.
         </p>
       </div>
 

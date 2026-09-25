@@ -1232,7 +1232,7 @@ export const AX_V2_HOME_HIGHLIGHT = ['manufacturing', 'wholesale-logistics', 'ed
 
 /** 공통 정직성 고지 */
 export const AX_V2_DISCLAIMER =
-  '업종별 업무를 가정해 미래AI랩의 AX 설계방식을 구현한 Concept Prototype입니다. 실제 구축 시 해당 기업의 업무와 프로세스에 맞춰 새롭게 설계합니다. 모든 화면은 구축 가능 범위를 보여주기 위한 가상 업종 기반 프론트엔드 프로토타입 예시입니다. 실제 고객사 운영 화면이 아니며, 화면 속 상호·수치는 시연용 가상 데이터입니다. 실제 구축 범위는 기업 인터뷰 후 결정됩니다.'
+  '업종별 업무를 가정해 만든 예시 화면(Concept Prototype)입니다. 실제 고객사 운영 화면이 아니며, 화면 속 상호와 수치는 시연용 가상 데이터예요. 실제로 만들 범위는 기업 인터뷰 후 그 회사에 맞춰 새로 정합니다.'
 
 /** "여기서 끝나지 않습니다" 공통 전환 흐름 */
 export const AX_V2_EXPANSION_FLOW = [

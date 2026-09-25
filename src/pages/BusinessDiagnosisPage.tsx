@@ -357,7 +357,7 @@ export default function BusinessDiagnosisPage() {
       window.scrollTo(0, 0)
       setSubmitDone(true)
     } catch (e) {
-      setSubmitError(e instanceof Error ? e.message : '저장 중 문제가 발생했습니다.')
+      setSubmitError(e instanceof Error ? e.message : '신청을 보내지 못했어요. 잠시 후 다시 눌러 주세요.')
     } finally {
       setSubmitting(false)
     }

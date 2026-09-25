@@ -140,21 +140,21 @@ export default function BusinessAxGuidePage() {
         <section id="cta" className="border-t border-[#343B44] bg-[#171B20]">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
             <h2 className="break-keep text-[1.7rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.1rem]">
-              우리 회사는 지금 무엇을 보여줘야<br className="hidden sm:block" /> 다음 단계로 갈 수 있을까요?
+              다음 단계로 가려면,<br className="hidden sm:block" /> 지금 무엇을 보여줘야 할까요?
             </h2>
             <p className="mx-auto mt-4 max-w-xl break-keep text-[1.18rem] leading-[1.7] text-slate-300 sm:text-[1.26rem]">
-              무엇을 개발할지 미리 고르지 않으셔도 됩니다. 지금 회사의 사업, 고객, 업무, 데이터, 성장 계획을 보고 무엇부터 하는 게 가장 효과적인지 함께 판단해드립니다.
+              그건 저희가 함께 찾아 드려요. 무엇을 만들지 미리 정하지 않으셔도 됩니다. 사업과 고객, 업무, 성장 계획을 보고 무엇부터 할지 같이 정해요.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to={AX_DIAG_HREF} className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto">
-                3분 기업 성장 · AX Fit 진단
+                3분 AX Fit 진단 받기
               </Link>
               <a href="#portfolio" className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
-                실제 AX 구축 화면 보기
+                AX 화면 직접 보기
               </a>
             </div>
             <button type="button" onClick={() => setConsultOpen(true)} className="mt-3 inline-flex min-h-11 items-center px-4 text-[1.05rem] font-semibold text-slate-400 underline underline-offset-4 transition-colors hover:text-white">
-              상담 신청
+              상담 신청하기
             </button>
           </div>
         </section>

@@ -70,15 +70,15 @@ export default function SubmitDoneOverlay({ open, onClose, consultationConsented
         </div>
 
         <h2 id="submit-done-title" className="mt-5 text-[1.45rem] font-black leading-tight tracking-tight text-slate-900 sm:text-2xl">
-          상담 신청이 완료되었습니다
+          상담 신청이 접수됐어요
         </h2>
         <p className="mx-auto mt-3 max-w-[20rem] break-keep text-[1rem] leading-relaxed text-slate-600">
           {consultationConsented
-            ? '담당 컨설턴트가 순차적으로 연락드리겠습니다.'
-            : '진단 결과가 저장되었습니다. 담당 컨설턴트가 순차적으로 연락드리겠습니다.'}
+            ? '담당 컨설턴트가 차례로 연락드리겠습니다.'
+            : '진단 결과도 저장했어요. 담당 컨설턴트가 차례로 연락드리겠습니다.'}
         </p>
         <p className="mt-2 text-[0.85rem] leading-relaxed text-slate-400">
-          답하신 10개 문항과 AX Fit 결과가 함께 전달되었습니다.
+          답하신 10개 질문과 AX Fit 결과도 함께 전달했어요.
         </p>
 
         <button
@@ -89,7 +89,7 @@ export default function SubmitDoneOverlay({ open, onClose, consultationConsented
         >
           확인
         </button>
-        <p className="mt-2.5 text-xs text-slate-400">닫으면 진단 결과를 다시 보거나 PDF로 저장할 수 있습니다.</p>
+        <p className="mt-2.5 text-xs text-slate-400">닫으면 결과를 다시 보거나 PDF로 저장할 수 있어요.</p>
       </div>
     </div>
   )
