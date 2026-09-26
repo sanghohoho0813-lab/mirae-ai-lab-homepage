@@ -104,7 +104,7 @@ function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; 
         <p className={`${eyebrow} text-slate-400`}>대표님이 답하신 내용</p>
         <h2 className={h2Cls}>지금은 크게 걸리는 곳이 없어요.</h2>
         <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-[1rem] leading-relaxed text-slate-600">
-          지금 방식이 잘 맞고 있다는 뜻입니다. 회사가 커질 때 다시 확인해 보세요.
+          지금 방식이 잘 맞고 있다는 뜻이에요. 회사가 커지면 그때 다시 해 보세요.
         </p>
       </section>
     )
@@ -226,7 +226,7 @@ function ClosingConsultCTA({ onConsult, hasProblems }: { onConsult: () => void; 
         >
           AX Fit 상담 신청하기 <span aria-hidden>→</span>
         </button>
-        <p className="mt-2.5 text-[0.82rem] text-slate-400">상담은 무료예요. 진행 여부는 상담 후에 정하시면 됩니다.</p>
+        <p className="mt-2.5 text-[0.82rem] text-slate-400">상담은 무료고, 진행 여부는 상담 뒤에 정하시면 돼요.</p>
       </div>
     </section>
   )
@@ -354,7 +354,7 @@ export default function AxFitReportView({
         <section className="mt-9 rounded-2xl border border-slate-200 bg-white px-4 py-4 print:hidden sm:px-5">
           <p className="text-[1rem] font-black text-slate-900">함께 검토하고 싶은 분야가 있으신가요? (선택)</p>
           <p className="mt-1 text-[0.85rem] leading-snug text-slate-500">
-            AX를 하며 쌓인 데이터와 기술, 실제 성과는 다른 분야에서도 근거가 될 수 있어요. 고르신 분야는 상담 때 함께 봅니다.
+            AX를 하며 쌓인 데이터와 성과는 다른 분야에서도 근거가 될 수 있어요. 고르신 분야는 상담 때 같이 봐요.
           </p>
           <div className="mt-3">
             <InterestPicker idPrefix="fit" value={growthInterests} onChange={onGrowthInterestsChange} />
@@ -390,7 +390,7 @@ export default function AxFitReportView({
               <p className="text-sm font-black text-amber-900">인쇄 창이 열리지 않았어요</p>
               <p className="mt-1.5 text-sm leading-relaxed text-amber-900">
                 {isInAppBrowser()
-                  ? '카카오톡이나 네이버 앱 안에서는 인쇄가 안 돼요. 아래 주소를 복사해 크롬이나 사파리에서 열면 PDF로 저장할 수 있습니다.'
+                  ? '카카오톡이나 네이버 앱 안에서는 인쇄가 안 돼요. 아래 주소를 복사해 크롬이나 사파리에서 열면 PDF로 저장할 수 있어요.'
                   : '이 브라우저에서는 인쇄 창을 열 수 없어요. 아래 방법으로 저장해 주세요.'}
               </p>
               <ul className="mt-2.5 space-y-1 text-sm leading-relaxed text-amber-900">

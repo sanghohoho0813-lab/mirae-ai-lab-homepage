@@ -35,19 +35,19 @@ export function AxHeroV2() {
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
         <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-[359px]:mt-6 max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] max-[359px]:text-[2.0rem] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
-          {/* PC 에서도 같은 자리에서 끊어 "않아요."만 남는 줄이 생기지 않게 한다 */}
-          AI 도입으로<br /> 끝내지 않아요.<br />
-          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">회사를 한 단계 더</span> 키웁니다.
+          {/* PC 에서도 같은 자리에서 끊어 두 줄로 읽히게 한다 */}
+          대표님 머릿속에만 있던 일,<br />
+          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">이제 회사가 기억합니다</span>.
         </h1>
         {/* 두 문단 — 문단마다 흰 글자(구체적인 대상) 하나와 브랜드색(남는 결과) 하나만 집어,
             읽는 눈이 어디에 멈출지 분명하게 한다. 줄간격은 1.85 로 넉넉히 둔다. */}
         <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-[359px]:mt-5 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-8 sm:text-[1.44rem]">
-          <b className="font-bold text-[#FAFAF8]">엑셀, 카톡, ERP</b>에 흩어진 일을 한 화면으로 모아요.<br className="hidden sm:block" />{' '}
-          누가 무엇을 했는지, 성과까지 <b className="font-bold text-[#E8B89A]">데이터로 남습니다</b>.
+          <b className="font-bold text-[#FAFAF8]">엑셀, 카톡, ERP</b>에 흩어진 일을 한 화면에 모아요.<br className="hidden sm:block" />{' '}
+          누가 언제 뭘 했는지 남고, <b className="font-bold text-[#E8B89A]">먼저 챙길 일은 AI가 알려 줘요</b>.
         </p>
         <p style={{ animationDelay: '0.46s' }} className="hero-anim mt-5 max-[359px]:mt-4 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-6 sm:text-[1.44rem]">
-          이 기록은 <b className="font-bold text-[#E8B89A]">정책자금, 정부지원사업, 투자</b>에서<br className="hidden sm:block" />{' '}
-          회사를 설명하는 <b className="font-bold text-[#FAFAF8]">성장 증거</b>가 돼요.
+          <b className="font-bold text-[#E8B89A]">정책자금, 정부지원사업, 투자</b> 심사에서도<br className="hidden sm:block" />{' '}
+          ‘이 회사, 진짜 이렇게 일하네’ 하고 <b className="font-bold text-[#FAFAF8]">화면으로 확인</b>할 수 있어요.
         </p>
       </div>
 

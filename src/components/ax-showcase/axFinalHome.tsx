@@ -9,7 +9,7 @@ import { AX_BUILD_PAYMENT } from '../../data/axPackages'
 
 /** Industry AX Preview 공통 설명 — 실제 고객사례가 아니라 Concept Prototype 임을 분명히 한다 */
 export const AX_PREVIEW_NOTE =
-  '업종별 업무를 가정해 만든 예시 화면(Concept Prototype)입니다. 실제로 만들 때는 그 회사의 일하는 방식에 맞춰 새로 설계해요.'
+  '업종별 업무를 가정해 만든 예시 화면(Concept Prototype)입니다. 실제로는 회사마다 일하는 방식에 맞춰 새로 설계합니다.'
 
 function ShowcaseShot({ s }: { s: AxPlatformSample }) {
   return (
@@ -42,7 +42,7 @@ export function AxScreenShowcase() {
         <div className="mx-auto max-w-4xl px-5 sm:px-6">
           <p className="text-center text-[1.1rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.2rem]">INDUSTRY AX PREVIEW</p>
           <h2 className="mt-3 break-keep text-center text-[1.87rem] font-black leading-[1.35] tracking-[-0.015em] text-white sm:text-[2.4rem]">
-            말로 하면 복잡하죠.<br className="sm:hidden" /> 그래서 화면부터 보여 드릴게요.
+            설명보다 화면 한 번<br className="sm:hidden" /> 보시는 게 빨라요.
           </h2>
         </div>
 
@@ -309,7 +309,7 @@ export function AxRealProjectsDeep() {
           그리고 지금,<br className="sm:hidden" /> 실제 기업에서도 만들고 있어요.
         </h2>
         <p className="mx-auto mt-4 max-w-2xl break-keep text-center text-[1.15rem] leading-[1.7] text-slate-600 sm:text-[1.25rem]">
-          실제 업무와 데이터를 이어, 현장에서 쓸 수 있는 수준까지 다듬고 있는 프로젝트예요. 고객사 보호를 위해 업종만 적었습니다.
+          실제 회사의 업무와 데이터로, 현장에서 쓸 수 있을 때까지 다듬는 중이에요. 회사 이름 대신 업종만 적었어요.
         </p>
 
         {/* 대표 2건 — 깊은 아코디언 */}
@@ -324,7 +324,7 @@ export function AxRealProjectsDeep() {
           ))}
         </div>
         <p className="mx-auto mt-5 max-w-2xl break-keep text-center text-[0.98rem] leading-relaxed text-slate-400 sm:text-[1.05rem]">
-          업체명과 실제 화면, 내부 자료는 공개하지 않습니다. 펼친 목록은 실제로 구현했거나 고도화 범위로 정한 항목이에요.
+          업체명과 실제 화면, 내부 자료는 공개하지 않습니다. 펼친 목록은 실제로 구현했거나 고도화 범위로 정한 항목입니다.
         </p>
       </div>
     </section>

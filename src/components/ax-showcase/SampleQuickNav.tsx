@@ -33,7 +33,7 @@ const GROUPS: Group[] = [
   {
     id: 'mvp-refs',
     title: '아이디어 MVP Preview',
-    desc: '머릿속 아이디어를 실제로 눌러 보는 서비스로 만든 초기 레퍼런스예요.',
+    desc: '아이디어를 실제로 써 볼 수 있는 첫 버전으로 만든 예시예요.',
     cta: 'MVP 화면 보기',
     card: 'border-[#A78BFA]/35 bg-gradient-to-br from-[#241F3D] to-[#2E2652] hover:border-[#C4B5FD]/60 hover:from-[#2A2447] hover:to-[#372D61]',
     accent: 'text-[#C4B5FD]',

@@ -112,7 +112,7 @@ export default function ConsultModal({
   source,
   contextRows = NO_CONTEXT_ROWS,
   heading = '상담 신청',
-  intro = '연락처를 남겨 주시면 담당자가 빠르게 연락드려요. 고르신 상품과 선택 내용도 그대로 함께 전달됩니다.',
+  intro = '연락처를 남겨 주시면 담당자가 빠르게 연락드려요. 고르신 상품과 선택 내용도 같이 전달돼요.',
   submitLabel = '상담 신청하기',
   topicGroups = NO_TOPIC_GROUPS,
   preselectProduct,
@@ -499,9 +499,9 @@ export default function ConsultModal({
   const stepTitles = isAx ? ['기업정보', '업무·AX 적합성', '참여조건·최종확인'] : ['기업정보', '자금계획', '최종확인']
   const stepHeadings = ['회사 기본 정보', isAx ? '지금 업무와 AX 적합성' : '자금 계획과 지금 상황', '참여 조건과 관심 서비스']
   const stepIntros = [
-    '먼저 회사의 기본 정보를 알려 주세요.',
-    isAx ? '지금 업무에 AX가 맞는지 확인해요.' : '자금 계획과 지금 상황을 알려 주세요.',
-    '마지막으로 참여 조건과 관심 서비스를 확인해 주세요.',
+    '성함과 연락처만 꼭 적어 주세요. 나머지는 선택이에요.',
+    isAx ? '자금 계획과 지금 업무를 아는 만큼만 알려 주세요.' : '자금 계획과 지금 상황을 아는 만큼만 알려 주세요.',
+    '마지막이에요. 입력하신 내용을 확인하고 제출해 주세요.',
   ]
 
   // ── 재사용 필드 블록 ─────────────────────────────────────────────
@@ -543,7 +543,7 @@ export default function ConsultModal({
       {isAx && (
         <>
           <p className="mt-2.5 rounded-lg bg-white px-3 py-2 text-[0.78rem] leading-relaxed text-slate-500 ring-1 ring-blue-100">
-            먼저 컨설팅비 100만원으로 기업 분석, 자금 전략, AX 실행 설계를 진행해요. 본개발비는 자금을 조달한 뒤 고르신 구현 수준에 따라 정산합니다. 조달 결과와 금액은 기관 심사에 따라 달라집니다. 상담 접수만으로는 비용이 들지 않고, 유료 컨설팅은 적합성 검토 후 별도 계약과 결제로 시작합니다.
+            컨설팅비 100만원으로 기업 분석, 자금 전략, AX 실행 설계를 먼저 진행합니다. 본개발비는 자금을 조달한 뒤 고르신 구현 수준에 맞춰 정산합니다. 조달 결과와 금액은 기관 심사에 따라 달라집니다. 상담 접수만으로는 비용이 들지 않으며, 유료 컨설팅은 적합성 검토 후 별도 계약과 결제로 시작합니다.
           </p>
           <div className="mt-3">
             <p className="mb-1.5 text-[0.82rem] font-semibold text-slate-500">희망 구현단계 <span className="font-normal text-slate-400">(선택 · 진단 후 정해도 돼요)</span></p>
@@ -685,7 +685,7 @@ export default function ConsultModal({
   const axWorkBlock = isAx && (
     <div className="rounded-2xl border-2 border-blue-200 bg-blue-50/40 p-4">
       <p className="text-sm font-bold text-slate-900">지금 업무와 AX 적합성</p>
-      <p className="mt-1 text-[0.8rem] leading-snug text-slate-500">지금 가장 많이 반복되는 업무를 골라 주세요. 적합성 검토에 씁니다.</p>
+      <p className="mt-1 text-[0.8rem] leading-snug text-slate-500">지금 가장 많이 반복되는 업무를 골라 주세요. AX가 맞는지 볼 때 써요.</p>
       <div className="mt-3 space-y-3.5">
         <div>
           <Chips label={AX_FORM.tasks.label} options={AX_FORM.tasks.options} values={axTasks} onToggle={toggleIn(setAxTasks)} />
@@ -736,7 +736,7 @@ export default function ConsultModal({
           </label>
           {axConsentError && <p role="alert" className="mt-1.5 text-[0.78rem] font-bold text-rose-600">AX 성장형 참여에는 위 2가지 동의가 필요합니다.</p>}
           <p className="mt-2 text-[0.75rem] leading-snug text-slate-400">
-            좋은 후기를 요구하지 않아요. 실제로 써 본 경험과 개선 의견을 솔직하게 알려 주세요.
+            좋은 말만 해 달라고 하지 않아요. 써 보신 그대로 솔직하게 알려 주세요.
           </p>
         </div>
 
@@ -768,7 +768,7 @@ export default function ConsultModal({
       <p className={labelClass}>
         {presetService ? '추가로 관심 있는 항목' : '함께 검토하고 싶은 분야'} <span className="font-normal text-slate-400">(선택)</span>
       </p>
-      {presetService && <p className="-mt-0.5 mb-2 text-[0.8rem] leading-snug text-slate-400">여러 개 골라도 되고, 안 골라도 신청됩니다.</p>}
+      {presetService && <p className="-mt-0.5 mb-2 text-[0.8rem] leading-snug text-slate-400">여러 개 골라도 되고, 안 골라도 신청돼요.</p>}
       <div className="mt-1.5">
         <InterestPicker idPrefix="cm" value={areas} onChange={setAreas} />
       </div>
@@ -947,7 +947,7 @@ export default function ConsultModal({
   const errorBlock = status === 'error' && (
     <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3.5 text-amber-900">
       <p className="break-keep text-[0.95rem] font-bold leading-snug">{serverMessage || '보내지 못했어요. 잠시 후 다시 눌러 주세요.'}</p>
-      <p className="mt-1 break-keep text-[0.86rem] leading-relaxed text-amber-800">입력하신 내용은 그대로 남아 있어요. 급하시면 아래로 바로 연결하세요.</p>
+      <p className="mt-1 break-keep text-[0.86rem] leading-relaxed text-amber-800">입력하신 내용은 그대로 남아 있어요. 급하시면 카카오톡이나 이메일로 바로 보내 주세요.</p>
       <div className="mt-2.5 flex flex-wrap gap-2">
         <a
           href={consultLinks.kakaoChat}
@@ -1053,7 +1053,7 @@ export default function ConsultModal({
                 </svg>
               </div>
               <p className="mt-4 text-lg font-black text-slate-900">상담 신청이 접수됐어요</p>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">담당 컨설턴트가 차례로 연락드리겠습니다.</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">담당 컨설턴트가 차례로 연락드릴게요.</p>
               <button
                 type="button"
                 onClick={requestClose}

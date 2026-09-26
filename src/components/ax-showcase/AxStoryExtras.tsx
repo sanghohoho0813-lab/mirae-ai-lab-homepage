@@ -97,7 +97,7 @@ export function AxJudgeVideo() {
             <a href={JUDGE_VIDEO.channelUrl} target="_blank" rel="noopener noreferrer" className="font-bold text-[#E8B89A] underline underline-offset-4 hover:text-white">
               「{JUDGE_VIDEO.channel}」
             </a>
-            . 미래AI랩과 관계없는 제3자의 공개 영상으로, 심사 현장의 시각을 참고하려고 소개해요. 내용과 저작권은 해당 채널에 있습니다.
+            . 미래AI랩과 관계없는 제3자의 공개 영상으로, 심사 현장 이야기를 참고하시라고 소개합니다. 내용과 저작권은 해당 채널에 있습니다.
           </p>
         </figcaption>
       </div>

@@ -74,11 +74,11 @@ export default function SubmitDoneOverlay({ open, onClose, consultationConsented
         </h2>
         <p className="mx-auto mt-3 max-w-[20rem] break-keep text-[1rem] leading-relaxed text-slate-600">
           {consultationConsented
-            ? '담당 컨설턴트가 차례로 연락드리겠습니다.'
-            : '진단 결과도 저장했어요. 담당 컨설턴트가 차례로 연락드리겠습니다.'}
+            ? '담당 컨설턴트가 차례로 연락드릴게요.'
+            : '진단 결과도 저장했어요. 담당 컨설턴트가 차례로 연락드릴게요.'}
         </p>
         <p className="mt-2 text-[0.85rem] leading-relaxed text-slate-400">
-          답하신 10개 질문과 AX Fit 결과도 함께 전달했어요.
+          답하신 10개 질문과 결과도 담당자에게 같이 전달됐어요.
         </p>
 
         <button

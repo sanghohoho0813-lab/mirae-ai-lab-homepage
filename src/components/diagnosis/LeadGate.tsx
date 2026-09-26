@@ -70,10 +70,10 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
     <div className="animate-rise-in mx-auto mt-8 w-full max-w-[640px] rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5 sm:p-8">
       <p className="text-sm font-black uppercase tracking-widest text-blue-600">AX Fit 상담 신청</p>
       <h2 className="mt-2 text-xl font-black leading-[1.3] tracking-tight text-slate-900 sm:text-2xl">
-        진단 결과를 보고,<br className="sm:hidden" /> AX 방향을 함께 잡아 드려요
+        진단 결과를 보고,<br className="sm:hidden" /> 어디부터 손댈지 같이 정해 드려요
       </h2>
       <p className="mt-2.5 text-[0.95rem] leading-relaxed text-slate-600">
-        답하신 10개 질문과 AX Fit 결과가 함께 전달돼요. 담당자가 확인하고 연락드립니다.
+        답하신 10개 질문과 결과가 담당자에게 같이 넘어가요. 확인한 뒤 연락드릴게요.
       </p>
 
       <div className="mt-6 space-y-4">
@@ -109,7 +109,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         {/* 회사 정보 — 일반 상담 신청과 같은 항목. 모두 선택이라 부담 없이 넘어갈 수 있다. */}
         <div className="rounded-2xl border border-slate-200 p-4">
           <p className={labelCls}>회사 정보 (선택)</p>
-          <p className="mt-0.5 text-xs text-slate-500">알려 주시면 상담 전에 맞는 방향을 미리 준비해 둘게요.</p>
+          <p className="mt-0.5 text-xs text-slate-500">알려 주시면 상담 전에 미리 살펴보고 연락드려요.</p>
           <div className="mt-3 space-y-3">
             {CONSULT_COMPANY_FIELDS.map((f) => (
               <div key={f.key}>
@@ -187,7 +187,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
               )}
             </span>
           </label>
-          {touched && !privacyOk && <p className="text-xs font-semibold text-red-500">상담 신청을 위해 개인정보 수집·이용 동의가 필요합니다.</p>}
+          {touched && !privacyOk && <p className="text-xs font-semibold text-red-500">상담을 신청하려면 개인정보 수집·이용에 동의해 주세요.</p>}
           <label className="flex cursor-pointer items-start gap-2.5">
             <input type="checkbox" checked={consultOk} onChange={(e) => setConsultOk(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600" />
             <span className="min-w-0">
@@ -230,7 +230,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         >
           {submitting ? '접수하고 있어요…' : 'AX Fit 상담 신청하기'}
         </button>
-        <p className="text-center text-sm font-medium text-slate-400">연락처는 상담 목적으로만 사용합니다. 진단 답변도 함께 전달돼요.</p>
+        <p className="text-center text-sm font-medium text-slate-400">연락처는 상담 목적으로만 사용합니다.</p>
       </div>
     </div>
   )

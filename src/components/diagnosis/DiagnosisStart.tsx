@@ -24,7 +24,7 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
       </p>
       <p className="animate-rise-in mt-1.5 max-w-lg break-keep text-base leading-relaxed text-slate-600 [animation-delay:150ms] sm:text-lg">
         지금 일하는 방식을 보고,<br className="sm:hidden" />{' '}
-        <b className="font-bold text-slate-900">정리가 먼저인지, 작게 시작할지, 전면 구축이 맞는지</b> 가려 드립니다.
+        <b className="font-bold text-slate-900">어디서부터 시작하면 될지</b> 알려 드려요.
       </p>
 
       {/* 결과 등급 4단계 미리보기 — 폰에서는 2×2 로 접어(설명 생략) 시작 버튼이 첫 화면 안에 들어오게 한다 */}

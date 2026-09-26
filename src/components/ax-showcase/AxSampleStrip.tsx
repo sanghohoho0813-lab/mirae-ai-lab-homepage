@@ -158,7 +158,7 @@ export default function AxSampleStrip() {
       <Row label="업종별 AX와 고객 플랫폼" count={axItems.length} items={axItems} dir={1} />
       <Row label="아이디어 MVP(먼저 써 보는 시험판)" count={mvpItems.length} items={mvpItems} dir={-1} />
       <p className="px-5 text-[0.82rem] leading-relaxed text-slate-500 sm:px-6 sm:text-[0.9rem]">
-        누르면 실제 화면이 열려요. 모두 미래AI랩이 직접 만든 자체 레퍼런스이고, 화면 속 숫자는 가상의 시연 데이터입니다.
+        누르면 실제 화면이 열려요. 모두 미래AI랩이 직접 만든 자체 레퍼런스이고, 화면 속 숫자는 시연용 가상 데이터예요.
       </p>
     </div>
   )

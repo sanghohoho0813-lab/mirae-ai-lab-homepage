@@ -143,7 +143,7 @@ export default function BusinessAxGuidePage() {
               다음 단계로 가려면,<br className="hidden sm:block" /> 지금 무엇을 보여줘야 할까요?
             </h2>
             <p className="mx-auto mt-4 max-w-xl break-keep text-[1.18rem] leading-[1.7] text-slate-300 sm:text-[1.26rem]">
-              그건 저희가 함께 찾아 드려요. 무엇을 만들지 미리 정하지 않으셔도 됩니다. 사업과 고객, 업무, 성장 계획을 보고 무엇부터 할지 같이 정해요.
+              무엇을 만들지 미리 정하지 않으셔도 돼요. 지금 사업과 고객, 일하는 방식을 보고 무엇부터 할지 같이 정해요.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to={AX_DIAG_HREF} className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto">
