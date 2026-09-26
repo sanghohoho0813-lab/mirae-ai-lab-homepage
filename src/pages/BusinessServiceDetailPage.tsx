@@ -398,11 +398,11 @@ export default function BusinessServiceDetailPage() {
       {/* ── 섹션1: 혜택 — 정리하고 나면, 회사는 이렇게 유리해집니다 ── */}
       <section className={`bg-slate-50 ${band}`}>
         <div className={inner}>
-          <SectionTitle chip="💡 그래서 뭐가 좋아지나요?" tone={CHIP.emerald}>
+          <SectionTitle chip="💡 정리하고 나면" tone={CHIP.emerald}>
             회사가 이렇게<br /><span className={accentText}>유리해져요</span>
           </SectionTitle>
           <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
-            제도 설명보다, 경영에서 실제로 달라지는 점부터 보여 드릴게요.
+            제도 설명보다 회사에서 실제로 달라지는 것부터 볼게요.
           </p>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {content.benefits.map((b, i) => (
@@ -426,11 +426,11 @@ export default function BusinessServiceDetailPage() {
       {!trimmed && (
         <section className={`bg-slate-900 ${band}`}>
           <div className={inner}>
-            <SectionTitle chip="🧭 혼자 해도 되지 않나요?" tone={CHIP.dark} dark>
+            <SectionTitle chip="🧭 전문가가 필요한 이유" tone={CHIP.dark} dark>
               신청보다 어려운 건,<br /><span className="text-amber-300">통과하고 제대로 쓰는 거예요</span>
             </SectionTitle>
             <p className="mx-auto mt-4 max-w-lg text-center text-[1rem] font-medium leading-relaxed text-slate-400">
-              서류가 많아서 어려운 게 아니에요. 무엇을 어떤 순서로 증명할지 판단하기가 어렵습니다.
+              서류 양보다, 무엇을 어떤 순서로 보여 줄지 정하는 게 어려워요.
             </p>
             <div className="mt-9 grid gap-4 sm:grid-cols-2">
               {content.whyPoints.map((w, i) => (
@@ -455,7 +455,7 @@ export default function BusinessServiceDetailPage() {
             회사는 이렇게<br /><span className={accentText}>달라집니다</span>
           </SectionTitle>
           <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
-            대표님 말과 기억에 기대던 것을, 회사의 자료와 제도, 시스템으로 바꿔요.
+            대표님 머릿속에만 있던 걸 누가 봐도 알 수 있게 남겨요.
           </p>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
             {content.afters.map((a) => (
@@ -501,10 +501,10 @@ export default function BusinessServiceDetailPage() {
           <section className={`bg-slate-50 ${band}`}>
             <div className={inner}>
               <SectionTitle chip="🙋 지금 우리 회사 이야기라면" tone={CHIP.sky}>
-                2개 이상 해당되나요?<br /><span className={accentText}>지금 점검할 때예요</span>
+                2개 이상 해당되면<br /><span className={accentText}>지금 점검할 때예요</span>
               </SectionTitle>
               <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
-                급해진 뒤보다, 고를 수 있을 때 시작하는 게 유리합니다.
+                급해지면 고를 수 있는 게 줄어요.
               </p>
               <div className="mx-auto mt-9 max-w-xl space-y-2.5">
                 {content.checklist.map((r) => (
@@ -521,7 +521,7 @@ export default function BusinessServiceDetailPage() {
                   회사 안에는 <span className={accentText}>이것이 남습니다</span>
                 </h3>
                 <p className="mx-auto mt-3 max-w-md text-[1rem] font-medium leading-relaxed text-slate-500">
-                  한 번 쓰고 버리는 서류가 아니에요. 다음 자금, 인증, 지원사업, 영업에 다시 쓸 회사 자산을 만듭니다.
+                  다음 자금 신청이나 영업 미팅 때 그대로 꺼내 쓰면 돼요.
                 </p>
               </div>
               <div className={`mt-8 grid gap-4 ${content.outcomes.length >= 3 ? 'lg:grid-cols-3 sm:grid-cols-2' : 'sm:grid-cols-2'}`}>
@@ -551,7 +551,7 @@ export default function BusinessServiceDetailPage() {
                 서류만 처리하는<br /><span className={accentText}>대행과는 다릅니다</span>
               </SectionTitle>
               <p className="mx-auto mt-4 max-w-md text-center text-[1rem] font-medium leading-relaxed text-slate-500">
-                이번 신청 한 건으로 끝내지 않아요. 다음 자금, 인증, 세금, 성장 단계까지 이어 드립니다.
+                이번 신청 한 건으로 끝내지 않고, 다음에 할 일까지 같이 챙겨요.
               </p>
 
               {!NO_TRUST_IDS.has(pkg.id) && (
@@ -598,9 +598,9 @@ export default function BusinessServiceDetailPage() {
               </div>
 
               <div className="mt-6 rounded-3xl bg-slate-900 p-7 text-center">
-                <p className="text-[1.1rem] font-black text-white sm:text-xl">감이 아니라, <span className="text-sky-300">데이터로 진단합니다</span></p>
+                <p className="text-[1.1rem] font-black text-white sm:text-xl">감 대신, <span className="text-sky-300">데이터로 진단해요</span></p>
                 <p className="mx-auto mt-3 max-w-md text-[0.98rem] leading-relaxed text-slate-300">
-                  직접 만들고 전문가가 검증한 <b className="text-white">자체 SaaS</b>(온라인 진단 프로그램)가 있어요. 인증과 자금 심사 데이터를 반영해 진단 기준을 계속 다듬습니다.
+                  직접 만들고 전문가가 검증한 <b className="text-white">자체 SaaS</b>(온라인 진단 프로그램)로 진단해요. 인증·자금 심사 결과를 반영해 기준을 계속 고쳐요.
                 </p>
                 <div className="mt-4 flex flex-wrap justify-center gap-2">
                   <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-slate-200">🧠 데이터 학습</span>
