@@ -78,12 +78,31 @@ const everyday: { tag: string; title: string; desc: string; icon: ReactNode }[] 
   },
 ]
 
-// 써 보면 달라지는 것 — 시간 · 다음 계약 · 처음 맡는 분야 · 첫 미팅
+// 써 보면 달라지는 것 — 시간 · 여유 · 추가 계약 · 소개 · 처음 맡는 분야 · 첫 미팅
 const outcomes: { t: string; d: string }[] = [
   { t: '헛걸음이 사라져요', d: '찾고, 묻고, 다시 받던 시간을 고객 일에 쓸 수 있어요.' },
-  { t: '다음 제안이 쉬워져요', d: '쌓인 기록과 분석을 보여 주면서 ‘다음엔 이걸 해 보시죠’라고 말할 수 있어요.' },
+  { t: '같은 시간에 더 많은 고객사를', d: '서류와 일정이 알아서 정리되니, 고객사가 늘어도 허둥대지 않아요.' },
+  { t: '추가 계약이 자연스러워요', d: '쌓인 기록과 분석을 보여 주면서 ‘다음엔 이걸 해 보시죠’라고 말할 수 있어요. 다음 계약은 거기서 시작돼요.' },
+  { t: '소개받기 좋아져요', d: '고객이 진행 상황을 직접 보니 믿음이 쌓여요. ‘그 컨설턴트는 관리가 확실해’라는 말이 가장 강한 영업이에요.' },
   { t: '처음 맡는 분야도 금방', d: '잘 모르는 분야라도 도구가 요건과 확인할 것을 순서대로 짚어 줘요. 조금만 도움받으면 금방 따라잡아요.' },
   { t: '첫 미팅부터 달라 보여요', d: '“서류는 여기 올려 주시고, 진행 상황은 여기서 보시면 돼요.” 이 화면 하나로 다른 컨설턴트와 차이가 나요.' },
+]
+
+// 예상 반응 — ⚠️ 실제 이용 후기가 아니다(정식 출시 전). 화면에 '예시'로 분명히 적고,
+//   실제 이용자 후기가 모이면(동의 받고) 이 목록을 바꾼다. 없는 숫자·실명은 넣지 않는다.
+const reactions: { quote: string; who: string }[] = [
+  {
+    quote: '서류 다시 달라고 연락할 일이 없어졌어요. 아침에 열면 오늘 누구 일부터 할지 정리돼 있어서, 출근하자마자 전화부터 돌려요.',
+    who: '법인컨설턴트',
+  },
+  {
+    quote: '제가 올린 서류가 어디까지 처리됐는지 바로 보이니까 따로 물어볼 일이 없더라고요. 이렇게 관리해 주는 컨설턴트는 처음이에요.',
+    who: '고객사 대표님',
+  },
+  {
+    quote: '지난번에 받아 둔 서류로 고용지원금이랑 연구소까지 바로 짚어 드렸더니, 그 자리에서 다음 일을 맡겨 주셨어요. 아는 대표님도 소개해 주시고요.',
+    who: '정책자금 컨설턴트',
+  },
 ]
 
 // 고객과 내부가 한 바퀴로 — 화면보다 이 순환이 핵심이다
@@ -106,7 +125,8 @@ const principles = [
   },
 ]
 
-// 신뢰 지표(히어로 우측 패널) — 실제 확인된 정보만. 대표님용 서비스몰과 동일 축.
+// 신뢰 지표(믿고 맡기는 이유) — 실제 확인된 정보만. 대표님용 서비스몰과 동일 축.
+// 위치: 전자책 바로 위 (대표님 요청 — 첫 화면은 제품 이야기에 집중).
 const trustStats: { value: string; label: string; sub?: string }[] = [
   { value: '100억원+', label: '누적 자금조달 지원', sub: '지원금·세금 환급 포함' },
   { value: '9년', label: '세무·노무·법무·자금 현장 경력' },
@@ -145,6 +165,130 @@ const gridBackground = {
   WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%)',
   maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%)',
 } as const
+
+// 히어로 오른쪽(PC 전용) — '고객사 화면' 예시. 히어로 문장(서류는 한 번 · 고객사 정보 한눈에 · 다음에 제안할 거리)을 그림으로 보여 준다.
+// ⚠️ 가상 데이터(B사, 번호는 가림). 대시보드 예시와 같은 원칙으로 '예시 화면'을 붙이고 화면 읽기에서는 숨긴다.
+function HeroClientCard() {
+  const row = 'rounded-lg bg-white/[0.06] px-3 py-2'
+  return (
+    <div aria-hidden className="hidden lg:block">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-5 shadow-2xl shadow-black/40 backdrop-blur">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[0.8rem] font-bold tracking-wide text-slate-400">MIRAE AI LAB OS · 고객사</p>
+          <span className="rounded-md bg-violet-500/20 px-1.5 py-0.5 text-[0.7rem] font-black text-violet-200">예시 화면</span>
+        </div>
+        <p className="mt-1.5 text-xl font-black text-white">
+          B사 <span className="text-sm font-semibold text-slate-400">제조 · 직원 12명</span>
+        </p>
+        <dl className="mt-4 grid grid-cols-2 gap-2 text-[0.85rem]">
+          <div className={row}>
+            <dt className="text-slate-400">사업자등록번호</dt>
+            <dd className="mt-0.5 font-bold text-white">123-45-•••••</dd>
+          </div>
+          <div className={row}>
+            <dt className="text-slate-400">대표 연락처</dt>
+            <dd className="mt-0.5 font-bold text-white">010-••••-1234</dd>
+          </div>
+        </dl>
+        <div className={`mt-2 ${row} py-2.5`}>
+          <div className="flex justify-between text-[0.85rem]">
+            <span className="text-slate-400">받은 서류</span>
+            <span className="font-bold text-emerald-300">7 / 7 완료</span>
+          </div>
+          <div className="mt-2 h-1.5 rounded-full bg-white/10">
+            <div className="h-full w-full rounded-full bg-emerald-400" />
+          </div>
+          <p className="mt-2 text-[0.78rem] text-slate-400">사업자등록증 · 재무제표 · 4대보험 명부 …</p>
+        </div>
+        <div className={`mt-2 flex items-center justify-between ${row} text-[0.85rem]`}>
+          <span className="text-slate-400">2차 기성 수금</span>
+          <span className="font-bold text-amber-300">D-3</span>
+        </div>
+        <div className="mt-4 rounded-xl border border-sky-400/30 bg-sky-400/10 p-3.5">
+          <p className="text-[0.78rem] font-black text-sky-300">✦ 올려 둔 서류로 찾은 다음 제안</p>
+          <ul className="mt-2 space-y-1.5 text-[0.88rem] text-white">
+            <li className="flex justify-between gap-3">
+              <span className="font-semibold">고용지원금</span>
+              <span className="text-slate-300">신청 요건 검토</span>
+            </li>
+            <li className="flex justify-between gap-3">
+              <span className="font-semibold">기업부설연구소</span>
+              <span className="text-slate-300">인력 조건 확인</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <p className="mt-2 text-center text-[0.75rem] text-slate-500">예시 화면 · 가상 데이터</p>
+    </div>
+  )
+}
+
+// 믿고 맡기는 이유 — 만든 사람의 이력. 전자책 바로 위에 둔다.
+function TrustPanel() {
+  return (
+    <div data-os-trust className="mt-10 rounded-3xl bg-slate-900 p-5 text-white shadow-sm sm:p-8">
+      <p className="text-[0.9rem] font-bold uppercase tracking-widest text-amber-300">믿고 맡기는 이유</p>
+      <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:gap-10">
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-5">
+          {trustStats.map((s) => (
+            <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
+              <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
+              <dt className="mt-1.5 break-keep text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
+              {s.sub && <p className="mt-0.5 text-[0.78rem] font-semibold leading-snug text-amber-300/90">{s.sub}</p>}
+            </div>
+          ))}
+        </dl>
+        <div className="flex items-start gap-3 border-t border-white/10 pt-5 sm:gap-4 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+          <img
+            src="/assets/profile/ceo-avatar.webp"
+            alt="미래 AI 랩 대표 프로필 사진"
+            loading="lazy"
+            decoding="async"
+            width={200}
+            height={200}
+            className="h-16 w-16 shrink-0 rounded-full object-cover shadow-lg shadow-black/30 ring-[3px] ring-amber-400/60 sm:h-24 sm:w-24"
+          />
+          <div className="min-w-0">
+            <p className="text-[0.98rem] font-semibold leading-relaxed text-slate-100 sm:text-[1.1rem]">
+              정책자금, 정부지원사업, 법인컨설팅, AX 구축까지 9년 동안 현장에서 직접 해 온 일을 이 도구에 담았어요.
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[0.9rem] font-medium text-slate-300 sm:mt-2.5 sm:text-[0.95rem]">
+              <span className="font-bold text-white">미래 AI 랩 대표</span>
+              <span className="text-slate-600">·</span>
+              <span>Mirae AI Lab</span>
+              <span className="text-slate-600">·</span>
+              <a
+                href="https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 font-bold text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+                aria-label="유튜브 김팀장의 경영노트 채널 (새 탭에서 열림)"
+              >
+                <svg viewBox="0 0 24 24" className="h-4.5 w-4.5 shrink-0" aria-hidden>
+                  <rect x="1.5" y="5" width="21" height="14" rx="3.5" fill="#FF0000" />
+                  <path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="#fff" />
+                </svg>
+                김팀장의 경영노트
+                <span aria-hidden className="text-slate-300">↗</span>
+              </a>
+            </div>
+            <div className="mt-3 space-y-1.5">
+              {trustAwards.map((a) => (
+                <div key={a.title} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
+                  <span className="mt-px shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.76rem] font-black text-slate-900">{a.year}</span>
+                  <p className="min-w-0 break-keep text-[0.82rem] font-semibold leading-snug text-slate-100">
+                    {a.title}
+                    <span className="font-normal text-slate-400"> · {a.detail}</span>
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 // 섹션 머리 — 작은 라벨 + 제목 + 설명
 function SectionHead({ eyebrow, title, desc }: { eyebrow: string; title: ReactNode; desc?: ReactNode }) {
@@ -196,8 +340,8 @@ function App() {
         <div aria-hidden className="pointer-events-none absolute -left-32 -top-40 h-96 w-96 rounded-full bg-blue-600/25 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 h-[26rem] w-[26rem] rounded-full bg-sky-500/20 blur-3xl" />
         <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-16 lg:pb-20 lg:pt-20">
-          <div className="lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-start lg:gap-x-10">
-            {/* 왼쪽 — 메시지·CTA */}
+          <div className="lg:grid lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-x-12">
+            {/* 메시지·CTA — 신뢰 패널은 전자책 바로 위로 옮겼다 */}
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-sky-400" />
@@ -247,72 +391,14 @@ function App() {
                   </div>
                 ))}
               </dl>
-              {/* 진정성 한 줄 (얼굴은 우측 신뢰 패널에 1회만) */}
+              {/* 진정성 한 줄 (얼굴·이력은 아래 '믿고 맡기는 이유'에 1회만) */}
               <p className="mt-6 border-l-2 border-sky-400/50 pl-3.5 text-sm leading-relaxed text-slate-400 sm:text-base">
                 제가 매일 쓰면서 쓸모 있다고 확인한 기능만 내놓습니다.
               </p>
             </div>
 
-            {/* 오른쪽 — 신뢰 패널 (얼굴 사진 1회 · 모바일에서는 CTA 아래로) */}
-            <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur sm:p-6 lg:mt-0">
-              <p className="text-[0.9rem] font-bold uppercase tracking-widest text-amber-300">믿고 맡기는 이유</p>
-              <dl className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4 lg:grid-cols-2">
-                {trustStats.map((s) => (
-                  <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
-                    <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
-                    <dt className="mt-1.5 break-keep text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
-                    {s.sub && <p className="mt-0.5 text-[0.78rem] font-semibold leading-snug text-amber-300/90">{s.sub}</p>}
-                  </div>
-                ))}
-              </dl>
-              <div className="mt-4 flex items-start gap-3 border-t border-white/10 pt-4 sm:gap-3.5">
-                <img
-                  src="/assets/profile/ceo-avatar.webp"
-                  alt="미래 AI 랩 대표 프로필 사진"
-                  loading="lazy"
-                  decoding="async"
-                  width={200}
-                  height={200}
-                  className="h-16 w-16 shrink-0 rounded-full object-cover shadow-lg shadow-black/30 ring-[3px] ring-amber-400/60 sm:h-24 sm:w-24"
-                />
-                <div className="min-w-0">
-                  <p className="text-[0.98rem] font-semibold leading-relaxed text-slate-100 sm:text-[1.1rem]">
-                    정책자금부터 정부지원사업, 법인컨설팅, AX 구축까지 기업의 성장 과정을 한 흐름으로 설계합니다.
-                  </p>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[0.9rem] font-medium text-slate-300 sm:mt-2.5 sm:text-[0.95rem]">
-                    <span className="font-bold text-white">미래 AI 랩 대표</span>
-                    <span className="text-slate-600">·</span>
-                    <span>Mirae AI Lab</span>
-                    <span className="text-slate-600">·</span>
-                    <a
-                      href="https://youtube.com/channel/UCjXWwM0_25vl1Mpr2Pc5amQ?si=vBv8_7d3w8Uk5uGA"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 font-bold text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
-                      aria-label="유튜브 김팀장의 경영노트 채널 (새 탭에서 열림)"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-4.5 w-4.5 shrink-0" aria-hidden>
-                        <rect x="1.5" y="5" width="21" height="14" rx="3.5" fill="#FF0000" />
-                        <path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="#fff" />
-                      </svg>
-                      김팀장의 경영노트
-                      <span aria-hidden className="text-slate-300">↗</span>
-                    </a>
-                  </div>
-                  <div className="mt-3 space-y-1.5">
-                    {trustAwards.map((a) => (
-                      <div key={a.title} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
-                        <span className="mt-px shrink-0 rounded bg-amber-400 px-1.5 py-0.5 text-[0.76rem] font-black text-slate-900">{a.year}</span>
-                        <p className="min-w-0 break-keep text-[0.82rem] font-semibold leading-snug text-slate-100">
-                          {a.title}
-                          <span className="font-normal text-slate-400"> · {a.detail}</span>
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <HeroClientCard />
+
           </div>
         </div>
       </section>
@@ -360,13 +446,38 @@ function App() {
         <div data-os-renewal className="mt-10 rounded-3xl bg-slate-900 p-6 text-white shadow-sm sm:p-9">
           <p className="text-sm font-black tracking-wide text-sky-300">써 보면 달라지는 것</p>
           <h3 className="mt-2 break-keep text-[1.6rem] font-bold leading-snug sm:text-3xl">
-            시간은 아끼고,<br className="sm:hidden" /> 다음 계약은 가까워져요
+            시간은 아끼고,<br className="sm:hidden" /> 계약과 소개는 가까워져요
           </h3>
           <ul className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
             {outcomes.map((o) => (
               <li key={o.t} className="border-l-2 border-sky-400/60 pl-4">
                 <p className="break-keep text-lg font-bold">{o.t}</p>
                 <p className="mt-1 break-keep text-[1rem] leading-relaxed text-slate-300">{o.d}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-7 break-keep border-t border-white/10 pt-5 text-[1.05rem] font-semibold leading-relaxed text-white sm:text-lg">
+            꼼꼼하게 관리받은 고객은 다시 찾고, 주변에도 소개해요. <span className="text-sky-300">일이 일을 부르는 컨설턴트</span>가 되는 거예요.
+          </p>
+        </div>
+
+        {/* 예상 반응 — 정식 출시 전이라 실제 후기가 아니다. '예시'로 분명히 적는다 */}
+        <div data-os-reactions className="mt-10">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <h3 className="break-keep text-[1.5rem] font-bold text-slate-900 sm:text-[1.7rem]">써 보시면, 이런 말이 나올 거예요</h3>
+            <span className="rounded-md bg-violet-100 px-2 py-0.5 text-xs font-black text-violet-700">예상 반응 · 예시</span>
+          </div>
+          <p className="mt-2 break-keep text-[0.95rem] leading-relaxed text-slate-500">
+            정식 출시 전이라 실제 이용 후기는 아직 없어요. 이런 반응이 나오도록 만들고 있다는 뜻으로 적었어요.
+          </p>
+          <ul className="mt-5 grid gap-4 md:grid-cols-3">
+            {reactions.map((r) => (
+              <li key={r.who} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <p aria-hidden className="text-[1.05rem] tracking-[0.15em] text-amber-400">★★★★★</p>
+                <p className="mt-3 flex-1 break-keep text-[1.02rem] leading-relaxed text-slate-700">“{r.quote}”</p>
+                <p className="mt-4 text-sm font-bold text-slate-500">
+                  {r.who} <span className="font-medium text-slate-400">· 예시</span>
+                </p>
               </li>
             ))}
           </ul>
@@ -487,8 +598,10 @@ function App() {
             ))}
           </div>
 
+          <TrustPanel />
+
           {/* 실무 전자책 — 큰 이미지 섹션 → 가로 컴팩트 카드 */}
-          <div id="resources" className="mt-10 scroll-mt-20 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:grid md:grid-cols-[0.9fr_1.1fr]">
+          <div id="resources" className="mt-6 scroll-mt-20 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:grid md:grid-cols-[0.9fr_1.1fr]">
             <a
               href="https://futureailab.crekit.io/l/deals/zy3n6rjd"
               target="_blank"
