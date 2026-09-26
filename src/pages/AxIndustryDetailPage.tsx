@@ -19,7 +19,7 @@ const inner = 'mx-auto max-w-[880px]'
 
 /** 진행 4단계 — 가격을 두지 않고 어디까지 무엇을 하는지만 말한다 */
 const AX_STAGES = [
-  { key: 'AX FIT', title: '우리 회사에 AX가 필요한지 판단' },
+  { key: 'AX FIT', title: '우리 회사에 AX가 필요한지부터 보기' },
   { key: 'AX BLUEPRINT', title: '사업과 업무를 분석해 우선순위·범위·KPI 정하기' },
   { key: '1차 AX BUILD', title: '효과가 가장 큰 핵심 업무부터 만들기' },
   { key: 'AX SCALE', title: '효과 확인 후 업무·AI·고객 플랫폼으로 넓히기' },
@@ -134,7 +134,7 @@ export default function AxIndustryDetailPage() {
             지금 업무에 적용하는 <span className="text-teal-300">AX 5단계</span>
           </h2>
           <p className="mt-2.5 max-w-2xl break-keep text-[1.2rem] sm:text-[1.09rem] leading-relaxed text-slate-400">
-            단계를 누르면 그림과 설명이 바뀌어요. 그림을 누르면 크게 볼 수 있습니다.
+            단계를 누르면 그림과 설명이 바뀌고, 그림을 누르면 크게 볼 수 있어요.
           </p>
           <div className="mt-4">
             <AxFiveStageViewer industry={industry} />
@@ -166,9 +166,9 @@ export default function AxIndustryDetailPage() {
       {/* 7. 예상되는 신규매출 구조 */}
       <section className={`${band} border-b border-white/10 bg-slate-950`}>
         <div className={inner}>
-          <h2 className="break-keep text-[1.49rem] font-black leading-snug text-white sm:text-[1.8rem]">어떤 매출이 새로 생길 수 있을까요?</h2>
+          <h2 className="break-keep text-[1.49rem] font-black leading-snug text-white sm:text-[1.8rem]">이런 매출이 새로 생길 수 있어요</h2>
           <p className="mt-2.5 break-keep text-[1.17rem] sm:text-[1.06rem] leading-relaxed text-slate-400">
-            이 업종에서 생길 수 있는 매출 예시예요. 실제 범위와 성과는 회사 상황에 따라 달라집니다.
+            예시일 뿐이고, 실제 범위와 성과는 회사 상황에 따라 달라집니다.
           </p>
           <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {industry.ideas.flatMap((i) => i.revenues).map((r, i) => (
@@ -185,14 +185,14 @@ export default function AxIndustryDetailPage() {
       <section className={`${band} border-b border-white/10 bg-slate-900`}>
         <div className={inner}>
           <h2 className="break-keep text-[1.49rem] font-black leading-snug text-white sm:text-[1.8rem]">
-            성과가 쌓이면, <span className="text-teal-300">다음 성장 단계의 근거가 됩니다.</span>
+            쓰면서 쌓인 기록은 <span className="text-teal-300">다음 심사 때 그대로 자료가 됩니다.</span>
           </h2>
           <p className="mt-4 max-w-2xl break-keep text-[1.2rem] sm:text-[1.09rem] leading-relaxed text-slate-300">
-            보여 주기용 화면은 만들지 않아요. 실제 업무가 바뀌고 데이터가 쌓이게 만듭니다. 그 결과가 나중에
-            정책지원, R&D, 정책금융, 성장 전략에서도 설명할 수 있는 회사 재산으로 남아요.
+            실제 업무가 바뀌고 데이터가 쌓이게 만들어요. 그 기록은 나중에
+            정책지원, R&D, 정책금융, 성장 전략을 준비할 때도 꺼내 쓸 수 있어요.
           </p>
           <p className="mt-4 break-keep rounded-2xl border border-teal-400/25 bg-teal-400/[0.08] p-4 text-[1.24rem] font-bold leading-relaxed text-teal-100 sm:text-[1.21rem]">
-            평가용 겉모습이 아니라, 평가받을 수 있는 실체를 만듭니다.
+            심사 직전에 급히 만든 화면 말고, 매일 실제로 쓰는 화면을 만듭니다.
           </p>
           <p className="mt-3 break-keep text-[1.1rem] sm:text-[1.0rem] leading-relaxed text-slate-500">
             정책지원·R&D·정책금융의 결과는 각 기관의 독립적인 판단으로 결정됩니다.
@@ -205,7 +205,7 @@ export default function AxIndustryDetailPage() {
         <div className={inner}>
           <h2 className="break-keep text-[1.49rem] font-black leading-snug text-white sm:text-[1.8rem]">이렇게 진행합니다</h2>
           <p className="mt-2.5 break-keep text-[1.17rem] sm:text-[1.06rem] leading-relaxed text-slate-400">
-            처음부터 다 만들지 않아요. 필요한지 먼저 보고, 효과가 가장 큰 업무부터 만듭니다.
+            처음부터 다 만들지 않아요. 필요한지 먼저 보고, 효과가 가장 큰 업무부터 만들어요.
           </p>
           <ol className="mt-4 grid gap-2.5 sm:grid-cols-2">
             {AX_STAGES.map((s, i) => (
@@ -229,7 +229,7 @@ export default function AxIndustryDetailPage() {
             {[
               {
                 q: `${industry.displayName} 업종도 정말 적용할 수 있나요?`,
-                a: '위 화면이 그 예시예요. 이 업종의 업무 흐름을 가정해 만든 Concept Prototype이고, 실제 범위는 대표님 인터뷰와 업무 분석 후 정합니다.',
+                a: '위 화면이 그 예시예요. 이 업종의 일을 가정해 만든 Concept Prototype이고, 실제 범위는 대표님 인터뷰와 업무 분석 뒤에 정해요.',
               },
               {
                 q: '기존에 쓰던 프로그램을 버려야 하나요?',
@@ -237,11 +237,11 @@ export default function AxIndustryDetailPage() {
               },
               {
                 q: '위 화면을 그대로 쓰게 되나요?',
-                a: '아니요. 업종별 업무를 가정한 예시예요. 실제로는 그 회사의 일하는 방식에 맞춰 새로 설계합니다.',
+                a: '아니요. 업종별 업무를 가정한 예시예요. 실제로는 그 회사의 일하는 방식에 맞춰 새로 설계해요.',
               },
               {
                 q: '어디까지 만들어야 하나요?',
-                a: '처음엔 효과가 가장 큰 핵심 업무 하나면 돼요. AX Fit으로 필요한지 먼저 보고, AX Blueprint에서 분석과 범위를 정합니다. 1차 AX Build는 그 업무 하나로 시작하고, 효과를 확인한 뒤 넓혀요.',
+                a: '처음엔 효과가 가장 큰 핵심 업무 하나면 돼요. AX Fit으로 필요한지 보고, AX Blueprint에서 분석과 범위를 정한 뒤, 1차 AX Build는 그 업무 하나로 시작해요. 효과를 확인하면 넓혀 가요.',
               },
             ].map((f) => (
               <details key={f.q} className="group rounded-2xl border border-white/12 bg-white/[0.04] p-4">
@@ -279,7 +279,7 @@ export default function AxIndustryDetailPage() {
       <section className={`${band} bg-slate-900`}>
         <div className={inner}>
           <h2 className="break-keep text-[1.54rem] font-black leading-snug text-white sm:text-[1.9rem]">
-            우리 회사 일은 어떻게 바뀔 수 있을까요?<br className="hidden sm:block" /> 먼저 확인해 보세요.
+            우리 회사 일이 어떻게 바뀔지,<br className="hidden sm:block" /> 먼저 확인해 보세요.
           </h2>
           <Link
             to="/business-diagnosis"

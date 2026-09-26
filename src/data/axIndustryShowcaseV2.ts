@@ -1232,7 +1232,7 @@ export const AX_V2_HOME_HIGHLIGHT = ['manufacturing', 'wholesale-logistics', 'ed
 
 /** 공통 정직성 고지 */
 export const AX_V2_DISCLAIMER =
-  '업종별 업무를 가정해 만든 예시 화면(Concept Prototype)입니다. 실제 고객사 운영 화면이 아니며, 화면 속 상호와 수치는 시연용 가상 데이터예요. 실제로 만들 범위는 기업 인터뷰 후 그 회사에 맞춰 새로 정합니다.'
+  '업종별 업무를 가정해 만든 예시 화면(Concept Prototype)입니다. 실제 고객사 운영 화면이 아니며, 화면 속 상호와 수치는 시연용 가상 데이터입니다. 실제로 만들 범위는 기업 인터뷰 뒤 그 회사에 맞춰 새로 정합니다.'
 
 /** "여기서 끝나지 않습니다" 공통 전환 흐름 */
 export const AX_V2_EXPANSION_FLOW = [
