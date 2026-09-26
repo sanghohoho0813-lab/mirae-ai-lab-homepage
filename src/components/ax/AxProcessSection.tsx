@@ -3,7 +3,7 @@
 import { SectionHead } from './axFrames'
 
 const TIMELINE = [
-  { day: 'Day 0~1', title: '인터뷰와 자료 확인', desc: '지금 일하는 방식과 대출·매출 상황을 듣고, 필요한 서류를 추려요.' },
+  { day: 'Day 0~1', title: '인터뷰와 자료 확인', desc: '일하는 방식과 자금 상황을 듣고 필요한 서류를 추려요.' },
   { day: 'Day 1~2', title: '방향과 디자인 초안', desc: '준비할 자금과 논리, 화면 방향을 먼저 보여 드려요.' },
   { day: 'Day 3~5', title: 'MVP 초안 제작', desc: '실제 업무대로 눌러 볼 수 있는 첫 버전(MVP)을 만들어요.' },
   { day: 'Day 6~10', title: '같이 고치기', desc: '대표님 의견을 듣고 화면과 계획서를 같이 고쳐요.' },
@@ -16,8 +16,8 @@ export default function AxProcessSection({ onResult }: { onResult?: () => void }
       <div className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-14">
         <SectionHead
           eyebrow="최대 2주 진행과정"
-          title={<><span className="text-blue-600">3~5일 차</span>에 눌러 볼 수 있는 첫 버전이 나와요.</>}
-          desc="중간중간 직접 보시고, 고칠 곳을 말씀해 주시면 돼요."
+          title={<>완성될 때까지 <span className="text-blue-600">기다리지 않으셔도</span> 돼요.</>}
+          desc="3~5일 차에 첫 버전을 보여 드리고, 그다음부터 같이 고쳐 가요."
         />
 
         <ol className="mt-8 space-y-0">

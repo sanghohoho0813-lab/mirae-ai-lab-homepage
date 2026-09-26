@@ -29,7 +29,7 @@ export default function AxPolicyShift({ onDetail }: { onDetail?: () => void }) {
         <div className="mt-6 rounded-2xl border border-amber-400/30 bg-amber-400/[0.06] p-5 sm:p-6">
           <span className="inline-block rounded-md bg-amber-400/15 px-2 py-0.5 text-[0.858rem] sm:text-[1.014rem] font-black tracking-tight text-amber-300">AX 혁신전환</span>
           <p className="mt-2.5 break-keep text-[1.265rem] font-black leading-snug text-white sm:text-[1.69rem]">
-            자금을 신청하는 회사에서, <span className="text-amber-300">자금을 받을 이유가 보이는 AX 혁신기업</span>으로.
+            자금을 신청만 하는 회사에서, <span className="text-amber-300">받을 이유가 보이는 회사</span>로.
           </p>
           <p className="mt-2.5 break-keep text-[0.902rem] sm:text-[1.066rem] leading-relaxed text-slate-400">{P.concept.disclaimer}</p>
         </div>

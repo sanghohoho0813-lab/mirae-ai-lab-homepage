@@ -128,7 +128,7 @@ export function AxSelectionSection() {
             한 달에 5개사가 현실적인 한계예요.
           </p>
           <p className="mx-auto mt-6 max-w-2xl break-keep text-[1.32rem] leading-[1.75] text-slate-200 sm:text-[1.36rem]">
-            그래서 자금으로<br className="hidden sm:block" /> 사업을 실제로 바꾸려는 회사를 먼저 받아요.
+            그래서 아래 기준으로 먼저 받아요.
           </p>
         </div>
 

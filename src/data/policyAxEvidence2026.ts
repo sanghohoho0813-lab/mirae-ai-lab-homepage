@@ -115,7 +115,7 @@ export const AX_PURPOSE = {
  *  ⚠️ 특정 결과·승인을 단정하지 않는다. 비교는 준비 상태의 차이만 말한다. */
 export const AX_JUDGE = {
   setupLines: [
-    '정책자금과 정부지원사업 예산은 한정돼 있는데, 신청하는 기업은 훨씬 많아요.',
+    '정책자금 예산은 한정돼 있고, 신청하는 회사는 훨씬 많아요.',
   ],
   question: '대표님이 심사위원이라면,\n어느 기업을 지원하시겠어요?',
   left: {
@@ -147,7 +147,7 @@ export const AX_JUDGE = {
 export const AX_INDUSTRY_CASES = {
   title: '실제로 이런 전환이\n계속 일어나고 있어요.',
   intro:
-    '사업을 혁신성장 유형으로 바꾼 뒤 자금 규모가 달라진 사례가 업계에 알려져 있어요.',
+    '모두 사업을 혁신성장 유형으로 바꾼 뒤 자금 규모가 달라진 경우예요.',
   items: [
     {
       icon: '🥩',

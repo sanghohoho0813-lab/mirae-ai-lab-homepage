@@ -237,7 +237,6 @@ export const AX_BUILD_STAGE_NOTE =
 export const AX_BUILD_PAYMENT = {
   title: '개발비는 자금을 받은 뒤에 정산해요.',
   lines: [
-    '처음엔 컨설팅 비용만 내시면 개발을 시작해요.',
     '개발비가 무료라는 뜻은 아니에요.',
   ],
   notes: [
@@ -286,16 +285,16 @@ export const AX_SELECTION_DECLINE = [
 export type AxMethodStep = { no: number; title: string; desc: string; icon: string }
 
 export const AX_METHOD_STEPS: AxMethodStep[] = [
-  { no: 1, icon: '🔍', title: '숨은 자산 찾기', desc: '대표님 경험과 거래처, 반복 업무에서 기술이나 데이터가 될 만한 걸 찾아요.' },
-  { no: 2, icon: '🔄', title: '지금 업무를 한 화면으로', desc: '엑셀, 카톡, 수기 장부로 하던 일을 직원이 같이 쓰는 화면 하나로 모아요.' },
+  { no: 1, icon: '🔍', title: '숨은 자산 찾기', desc: '경험과 거래처, 반복 업무 속에서 기술·데이터가 될 것을 찾아요.' },
+  { no: 2, icon: '🔄', title: '지금 업무를 한 화면으로', desc: '엑셀, 카톡, 수기 장부로 하던 일을 화면 하나로 모아요.' },
   { no: 3, icon: '🚀', title: '고객용 서비스로 넓히기', desc: '내부에서 쓰던 화면을 고객용 앱·웹과 반복 매출로 넓혀요.' },
-  { no: 4, icon: '🏅', title: '기술력 서류로 남기기', desc: '필요하면 벤처·연구소·특허를 준비해, 기술력과 개발 계획을 서류로 보여 줘요.' },
-  { no: 5, icon: '💰', title: '자금 신청까지 연결', desc: '사업계획서와 자금사용계획을 화면과 맞추고, 다음에 신청할 기관과 순서를 정해요.' },
+  { no: 4, icon: '🏅', title: '기술력 서류로 남기기', desc: '필요하면 벤처·연구소·특허로 기술력과 개발 계획을 증명해요.' },
+  { no: 5, icon: '💰', title: '자금 신청까지 연결', desc: '계획서를 화면과 맞추고, 다음에 신청할 기관과 순서를 정해요.' },
 ]
 
 /** 미래AI랩이 만드는 세 가지 가치 */
 export const AX_CORE_VALUES = [
   { icon: '🏛️', title: '심사위원이 읽기 쉬운 계획서', desc: '기술성·사업성·성장성이 한눈에 보이게 회사를 다시 정리해요.' },
   { icon: '🖥️', title: '직접 눌러 볼 수 있는 화면', desc: '계획서에 적은 업무를 실제 화면으로 보여 드려요.' },
-  { icon: '📈', title: '자금 다음에 할 일 목록', desc: '자금을 받은 뒤 무엇부터 할지 순서를 정해 드려요.' },
+  { icon: '📈', title: '자금 다음에 할 일 목록', desc: '매출로 이어질 다음 순서를 미리 잡아요.' },
 ]
