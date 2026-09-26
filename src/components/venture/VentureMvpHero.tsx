@@ -100,7 +100,16 @@ export default function VentureMvpHero({ onConsult }: { onConsult: () => void })
         {/* PC 오른쪽 — 실제로 눌러 볼 수 있는 자체 데모 화면 한 장 */}
         {demo && (
           <figure className="mt-10 hidden lg:mt-0 lg:block">
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl shadow-black/50">
+            {/* 화면을 눌러도 데모가 열린다. 키보드는 아래 '직접 눌러 보기' 링크 하나로 충분해 여기선 탭 순서에서 뺀다 */}
+            <a
+              href={demo.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={-1}
+              aria-hidden
+              data-mvp-hero-demo
+              className="block overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl shadow-black/50 transition-transform duration-200 hover:-translate-y-1 motion-reduce:hover:translate-y-0"
+            >
               <div aria-hidden className="flex items-center gap-1.5 border-b border-slate-200 bg-slate-100 px-3 py-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-rose-300" />
                 <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
@@ -108,7 +117,7 @@ export default function VentureMvpHero({ onConsult }: { onConsult: () => void })
                 <span className="ml-2 truncate rounded bg-white px-2 py-0.5 text-[0.72rem] text-slate-400">{demo.name}</span>
               </div>
               <img src={demo.imgSm} alt={demo.alt} width={720} height={450} className="block h-auto w-full" />
-            </div>
+            </a>
             <figcaption className="mt-3 text-center text-[0.85rem] text-slate-400">
               미래AI랩이 직접 만든 MVP 예시 · {demo.name}{' '}
               <a

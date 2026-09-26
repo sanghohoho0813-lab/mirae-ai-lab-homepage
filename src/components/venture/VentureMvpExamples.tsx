@@ -1,6 +1,7 @@
-// 예를 들면 — 미래AI랩 자체 데모 MVP 를 '이런 회사가, 이런 기술사업을' 틀로 보여 준다.
-// 개발사 메뉴판(쇼핑몰·예약·구독…)처럼 보이지 않게, '지금 하는 사업 → 기술사업 → 심사·투자자 앞에서 눌러 보여 줄 화면'
-// 순서로 읽히게 한다.
+// 예를 들면 — 미래AI랩 자체 데모 MVP 10개를 '이런 회사가, 이런 기술사업을' 틀로 보여 준다.
+// 개발사 메뉴판(쇼핑몰·예약·구독…)처럼 보이지 않게, '지금 하는 사업 → 새 기술사업' 순서로 읽히게 한다.
+//  - 카드 전체가 링크다. 누르면 실제로 작동하는 데모가 새 탭으로 열린다(noopener).
+//  - 폰·태블릿은 가로 한 줄 카드(썸네일 + 글) 목록, PC 는 다섯 칸 × 두 줄.
 // ⚠️ 고객사 사례가 아니다 — 아래에 '자체 데모'라고 분명히 적는다. 없는 성과·숫자는 붙이지 않는다.
 import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
 
@@ -8,10 +9,20 @@ const EXAMPLES: { from: string; to: string; slug: string }[] = [
   { from: '동네 반려동물 미용실', to: '예약·재방문 관리 플랫폼', slug: 'pawbeauty' },
   { from: '농산물 유통 회사', to: '산지직송 신선식품 커머스', slug: 'localmom' },
   { from: '전문가 상담 사무소', to: '전문가 상담 매칭 플랫폼', slug: 'expertmatch' },
+  { from: '동네 보습학원', to: '온라인 학습·진도관리 플랫폼', slug: 'eduplaza' },
+  { from: '회계·경영 자문 사무소', to: 'AI 경영데이터 분석 서비스', slug: 'insightai' },
+  { from: '반려견 훈련·돌봄 센터', to: '유기견 산책 봉사 매칭', slug: 'rescuewalk' },
+  { from: '카페·공유오피스 운영 회사', to: '작업하기 좋은 카페 지도', slug: 'cafefocus' },
+  { from: 'IT 보안·유지보수 회사', to: 'AI 사기문자 판독 서비스', slug: 'scamshield' },
+  { from: '반찬·식자재 판매점', to: '냉장고 식재료 관리 앱', slug: 'freshfridge' },
+  { from: '옷가게·의류 쇼핑몰', to: 'AI 코디 점검 서비스', slug: 'stylecheck' },
 ]
 
 export default function VentureMvpExamples() {
-  const items = EXAMPLES.map((e) => ({ ...e, demo: PORTFOLIO_SAMPLES.find((s) => s.slug === e.slug) })).filter((e) => e.demo)
+  const items = EXAMPLES.flatMap((e) => {
+    const demo = PORTFOLIO_SAMPLES.find((s) => s.slug === e.slug)
+    return demo ? [{ ...e, demo }] : []
+  })
 
   return (
     <section data-mvp-examples className="border-b border-[#E7EAEE] bg-[#FAFAF8]">
@@ -25,35 +36,55 @@ export default function VentureMvpExamples() {
           만든 화면은 심사위원이나 투자자 앞에서 직접 눌러 보여 드릴 수 있어요. 말로만 하던 사업계획이 눈에 보이는 근거가 돼요.
         </p>
 
-        {/* 폰에서는 옆으로 넘겨 보게 해 구간이 길어지지 않게, PC 에서는 세 칸 */}
-        <p className="mt-6 text-[0.85rem] font-semibold text-[#8A939C] md:hidden">옆으로 넘겨 보세요 →</p>
-        <ul
-          data-mvp-examples-list
-          className="-mx-5 mt-2 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 [scrollbar-width:none] md:mx-0 md:mt-7 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
-        >
+        <div className="mt-7 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
+          <p className="flex items-center gap-2 text-[0.9rem] font-bold">
+            <span className="text-[#646E78]">지금 하는 사업</span>
+            <span aria-hidden className="text-[#D47A4A]">
+              →
+            </span>
+            <span className="text-[#B35A2A]">새 기술사업</span>
+          </p>
+          <p className="break-keep text-[0.85rem] font-semibold text-[#8A939C]">누르면 실제로 작동하는 데모가 새 창으로 열려요 ↗</p>
+        </div>
+
+        <ul data-mvp-examples-list className="mt-3 grid gap-2.5 md:grid-cols-2 md:gap-3 lg:grid-cols-5 lg:gap-4">
           {items.map(({ from, to, demo }) => (
-            <li key={to} className="flex w-[84%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#E7EAEE] bg-white shadow-sm min-[480px]:w-[62%] md:w-auto">
-              <div className="border-b border-[#E7EAEE] bg-slate-50">
-                <img src={demo!.imgSm} alt={demo!.alt} width={720} height={450} loading="lazy" decoding="async" className="block h-auto w-full" />
-              </div>
-              <div className="flex flex-1 flex-col p-5">
-                <p className="text-[0.8rem] font-bold text-[#8A939C]">지금 하는 사업</p>
-                <p className="mt-0.5 break-keep text-[1.05rem] font-bold text-[#343B44]">{from}</p>
-                <p aria-hidden className="my-1.5 text-[#D47A4A]">
-                  ↓
-                </p>
-                <p className="text-[0.8rem] font-bold text-[#B35A2A]">새 기술사업</p>
-                <p className="mt-0.5 break-keep text-[1.15rem] font-black text-[#171B20]">{to}</p>
-                <a
-                  href={demo!.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${demo!.name} 데모 직접 눌러 보기 (새 탭에서 열림)`}
-                  className="mt-4 inline-flex min-h-11 items-center gap-1.5 self-start rounded-xl border border-[#E7EAEE] px-3.5 text-[0.95rem] font-bold text-[#343B44] transition-colors hover:border-[#D47A4A]/60 hover:text-[#171B20]"
-                >
-                  {demo!.name} 직접 눌러 보기 <span aria-hidden>↗</span>
-                </a>
-              </div>
+            <li key={demo.slug} className="flex">
+              <a
+                href={demo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${from} → ${to}: ${demo.name} 데모 직접 눌러 보기 (새 탭에서 열림)`}
+                data-mvp-example={demo.slug}
+                className="group flex w-full items-center gap-3.5 rounded-2xl border border-[#E7EAEE] bg-white p-2.5 pr-3.5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-[#D47A4A]/60 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D47A4A] motion-reduce:hover:translate-y-0 lg:flex-col lg:items-stretch lg:gap-0 lg:overflow-hidden lg:p-0"
+              >
+                <div className="w-[6.5rem] shrink-0 overflow-hidden rounded-xl border border-[#E7EAEE] bg-slate-50 min-[400px]:w-[7.5rem] lg:w-full lg:rounded-none lg:border-0 lg:border-b">
+                  <img
+                    src={demo.imgSm}
+                    alt=""
+                    width={720}
+                    height={450}
+                    loading="lazy"
+                    decoding="async"
+                    className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:group-hover:scale-100"
+                  />
+                </div>
+                <div className="min-w-0 flex-1 lg:flex lg:flex-col lg:p-4">
+                  <p className="break-keep text-[0.88rem] font-semibold leading-snug text-[#646E78]">{from}</p>
+                  <p className="mt-1 break-keep text-[1.02rem] font-black leading-snug text-[#171B20]">
+                    <span aria-hidden className="text-[#D47A4A]">
+                      →{' '}
+                    </span>
+                    {to}
+                  </p>
+                  <p className="mt-3 hidden text-[0.82rem] font-bold text-[#B35A2A] lg:mt-auto lg:block lg:pt-3">
+                    {demo.name} 열어 보기 <span aria-hidden>↗</span>
+                  </p>
+                </div>
+                <span aria-hidden className="shrink-0 text-[1.1rem] font-bold text-[#B35A2A] lg:hidden">
+                  ↗
+                </span>
+              </a>
             </li>
           ))}
         </ul>
