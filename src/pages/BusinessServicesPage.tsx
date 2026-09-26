@@ -17,7 +17,7 @@ import { usePageMeta } from '../lib/pageMeta'
 
 const PAGE_TITLE = '대표님 서비스 선택 | 미래AI랩 — 50인 미만 중소기업 AX · 기술사업·MVP'
 const PAGE_DESC =
-  '50인 미만 중소기업을 위한 AX와 기술사업을 만들어요. 아이디어는 눌러 보는 서비스로, 회사는 벤처기업으로 — 2주 MVP·벤처기업확인 패키지부터, 회사 전체를 바꾸는 AX 도입까지.'
+  '50인 미만 중소기업을 위한 AX와 기술사업을 만들어요. 아이디어는 작동하는 서비스로, 회사는 벤처기업으로 — 2주 MVP·벤처기업확인 패키지부터, 회사 전체를 바꾸는 AX 도입까지.'
 
 const MVP_STEPS = ['기술사업', 'MVP', '벤처기업확인'] as const
 const AX_KEYWORDS = ['내부 업무', '고객 응대', '데이터', '자동화', '매출 성장'] as const
@@ -107,7 +107,7 @@ export default function BusinessServicesPage() {
           <Link
             to={VENTURE_MVP_PATH}
             data-track="venture-mvp"
-            aria-label="01 2주 기술사업 빌드 — 아이디어는 눌러 보는 서비스로, 회사는 벤처기업으로. 2주 기술사업 패키지 보기"
+            aria-label="01 2주 기술사업 빌드 — 아이디어는 작동하는 서비스로, 회사는 벤처기업으로. 2주 기술사업 패키지 보기"
             className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#D47A4A]/30 bg-gradient-to-br from-[#171B20] via-[#1F252C] to-[#343B44] p-5 pt-6 text-white shadow-lg shadow-[#171B20]/25 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/70 hover:shadow-2xl hover:shadow-[#171B20]/35 [animation-delay:200ms] sm:p-7"
           >
             <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#D47A4A]/25 opacity-70 blur-3xl transition-opacity group-hover:opacity-100" />

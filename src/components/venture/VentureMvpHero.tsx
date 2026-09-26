@@ -1,11 +1,11 @@
 // 기술사업·MVP 첫 화면 — 예전 01번 통이미지를 글자로 바꿨다(문구를 바로 고칠 수 있고, 폰에서 글자가 더 선명하다).
-// 메시지: 아이디어는 눌러 보는 서비스로, 회사는 벤처기업으로.
+// 메시지: 아이디어는 작동하는 서비스로 만들어드리고, 회사는 벤처기업으로 만들어드려요.
 //   결과물은 '서비스(앱)'가 아니라 '회사의 성장(벤처기업)'이라는 컨설팅 관점 — 개발 외주사처럼 보이지 않게 한다.
 // ⚠️ '벤처인증까지'처럼 인증을 약속하는 표현은 쓰지 않는다 → '벤처기업확인 신청까지'.
 // ⚠️ 가격·선착순은 서비스 선택 페이지 01 카드와 같은 숫자여야 한다(정상가 500만원 → 런칭 파트너 300만원 · 선착순 5개사).
 import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
 
-const STEPS = ['기술사업 아이디어', '눌러 보는 MVP', '벤처기업확인 신청'] as const
+const STEPS = ['기술사업 아이디어', '작동하는 MVP', '벤처기업확인 신청'] as const
 const CHECKS = ['아이디어가 없어도 OK — 지금 사업에서 찾아 드려요', '경영컨설턴트 1:1 설계', '벤처기업확인 신청까지'] as const
 
 export default function VentureMvpHero({ onConsult }: { onConsult: () => void }) {
@@ -24,12 +24,18 @@ export default function VentureMvpHero({ onConsult }: { onConsult: () => void })
             경영컨설턴트가 설계하는 2주 기술사업 빌드
           </p>
 
-          <h1 className="mt-5 break-keep text-[2.1rem] font-black leading-[1.22] tracking-tight min-[380px]:text-[2.3rem] sm:text-[3rem] lg:text-[3.2rem]">
-            {/* 폭과 관계없이 세 줄로 끊는다 — '아이디어는 / 눌러 보는 서비스로, / 회사는 벤처기업으로.' */}
+          <h1 className="mt-5 break-keep text-[1.95rem] font-black leading-[1.24] tracking-tight min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[2.9rem] xl:text-[3.05rem]">
+            {/* 줄은 뜻 단위로 끊는다. 폰·PC(오른쪽에 화면이 있어 폭이 좁다)는 다섯 줄,
+                가운데 폭(태블릿)은 첫 두 줄을 합쳐 네 줄:
+                '아이디어는 / 작동하는 서비스로 / 만들어드리고, / 회사는 벤처기업으로 / 만들어드려요.' */}
             아이디어는
-            <br /> <span className="text-[#E8B89A]">눌러 보는 서비스로,</span>
+            <br className="sm:hidden lg:inline" /> <span className="text-[#E8B89A]">작동하는 서비스로</span>
             <br />
-            회사는 <span className="text-[#E8894F]">벤처기업으로.</span>
+            만들어드리고,
+            <br />
+            회사는 <span className="text-[#E8894F]">벤처기업으로</span>
+            <br />
+            만들어드려요.
           </h1>
 
           <p className="mt-5 max-w-xl break-keep text-[1.04rem] leading-relaxed text-slate-300 sm:text-[1.15rem]">
