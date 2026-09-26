@@ -461,16 +461,10 @@ function App() {
           </p>
         </div>
 
-        {/* 예상 반응 — 정식 출시 전이라 실제 후기가 아니다. '예시'로 분명히 적는다 */}
-        <div data-os-reactions className="mt-10">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <h3 className="break-keep text-[1.5rem] font-bold text-slate-900 sm:text-[1.7rem]">써 보시면, 이런 말이 나올 거예요</h3>
-            <span className="rounded-md bg-violet-100 px-2 py-0.5 text-xs font-black text-violet-700">예상 반응 · 예시</span>
-          </div>
-          <p className="mt-2 break-keep text-[0.95rem] leading-relaxed text-slate-500">
-            정식 출시 전이라 실제 이용 후기는 아직 없어요. 이런 반응이 나오도록 만들고 있다는 뜻으로 적었어요.
-          </p>
-          <ul className="mt-5 grid gap-4 md:grid-cols-3">
+        {/* 예상 반응 — 정식 출시 전이라 실제 후기가 아니다. 제목·안내 문장은 대표님 요청으로 뺐고,
+            카드마다 '· 예시' 표기는 남겨 실제 후기로 읽히지 않게 한다 */}
+        <div data-os-reactions className="mt-8">
+          <ul className="grid gap-4 md:grid-cols-3">
             {reactions.map((r) => (
               <li key={r.who} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                 <p aria-hidden className="text-[1.05rem] tracking-[0.15em] text-amber-400">★★★★★</p>
