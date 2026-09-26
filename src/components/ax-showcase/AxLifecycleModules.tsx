@@ -85,7 +85,7 @@ export default function AxLifecycleModules() {
         ))}
       </ol>
       <p className="mt-4 break-keep text-[1.26rem] sm:text-[1.495rem] leading-relaxed text-slate-500">
-        한꺼번에 권하지 않아요. 지금 가장 필요한 것부터 하나씩 설계합니다.
+        한꺼번에 권하지 않아요. 지금 가장 급한 것부터 하나씩 해요.
       </p>
 
       <div className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">

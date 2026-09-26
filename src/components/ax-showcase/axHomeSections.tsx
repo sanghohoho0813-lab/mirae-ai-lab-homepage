@@ -67,7 +67,7 @@ export function AxCoreValuesSection() {
   return (
     <section className={`${band} border-t border-slate-200 bg-white`}>
       <div className={wrap}>
-        <h2 className={h2Light}>무엇을 만들어 드리나요?</h2>
+        <h2 className={h2Light}>저희가 만들어 드리는 것</h2>
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
           {AX_CORE_VALUES.map((v) => (
             <div key={v.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
@@ -88,7 +88,7 @@ export function AxMethodSection() {
     <section id="ax-method" className={`${band} scroll-mt-16 border-t border-slate-200 bg-slate-50`}>
       <div className={wrap}>
         <h2 className={h2Light}>
-          평범한 업무를<br className="hidden sm:block" /> 정책자금에서 설명할 수 있는 <span className="text-blue-600">AX 사업</span>으로 바꿔요.
+          매일 하던 일을<br className="hidden sm:block" /> 심사에서 <span className="text-blue-600">설명할 수 있는 사업</span>으로 바꿔요.
         </h2>
         <ol className="mt-8 space-y-3">
           {AX_METHOD_STEPS.map((s) => (
@@ -120,15 +120,15 @@ export function AxSelectionSection() {
             <span className="text-[1.65rem] font-black text-white sm:text-[1.9rem]">만 진행합니다</span>
           </p>
           <p className="mx-auto mt-8 max-w-2xl break-keep text-[1.32rem] leading-[1.75] text-slate-200 sm:text-[1.36rem]">
-            회사마다 업종도, 막힌 곳도, 쌓인 데이터도 달라요.<br className="hidden sm:block" />{' '}
-            같은 자료를 돌려 쓸 수 없습니다.
+            회사마다 막힌 곳이 달라서,<br className="hidden sm:block" />{' '}
+            남의 회사 자료를 돌려 쓸 수 없어요.
           </p>
           <p className="mx-auto mt-6 max-w-2xl break-keep text-[1.32rem] font-bold leading-[1.75] text-white sm:text-[1.36rem]">
-            대표님 회사에 <span className="text-amber-300">꼭 맞춘 사업구조와 화면</span>을 만들려면,<br className="hidden sm:block" />{' '}
+            대표님 회사에 <span className="text-amber-300">꼭 맞춘 계획서와 화면</span>을 만들려면,<br className="hidden sm:block" />{' '}
             한 달에 5개사가 현실적인 한계예요.
           </p>
           <p className="mx-auto mt-6 max-w-2xl break-keep text-[1.32rem] leading-[1.75] text-slate-200 sm:text-[1.36rem]">
-            그래서 자금만 받고 끝낼 회사보다,<br className="hidden sm:block" /> 자금으로 사업을 실제로 바꾸려는 회사를 먼저 받습니다.
+            그래서 자금으로<br className="hidden sm:block" /> 사업을 실제로 바꾸려는 회사를 먼저 받아요.
           </p>
         </div>
 

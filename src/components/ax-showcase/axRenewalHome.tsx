@@ -260,10 +260,10 @@ export function AxRealProjectsSection() {
 /* ── 상세페이지 — 개발역량을 쉬운 말로: 화면만 만드는 것이 아닙니다 ─────────── */
 
 const HOW_WE_BUILD = [
-  { no: '01', title: '업무가 이어지게 만듭니다', desc: '견적부터 주문, 현장, 재고, 정산까지 실제 일의 순서대로 잇습니다.' },
-  { no: '02', title: '고객 화면과 직원 화면을 잇습니다', desc: '고객이 예약·주문하면 직원 화면에 일이 생기고, 처리 결과는 고객 화면에 바로 보여요.' },
-  { no: '03', title: '숫자만 보여 주지 않습니다', desc: '무엇을 확인하고 누구에게 연락할지, 다음 행동까지 잇는 게 목표예요.' },
-  { no: '04', title: '운영 중 실수까지 챙기고, 다시 확인합니다', desc: '중복 저장, 잘못된 입력, 권한, 재고·정산 상태, 오류 복구를 챙기고 PC·태블릿·모바일, 권한별 화면, 빈 데이터까지 반복해서 확인해요.' },
+  { no: '01', title: '견적서가 정산까지 이어져요', desc: '견적이 주문이 되면 현장 일정과 재고, 정산이 따라 움직여요.' },
+  { no: '02', title: '고객이 예약·주문하면 직원 화면에 바로 떠요', desc: '직원이 처리를 끝내면 고객 화면에도 바로 표시돼요.' },
+  { no: '03', title: '오늘 할 일까지 짚어 주는 게 목표예요', desc: '매출 숫자만 띄우지 않고, 확인할 건과 연락할 곳을 같이 보여 줘요.' },
+  { no: '04', title: '실수할 만한 곳을 먼저 막아요', desc: '중복 저장, 잘못된 입력, 권한, 재고·정산 상태, 오류 복구를 챙겨요. PC·태블릿·모바일과 권한별 화면, 빈 데이터까지 반복해서 확인해요.' },
 ] as const
 
 export function AxHowWeBuildSection() {
@@ -272,7 +272,7 @@ export function AxHowWeBuildSection() {
       <div className="mx-auto max-w-[820px]">
         <p className="text-center text-[1.1rem] font-black tracking-tight text-teal-600 sm:text-[1.3rem]">개발 방식</p>
         <h2 className="mt-3 break-keep text-center text-[1.6rem] font-black leading-snug tracking-tight text-slate-900 sm:text-[2.2rem]">
-          화면만 만들지 않아요.
+          화면 뒤의 일까지 이어서 만들어요.
         </h2>
         <ol className="mt-8 space-y-3">
           {HOW_WE_BUILD.map((h) => (

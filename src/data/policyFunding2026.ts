@@ -88,10 +88,10 @@ export const FUNDING_TARGET = {
 export const POLICY_SUMMARY = {
   eyebrow: 'DX를 넘어 AX',
   title: '정부가 더 눈여겨보는 방향은 정해져 있어요.',
-  subtitle: '수출, 첨단기술, 그리고 AI입니다.',
+  subtitle: '수출, 첨단기술, 그리고 AI예요.',
   reality: {
-    title: '그렇다고 업종을 바꿔야 할까요?',
-    body: '아니요. 숙박업체가 반도체회사가 될 순 없잖아요. 바꿀 것은 일하는 방식입니다.',
+    title: '업종을 바꿀 필요는 없어요.',
+    body: '숙박업을 하던 회사가 반도체를 만들 순 없잖아요. 바꿀 건 일하는 방식이에요.',
   },
   solution: {
     title: '지금 하는 일에 AI와 데이터를 더하면 돼요.',

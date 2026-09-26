@@ -45,7 +45,7 @@ export const AX_POLICY_EVIDENCE_2026: AxPolicyEvidence[] = [
   {
     id: 'kosmes-priority',
     title: '정책우선도 평가에 혁신성장·IP·기술경영혁신 반영',
-    shortDescription: '혁신성장분야, 지식재산권, 기술·경영혁신, 성장잠재력 AI평가가 우선검토 지표로 쓰입니다.',
+    shortDescription: '혁신성장분야, 지식재산권, 기술·경영혁신, 성장잠재력 AI평가가 우선검토 지표로 쓰여요.',
     sourceName: '중소벤처기업진흥공단 정책자금 신청·정책우선도 평가 안내',
     officialDate: '2026년도',
     sourceType: '평가안내',
@@ -133,12 +133,12 @@ export const AX_JUDGE = {
     tag: '사업계획서 + AX 웹·앱 + 기업인증',
     items: [
       '핵심 기능이 작동하는 MVP 웹·앱',
-      '업무 기록과 데이터가 쌓이는 구조',
+      '업무 기록이 매일 쌓이는 프로그램',
       '벤처·연구소 등 기업인증 준비',
-      '화면과 숫자로 보여주는 실행 근거',
+      '말 대신 화면과 숫자로 설명',
     ],
   },
-  conclusion: '이제 AX 웹·앱은\n선택이 아니라 필수예요.',
+  conclusion: '같은 예산이라면,\n보여 줄 게 있는 B 기업에 눈이 가요.',
 } as const
 
 /** 업계에 알려진 전환 사례 — 재구성한 예시.
@@ -147,7 +147,7 @@ export const AX_JUDGE = {
 export const AX_INDUSTRY_CASES = {
   title: '실제로 이런 전환이\n계속 일어나고 있어요.',
   intro:
-    '소상공인·중소기업이 사업을 혁신성장 유형으로 바꿔, 정책자금·정부지원사업에서 좋은 결과를 낸 사례가 업계에 알려지고 있어요.',
+    '사업을 혁신성장 유형으로 바꾼 뒤 자금 규모가 달라진 사례가 업계에 알려져 있어요.',
   items: [
     {
       icon: '🥩',
@@ -155,7 +155,7 @@ export const AX_INDUSTRY_CASES = {
       to: '밀키트·고기 유통 플랫폼',
       before: '기존 대출 한도 1억원대에서 정체',
       after: '전환 후 3억원대 자금 조달',
-      point: '매장 하나가 아니라 제품·유통·물류 기업으로 설명이 바뀌었습니다.',
+      point: '가게 한 곳이던 회사가 제품·유통·물류 회사로 설명됐어요.',
     },
     {
       icon: '📚',
@@ -163,7 +163,7 @@ export const AX_INDUSTRY_CASES = {
       to: '온라인 학습 플랫폼',
       before: '2년간 직접 신청, 계속 탈락',
       after: '사업화 이후 7억원대 자금 조달',
-      point: '교육 노하우를 콘텐츠·진도 데이터가 쌓이는 플랫폼으로 바꿨습니다.',
+      point: '교육 노하우를 콘텐츠와 진도 기록이 쌓이는 플랫폼으로 바꿨어요.',
     },
     {
       icon: '💄',
@@ -171,7 +171,7 @@ export const AX_INDUSTRY_CASES = {
       to: 'AI 피부분석·맞춤 추천 서비스',
       before: '보증 한도 수천만원 수준',
       after: '전환 후 5억원대 자금 조달',
-      point: '단순 판매가 아니라 고객 데이터와 재구매 구조를 만들었습니다.',
+      point: '고객 데이터를 모아 재구매로 이어지게 했어요.',
     },
     {
       icon: '🧘',
@@ -179,7 +179,7 @@ export const AX_INDUSTRY_CASES = {
       to: 'AI 자세분석 헬스케어 서비스',
       before: '직접 신청은 전부 거절',
       after: '유상·무상 합계 5억원대 조달',
-      point: '레슨 경험을 영상 분석·운동기록 데이터 서비스로 바꿨습니다.',
+      point: '레슨 노하우를 영상 분석과 운동 기록 서비스로 바꿨어요.',
     },
   ],
   disclaimer:
