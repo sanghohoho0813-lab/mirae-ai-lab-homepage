@@ -118,8 +118,8 @@ export default function BusinessServicesPage() {
                 기술사업 하나를<br />2주 안에 만들어요
               </h2>
               <p className="mt-3 text-[0.96rem] leading-relaxed text-slate-300 sm:text-[1.02rem]">
-                지금 사업에서 아이디어를 찾고, <b className="font-bold text-white">바로 써 볼 수 있는 첫 버전(MVP)</b>을 만들어요.
-                벤처기업확인 신청까지 한 번에 해요.
+                지금 하는 사업에서 기술사업 아이디어를 찾고, <b className="font-bold text-white">바로 써 볼 수 있는 첫 버전(MVP)</b>과
+                벤처기업확인 신청까지 한 번에 끝내요.
               </p>
               <ul className="mt-4 flex flex-wrap items-center gap-1.5" aria-label="패키지 구성">
                 {MVP_STEPS.map((s, i) => (
@@ -157,8 +157,8 @@ export default function BusinessServicesPage() {
                 회사 전체를<br />AX로 바꿔요
               </h2>
               <p className="mt-3 text-[0.96rem] leading-relaxed text-[#343B44] sm:text-[1.02rem]">
-                반복 업무, 고객 응대, 흩어진 데이터를 하나로 이어요.{' '}
-                <b className="font-bold text-[#171B20]">일은 덜고, 놓치던 매출은 챙기게요.</b>
+                반복 업무, 고객 응대, 여기저기 흩어진 데이터를 한 화면으로 모아요.{' '}
+                <b className="font-bold text-[#171B20]">일은 줄고, 놓치던 매출은 다시 챙길 수 있어요.</b>
               </p>
               <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="핵심 키워드">
                 {AX_KEYWORDS.map((k) => (
