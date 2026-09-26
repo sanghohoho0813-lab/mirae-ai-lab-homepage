@@ -354,7 +354,7 @@ export default function AxFitReportView({
         <section className="mt-9 rounded-2xl border border-slate-200 bg-white px-4 py-4 print:hidden sm:px-5">
           <p className="text-[1rem] font-black text-slate-900">함께 검토하고 싶은 분야가 있으신가요? (선택)</p>
           <p className="mt-1 text-[0.85rem] leading-snug text-slate-500">
-            AX를 하며 쌓인 데이터와 성과는 다른 분야에서도 근거가 될 수 있어요. 고르신 분야는 상담 때 같이 봐요.
+            AX로 쌓인 데이터와 성과는 다른 분야에서도 근거가 될 수 있어요. 고르신 분야는 상담 때 같이 봐요.
           </p>
           <div className="mt-3">
             <InterestPicker idPrefix="fit" value={growthInterests} onChange={onGrowthInterestsChange} />

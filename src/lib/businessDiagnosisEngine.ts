@@ -39,19 +39,19 @@ const round5 = (n: number) => Math.max(0, Math.min(100, Math.round(n / 5) * 5))
 export const GRADE_META: Record<AxFitGrade, { label: string; desc: string; headline: string; tone: SeverityTone }> = {
   NO_GO: {
     label: '지금은 정비 먼저',
-    desc: '새 시스템을 들이기 전에, 지금 쓰는 엑셀과 카톡부터 정리하면 되는 단계예요.',
+    desc: '새 시스템을 들이기 전에 엑셀과 카톡부터 정리하면 되는 단계예요.',
     headline: '지금은 새로 만들기보다 정리가 먼저예요.',
     tone: 'blue',
   },
   LITE: {
     label: '작게 시작',
-    desc: '회사 전체를 바꾸기보다, 반복되거나 자주 막히는 일부터 손보면 되는 단계예요.',
+    desc: '전체를 바꾸기보다, 자주 막히는 일부터 손보면 되는 단계예요.',
     headline: '작게 시작하는 게 맞아요.',
     tone: 'amber',
   },
   FULL: {
     label: '전면 구축 후보',
-    desc: '우리 회사 방식대로 돌아가는 전용 시스템을 만들고, AI 판단까지 붙이길 권해요.',
+    desc: '우리 회사 방식대로 도는 전용 시스템에 AI 판단까지 붙이길 권해요.',
     headline: '전면 구축까지 검토해 볼 만한 회사예요.',
     tone: 'orange',
   },
@@ -67,47 +67,47 @@ export const GRADE_META: Record<AxFitGrade, { label: string; desc: string; headl
 const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: string }> = {
   repeatInput: {
     title: '같은 정보를 여러 곳에 반복 입력',
-    why: '옮겨 적을 때마다 오타와 빠지는 내용이 생기고, 직원 시간은 정작 일보다 옮겨 적기에 들어가요.',
+    why: '옮겨 적을 때마다 오타가 나고, 직원 시간도 거기에 들어가요.',
     ifIgnored: '거래가 늘면 입력도 같이 늘어서, 사람을 더 뽑아도 끝이 안 나요.',
   },
   askProgress: {
     title: '진행 상황을 직접 물어봐야 알 수 있음',
-    why: "진행 상황이 담당자 머릿속에만 있으면, '그거 어떻게 됐어요?' 묻는 것부터 일이 돼요.",
+    why: "담당자 머릿속에만 있으니, '그거 어떻게 됐어요?' 묻는 것부터 일이 돼요.",
     ifIgnored: '대표님이 자리를 비우면 회사 일도 같이 멈춰요.',
   },
   toolGaps: {
     title: '엑셀, 카톡, 전화, ERP 사이에서 일이 끊김',
-    why: '카톡으로 받은 걸 엑셀로 옮기는 그 사이를 사람이 메우고 있어요. 실수도 거기서 나요.',
-    ifIgnored: '회사 상황을 한 번에 볼 곳이 없어서, 결정이 자꾸 늦어져요.',
+    why: '카톡에서 엑셀로 옮기는 사이를 사람이 메우고, 실수도 거기서 나요.',
+    ifIgnored: '회사 상황을 한 번에 볼 곳이 없어 결정이 늦어져요.',
   },
   manualHandoff: {
     title: '고객 요청과 주문, 예약을 사람이 직접 전달',
-    why: '고객 문의가 담당자 전화나 카톡에서 멈추면, 답이 빠를지 늦을지는 그 사람 사정에 달려요.',
+    why: '문의가 담당자 폰에서 멈추면, 답이 언제 나갈지는 그 사람 사정에 달려요.',
     ifIgnored: '고객이 늘수록 빠뜨리는 주문과 늦는 답변도 같이 늘어요.',
   },
   missDelay: {
     title: '빠뜨리거나 늦어져 다시 확인하는 일이 반복',
-    why: '알려 주는 곳이 없으니, 사람이 기억에 기대서 겨우 막고 있는 거예요.',
+    why: '알려 주는 곳이 없어서, 사람 기억으로 겨우 막고 있는 거예요.',
     ifIgnored: '다시 확인하느라 정작 일할 시간이 계속 줄어요.',
   },
   priorityByMemory: {
     title: '무엇부터 할지 담당자의 경험과 기억에 의존',
-    why: '누가 맡느냐에 따라 먼저 하는 일이 달라서, 결과도 사람마다 달라져요.',
-    ifIgnored: '담당자가 바뀌면 일 처리 순서를 처음부터 다시 잡아야 해요.',
+    why: '누가 맡느냐에 따라 순서도, 결과도 달라져요.',
+    ifIgnored: '담당자가 바뀌면 순서를 처음부터 다시 잡아야 해요.',
   },
   dataUnused: {
     title: '데이터는 있는데 결정할 때 쓰지 못함',
-    why: '거래 기록이 엑셀에 쌓여만 있고, 결정할 때는 꺼내 보지 않게 돼요.',
+    why: '거래 기록은 엑셀에 쌓여만 있고, 결정할 땐 안 꺼내 봐요.',
     ifIgnored: '감으로 내린 결정이 맞았는지 확인할 길이 계속 없어요.',
   },
   ceoLoadGrows: {
     title: '회사가 커질수록 대표님과 관리자가 확인할 일도 늘어남',
-    why: '회사가 클수록 대표님이 더 바빠진다면, 시스템이 할 일을 대표님이 대신 하고 있는 거예요.',
+    why: '회사가 클수록 대표님이 더 바쁘다면, 시스템이 할 일을 대표님이 하고 있는 거예요.',
     ifIgnored: '매출이 두 배가 되면 대표님 일도 두 배가 돼요.',
   },
   uniqueWork: {
     title: '기존 ERP·POS·SaaS로는 안 되는 우리 회사만의 일',
-    why: '시중 프로그램이 못 채운 이 일이 우리 회사의 강점이자, 지금 일이 자주 막히는 곳이에요.',
+    why: '이 일이 우리 회사의 강점이자, 지금 자주 막히는 곳이에요.',
     ifIgnored: '계속 사람 손으로 처리하면 그 노하우가 회사에 남지 않아요.',
   },
 }
@@ -116,11 +116,11 @@ const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: stri
 type Cluster = { id: string; qs: string[]; point: string }
 const CLUSTERS: Cluster[] = [
   { id: 'connect', qs: ['repeatInput', 'toolGaps'], point: '한 번만 입력하면 필요한 곳에 같이 들어가게 해요.' },
-  { id: 'visibility', qs: ['askProgress', 'ceoLoadGrows'], point: '안 물어봐도 일이 어디까지 됐는지 한 화면에서 보여 드려요.' },
-  { id: 'customer', qs: ['manualHandoff'], point: '고객 주문이나 예약, 문의가 들어오면 담당자에게 바로 넘어가게 해요.' },
+  { id: 'visibility', qs: ['askProgress', 'ceoLoadGrows'], point: '안 물어봐도 진행 상황이 한 화면에 보여요.' },
+  { id: 'customer', qs: ['manualHandoff'], point: '주문, 예약, 문의가 들어오면 담당자에게 바로 넘어가게 해요.' },
   { id: 'judgment', qs: ['missDelay', 'priorityByMemory'], point: '놓치기 쉬운 일과 먼저 할 일을 AI가 먼저 알려 줘요.' },
-  { id: 'data', qs: ['dataUnused'], point: '쌓인 기록을 보고 바로 결정할 수 있게, 우리 회사 현황판(대시보드)을 만들어요.' },
-  { id: 'unique', qs: ['uniqueWork'], point: '시중 프로그램으로 안 되던 우리 회사만의 일을 전용 시스템으로 만들어요.' },
+  { id: 'data', qs: ['dataUnused'], point: '쌓인 기록을 한눈에 보는 우리 회사 현황판(대시보드)을 만들어요.' },
+  { id: 'unique', qs: ['uniqueWork'], point: '시중 프로그램으로 안 되던 일을 전용 시스템으로 만들어요.' },
 ]
 
 function topClusterPoints(a: DiagnosisAnswers, max: number): string[] {
@@ -178,7 +178,7 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
           title: '지금 쓰는 도구부터 정리하세요',
           points: [
             '엑셀, 카톡방, ERP에 각각 뭘 남길지부터 정해 두세요.',
-            '옮겨 적는 일이 눈에 띄게 늘면, 그때 작게 시작할 곳을 같이 찾아봐요.',
+            '옮겨 적는 일이 눈에 띄게 늘면, 그때 작게 시작해요.',
           ],
         }
       : grade === 'LITE'
@@ -210,11 +210,11 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
   // 다음 행동
   const nextActions =
     grade === 'NO_GO'
-      ? ['도구를 정리한 뒤, 반복 입력이 늘면 이 진단을 다시 해 보세요.', '원하시면 상담에서 지금 쓰는 도구 구성만 짧게 봐 드려요.']
+      ? ['도구를 정리한 뒤, 반복 입력이 늘면 이 진단을 다시 해 보세요.', '원하시면 상담에서 지금 도구 구성만 짧게 봐 드려요.']
       : grade === 'LITE'
         ? ['제일 자주 막히는 일 1개를 골라, 상담에서 어디까지 할지 정하세요.', '같이 쓸 담당자를 먼저 정해 두면 진행이 빨라져요.']
         : grade === 'FULL'
-          ? ['AX Blueprint 상담부터 시작하세요. 사업과 업무를 같이 들여다보고, 무엇부터 어디까지 만들지와 성과 지표(KPI)를 정해요.', '1차 AX Build는 효과가 가장 큰 핵심 업무 하나로 시작해요.']
+          ? ['AX Blueprint 상담부터 시작하세요. 사업과 업무를 같이 보고, 무엇부터 어디까지 만들지와 성과 지표(KPI)를 정해요.', '1차 AX Build는 효과가 가장 큰 핵심 업무 하나로 시작해요.']
           : ['AX Fit 상담을 신청해, 사업과 업무 분석 일정부터 잡으세요.', '1차 구축 범위는 운영 화면부터 검토해요.']
   // ⚠️ 담당자 안내(readiness.note)는 결과지에서 '내부 담당자' 칸으로 따로 보여준다 —
   //    여기에 또 넣으면 같은 문장이 바로 위아래에 두 번 나온다.

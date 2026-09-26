@@ -73,7 +73,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         진단 결과를 보고,<br className="sm:hidden" /> 어디부터 손댈지 같이 정해 드려요
       </h2>
       <p className="mt-2.5 text-[0.95rem] leading-relaxed text-slate-600">
-        답하신 10개 질문과 결과가 담당자에게 같이 넘어가요. 확인한 뒤 연락드릴게요.
+        답하신 10개 질문과 결과를 보고 담당자가 연락드릴게요.
       </p>
 
       <div className="mt-6 space-y-4">
