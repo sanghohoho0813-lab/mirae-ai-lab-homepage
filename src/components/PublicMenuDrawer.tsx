@@ -132,7 +132,7 @@ const CONSULTANT_MENU: MenuConfig = {
       accent: 'violet',
       items: [
         { label: '대시보드 미리보기', desc: '아침에 열면 할 일이 정리돼 있어요', to: '/consultants#dashboard' },
-        { label: '운영 방식', desc: '고객 화면과 이어지는 흐름 · 쌓이는 기록', to: '/consultants#how' },
+        { label: '운영 방식', desc: '고객이 올리면 내 할 일로, 처리하면 고객 화면으로', to: '/consultants#how' },
         { label: '7개 모듈', desc: '지금 쓰는 도구와 완성되면 들어갈 기능', to: '/consultants#modules' },
         { label: '출시 일정', desc: '2026년 10월부터 차례로 · 정식 출시 후 월 구독', to: '/consultants#launch' },
       ],

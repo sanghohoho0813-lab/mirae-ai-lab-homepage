@@ -1,9 +1,10 @@
 // MIRAE AI LAB OS — 7개 모듈 (/consultants#modules).
 // 기준: 대표님이 정리한 모듈표(대모듈 · 포함 기능). '지금 쓰는 도구' 는 실제 운영 OS 의 컨설팅 작업실 메뉴다.
-// 일정은 대표님이 정한 대로 — 컨설턴트 운영 · 기업성장 모듈은 10월 중, 나머지는 11월 이후. 바뀌면 여기만 고친다.
+// 일정은 대표님이 정한 대로 — 컨설턴트 운영 · 기업성장 모듈은 10월 중, 절세·재무(세금 계산기·창업감면·크레탑)는 10월 이후,
+//   나머지는 11월 이후. 바뀌면 여기만 고친다.
 // ⚠️ 가격·완성도 % 는 적지 않는다(정해지지 않은 숫자를 보이지 않는다).
 
-type When = '10월 중 완성 예정' | '11월 이후'
+type When = '10월 중 완성 예정' | '10월 이후' | '11월 이후'
 
 type OsModule = {
   name: string
@@ -21,7 +22,7 @@ export const OS_MODULES: OsModule[] = [
   {
     name: '컨설턴트 운영 모듈',
     base: true,
-    desc: '매일 가장 먼저 여는 화면이에요. 고객사별 할 일, 서류, 수금을 한곳에서 챙기고 고객 화면(My MIRAE)과 이어집니다.',
+    desc: '매일 가장 먼저 여는 화면이에요. 서류는 한 번만 받고, 고객사 정보와 수금·마감은 한눈에 봐요. 여기 올린 서류가 다른 모듈로 그대로 이어져요.',
     features: ['고객관리', '일정', '상담이력', '문서', '기성고', '정산', '리포트'],
     now: ['오늘 화면', '업체별 현황표', '상담신청함', '업무 일기', '고객 발행'],
     when: '10월 중 완성 예정',
@@ -45,7 +46,7 @@ export const OS_MODULES: OsModule[] = [
     desc: '세금 계산, 감면 판정, 절세 시뮬레이션으로 상담 자리에서 바로 숫자로 보여 드려요.',
     features: ['세금계산기', '창업감면', '절세 시뮬레이션', '가업승계', '재무기초 분석'],
     now: ['세금 계산기', '창업감면 판정기', '크레탑 분석기'],
-    when: '11월 이후',
+    when: '10월 이후',
   },
   {
     name: 'IP·R&D 모듈',
@@ -74,6 +75,7 @@ export default function OsModules() {
     <div className="grid gap-3 sm:gap-4 md:grid-cols-2" data-os-modules>
       {OS_MODULES.map((m, i) => {
         const soon = m.when === '10월 중 완성 예정'
+        const next = m.when === '10월 이후'
         return (
           <article
             key={m.name}
@@ -85,7 +87,11 @@ export default function OsModules() {
               {m.base && <span className="rounded-md bg-slate-900 px-1.5 py-0.5 text-xs font-black text-white">기본 모듈</span>}
               <span
                 className={`ml-auto rounded-full px-2.5 py-1 text-xs font-black ${
-                  soon ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200'
+                  soon
+                    ? 'bg-violet-600 text-white'
+                    : next
+                      ? 'bg-violet-50 text-violet-700 ring-1 ring-inset ring-violet-200'
+                      : 'bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200'
                 }`}
               >
                 {m.when}

@@ -196,8 +196,8 @@ export default function OsDashboardPreview() {
 //  (핵심 기능 개발 거의 완료 → 테스트·UI/UX 다듬기 → 2026년 10월 컨설턴트 운영·기업성장 모듈 → 11월 이후 나머지 · 월 구독)
 const LAUNCH: { title: string; desc: string; state: 'done' | 'now' | 'next' }[] = [
   { title: '개발', desc: '핵심 기능은 거의 다 만들었어요', state: 'done' },
-  { title: '다듬는 중', desc: '직접 써 보면서 화면과 완성도를 다듬고 있어요', state: 'now' },
-  { title: '2026년 10월', desc: '컨설턴트 운영·기업성장 모듈부터 열어요', state: 'next' },
+  { title: '다듬는 중', desc: '직접 써 보면서 다듬고 있어요', state: 'now' },
+  { title: '2026년 10월', desc: '운영·기업성장 모듈부터 열고, 절세·재무 모듈이 뒤따라요', state: 'next' },
   { title: '11월 이후', desc: '나머지 모듈을 차례로 더하고, 정식 출시 후 월 구독으로 제공할 예정이에요', state: 'next' },
 ]
 

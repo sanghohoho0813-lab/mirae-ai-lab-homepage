@@ -52,7 +52,7 @@ const choices: readonly Choice[] = [
     to: '/consultants',
     icon: '🧑‍💼',
     lines: ['컨설턴트이신가요?'],
-    desc: '여러 고객사의 할 일, 서류, 수금을 한 화면에서 챙겨요. 컨설턴트를 위한 운영 OS예요.',
+    desc: '서류는 한 번만 받고, 고객사 정보는 어디서든 한눈에. 컨설턴트를 위한 운영 OS예요.',
     aria: '컨설턴트이신가요? 컨설턴트 운영 OS 보기',
     card: 'bg-gradient-to-br from-slate-800 to-slate-950 shadow-lg shadow-slate-900/30 hover:shadow-2xl hover:shadow-sky-500/20',
     glow: 'bg-sky-400/25',
