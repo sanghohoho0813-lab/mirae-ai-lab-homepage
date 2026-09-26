@@ -69,7 +69,7 @@ const BUSINESS_MENU: MenuConfig = {
       accent: 'blue',
       // 이름·한 줄 설명은 선택 페이지 카드와 같게
       items: [
-        { no: '1', label: '2주 기술사업 빌드', desc: '없던 사업을 새로 만들어요 · 기술사업·MVP·벤처기업확인', to: '/business-services/venture-mvp', match: (p) => p.startsWith('/business-services/venture-mvp') },
+        { no: '1', label: '2주 기술사업 빌드', desc: '아이디어는 서비스로, 회사는 벤처기업으로', to: '/business-services/venture-mvp', match: (p) => p.startsWith('/business-services/venture-mvp') },
         { no: '2', label: '풀 AX 구축', desc: '하던 일을 더 편하게 바꿔요 · 회사 전체 AX', to: '/business-services/ax-start', match: (p) => p.startsWith('/business-services/ax-start') },
         { no: '3', label: '두 서비스 비교하기', desc: '어느 쪽이 맞는지 한 화면에서', to: '/business-services', match: (p) => p === '/business-services' },
       ],

@@ -40,7 +40,7 @@ const choices: readonly Choice[] = [
     lines: ['중소기업 대표님 또는', '예비창업가이신가요?'],
     // AX 하나만 파는 것처럼 읽히지 않게 — 선택 페이지에서 AX 도입 / 기술사업·MVP 로 갈린다
     // 선택 페이지의 순서(01 기술사업·MVP → 02 AX 도입)와 같은 순서로 읽히게 한다
-    desc: '우리 회사에 맞는 다음 한 걸음을 찾아 드려요. 새 기술사업(MVP)부터 회사 전체 AX까지요.',
+    desc: '우리 회사에 맞는 다음 한 걸음을 찾아 드려요. 아이디어를 서비스로 만드는 기술사업부터 회사 전체 AX까지요.',
     aria: '중소기업 대표님 또는 예비창업가이신가요? AX 도입과 기술사업·MVP 중 고르기',
     card: 'bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30',
     glow: 'bg-white/20',

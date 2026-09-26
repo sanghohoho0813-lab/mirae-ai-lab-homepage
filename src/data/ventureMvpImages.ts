@@ -22,7 +22,7 @@ export type VentureMvpHotspot = {
  *  그림 버튼을 눌러도 아무 일이 없던 것을 막는다. 값은 원본 PNG 에서 버튼 색 영역을 측정한 % 좌표라
  *  이미지가 어떤 폭으로 그려져도 같은 자리에 겹친다. 위아래 1% 정도는 손가락 여유로 더 잡았다. */
 export const VENTURE_MVP_HOTSPOTS: Partial<Record<string, VentureMvpHotspot[]>> = {
-  '01': [{ label: '우리 회사도 만들어보기 — 상담 신청', action: 'consult', x: 5.7, y: 77.5, w: 88.4, h: 6.5 }],
+  // '01' 은 페이지에서 글자 히어로로 바뀌어 더 이상 그리지 않는다(히어로의 '무료로 상담받기' 버튼이 대신한다)
   '04': [{ label: '22개 전체 샘플 직접 보기', action: 'samples', x: 5.6, y: 95.3, w: 88.8, h: 4.5 }],
   '09': [{ label: '벤처기업확인 혜택 보기', action: 'venture-benefit', x: 16.3, y: 86.2, w: 67.4, h: 6.5 }],
   '15': [

@@ -17,7 +17,7 @@ import { usePageMeta } from '../lib/pageMeta'
 
 const PAGE_TITLE = '대표님 서비스 선택 | 미래AI랩 — 50인 미만 중소기업 AX · 기술사업·MVP'
 const PAGE_DESC =
-  '50인 미만 중소기업을 위한 AX와 기술사업을 만들어요. 기술사업 하나를 2주 안에 만드는 MVP·벤처기업확인 패키지부터, 회사 전체를 바꾸는 AX 도입까지.'
+  '50인 미만 중소기업을 위한 AX와 기술사업을 만들어요. 아이디어는 눌러 보는 서비스로, 회사는 벤처기업으로 — 2주 MVP·벤처기업확인 패키지부터, 회사 전체를 바꾸는 AX 도입까지.'
 
 const MVP_STEPS = ['기술사업', 'MVP', '벤처기업확인'] as const
 const AX_KEYWORDS = ['내부 업무', '고객 응대', '데이터', '자동화', '매출 성장'] as const
@@ -107,15 +107,15 @@ export default function BusinessServicesPage() {
           <Link
             to={VENTURE_MVP_PATH}
             data-track="venture-mvp"
-            aria-label="01 2주 기술사업 빌드 — 기술사업 하나를 2주 안에 만들어요. 2주 기술사업 패키지 보기"
+            aria-label="01 2주 기술사업 빌드 — 아이디어는 눌러 보는 서비스로, 회사는 벤처기업으로. 2주 기술사업 패키지 보기"
             className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#D47A4A]/30 bg-gradient-to-br from-[#171B20] via-[#1F252C] to-[#343B44] p-5 pt-6 text-white shadow-lg shadow-[#171B20]/25 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/70 hover:shadow-2xl hover:shadow-[#171B20]/35 [animation-delay:200ms] sm:p-7"
           >
             <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#D47A4A]/25 opacity-70 blur-3xl transition-opacity group-hover:opacity-100" />
 
             <div className="relative">
-              <CardHead no="01" name="2주 기술사업 빌드" diff="없던 사업을 새로 만들어요" badge="선착순 5개사" tone="dark" />
+              <CardHead no="01" name="2주 기술사업 빌드" diff="없던 기술사업을 2주 안에" badge="선착순 5개사" tone="dark" />
               <h2 className="mt-4 text-[1.5rem] font-black leading-[1.25] tracking-tight sm:text-[1.8rem]">
-                기술사업 하나를<br />2주 안에 만들어요
+                아이디어는 서비스로,<br />회사는 <span className="text-[#E8894F]">벤처기업으로</span>
               </h2>
               <p className="mt-3 text-[0.96rem] leading-relaxed text-slate-300 sm:text-[1.02rem]">
                 지금 하는 사업에서 기술사업 아이디어를 찾고, <b className="font-bold text-white">바로 써 볼 수 있는 첫 버전(MVP)</b>과

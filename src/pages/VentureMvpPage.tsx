@@ -1,8 +1,10 @@
 // 기술사업 · MVP · 벤처기업확인 패키지 (/business-services/venture-mvp).
-// 주인공은 Drive 상세페이지 이미지 15장 자체다 — 웹 텍스트로 다시 설명하지 않는다.
-//  - 01→15 순서 고정, 원본 비율 그대로(width:100%; height:auto), 이미지 사이 여백 없음
-//  - 첫 장만 우선 로딩, 나머지는 lazy. width/height 로 자리를 미리 잡아 CLS 를 막는다
-//  - 이미지 안에 그려진 버튼(01·04·09·15)은 그림일 뿐이라, 그 자리에 투명한 실제 링크(hotspot)를 얹고
+// 첫 화면은 글자 히어로(VentureMvpHero) — '아이디어는 눌러 보는 서비스로, 회사는 벤처기업으로.'
+//   예전 01번 통이미지를 대신한다(문구를 바로 고칠 수 있고 폰에서 선명하다). 이어서 '예를 들면'(자체 데모 3개),
+//   그다음 Drive 상세페이지 이미지 02~15 를 그대로 붙인다.
+//  - 02→15 순서 고정, 원본 비율 그대로(width:100%; height:auto), 이미지 사이 여백 없음
+//  - 이미지는 모두 lazy(첫 화면은 글자라 가장 먼저 그려진다). width/height 로 자리를 미리 잡아 CLS 를 막는다
+//  - 이미지 안에 그려진 버튼(04·09·15)은 그림일 뿐이라, 그 자리에 투명한 실제 링크(hotspot)를 얹고
 //    실제 CTA 는 하단(+모바일 하단 고정)에 따로 둔다
 //  - ⚠️ 이 페이지는 3분 AX Fit 진단으로 보내지 않는다. 상세페이지를 끝까지 읽은 사람에게
 //    다시 AX 적합도 진단을 시키지 않고, 기존 상담카드(ConsultModal)를 바로 열어 회사 정보를 받는다.
@@ -14,13 +16,16 @@ import HeaderAccount from '../components/account/HeaderAccount'
 import LegalFooter from '../components/LegalFooter'
 import KakaoFloat from '../components/KakaoFloat'
 import ConsultModal from '../components/ConsultModal'
+import VentureMvpHero from '../components/venture/VentureMvpHero'
+import VentureMvpExamples from '../components/venture/VentureMvpExamples'
 import { VENTURE_MVP_DIR, VENTURE_MVP_HOTSPOTS, VENTURE_MVP_IMAGES, type VentureMvpHotspot } from '../data/ventureMvpImages'
 import { AX_GUIDE_PATH, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { rememberInterest } from '../lib/interestTrack'
 import { usePageMeta } from '../lib/pageMeta'
 
 const PAGE_TITLE = '기술사업 · MVP · 벤처기업확인 | 미래AI랩'
-const PAGE_DESC = '지금 하는 사업에서 출발해 기술사업 아이디어를 잡고, 실제로 돌아가는 MVP를 만들고, 벤처기업확인 신청까지 한 번에 이어 갑니다.'
+const PAGE_DESC =
+  '아이디어는 눌러 보는 서비스로, 회사는 벤처기업으로. 경영컨설턴트가 기술사업 아이디어부터 MVP, 벤처기업확인 신청까지 2주 안에 함께합니다. 런칭 파트너 300만원 · 선착순 5개사.'
 
 /** 상담 리드의 신청 경로 — consult_leads.source 와 알림 메일 제목에 그대로 들어간다 */
 const CONSULT_SOURCE = '기술사업·MVP 상세페이지 (venture-mvp)'
@@ -33,6 +38,8 @@ const VENTURE_BENEFIT_HREF = '/business-services/venture-innovation'
 const HOTSPOT_CLS =
   'absolute block rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E8B89A]'
 const hotspotStyle = (h: VentureMvpHotspot) => ({ left: `${h.x}%`, top: `${h.y}%`, width: `${h.w}%`, height: `${h.h}%` })
+// 01 은 글자 히어로(VentureMvpHero)가 대신한다 — 02 부터 붙인다
+const STORY_IMAGES = VENTURE_MVP_IMAGES.filter((img) => img.n !== '01')
 
 export default function VentureMvpPage() {
   usePageMeta(PAGE_TITLE, PAGE_DESC, VENTURE_MVP_PATH)
@@ -45,7 +52,7 @@ export default function VentureMvpPage() {
     rememberInterest('venture-mvp')
   }, [])
 
-  // 모바일 하단 고정 CTA — 첫 장을 어느 정도 본 뒤에만 띄우고, 하단 CTA 가 보이면 숨긴다
+  // 모바일 하단 고정 CTA — 첫 화면을 어느 정도 본 뒤에만 띄우고, 하단 CTA 가 보이면 숨긴다
   useEffect(() => {
     const sync = () => setPastTop(window.scrollY > 480)
     sync()
@@ -62,7 +69,7 @@ export default function VentureMvpPage() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-[#FAFAF8] pb-[4.5rem] text-[#171B20] antialiased [word-break:keep-all] sm:pb-0">
-      {/* 작은 헤더 — 로고 · 뒤로 · 상담 신청. 이미지가 주인공이라 메뉴는 두지 않는다 */}
+      {/* 작은 헤더 — 로고 · 뒤로 · 상담 신청. 메뉴는 두지 않는다 */}
       <header className="sticky top-0 z-30 border-b border-[#E7EAEE] bg-[#FAFAF8]/92 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-2 sm:px-6 sm:py-2.5">
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">
@@ -93,11 +100,12 @@ export default function VentureMvpPage() {
       </header>
 
       <main className="flex-1">
-        <h1 className="sr-only">기술사업 · MVP · 벤처기업확인 패키지 — 2주 기술사업 빌드</h1>
+        <VentureMvpHero onConsult={() => setConsultOpen(true)} />
+        <VentureMvpExamples />
 
-        {/* 상세 이미지 15장 — 하나의 긴 스토리처럼 붙여서 보여준다 */}
+        {/* 상세 이미지 02~15 — 하나의 긴 스토리처럼 붙여서 보여준다(01 은 위 글자 히어로가 대신한다) */}
         <div className="mx-auto w-full max-w-[880px]" data-mvp-story>
-          {VENTURE_MVP_IMAGES.map((img, i) => (
+          {STORY_IMAGES.map((img, i) => (
             <div key={img.n} className="relative">
               <picture>
                 <source srcSet={`${VENTURE_MVP_DIR}/${img.n}.webp`} type="image/webp" />
@@ -105,9 +113,8 @@ export default function VentureMvpPage() {
                   src={`${VENTURE_MVP_DIR}/${img.n}.png`}
                   width={img.w}
                   height={img.h}
-                  alt={`기술사업·MVP·벤처기업확인 상세 안내 ${i + 1} / ${VENTURE_MVP_IMAGES.length}`}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  fetchPriority={i === 0 ? 'high' : undefined}
+                  alt={`기술사업·MVP·벤처기업확인 상세 안내 ${i + 1} / ${STORY_IMAGES.length}`}
+                  loading="lazy"
                   decoding="async"
                   className="block h-auto w-full"
                 />
