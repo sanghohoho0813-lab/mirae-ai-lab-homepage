@@ -119,22 +119,7 @@ const outcomes: { t: string; d: string; em: string }[] = [
   { t: '첫 미팅부터 달라 보여요', d: '“서류는 여기 올려 주시고, 진행 상황은 여기서 보시면 돼요.” 이 화면 하나로 다른 컨설턴트와 차이가 나요.', em: '다른 컨설턴트와 차이가 나요' },
 ]
 
-// 예상 반응 — ⚠️ 실제 이용 후기가 아니다(정식 출시 전). 화면에 '예시'로 분명히 적고,
-//   실제 이용자 후기가 모이면(동의 받고) 이 목록을 바꾼다. 없는 숫자·실명은 넣지 않는다.
-const reactions: { quote: string; who: string }[] = [
-  {
-    quote: '서류 다시 달라고 연락할 일이 없어졌어요. 아침에 열면 오늘 누구 일부터 할지 정리돼 있어서, 출근하자마자 전화부터 돌려요.',
-    who: '법인컨설턴트',
-  },
-  {
-    quote: '제가 올린 서류가 어디까지 처리됐는지 바로 보이니까 따로 물어볼 일이 없더라고요. 이렇게 관리해 주는 컨설턴트는 처음이에요.',
-    who: '고객사 대표님',
-  },
-  {
-    quote: '지난번에 받아 둔 서류로 고용지원금이랑 연구소까지 바로 짚어 드렸더니, 그 자리에서 다음 일을 맡겨 주셨어요. 아는 대표님도 소개해 주시고요.',
-    who: '정책자금 컨설턴트',
-  },
-]
+// 이용 후기 — 정식 출시 후 동의받은 실제 후기가 생기면 '써 보면 달라지는 것' 아래에 넣는다(지금은 없음).
 
 // 고객과 내부가 한 바퀴로 — 화면보다 이 순환이 핵심이다
 const loop = [
@@ -497,22 +482,6 @@ function App() {
           <p className="mt-7 break-keep border-t border-white/10 pt-5 text-[1.05rem] font-semibold leading-relaxed text-white sm:text-lg">
             꼼꼼하게 관리받은 고객은 다시 찾고, 주변에도 소개해요. <span className="text-emerald-300">일이 일을 부르는 컨설턴트</span>가 되는 거예요.
           </p>
-        </div>
-
-        {/* 예상 반응 — 정식 출시 전이라 실제 후기가 아니다. 제목·안내 문장은 대표님 요청으로 뺐고,
-            카드마다 '· 예시' 표기는 남겨 실제 후기로 읽히지 않게 한다 */}
-        <div data-os-reactions className="mt-8">
-          <ul className="grid gap-4 md:grid-cols-3">
-            {reactions.map((r) => (
-              <li key={r.who} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                <p aria-hidden className="text-[1.05rem] tracking-[0.15em] text-amber-400">★★★★★</p>
-                <p className="mt-3 flex-1 break-keep text-[1.02rem] leading-relaxed text-slate-700">“{r.quote}”</p>
-                <p className="mt-4 text-sm font-bold text-slate-500">
-                  {r.who} <span className="font-medium text-slate-400">· 예시</span>
-                </p>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
