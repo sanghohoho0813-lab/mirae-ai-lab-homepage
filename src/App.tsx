@@ -29,9 +29,34 @@ const svg = (d: ReactNode) => (
 
 // 매일 여는 화면(컨설턴트 운영 모듈) — 컨설턴트가 하루에 몇 번씩 시간을 버리던 순간을 없앤다.
 // 대표님 설명 그대로: 서류는 한 번 / 어디서든 / 고객사 정보 한눈에 / 수금·마감 / 다음 모듈로 이어져 자동 분석.
-const everyday: { tag: string; title: string; desc: string; icon: ReactNode }[] = [
+// 색 역할(읽기 쉽게): 파랑 = 기본 · 보라 = 고객 정보 · 초록 = 좋아지는 것 · 호박색 = 시간·돈.
+// Tailwind 가 클래스를 찾을 수 있게 전체 클래스 이름을 그대로 적는다.
+type Tone = 'blue' | 'emerald' | 'violet' | 'amber'
+const TONE: Record<Tone, { box: string; chip: string; em: string }> = {
+  blue: { box: 'bg-blue-50 text-blue-600 ring-blue-100', chip: 'bg-blue-50 text-blue-700', em: 'text-blue-700' },
+  emerald: { box: 'bg-emerald-50 text-emerald-600 ring-emerald-100', chip: 'bg-emerald-50 text-emerald-700', em: 'text-emerald-700' },
+  violet: { box: 'bg-violet-50 text-violet-600 ring-violet-100', chip: 'bg-violet-50 text-violet-700', em: 'text-violet-700' },
+  amber: { box: 'bg-amber-50 text-amber-600 ring-amber-100', chip: 'bg-amber-50 text-amber-800', em: 'text-amber-700' },
+}
+
+/** 문장 속 핵심 구절 하나만 굵게·색으로 — 훑어 읽어도 요점이 걸리게 */
+function Em({ text, em, cls }: { text: string; em?: string; cls: string }) {
+  const i = em ? text.indexOf(em) : -1
+  if (!em || i < 0) return <>{text}</>
+  return (
+    <>
+      {text.slice(0, i)}
+      <b className={`font-semibold ${cls}`}>{em}</b>
+      {text.slice(i + em.length)}
+    </>
+  )
+}
+
+const everyday: { tag: string; title: string; desc: string; em: string; tone: Tone; icon: ReactNode }[] = [
   {
     tag: '서류',
+    tone: 'blue',
+    em: '다시 달라고 할 일이 없어요',
     title: '서류는 한 번만 받으면 끝',
     desc: '고객이 올린 서류는 업체별로 차곡차곡 쌓여요. ‘그거 저번에 보내 드렸잖아요’ 소리 들으며 다시 달라고 할 일이 없어요.',
     icon: svg(
@@ -43,6 +68,8 @@ const everyday: { tag: string; title: string; desc: string; icon: ReactNode }[] 
   },
   {
     tag: '어디서든',
+    tone: 'emerald',
+    em: '폰으로 바로 열어 봐요',
     title: 'PC, 폰, 클라우드를 오갈 필요 없이',
     desc: '사무실 컴퓨터에 있었나, 메일로 받았나 뒤질 필요가 없어요. 외근 중에도 폰으로 바로 열어 봐요.',
     icon: svg(
@@ -55,6 +82,8 @@ const everyday: { tag: string; title: string; desc: string; icon: ReactNode }[] 
   },
   {
     tag: '고객사 정보',
+    tone: 'violet',
+    em: '한 화면에 깔끔하게 정리돼 있어요',
     title: '사업자등록번호부터 한눈에',
     desc: '고객사마다 꼭 필요한 정보가 한 화면에 깔끔하게 정리돼 있어요. 찾아보고, 다시 물어보는 시간이 줄어요.',
     icon: svg(
@@ -67,6 +96,8 @@ const everyday: { tag: string; title: string; desc: string; icon: ReactNode }[] 
   },
   {
     tag: '수금·마감',
+    tone: 'amber',
+    em: '대신 기억해 둬요',
     title: '수금일과 마감일은 먼저 알려 줘요',
     desc: '받을 돈, 신청 마감, 다음에 연락할 날을 대신 기억해 둬요. 놓칠까 봐 달력을 몇 번씩 들여다볼 필요가 없어요.',
     icon: svg(
@@ -79,13 +110,13 @@ const everyday: { tag: string; title: string; desc: string; icon: ReactNode }[] 
 ]
 
 // 써 보면 달라지는 것 — 시간 · 여유 · 추가 계약 · 소개 · 처음 맡는 분야 · 첫 미팅
-const outcomes: { t: string; d: string }[] = [
-  { t: '헛걸음이 사라져요', d: '찾고, 묻고, 다시 받던 시간을 고객 일에 쓸 수 있어요.' },
-  { t: '같은 시간에 더 많은 고객사를', d: '서류와 일정이 알아서 정리되니, 고객사가 늘어도 허둥대지 않아요.' },
-  { t: '추가 계약이 자연스러워요', d: '쌓인 기록과 분석을 보여 주면서 ‘다음엔 이걸 해 보시죠’라고 말할 수 있어요. 다음 계약은 거기서 시작돼요.' },
-  { t: '소개받기 좋아져요', d: '고객이 진행 상황을 직접 보니 믿음이 쌓여요. ‘그 컨설턴트는 관리가 확실해’라는 말이 가장 강한 영업이에요.' },
-  { t: '처음 맡는 분야도 금방', d: '잘 모르는 분야라도 도구가 요건과 확인할 것을 순서대로 짚어 줘요. 조금만 도움받으면 금방 따라잡아요.' },
-  { t: '첫 미팅부터 달라 보여요', d: '“서류는 여기 올려 주시고, 진행 상황은 여기서 보시면 돼요.” 이 화면 하나로 다른 컨설턴트와 차이가 나요.' },
+const outcomes: { t: string; d: string; em: string }[] = [
+  { t: '헛걸음이 사라져요', d: '찾고, 묻고, 다시 받던 시간을 고객 일에 쓸 수 있어요.', em: '고객 일에 쓸 수 있어요' },
+  { t: '같은 시간에 더 많은 고객사를', d: '서류와 일정이 알아서 정리되니, 고객사가 늘어도 허둥대지 않아요.', em: '허둥대지 않아요' },
+  { t: '추가 계약이 자연스러워요', d: '쌓인 기록과 분석을 보여 주면서 ‘다음엔 이걸 해 보시죠’라고 말할 수 있어요. 다음 계약은 거기서 시작돼요.', em: '다음 계약은 거기서 시작돼요' },
+  { t: '소개받기 좋아져요', d: '고객이 진행 상황을 직접 보니 믿음이 쌓여요. ‘그 컨설턴트는 관리가 확실해’라는 말이 가장 강한 영업이에요.', em: '가장 강한 영업이에요' },
+  { t: '처음 맡는 분야도 금방', d: '잘 모르는 분야라도 도구가 요건과 확인할 것을 순서대로 짚어 줘요. 조금만 도움받으면 금방 따라잡아요.', em: '금방 따라잡아요' },
+  { t: '첫 미팅부터 달라 보여요', d: '“서류는 여기 올려 주시고, 진행 상황은 여기서 보시면 돼요.” 이 화면 하나로 다른 컨설턴트와 차이가 나요.', em: '다른 컨설턴트와 차이가 나요' },
 ]
 
 // 예상 반응 — ⚠️ 실제 이용 후기가 아니다(정식 출시 전). 화면에 '예시'로 분명히 적고,
@@ -360,7 +391,7 @@ function App() {
               </p>
               <p className="mt-3 break-keep text-base leading-relaxed text-slate-300 sm:text-lg">
                 서류는 한 번 받으면 끝. 고객사 정보는 밖에서도 폰으로 바로 꺼내 보고,
-                올려 둔 서류로 <span className="font-semibold text-white">다음에 제안할 거리</span>까지 찾아 줍니다.
+                올려 둔 서류로 <span className="font-semibold text-emerald-300">다음에 제안할 거리</span>까지 찾아 줍니다.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -414,11 +445,13 @@ function App() {
           {everyday.map((v) => (
             <article key={v.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
               <div className="flex items-center gap-3">
-                <div className="grid h-11 w-11 place-items-center rounded-xl bg-slate-900 text-sky-300 [&_svg]:h-5 [&_svg]:w-5">{v.icon}</div>
-                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold tracking-wide text-blue-700">{v.tag}</span>
+                <div className={`grid h-11 w-11 place-items-center rounded-xl ring-1 ring-inset [&_svg]:h-5 [&_svg]:w-5 ${TONE[v.tone].box}`}>{v.icon}</div>
+                <span className={`rounded-full px-2.5 py-1 text-xs font-bold tracking-wide ${TONE[v.tone].chip}`}>{v.tag}</span>
               </div>
               <h3 className="mt-4 break-keep text-xl font-bold text-slate-900">{v.title}</h3>
-              <p className="mt-2 break-keep text-[1.02rem] leading-relaxed text-slate-600">{v.desc}</p>
+              <p className="mt-2 break-keep text-[1.02rem] leading-relaxed text-slate-600">
+                <Em text={v.desc} em={v.em} cls={TONE[v.tone].em} />
+              </p>
             </article>
           ))}
 
@@ -444,20 +477,22 @@ function App() {
 
         {/* 써 보면 달라지는 것 — 시간 · 다음 계약 · 처음 맡는 분야 · 첫 미팅 */}
         <div data-os-renewal className="mt-10 rounded-3xl bg-slate-900 p-6 text-white shadow-sm sm:p-9">
-          <p className="text-sm font-black tracking-wide text-sky-300">써 보면 달라지는 것</p>
+          <p className="text-sm font-black tracking-wide text-emerald-300">써 보면 달라지는 것</p>
           <h3 className="mt-2 break-keep text-[1.6rem] font-bold leading-snug sm:text-3xl">
             시간은 아끼고,<br className="sm:hidden" /> 계약과 소개는 가까워져요
           </h3>
           <ul className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
             {outcomes.map((o) => (
-              <li key={o.t} className="border-l-2 border-sky-400/60 pl-4">
+              <li key={o.t} className="border-l-2 border-emerald-400/70 pl-4">
                 <p className="break-keep text-lg font-bold">{o.t}</p>
-                <p className="mt-1 break-keep text-[1rem] leading-relaxed text-slate-300">{o.d}</p>
+                <p className="mt-1 break-keep text-[1rem] leading-relaxed text-slate-300">
+                  <Em text={o.d} em={o.em} cls="text-emerald-300" />
+                </p>
               </li>
             ))}
           </ul>
           <p className="mt-7 break-keep border-t border-white/10 pt-5 text-[1.05rem] font-semibold leading-relaxed text-white sm:text-lg">
-            꼼꼼하게 관리받은 고객은 다시 찾고, 주변에도 소개해요. <span className="text-sky-300">일이 일을 부르는 컨설턴트</span>가 되는 거예요.
+            꼼꼼하게 관리받은 고객은 다시 찾고, 주변에도 소개해요. <span className="text-emerald-300">일이 일을 부르는 컨설턴트</span>가 되는 거예요.
           </p>
         </div>
 
@@ -586,7 +621,7 @@ function App() {
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {faqs.map((item) => (
               <article key={item.q} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-lg font-bold text-slate-900">Q. {item.q}</p>
+                <p className="text-lg font-bold text-slate-900"><span className="text-blue-600">Q.</span> {item.q}</p>
                 <p className="mt-3 text-base leading-relaxed text-slate-600">{item.a}</p>
               </article>
             ))}
