@@ -482,9 +482,12 @@ function App() {
             시간은 아끼고,<br className="sm:hidden" /> 계약과 소개는 가까워져요
           </h3>
           <ul className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
-            {outcomes.map((o) => (
+            {outcomes.map((o, i) => (
               <li key={o.t} className="border-l-2 border-emerald-400/70 pl-4">
-                <p className="break-keep text-lg font-bold">{o.t}</p>
+                <p className="flex items-baseline gap-2.5 break-keep text-lg font-bold">
+                  <span className="shrink-0 text-[0.95rem] font-black tabular-nums text-emerald-300">{String(i + 1).padStart(2, '0')}</span>
+                  {o.t}
+                </p>
                 <p className="mt-1 break-keep text-[1rem] leading-relaxed text-slate-300">
                   <Em text={o.d} em={o.em} cls="text-emerald-300" />
                 </p>
