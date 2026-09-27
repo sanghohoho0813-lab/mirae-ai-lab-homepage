@@ -1,7 +1,7 @@
 // 기술사업 · MVP · 벤처기업확인 패키지 (/business-services/venture-mvp).
 // 첫 화면은 글자 히어로(VentureMvpHero) — '아이디어는 작동하는 서비스로 만들어드리고, 회사는 벤처기업으로 만들어드려요.'
 //   예전 01번 통이미지를 대신한다(문구를 바로 고칠 수 있고 폰에서 선명하다). 이어서 '예를 들면'(자체 데모 10개, 카드 전체가 데모 링크),
-//   그다음 Drive 상세페이지 이미지 02~15 를 그대로 붙인다.
+//   세 번째로 1분 소개 영상(VentureMvpFilm), 그다음 Drive 상세페이지 이미지 02~15 를 그대로 붙인다.
 //  - 02→15 순서 고정, 원본 비율 그대로(width:100%; height:auto), 이미지 사이 여백 없음
 //  - 이미지는 모두 lazy(첫 화면은 글자라 가장 먼저 그려진다). width/height 로 자리를 미리 잡아 CLS 를 막는다
 //  - 이미지 안에 그려진 버튼(04·09·15)은 그림일 뿐이라, 그 자리에 투명한 실제 링크(hotspot)를 얹고
@@ -18,6 +18,7 @@ import KakaoFloat from '../components/KakaoFloat'
 import ConsultModal from '../components/ConsultModal'
 import VentureMvpHero from '../components/venture/VentureMvpHero'
 import VentureMvpExamples from '../components/venture/VentureMvpExamples'
+import VentureMvpFilm from '../components/venture/VentureMvpFilm'
 import { VENTURE_MVP_DIR, VENTURE_MVP_HOTSPOTS, VENTURE_MVP_IMAGES, type VentureMvpHotspot } from '../data/ventureMvpImages'
 import { AX_GUIDE_PATH, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { rememberInterest } from '../lib/interestTrack'
@@ -102,6 +103,7 @@ export default function VentureMvpPage() {
       <main className="flex-1">
         <VentureMvpHero onConsult={() => setConsultOpen(true)} />
         <VentureMvpExamples />
+        <VentureMvpFilm onConsult={() => setConsultOpen(true)} />
 
         {/* 상세 이미지 02~15 — 하나의 긴 스토리처럼 붙여서 보여준다(01 은 위 글자 히어로가 대신한다) */}
         <div className="mx-auto w-full max-w-[880px]" data-mvp-story>

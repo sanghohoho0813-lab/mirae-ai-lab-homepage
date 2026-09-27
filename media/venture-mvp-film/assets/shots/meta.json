@@ -1,0 +1,74 @@
+{
+ "pawbeauty": {
+  "homeH": 2700,
+  "click": {
+   "x": 498.421875,
+   "y": 67.03125,
+   "width": 88,
+   "height": 41.921875
+  },
+  "innerUrl": "https://sample-animalbeauty-booking-mvp.vercel.app/booking",
+  "innerH": 927,
+  "mobH": 2400
+ },
+ "localmom": {
+  "homeH": 2700,
+  "click": {
+   "x": 112,
+   "y": 897.3125,
+   "width": 289,
+   "height": 411.6875
+  },
+  "innerUrl": "https://sample-localmat-commerce-mvp.vercel.app/products/nonsan-ttalgi",
+  "innerH": 2700,
+  "mobH": 2400
+ },
+ "expertmatch": {
+  "homeH": 2700,
+  "click": {
+   "x": 361.640625,
+   "y": 58.59375,
+   "width": 135,
+   "height": 55.59375
+  },
+  "innerUrl": "https://sample-expertmatch-mvp.vercel.app/experts",
+  "innerH": 2700,
+  "mobH": 2400
+ },
+ "eduplaza": {
+  "homeH": 2631,
+  "click": {
+   "x": 352,
+   "y": 695.484375,
+   "width": 187,
+   "height": 48.796875
+  },
+  "innerUrl": "https://sample4-eduplaza-learning-mvp.vercel.app/learn/c1?lesson=c1-s3-l3",
+  "innerH": 1633,
+  "mobH": 2400
+ },
+ "insightai": {
+  "homeH": 2700,
+  "click": {
+   "x": 12,
+   "y": 361,
+   "width": 268,
+   "height": 52
+  },
+  "innerUrl": "https://sample5-insight-ai-analytics-mvp.vercel.app/forecast",
+  "innerH": 1576,
+  "mobH": 2400
+ },
+ "stylecheck": {
+  "homeH": 2700,
+  "click": {
+   "x": 388.59375,
+   "y": 1060.53125,
+   "width": 315.8125,
+   "height": 498.375
+  },
+  "innerUrl": "https://sample10-stylecheck-ai-mvp.vercel.app/result/sc-mujo4cov-nf5egw",
+  "innerH": 2700,
+  "mobH": 2400
+ }
+}
