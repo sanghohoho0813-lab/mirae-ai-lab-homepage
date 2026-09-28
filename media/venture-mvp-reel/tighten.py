@@ -1,8 +1,8 @@
 # 녹음의 긴 쉼을 줄이고 전체를 1.05배로 → assets/voice-fast.wav
 # 같은 규칙으로 받아쓰기 단어 시간도 옮겨 asr-fast.json 을 만든다(다시 받아쓰지 않아도 정확히 맞는다).
 #  - 쉼표 쉼(문장 안): 0.2초까지
-#  - 문장 사이(같은 장면): 0.26초
-#  - 장면 사이: 0.38초
+#  - 문장 사이(같은 장면): 0.35초
+#  - 장면 사이: 0.45초
 #  - 말 끝 꼬리는 넉넉히(60%), 다음 말 앞은 40% 남겨 소리가 잘리지 않게 한다
 import json, re, subprocess, sys
 
@@ -21,14 +21,16 @@ sil = list(zip(starts, ends))
 
 lines = T['lines']
 def kind(s, e):
-    """쉼의 종류: 장면 사이 / 문장 사이 / 문장 안"""
+    """쉼의 종류: 장면 사이 / 문장 사이 / 문장 안.
+    쉼이 끝난 바로 뒤에 새 문장이 시작하면 문장(또는 장면) 사이로 본다.
+    (받아쓰기의 말 끝 시간은 실제보다 늦게 잡혀서, 앞 문장 끝으로 판단하면 문장 사이를 쉼표로 잘못 본다)"""
     for i in range(1, len(lines)):
         a, b = lines[i - 1], lines[i]
-        if s - 0.35 <= b['start'] <= e + 0.35 and a['end'] - 0.45 <= s:
+        if s - 0.2 <= b['start'] + 0.08 <= e + 0.45:
             return 'block' if a['block'] != b['block'] else 'line'
     return 'comma'
 
-TARGET = {'block': 0.38, 'line': 0.26, 'comma': 0.2}
+TARGET = {'block': 0.45, 'line': 0.35, 'comma': 0.2}
 cuts = []  # (시작, 끝) 잘라낼 구간
 for s, e in sil:
     d = e - s

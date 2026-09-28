@@ -29,7 +29,8 @@ const rise = (sel, at, extra = '') => tw(`tl.from('${sel}', { y: 36, opacity: 0,
 const pop = (sel, at) => tw(`tl.from('${sel}', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, ${r2(at)});`)
 
 // ── 그림 조각
-const CERT = (id, cls = '') => `<div class="cert ${cls}" id="${id}"><div class="cert-in"><p class="cert-k">예시 그림</p><p class="cert-t">벤처기업<br>확인서</p><i></i><i></i><i style="width:62%"></i><div class="cert-seal"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z" fill="#fff"/></svg></div></div></div>`
+// 실제 벤처기업확인서 — 기업명·사업자등록번호·대표자·주소·발급번호·날짜는 모두 가린 이미지(2차원 코드 부분은 잘라냄)
+const CERTIMG = (id, cls = '') => `<div class="certimg ${cls}" id="${id}"><img src="assets/shots/cert-masked.jpg" alt=""><span class="mask">기업 정보 가림</span></div>`
 const PHONE = (id, img, cls = '') => `<div class="phone ${cls}" id="${id}"><div class="screen">${img ? `<img class="mob" id="${id}-img" src="assets/shots/${img}" alt="">` : '<div class="blank"><i></i><i></i><i></i><b>MVP</b></div>'}</div></div>`
 const CURSOR = (id) => `<svg class="cursor" id="${id}" viewBox="0 0 24 24" width="44" height="44"><path d="M4 2.5 L4 19 L8.6 14.8 L11.6 21.4 L14.4 20.2 L11.4 13.7 L17.6 13.4 Z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>`
 const ICON = {
@@ -45,9 +46,9 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
 {
   const b = 1
   sec(b, `
-    <div class="who" id="s1a" style="top:290px">${CERT('s1-cert', 'sm')}<span class="qm" id="s1-q1">?</span>
+    <div class="who" id="s1a" style="top:290px">${CERTIMG('s1-cert', 'sm')}<span class="qm" id="s1-q1">?</span>
       <div class="who-txt"><span class="tag">중소기업 대표님</span><p>벤처인증은 필요한데<br><b>내세울 기술</b>이 없다면?</p></div></div>
-    <div class="who" id="s1b" style="top:745px">${PHONE('s1-ph', null, 'sm')}<span class="qm" id="s1-q2">?</span>
+    <div class="who" id="s1b" style="top:745px">${PHONE('s1-ph', 'pawbeauty-mob.jpg', 'sm')}<span class="qm" id="s1-q2">?</span>
       <div class="who-txt"><span class="tag">예비창업자</span><p>창업 준비 중인데<br><b>MVP부터</b> 막막하다면?</p></div></div>
     <div class="stamp" id="s1s">둘 다, <em>한 번에</em> 해결</div>`)
   fade(b)
@@ -64,9 +65,9 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   const b = 2
   sec(b, `
     <div class="big" id="s2-t">${lines(['<em class="peach">작동하는 서비스</em>', '+ 벤처기업확인 신청'])}</div>
-    ${CERT('s2-cert', 'md')}
+    ${CERTIMG('s2-cert', 'md')}
     <div class="plus" id="s2-plus">+</div>
-    ${PHONE('s2-ph', 'localmom-mob.jpg', 'md')}
+    ${PHONE('s2-ph', 'pawbeauty-mob.jpg', 'md')}
     <div class="badge" id="s2-badge"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#171B20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>기술기업</b></div>
     <p class="fine" id="s2-f" style="top:1245px">*벤처인증의 정식 명칭은 벤처기업확인이에요. 확인 여부는 확인기관 심사로 정해집니다.</p>`)
   fade(b)
@@ -147,7 +148,7 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
 // 7) MVP 가 차이(샘플 4 EduPlaza) → 나중엔 AX: 학습 플랫폼 → 학원 AX, 미용 예약 → 헤어숍 AX (공식 근거는 따로)
 {
   const b = 7
-  const PAIRS = [['eduplaza-mob.jpg', 'ax-edumaster-lg.jpg', '학습 플랫폼 MVP', '학원 AX', '에듀마스터'], ['pawbeauty-mob.jpg', 'ax-lumiere-dash.jpg', '미용 예약 MVP', '헤어숍 AX', 'LUMIÈRE']]
+  const PAIRS = [['eduplaza-mob.jpg', 'ax-edumaster-lg.jpg', '학습 플랫폼 MVP', '학원 AX', '에듀마스터']]
   sec(b, `
     <div class="big" id="s7-t1">${lines(['눌러 보여 주는 <em class="peach">MVP</em>가', '차이를 만들어요'])}</div>
     <div class="big" id="s7-t2">${lines(['나중엔 AI를 붙여', '<em class="orange">AX</em>로 키워요'])}</div>
@@ -167,20 +168,16 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   tw(`tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' }, ${r2(K('b7_mvp') - 0.2)});`)
   tw(`tl.to('#s7-ph-img', { y: -560, duration: 3.0, ease: 'power1.inOut' }, ${r2(K('b7_mvp'))});`)
   tw(`tl.from(['#s7-ch1', '#s7-ch2'], { scale: 0.5, opacity: 0, duration: 0.35, ease: 'back.out(2)', stagger: 0.25 }, ${r2(K('b7_mvp') + 0.45)});`)
-  const sw = K('b7_ai') - 0.3, sw2 = K('b7_gov') - 0.05
+  const sw = K('b7_ai') - 0.3
   tw(`tl.to(['#s7-a', '#s7-t1'], { opacity: 0, duration: 0.25 }, ${r2(sw)});`)
-  tw(`tl.set(['#s7-t2', '#s7-p1'], { opacity: 0 }, ${START[b]});`)
+  tw(`tl.set('#s7-t2', { opacity: 0 }, ${START[b]});`)
   tw(`tl.set('#s7-t2', { opacity: 1 }, ${r2(sw)});`)
   reveal('#s7-t2 .ln > span', sw + 0.05)
   tw(`tl.from('#s7-p0', { y: 50, opacity: 0, duration: 0.4, ease: 'power2.out' }, ${r2(sw + 0.15)});`)
-  tw(`tl.to('#s7-ax0', { y: -140, duration: 2.0, ease: 'power1.inOut' }, ${r2(sw + 0.4)});`)
-  tw(`tl.to('#s7-m0-img', { y: -300, duration: 2.0, ease: 'power1.inOut' }, ${r2(sw + 0.4)});`)
+  tw(`tl.to('#s7-ax0', { y: -220, duration: ${r2(END(b) - sw - 0.5)}, ease: 'power1.inOut' }, ${r2(sw + 0.4)});`)
+  tw(`tl.to('#s7-m0-img', { y: -420, duration: ${r2(END(b) - sw - 0.5)}, ease: 'power1.inOut' }, ${r2(sw + 0.4)});`)
   pop('#s7-ai', sw + 0.45)
-  tw(`tl.to('#s7-p0', { opacity: 0, duration: 0.2 }, ${r2(sw2)});`)
-  tw(`tl.to('#s7-p1', { opacity: 1, duration: 0.25 }, ${r2(sw2)});`)
-  tw(`tl.to('#s7-ax1', { y: -60, duration: 2.4, ease: 'power1.inOut' }, ${r2(sw2 + 0.1)});`)
-  tw(`tl.to('#s7-m1-img', { y: -300, duration: 2.4, ease: 'power1.inOut' }, ${r2(sw2 + 0.1)});`)
-  rise('#s7-off', sw2 + 0.1)
+  rise('#s7-off', K('b7_gov') - 0.1)
 }
 // 8) 따로 vs 한 번에
 {
@@ -313,7 +310,7 @@ const BURST_GAP = 0.13
   tw(`tl.to('#s13-g', { opacity: 0.22, duration: 0.3 }, ${te});`)
   tw(`tl.from('#s13-end', { scale: 0.85, opacity: 0, duration: 0.4, ease: 'back.out(1.6)' }, ${te});`)
   tw(`tl.to('#s13-btn', { scale: 1.05, duration: 0.35, ease: 'sine.inOut', yoyo: true, repeat: 3 }, ${r2(te + 0.5)});`)
-  writeFileSync(new URL('./ticks.json', import.meta.url), JSON.stringify(BURST.map((_, i) => r2(t0 + 0.15 + i * BURST_GAP))))
+  writeFileSync(new URL('./music.json', import.meta.url), JSON.stringify({ start: r2(TOTAL - 8), voiceEnd: T.audioEnd, total: TOTAL }))
 }
 // 자막 — 두 줄 안에서 가운데 가까운 띄어쓰기로 끊는다
 // 쉼표 뒤를 먼저 고르고, '한 번에'·'내세울 수'처럼 한 글자 낱말이 떨어지는 자리는 피한다
@@ -381,16 +378,12 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .fine { position: absolute; left: 70px; right: 70px; font-size: 26px; font-weight: 500; line-height: 1.5; color: #7C8591; }
 .fine.center { text-align: center; }
 .tag { display: inline-flex; align-items: center; height: 46px; padding: 0 20px; border-radius: 999px; font-size: 26px; font-weight: 800; color: #E8B89A; box-shadow: inset 0 0 0 2px rgba(232,184,154,.45); }
-/* 확인서 그림 */
-.cert { position: absolute; width: 300px; height: 390px; padding: 12px; border-radius: 14px; background: #FBF7EE; box-shadow: 0 24px 60px rgba(0,0,0,.5); }
-.cert-in { position: relative; width: 100%; height: 100%; border: 5px double #C9A45C; border-radius: 8px; padding: 26px 22px; color: #3A2F1E; }
-.cert-k { font-size: 16px; font-weight: 700; color: #A89A80; }
-.cert-t { margin: 16px 0 22px; font-size: 44px; font-weight: 900; line-height: 1.12; letter-spacing: -0.02em; }
-.cert-in i { display: block; height: 12px; margin-bottom: 14px; border-radius: 6px; background: #E6DDCB; }
-.cert-seal { position: absolute; right: 18px; bottom: 18px; width: 76px; height: 76px; border-radius: 50%; background: #D47A4A; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 6px rgba(212,122,74,.25); }
-.cert-seal svg { width: 40px; height: 40px; }
-.cert.sm { left: 40px; top: 45px; transform: scale(.8); transform-origin: 0 0; }
-.cert.md { left: 110px; top: 690px; }
+/* 실제 확인서(정보 가림) */
+.certimg { position: absolute; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+.certimg img { display: block; width: 100%; height: auto; }
+.certimg .mask { position: absolute; right: 10px; bottom: 10px; padding: 5px 12px; border-radius: 999px; background: rgba(23,27,32,.86); color: #fff; font-size: 18px; font-weight: 800; }
+.certimg.sm { left: 34px; top: 34px; width: 262px; } .certimg.sm .mask { font-size: 15px; padding: 4px 9px; }
+.certimg.md { left: 80px; top: 620px; width: 400px; }
 /* 폰 그림 */
 .phone { position: absolute; width: 230px; height: 480px; padding: 9px; border-radius: 38px; background: #0E1114; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 0 2px rgba(255,255,255,.14); }
 .phone .screen { width: 100%; height: 100%; border-radius: 30px; overflow: hidden; background: #fff; position: relative; }
@@ -402,7 +395,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .phone.md { left: 640px; top: 600px; }
 .phone.lg { left: 600px; top: 560px; width: 300px; height: 620px; } .phone.lg .mob { width: 282px; }
 .phone.dm { left: 800px; top: 830px; z-index: 6; }
-.plus { position: absolute; left: 460px; top: 790px; width: 130px; text-align: center; font-size: 120px; font-weight: 900; color: #E8894F; }
+.plus { position: absolute; left: 500px; top: 790px; width: 130px; text-align: center; font-size: 120px; font-weight: 900; color: #E8894F; }
 .badge { position: absolute; left: 290px; top: 700px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #F0A06E, #D47A4A 70%); box-shadow: 0 0 0 18px rgba(212,122,74,.22), 0 40px 90px rgba(0,0,0,.5); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; z-index: 5; }
 .badge svg { width: 130px; height: 130px; } .badge b { font-size: 92px; font-weight: 900; color: #171B20; letter-spacing: -0.03em; }
 /* 1) 두 고객 */
