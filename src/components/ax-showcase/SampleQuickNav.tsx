@@ -43,10 +43,13 @@ const GROUPS: Group[] = [
 export default function SampleQuickNav({
   open: openProp,
   onOpenChange,
+  pillLabel = 'AX Preview',
 }: {
   /** 하단 고정 바 버튼처럼 바깥에서 열 때 사용 (미지정이면 스스로 관리) */
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  /** PC 알약 글자 — 기술사업·MVP 페이지는 '샘플 22개 보기' */
+  pillLabel?: string
 } = {}) {
   const [ownOpen, setOwnOpen] = useState(false)
   const open = openProp ?? ownOpen
@@ -154,11 +157,11 @@ export default function SampleQuickNav({
           type="button"
           onClick={() => setOpen(true)}
           aria-expanded={false}
-          aria-label="AX Preview 열기"
+          aria-label={`${pillLabel} 열기`}
           className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] right-[4.75rem] z-40 hidden items-center sm:inline-flex gap-1.5 rounded-full bg-[#171B20]/92 px-3.5 py-3 text-white shadow-lg shadow-slate-900/25 ring-1 ring-white/15 backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-[#171B20] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A] sm:bottom-6 sm:right-[10.25rem] sm:px-4"
         >
           <span aria-hidden className="text-[1.05rem] leading-none text-[#E8B89A]">▦</span>
-          <span className="whitespace-nowrap text-[1.05rem] font-black leading-none sm:text-[1.06rem]">AX Preview</span>
+          <span className="whitespace-nowrap text-[1.05rem] font-black leading-none sm:text-[1.06rem]">{pillLabel}</span>
         </button>
       )}
 

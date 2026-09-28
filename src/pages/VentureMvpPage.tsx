@@ -1,7 +1,8 @@
 // 기술사업 · MVP · 벤처기업확인 패키지 (/business-services/venture-mvp).
-// 첫 화면은 글자 히어로(VentureMvpHero) — '아이디어는 작동하는 서비스로 만들어드리고, 회사는 벤처기업으로 만들어드려요.'
-//   예전 01번 통이미지를 대신한다(문구를 바로 고칠 수 있고 폰에서 선명하다). 이어서 '예를 들면'(자체 데모 10개, 카드 전체가 데모 링크),
-//   세 번째로 1분 소개 영상(VentureMvpFilm), 그다음 Drive 상세페이지 이미지 02~15 를 그대로 붙인다.
+// 순서: 글자 히어로(VentureMvpHero) → 소개 영상(VentureMvpFilm, '꼭 봐 주세요') → '예를 들면'(자체 데모 10개 + AX 12개 더 보기)
+//   → 마지막 CTA('우리 회사도 가능할까요?'). 영상이 '샘플 22개, 직접 눌러서 확인해 보세요' 로 끝나서 바로 예시로 이어진다.
+//   히어로의 '영상으로 모든 내용 확인하기' 를 누르면 영상이 소리를 켜고 처음부터 재생된다.
+// Drive 상세페이지 이미지 02~15 는 대표님 요청으로 잠시 숨겨 두었다(SHOW_STORY_IMAGES). 나중에 FAQ 로 마무리할 예정.
 //  - 02→15 순서 고정, 원본 비율 그대로(width:100%; height:auto), 이미지 사이 여백 없음
 //  - 이미지는 모두 lazy(첫 화면은 글자라 가장 먼저 그려진다). width/height 로 자리를 미리 잡아 CLS 를 막는다
 //  - 이미지 안에 그려진 버튼(04·09·15)은 그림일 뿐이라, 그 자리에 투명한 실제 링크(hotspot)를 얹고
@@ -17,8 +18,9 @@ import LegalFooter from '../components/LegalFooter'
 import KakaoFloat from '../components/KakaoFloat'
 import ConsultModal from '../components/ConsultModal'
 import VentureMvpHero from '../components/venture/VentureMvpHero'
-import VentureMvpExamples from '../components/venture/VentureMvpExamples'
-import VentureMvpFilm from '../components/venture/VentureMvpFilm'
+import VentureMvpExamples, { VENTURE_MVP_EXAMPLES_ID } from '../components/venture/VentureMvpExamples'
+import VentureMvpFilm, { type VentureMvpFilmHandle } from '../components/venture/VentureMvpFilm'
+import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import { VENTURE_MVP_DIR, VENTURE_MVP_HOTSPOTS, VENTURE_MVP_IMAGES, type VentureMvpHotspot } from '../data/ventureMvpImages'
 import { AX_GUIDE_PATH, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { rememberInterest } from '../lib/interestTrack'
@@ -41,13 +43,17 @@ const HOTSPOT_CLS =
 const hotspotStyle = (h: VentureMvpHotspot) => ({ left: `${h.x}%`, top: `${h.y}%`, width: `${h.w}%`, height: `${h.h}%` })
 // 01 은 글자 히어로(VentureMvpHero)가 대신한다 — 02 부터 붙인다
 const STORY_IMAGES = VENTURE_MVP_IMAGES.filter((img) => img.n !== '01')
+// 상세 이미지 02~15 — 대표님 요청(영상·예시로 충분, 길면 좋을 게 없다)으로 잠시 숨김. 다시 보이려면 true
+const SHOW_STORY_IMAGES = false
 
 export default function VentureMvpPage() {
   usePageMeta(PAGE_TITLE, PAGE_DESC, VENTURE_MVP_PATH)
   const [pastTop, setPastTop] = useState(false)
   const [atEnd, setAtEnd] = useState(false)
   const [consultOpen, setConsultOpen] = useState(false)
+  const [sampleNavOpen, setSampleNavOpen] = useState(false)
   const ctaRef = useRef<HTMLDivElement>(null)
+  const filmRef = useRef<VentureMvpFilmHandle>(null)
 
   useEffect(() => {
     rememberInterest('venture-mvp')
@@ -101,55 +107,56 @@ export default function VentureMvpPage() {
       </header>
 
       <main className="flex-1">
-        <VentureMvpHero onConsult={() => setConsultOpen(true)} />
+        <VentureMvpHero onConsult={() => setConsultOpen(true)} onWatch={() => filmRef.current?.playWithSound()} />
+        <VentureMvpFilm ref={filmRef} onConsult={() => setConsultOpen(true)} samplesAnchor={VENTURE_MVP_EXAMPLES_ID} />
         <VentureMvpExamples />
-        <VentureMvpFilm onConsult={() => setConsultOpen(true)} />
 
-        {/* 상세 이미지 02~15 — 하나의 긴 스토리처럼 붙여서 보여준다(01 은 위 글자 히어로가 대신한다) */}
-        <div className="mx-auto w-full max-w-[880px]" data-mvp-story>
-          {STORY_IMAGES.map((img, i) => (
-            <div key={img.n} className="relative">
-              <picture>
-                <source srcSet={`${VENTURE_MVP_DIR}/${img.n}.webp`} type="image/webp" />
-                <img
-                  src={`${VENTURE_MVP_DIR}/${img.n}.png`}
-                  width={img.w}
-                  height={img.h}
-                  alt={`기술사업·MVP·벤처기업확인 상세 안내 ${i + 1} / ${STORY_IMAGES.length}`}
-                  loading="lazy"
-                  decoding="async"
-                  className="block h-auto w-full"
-                />
-              </picture>
-              {/* 그림 속 버튼 자리에 얹는 실제 링크 — 보이지 않고 눌리기만 한다 */}
-              {(VENTURE_MVP_HOTSPOTS[img.n] ?? []).map((h) =>
-                h.action === 'consult' ? (
-                  <button
-                    key={h.label}
-                    type="button"
-                    onClick={() => setConsultOpen(true)}
-                    aria-label={h.label}
-                    data-mvp-hotspot={h.action}
-                    className={HOTSPOT_CLS}
-                    style={hotspotStyle(h)}
+        {/* 상세 이미지 02~15 — 하나의 긴 스토리처럼 붙여서 보여준다(01 은 위 글자 히어로가 대신한다). 지금은 숨김 */}
+        {SHOW_STORY_IMAGES && (
+          <div className="mx-auto w-full max-w-[880px]" data-mvp-story>
+            {STORY_IMAGES.map((img, i) => (
+              <div key={img.n} className="relative">
+                <picture>
+                  <source srcSet={`${VENTURE_MVP_DIR}/${img.n}.webp`} type="image/webp" />
+                  <img
+                    src={`${VENTURE_MVP_DIR}/${img.n}.png`}
+                    width={img.w}
+                    height={img.h}
+                    alt={`기술사업·MVP·벤처기업확인 상세 안내 ${i + 1} / ${STORY_IMAGES.length}`}
+                    loading="lazy"
+                    decoding="async"
+                    className="block h-auto w-full"
                   />
-                ) : (
-                  <Link
-                    key={h.label}
-                    to={h.action === 'samples' ? SAMPLES_HREF : VENTURE_BENEFIT_HREF}
-                    aria-label={h.label}
-                    data-mvp-hotspot={h.action}
-                    className={HOTSPOT_CLS}
-                    style={hotspotStyle(h)}
-                  />
-                ),
-              )}
-            </div>
-          ))}
-        </div>
+                </picture>
+                {/* 그림 속 버튼 자리에 얹는 실제 링크 — 보이지 않고 눌리기만 한다 */}
+                {(VENTURE_MVP_HOTSPOTS[img.n] ?? []).map((h) =>
+                  h.action === 'consult' ? (
+                    <button
+                      key={h.label}
+                      type="button"
+                      onClick={() => setConsultOpen(true)}
+                      aria-label={h.label}
+                      data-mvp-hotspot={h.action}
+                      className={HOTSPOT_CLS}
+                      style={hotspotStyle(h)}
+                    />
+                  ) : (
+                    <Link
+                      key={h.label}
+                      to={h.action === 'samples' ? SAMPLES_HREF : VENTURE_BENEFIT_HREF}
+                      aria-label={h.label}
+                      data-mvp-hotspot={h.action}
+                      className={HOTSPOT_CLS}
+                      style={hotspotStyle(h)}
+                    />
+                  ),
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* 실제로 눌리는 CTA — 이미지 안의 버튼은 그림이다.
-            마지막 이미지가 끝나자마자 이어지도록 위쪽 경계선·여백을 두지 않는다. */}
+        {/* 마지막 CTA — 예시(또는 상세 이미지)가 끝나자마자 이어지도록 위쪽 경계선·여백을 두지 않는다 */}
         <div ref={ctaRef}>
           <section className="bg-[#171B20] text-white">
             <div className="mx-auto max-w-[880px] px-5 py-14 text-center sm:px-6 sm:py-16">
@@ -185,18 +192,32 @@ export default function VentureMvpPage() {
       <LegalFooter />
       <KakaoFloat />
 
-      {/* 모바일 하단 고정 CTA — 한 줄 높이만 차지해 이미지 감상을 방해하지 않는다 */}
+      {/* 샘플 창 — PC 는 카톡 버튼 옆 알약, 모바일은 아래 고정 바 오른쪽 버튼이 연다(AX 페이지와 같은 방식).
+          '아이디어 MVP' 는 이 페이지의 예시로, '산업별 AX' 는 AX 상세 안내로 보낸다 */}
+      <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} pillLabel="샘플 22개 보기" />
+
+      {/* 모바일 하단 고정 바 — AX 페이지와 같은 두 칸: 상담 60% · 샘플 22개 보기 40% */}
       {pastTop && !atEnd && (
         <div
           data-mvp-sticky
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E7EAEE] bg-[#FAFAF8]/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(23,27,32,0.08)] backdrop-blur-md sm:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-[#E7EAEE] bg-[#FAFAF8]/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(23,27,32,0.08)] backdrop-blur-md sm:hidden"
         >
+          {/* basis 0 + min-w-0 이 있어야 글자 길이가 아니라 비율이 폭을 정한다 */}
           <button
             type="button"
             onClick={() => setConsultOpen(true)}
-            className="flex min-h-12 w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-[#D47A4A] px-4 text-[1rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A]"
+            className="flex min-h-12 min-w-0 flex-[6_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#D47A4A] px-2 text-[0.92rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] min-[400px]:text-[1rem]"
           >
-            우리 회사 기준으로 검토받기 <span aria-hidden>→</span>
+            무료로 상담받기 <span aria-hidden>→</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSampleNavOpen(true)}
+            data-mvp-sticky-samples
+            className="flex min-h-12 min-w-0 flex-[4_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#171B20] px-2 text-[0.92rem] font-bold text-white shadow-sm transition-colors hover:bg-[#343B44] min-[400px]:text-[1rem]"
+          >
+            <span aria-hidden className="hidden text-[#E8B89A] min-[370px]:inline">▦</span>
+            <span>샘플 22개 보기</span>
           </button>
         </div>
       )}

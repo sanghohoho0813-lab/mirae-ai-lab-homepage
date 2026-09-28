@@ -8,7 +8,7 @@ import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
 const STEPS = ['기술사업 아이디어', '작동하는 MVP', '벤처기업확인 신청'] as const
 const CHECKS = ['아이디어가 없어도 OK — 지금 사업에서 찾아 드려요', '경영컨설턴트 1:1 설계', '벤처기업확인 신청까지'] as const
 
-export default function VentureMvpHero({ onConsult }: { onConsult: () => void }) {
+export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () => void; onWatch: () => void }) {
   // PC 오른쪽 — 실제로 눌러 볼 수 있는 자체 데모 한 장(광고처럼 '화면'이 먼저 보이게)
   const demo = PORTFOLIO_SAMPLES.find((s) => s.slug === 'pawbeauty')
 
@@ -72,14 +72,32 @@ export default function VentureMvpHero({ onConsult }: { onConsult: () => void })
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={onConsult}
-            data-mvp-hero-cta
-            className="shine-cta mt-5 flex min-h-14 w-full max-w-xl items-center justify-center gap-2 rounded-2xl bg-[#D47A4A] px-6 text-[1.15rem] font-black text-[#171B20] shadow-xl shadow-[#D47A4A]/25 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] motion-reduce:hover:translate-y-0 sm:text-[1.25rem]"
-          >
-            무료로 상담받기 <span aria-hidden>→</span>
-          </button>
+          {/* 상담(주) · 영상(보조) — 폰은 위아래, 태블릿·PC 는 나란히 두어 첫 화면에 둘 다 보이게 한다.
+              영상 버튼을 누르면 바로 아래 소개 영상이 소리를 켜고 처음부터 재생된다 */}
+          <div className="mt-5 grid max-w-xl gap-3 sm:grid-cols-[1fr_1.15fr]">
+            <button
+              type="button"
+              onClick={onConsult}
+              data-mvp-hero-cta
+              className="shine-cta flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#D47A4A] px-6 text-[1.15rem] font-black text-[#171B20] shadow-xl shadow-[#D47A4A]/25 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] motion-reduce:hover:translate-y-0 sm:px-4 sm:text-[1.2rem]"
+            >
+              무료로 상담받기 <span aria-hidden>→</span>
+            </button>
+            <button
+              type="button"
+              onClick={onWatch}
+              data-mvp-hero-watch
+              className="flex min-h-14 w-full items-center justify-center gap-3 rounded-2xl border border-white/25 bg-white/[0.07] px-4 py-2 text-left text-white transition-colors hover:border-[#E8B89A]/70 hover:bg-white/[0.12]"
+            >
+              <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#E8894F] pl-0.5 text-[0.9rem] text-[#171B20]">
+                ▶
+              </span>
+              <span className="leading-tight">
+                <span className="block text-[1.06rem] font-black sm:text-[0.98rem]">영상으로 모든 내용 확인하기</span>
+                <span className="mt-0.5 block text-[0.82rem] font-bold text-[#E8B89A]">1분 42초 · 소리 켜고 처음부터</span>
+              </span>
+            </button>
+          </div>
 
           <ul className="mt-4 grid max-w-xl gap-1.5 text-[0.95rem] text-slate-300">
             {CHECKS.map((c) => (

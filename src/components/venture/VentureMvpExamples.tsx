@@ -3,7 +3,12 @@
 //  - 카드 전체가 링크다. 누르면 실제로 작동하는 데모가 새 탭으로 열린다(noopener).
 //  - 폰·태블릿은 가로 한 줄 카드(썸네일 + 글) 목록, PC 는 다섯 칸 × 두 줄.
 // ⚠️ 고객사 사례가 아니다 — 아래에 '자체 데모'라고 분명히 적는다. 없는 성과·숫자는 붙이지 않는다.
+import { Link } from 'react-router-dom'
 import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
+import { AX_GUIDE_PATH } from '../../lib/businessRoutes'
+
+/** 샘플 창(SampleQuickNav)의 '아이디어 MVP Preview' 묶음 id 와 같다 — 이 페이지에선 여기로 스크롤한다 */
+export const VENTURE_MVP_EXAMPLES_ID = 'mvp-refs'
 
 const EXAMPLES: { from: string; to: string; slug: string }[] = [
   { from: '동네 반려동물 미용실', to: '예약·재방문 관리 플랫폼', slug: 'pawbeauty' },
@@ -25,7 +30,7 @@ export default function VentureMvpExamples() {
   })
 
   return (
-    <section data-mvp-examples className="border-b border-[#E7EAEE] bg-[#FAFAF8]">
+    <section id={VENTURE_MVP_EXAMPLES_ID} data-mvp-examples className="scroll-mt-16 border-b border-[#E7EAEE] bg-[#FAFAF8]">
       <div className="mx-auto max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
         <p className="text-[1rem] font-black text-[#B35A2A]">예를 들면</p>
         <h2 className="mt-2 break-keep text-[1.75rem] font-black leading-tight tracking-tight text-[#171B20] sm:text-[2.2rem]">
@@ -88,6 +93,21 @@ export default function VentureMvpExamples() {
             </li>
           ))}
         </ul>
+
+        {/* 22개 중 나머지 12개(업종별 AX)는 AX 상세 안내에 있다 — 마지막 카드(AI 코디 점검) 바로 다음에 잇는다 */}
+        <Link
+          to={`${AX_GUIDE_PATH}#portfolio`}
+          data-mvp-more-ax
+          className="group mt-4 flex min-h-14 items-center justify-between gap-3 rounded-2xl bg-[#171B20] px-5 py-3 text-white shadow-sm transition-colors hover:bg-[#343B44]"
+        >
+          <span className="break-keep text-[1rem] font-bold leading-snug sm:text-[1.05rem]">
+            업종별 <b className="font-black text-[#E8B89A]">AX 샘플 12개</b> 더 보기
+            <span className="ml-1.5 hidden text-[0.9rem] font-semibold text-slate-400 sm:inline">— 음식점·학원·헤어숍 등 운영 화면</span>
+          </span>
+          <span aria-hidden className="shrink-0 text-[1.2rem] font-black text-[#E8B89A] transition-transform group-hover:translate-x-0.5">
+            →
+          </span>
+        </Link>
 
         <p className="mt-4 break-keep text-[0.85rem] leading-relaxed text-[#8A939C]">
           위 화면은 미래AI랩이 직접 만든 자체 데모예요. 고객사 사례가 아니고, 실제로는 대표님 회사 사업에 맞춰 새로 설계해요.

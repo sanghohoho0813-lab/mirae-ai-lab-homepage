@@ -4,7 +4,14 @@
 대표님 녹음(`assets/voice.mp3`)에 맞춰 [HyperFrames](https://github.com/heygen-com/hyperframes)로 만들었습니다.
 
 - 결과물: `public/business/venture-mvp/mvp-reel.mp4`(H.264 + AAC) · `mvp-reel.webm`(VP9 + Opus) · `mvp-reel-poster.webp`
-  — 1080×1920(9:16), 약 101초(목소리 94초 + 샘플 22개·끝 카드 7초), 목소리 + 자막(배경음악 없음)
+  — 1080×1920(9:16). 아래 원본으로 만든 v6(약 101초)를 대표님이 한 번 더 다듬은 **최종본(1분 42초)** 이 게시돼 있어요.
+- 게시본 = Drive '내 홈페이지 상세페이지 음성 2.mp4'(4320×7680 HEVC 60fps, 217MB)를 웹용으로 줄인 것:
+  ```bash
+  ffmpeg -i 최종.mp4 -vf "scale=1080:1920:flags=lanczos,fps=30" -c:v libx264 -preset veryfast -crf 12 -c:a copy mid.mp4   # 한 번만 8K 디코딩
+  ffmpeg -i mid.mp4 -c:v libx264 -preset slow -crf 24 -profile:v high -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -movflags +faststart mvp-reel.mp4
+  ffmpeg -i mid.mp4 -c:v libvpx-vp9 -b:v 0 -crf 38 -deadline good -cpu-used 4 -row-mt 1 -g 60 -c:a libopus -b:a 96k mvp-reel.webm
+  ```
+  표지(`mvp-reel-poster.webp`)는 첫 장면이 같아 v6 에서 자막 없이 뽑은 8.2초 화면을 그대로 쓴다.
 - 녹음 원본(113.8초)의 긴 쉼을 줄이고(`tighten.py`: 문장 안 0.2초 · 문장 사이 0.35초 · 장면 사이 0.45초) 1.05배로 빠르게 했어요.
 - 다시 녹음하지 않고 고친 곳은 `edits.json` 에 있어요: '대충 만들지 않아요' → 0.25초 → '실제로 이렇게 작동합니다' → 1.5초 → '개발을 몰라도',
   '미용실도, 회계 사무소도, 옷가게도요' 문장 뺌(화면과 달라서), '2주 안에 끝내 드립니다' 뒤 1.95초(1~3단계·45일 안내 읽을 틈).

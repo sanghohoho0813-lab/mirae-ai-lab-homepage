@@ -3,7 +3,7 @@
 //
 // 흐름: / → /business-services(2-Track 선택) → ① /business-services/ax-start(AX 홈: 히어로+스토리 01~03)
 //                                             → /business-services/ax(AX 상세 안내) → 3분 진단 → 상담
-//                                            ② /business-services/venture-mvp(기술사업·MVP 15장) → 3분 진단 → 상담
+//                                            ② /business-services/venture-mvp(기술사업·MVP: 히어로 → 소개 영상 → 예시 10개) → 상담
 export const BUSINESS_CHOOSER_PATH = '/business-services'
 export const AX_START_PATH = '/business-services/ax-start'
 export const AX_GUIDE_PATH = '/business-services/ax'
