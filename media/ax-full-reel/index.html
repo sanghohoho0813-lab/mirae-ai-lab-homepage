@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Medium.subset.woff2') format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-SemiBold.subset.woff2') format('woff2'); font-weight: 600; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Bold.subset.woff2') format('woff2'); font-weight: 700; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-ExtraBold.subset.woff2') format('woff2'); font-weight: 800; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Black.subset.woff2') format('woff2'); font-weight: 900; font-display: block; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #171B20; }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #171B20; color: #fff; font-family: 'Pretendard', sans-serif; word-break: keep-all; }
+em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; } .green { color: #8FD6A8; }
+.glow1 { position: absolute; right: -300px; top: -260px; width: 900px; height: 900px; border-radius: 50%; background: radial-gradient(circle, rgba(212,122,74,.30), rgba(212,122,74,0) 66%); }
+.glow2 { position: absolute; left: -300px; top: 900px; width: 820px; height: 820px; border-radius: 50%; background: radial-gradient(circle, rgba(232,184,154,.10), rgba(232,184,154,0) 66%); }
+.clip { position: absolute; inset: 0; }
+.brand { position: absolute; top: 110px; left: 60px; right: 60px; height: 64px; display: flex; align-items: center; justify-content: space-between; z-index: 30; }
+.brand .logo { height: 64px; padding: 10px 18px; background: #fff; border-radius: 14px; display: flex; align-items: center; } .brand .logo img { height: 44px; }
+.brand .tag2 { font-size: 28px; font-weight: 800; color: #E8B89A; display: flex; align-items: center; gap: 10px; }
+.brand .tag2::before { content: ''; width: 11px; height: 11px; border-radius: 50%; background: #D47A4A; }
+.big { position: absolute; left: 60px; right: 50px; top: 220px; font-size: 96px; font-weight: 900; line-height: 1.16; letter-spacing: -0.035em; }
+.big.sm { font-size: 80px; }
+.ln { overflow: hidden; padding-bottom: 6px; } .ln > span { display: inline-block; }
+.fine { position: absolute; left: 70px; right: 70px; font-size: 24px; font-weight: 500; line-height: 1.45; color: #7C8591; } .fine.center { text-align: center; }
+.ic { display: inline-flex; width: 44px; height: 44px; color: currentColor; } .ic svg { width: 100%; height: 100%; } .ic.lg { width: 64px; height: 64px; }
+.fimg { position: absolute; left: 0; top: 0; display: block; }
+.touch { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; background: rgba(255,255,255,.55); box-shadow: 0 0 0 4px rgba(212,122,74,.95); opacity: 0; z-index: 5; }
+.phone { position: absolute; padding: 9px; border-radius: 40px; background: #0E1114; box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 0 2px rgba(255,255,255,.14); }
+.phone .screen { position: relative; overflow: hidden; border-radius: 31px; background: #fff; aspect-ratio: 390 / 844; }
+/* 1) 대표님 상황 카드 */
+.hstack { position: absolute; left: 44px; right: 44px; top: 214px; display: grid; gap: 18px; }
+.hk { position: relative; display: flex; align-items: center; height: 250px; padding: 0 34px 0 26px; border-radius: 30px; background: linear-gradient(135deg, rgba(40,46,54,.96), rgba(22,26,31,.96)); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12), 0 20px 50px rgba(0,0,0,.45); }
+.hk .hn { flex: none; width: 170px; text-align: center; font-size: 150px; font-weight: 900; line-height: 1; letter-spacing: -0.06em; background: linear-gradient(180deg, #F6B07C, #D47A4A); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hk .hbar { flex: none; width: 2px; height: 150px; margin: 0 30px 0 12px; background: rgba(255,255,255,.18); }
+.hk p { font-size: 40px; font-weight: 800; line-height: 1.3; color: #fff; letter-spacing: -0.02em; } .hk p em { color: #F09A5E; }
+.kkut { position: absolute; left: 0; right: 0; top: 560px; text-align: center; z-index: 5; }
+.kchips { display: flex; justify-content: center; gap: 22px; } .kchips span { padding: 20px 40px; border-radius: 999px; background: #fff; color: #171B20; font-size: 54px; font-weight: 900; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+.stampr { display: inline-block; margin-top: 36px; padding: 18px 48px; border: 8px solid #E5484D; border-radius: 20px; color: #FF6B6E; font-size: 96px; font-weight: 900; transform: rotate(-8deg); background: rgba(23,27,32,.75); }
+.watch { position: absolute; left: 0; right: 0; margin: 0 auto; top: 1040px; width: max-content; padding: 22px 46px; border-radius: 999px; background: #D47A4A; color: #171B20; font-size: 50px; font-weight: 900; z-index: 6; box-shadow: 0 20px 50px rgba(212,122,74,.45); } .watch span { display: inline-block; }
+/* 2) 심사장 */
+.room { position: absolute; left: 60px; right: 60px; top: 440px; height: 480px; }
+.screen2 { position: absolute; left: 150px; right: 150px; top: 0; height: 200px; padding: 34px 40px; border-radius: 16px; background: #2A3038; box-shadow: inset 0 0 0 2px rgba(255,255,255,.1); }
+.screen2 p { font-size: 34px; font-weight: 800; color: #C9CED6; margin-bottom: 18px; } .screen2 i { display: block; height: 16px; border-radius: 8px; background: #454C56; margin-bottom: 16px; }
+.judges { position: absolute; left: 0; right: 0; top: 250px; display: flex; justify-content: center; gap: 90px; }
+.judge { position: relative; width: 150px; height: 170px; } .judge .jh { position: absolute; left: 45px; top: 0; width: 60px; height: 60px; border-radius: 50%; background: #5A6370; } .judge .jb { position: absolute; left: 0; top: 70px; width: 150px; height: 100px; border-radius: 75px 75px 0 0; background: #474F5A; }
+.desk { position: absolute; left: 20px; right: 20px; top: 380px; height: 90px; border-radius: 14px; background: #3A3F47; display: flex; align-items: center; justify-content: center; } .desk span { padding: 6px 20px; border-radius: 8px; background: #F4F1EC; color: #343B44; font-size: 26px; font-weight: 800; }
+.bub { position: absolute; padding: 22px 34px; border-radius: 28px; font-size: 42px; font-weight: 800; z-index: 6; box-shadow: 0 18px 44px rgba(0,0,0,.5); }
+.bub.q { left: 120px; right: 120px; top: 950px; text-align: center; background: #fff; color: #171B20; border: 5px solid #E8894F; } .bub.q b { color: #C8612E; }
+.bub.q::after { content: ''; position: absolute; left: 50%; top: -24px; margin-left: -18px; border: 18px solid transparent; border-bottom: 22px solid #E8894F; border-top: 0; }
+.bub.a { left: 70px; top: 1085px; background: #3A4048; color: #E5E8EC; } .bub.a2 { left: auto; right: 70px; top: 1195px; }
+.nomvp { position: absolute; left: 100px; right: 100px; top: 470px; height: 220px; border: 5px dashed #5A6370; border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nomvp .slot { font-size: 50px; font-weight: 900; color: #AEB6C0; } .nomvp .slot small { font-size: 30px; }
+.nomvp .x { position: absolute; right: -30px; top: -40px; width: 110px; height: 110px; border-radius: 50%; background: #C8514A; color: #fff; font-size: 64px; display: flex; align-items: center; justify-content: center; }
+.nomvp p { margin-top: 10px; font-size: 32px; font-weight: 700; color: #8A939C; }
+.pile { position: absolute; left: 0; right: 0; top: 740px; height: 360px; }
+.plan { position: absolute; left: 380px; top: 0; width: 320px; height: 360px; padding: 30px 26px; border-radius: 18px; background: #F4F1EC; color: #343B44; box-shadow: 0 16px 40px rgba(0,0,0,.45); transform-origin: 50% 90%; }
+.plan p { font-size: 32px; font-weight: 900; margin-bottom: 12px; line-height: 1.2; } .plan .aitag { display: inline-block; margin-bottom: 18px; padding: 5px 14px; border-radius: 999px; background: #DAD4C9; font-size: 20px; font-weight: 800; color: #6B6458; }
+.plan i { display: block; height: 13px; border-radius: 7px; background: #D9D4CC; margin-bottom: 16px; } .plan.mine { background: #FFF6EE; box-shadow: 0 0 0 4px #E8894F, 0 16px 40px rgba(0,0,0,.45); }
+.verdict { position: absolute; left: 60px; right: 60px; top: 1130px; text-align: center; z-index: 7; }
+.verdict p { font-size: 44px; font-weight: 800; color: #D5DAE0; } .verdict .vb { display: inline-block; margin-top: 10px; padding: 14px 40px; border-radius: 999px; background: #D47A4A; color: #171B20; font-size: 58px; font-weight: 900; }
+/* 3) 회사 안 */
+.srcs { position: absolute; left: 60px; right: 60px; top: 480px; display: flex; justify-content: space-between; }
+.src { width: 300px; padding: 26px 20px; border-radius: 26px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); text-align: center; }
+.src b { display: block; margin-top: 8px; font-size: 36px; font-weight: 900; } .src .dots { margin-top: 14px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.src .dots span { padding: 6px 14px; border-radius: 999px; background: #D47A4A; color: #171B20; font-size: 24px; font-weight: 900; }
+.vault { position: absolute; left: 180px; right: 180px; top: 820px; height: 360px; border: 6px dashed #E8B89A; border-radius: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.vault .vin { text-align: center; color: #E8B89A; } .vault .vin .ic { width: 70px; height: 70px; } .vault p { margin-top: 10px; font-size: 38px; font-weight: 800; color: #D5DAE0; } .vault b { font-size: 76px; font-weight: 900; color: #fff; }
+.vault .empty { position: absolute; bottom: -34px; padding: 10px 26px; border-radius: 999px; background: #3A4048; color: #FF8A8C; font-size: 30px; font-weight: 900; }
+.cons { position: absolute; left: 60px; right: 60px; top: 520px; display: grid; gap: 26px; transform-origin: 50% 100%; }
+.con { position: relative; display: flex; align-items: center; gap: 26px; height: 210px; padding: 0 36px; border-radius: 30px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 2px rgba(255,255,255,.1); }
+.con .cic { width: 110px; height: 110px; border-radius: 28px; background: rgba(212,122,74,.18); color: #E8B89A; display: flex; align-items: center; justify-content: center; } .con .cic .ic { width: 64px; height: 64px; }
+.con p b { display: block; font-size: 50px; font-weight: 900; } .con p small { display: block; margin-top: 6px; font-size: 30px; color: #AEB6C0; }
+.con.hot { background: rgba(229,72,77,.12); box-shadow: inset 0 0 0 3px rgba(229,72,77,.6); } .con.hot .cic { background: rgba(229,72,77,.2); color: #FF8A8C; } .con.hot p b { color: #FF8A8C; }
+.coins { position: absolute; right: 40px; top: 60px; display: flex; gap: 8px; } .coins .ic { width: 54px; height: 54px; }
+.leave { position: absolute; right: 60px; top: 70px; color: #AEB6C0; } .leave .ic { width: 70px; height: 70px; }
+/* 4) 250곳 */
+.grid250 { position: absolute; left: 60px; right: 60px; top: 470px; height: 300px; display: grid; grid-template-columns: repeat(21, 1fr); grid-auto-rows: 1fr; gap: 6px; }
+.grid250 i { display: block; border-radius: 4px; background: #E8894F; }
+.n250 { position: absolute; left: 0; right: 0; top: 520px; text-align: center; z-index: 3; } .n250 b { font-size: 190px; font-weight: 900; letter-spacing: -0.05em; text-shadow: 0 10px 40px rgba(0,0,0,.6); } .n250 span { font-size: 56px; font-weight: 900; margin-left: 10px; }
+.range { position: absolute; left: 60px; right: 60px; top: 800px; padding: 18px; border-radius: 20px; background: rgba(255,255,255,.08); text-align: center; font-size: 36px; font-weight: 700; color: #D5DAE0; } .range b { color: #E8B89A; font-weight: 900; }
+.pils { position: absolute; left: 50px; right: 50px; top: 920px; display: flex; align-items: center; gap: 8px; }
+.pil { flex: 1; height: 300px; padding: 26px 22px; border-radius: 26px; background: rgba(212,122,74,.12); box-shadow: inset 0 0 0 3px rgba(212,122,74,.55); }
+.pil i { display: inline-flex; width: 56px; height: 56px; border-radius: 50%; background: #D47A4A; color: #171B20; font-style: normal; font-size: 32px; font-weight: 900; align-items: center; justify-content: center; }
+.pil p { margin-top: 16px; font-size: 30px; font-weight: 700; line-height: 1.35; color: #D5DAE0; } .pil p b { color: #fff; font-weight: 900; }
+.parr { font-size: 40px; font-weight: 900; color: #E8894F; }
+/* 5) 사례 이야기 */
+.case { position: absolute; left: 60px; top: 205px; font-size: 26px; font-weight: 900; letter-spacing: .12em; color: #E8894F; }
+.big#s5-t { top: 245px; }
+.path { position: absolute; left: 60px; right: 360px; top: 480px; display: flex; flex-direction: column; align-items: stretch; }
+.node { display: flex; align-items: center; gap: 24px; height: 150px; padding: 0 30px; border-radius: 26px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); color: #E8B89A; }
+.node p { font-size: 32px; font-weight: 700; color: #C9CED6; line-height: 1.3; } .node p b { font-size: 40px; color: #fff; font-weight: 900; }
+.path .down { display: block; width: 6px; height: 40px; margin: 0 auto; background: #E8894F; border-radius: 3px; }
+.win { position: absolute; right: 50px; top: 990px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #F0A06E, #D47A4A 70%); color: #171B20; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 0 16px rgba(212,122,74,.22), 0 30px 70px rgba(0,0,0,.5); transform: rotate(-8deg); }
+.win small { font-size: 36px; font-weight: 900; } .win b { font-size: 68px; font-weight: 900; letter-spacing: -0.04em; }
+/* 6) 몽타주 */
+.cases { position: absolute; left: 50px; right: 50px; top: 470px; display: grid; gap: 16px; }
+.cs { display: flex; align-items: center; gap: 20px; height: 140px; padding: 0 26px; border-radius: 24px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); }
+.cs .ind { flex: none; width: 190px; font-size: 28px; font-weight: 900; color: #E8B89A; line-height: 1.2; }
+.cs p { flex: 1; font-size: 34px; font-weight: 700; color: #C9CED6; line-height: 1.25; } .cs p b { color: #fff; font-weight: 900; }
+.cs .tier { flex: none; padding: 10px 18px; border-radius: 16px; background: #D47A4A; color: #171B20; font-size: 32px; font-weight: 900; }
+.eq { position: absolute; left: 40px; right: 40px; top: 760px; padding: 34px 20px; border-radius: 30px; background: #fff; color: #171B20; text-align: center; font-size: 46px; font-weight: 900; z-index: 5; box-shadow: 0 30px 70px rgba(0,0,0,.55); } .eq em { color: #D47A4A; margin: 0 6px; } .eq b { color: #C8612E; }
+/* 7) 공식 근거 */
+.official { position: absolute; left: 60px; right: 60px; top: 480px; padding: 34px 36px; border-radius: 30px; background: #10161D; box-shadow: inset 0 0 0 3px rgba(143,214,168,.6); }
+.otag { display: inline-block; padding: 8px 20px; border-radius: 999px; background: #2E9E6A; color: #fff; font-size: 30px; font-weight: 900; }
+.orow { margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.1); } .orow b { font-size: 36px; font-weight: 900; color: #8FD6A8; } .orow p { margin-top: 6px; font-size: 44px; font-weight: 900; color: #fff; line-height: 1.25; } .orow small { display: block; margin-top: 8px; font-size: 24px; color: #7C8591; }
+.odis { margin-top: 26px; font-size: 24px; line-height: 1.45; color: #7C8591; }
+/* 8) 안과 밖 */
+.plbl { position: absolute; top: 470px; font-size: 34px; font-weight: 900; color: #D5DAE0; } .plbl.l { left: 64px; } .plbl.r { right: 64px; }
+.phone.pl { left: 50px; top: 530px; } .phone.pr { right: 50px; top: 530px; }
+.wire { position: absolute; left: 440px; top: 860px; width: 200px; height: 60px; z-index: 7; }
+.pulse { position: absolute; left: 455px; top: 872px; width: 36px; height: 36px; border-radius: 50%; background: #E8894F; box-shadow: 0 0 0 10px rgba(232,137,79,.3), 0 0 30px #E8894F; opacity: 0; z-index: 8; }
+.aib { position: absolute; left: 60px; right: 60px; top: 1180px; padding: 20px 26px; border-radius: 22px; background: #fff; color: #171B20; font-size: 34px; font-weight: 800; text-align: center; z-index: 9; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+.aib span { display: inline-block; margin-right: 10px; padding: 4px 14px; border-radius: 10px; background: #2F6FED; color: #fff; font-weight: 900; } .aib b { color: #C8612E; }
+/* 9) 답 */
+.hstack.sm { top: 470px; gap: 14px; }
+.flip { position: relative; height: 190px; }
+.flip .hk, .flip .ans { position: absolute; inset: 0; height: 190px; transform-origin: 50% 50%; }
+.hk.small .hn { width: 120px; font-size: 104px; } .hk.small .hbar { height: 110px; margin: 0 22px 0 8px; } .hk.small p { font-size: 30px; }
+.ans { display: flex; align-items: center; padding: 0 34px 0 26px; border-radius: 30px; background: linear-gradient(135deg, #1D3A2C, #16271F); box-shadow: inset 0 0 0 3px rgba(143,214,168,.7), 0 20px 50px rgba(0,0,0,.45); transform: scaleY(0); }
+.ans .hn.g { flex: none; width: 120px; display: flex; justify-content: center; color: #8FD6A8; } .ans .hn.g .ic { width: 84px; height: 84px; }
+.ans .hbar { flex: none; width: 2px; height: 110px; margin: 0 22px 0 8px; background: rgba(143,214,168,.35); }
+.ans p { font-size: 44px; font-weight: 800; line-height: 1.25; color: #D5DAE0; } .ans p b { color: #8FD6A8; font-weight: 900; }
+/* 10) 우리 근거 */
+.axw { position: absolute; left: 50px; right: 50px; top: 470px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.axc { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(0,0,0,.45); } .axc img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.axc figcaption { position: absolute; left: 8px; bottom: 8px; padding: 3px 12px; border-radius: 999px; background: rgba(23,27,32,.88); font-size: 22px; font-weight: 800; }
+.real { position: absolute; left: 60px; right: 60px; top: 700px; padding: 28px 30px; border-radius: 28px; background: #10161D; box-shadow: inset 0 0 0 2px rgba(232,184,154,.45); z-index: 3; }
+.real .rt { font-size: 40px; font-weight: 900; } .real .rt small { margin-left: 10px; font-size: 24px; font-weight: 700; color: #7C8591; }
+.real div { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 12px; } .real span { padding: 10px 20px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 28px; font-weight: 800; color: #E5E8EC; }
+.patent { position: absolute; left: 0; right: 0; margin: 0 auto; top: 1090px; width: max-content; padding: 22px 44px; border-radius: 22px; background: #D47A4A; color: #171B20; text-align: center; box-shadow: 0 20px 50px rgba(212,122,74,.4); z-index: 4; }
+.patent b { display: block; font-size: 48px; font-weight: 900; } .patent span { font-size: 28px; font-weight: 800; }
+/* 11) 진행 */
+.pro { position: absolute; left: 60px; top: 460px; padding: 14px 30px; border-radius: 999px; background: #2E9E6A; color: #fff; font-size: 34px; font-weight: 900; }
+.steps { position: absolute; left: 60px; right: 60px; top: 560px; display: grid; gap: 18px; }
+.st { display: flex; align-items: center; gap: 26px; height: 150px; padding: 0 30px; border-radius: 26px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); }
+.st i { flex: none; padding: 10px 16px; border-radius: 14px; background: #D47A4A; color: #171B20; font-style: normal; font-size: 26px; font-weight: 900; }
+.st p b { display: block; font-size: 44px; font-weight: 900; } .st p small { display: block; margin-top: 6px; font-size: 28px; color: #AEB6C0; }
+.layer { position: absolute; left: 120px; right: 120px; top: 1090px; }
+.ly { height: 80px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; } .ly.ax { background: #D47A4A; color: #171B20; margin-bottom: 10px; } .ly.old { background: #3A4048; color: #D5DAE0; font-weight: 800; }
+/* 12) 인증 */
+.phone.pc { left: 380px; top: 500px; }
+.badge2 { position: absolute; display: inline-flex; align-items: center; gap: 10px; padding: 18px 28px; border-radius: 999px; background: #fff; color: #171B20; font-size: 38px; font-weight: 900; box-shadow: 0 16px 40px rgba(0,0,0,.5); z-index: 5; } .badge2 .ic { width: 40px; height: 40px; color: #2E9E6A; }
+.badge2.b1 { left: 50px; top: 540px; } .badge2.b2 { right: 40px; top: 640px; } .badge2.b3 { left: 70px; top: 780px; } .badge2.b4 { right: 60px; top: 900px; } .badge2.b5 { left: 60px; top: 1020px; }
+.partners { position: absolute; left: 60px; right: 60px; top: 1195px; text-align: center; font-size: 30px; font-weight: 800; color: #AEB6C0; } .partners span { display: inline-block; margin-left: 10px; padding: 8px 20px; border-radius: 999px; background: rgba(255,255,255,.1); color: #fff; }
+/* 13) 닫기 */
+.room#s13-room { top: 330px; }
+#s13-q { top: 830px; }
+.show { position: absolute; left: 0; right: 0; top: 500px; height: 580px; } .phone.ps { left: 405px; top: 0; transform: rotate(-4deg); }
+.nod { position: absolute; left: 700px; top: 20px; width: 110px; height: 110px; border-radius: 50%; background: #2E9E6A; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(0,0,0,.5); } .nod .ic { width: 64px; height: 64px; }
+.ctab { position: absolute; left: 60px; right: 60px; top: 360px; text-align: center; }
+.ctab .q { font-size: 56px; font-weight: 800; line-height: 1.3; color: #D5DAE0; } .ctab .q b { color: #fff; font-weight: 900; }
+.cta { margin: 60px auto 0; width: 820px; height: 170px; border-radius: 40px; background: #D47A4A; color: #171B20; font-size: 64px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 18px; box-shadow: 0 30px 80px rgba(212,122,74,.45); }
+.url2 { margin-top: 40px; font-size: 48px; font-weight: 800; color: #E8B89A; }
+/* 끝 화면 */
+.bhead { position: absolute; left: 0; right: 0; top: 230px; text-align: center; font-size: 52px; font-weight: 800; color: #D5DAE0; } .bhead b { color: #E8894F; font-weight: 900; }
+.bgrid { position: absolute; left: 50px; right: 50px; top: 340px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.bcell { aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(0,0,0,.45); } .bcell img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.endcard { position: absolute; left: 70px; right: 70px; top: 520px; padding: 70px 40px 60px; border-radius: 40px; background: rgba(16,20,25,.95); box-shadow: 0 30px 90px rgba(0,0,0,.6), inset 0 0 0 2px rgba(232,184,154,.35); text-align: center; }
+.endcard .e1 { font-size: 92px; font-weight: 900; letter-spacing: -0.03em; } .endcard .ebar { display: block; width: 120px; height: 6px; margin: 36px auto 30px; border-radius: 3px; background: #D47A4A; }
+.endcard .e5 { font-size: 48px; font-weight: 700; line-height: 1.35; color: #D5DAE0; } .endcard .e5 b { color: #E8B89A; font-weight: 900; } .endcard .e3 { margin-top: 30px; font-size: 44px; font-weight: 800; color: #E8B89A; }
+/* 자막 · 진행 막대 */
+.sub { display: flex; align-items: flex-end; justify-content: center; padding: 0 60px 420px; z-index: 40; }
+.sub span { max-width: 960px; padding: 18px 34px; border-radius: 22px; background: rgba(8,10,13,.88); font-size: 50px; font-weight: 800; line-height: 1.32; text-align: center; }
+.foot { position: absolute; left: 70px; right: 70px; top: 1660px; text-align: center; font-size: 28px; font-weight: 700; color: #6B7680; z-index: 2; }
+#prog { position: absolute; left: 70px; right: 70px; top: 1730px; height: 8px; border-radius: 4px; background: rgba(255,255,255,.12); overflow: hidden; z-index: 2; }
+#prog i { display: block; width: 100%; height: 100%; background: #D47A4A; transform-origin: 0 50%; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="252.83" data-width="1080" data-height="1920">
+  <div class="glow1"></div><div class="glow2"></div>
+  <div class="brand"><span class="logo"><img src="assets/logo.png" alt="미래에이아이랩"></span><span class="tag2">경영컨설턴트가 설계하는 AX</span></div>
+  <p class="foot">miraeailab.com · 회사의 안과 밖을 잇는 AX</p><div id="prog"><i></i></div>
+  <section class="clip scene " id="s1" data-start="0" data-duration="28.17" data-track-index="1">
+    <div class="hstack" id="s1-stack"><div class="hk " id="h1"><b class="hn">1.</b><i class="hbar"></i><p>정책자금이나 보증을<br>이미 받을 만큼 받아서,<br><em>새로운 성장성</em>을 설명하기 어렵다.</p></div><div class="hk " id="h2"><b class="hn">2.</b><i class="hbar"></i><p>매출은 꾸준한데, ‘그래서 <em>다음은<br>어떻게 되나요?</em>’ 앞에서<br>‘자금이 조달되면 하겠습니다’<br>외엔 할 말이 없다.</p></div><div class="hk " id="h3"><b class="hn">3.</b><i class="hbar"></i><p>새 아이디어로 투자·지원금을<br>받고 싶은데, <em>‘진짜 되는 건가요?’</em><br>앞에서 보여 줄 게 없다.</p></div><div class="hk " id="h4"><b class="hn">4.</b><i class="hbar"></i><p>사업 초기라 실적은 부족한데,<br><em>수억 원 이상의 성장자금</em>이<br>필요하다.</p></div></div>
+    <div class="kkut" id="s1-k"><div class="kchips"><span>정부지원사업</span><span>투자</span></div><div class="stampr" id="s1-stamp">한 끗 차이</div></div>
+    <div class="watch" id="s1-w">이 영상, 끝까지 봐 주세요 <span>▼</span></div></section>
+<section class="clip scene " id="s2" data-start="28.17" data-duration="25.97" data-track-index="1">
+    <div class="big sm" id="s2-t"><div class="ln"><span>왜 이렇게</span></div><div class="ln"><span><em class="peach">막히는 걸까요?</em></span></div></div>
+    <div class="room" id="s2-room">
+  <div class="screen2"><p>사업계획서 브리핑</p><i></i><i></i><i style="width:60%"></i></div>
+  <div class="judges"><div class="judge"><span class="jh"></span><span class="jb"></span></div><div class="judge"><span class="jh"></span><span class="jb"></span></div><div class="judge"><span class="jh"></span><span class="jb"></span></div></div>
+  <div class="desk"><span>심사위원</span></div>
+</div>
+    <div class="bub q" id="s2-q">그래서, <b>다음은 어떻게 되나요?</b></div>
+    <div class="bub a" id="s2-a1">자금이 조달되면 하겠습니다…</div>
+    <div class="bub a a2" id="s2-a2">지원금 받으면 하겠습니다…</div>
+    <div class="nomvp" id="s2-mvp"><span class="slot">MVP <small>(최소 기능 제품)</small> · 웹앱</span><b class="x">✕</b><p>보여 줄 게 없이</p></div>
+    <div class="pile" id="s2-pile"><div class="plan" style="transform:translateX(-128px) rotate(-12deg)"><p>사업계획서</p><span class="aitag">AI로 작성</span><i></i><i></i><i style="width:70%"></i><i></i></div><div class="plan" style="transform:translateX(-64px) rotate(-6deg)"><p>사업계획서</p><span class="aitag">AI로 작성</span><i></i><i></i><i style="width:70%"></i><i></i></div><div class="plan" style="transform:translateX(0px) rotate(0deg)"><p>사업계획서</p><span class="aitag">AI로 작성</span><i></i><i></i><i style="width:70%"></i><i></i></div><div class="plan" style="transform:translateX(64px) rotate(6deg)"><p>사업계획서</p><span class="aitag">AI로 작성</span><i></i><i></i><i style="width:70%"></i><i></i></div><div class="plan" style="transform:translateX(128px) rotate(12deg)"><p>사업계획서</p><span class="aitag">AI로 작성</span><i></i><i></i><i style="width:70%"></i><i></i></div><div class="plan mine" id="s2-mine"><p>우리 회사<br>사업계획서</p><i></i><i></i><i style="width:60%"></i></div></div>
+    <div class="verdict" id="s2-v"><p>계획이 부족한 게 아니라,</p><p class="vb">보여 줄 게 없는 것</p></div></section>
+<section class="clip scene " id="s3" data-start="54.14" data-duration="23.49" data-track-index="1">
+    <div class="big sm" id="s3-t"><div class="ln"><span>더 큰 문제는</span></div><div class="ln"><span><em class="orange">회사 안</em>에 있어요</span></div></div>
+    <div class="srcs" id="s3-src"><div class="src" id="s3-s0"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="#1F7A4D"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></i><b>엑셀</b><div class="dots"><span>고객</span><span>매출</span></div></div><div class="src" id="s3-s1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i><b>메신저</b><div class="dots"><span>재고</span><span>주문</span></div></div><div class="src" id="s3-s2"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z" fill="#FFF3B0"/><path d="M8 9h8M8 13h8M8 17h5" stroke="#9A8A3A" stroke-width="1.6" stroke-linecap="round"/></svg></i><b>메모장</b><div class="dots"><span>직원</span><span>일정</span></div></div></div>
+    <div class="vault" id="s3-vault"><div class="vin"><i class="ic "><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg></i><p>회사의 가장 큰 자산</p><b>데이터</b></div><span class="empty" id="s3-empty">텅 비어 있어요</span></div>
+    <div class="cons" id="s3-cons">
+      <div class="con" id="s3-c1"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i></span><p><b>매달 새는 시간 · 돈</b><small>자료를 찾고 맞추는 데</small></p><span class="coins"><i class="ic cn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#E8B84A"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="900" fill="#7A5A10">₩</text></svg></i><i class="ic cn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#E8B84A"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="900" fill="#7A5A10">₩</text></svg></i><i class="ic cn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#E8B84A"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="900" fill="#7A5A10">₩</text></svg></i></span></div>
+      <div class="con" id="s3-c2"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 21V4h9v17" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 12h7M18 9l3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><p><b>직원 한 명 퇴사에 휘청</b><small>일을 아는 사람만 아는 회사</small></p><span class="leave" id="s3-leave"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z" fill="currentColor"/></svg></i></span></div>
+      <div class="con hot" id="s3-c3"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 6l7 7 4-4 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 11v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i></span><p><b>회사는 더 크기 어려워요</b></p></div>
+    </div></section>
+<section class="clip scene " id="s4" data-start="77.63" data-duration="24.3" data-track-index="1">
+    <div class="big sm" id="s4-t"><div class="ln"><span>잘 받는 회사는</span></div><div class="ln"><span><em class="peach">대체 뭐가 다를까요?</em></span></div></div>
+    <div class="grid250" id="s4-g"><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i><i style="opacity:0.65"></i><i style="opacity:0.55"></i><i style="opacity:0.45"></i><i style="opacity:0.35"></i><i style="opacity:0.8"></i></div>
+    <div class="n250" id="s4-n"><b>250</b><span>곳 이상 조사</span></div>
+    <div class="range" id="s4-r">최근 3년 · <b>수억 ~ 수백억 원</b> 융자 · 투자 유치</div>
+    <div class="pils" id="s4-p"><div class="pil" id="s4-p0"><i>1</i><p>고객 데이터를<br><b>꾸준히 쌓고</b></p></div><span class="parr">→</span><div class="pil" id="s4-p1"><i>2</i><p>새 제품 · 포털 · 플랫폼으로<br><b>고객이 직접 쓰게 키우고</b></p></div><span class="parr">→</span><div class="pil" id="s4-p2"><i>3</i><p>회사 안 운영과<br><b>하나로 연결</b></p></div></div>
+    <p class="fine" id="s4-f" style="top:1262px">미래AI랩 자체 조사 · 공개 자료 기준</p></section>
+<section class="clip scene " id="s5" data-start="101.93" data-duration="13.37" data-track-index="1">
+    <p class="case" id="s5-c">CASE · 공개 사례</p>
+    <div class="big sm" id="s5-t"><div class="ln"><span>사례를</span></div><div class="ln"><span><em class="peach">하나 볼게요</em></span></div></div>
+    <div class="path" id="s5-path"><div class="node" id="s5-n0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 4h-4a2 2 0 0 0-2 2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 8h4M6.5 11h4M6.5 14h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></i><p>렌탈 장부를<br><b>손으로 쓰던 회사</b></p></div><i class="down"></i><div class="node" id="s5-n1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.3 1.6A3.3 3.3 0 0 0 7 18z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></i><p>관리 방식을<br><b>클라우드 시스템으로</b></p></div><i class="down"></i><div class="node" id="s5-n2"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor"/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor"/></svg></i><p>그걸<br><b>서비스로 키우고</b></p></div><i class="down"></i><div class="node" id="s5-n3"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><p>사업을<br><b>금융까지 넓혀</b></p></div></div>
+    <div class="win" id="s5-win"><small>조달</small><b>10억 원+</b></div>
+    <p class="fine" id="s5-f" style="top:1262px">공개 사례 요약 · 미래AI랩 실적이 아니에요</p></section>
+<section class="clip scene " id="s6" data-start="115.3" data-duration="26.52" data-track-index="1">
+    <div class="big sm" id="s6-t"><div class="ln"><span>이런 회사는</span></div><div class="ln"><span><em class="peach">하나가 아니었어요</em></span></div></div>
+    <div class="cases" id="s6-cs"><div class="cs" id="s6-c0"><span class="ind">부동산 중개</span><p>공실 · 임대 관리 <em class="orange">→</em> <b>자동화 플랫폼</b></p><span class="tier">10억+</span></div><div class="cs" id="s6-c1"><span class="ind">숙박업</span><p>예약 · 매출 관리 <em class="orange">→</em> <b>운영 자동화</b></p><span class="tier">10억+</span></div><div class="cs" id="s6-c2"><span class="ind">히트펌프 판매</span><p>판매 <em class="orange">→</em> <b>운영·모니터링 구독</b></p><span class="tier">5~9억</span></div><div class="cs" id="s6-c3"><span class="ind">김 양식</span><p>바다 양식장 <em class="orange">→</em> <b>육상 자동화 · AI 모니터링</b></p><span class="tier">5~9억</span></div><div class="cs" id="s6-c4"><span class="ind">체형관리 스튜디오</span><p>스튜디오 <em class="orange">→</em> <b>웰니스 플랫폼</b></p><span class="tier">3~4억</span></div></div>
+    <div class="eq" id="s6-eq">하던 일 <em>+</em> 고객 데이터 <em>+</em> 플랫폼 <em>=</em> <b>다음 단계</b></div>
+    <p class="fine" id="s6-f" style="top:1262px">공개 사례 요약 · 미래AI랩 실적이 아니에요 · 금액은 조달 규모 구간</p></section>
+<section class="clip scene " id="s7" data-start="141.82" data-duration="11.3" data-track-index="1">
+    <div class="big sm" id="s7-t"><div class="ln"><span>정부 돈의 방향도</span></div><div class="ln"><span><em class="green">같아요</em></span></div></div>
+    <div class="official" id="s7-o"><span class="otag">공식 근거</span>
+      <div class="orow" id="s7-r1"><b>AX-Sprint</b><p>7,540억 원 규모 지원 발표</p><small>대한민국 정책브리핑 2026.3 · 기후에너지환경부 2026.6.19</small></div>
+      <div class="orow" id="s7-r2"><b>중진공 정책자금</b><p>신성장기반자금 AX 스프린트 우대트랙</p><small>중소벤처기업진흥공단</small></div>
+      <div class="orow" id="s7-r3"><b>정책우선도 평가</b><p>혁신성장 · 지식재산(IP) 반영</p><small>중소벤처기업부 2026 정책자금</small></div>
+      <p class="odis">기관 발표를 요약한 것으로 미래AI랩의 실적이 아니에요. 지원·선정은 각 기관 심사로 정해져요.</p>
+    </div></section>
+<section class="clip scene " id="s8" data-start="153.12" data-duration="20.51" data-track-index="1">
+    <div class="big sm" id="s8-t"><div class="ln"><span>회사의 <em class="orange">안</em>과 <em class="peach">밖</em>을</span></div><div class="ln"><span>연결해 드립니다</span></div></div>
+    <p class="plbl l" id="s8-lo"><em class="peach">밖</em> · 고객이 직접 예약</p>
+    <p class="plbl r" id="s8-li"><em class="orange">안</em> · 대표님 폰(AX)</p>
+    <div class="phone pl" id="s8-out"><div class="screen" style="width:340px"><img class="fimg" src="assets/flows/gsbk2-00.jpg" style="width:340px" alt=""><img class="fimg" id="o-gsbk2-01a" src="assets/flows/gsbk2-01a.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-01" src="assets/flows/gsbk2-01.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-02a" src="assets/flows/gsbk2-02a.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-02" src="assets/flows/gsbk2-02.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-03a" src="assets/flows/gsbk2-03a.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-03" src="assets/flows/gsbk2-03.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-04a" src="assets/flows/gsbk2-04a.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-04" src="assets/flows/gsbk2-04.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-05a" src="assets/flows/gsbk2-05a.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-05" src="assets/flows/gsbk2-05.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-06" src="assets/flows/gsbk2-06.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-07" src="assets/flows/gsbk2-07.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-08a" src="assets/flows/gsbk2-08a.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-08" src="assets/flows/gsbk2-08.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-09a" src="assets/flows/gsbk2-09a.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-09" src="assets/flows/gsbk2-09.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="o-gsbk2-10" src="assets/flows/gsbk2-10.jpg" style="width:340px;opacity:0" alt=""><span class="touch" id="o-gsbk2-t1" style="left:88.05px;top:500.41px"></span><span class="touch" id="o-gsbk2-t2" style="left:170px;top:686.1px"></span><span class="touch" id="o-gsbk2-t3" style="left:114.21px;top:401.9px"></span><span class="touch" id="o-gsbk2-t4" style="left:268.51px;top:629.44px"></span><span class="touch" id="o-gsbk2-t5" style="left:260.67px;top:716.62px"></span><span class="touch" id="o-gsbk2-t8" style="left:260.67px;top:320.82px"></span><span class="touch" id="o-gsbk2-t9" style="left:240.62px;top:197.9px"></span><span class="touch" id="o-gsbk2-t11" style="left:126.41px;top:612px"></span></div></div>
+    <div class="phone pr" id="s8-in"><div class="screen" style="width:340px"><img class="fimg" src="assets/flows/gsax-01.jpg" style="width:340px" alt=""><img class="fimg" id="i-demand" src="assets/flows/gsbk2-11.jpg" style="width:340px;opacity:0" alt=""><img class="fimg" id="i-purchase" src="assets/flows/gsax-02.jpg" style="width:340px;opacity:0" alt=""><span class="touch" id="i-t1" style="left:176.1px;top:666.05px"></span></div></div>
+    <svg class="wire" id="s8-wire" viewBox="0 0 200 60"><path d="M0 30 C 60 0, 140 60, 200 30" fill="none" stroke="#E8894F" stroke-width="5" stroke-dasharray="10 8"/></svg>
+    <span class="pulse" id="s8-pulse"></span>
+    <div class="aib" id="s8-ai"><span>AI</span> 예약 반영 → <b>한우 사골 70kg 발주 추천</b></div>
+    <p class="fine" id="s8-f" style="top:1262px">미래AI랩 자체 데모(고운솥 식당) · 가상 시연 데이터</p></section>
+<section class="clip scene " id="s9" data-start="173.63" data-duration="17.7" data-track-index="1">
+    <div class="big sm" id="s9-t"><div class="ln"><span>처음의 고민은</span></div><div class="ln"><span><em class="green">이렇게 바뀌어요</em></span></div></div>
+    <div class="hstack sm" id="s9-stack"><div class="flip" id="s9-f0"><div class="hk small" id="a1"><b class="hn">1.</b><i class="hbar"></i><p>정책자금이나 보증을<br>이미 받을 만큼 받아서,<br><em>새로운 성장성</em>을 설명하기 어렵다.</p></div><div class="ans" id="s9-a0"><b class="hn g"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></b><i class="hbar"></i><p>새로운 성장 단계를<br><b>보여 준다</b></p></div></div><div class="flip" id="s9-f1"><div class="hk small" id="a2"><b class="hn">2.</b><i class="hbar"></i><p>매출은 꾸준한데, ‘그래서 <em>다음은<br>어떻게 되나요?</em>’ 앞에서<br>‘자금이 조달되면 하겠습니다’<br>외엔 할 말이 없다.</p></div><div class="ans" id="s9-a1"><b class="hn g"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></b><i class="hbar"></i><p>이미 돌아가는 화면을<br><b>보여 준다</b></p></div></div><div class="flip" id="s9-f2"><div class="hk small" id="a3"><b class="hn">3.</b><i class="hbar"></i><p>새 아이디어로 투자·지원금을<br>받고 싶은데, <em>‘진짜 되는 건가요?’</em><br>앞에서 보여 줄 게 없다.</p></div><div class="ans" id="s9-a2"><b class="hn g"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></b><i class="hbar"></i><p>‘진짜 되나요?’엔<br><b>직접 눌러 보게</b></p></div></div><div class="flip" id="s9-f3"><div class="hk small" id="a4"><b class="hn">4.</b><i class="hbar"></i><p>사업 초기라 실적은 부족한데,<br><em>수억 원 이상의 성장자금</em>이<br>필요하다.</p></div><div class="ans" id="s9-a3"><b class="hn g"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></b><i class="hbar"></i><p>쌓이는 데이터를<br><b>증거로</b></p></div></div></div></section>
+<section class="clip scene " id="s10" data-start="191.33" data-duration="15.11" data-track-index="1">
+    <div class="big sm" id="s10-t"><div class="ln"><span>저희는</span></div><div class="ln"><span><em class="peach">직접 만들었습니다</em></span></div></div>
+    <div class="axw" id="s10-w"><figure class="axc" id="s10-x0"><img src="assets/shots/ax-gounsot.jpg" alt=""><figcaption>음식점</figcaption></figure><figure class="axc" id="s10-x1"><img src="assets/shots/ax-edumaster.jpg" alt=""><figcaption>학원</figcaption></figure><figure class="axc" id="s10-x2"><img src="assets/shots/ax-seum.jpg" alt=""><figcaption>제조</figcaption></figure><figure class="axc" id="s10-x3"><img src="assets/shots/ax-nexmart.jpg" alt=""><figcaption>유통</figcaption></figure><figure class="axc" id="s10-x4"><img src="assets/shots/ax-materix.jpg" alt=""><figcaption>자재 유통</figcaption></figure><figure class="axc" id="s10-x5"><img src="assets/shots/ax-lumiere.jpg" alt=""><figcaption>헤어숍</figcaption></figure><figure class="axc" id="s10-x6"><img src="assets/shots/ax-veloa.jpg" alt=""><figcaption>뷰티 커머스</figcaption></figure><figure class="axc" id="s10-x7"><img src="assets/shots/ax-vitalon.jpg" alt=""><figcaption>피트니스</figcaption></figure><figure class="axc" id="s10-x8"><img src="assets/shots/ax-autobridge.jpg" alt=""><figcaption>자동차 정비</figcaption></figure><figure class="axc" id="s10-x9"><img src="assets/shots/ax-livarte.jpg" alt=""><figcaption>인테리어</figcaption></figure><figure class="axc" id="s10-x10"><img src="assets/shots/ax-cleanway.jpg" alt=""><figcaption>현장 서비스</figcaption></figure><figure class="axc" id="s10-x11"><img src="assets/shots/ax-morfit.jpg" alt=""><figcaption>패션</figcaption></figure></div>
+    <div class="real" id="s10-r"><p class="rt">실제 기업과 함께 만드는 중 <small>업체명 비공개</small></p><div><span>의료폐기물 수거·운반</span><span>웰니스 케어</span><span>피혁 제조·도소매</span><span>산업계측·장비유통</span><span>전기·정보통신</span><span>산업용 설비·펌프</span></div></div>
+    <div class="patent" id="s10-p"><b>AX 핵심기술 특허 출원 5건</b><span>2026. 9. 11</span></div>
+    <p class="fine" id="s10-f" style="top:1262px">AX 화면은 예시 화면(Concept Prototype) · 특허는 출원(등록 아님)</p></section>
+<section class="clip scene " id="s11" data-start="206.44" data-duration="15.5" data-track-index="1">
+    <div class="big sm" id="s11-t"><div class="ln"><span>진행은</span></div><div class="ln"><span><em class="peach">이렇게 해요</em></span></div></div>
+    <span class="pro" id="s11-pro">9년 차 경영컨설턴트</span>
+    <div class="steps" id="s11-st"><div class="st" id="s11-s0"><i>STEP 1</i><p><b>기업 성장 · AX 진단</b><small>성장 단계와 업무부터</small></p></div><div class="st" id="s11-s1"><i>STEP 2</i><p><b>성장 설계도</b><small>무엇부터 바꿔야 자금·매출로 이어지는지</small></p></div><div class="st" id="s11-s2"><i>STEP 3</i><p><b>필요한 것만 실행</b><small>급한 한 가지부터, 필요한 만큼</small></p></div></div>
+    <div class="layer" id="s11-l"><div class="ly ax" id="s11-ax">AX 한 층</div><div class="ly old">이미 잘 쓰는 프로그램은 그대로</div></div></section>
+<section class="clip scene " id="s12" data-start="221.94" data-duration="13.29" data-track-index="1">
+    <div class="big sm" id="s12-t"><div class="ln"><span>인증은요?</span></div><div class="ln"><span><em class="peach">신청까지 함께 준비해요</em></span></div></div>
+    <div class="phone pc" id="s12-ph"><div class="screen" style="width:300px"><img class="fimg" src="assets/flows/gsax-01.jpg" style="width:300px" alt=""></div></div>
+    <span class="badge2 b1" id="s12-b1"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>벤처기업확인</span><span class="badge2 b2" id="s12-b2"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>기업부설연구소</span><span class="badge2 b3" id="s12-b3"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>이노비즈</span><span class="badge2 b4" id="s12-b4"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>메인비즈</span><span class="badge2 b5" id="s12-b5"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>특허 출원</span>
+    <div class="partners" id="s12-pt">함께하는 전문가 <span>세무사</span><span>법무사</span><span>변리사</span></div>
+    <p class="fine center" id="s12-f" style="top:1262px">필요한 것만 골라 진행 · 결과와 처리기간은 외부기관 심사·절차에 따라 달라요 · 특허는 제휴 변리사</p></section>
+<section class="clip scene " id="s13" data-start="235.23" data-duration="12.6" data-track-index="1">
+    <div class="room" id="s13-room">
+  <div class="screen2"><p>사업계획서 브리핑</p><i></i><i></i><i style="width:60%"></i></div>
+  <div class="judges"><div class="judge"><span class="jh"></span><span class="jb"></span></div><div class="judge"><span class="jh"></span><span class="jb"></span></div><div class="judge"><span class="jh"></span><span class="jb"></span></div></div>
+  <div class="desk"><span>심사위원</span></div>
+</div>
+    <div class="bub q" id="s13-q">그래서, <b>다음은 어떻게 되나요?</b></div>
+    <div class="show" id="s13-show"><div class="phone ps" id="s13-ph"><div class="screen" style="width:250px"><img class="fimg" src="assets/flows/gsbk2-11.jpg" style="width:250px" alt=""></div></div><span class="nod" id="s13-nod"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div>
+    <div class="ctab" id="s13-cta"><p class="q">우리 회사는 지금<br><b>무엇부터 보여 줘야 할까요?</b></p><div class="cta">3분 AX Fit 진단 받기 <span>→</span></div><p class="url2">miraeailab.com</p></div>
+    <p class="fine center" id="s13-f" style="top:1262px">자금조달·선정 결과는 기관 심사에 따라 달라지며 보장되지 않아요 · 영상 속 화면은 자체 데모</p></section>
+<section class="clip scene" id="s14" data-start="247.83" data-duration="5" data-track-index="1">
+    <p class="bhead" id="s14-h">미래AI랩이 직접 만든 <b>업종별 AX 12개</b></p>
+    <div class="bgrid" id="s14-g"><figure class="bcell"><img src="assets/shots/ax-gounsot.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-edumaster.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-seum.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-nexmart.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-materix.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-lumiere.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-veloa.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-vitalon.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-autobridge.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-livarte.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-cleanway.jpg" alt=""></figure><figure class="bcell"><img src="assets/shots/ax-morfit.jpg" alt=""></figure></div>
+    <div class="endcard" id="s14-end"><p class="e1">직접 눌러서</p><p class="e1"><em class="peach">확인해 보세요</em></p><i class="ebar"></i><p class="e5">어떤 업종이든,<br><b>우리 회사에 맞춰</b> 만들어 드립니다</p><p class="e3">miraeailab.com</p></div>
+  </section>
+
+  <div class="clip sub" id="sub0" data-start="0" data-duration="3.1" data-track-index="9"><span>정책자금이나 보증,<br>이미 받을 만큼 받으셨나요?</span></div><div class="clip sub" id="sub1" data-start="3.39" data-duration="1.12" data-track-index="9"><span>매출은 꾸준한데,</span></div><div class="clip sub" id="sub2" data-start="4.53" data-duration="1.86" data-track-index="9"><span>‘그래서 다음은 어떻게 되나요?’라는</span></div><div class="clip sub" id="sub3" data-start="6.41" data-duration="1.25" data-track-index="9"><span>심사위원의 질문에,</span></div><div class="clip sub" id="sub4" data-start="7.68" data-duration="3.75" data-track-index="9"><span>‘자금이 조달되면 하겠습니다’<br>말고는 할 말이 없으신가요?</span></div><div class="clip sub" id="sub5" data-start="11.72" data-duration="2.46" data-track-index="9"><span>새 아이디어로 투자·지원금을<br>받고 싶은데,</span></div><div class="clip sub" id="sub6" data-start="14.2" data-duration="3.18" data-track-index="9"><span>‘진짜 되는 건가요?’라는<br>질문 앞에서 보여 줄 게 없거나,</span></div><div class="clip sub" id="sub7" data-start="17.57" data-duration="1.79" data-track-index="9"><span>사업 초기라 실적은 부족한데,</span></div><div class="clip sub" id="sub8" data-start="19.38" data-duration="2.65" data-track-index="9"><span>수억 원 이상의<br>성장자금이 필요하신가요?</span></div><div class="clip sub" id="sub9" data-start="22.31" data-duration="3.8" data-track-index="9"><span>정부지원사업도, 투자도,<br>매번 한 끗 차이로 놓치고 계신다면,</span></div><div class="clip sub" id="sub10" data-start="26.13" data-duration="1.91" data-track-index="9"><span>이 영상, 끝까지 봐 주세요.</span></div><div class="clip sub" id="sub11" data-start="28.42" data-duration="1.71" data-track-index="9"><span>왜 이렇게 막히는 걸까요?</span></div><div class="clip sub" id="sub12" data-start="30.42" data-duration="2.62" data-track-index="9"><span>브리핑을 마치면,<br>심사위원이 묻습니다.</span></div><div class="clip sub" id="sub13" data-start="33.06" data-duration="2.18" data-track-index="9"><span>‘그래서, 다음은 어떻게 되나요?’</span></div><div class="clip sub" id="sub14" data-start="35.53" data-duration="1.89" data-track-index="9"><span>‘자금이 조달되면 하겠습니다.’</span></div><div class="clip sub" id="sub15" data-start="37.44" data-duration="1.84" data-track-index="9"><span>‘지원금 받으면 하겠습니다.’</span></div><div class="clip sub" id="sub16" data-start="40.21" data-duration="1.52" data-track-index="9"><span>그 순간, 보여 줄 최소한의</span></div><div class="clip sub" id="sub17" data-start="41.75" data-duration="2.4" data-track-index="9"><span>MVP(최소 기능 제품)나<br>웹앱 같은 게 없이</span></div><div class="clip sub" id="sub18" data-start="44.17" data-duration="1.66" data-track-index="9"><span>사업계획서만 제출했다면,</span></div><div class="clip sub" id="sub19" data-start="45.85" data-duration="1.99" data-track-index="9"><span>우리 회사는 누구나 AI로 쓰는</span></div><div class="clip sub" id="sub20" data-start="47.86" data-duration="2.51" data-track-index="9"><span>비슷비슷한<br>계획서 중 하나가 될 뿐이죠.</span></div><div class="clip sub" id="sub21" data-start="50.66" data-duration="1.75" data-track-index="9"><span>계획이 부족한 게 아니에요.</span></div><div class="clip sub" id="sub22" data-start="52.43" data-duration="1.58" data-track-index="9"><span>보여 줄 게 없는 거예요.</span></div><div class="clip sub" id="sub23" data-start="54.39" data-duration="1.98" data-track-index="9"><span>더 큰 문제는 회사 안에 있어요.</span></div><div class="clip sub" id="sub24" data-start="56.65" data-duration="2.19" data-track-index="9"><span>고객, 매출, 재고, 직원의 기록이</span></div><div class="clip sub" id="sub25" data-start="58.86" data-duration="3.12" data-track-index="9"><span>엑셀과 메신저,<br>누군가의 메모장에 흩어져 있죠.</span></div><div class="clip sub" id="sub26" data-start="62.27" data-duration="1.92" data-track-index="9"><span>사실 이 데이터는, 쌓이기만 하면</span></div><div class="clip sub" id="sub27" data-start="64.21" data-duration="2.11" data-track-index="9"><span>회사의 가장 큰 자산이 되는데요.</span></div><div class="clip sub" id="sub28" data-start="66.6" data-duration="1.39" data-track-index="9"><span>한곳에 모이지 않으니,</span></div><div class="clip sub" id="sub29" data-start="68.01" data-duration="2.78" data-track-index="9"><span>자료를 찾고 맞추는 데<br>매달 시간과 돈이 새고,</span></div><div class="clip sub" id="sub30" data-start="70.98" data-duration="1.92" data-track-index="9"><span>일을 아는 직원 한 명이 그만두면,</span></div><div class="clip sub" id="sub31" data-start="72.92" data-duration="1.71" data-track-index="9"><span>회사 전체가 휘청입니다.</span></div><div class="clip sub" id="sub32" data-start="74.92" data-duration="2.57" data-track-index="9"><span>이대로라면, 회사는 더 크기 어려워요.</span></div><div class="clip sub" id="sub33" data-start="77.88" data-duration="1.92" data-track-index="9"><span>그럼 융자와 투자를 이끌어내고,</span></div><div class="clip sub" id="sub34" data-start="79.82" data-duration="2" data-track-index="9"><span>정부지원사업에 선정되는 회사들은</span></div><div class="clip sub" id="sub35" data-start="81.84" data-duration="1.44" data-track-index="9"><span>대체 뭐가 다를까요?</span></div><div class="clip sub" id="sub36" data-start="83.56" data-duration="2.13" data-track-index="9"><span>저희 미래AI랩은 최근 3년 동안</span></div><div class="clip sub" id="sub37" data-start="85.71" data-duration="2.4" data-track-index="9"><span>수억에서 수백억 원의<br>융자와 투자를 유치한</span></div><div class="clip sub" id="sub38" data-start="88.13" data-duration="2.51" data-track-index="9"><span>회사 250곳 이상을 조사해 봤어요.</span></div><div class="clip sub" id="sub39" data-start="90.92" data-duration="2.11" data-track-index="9"><span>그 회사들의 특징은 분명했어요.</span></div><div class="clip sub" id="sub40" data-start="93.32" data-duration="1.65" data-track-index="9"><span>고객 데이터를 꾸준히 쌓고,</span></div><div class="clip sub" id="sub41" data-start="94.99" data-duration="2.13" data-track-index="9"><span>그걸 고객이 직접 쓰는 새로운 제품이나</span></div><div class="clip sub" id="sub42" data-start="97.14" data-duration="2.13" data-track-index="9"><span>포털, 플랫폼 같은 형태로 키우고,</span></div><div class="clip sub" id="sub43" data-start="99.29" data-duration="2.51" data-track-index="9"><span>회사 안 운영과 하나로<br>연결해 뒀다는 것.</span></div><div class="clip sub" id="sub44" data-start="102.18" data-duration="1.44" data-track-index="9"><span>사례를 하나 볼게요.</span></div><div class="clip sub" id="sub45" data-start="103.91" data-duration="2.65" data-track-index="9"><span>렌탈 장부를 손으로 쓰던<br>회사가 있었어요.</span></div><div class="clip sub" id="sub46" data-start="106.84" data-duration="3.13" data-track-index="9"><span>이 회사는 그 관리 방식을<br>클라우드 시스템으로 바꾸고,</span></div><div class="clip sub" id="sub47" data-start="109.99" data-duration="2.52" data-track-index="9"><span>서비스로 키워 금융까지<br>사업을 넓혔죠.</span></div><div class="clip sub" id="sub48" data-start="112.79" data-duration="2.38" data-track-index="9"><span>그렇게 10억 원 이상을 조달했습니다.</span></div><div class="clip sub" id="sub49" data-start="115.55" data-duration="2.11" data-track-index="9"><span>이런 회사는 하나가 아니었어요.</span></div><div class="clip sub" id="sub50" data-start="117.95" data-duration="1.05" data-track-index="9"><span>공실과 임대 관리를</span></div><div class="clip sub" id="sub51" data-start="119.02" data-duration="2.65" data-track-index="9"><span>자동화 플랫폼으로 만든<br>부동산 중개 회사,</span></div><div class="clip sub" id="sub52" data-start="121.86" data-duration="1.45" data-track-index="9"><span>예약과 매출을 하나로 묶은</span></div><div class="clip sub" id="sub53" data-start="123.33" data-duration="1.98" data-track-index="9"><span>숙박업체도 10억 원을 넘겼고,</span></div><div class="clip sub" id="sub54" data-start="125.49" data-duration="3.14" data-track-index="9"><span>히트펌프를 팔던 회사는<br>운영·모니터링 구독 서비스로,</span></div><div class="clip sub" id="sub55" data-start="128.65" data-duration="3.45" data-track-index="9"><span>바다 김 양식장은<br>육상 자동화와 AI 모니터링으로,</span></div><div class="clip sub" id="sub56" data-start="132.28" data-duration="1.19" data-track-index="9"><span>체형관리 스튜디오는</span></div><div class="clip sub" id="sub57" data-start="133.49" data-duration="2.65" data-track-index="9"><span>웰니스 플랫폼으로<br>다음 단계를 열었어요.</span></div><div class="clip sub" id="sub58" data-start="136.42" data-duration="1.39" data-track-index="9"><span>하던 일은 그대로인데,</span></div><div class="clip sub" id="sub59" data-start="137.83" data-duration="1.73" data-track-index="9"><span>고객 데이터와 플랫폼을 붙이자</span></div><div class="clip sub" id="sub60" data-start="139.58" data-duration="2.11" data-track-index="9"><span>다음 단계가 보이기 시작한 거죠.</span></div><div class="clip sub" id="sub61" data-start="142.07" data-duration="3.08" data-track-index="9"><span>정부 돈이 흘러가는 방향은<br>어떨까요? 같아요.</span></div><div class="clip sub" id="sub62" data-start="145.44" data-duration="4.34" data-track-index="9"><span>정부는 올해 AX 스프린트에<br>7,540억 원 규모 지원을 발표했고,</span></div><div class="clip sub" id="sub63" data-start="149.8" data-duration="3.18" data-track-index="9"><span>중진공 정책자금엔<br>AX 우대트랙도 생겼어요.</span></div><div class="clip sub" id="sub64" data-start="153.37" data-duration="1.45" data-track-index="9"><span>그래서 미래AI랩은</span></div><div class="clip sub" id="sub65" data-start="154.84" data-duration="2.52" data-track-index="9"><span>회사의 안과 밖을 함께<br>연결해 드립니다.</span></div><div class="clip sub" id="sub66" data-start="157.64" data-duration="2.33" data-track-index="9"><span>안에서는 직원, 고객, 재고, 정산을</span></div><div class="clip sub" id="sub67" data-start="159.99" data-duration="2.24" data-track-index="9"><span>한 화면에 모아 대표님 폰으로 보고,</span></div><div class="clip sub" id="sub68" data-start="162.42" data-duration="1.72" data-track-index="9"><span>밖으로는 거래처와 고객이 직접</span></div><div class="clip sub" id="sub69" data-start="164.16" data-duration="2.19" data-track-index="9"><span>견적, 주문, 예약, 재구매를 하는</span></div><div class="clip sub" id="sub70" data-start="166.37" data-duration="1.84" data-track-index="9"><span>포털과 플랫폼을 만들어요.</span></div><div class="clip sub" id="sub71" data-start="168.5" data-duration="3.13" data-track-index="9"><span>그리고 둘을 연결해,<br>쌓이는 데이터를 AI가 읽고</span></div><div class="clip sub" id="sub72" data-start="171.65" data-duration="1.84" data-track-index="9"><span>다음 할 일까지 알려 줍니다.</span></div><div class="clip sub" id="sub73" data-start="173.88" data-duration="2.51" data-track-index="9"><span>그러면 처음의 고민은<br>이렇게 바뀌어요.</span></div><div class="clip sub" id="sub74" data-start="176.67" data-duration="1.26" data-track-index="9"><span>받을 만큼 받았다면,</span></div><div class="clip sub" id="sub75" data-start="177.95" data-duration="1.97" data-track-index="9"><span>새로운 성장 단계를 보여 주고,</span></div><div class="clip sub" id="sub76" data-start="180.11" data-duration="2.09" data-track-index="9"><span>‘자금이 조달되면 하겠다’ 대신,</span></div><div class="clip sub" id="sub77" data-start="182.22" data-duration="2.11" data-track-index="9"><span>이미 돌아가는 화면을 보여 주고,</span></div><div class="clip sub" id="sub78" data-start="184.52" data-duration="1.52" data-track-index="9"><span>‘진짜 되나요?’라는 질문엔,</span></div><div class="clip sub" id="sub79" data-start="186.06" data-duration="1.44" data-track-index="9"><span>직접 눌러 보게 하고,</span></div><div class="clip sub" id="sub80" data-start="187.68" data-duration="1.25" data-track-index="9"><span>실적이 부족하다면,</span></div><div class="clip sub" id="sub81" data-start="188.95" data-duration="2.25" data-track-index="9"><span>쌓이는 데이터를 증거로 내밉니다.</span></div><div class="clip sub" id="sub82" data-start="191.58" data-duration="2.53" data-track-index="9"><span>저희는 음식점부터 학원,<br>제조, 유통까지</span></div><div class="clip sub" id="sub83" data-start="194.13" data-duration="3.19" data-track-index="9"><span>업종별 AX 화면 12개를<br>직접 만들었습니다.</span></div><div class="clip sub" id="sub84" data-start="197.6" data-duration="1.19" data-track-index="9"><span>지금도 실제 기업들과</span></div><div class="clip sub" id="sub85" data-start="198.81" data-duration="3.05" data-track-index="9"><span>내부 AX와 고객 플랫폼을<br>함께 만들고 있고,</span></div><div class="clip sub" id="sub86" data-start="202.04" data-duration="1.19" data-track-index="9"><span>올해 9월엔 이 구조로</span></div><div class="clip sub" id="sub87" data-start="203.25" data-duration="3.05" data-track-index="9"><span>AX 핵심기술 특허 5건도 출원했습니다.</span></div><div class="clip sub" id="sub88" data-start="206.69" data-duration="1.43" data-track-index="9"><span>진행은 이렇게 해요.</span></div><div class="clip sub" id="sub89" data-start="208.41" data-duration="3.4" data-track-index="9"><span>9년 차 경영컨설턴트가<br>회사의 성장 단계와 업무를 진단해,</span></div><div class="clip sub" id="sub90" data-start="211.83" data-duration="2.4" data-track-index="9"><span>무엇부터 바꿔야<br>자금과 매출로 이어지는지</span></div><div class="clip sub" id="sub91" data-start="214.25" data-duration="1.57" data-track-index="9"><span>성장 설계도를 그려요.</span></div><div class="clip sub" id="sub92" data-start="216.11" data-duration="3.16" data-track-index="9"><span>그리고 급한 한 가지부터,<br>필요한 만큼만 만듭니다.</span></div><div class="clip sub" id="sub93" data-start="219.29" data-duration="2.51" data-track-index="9"><span>이미 잘 쓰는 프로그램은<br>그대로 두고요.</span></div><div class="clip sub" id="sub94" data-start="222.19" data-duration="0.86" data-track-index="9"><span>인증은요?</span></div><div class="clip sub" id="sub95" data-start="223.07" data-duration="4.34" data-track-index="9"><span>벤처기업확인, 기업부설연구소,<br>이노비즈와 메인비즈 같은 기업인증,</span></div><div class="clip sub" id="sub96" data-start="227.43" data-duration="1.39" data-track-index="9"><span>그리고 특허 출원까지,</span></div><div class="clip sub" id="sub97" data-start="228.84" data-duration="2.78" data-track-index="9"><span>필요한 것을 골라<br>신청까지 함께 준비합니다.</span></div><div class="clip sub" id="sub98" data-start="231.91" data-duration="3.18" data-track-index="9"><span>직접 만든 AX가 곧<br>기술력의 근거가 되니까요.</span></div><div class="clip sub" id="sub99" data-start="235.48" data-duration="0.92" data-track-index="9"><span>다음 심사에서 또</span></div><div class="clip sub" id="sub100" data-start="236.42" data-duration="2.05" data-track-index="9"><span>‘그래서, 다음은 어떻게 되나요?’라는</span></div><div class="clip sub" id="sub101" data-start="238.49" data-duration="1.12" data-track-index="9"><span>질문을 받는다면,</span></div><div class="clip sub" id="sub102" data-start="239.63" data-duration="2.25" data-track-index="9"><span>이번엔 말 대신 화면을 보여 주세요.</span></div><div class="clip sub" id="sub103" data-start="242.16" data-duration="2.7" data-track-index="9"><span>우리 회사는 지금 무엇부터<br>보여 줘야 할까요?</span></div><div class="clip sub" id="sub104" data-start="244.88" data-duration="2.78" data-track-index="9"><span>3분 AX 진단으로 먼저 확인해 보세요.</span></div>
+</div>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  tl.to('#s1', { opacity: 0, duration: 0.18 }, 27.99);
+  tl.fromTo('#h1', { scale: 1.05 }, { scale: 1, duration: 0.45, ease: 'power2.out' }, 0);
+  tl.from('#h2', { scale: 1.18, opacity: 0, duration: 0.3, ease: 'back.out(1.4)' }, 3.47);
+  tl.from('#h3', { scale: 1.18, opacity: 0, duration: 0.3, ease: 'back.out(1.4)' }, 11.8);
+  tl.from('#h4', { scale: 1.18, opacity: 0, duration: 0.3, ease: 'back.out(1.4)' }, 17.65);
+  tl.fromTo('#s1-stack', { x: -10 }, { x: 0, duration: 0.25, ease: 'elastic.out(1.2, 0.3)', immediateRender: false }, 3.64);
+  tl.fromTo('#s1-stack', { x: -10 }, { x: 0, duration: 0.25, ease: 'elastic.out(1.2, 0.3)', immediateRender: false }, 11.97);
+  tl.fromTo('#s1-stack', { x: -10 }, { x: 0, duration: 0.25, ease: 'elastic.out(1.2, 0.3)', immediateRender: false }, 17.82);
+  tl.to('#s1-stack', { opacity: 0.28, duration: 0.3 }, 22.41);
+  tl.from('#s1-k .kchips span', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 22.51);
+  tl.from('#s1-stamp', { scale: 2.4, opacity: 0, rotation: -24, duration: 0.35, ease: 'power3.out' }, 24.47);
+  tl.from('#s1-w', { y: 40, opacity: 0, duration: 0.4, ease: 'back.out(2)' }, 26.83);
+  tl.to('#s1-w span', { y: 10, duration: 0.35, ease: 'sine.inOut', yoyo: true, repeat: 3 }, 27.23);
+  tl.fromTo('#s2', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 28.17);
+  tl.to('#s2', { opacity: 0, duration: 0.18 }, 53.96);
+  tl.from('#s2-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 28.27);
+  tl.from('#s2-room', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 28.47);
+  tl.from('#s2-q', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 33.16);
+  tl.from('#s2-a1', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 35.63);
+  tl.from('#s2-a2', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 37.54);
+  tl.to('#s2-room .judge', { opacity: 0.45, duration: 0.6 }, 38.64);
+  tl.to(['#s2-room', '#s2-q', '#s2-a1', '#s2-a2'], { opacity: 0, y: -30, duration: 0.35 }, 40.11);
+  tl.from('#s2-mvp', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 41.85);
+  tl.from('#s2-mvp .x', { scale: 3, opacity: 0, duration: 0.3, ease: 'power3.out' }, 42.35);
+  tl.from('#s2-pile .plan:not(.mine)', { y: 140, opacity: 0, duration: 0.4, ease: 'power2.out', stagger: 0.08 }, 44.07);
+  tl.from('#s2-mine', { y: -320, x: 260, rotation: 20, opacity: 0, duration: 0.6, ease: 'power2.in' }, 44.37);
+  tl.to('#s2-pile', { opacity: 0.4, filter: 'grayscale(1)', duration: 0.5 }, 48.26);
+  tl.to('#s2-mvp', { opacity: 0.25, duration: 0.3 }, 48.26);
+  tl.from('#s2-v', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 51.73);
+  tl.from('#s2-v .vb', { scale: 0.7, opacity: 0, duration: 0.45, ease: 'back.out(2)' }, 52.53);
+  tl.fromTo('#s3', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 54.14);
+  tl.to('#s3', { opacity: 0, duration: 0.18 }, 77.45);
+  tl.from('#s3-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 54.24);
+  tl.from('#s3-src .src', { y: 50, opacity: 0, rotation: (i) => [-6, 4, -3][i], duration: 0.4, ease: 'back.out(1.6)', stagger: 0.18 }, 56.65);
+  tl.from('#s3-src .dots span', { scale: 0, duration: 0.25, ease: 'back.out(2)', stagger: 0.06 }, 59.06);
+  tl.to('#s3-src .src', { y: (i) => [-8, 10, -4][i], rotation: (i) => [-5, 4, -3][i], duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: 3 }, 59.46);
+  tl.from('#s3-vault', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 64.31);
+  tl.from('#s3-empty', { opacity: 0, y: 12, duration: 0.3 }, 65.61);
+  tl.to(['#s3-src', '#s3-vault'], { opacity: 0, y: -40, duration: 0.35 }, 66.45);
+  tl.from('#s3-c1', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 66.6);
+  tl.from('#s3-c1 .cn', { y: -40, opacity: 0, duration: 0.5, ease: 'bounce.out', stagger: 0.15 }, 69.69);
+  tl.from('#s3-c2', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 71.99);
+  tl.to('#s3-leave', { x: 150, opacity: 0, duration: 0.8, ease: 'power1.in' }, 72.59);
+  tl.fromTo('#s3-cons', { rotation: 0 }, { rotation: 1.4, duration: 0.08, yoyo: true, repeat: 7, ease: 'none', immediateRender: false }, 73.8);
+  tl.set('#s3-cons', { rotation: 0 }, 74.5);
+  tl.from('#s3-c3', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 75.89);
+  tl.fromTo('#s4', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 77.63);
+  tl.to('#s4', { opacity: 0, duration: 0.18 }, 101.75);
+  tl.from('#s4-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 77.73);
+  tl.from('#s4-g i', { scale: 0, duration: 0.18, stagger: { each: 0.006, from: 'random' } }, 83.56);
+  tl.from('#s4-r', { y: 20, opacity: 0, duration: 0.35 }, 85.81);
+  tl.from('#s4-n', { scale: 0.4, opacity: 0, duration: 0.45, ease: 'back.out(2)' }, 88.46);
+  tl.to('#s4-g', { opacity: 0.25, duration: 0.4 }, 90.92);
+  tl.from('#s4-p0', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 93.37);
+  tl.from('#s4-p1', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 96.25);
+  tl.from('#s4-p2', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 100.14);
+  tl.from('#s4-p .parr', { opacity: 0, x: -10, duration: 0.3, stagger: 0.6 }, 96.1);
+  tl.from('#s4-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 93.52);
+  tl.fromTo('#s5', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 101.93);
+  tl.to('#s5', { opacity: 0, duration: 0.18 }, 115.12);
+  tl.from('#s5-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 102.03);
+  tl.from('#s5-c', { opacity: 0, duration: 0.3 }, 102.03);
+  tl.from('#s5-n0', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 103.81);
+  tl.from('#s5-n1', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 108.08);
+  tl.from('#s5-n2', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 109.89);
+  tl.from('#s5-n3', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 110.7);
+  tl.from('#s5-path .down', { scaleY: 0, transformOrigin: '50% 0%', duration: 0.3, stagger: 0.8 }, 107.78);
+  tl.from('#s5-win', { scale: 2.2, opacity: 0, rotation: -14, duration: 0.4, ease: 'power3.out' }, 113.27);
+  tl.from('#s5-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 104.11);
+  tl.fromTo('#s6', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 115.3);
+  tl.to('#s6', { opacity: 0, duration: 0.18 }, 141.64);
+  tl.from('#s6-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 115.4);
+  tl.from('#s6-c0', { x: -160, opacity: 0, duration: 0.38, ease: 'power3.out' }, 117.95);
+  tl.from('#s6-c1', { x: 160, opacity: 0, duration: 0.38, ease: 'power3.out' }, 121.86);
+  tl.from('#s6-c2', { x: -160, opacity: 0, duration: 0.38, ease: 'power3.out' }, 125.49);
+  tl.from('#s6-c3', { x: 160, opacity: 0, duration: 0.38, ease: 'power3.out' }, 128.65);
+  tl.from('#s6-c4', { x: -160, opacity: 0, duration: 0.38, ease: 'power3.out' }, 132.28);
+  tl.from('#s6-c0 .tier', { scale: 0, duration: 0.3, ease: 'back.out(2.5)' }, 118.45);
+  tl.from('#s6-c1 .tier', { scale: 0, duration: 0.3, ease: 'back.out(2.5)' }, 122.36);
+  tl.from('#s6-c2 .tier', { scale: 0, duration: 0.3, ease: 'back.out(2.5)' }, 125.99);
+  tl.from('#s6-c3 .tier', { scale: 0, duration: 0.3, ease: 'back.out(2.5)' }, 129.15);
+  tl.from('#s6-c4 .tier', { scale: 0, duration: 0.3, ease: 'back.out(2.5)' }, 132.78);
+  tl.from('#s6-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 118.15);
+  tl.to('#s6-cs', { opacity: 0.3, duration: 0.3 }, 137.43);
+  tl.from('#s6-eq', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 137.53);
+  tl.fromTo('#s7', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 141.82);
+  tl.to('#s7', { opacity: 0, duration: 0.18 }, 152.94);
+  tl.from('#s7-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 141.92);
+  tl.from('#s7-o', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 145.04);
+  tl.from('#s7-r1', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 146.11);
+  tl.from('#s7-r2', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 149.8);
+  tl.from('#s7-r3', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 151.2);
+  tl.fromTo('#s8', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 153.12);
+  tl.to('#s8', { opacity: 0, duration: 0.18 }, 173.45);
+  tl.from('#s8-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 153.22);
+  tl.from('#s8-li', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 157.54);
+  tl.from('#s8-in', { y: 80, opacity: 0, duration: 0.5, ease: 'power3.out' }, 157.54);
+  tl.from('#s8-lo', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 162.32);
+  tl.from('#s8-out', { y: 80, opacity: 0, duration: 0.5, ease: 'power3.out' }, 162.32);
+  tl.set('#o-gsbk2-01a', { opacity: 1 }, 163.02);
+  tl.fromTo('#o-gsbk2-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 163.06);
+  tl.to('#o-gsbk2-01', { opacity: 1, duration: 0.12 }, 163.22);
+  tl.set('#o-gsbk2-02a', { opacity: 1 }, 163.58);
+  tl.fromTo('#o-gsbk2-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 163.62);
+  tl.to('#o-gsbk2-02', { opacity: 1, duration: 0.12 }, 163.78);
+  tl.set('#o-gsbk2-03a', { opacity: 1 }, 164.14);
+  tl.fromTo('#o-gsbk2-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 164.18);
+  tl.to('#o-gsbk2-03', { opacity: 1, duration: 0.12 }, 164.34);
+  tl.set('#o-gsbk2-04a', { opacity: 1 }, 164.69);
+  tl.fromTo('#o-gsbk2-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 164.73);
+  tl.to('#o-gsbk2-04', { opacity: 1, duration: 0.12 }, 164.89);
+  tl.set('#o-gsbk2-05a', { opacity: 1 }, 165.25);
+  tl.fromTo('#o-gsbk2-t5', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 165.29);
+  tl.to('#o-gsbk2-05', { opacity: 1, duration: 0.12 }, 165.45);
+  tl.to('#o-gsbk2-06', { opacity: 1, duration: 0.12 }, 165.81);
+  tl.to('#o-gsbk2-07', { opacity: 1, duration: 0.12 }, 166.37);
+  tl.set('#o-gsbk2-08a', { opacity: 1 }, 166.93);
+  tl.fromTo('#o-gsbk2-t8', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 166.97);
+  tl.to('#o-gsbk2-08', { opacity: 1, duration: 0.12 }, 167.13);
+  tl.set('#o-gsbk2-09a', { opacity: 1 }, 167.48);
+  tl.fromTo('#o-gsbk2-t9', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 167.52);
+  tl.to('#o-gsbk2-09', { opacity: 1, duration: 0.12 }, 167.68);
+  tl.to('#o-gsbk2-10', { opacity: 1, duration: 0.12 }, 168.04);
+  tl.fromTo('#o-gsbk2-t11', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 169);
+  tl.from('#s8-wire', { opacity: 0, duration: 0.3 }, 169.1);
+  tl.fromTo('#s8-pulse', { x: 0, opacity: 1 }, { x: 150, duration: 0.7, ease: 'power1.inOut', immediateRender: false }, 169.2);
+  tl.to('#s8-pulse', { opacity: 0, duration: 0.2 }, 169.9);
+  tl.to('#i-demand', { opacity: 1, duration: 0.2 }, 169.85);
+  tl.fromTo('#s8-in', { boxShadow: '0 30px 70px rgba(0,0,0,.6), 0 0 0 2px rgba(255,255,255,.14)' }, { boxShadow: '0 30px 70px rgba(0,0,0,.6), 0 0 0 8px rgba(232,137,79,.9)', duration: 0.25, yoyo: true, repeat: 1, immediateRender: false }, 169.85);
+  tl.fromTo('#i-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 171.11);
+  tl.to('#i-purchase', { opacity: 1, duration: 0.15 }, 171.31);
+  tl.from('#s8-ai', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 171.46);
+  tl.from('#s8-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 162.62);
+  tl.fromTo('#s9', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 173.63);
+  tl.to('#s9', { opacity: 0, duration: 0.18 }, 191.15);
+  tl.from('#s9-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 173.73);
+  tl.from('#s9-stack .flip', { y: 40, opacity: 0, duration: 0.35, stagger: 0.1 }, 173.88);
+  tl.to('#s9-f0 .hk', { scaleY: 0, duration: 0.16, ease: 'power2.in' }, 176.77);
+  tl.fromTo('#s9-a0', { scaleY: 0 }, { scaleY: 1, duration: 0.2, ease: 'back.out(2)', immediateRender: true }, 176.93);
+  tl.to('#s9-f1 .hk', { scaleY: 0, duration: 0.16, ease: 'power2.in' }, 180.21);
+  tl.fromTo('#s9-a1', { scaleY: 0 }, { scaleY: 1, duration: 0.2, ease: 'back.out(2)', immediateRender: true }, 180.37);
+  tl.to('#s9-f2 .hk', { scaleY: 0, duration: 0.16, ease: 'power2.in' }, 184.62);
+  tl.fromTo('#s9-a2', { scaleY: 0 }, { scaleY: 1, duration: 0.2, ease: 'back.out(2)', immediateRender: true }, 184.78);
+  tl.to('#s9-f3 .hk', { scaleY: 0, duration: 0.16, ease: 'power2.in' }, 187.78);
+  tl.fromTo('#s9-a3', { scaleY: 0 }, { scaleY: 1, duration: 0.2, ease: 'back.out(2)', immediateRender: true }, 187.94);
+  tl.fromTo('#s10', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 191.33);
+  tl.to('#s10', { opacity: 0, duration: 0.18 }, 206.26);
+  tl.from('#s10-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 191.43);
+  tl.from('#s10-w .axc', { scale: 0.4, opacity: 0, duration: 0.3, ease: 'back.out(2)', stagger: 0.09 }, 194.03);
+  tl.to('#s10-w', { opacity: 0.35, duration: 0.3 }, 198);
+  tl.from('#s10-r', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 198);
+  tl.from('#s10-r span', { scale: 0.5, opacity: 0, duration: 0.25, stagger: 0.08 }, 198.4);
+  tl.from('#s10-p', { scale: 1.8, opacity: 0, rotation: -8, duration: 0.4, ease: 'power3.out' }, 204.33);
+  tl.from('#s10-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 194.33);
+  tl.fromTo('#s11', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 206.44);
+  tl.to('#s11', { opacity: 0, duration: 0.18 }, 221.76);
+  tl.from('#s11-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 206.54);
+  tl.from('#s11-pro', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 208.31);
+  tl.from('#s11-s0', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 211.13);
+  tl.from('#s11-s1', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 214.15);
+  tl.from('#s11-s2', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 216.41);
+  tl.from('#s11-l .old', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 219.19);
+  tl.from('#s11-ax', { y: -80, opacity: 0, duration: 0.45, ease: 'bounce.out' }, 219.79);
+  tl.fromTo('#s12', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 221.94);
+  tl.to('#s12', { opacity: 0, duration: 0.18 }, 235.05);
+  tl.from('#s12-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 222.04);
+  tl.from('#s12-ph', { scale: 0.8, opacity: 0, duration: 0.45, ease: 'back.out(1.6)' }, 222.34);
+  tl.from('#s12-b1', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 223.17);
+  tl.from('#s12-b2', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 224.18);
+  tl.from('#s12-b3', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 225.32);
+  tl.from('#s12-b4', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 225.99);
+  tl.from('#s12-b5', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 227.93);
+  tl.from('#s12-pt', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 231.71);
+  tl.from('#s12-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 223.27);
+  tl.fromTo('#s13', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 235.23);
+  tl.to('#s13', { opacity: 0, duration: 0.18 }, 247.65);
+  tl.from('#s13-room', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 235.33);
+  tl.from('#s13-q', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 236.52);
+  tl.to(['#s13-room', '#s13-q'], { opacity: 0, y: -60, duration: 0.35 }, 240.04);
+  tl.from('#s13-show', { y: 260, opacity: 0, duration: 0.55, ease: 'back.out(1.4)' }, 240.24);
+  tl.from('#s13-nod', { scale: 0, duration: 0.35, ease: 'back.out(3)' }, 241.04);
+  tl.to('#s13-show', { opacity: 0, y: -40, duration: 0.35 }, 241.96);
+  tl.from('#s13-cta', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 242.16);
+  tl.to('#s13-cta .cta', { scale: 1.05, duration: 0.4, ease: 'sine.inOut', yoyo: true, repeat: 3 }, 245.08);
+  tl.from('#s13-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 242.66);
+  tl.fromTo('#s14', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 247.83);
+  tl.from('#s14-h', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 247.88);
+  tl.from('#s14-g .bcell', { scale: 0.3, opacity: 0, duration: 0.24, ease: 'back.out(2)', stagger: 0.12 }, 247.98);
+  tl.to(['#s14-g', '#s14-h'], { opacity: 0.2, duration: 0.35 }, 249.72);
+  tl.from('#s14-end', { scale: 0.88, opacity: 0, duration: 0.45, ease: 'back.out(1.6)' }, 249.72);
+  tl.from('#s14-end .e5', { y: 24, opacity: 0, duration: 0.4, ease: 'power2.out' }, 250.32);
+  tl.from('#sub0 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 0);
+  tl.from('#sub1 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 3.39);
+  tl.from('#sub2 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 4.53);
+  tl.from('#sub3 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 6.41);
+  tl.from('#sub4 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 7.68);
+  tl.from('#sub5 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 11.72);
+  tl.from('#sub6 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 14.2);
+  tl.from('#sub7 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 17.57);
+  tl.from('#sub8 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 19.38);
+  tl.from('#sub9 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 22.31);
+  tl.from('#sub10 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 26.13);
+  tl.from('#sub11 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 28.42);
+  tl.from('#sub12 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 30.42);
+  tl.from('#sub13 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 33.06);
+  tl.from('#sub14 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 35.53);
+  tl.from('#sub15 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 37.44);
+  tl.from('#sub16 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 40.21);
+  tl.from('#sub17 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 41.75);
+  tl.from('#sub18 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 44.17);
+  tl.from('#sub19 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 45.85);
+  tl.from('#sub20 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 47.86);
+  tl.from('#sub21 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 50.66);
+  tl.from('#sub22 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 52.43);
+  tl.from('#sub23 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 54.39);
+  tl.from('#sub24 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 56.65);
+  tl.from('#sub25 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 58.86);
+  tl.from('#sub26 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 62.27);
+  tl.from('#sub27 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 64.21);
+  tl.from('#sub28 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 66.6);
+  tl.from('#sub29 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 68.01);
+  tl.from('#sub30 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 70.98);
+  tl.from('#sub31 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 72.92);
+  tl.from('#sub32 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 74.92);
+  tl.from('#sub33 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 77.88);
+  tl.from('#sub34 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 79.82);
+  tl.from('#sub35 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 81.84);
+  tl.from('#sub36 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 83.56);
+  tl.from('#sub37 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 85.71);
+  tl.from('#sub38 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 88.13);
+  tl.from('#sub39 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 90.92);
+  tl.from('#sub40 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 93.32);
+  tl.from('#sub41 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 94.99);
+  tl.from('#sub42 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 97.14);
+  tl.from('#sub43 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 99.29);
+  tl.from('#sub44 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 102.18);
+  tl.from('#sub45 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 103.91);
+  tl.from('#sub46 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 106.84);
+  tl.from('#sub47 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 109.99);
+  tl.from('#sub48 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 112.79);
+  tl.from('#sub49 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 115.55);
+  tl.from('#sub50 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 117.95);
+  tl.from('#sub51 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 119.02);
+  tl.from('#sub52 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 121.86);
+  tl.from('#sub53 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 123.33);
+  tl.from('#sub54 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 125.49);
+  tl.from('#sub55 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 128.65);
+  tl.from('#sub56 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 132.28);
+  tl.from('#sub57 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 133.49);
+  tl.from('#sub58 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 136.42);
+  tl.from('#sub59 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 137.83);
+  tl.from('#sub60 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 139.58);
+  tl.from('#sub61 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 142.07);
+  tl.from('#sub62 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 145.44);
+  tl.from('#sub63 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 149.8);
+  tl.from('#sub64 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 153.37);
+  tl.from('#sub65 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 154.84);
+  tl.from('#sub66 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 157.64);
+  tl.from('#sub67 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 159.99);
+  tl.from('#sub68 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 162.42);
+  tl.from('#sub69 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 164.16);
+  tl.from('#sub70 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 166.37);
+  tl.from('#sub71 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 168.5);
+  tl.from('#sub72 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 171.65);
+  tl.from('#sub73 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 173.88);
+  tl.from('#sub74 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 176.67);
+  tl.from('#sub75 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 177.95);
+  tl.from('#sub76 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 180.11);
+  tl.from('#sub77 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 182.22);
+  tl.from('#sub78 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 184.52);
+  tl.from('#sub79 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 186.06);
+  tl.from('#sub80 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 187.68);
+  tl.from('#sub81 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 188.95);
+  tl.from('#sub82 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 191.58);
+  tl.from('#sub83 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 194.13);
+  tl.from('#sub84 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 197.6);
+  tl.from('#sub85 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 198.81);
+  tl.from('#sub86 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 202.04);
+  tl.from('#sub87 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 203.25);
+  tl.from('#sub88 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 206.69);
+  tl.from('#sub89 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 208.41);
+  tl.from('#sub90 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 211.83);
+  tl.from('#sub91 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 214.25);
+  tl.from('#sub92 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 216.11);
+  tl.from('#sub93 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 219.29);
+  tl.from('#sub94 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 222.19);
+  tl.from('#sub95 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 223.07);
+  tl.from('#sub96 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 227.43);
+  tl.from('#sub97 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 228.84);
+  tl.from('#sub98 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 231.91);
+  tl.from('#sub99 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 235.48);
+  tl.from('#sub100 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 236.42);
+  tl.from('#sub101 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 238.49);
+  tl.from('#sub102 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 239.63);
+  tl.from('#sub103 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 242.16);
+  tl.from('#sub104 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 244.88);
+  tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: 252.83, ease: 'none' }, 0);
+
+  window.__timelines["main"] = tl;
+  tl.seek(0);
+</script>
+</body>
+</html>
