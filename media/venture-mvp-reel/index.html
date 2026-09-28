@@ -142,9 +142,9 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .pair { position: absolute; inset: 0; }
 .pairlbl { position: absolute; left: 60px; right: 60px; top: 515px; display: flex; align-items: center; gap: 14px; font-size: 40px; font-weight: 800; color: #AEB6C0; }
 .pairlbl b { color: #fff; font-weight: 900; } .pairlbl em { font-size: 44px; }
-.phone.axph { left: 40px; top: 590px; width: 300px; height: 620px; z-index: 6; }
-.donepill { position: absolute; left: 52px; top: 1140px; padding: 12px 22px; border-radius: 999px; background: #2E9E6A; color: #fff; font-size: 30px; font-weight: 900; box-shadow: 0 12px 30px rgba(0,0,0,.5); z-index: 9; }
-.official.side { left: 370px; right: 40px; top: 1090px; padding: 18px 24px; } .official.side p { font-size: 30px; }
+.phone.axph { left: 40px; top: 615px; width: 300px; height: 620px; z-index: 6; }
+.donepill { position: absolute; left: 52px; top: 1165px; padding: 12px 22px; border-radius: 999px; background: #2E9E6A; color: #fff; font-size: 30px; font-weight: 900; box-shadow: 0 12px 30px rgba(0,0,0,.5); z-index: 9; }
+.official.side { left: 370px; right: 40px; top: 1115px; padding: 18px 24px; } .official.side p { font-size: 30px; }
 .phone.mini { left: 40px; top: 760px; width: 170px; height: 350px; padding: 7px; border-radius: 28px; z-index: 6; } .phone.mini .screen { border-radius: 22px; } .phone.mini .mob { width: 156px; }
 /* 9) 폰 3대 */
 .trio { position: absolute; left: 60px; right: 60px; top: 520px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -174,6 +174,15 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .endcard .e0 { font-size: 36px; font-weight: 800; color: #AEB6C0; margin-bottom: 14px; }
 .endcard .ebar { display: block; width: 120px; height: 6px; margin: 36px auto 30px; border-radius: 3px; background: #D47A4A; }
 .endcard .e5 { font-size: 48px; font-weight: 700; line-height: 1.35; color: #D5DAE0; } .endcard .e5 b { color: #E8B89A; font-weight: 900; }
+/* MVP 뜻(최소 기능 제품·웹앱) */
+.mvp { position: relative; display: inline-block; }
+.mvp small { position: absolute; left: 50%; top: 100%; transform: translateX(-50%); margin-top: -4px; white-space: nowrap; font-size: var(--ms); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; color: #E8B89A; }
+.mvp.l small { left: 0; transform: none; }
+.mvpin { margin: 0 2px 0 4px; font-weight: 700; letter-spacing: -0.01em; color: #E8B89A; white-space: nowrap; }
+.foot .mvpin { color: inherit; }
+.mnote { position: absolute; left: 60px; top: 478px; font-size: 32px; font-weight: 800; color: #D5DAE0; } .mnote b { font-weight: 900; }
+.steps3 { top: 945px !important; } .steps3 > div { height: 212px !important; }
+.d45 { position: absolute; right: 60px; top: 1168px; width: 308px; text-align: center; font-size: 25px; font-weight: 700; line-height: 1.3; color: #C9CED6; } .d45 b { color: #E8B89A; font-weight: 900; }
 /* 자막 · 진행 막대 */
 .sub { display: flex; align-items: flex-end; justify-content: center; padding: 0 70px 420px; z-index: 40; }
 .sub span { max-width: 900px; padding: 18px 34px; border-radius: 22px; background: rgba(8,10,13,.88); font-size: 54px; font-weight: 800; line-height: 1.32; text-align: center; }
@@ -183,15 +192,15 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-start="0" data-duration="99.87" data-width="1080" data-height="1920">
+<div id="root" data-composition-id="main" data-start="0" data-duration="101.21" data-width="1080" data-height="1920">
   <div class="glow1"></div><div class="glow2"></div>
   <div class="brand"><span class="logo"><img src="assets/logo.png" alt="미래에이아이랩"></span><span class="tag2">2주 기술사업 빌드</span></div>
-  <p class="foot">miraeailab.com · 벤처인증 + 작동하는 MVP</p><div id="prog"><i></i></div>
+  <p class="foot">miraeailab.com · 벤처인증 + 작동하는 MVP<small class="mvpin" style="font-size:22px">(최소 기능 제품·웹앱)</small></p><div id="prog"><i></i></div>
   <section class="clip scene" id="s1" data-start="0" data-duration="8.76" data-track-index="1">
     <div class="who" id="s1a" style="top:290px"><div class="certimg sm" id="s1-cert"><img src="assets/shots/cert-masked.jpg" alt=""></div><span class="qm" id="s1-q1">?</span>
       <div class="who-txt"><span class="tag">중소기업 대표님</span><p>벤처인증은 필요한데<br><b>내세울 기술</b>이 없다면?</p></div></div>
     <div class="who" id="s1b" style="top:745px"><div class="phone s1p1" id="s1-ph"><div class="screen"><img class="fimg" src="assets/flows/paw-00.jpg" style="width:100%" alt=""></div></div><div class="phone s1p2" id="s1-ph2"><div class="screen"><img class="fimg" src="assets/flows/mom-00.jpg" style="width:100%" alt=""></div></div><span class="qm" id="s1-q2">?</span>
-      <div class="who-txt"><span class="tag">예비창업자</span><p>창업 준비 중인데<br><b>MVP부터</b> 막막하다면?</p></div></div>
+      <div class="who-txt"><span class="tag">예비창업자</span><p>창업 준비 중인데<br><b><span class="mvp l" style="--ms:27px">MVP<small>(최소 기능 제품·웹앱)</small></span>부터</b> 막막하다면?</p></div></div>
     <div class="stamp" id="s1s">둘 다, <em>한 번에</em> 해결</div></section>
 <section class="clip scene" id="s2" data-start="8.76" data-duration="6.57" data-track-index="1">
     <div class="big" id="s2-t"><div class="ln"><span><em class="peach">작동하는 서비스</em></span></div><div class="ln"><span>+ 벤처기업확인 신청</span></div></div>
@@ -211,7 +220,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
     <div class="okpill" id="s4-ok">✓ 직접 눌러 보는 웹앱</div></section>
 <section class="clip scene" id="s5" data-start="36.46" data-duration="12.84" data-track-index="1">
     <div class="big" id="s5-t"><div class="ln"><span>아이디어가</span></div><div class="ln"><span><em class="peach">있든, 없든</em></span></div></div>
-    <div class="row" id="s5-c1" style="top:560px"><span class="tag">아이디어가 있다면</span><p>그 아이디어를 <b>MVP로</b></p></div>
+    <div class="row" id="s5-c1" style="top:560px"><span class="tag">아이디어가 있다면</span><p>그 아이디어를 <b>MVP<small class="mvpin" style="font-size:27px">(최소 기능 제품·웹앱)</small>로</b></p></div>
     <div class="row" id="s5-c2" style="top:770px"><span class="tag">아이디어가 없다면</span><p>지금 사업에서 <b>기술사업 찾기</b></p></div>
     <span class="pro" id="s5-pro">9년 차 경영컨설턴트 1:1</span>
     <div class="row hot" id="s5-c3" style="top:990px"><span class="tag">함께 짜 드려요</span><p><b>매출로 이어지는</b> 성장 방안</p>
@@ -222,6 +231,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
     <div class="grey" id="s6-grey">다 비슷해 보여요</div></section>
 <section class="clip scene" id="s7" data-start="56.63" data-duration="8.47" data-track-index="1">
     <div class="big" id="s7-t1"><div class="ln"><span>눌러 보여 주는 <em class="peach">MVP</em>가</span></div><div class="ln"><span>차이를 만들어요</span></div></div>
+    <p class="mnote" id="s7-n"><b>MVP</b><small class="mvpin" style="font-size:32px">(최소 기능 제품·웹앱)</small></p>
     <div class="big" id="s7-t2"><div class="ln"><span>나중엔 AI를 붙여</span></div><div class="ln"><span><em class="orange">AX</em>로 키워요</span></div></div>
     <div id="s7-a">
       <div class="stack mini"><div class="plan" style="transform:rotate(-8deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div><div class="plan" style="transform:rotate(0deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div><div class="plan" style="transform:rotate(8deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div></div>
@@ -229,9 +239,9 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
       <span class="chip c1" id="s7-ch1">심사위원 앞에서</span><span class="chip c2" id="s7-ch2">투자자 앞에서</span>
     </div>
     <div class="pair" id="s7-p0">
-      <p class="pairlbl"><span>학습 플랫폼 MVP</span><em class="orange">→</em><b>학원 AX</b></p>
+      <p class="pairlbl"><span>학습 플랫폼 <span class="mvp " style="--ms:22px">MVP<small>(최소 기능 제품·웹앱)</small></span></span><em class="orange">→</em><b>학원 AX</b></p>
       <div class="phone axph" id="s7-m0"><div class="screen"><img class="fimg" id="s7-m0-scroll" src="assets/flows/edu2-scroll.jpg" style="width:282px" alt=""><img class="fimg" src="assets/flows/edu2-nav.jpg" style="width:282px;top:562.55px" alt=""><img class="fimg" id="s7-m0-06a" src="assets/flows/edu2-06a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-m0-06" src="assets/flows/edu2-06.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-m0-07a" src="assets/flows/edu2-07a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-m0-07" src="assets/flows/edu2-07.jpg" style="width:282px;opacity:0" alt=""><span class="touch" id="s7-m0-t6" style="left:141px;top:378.89px"></span><span class="touch" id="s7-m0-t7" style="left:203.18px;top:533.63px"></span></div></div>
-      <div class="abs" style="left:370px;top:610px"><div class="browser" id="s7-br0" style="width:670px"><div class="bar"><i></i><i></i><i></i><span class="url">에듀마스터 · 미래AI랩 자체 AX 데모</span></div><div class="vp" style="height:418.75px"><img class="fimg" src="assets/flows/ax-00.jpg" style="width:670px" alt=""><img class="fimg" id="s7-ax-01a" src="assets/flows/ax-01a.jpg" style="width:670px;opacity:0" alt=""><img class="fimg" id="s7-ax-01" src="assets/flows/ax-01.jpg" style="width:670px;opacity:0" alt=""><img class="fimg" id="s7-ax-02a" src="assets/flows/ax-02a.jpg" style="width:670px;opacity:0" alt=""><img class="fimg" id="s7-ax-02" src="assets/flows/ax-02.jpg" style="width:670px;opacity:0" alt=""><span class="touch" id="s7-ax-t1" style="left:48.39px;top:209.38px"></span><span class="touch" id="s7-ax-t2" style="left:65.14px;top:87.94px"></span><svg class="cursor" id="s7-cur" viewBox="0 0 24 24" width="44" height="44"><path d="M4 2.5 L4 19 L8.6 14.8 L11.6 21.4 L14.4 20.2 L11.4 13.7 L17.6 13.4 Z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg></div></div></div>
+      <div class="abs" style="left:370px;top:635px"><div class="browser" id="s7-br0" style="width:670px"><div class="bar"><i></i><i></i><i></i><span class="url">에듀마스터 · 미래AI랩 자체 AX 데모</span></div><div class="vp" style="height:418.75px"><img class="fimg" src="assets/flows/ax-00.jpg" style="width:670px" alt=""><img class="fimg" id="s7-ax-01a" src="assets/flows/ax-01a.jpg" style="width:670px;opacity:0" alt=""><img class="fimg" id="s7-ax-01" src="assets/flows/ax-01.jpg" style="width:670px;opacity:0" alt=""><img class="fimg" id="s7-ax-02a" src="assets/flows/ax-02a.jpg" style="width:670px;opacity:0" alt=""><img class="fimg" id="s7-ax-02" src="assets/flows/ax-02.jpg" style="width:670px;opacity:0" alt=""><span class="touch" id="s7-ax-t1" style="left:48.39px;top:209.38px"></span><span class="touch" id="s7-ax-t2" style="left:65.14px;top:87.94px"></span><svg class="cursor" id="s7-cur" viewBox="0 0 24 24" width="44" height="44"><path d="M4 2.5 L4 19 L8.6 14.8 L11.6 21.4 L14.4 20.2 L11.4 13.7 L17.6 13.4 Z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg></div></div></div>
     </div>
     <span class="donepill" id="s7-done">✓ 수강 신청 완료</span>
     <span class="aichip" id="s7-ai">+ AI</span>
@@ -239,31 +249,32 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 <section class="clip scene" id="s8" data-start="65.1" data-duration="8.89" data-track-index="1">
     <div class="big" id="s8-t"><div class="ln"><span>보통은 따로따로,</span></div><div class="ln"><span><em class="orange">저희는 한 번에</em></span></div></div>
     <div class="sep" id="s8-l"><span class="tag">컨설팅 회사</span><p>벤처인증</p></div>
-    <div class="sep r" id="s8-r"><span class="tag">개발사</span><p>MVP</p></div>
+    <div class="sep r" id="s8-r"><span class="tag">개발사</span><p><span class="mvp l" style="--ms:28px">MVP<small>(최소 기능 제품·웹앱)</small></span></p></div>
     <div class="merged" id="s8-m"><div class="mlogo"><img src="assets/logo.png" alt=""></div>
       <div class="msteps"><span id="s8-s0"><i>1</i>설계</span><span id="s8-s1"><i>2</i>제작</span><span id="s8-s2"><i>3</i>신청</span><span id="s8-s3"><i>4</i>컨설팅</span></div></div>
     <div class="stamp small" id="s8-once">한 번에</div></section>
-<section class="clip scene" id="s9" data-start="73.99" data-duration="5.29" data-track-index="1">
+<section class="clip scene" id="s9" data-start="73.99" data-duration="5.11" data-track-index="1">
     <div class="big" id="s9-t"><div class="ln"><span>대충 만들지 않아요</span></div><div class="ln"><span><em class="peach">실제로 이렇게 작동해요</em></span></div></div>
     <div class="trio" id="s9-tri"><div class="tcol" id="s9-c0"><p class="tl"><span>애견샵</span><b><em class="orange">→</em> 예약 플랫폼</b></p><div class="phone tri" id="s9-p0"><div class="screen"><img class="fimg" src="assets/flows/paw-08.jpg" style="width:262px" alt=""><img class="fimg" id="s9-p0-09a" src="assets/flows/paw-09a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-09" src="assets/flows/paw-09.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-10a" src="assets/flows/paw-10a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-10" src="assets/flows/paw-10.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-11a" src="assets/flows/paw-11a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-11" src="assets/flows/paw-11.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-12a" src="assets/flows/paw-12a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-12" src="assets/flows/paw-12.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-13a" src="assets/flows/paw-13a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-13" src="assets/flows/paw-13.jpg" style="width:262px;opacity:0" alt=""><span class="touch" id="s9-p0-t9" style="left:215.65px;top:540.79px"></span><span class="touch" id="s9-p0-t10" style="left:131px;top:395.02px"></span><span class="touch" id="s9-p0-t11" style="left:103.46px;top:552.22px"></span><span class="touch" id="s9-p0-t12" style="left:215.65px;top:540.79px"></span><span class="touch" id="s9-p0-t13" style="left:197.51px;top:540.79px"></span></div></div></div><div class="tcol" id="s9-c1"><p class="tl"><span>농산물 유통</span><b><em class="orange">→</em> 산지직송 커머스</b></p><div class="phone tri" id="s9-p1"><div class="screen"><img class="fimg" src="assets/flows/mom-00.jpg" style="width:262px" alt=""><img class="fimg" id="s9-p1-01a" src="assets/flows/mom-01a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-01" src="assets/flows/mom-01.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-02a" src="assets/flows/mom-02a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-02" src="assets/flows/mom-02.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-03a" src="assets/flows/mom-03a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-03" src="assets/flows/mom-03.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-04a" src="assets/flows/mom-04a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-04" src="assets/flows/mom-04.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-05a" src="assets/flows/mom-05a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-05" src="assets/flows/mom-05.jpg" style="width:262px;opacity:0" alt=""><span class="touch" id="s9-p1-t1" style="left:69.19px;top:283.5px"></span><span class="touch" id="s9-p1-t2" style="left:151.83px;top:499.82px"></span><span class="touch" id="s9-p1-t3" style="left:150.48px;top:298.28px"></span><span class="touch" id="s9-p1-t4" style="left:131px;top:499.82px"></span><span class="touch" id="s9-p1-t5" style="left:131px;top:499.82px"></span></div></div></div><div class="tcol" id="s9-c2"><p class="tl"><span>학원</span><b><em class="orange">→</em> 교육 플랫폼</b></p><div class="phone tri" id="s9-p2"><div class="screen"><img class="fimg" src="assets/flows/edu-00.jpg" style="width:262px" alt=""><img class="fimg" id="s9-p2-01a" src="assets/flows/edu-01a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-01" src="assets/flows/edu-01.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-02a" src="assets/flows/edu-02a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-02" src="assets/flows/edu-02.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-03a" src="assets/flows/edu-03a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-03" src="assets/flows/edu-03.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-04a" src="assets/flows/edu-04a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-04" src="assets/flows/edu-04.jpg" style="width:262px;opacity:0" alt=""><span class="touch" id="s9-p2-t1" style="left:131px;top:428.61px"></span><span class="touch" id="s9-p2-t2" style="left:188.77px;top:495.78px"></span><span class="touch" id="s9-p2-t3" style="left:131px;top:176.68px"></span><span class="touch" id="s9-p2-t4" style="left:165.93px;top:246.55px"></span></div></div></div></div></section>
-<section class="clip scene" id="s10" data-start="79.28" data-duration="4.65" data-track-index="1">
+<section class="clip scene" id="s10" data-start="79.1" data-duration="6.37" data-track-index="1">
     <div class="big" id="s10-t"><div class="ln"><span>개발을 몰라도</span></div><div class="ln"><span><em class="peach">괜찮습니다</em></span></div></div>
     <span class="pro big2" id="s10-req">✓ 벤처 요건부터 먼저 확인</span>
     <div class="two" id="s10-two"><b>2주</b><span>안에<br>끝내요</span></div>
-    <div class="steps3" id="s10-st"><div><i>1</i><p>기술사업<br><b>아이디어</b></p></div><div><i>2</i><p>작동하는<br><b>MVP</b></p></div><div><i>3</i><p>벤처기업확인<br><b>신청</b></p></div></div>
-    <p class="fine" id="s10-f" style="top:1215px">*2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요.</p></section>
-<section class="clip scene" id="s11" data-start="83.93" data-duration="5.72" data-track-index="1">
+    <div class="steps3" id="s10-st"><div><i>1</i><p>기술사업<br><b>아이디어</b></p></div><div><i>2</i><p>작동하는<br><b><span class="mvp l" style="--ms:20px">MVP<small>(최소 기능 제품·웹앱)</small></span></b></p></div><div><i>3</i><p>벤처기업확인<br><b>신청</b></p></div></div>
+    <p class="d45" id="s10-45">확인 결과는 신청 후<br><b>45일 이내</b>에 나와요</p>
+    <p class="fine" id="s10-f" style="top:1242px;font-size:24px">*2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요.<br>*45일은 확인기관의 처리 기한이며, 부득이하면 한 번 20일까지 늘어날 수 있어요.</p></section>
+<section class="clip scene" id="s11" data-start="85.47" data-duration="5.52" data-track-index="1">
     <span class="hotpill" id="s11-c">런칭 기념 · 선착순 5개사</span>
     <p class="was" id="s11-was"><span>정상가</span> 500만원<i id="s11-x"></i></p>
     <p class="now" id="s11-now">300만원</p>
-    <p class="incl" id="s11-in">작동하는 MVP + 벤처기업확인 신청</p></section>
-<section class="clip scene" id="s12" data-start="89.65" data-duration="3.22" data-track-index="1">
+    <p class="incl" id="s11-in">작동하는 <span class="mvp " style="--ms:26px">MVP<small>(최소 기능 제품·웹앱)</small></span> + 벤처기업확인 신청</p></section>
+<section class="clip scene" id="s12" data-start="90.99" data-duration="3.22" data-track-index="1">
     <div class="big center" id="s12-t"><div class="ln"><span>우리 회사도</span></div><div class="ln"><span><em class="peach">될까요?</em></span></div></div>
     <div class="cta" id="s12-btn">무료 상담 받기 <span>→</span></div>
     <p class="url2" id="s12-url">miraeailab.com</p>
     <div class="clogo" id="s12-logo"><img src="assets/logo.png" alt="미래에이아이랩"></div>
     <p class="fine center" id="s12-f" style="top:1190px">2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요.<br>벤처기업확인 여부는 확인기관 심사로 정해집니다.<br>영상 속 화면은 미래AI랩 자체 데모이며 고객사 사례가 아니에요.</p></section>
-<section class="clip scene" id="s13" data-start="92.87" data-duration="7" data-track-index="1">
+<section class="clip scene" id="s13" data-start="94.21" data-duration="7" data-track-index="1">
     <p class="bhead" id="s13-h">미래AI랩이 직접 만든 <b>샘플 22개</b></p>
     <div class="bgrid" id="s13-g"><figure class="bcell" id="s13-0"><img src="assets/shots/pawbeauty-top.jpg" alt=""><figcaption>PawBeauty</figcaption></figure><figure class="bcell" id="s13-1"><img src="assets/shots/ax-materix.jpg" alt=""><figcaption>MATERIX</figcaption></figure><figure class="bcell" id="s13-2"><img src="assets/shots/expertmatch-top.jpg" alt=""><figcaption>ExpertMatch</figcaption></figure><figure class="bcell" id="s13-3"><img src="assets/shots/ax-lumiere.jpg" alt=""><figcaption>LUMIÈRE</figcaption></figure><figure class="bcell" id="s13-4"><img src="assets/shots/localmom-top.jpg" alt=""><figcaption>로컬맘</figcaption></figure><figure class="bcell" id="s13-5"><img src="assets/shots/ax-seum.jpg" alt=""><figcaption>세움정밀</figcaption></figure><figure class="bcell" id="s13-6"><img src="assets/shots/eduplaza-top.jpg" alt=""><figcaption>EduPlaza</figcaption></figure><figure class="bcell" id="s13-7"><img src="assets/shots/ax-veloa.jpg" alt=""><figcaption>VELOA</figcaption></figure><figure class="bcell" id="s13-8"><img src="assets/shots/insightai-top.jpg" alt=""><figcaption>InsightAI</figcaption></figure><figure class="bcell" id="s13-9"><img src="assets/shots/ax-edumaster.jpg" alt=""><figcaption>에듀마스터</figcaption></figure><figure class="bcell" id="s13-10"><img src="assets/shots/rescuewalk-top.jpg" alt=""><figcaption>RescueWalk</figcaption></figure><figure class="bcell" id="s13-11"><img src="assets/shots/ax-vitalon.jpg" alt=""><figcaption>VITALON</figcaption></figure><figure class="bcell" id="s13-12"><img src="assets/shots/cafefocus-top.jpg" alt=""><figcaption>CafeFocus</figcaption></figure><figure class="bcell" id="s13-13"><img src="assets/shots/ax-autobridge.jpg" alt=""><figcaption>오토브릿지</figcaption></figure><figure class="bcell" id="s13-14"><img src="assets/shots/scamshield-top.jpg" alt=""><figcaption>ScamShield</figcaption></figure><figure class="bcell" id="s13-15"><img src="assets/shots/ax-livarte.jpg" alt=""><figcaption>LIVARTÉ</figcaption></figure><figure class="bcell" id="s13-16"><img src="assets/shots/freshfridge-top.jpg" alt=""><figcaption>FreshFridge</figcaption></figure><figure class="bcell" id="s13-17"><img src="assets/shots/ax-cleanway.jpg" alt=""><figcaption>CLEANWAY</figcaption></figure><figure class="bcell" id="s13-18"><img src="assets/shots/stylecheck-top.jpg" alt=""><figcaption>StyleCheck AI</figcaption></figure><figure class="bcell" id="s13-19"><img src="assets/shots/ax-gounsot.jpg" alt=""><figcaption>고운솥</figcaption></figure><figure class="bcell" id="s13-20"><img src="assets/shots/ax-nexmart.jpg" alt=""><figcaption>NEXMART</figcaption></figure><figure class="bcell" id="s13-21"><img src="assets/shots/ax-morfit.jpg" alt=""><figcaption>MORFIT</figcaption></figure></div>
     <div class="endcard" id="s13-end">
@@ -276,7 +287,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
     </div>
   </section>
 
-  <div class="clip sub" id="sub0" data-start="0" data-duration="3.05" data-track-index="9"><span>벤처인증, 받아야 하는데<br>내세울 기술이 없으신가요?</span></div><div class="clip sub" id="sub1" data-start="3.07" data-duration="3.39" data-track-index="9"><span>혹은 창업 준비 중인데,<br>MVP부터 막막하신가요?</span></div><div class="clip sub" id="sub2" data-start="6.48" data-duration="2.51" data-track-index="9"><span>저희가 둘 다, 한 번에<br>해결해 드릴게요.</span></div><div class="clip sub" id="sub3" data-start="9.01" data-duration="2.13" data-track-index="9"><span>작동하는 서비스를<br>직접 만들고,</span></div><div class="clip sub" id="sub4" data-start="11.16" data-duration="1.53" data-track-index="9"><span>벤처기업확인 신청까지.</span></div><div class="clip sub" id="sub5" data-start="12.71" data-duration="2.85" data-track-index="9"><span>회사를 진짜 기술기업으로<br>만들어 드립니다.</span></div><div class="clip sub" id="sub6" data-start="15.58" data-duration="1.87" data-track-index="9"><span>벤처인증, 왜 받을까요?</span></div><div class="clip sub" id="sub7" data-start="17.47" data-duration="3.01" data-track-index="9"><span>요건을 갖춘 창업 기업은<br>법인세·소득세를</span></div><div class="clip sub" id="sub8" data-start="20.5" data-duration="2.63" data-track-index="9"><span>최대 5년간 절반까지<br>줄일 수 있고,</span></div><div class="clip sub" id="sub9" data-start="23.15" data-duration="2.27" data-track-index="9"><span>정책자금·보증<br>심사에선 우대,</span></div><div class="clip sub" id="sub10" data-start="25.44" data-duration="2.59" data-track-index="9"><span>정부지원사업에선 가점을<br>받을 수 있어요.</span></div><div class="clip sub" id="sub11" data-start="28.05" data-duration="3.34" data-track-index="9"><span>그런데 벤처기업확인은<br>기술성과 성장성을 봅니다.</span></div><div class="clip sub" id="sub12" data-start="31.41" data-duration="1.4" data-track-index="9"><span>그래서 말로 하는<br>기술보다는,</span></div><div class="clip sub" id="sub13" data-start="32.83" data-duration="2.23" data-track-index="9"><span>기능을 하나하나<br>눌러 볼 수 있는 웹앱이</span></div><div class="clip sub" id="sub14" data-start="35.08" data-duration="1.61" data-track-index="9"><span>훨씬 설득력 있죠.</span></div><div class="clip sub" id="sub15" data-start="36.71" data-duration="1.84" data-track-index="9"><span>아이디어가 있으면<br>그 아이디어로,</span></div><div class="clip sub" id="sub16" data-start="38.57" data-duration="2.26" data-track-index="9"><span>없으면 9년 차<br>경영컨설턴트가</span></div><div class="clip sub" id="sub17" data-start="40.85" data-duration="2.23" data-track-index="9"><span>지금 하는 사업에서<br>직접 찾아 드립니다.</span></div><div class="clip sub" id="sub18" data-start="43.1" data-duration="2.58" data-track-index="9"><span>매출로 이어지는<br>성장 방안까지 짜서,</span></div><div class="clip sub" id="sub19" data-start="45.7" data-duration="3.83" data-track-index="9"><span>융자·투자·지원사업에서<br>내세울 수 있게 준비해 드려요.</span></div><div class="clip sub" id="sub20" data-start="49.55" data-duration="2.43" data-track-index="9"><span>정책자금, 정부지원사업<br>준비 중이신가요?</span></div><div class="clip sub" id="sub21" data-start="52.04" data-duration="2.81" data-track-index="9"><span>요즘은 누구나 AI로<br>쓰는 사업계획서만으론</span></div><div class="clip sub" id="sub22" data-start="54.87" data-duration="1.99" data-track-index="9"><span>눈에 띄기 정말 어려워졌죠.</span></div><div class="clip sub" id="sub23" data-start="56.88" data-duration="3.16" data-track-index="9"><span>직접 눌러 보여 주는<br>MVP가 그 차이를 만들어요.</span></div><div class="clip sub" id="sub24" data-start="60.06" data-duration="1.81" data-track-index="9"><span>나중엔 여기에 AI를 붙여,</span></div><div class="clip sub" id="sub25" data-start="61.89" data-duration="3.44" data-track-index="9"><span>정부가 적극 지원하기 시작한<br>AX로도 키울 수 있고요.</span></div><div class="clip sub" id="sub26" data-start="65.35" data-duration="2.44" data-track-index="9"><span>보통은 벤처인증은<br>컨설팅 회사에,</span></div><div class="clip sub" id="sub27" data-start="67.81" data-duration="2.27" data-track-index="9"><span>MVP는 개발사에<br>따로 맡기죠.</span></div><div class="clip sub" id="sub28" data-start="70.1" data-duration="1.89" data-track-index="9"><span>저희는 설계부터 제작,<br>신청,</span></div><div class="clip sub" id="sub29" data-start="72.01" data-duration="2.2" data-track-index="9"><span>컨설팅까지 한 번에<br>해 드립니다.</span></div><div class="clip sub" id="sub30" data-start="74.24" data-duration="2.4" data-track-index="9"><span>MVP도 절대 대충<br>만들지 않아요.</span></div><div class="clip sub" id="sub31" data-start="77.78" data-duration="1.73" data-track-index="9"><span>실제로 이렇게 작동합니다.</span></div><div class="clip sub" id="sub32" data-start="79.53" data-duration="1.72" data-track-index="9"><span>개발을 몰라도 괜찮습니다.</span></div><div class="clip sub" id="sub33" data-start="81.27" data-duration="2.89" data-track-index="9"><span>요건부터 먼저 짚고,<br>2주 안에 끝내 드립니다.</span></div><div class="clip sub" id="sub34" data-start="84.18" data-duration="2.75" data-track-index="9"><span>런칭 기념으로<br>선착순 5개사만,</span></div><div class="clip sub" id="sub35" data-start="86.95" data-duration="2.93" data-track-index="9"><span>500만원이 아닌 300만원에<br>진행해 드리고 있어요.</span></div><div class="clip sub" id="sub36" data-start="89.9" data-duration="1.16" data-track-index="9"><span>우리 회사도 될지,</span></div><div class="clip sub" id="sub37" data-start="91.08" data-duration="1.88" data-track-index="9"><span>지금 바로 상담부터<br>받아 보세요.</span></div>
+  <div class="clip sub" id="sub0" data-start="0" data-duration="3.05" data-track-index="9"><span>벤처인증, 받아야 하는데<br>내세울 기술이 없으신가요?</span></div><div class="clip sub" id="sub1" data-start="3.07" data-duration="3.39" data-track-index="9"><span>혹은 창업 준비 중인데,<br>MVP부터 막막하신가요?</span></div><div class="clip sub" id="sub2" data-start="6.48" data-duration="2.51" data-track-index="9"><span>저희가 둘 다, 한 번에<br>해결해 드릴게요.</span></div><div class="clip sub" id="sub3" data-start="9.01" data-duration="2.13" data-track-index="9"><span>작동하는 서비스를<br>직접 만들고,</span></div><div class="clip sub" id="sub4" data-start="11.16" data-duration="1.53" data-track-index="9"><span>벤처기업확인 신청까지.</span></div><div class="clip sub" id="sub5" data-start="12.71" data-duration="2.85" data-track-index="9"><span>회사를 진짜 기술기업으로<br>만들어 드립니다.</span></div><div class="clip sub" id="sub6" data-start="15.58" data-duration="1.87" data-track-index="9"><span>벤처인증, 왜 받을까요?</span></div><div class="clip sub" id="sub7" data-start="17.47" data-duration="3.01" data-track-index="9"><span>요건을 갖춘 창업 기업은<br>법인세·소득세를</span></div><div class="clip sub" id="sub8" data-start="20.5" data-duration="2.63" data-track-index="9"><span>최대 5년간 절반까지<br>줄일 수 있고,</span></div><div class="clip sub" id="sub9" data-start="23.15" data-duration="2.27" data-track-index="9"><span>정책자금·보증<br>심사에선 우대,</span></div><div class="clip sub" id="sub10" data-start="25.44" data-duration="2.59" data-track-index="9"><span>정부지원사업에선 가점을<br>받을 수 있어요.</span></div><div class="clip sub" id="sub11" data-start="28.05" data-duration="3.34" data-track-index="9"><span>그런데 벤처기업확인은<br>기술성과 성장성을 봅니다.</span></div><div class="clip sub" id="sub12" data-start="31.41" data-duration="1.4" data-track-index="9"><span>그래서 말로 하는<br>기술보다는,</span></div><div class="clip sub" id="sub13" data-start="32.83" data-duration="2.23" data-track-index="9"><span>기능을 하나하나<br>눌러 볼 수 있는 웹앱이</span></div><div class="clip sub" id="sub14" data-start="35.08" data-duration="1.61" data-track-index="9"><span>훨씬 설득력 있죠.</span></div><div class="clip sub" id="sub15" data-start="36.71" data-duration="1.84" data-track-index="9"><span>아이디어가 있으면<br>그 아이디어로,</span></div><div class="clip sub" id="sub16" data-start="38.57" data-duration="2.26" data-track-index="9"><span>없으면 9년 차<br>경영컨설턴트가</span></div><div class="clip sub" id="sub17" data-start="40.85" data-duration="2.23" data-track-index="9"><span>지금 하는 사업에서<br>직접 찾아 드립니다.</span></div><div class="clip sub" id="sub18" data-start="43.1" data-duration="2.58" data-track-index="9"><span>매출로 이어지는<br>성장 방안까지 짜서,</span></div><div class="clip sub" id="sub19" data-start="45.7" data-duration="3.83" data-track-index="9"><span>융자·투자·지원사업에서<br>내세울 수 있게 준비해 드려요.</span></div><div class="clip sub" id="sub20" data-start="49.55" data-duration="2.43" data-track-index="9"><span>정책자금, 정부지원사업<br>준비 중이신가요?</span></div><div class="clip sub" id="sub21" data-start="52.04" data-duration="2.81" data-track-index="9"><span>요즘은 누구나 AI로<br>쓰는 사업계획서만으론</span></div><div class="clip sub" id="sub22" data-start="54.87" data-duration="1.99" data-track-index="9"><span>눈에 띄기 정말 어려워졌죠.</span></div><div class="clip sub" id="sub23" data-start="56.88" data-duration="3.16" data-track-index="9"><span>직접 눌러 보여 주는<br>MVP가 그 차이를 만들어요.</span></div><div class="clip sub" id="sub24" data-start="60.06" data-duration="1.81" data-track-index="9"><span>나중엔 여기에 AI를 붙여,</span></div><div class="clip sub" id="sub25" data-start="61.89" data-duration="3.44" data-track-index="9"><span>정부가 적극 지원하기 시작한<br>AX로도 키울 수 있고요.</span></div><div class="clip sub" id="sub26" data-start="65.35" data-duration="2.44" data-track-index="9"><span>보통은 벤처인증은<br>컨설팅 회사에,</span></div><div class="clip sub" id="sub27" data-start="67.81" data-duration="2.27" data-track-index="9"><span>MVP는 개발사에<br>따로 맡기죠.</span></div><div class="clip sub" id="sub28" data-start="70.1" data-duration="1.89" data-track-index="9"><span>저희는 설계부터 제작,<br>신청,</span></div><div class="clip sub" id="sub29" data-start="72.01" data-duration="2.2" data-track-index="9"><span>컨설팅까지 한 번에<br>해 드립니다.</span></div><div class="clip sub" id="sub30" data-start="74.24" data-duration="2.27" data-track-index="9"><span>MVP<small class="mvpin" style="font-size:32px">(최소 기능 제품·웹앱)</small>도 절대 대충<br>만들지 않아요.</span></div><div class="clip sub" id="sub31" data-start="76.53" data-duration="1.78" data-track-index="9"><span>실제로 이렇게 작동합니다.</span></div><div class="clip sub" id="sub32" data-start="79.35" data-duration="1.73" data-track-index="9"><span>개발을 몰라도 괜찮습니다.</span></div><div class="clip sub" id="sub33" data-start="81.1" data-duration="3.08" data-track-index="9"><span>요건부터 먼저 짚고,<br>2주 안에 끝내 드립니다.</span></div><div class="clip sub" id="sub34" data-start="85.72" data-duration="2.55" data-track-index="9"><span>런칭 기념으로<br>선착순 5개사만,</span></div><div class="clip sub" id="sub35" data-start="88.29" data-duration="2.93" data-track-index="9"><span>500만원이 아닌 300만원에<br>진행해 드리고 있어요.</span></div><div class="clip sub" id="sub36" data-start="91.24" data-duration="1.16" data-track-index="9"><span>우리 회사도 될지,</span></div><div class="clip sub" id="sub37" data-start="92.42" data-duration="1.89" data-track-index="9"><span>지금 바로 상담부터<br>받아 보세요.</span></div>
 </div>
 <script>
   window.__timelines = window.__timelines || {};
@@ -380,6 +391,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.to('#s7', { opacity: 0, duration: 0.18 }, 64.92);
   tl.from('#s7-t1 .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 56.78);
   tl.from('#s7-a .plan', { opacity: 0, y: 40, duration: 0.35, stagger: 0.08 }, 56.78);
+  tl.from('#s7-n', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 57.18);
   tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.45, ease: 'back.out(1.7)' }, 56.83);
   tl.from(['#s7-ch1', '#s7-ch2'], { scale: 0.5, opacity: 0, duration: 0.35, ease: 'back.out(2)', stagger: 0.25 }, 58.45);
   tl.set('#s7-ph-01a', { opacity: 1 }, 57.28);
@@ -397,7 +409,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.set('#s7-ph-05a', { opacity: 1 }, 59.8);
   tl.fromTo('#s7-ph-t5', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 59.84);
   tl.to('#s7-ph-05', { opacity: 1, duration: 0.12 }, 60);
-  tl.to(['#s7-a', '#s7-t1'], { opacity: 0, duration: 0.25 }, 60.72);
+  tl.to(['#s7-a', '#s7-t1', '#s7-n'], { opacity: 0, duration: 0.25 }, 60.72);
   tl.set('#s7-t2', { opacity: 0 }, 56.63);
   tl.set('#s7-t2', { opacity: 1 }, 60.72);
   tl.from('#s7-t2 .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 60.77);
@@ -436,108 +448,109 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.from('#s8-s3', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 72.16);
   tl.from('#s8-once', { scale: 2.2, opacity: 0, rotation: -18, duration: 0.4, ease: 'power3.out' }, 72.87);
   tl.fromTo('#s9', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 73.99);
-  tl.to('#s9', { opacity: 0, duration: 0.18 }, 79.1);
+  tl.to('#s9', { opacity: 0, duration: 0.18 }, 78.92);
   tl.from('#s9-t .ln:nth-child(1) > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 74.11);
-  tl.from('#s9-t .ln:nth-child(2) > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 77.76);
+  tl.from('#s9-t .ln:nth-child(2) > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 76.51);
   tl.from('#s9-tri .tcol', { y: 70, opacity: 0, duration: 0.35, ease: 'back.out(1.6)', stagger: 0.1 }, 74.19);
   tl.set('#s9-p0-09a', { opacity: 1 }, 74.74);
   tl.fromTo('#s9-p0-t9', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 74.78);
   tl.to('#s9-p0-09', { opacity: 1, duration: 0.12 }, 74.94);
-  tl.set('#s9-p0-10a', { opacity: 1 }, 75.46);
-  tl.fromTo('#s9-p0-t10', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75.5);
-  tl.to('#s9-p0-10', { opacity: 1, duration: 0.12 }, 75.66);
-  tl.set('#s9-p0-11a', { opacity: 1 }, 76.18);
-  tl.fromTo('#s9-p0-t11', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.22);
-  tl.to('#s9-p0-11', { opacity: 1, duration: 0.12 }, 76.38);
-  tl.set('#s9-p0-12a', { opacity: 1 }, 76.9);
-  tl.fromTo('#s9-p0-t12', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.94);
-  tl.to('#s9-p0-12', { opacity: 1, duration: 0.12 }, 77.1);
-  tl.set('#s9-p0-13a', { opacity: 1 }, 77.62);
-  tl.fromTo('#s9-p0-t13', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.66);
-  tl.to('#s9-p0-13', { opacity: 1, duration: 0.12 }, 77.82);
-  tl.to('#s9-c0', { scale: 1.05, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 77.82);
-  tl.to('#s9-c0 .tl b', { color: '#E8894F', duration: 0.15 }, 77.82);
+  tl.set('#s9-p0-10a', { opacity: 1 }, 75.42);
+  tl.fromTo('#s9-p0-t10', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75.46);
+  tl.to('#s9-p0-10', { opacity: 1, duration: 0.12 }, 75.62);
+  tl.set('#s9-p0-11a', { opacity: 1 }, 76.1);
+  tl.fromTo('#s9-p0-t11', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.14);
+  tl.to('#s9-p0-11', { opacity: 1, duration: 0.12 }, 76.3);
+  tl.set('#s9-p0-12a', { opacity: 1 }, 76.78);
+  tl.fromTo('#s9-p0-t12', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.82);
+  tl.to('#s9-p0-12', { opacity: 1, duration: 0.12 }, 76.98);
+  tl.set('#s9-p0-13a', { opacity: 1 }, 77.46);
+  tl.fromTo('#s9-p0-t13', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.5);
+  tl.to('#s9-p0-13', { opacity: 1, duration: 0.12 }, 77.66);
+  tl.to('#s9-c0', { scale: 1.05, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 77.66);
+  tl.to('#s9-c0 .tl b', { color: '#E8894F', duration: 0.15 }, 77.66);
   tl.set('#s9-p1-01a', { opacity: 1 }, 74.96);
   tl.fromTo('#s9-p1-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75);
   tl.to('#s9-p1-01', { opacity: 1, duration: 0.12 }, 75.16);
-  tl.set('#s9-p1-02a', { opacity: 1 }, 75.68);
-  tl.fromTo('#s9-p1-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75.72);
-  tl.to('#s9-p1-02', { opacity: 1, duration: 0.12 }, 75.88);
-  tl.set('#s9-p1-03a', { opacity: 1 }, 76.4);
-  tl.fromTo('#s9-p1-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.44);
-  tl.to('#s9-p1-03', { opacity: 1, duration: 0.12 }, 76.6);
-  tl.set('#s9-p1-04a', { opacity: 1 }, 77.12);
-  tl.fromTo('#s9-p1-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.16);
-  tl.to('#s9-p1-04', { opacity: 1, duration: 0.12 }, 77.32);
-  tl.set('#s9-p1-05a', { opacity: 1 }, 77.84);
-  tl.fromTo('#s9-p1-t5', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.88);
-  tl.to('#s9-p1-05', { opacity: 1, duration: 0.12 }, 78.04);
-  tl.to('#s9-c1', { scale: 1.05, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 78.04);
-  tl.to('#s9-c1 .tl b', { color: '#E8894F', duration: 0.15 }, 78.04);
+  tl.set('#s9-p1-02a', { opacity: 1 }, 75.64);
+  tl.fromTo('#s9-p1-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75.68);
+  tl.to('#s9-p1-02', { opacity: 1, duration: 0.12 }, 75.84);
+  tl.set('#s9-p1-03a', { opacity: 1 }, 76.32);
+  tl.fromTo('#s9-p1-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.36);
+  tl.to('#s9-p1-03', { opacity: 1, duration: 0.12 }, 76.52);
+  tl.set('#s9-p1-04a', { opacity: 1 }, 77);
+  tl.fromTo('#s9-p1-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.04);
+  tl.to('#s9-p1-04', { opacity: 1, duration: 0.12 }, 77.2);
+  tl.set('#s9-p1-05a', { opacity: 1 }, 77.68);
+  tl.fromTo('#s9-p1-t5', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.72);
+  tl.to('#s9-p1-05', { opacity: 1, duration: 0.12 }, 77.88);
+  tl.to('#s9-c1', { scale: 1.05, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 77.88);
+  tl.to('#s9-c1 .tl b', { color: '#E8894F', duration: 0.15 }, 77.88);
   tl.set('#s9-p2-01a', { opacity: 1 }, 75.18);
   tl.fromTo('#s9-p2-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75.22);
   tl.to('#s9-p2-01', { opacity: 1, duration: 0.12 }, 75.38);
-  tl.set('#s9-p2-02a', { opacity: 1 }, 76.08);
-  tl.fromTo('#s9-p2-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.12);
-  tl.to('#s9-p2-02', { opacity: 1, duration: 0.12 }, 76.28);
-  tl.set('#s9-p2-03a', { opacity: 1 }, 76.98);
-  tl.fromTo('#s9-p2-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.02);
-  tl.to('#s9-p2-03', { opacity: 1, duration: 0.12 }, 77.18);
-  tl.set('#s9-p2-04a', { opacity: 1 }, 77.88);
-  tl.fromTo('#s9-p2-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.92);
-  tl.to('#s9-p2-04', { opacity: 1, duration: 0.12 }, 78.08);
-  tl.to('#s9-c2', { scale: 1.05, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 78.08);
-  tl.to('#s9-c2 .tl b', { color: '#E8894F', duration: 0.15 }, 78.08);
-  tl.fromTo('#s10', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 79.28);
-  tl.to('#s10', { opacity: 0, duration: 0.18 }, 83.75);
-  tl.from('#s10-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 79.43);
-  tl.from('#s10-req', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 81.37);
-  tl.from('#s10-two b', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'back.out(1.8)', transformOrigin: '0% 70%' }, 82.72);
-  tl.from('#s10-two span', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 82.97);
-  tl.from('#s10-st > div', { y: 30, opacity: 0, duration: 0.35, ease: 'power2.out', stagger: 0.14 }, 83.22);
-  tl.from('#s10-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 83.67);
-  tl.fromTo('#s11', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 83.93);
-  tl.to('#s11', { opacity: 0, duration: 0.18 }, 89.47);
-  tl.from('#s11-c', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 85.42);
-  tl.from('#s11-was', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 86.85);
-  tl.from('#s11-x', { scaleX: 0, duration: 0.35, ease: 'power2.inOut', transformOrigin: '0% 50%' }, 87.6);
-  tl.from('#s11-now', { scale: 0.4, opacity: 0, duration: 0.55, ease: 'back.out(1.7)' }, 87.98);
-  tl.from('#s11-in', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 88.88);
-  tl.fromTo('#s12', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 89.65);
-  tl.to('#s12', { opacity: 0, duration: 0.15 }, 92.72);
-  tl.from('#s12-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 89.75);
-  tl.from('#s12-btn', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 90.15);
-  tl.to('#s12-btn', { scale: 1.05, duration: 0.4, ease: 'sine.inOut', yoyo: true, repeat: 3 }, 91.28);
-  tl.from('#s12-url', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 90.55);
-  tl.from('#s12-logo', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 90.75);
-  tl.from('#s12-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 90.95);
-  tl.fromTo('#s13', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 92.87);
-  tl.from('#s13-h', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 92.92);
-  tl.from('#s13-0', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 93.07);
-  tl.from('#s13-1', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 93.23);
-  tl.from('#s13-2', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 93.38);
-  tl.from('#s13-3', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 93.54);
-  tl.from('#s13-4', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 93.69);
-  tl.from('#s13-5', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 93.85);
-  tl.from('#s13-6', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94);
-  tl.from('#s13-7', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.16);
-  tl.from('#s13-8', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.31);
-  tl.from('#s13-9', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.47);
-  tl.from('#s13-10', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.62);
-  tl.from('#s13-11', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.78);
-  tl.from('#s13-12', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.93);
-  tl.from('#s13-13', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.09);
-  tl.from('#s13-14', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.24);
-  tl.from('#s13-15', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.4);
-  tl.from('#s13-16', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.55);
-  tl.from('#s13-17', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.71);
-  tl.from('#s13-18', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.86);
-  tl.from('#s13-19', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.02);
-  tl.from('#s13-20', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.17);
-  tl.from('#s13-21', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.33);
-  tl.to(['#s13-g', '#s13-h'], { opacity: 0.2, duration: 0.35 }, 96.78);
-  tl.from('#s13-end', { scale: 0.88, opacity: 0, duration: 0.45, ease: 'back.out(1.6)' }, 96.78);
-  tl.from('#s13-end .e5', { y: 24, opacity: 0, duration: 0.4, ease: 'power2.out' }, 97.48);
+  tl.set('#s9-p2-02a', { opacity: 1 }, 76.03);
+  tl.fromTo('#s9-p2-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.07);
+  tl.to('#s9-p2-02', { opacity: 1, duration: 0.12 }, 76.23);
+  tl.set('#s9-p2-03a', { opacity: 1 }, 76.88);
+  tl.fromTo('#s9-p2-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.92);
+  tl.to('#s9-p2-03', { opacity: 1, duration: 0.12 }, 77.08);
+  tl.set('#s9-p2-04a', { opacity: 1 }, 77.73);
+  tl.fromTo('#s9-p2-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.77);
+  tl.to('#s9-p2-04', { opacity: 1, duration: 0.12 }, 77.93);
+  tl.to('#s9-c2', { scale: 1.05, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 77.93);
+  tl.to('#s9-c2 .tl b', { color: '#E8894F', duration: 0.15 }, 77.93);
+  tl.fromTo('#s10', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 79.1);
+  tl.to('#s10', { opacity: 0, duration: 0.18 }, 85.29);
+  tl.from('#s10-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 79.25);
+  tl.from('#s10-req', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 81.2);
+  tl.from('#s10-two b', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'back.out(1.8)', transformOrigin: '0% 70%' }, 82.55);
+  tl.from('#s10-two span', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 82.8);
+  tl.from('#s10-st > div', { y: 30, opacity: 0, duration: 0.35, ease: 'power2.out', stagger: 0.14 }, 83.05);
+  tl.from('#s10-45', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 83.65);
+  tl.from('#s10-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 83.85);
+  tl.fromTo('#s11', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 85.47);
+  tl.to('#s11', { opacity: 0, duration: 0.18 }, 90.81);
+  tl.from('#s11-c', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 86.76);
+  tl.from('#s11-was', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 88.19);
+  tl.from('#s11-x', { scaleX: 0, duration: 0.35, ease: 'power2.inOut', transformOrigin: '0% 50%' }, 88.94);
+  tl.from('#s11-now', { scale: 0.4, opacity: 0, duration: 0.55, ease: 'back.out(1.7)' }, 89.33);
+  tl.from('#s11-in', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 90.23);
+  tl.fromTo('#s12', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 90.99);
+  tl.to('#s12', { opacity: 0, duration: 0.15 }, 94.06);
+  tl.from('#s12-t .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 91.09);
+  tl.from('#s12-btn', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 91.49);
+  tl.to('#s12-btn', { scale: 1.05, duration: 0.4, ease: 'sine.inOut', yoyo: true, repeat: 3 }, 92.62);
+  tl.from('#s12-url', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 91.89);
+  tl.from('#s12-logo', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 92.09);
+  tl.from('#s12-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 92.29);
+  tl.fromTo('#s13', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 94.21);
+  tl.from('#s13-h', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 94.26);
+  tl.from('#s13-0', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.41);
+  tl.from('#s13-1', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.57);
+  tl.from('#s13-2', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.72);
+  tl.from('#s13-3', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.88);
+  tl.from('#s13-4', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.03);
+  tl.from('#s13-5', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.19);
+  tl.from('#s13-6', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.34);
+  tl.from('#s13-7', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.49);
+  tl.from('#s13-8', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.65);
+  tl.from('#s13-9', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.81);
+  tl.from('#s13-10', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.96);
+  tl.from('#s13-11', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.12);
+  tl.from('#s13-12', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.27);
+  tl.from('#s13-13', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.43);
+  tl.from('#s13-14', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.58);
+  tl.from('#s13-15', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.74);
+  tl.from('#s13-16', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.89);
+  tl.from('#s13-17', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.05);
+  tl.from('#s13-18', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.2);
+  tl.from('#s13-19', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.35);
+  tl.from('#s13-20', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.51);
+  tl.from('#s13-21', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.67);
+  tl.to(['#s13-g', '#s13-h'], { opacity: 0.2, duration: 0.35 }, 98.12);
+  tl.from('#s13-end', { scale: 0.88, opacity: 0, duration: 0.45, ease: 'back.out(1.6)' }, 98.12);
+  tl.from('#s13-end .e5', { y: 24, opacity: 0, duration: 0.4, ease: 'power2.out' }, 98.82);
   tl.from('#sub0 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 0);
   tl.from('#sub1 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 3.07);
   tl.from('#sub2 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 6.48);
@@ -569,14 +582,14 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.from('#sub28 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 70.1);
   tl.from('#sub29 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 72.01);
   tl.from('#sub30 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 74.24);
-  tl.from('#sub31 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 77.78);
-  tl.from('#sub32 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 79.53);
-  tl.from('#sub33 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 81.27);
-  tl.from('#sub34 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 84.18);
-  tl.from('#sub35 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 86.95);
-  tl.from('#sub36 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 89.9);
-  tl.from('#sub37 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 91.08);
-  tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: 99.87, ease: 'none' }, 0);
+  tl.from('#sub31 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 76.53);
+  tl.from('#sub32 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 79.35);
+  tl.from('#sub33 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 81.1);
+  tl.from('#sub34 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 85.72);
+  tl.from('#sub35 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 88.29);
+  tl.from('#sub36 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 91.24);
+  tl.from('#sub37 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 92.42);
+  tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: 101.21, ease: 'none' }, 0);
 
   window.__timelines["main"] = tl;
   tl.seek(0);

@@ -45,9 +45,13 @@ for key in DROP:
     prv, nxt = lines[i - 1], lines[i + 1]
     s0, e0 = next((s, e) for s, e in sil if boundary(s, e)[1] == key)
     s1, e1 = next((s, e) for s, e in sil if boundary(s, e)[1] == (nxt['block'], nxt['line']))
-    t = TARGET['block' if prv['block'] != nxt['block'] else 'line']
-    drops.append((s0 + t * 0.6, e1 - t * 0.4)); spans.append((s0, e1))
-cuts, inserts = [], []  # 잘라낼 구간 (시작, 끝) · 끼워 넣을 무음 (위치, 길이)
+    t = GAP.get((nxt['block'], nxt['line']), TARGET['block' if prv['block'] != nxt['block'] else 'line'])
+    # 남길 쉼: 앞 문장 뒤 꼬리 + 다음 문장 앞머리. 각 쉼 안에서만 가져와(말소리가 섞이지 않게), 모자라면 무음을 끼운다
+    tail = min(t * 0.6, e0 - s0 - 0.03); head = min(t - tail, e1 - s1 - 0.03)
+    drops.append((s0 + tail, e1 - head)); spans.append((s0, e1))
+    if tail + head < t - 0.005:
+        inserts.append((s0 + tail - 0.001, t - tail - head))
+cuts, inserts, widened = [], [], []  # 잘라낼 구간 (시작, 끝) · 끼워 넣을 무음 (위치, 길이) · 무음을 끼운 쉼
 for s, e in sil:
     d = e - s
     if any(a <= s and e <= b for a, b in spans):
@@ -63,7 +67,7 @@ for s, e in sil:
     if d > t:
         cuts.append((s + t * 0.6, e - t * 0.4))
     elif who in GAP:
-        inserts.append((s + d * 0.6, t - d))
+        inserts.append((s + d * 0.6, t - d)); widened.append((s, e))
 cuts = sorted(cuts + drops)
 
 keep, cur = [], 0.0
@@ -95,9 +99,16 @@ open(f'{R}/tighten.filter', 'w').write(graph)
 subprocess.run([FF, '-loglevel', 'error', '-y', '-i', src, '-filter_complex_script', f'{R}/tighten.filter', '-map', '[out]', '-ar', '44100', '-ac', '2', f'{R}/assets/voice-fast.wav'], check=True)
 
 dropped = lambda w: any(a <= (w['s'] + w['e']) / 2 <= b for a, b in drops)  # 뺀 문장의 단어는 받아쓰기에서도 뺀다
+def snap(w):
+    # 받아쓰기는 말 앞뒤를 쉼 속까지 넉넉히 잡는다. 무음을 끼운 쉼에선 그 차이가 커지므로 말 시작·끝을 쉼 경계에 맞춘다
+    ws, we = w['s'], w['e']
+    for a, b in widened:
+        if a < ws < b < we: ws = b - 0.02
+        if ws < a < we < b: we = a + 0.05
+    return {'s': ws, 'e': we, 'w': w['w']}
 fast = []
 for seg in asr:
-    ws = [{'s': remap(w['s']), 'e': remap(w['e']), 'w': w['w']} for w in seg['words'] if not dropped(w)]
+    ws = [{'s': remap(x['s']), 'e': remap(x['e']), 'w': x['w']} for x in (snap(w) for w in seg['words'] if not dropped(w))]
     if ws:
         fast.append({'start': ws[0]['s'], 'end': ws[-1]['e'], 'text': ' '.join(w['w'] for w in ws), 'words': ws})
 json.dump(fast, open(f'{R}/asr-fast.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

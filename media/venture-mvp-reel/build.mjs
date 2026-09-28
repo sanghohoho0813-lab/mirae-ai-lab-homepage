@@ -30,6 +30,10 @@ const pop = (sel, at) => tw(`tl.from('${sel}', { scale: 0.6, opacity: 0, duratio
 
 // ── 그림 조각
 // 실제 벤처기업확인서 — 기업명·사업자등록번호·대표자·주소·발급번호·날짜는 모두 가린 이미지(2차원 코드 부분은 잘라냄)
+// MVP 가 화면에 나올 때마다 뜻을 작게 붙인다 — 단어 바로 아래(가운데 / l: 왼쪽 맞춤) 또는 바로 옆(MVPIN)
+const MVP_NOTE = '(최소 기능 제품·웹앱)'
+const MVPN = (cls = '', size = 24) => `<span class="mvp ${cls}" style="--ms:${size}px">MVP<small>${MVP_NOTE}</small></span>`
+const MVPIN = (size) => `MVP<small class="mvpin" style="font-size:${size}px">${MVP_NOTE}</small>`
 const CERTIMG = (id, cls = '') => `<div class="certimg ${cls}" id="${id}"><img src="assets/shots/cert-masked.jpg" alt=""></div>`
 const PHONE = (id, img, cls = '') => `<div class="phone ${cls}" id="${id}"><div class="screen">${img ? `<img class="mob" id="${id}-img" src="assets/shots/${img}" alt="">` : '<div class="blank"><i></i><i></i><i></i><b>MVP</b></div>'}</div></div>`
 const CURSOR = (id) => `<svg class="cursor" id="${id}" viewBox="0 0 24 24" width="44" height="44"><path d="M4 2.5 L4 19 L8.6 14.8 L11.6 21.4 L14.4 20.2 L11.4 13.7 L17.6 13.4 Z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>`
@@ -75,7 +79,7 @@ const BROWSER = (id, name, vph, inner, w = BW) => `<div class="browser" id="${id
     <div class="who" id="s1a" style="top:290px">${CERTIMG('s1-cert', 'sm')}<span class="qm" id="s1-q1">?</span>
       <div class="who-txt"><span class="tag">중소기업 대표님</span><p>벤처인증은 필요한데<br><b>내세울 기술</b>이 없다면?</p></div></div>
     <div class="who" id="s1b" style="top:745px">${PHONEIMG('s1-ph', 'assets/flows/paw-00.jpg', 's1p1')}${PHONEIMG('s1-ph2', 'assets/flows/mom-00.jpg', 's1p2')}<span class="qm" id="s1-q2">?</span>
-      <div class="who-txt"><span class="tag">예비창업자</span><p>창업 준비 중인데<br><b>MVP부터</b> 막막하다면?</p></div></div>
+      <div class="who-txt"><span class="tag">예비창업자</span><p>창업 준비 중인데<br><b>${MVPN('l', 27)}부터</b> 막막하다면?</p></div></div>
     <div class="stamp" id="s1s">둘 다, <em>한 번에</em> 해결</div>`)
   fade(b)
   tw(`tl.from('#s1a', { x: -80, opacity: 0, duration: 0.5, ease: 'power3.out' }, ${r2(L(1, 1).start)});`)
@@ -148,7 +152,7 @@ const BROWSER = (id, name, vph, inner, w = BW) => `<div class="browser" id="${id
   const b = 5
   sec(b, `
     <div class="big" id="s5-t">${lines(['아이디어가', '<em class="peach">있든, 없든</em>'])}</div>
-    <div class="row" id="s5-c1" style="top:560px"><span class="tag">아이디어가 있다면</span><p>그 아이디어를 <b>MVP로</b></p></div>
+    <div class="row" id="s5-c1" style="top:560px"><span class="tag">아이디어가 있다면</span><p>그 아이디어를 <b>${MVPIN(27)}로</b></p></div>
     <div class="row" id="s5-c2" style="top:770px"><span class="tag">아이디어가 없다면</span><p>지금 사업에서 <b>기술사업 찾기</b></p></div>
     <span class="pro" id="s5-pro">9년 차 경영컨설턴트 1:1</span>
     <div class="row hot" id="s5-c3" style="top:990px"><span class="tag">함께 짜 드려요</span><p><b>매출로 이어지는</b> 성장 방안</p>
@@ -179,6 +183,7 @@ const BROWSER = (id, name, vph, inner, w = BW) => `<div class="browser" id="${id
   const BW2 = 670, SC2 = BW2 / 1440
   sec(b, `
     <div class="big" id="s7-t1">${lines(['눌러 보여 주는 <em class="peach">MVP</em>가', '차이를 만들어요'])}</div>
+    <p class="mnote" id="s7-n">${MVPIN(32).replace('MVP', '<b>MVP</b>')}</p>
     <div class="big" id="s7-t2">${lines(['나중엔 AI를 붙여', '<em class="orange">AX</em>로 키워요'])}</div>
     <div id="s7-a">
       <div class="stack mini">${[-8, 0, 8].map((r) => `<div class="plan" style="transform:rotate(${r}deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div>`).join('')}</div>
@@ -186,20 +191,21 @@ const BROWSER = (id, name, vph, inner, w = BW) => `<div class="browser" id="${id
       <span class="chip c1" id="s7-ch1">심사위원 앞에서</span><span class="chip c2" id="s7-ch2">투자자 앞에서</span>
     </div>
     <div class="pair" id="s7-p0">
-      <p class="pairlbl"><span>학습 플랫폼 MVP</span><em class="orange">→</em><b>학원 AX</b></p>
+      <p class="pairlbl"><span>학습 플랫폼 ${MVPN('', 22)}</span><em class="orange">→</em><b>학원 AX</b></p>
       ${SCROLLPHONE('s7-m0', 'edu2', [6, 7], 'axph')}
-      <div class="abs" style="left:370px;top:610px">${BROWSER('s7-br0', '에듀마스터 · 미래AI랩 자체 AX 데모', r2(900 * SC2), flowImgs('s7-ax', 'ax', 0, [1, 2], BW2) + touches('s7-ax', 'ax', [1, 2], SC2) + CURSOR('s7-cur'), BW2)}</div>
+      <div class="abs" style="left:370px;top:635px">${BROWSER('s7-br0', '에듀마스터 · 미래AI랩 자체 AX 데모', r2(900 * SC2), flowImgs('s7-ax', 'ax', 0, [1, 2], BW2) + touches('s7-ax', 'ax', [1, 2], SC2) + CURSOR('s7-cur'), BW2)}</div>
     </div>
     <span class="donepill" id="s7-done">✓ 수강 신청 완료</span>
     <span class="aichip" id="s7-ai">+ AI</span>
     <div class="official side" id="s7-off"><span class="otag">공식 근거</span><p>중소벤처기업부 2026 정책자금<br><b>AX 스프린트 우대트랙</b></p><small>대상·심사기준을 충족한 기업에 적용돼요</small></div>`)
   fade(b); reveal('#s7-t1 .ln > span', START[b] + 0.15)
   tw(`tl.from('#s7-a .plan', { opacity: 0, y: 40, duration: 0.35, stagger: 0.08 }, ${r2(START[b] + 0.15)});`)
+  rise('#s7-n', START[b] + 0.55)
   tw(`tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.45, ease: 'back.out(1.7)' }, ${r2(START[b] + 0.2)});`)
   tw(`tl.from(['#s7-ch1', '#s7-ch2'], { scale: 0.5, opacity: 0, duration: 0.35, ease: 'back.out(2)', stagger: 0.25 }, ${r2(K('b7_mvp') + 0.45)});`)
   const sw = K('b7_ai') - 0.3
   { const t0 = r2(START[b] + 0.65); flowTL('s7-ph', [1, 2, 3, 4, 5], t0, r2((sw - 0.3 - t0) / 5)) }
-  tw(`tl.to(['#s7-a', '#s7-t1'], { opacity: 0, duration: 0.25 }, ${r2(sw)});`)
+  tw(`tl.to(['#s7-a', '#s7-t1', '#s7-n'], { opacity: 0, duration: 0.25 }, ${r2(sw)});`)
   tw(`tl.set('#s7-t2', { opacity: 0 }, ${START[b]});`)
   tw(`tl.set('#s7-t2', { opacity: 1 }, ${r2(sw)});`)
   reveal('#s7-t2 .ln > span', sw + 0.05)
@@ -227,7 +233,7 @@ const BROWSER = (id, name, vph, inner, w = BW) => `<div class="browser" id="${id
   sec(b, `
     <div class="big" id="s8-t">${lines(['보통은 따로따로,', '<em class="orange">저희는 한 번에</em>'])}</div>
     <div class="sep" id="s8-l"><span class="tag">컨설팅 회사</span><p>벤처인증</p></div>
-    <div class="sep r" id="s8-r"><span class="tag">개발사</span><p>MVP</p></div>
+    <div class="sep r" id="s8-r"><span class="tag">개발사</span><p>${MVPN('l', 28)}</p></div>
     <div class="merged" id="s8-m"><div class="mlogo"><img src="assets/logo.png" alt=""></div>
       <div class="msteps">${steps.map(([s], i) => `<span id="s8-s${i}"><i>${i + 1}</i>${s}</span>`).join('')}</div></div>
     <div class="stamp small" id="s8-once">한 번에</div>`)
@@ -269,19 +275,21 @@ const BROWSER = (id, name, vph, inner, w = BW) => `<div class="browser" id="${id
 // 10) 개발 몰라도 OK · 요건 먼저 · 2주
 {
   const b = 10
-  const S = [['기술사업', '아이디어'], ['작동하는', 'MVP'], ['벤처기업확인', '신청']]
+  const S = [['기술사업', '아이디어'], ['작동하는', MVPN('l', 20)], ['벤처기업확인', '신청']]
   sec(b, `
     <div class="big" id="s10-t">${lines(['개발을 몰라도', '<em class="peach">괜찮습니다</em>'])}</div>
     <span class="pro big2" id="s10-req">✓ 벤처 요건부터 먼저 확인</span>
     <div class="two" id="s10-two"><b>2주</b><span>안에<br>끝내요</span></div>
     <div class="steps3" id="s10-st">${S.map(([a, c], i) => `<div><i>${i + 1}</i><p>${a}<br><b>${c}</b></p></div>`).join('')}</div>
-    <p class="fine" id="s10-f" style="top:1215px">*2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요.</p>`)
+    <p class="d45" id="s10-45">확인 결과는 신청 후<br><b>45일 이내</b>에 나와요</p>
+    <p class="fine" id="s10-f" style="top:1242px;font-size:24px">*2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요.<br>*45일은 확인기관의 처리 기한이며, 부득이하면 한 번 20일까지 늘어날 수 있어요.</p>`)
   fade(b); reveal('#s10-t .ln > span', START[b] + 0.15)
   pop('#s10-req', K('b10_req') - 0.1)
   tw(`tl.from('#s10-two b', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'back.out(1.8)', transformOrigin: '0% 70%' }, ${r2(K('b10_2w') - 0.15)});`)
   rise('#s10-two span', K('b10_2w') + 0.1)
   tw(`tl.from('#s10-st > div', { y: 30, opacity: 0, duration: 0.35, ease: 'power2.out', stagger: 0.14 }, ${r2(K('b10_2w') + 0.35)});`)
-  rise('#s10-f', K('b10_2w') + 0.8)
+  rise('#s10-45', K('b10_2w') + 0.95)
+  rise('#s10-f', K('b10_2w') + 1.15)
 }
 // 11) 가격
 {
@@ -290,7 +298,7 @@ const BROWSER = (id, name, vph, inner, w = BW) => `<div class="browser" id="${id
     <span class="hotpill" id="s11-c">런칭 기념 · 선착순 5개사</span>
     <p class="was" id="s11-was"><span>정상가</span> 500만원<i id="s11-x"></i></p>
     <p class="now" id="s11-now">300만원</p>
-    <p class="incl" id="s11-in">작동하는 MVP + 벤처기업확인 신청</p>`)
+    <p class="incl" id="s11-in">작동하는 ${MVPN('', 26)} + 벤처기업확인 신청</p>`)
   fade(b)
   pop('#s11-c', K('b11_first') - 0.15)
   rise('#s11-was', K('b11_500') - 0.3)
@@ -377,8 +385,10 @@ const twoLines = (t) => {
 }
 if (process.argv.includes('--subs')) { T.cues.forEach((c) => console.log(twoLines(c.text).replace('<br>', ' / '))); process.exit(0) }
 let subs = ''
+const SUB_NOTE_BLOCKS = new Set([9])  // 1·7·8 장면은 화면 글자에 MVP 뜻이 함께 떠서 자막엔 붙이지 않는다
 T.cues.forEach((c, i) => {
-  subs += `<div class="clip sub" id="sub${i}" data-start="${c.start}" data-duration="${r2(c.end - c.start)}" data-track-index="9"><span>${twoLines(c.text)}</span></div>`
+  const txt = SUB_NOTE_BLOCKS.has(c.block) ? twoLines(c.text).replace('MVP', MVPIN(32)) : twoLines(c.text)
+  subs += `<div class="clip sub" id="sub${i}" data-start="${c.start}" data-duration="${r2(c.end - c.start)}" data-track-index="9"><span>${txt}</span></div>`
   tw(`tl.from('#sub${i} span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, ${c.start});`)
 })
 tw(`tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: ${TOTAL}, ease: 'none' }, 0);`)
@@ -523,9 +533,9 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .pair { position: absolute; inset: 0; }
 .pairlbl { position: absolute; left: 60px; right: 60px; top: 515px; display: flex; align-items: center; gap: 14px; font-size: 40px; font-weight: 800; color: #AEB6C0; }
 .pairlbl b { color: #fff; font-weight: 900; } .pairlbl em { font-size: 44px; }
-.phone.axph { left: 40px; top: 590px; width: 300px; height: 620px; z-index: 6; }
-.donepill { position: absolute; left: 52px; top: 1140px; padding: 12px 22px; border-radius: 999px; background: #2E9E6A; color: #fff; font-size: 30px; font-weight: 900; box-shadow: 0 12px 30px rgba(0,0,0,.5); z-index: 9; }
-.official.side { left: 370px; right: 40px; top: 1090px; padding: 18px 24px; } .official.side p { font-size: 30px; }
+.phone.axph { left: 40px; top: 615px; width: 300px; height: 620px; z-index: 6; }
+.donepill { position: absolute; left: 52px; top: 1165px; padding: 12px 22px; border-radius: 999px; background: #2E9E6A; color: #fff; font-size: 30px; font-weight: 900; box-shadow: 0 12px 30px rgba(0,0,0,.5); z-index: 9; }
+.official.side { left: 370px; right: 40px; top: 1115px; padding: 18px 24px; } .official.side p { font-size: 30px; }
 .phone.mini { left: 40px; top: 760px; width: 170px; height: 350px; padding: 7px; border-radius: 28px; z-index: 6; } .phone.mini .screen { border-radius: 22px; } .phone.mini .mob { width: 156px; }
 /* 9) 폰 3대 */
 .trio { position: absolute; left: 60px; right: 60px; top: 520px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -555,6 +565,15 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .endcard .e0 { font-size: 36px; font-weight: 800; color: #AEB6C0; margin-bottom: 14px; }
 .endcard .ebar { display: block; width: 120px; height: 6px; margin: 36px auto 30px; border-radius: 3px; background: #D47A4A; }
 .endcard .e5 { font-size: 48px; font-weight: 700; line-height: 1.35; color: #D5DAE0; } .endcard .e5 b { color: #E8B89A; font-weight: 900; }
+/* MVP 뜻(최소 기능 제품·웹앱) */
+.mvp { position: relative; display: inline-block; }
+.mvp small { position: absolute; left: 50%; top: 100%; transform: translateX(-50%); margin-top: -4px; white-space: nowrap; font-size: var(--ms); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; color: #E8B89A; }
+.mvp.l small { left: 0; transform: none; }
+.mvpin { margin: 0 2px 0 4px; font-weight: 700; letter-spacing: -0.01em; color: #E8B89A; white-space: nowrap; }
+.foot .mvpin { color: inherit; }
+.mnote { position: absolute; left: 60px; top: 478px; font-size: 32px; font-weight: 800; color: #D5DAE0; } .mnote b { font-weight: 900; }
+.steps3 { top: 945px !important; } .steps3 > div { height: 212px !important; }
+.d45 { position: absolute; right: 60px; top: 1168px; width: 308px; text-align: center; font-size: 25px; font-weight: 700; line-height: 1.3; color: #C9CED6; } .d45 b { color: #E8B89A; font-weight: 900; }
 /* 자막 · 진행 막대 */
 .sub { display: flex; align-items: flex-end; justify-content: center; padding: 0 70px 420px; z-index: 40; }
 .sub span { max-width: 900px; padding: 18px 34px; border-radius: 22px; background: rgba(8,10,13,.88); font-size: 54px; font-weight: 800; line-height: 1.32; text-align: center; }
@@ -567,7 +586,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 <div id="root" data-composition-id="main" data-start="0" data-duration="${TOTAL}" data-width="${W}" data-height="${H}">
   <div class="glow1"></div><div class="glow2"></div>
   <div class="brand"><span class="logo"><img src="assets/logo.png" alt="미래에이아이랩"></span><span class="tag2">2주 기술사업 빌드</span></div>
-  <p class="foot">miraeailab.com · 벤처인증 + 작동하는 MVP</p><div id="prog"><i></i></div>
+  <p class="foot">miraeailab.com · 벤처인증 + 작동하는 ${MVPIN(22)}</p><div id="prog"><i></i></div>
   ${html}
   ${subs}
 </div>
