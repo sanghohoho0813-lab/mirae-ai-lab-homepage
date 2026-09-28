@@ -7,6 +7,9 @@ script = open(sys.argv[2], encoding='utf-8').read().strip()
 import os
 ASR = os.environ.get('ASR', 'asr.json')  # 속도 조절본은 ASR=asr-fast.json
 asr = json.load(open(f'{R}/{ASR}', encoding='utf-8'))
+# edits.json 의 drop 문장은 줄인 목소리(asr-fast)에서 이미 빠졌으므로 정렬·자막에서도 뺀다(원본 녹음 정렬엔 남긴다)
+E = json.load(open(f'{R}/edits.json', encoding='utf-8')) if os.path.exists(f'{R}/edits.json') else {}
+DROPPED = {(d['block'], d['line']) for d in E.get('drop', [])} if ASR != 'asr.json' else set()
 
 def norm_chars(s):
     s = s.lower()
@@ -32,6 +35,8 @@ schars, sowner = [], []  # sowner: (block, line, charidx_in_norm_line)
 lines = []
 for bi, b in enumerate(blocks):
     for li, line in enumerate(b):
+        if (bi + 1, li + 1) in DROPPED:
+            continue
         cs = norm_chars(line)
         lines.append({'block': bi + 1, 'line': li + 1, 'text': line, 'n': len(cs), 'offset': len(schars)})
         schars += cs
@@ -111,6 +116,8 @@ for i, c in enumerate(cues):
 keys = {}
 if len(sys.argv) > 3:
     for spec in json.load(open(sys.argv[3], encoding='utf-8')):
+        if (spec['block'], spec['line']) in DROPPED:
+            continue
         L = next(x for x in lines if x['block'] == spec['block'] and x['line'] == spec['line'])
         keys[spec['id']] = t_of(L, spec['word'], spec.get('end', False))
 

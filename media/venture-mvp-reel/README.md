@@ -4,8 +4,9 @@
 대표님 녹음(`assets/voice.mp3`)에 맞춰 [HyperFrames](https://github.com/heygen-com/hyperframes)로 만들었습니다.
 
 - 결과물: `public/business/venture-mvp/mvp-reel.mp4`(H.264 + AAC) · `mvp-reel.webm`(VP9 + Opus) · `mvp-reel-poster.webp`
-  — 1080×1920(9:16), 약 102초(목소리 94초 + 샘플 22개·끝 카드 8초), 목소리 + 자막(배경음악 없음)
+  — 1080×1920(9:16), 약 100초(목소리 93초 + 샘플 22개·끝 카드 7초), 목소리 + 자막(배경음악 없음)
 - 녹음 원본(113.8초)의 긴 쉼을 줄이고(`tighten.py`: 문장 안 0.2초 · 문장 사이 0.35초 · 장면 사이 0.45초) 1.05배로 빠르게 했어요.
+- 다시 녹음하지 않고 고친 곳은 `edits.json` 에 있어요: '대충 만들지 않아요' 뒤 쉼 1.5초, '미용실도, 회계 사무소도, 옷가게도요' 문장 뺌(화면과 달라서).
 - 인스타그램 릴스에 그대로 올릴 수 있게 자막은 아래쪽 버튼·설명에 가리지 않는 높이(아래에서 420px 위)에 둡니다.
 
 ## 파일
@@ -15,16 +16,19 @@
 | `spoken.txt` | 실제 녹음에서 말한 문장(= 자막). 빈 줄로 장면(12개)을 나누고, `\|` 로 자막을 직접 끊을 수 있어요 |
 | `keys.json` | 장면 안 강조 타이밍에 쓰는 핵심 단어(예: "법인세" 나올 때 혜택 카드) |
 | `asr.json` | 녹음 받아쓰기(단어별 시간) — faster-whisper medium |
-| `align.py` | `asr.json` ↔ `spoken.txt` 글자 단위 정렬 → `timing.json`(문장·자막·핵심 단어 시간) |
-| `tighten.py` | 쉼 줄이기 + 1.05배 → `assets/voice-fast.wav`, 같은 규칙으로 단어 시간을 옮긴 `asr-fast.json` |
+| `align.py` | `asr.json` ↔ `spoken.txt` 글자 단위 정렬 → `timing.json`(문장·자막·핵심 단어 시간). `ASR=asr-fast.json` 이면 `edits.json` 의 뺀 문장은 자막에서도 뺀다 |
+| `edits.json` | 녹음은 그대로 두고 영상에서만 고친 곳 — 문장 앞 쉼 늘리기(`gapBefore`) · 문장 빼기(`drop`) |
+| `tighten.py` | 쉼 줄이기 + `edits.json` 반영 + 1.05배 → `assets/voice-fast.wav`, 같은 규칙으로 단어 시간을 옮긴 `asr-fast.json`(뺀 문장 단어는 없음) |
 | `build.mjs` | `timing.json` → `index.html`(컴포지션) · `subtitles.srt` |
 | `flow.mjs` | 데모 사이트를 실제로 눌러 가며 단계별 화면·누른 위치를 찍는 도구 → `assets/flows/`(`flows.json` 에 누른 위치) |
+| `assets/flows/edu2-scroll.jpg` · `edu2-nav.jpg` | EduPlaza 강의 목록 맨 위 + 350px 내린 화면을 이어 붙인 긴 그림, 아래 고정 메뉴(부드러운 스크롤용) |
 | `assets/shots/cert-masked.jpg` | 실제 벤처기업확인서 — 기업명·사업자등록번호·대표자·주소·발급번호·날짜 가림, 2차원 코드 부분 잘라냄 |
 
 장면별 샘플(스크롤 대신 실제로 눌러 다음 단계로):
 1) 실제 확인서(가림) + 폰 2대(PawBeauty·로컬맘) · 2) PawBeauty 예약 13단계 → 예약 완료 · 4) ExpertMatch 전문가 찾기 →
-7) EduPlaza 수강 신청 → 레슨 완료, 에듀마스터 학원 AX 대시보드 → 이탈 Risk → AI 브리핑 ·
-9) 애견샵 예약 완료 · 로컬맘 주문 완료 · EduPlaza 레슨 완료 폰 3대 · 마지막 8초) 샘플 22개 → '직접 눌러서 확인해 보세요 / 어떤 업종이든 맞춤형'
+7) 로컬맘 상품 → 바로 구매 → 주문 → 결제 완료, 이어서 EduPlaza 강의 목록 스크롤 → 강의 → 수강 시작 → '수강 신청 완료' 폰 +
+에듀마스터 학원 AX 대시보드 → 이탈 Risk → AI 브리핑 · 9) 애견샵 예약 완료 · 로컬맘 주문 완료 · EduPlaza 레슨 완료 폰 3대 ·
+마지막 7초) 샘플 22개(0.155초 간격) → '직접 눌러서 확인해 보세요 / 어떤 업종이든 맞춤형'
 
 ## 다시 만들기
 
@@ -32,7 +36,7 @@
 # 녹음을 새로 받았다면: 받아쓰기부터 (pip install faster-whisper)
 python3 asr.py .                                          # asr.json
 python3 align.py . spoken.txt keys.json && cp timing.json timing-orig.json  # 원본 기준(쉼 종류 판단에 씀)
-python3 tighten.py . ffmpeg                               # voice-fast.wav · asr-fast.json
+python3 tighten.py . ffmpeg                               # voice-fast.wav · asr-fast.json (edits.json 반영)
 ASR=asr-fast.json python3 align.py . spoken.txt keys.json # 빨라진 목소리 기준 timing.json
 node build.mjs                                            # index.html · subtitles.srt (TOTAL 출력)
 npx --yes hyperframes@0.8.79 snapshot --at 5,30,60,90 --no-end

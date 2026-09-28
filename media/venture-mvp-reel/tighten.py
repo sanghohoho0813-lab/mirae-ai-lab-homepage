@@ -4,7 +4,8 @@
 #  - 문장 사이(같은 장면): 0.35초
 #  - 장면 사이: 0.45초
 #  - 말 끝 꼬리는 넉넉히(60%), 다음 말 앞은 40% 남겨 소리가 잘리지 않게 한다
-import json, re, subprocess, sys
+#  - edits.json: 특정 문장 앞 쉼을 늘리거나(gapBefore, 모자라면 무음을 끼움) 문장을 통째로 뺀다(drop)
+import json, os, re, subprocess, sys
 
 R = sys.argv[1]
 FF = sys.argv[2]
@@ -20,29 +21,50 @@ dur = float(re.search(r'Duration: (\d+):(\d+):([0-9.]+)', out).group(3)) + 60 * 
 sil = list(zip(starts, ends))
 
 lines = T['lines']
-def kind(s, e):
+E = json.load(open(f'{R}/edits.json', encoding='utf-8')) if os.path.exists(f'{R}/edits.json') else {}
+GAP = {(g['block'], g['line']): g['sec'] * SPEED for g in E.get('gapBefore', [])}  # 1.05배 뒤 길이 → 원본 길이
+DROP = [(d['block'], d['line']) for d in E.get('drop', [])]
+
+def boundary(s, e):
     """쉼의 종류: 장면 사이 / 문장 사이 / 문장 안.
     쉼이 끝난 바로 뒤에 새 문장이 시작하면 문장(또는 장면) 사이로 본다.
     (받아쓰기의 말 끝 시간은 실제보다 늦게 잡혀서, 앞 문장 끝으로 판단하면 문장 사이를 쉼표로 잘못 본다)"""
     for i in range(1, len(lines)):
         a, b = lines[i - 1], lines[i]
         if s - 0.2 <= b['start'] + 0.08 <= e + 0.45:
-            return 'block' if a['block'] != b['block'] else 'line'
-    return 'comma'
+            return ('block' if a['block'] != b['block'] else 'line'), (b['block'], b['line'])
+    return 'comma', None
+def kind(s, e):
+    return boundary(s, e)[0]
 
 TARGET = {'block': 0.45, 'line': 0.35, 'comma': 0.2}
-cuts = []  # (시작, 끝) 잘라낼 구간
+# 뺄 문장: 그 문장 앞 쉼 ~ 다음 문장 앞 쉼을 한 번에 잘라, 앞뒤 문장 사이에 보통 쉼 하나만 남긴다
+drops, spans = [], []
+for key in DROP:
+    i = next(k for k, l in enumerate(lines) if (l['block'], l['line']) == key)
+    prv, nxt = lines[i - 1], lines[i + 1]
+    s0, e0 = next((s, e) for s, e in sil if boundary(s, e)[1] == key)
+    s1, e1 = next((s, e) for s, e in sil if boundary(s, e)[1] == (nxt['block'], nxt['line']))
+    t = TARGET['block' if prv['block'] != nxt['block'] else 'line']
+    drops.append((s0 + t * 0.6, e1 - t * 0.4)); spans.append((s0, e1))
+cuts, inserts = [], []  # 잘라낼 구간 (시작, 끝) · 끼워 넣을 무음 (위치, 길이)
 for s, e in sil:
     d = e - s
+    if any(a <= s and e <= b for a, b in spans):
+        continue
     if s < 0.05:          # 맨 앞 침묵
         if d > 0.15: cuts.append((0.0, e - 0.15))
         continue
     if e >= dur - 0.05:   # 맨 끝 침묵
         if d > 0.3: cuts.append((s + 0.3, e))
         continue
-    t = TARGET[kind(s, e)]
+    k, who = boundary(s, e)
+    t = GAP.get(who, TARGET[k])
     if d > t:
         cuts.append((s + t * 0.6, e - t * 0.4))
+    elif who in GAP:
+        inserts.append((s + d * 0.6, t - d))
+cuts = sorted(cuts + drops)
 
 keep, cur = [], 0.0
 for a, b in cuts:
@@ -54,22 +76,33 @@ def remap(t):
     removed = 0.0
     for a, b in cuts:
         if t >= b: removed += b - a
-        elif t > a: return (a - removed) / SPEED
-    return (t - removed) / SPEED
+        elif t > a: t = a; break
+    added = sum(d for p, d in inserts if t > p)
+    return (t - removed + added) / SPEED
 
-# 오디오 만들기: 남길 조각을 이어 붙이고(조각 경계엔 5ms 페이드) 1.05배
-parts = ''.join(f'[0:a]atrim=start={a:.3f}:end={b:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.005,afade=t=out:st={max(b - a - 0.005, 0):.3f}:d=0.005[p{i}];' for i, (a, b) in enumerate(keep))
-graph = parts + ''.join(f'[p{i}]' for i in range(len(keep))) + f'concat=n={len(keep)}:v=0:a=1,atempo={SPEED}[out]'
+# 오디오 만들기: 남길 조각을 이어 붙이고(조각 경계엔 5ms 페이드, 늘릴 쉼엔 무음) 1.05배
+pieces = []
+for a, b in keep:
+    cur = a
+    for p, d in sorted(x for x in inserts if a < x[0] < b):
+        pieces += [('seg', cur, p), ('sil', d)]; cur = p
+    pieces.append(('seg', cur, b))
+FMT = 'aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo'
+parts = ''.join((f'[0:a]atrim=start={x[1]:.3f}:end={x[2]:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.005,afade=t=out:st={max(x[2] - x[1] - 0.005, 0):.3f}:d=0.005,{FMT}[p{i}];'
+                 if x[0] == 'seg' else f'aevalsrc=0|0:s=44100:d={x[1]:.3f},{FMT}[p{i}];') for i, x in enumerate(pieces))
+graph = parts + ''.join(f'[p{i}]' for i in range(len(pieces))) + f'concat=n={len(pieces)}:v=0:a=1,atempo={SPEED}[out]'
 open(f'{R}/tighten.filter', 'w').write(graph)
 subprocess.run([FF, '-loglevel', 'error', '-y', '-i', src, '-filter_complex_script', f'{R}/tighten.filter', '-map', '[out]', '-ar', '44100', '-ac', '2', f'{R}/assets/voice-fast.wav'], check=True)
 
+dropped = lambda w: any(a <= (w['s'] + w['e']) / 2 <= b for a, b in drops)  # 뺀 문장의 단어는 받아쓰기에서도 뺀다
 fast = []
 for seg in asr:
-    fast.append({'start': remap(seg['start']), 'end': remap(seg['end']), 'text': seg['text'],
-                 'words': [{'s': remap(w['s']), 'e': remap(w['e']), 'w': w['w']} for w in seg['words']]})
+    ws = [{'s': remap(w['s']), 'e': remap(w['e']), 'w': w['w']} for w in seg['words'] if not dropped(w)]
+    if ws:
+        fast.append({'start': ws[0]['s'], 'end': ws[-1]['e'], 'text': ' '.join(w['w'] for w in ws), 'words': ws})
 json.dump(fast, open(f'{R}/asr-fast.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-json.dump({'speed': SPEED, 'cuts': cuts, 'kinds': TARGET}, open(f'{R}/tighten.json', 'w'), indent=1)
-removed = sum(b - a for a, b in cuts)
-print(f'쉼 {len(cuts)}곳에서 {removed:.1f}초 줄임 → {dur - removed:.1f}초 → 1.05배 {((dur - removed) / SPEED):.1f}초')
+json.dump({'speed': SPEED, 'cuts': cuts, 'inserts': inserts, 'drops': drops, 'kinds': TARGET}, open(f'{R}/tighten.json', 'w'), indent=1)
+removed = sum(b - a for a, b in cuts); added = sum(d for _, d in inserts)
+print(f'쉼 {len(cuts)}곳에서 {removed:.1f}초 줄임(뺀 문장 {len(drops)}개 포함), 무음 {added:.1f}초 넣음 → {dur - removed + added:.1f}초 → 1.05배 {((dur - removed + added) / SPEED):.1f}초')
 from collections import Counter
 print(Counter(kind(s, e) for s, e in sil if 0.05 < s < dur - 0.05))

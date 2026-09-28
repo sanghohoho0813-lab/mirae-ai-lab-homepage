@@ -13,7 +13,7 @@ const NB = 12
 const START = {}
 for (let b = 1; b <= NB; b++) START[b] = b === 1 ? 0 : r2(L(b).start - 0.25)
 const BURST_START = r2(T.audioEnd + 0.15)
-const TOTAL = r2(BURST_START + 8.0)  // 마지막 22개 화면 + 끝 카드 8초
+const TOTAL = r2(BURST_START + 7.0)  // 마지막 22개 화면(약 3.9초) + 끝 카드(약 3.1초)
 const END = (b) => (b === NB ? BURST_START : START[b + 1])
 
 let html = '', js = ''
@@ -44,9 +44,10 @@ const BW = 960, SC = BW / 1440, MOBW = 212, MS = MOBW / 780
 //   화면 안에 '시작 화면' 위로, 단계마다 '누르기 직전(a)' · '누른 뒤' 화면을 쌓아 두고 차례로 켠다.
 const FLOWS = JSON.parse(readFileSync(new URL('./assets/flows/flows.json', import.meta.url), 'utf8'))
 const nn = (x) => String(x).padStart(2, '0')
-const flowImgs = (id, name, from, steps, width) =>
-  `<img class="fimg" src="assets/flows/${name}-${nn(from)}.jpg" style="width:${width}px" alt="">` +
+const stepImgs = (id, name, steps, width) =>
   steps.map((st) => `<img class="fimg" id="${id}-${nn(st)}a" src="assets/flows/${name}-${nn(st)}a.jpg" style="width:${width}px;opacity:0" alt=""><img class="fimg" id="${id}-${nn(st)}" src="assets/flows/${name}-${nn(st)}.jpg" style="width:${width}px;opacity:0" alt="">`).join('')
+const flowImgs = (id, name, from, steps, width) =>
+  `<img class="fimg" src="assets/flows/${name}-${nn(from)}.jpg" style="width:${width}px" alt="">` + stepImgs(id, name, steps, width)
 const touches = (id, name, steps, sc) =>
   steps.map((st) => { const t = FLOWS[name].taps[st]; return `<span class="touch" id="${id}-t${st}" style="left:${r2(t.x * sc)}px;top:${r2(t.y * sc)}px"></span>` }).join('')
 const flowTL = (id, steps, t0, dt) => steps.forEach((st, k) => {
@@ -56,11 +57,16 @@ const flowTL = (id, steps, t0, dt) => steps.forEach((st, k) => {
   tw(`tl.to('#${id}-${nn(st)}', { opacity: 1, duration: 0.12 }, ${r2(t + 0.2)});`)
 })
 // 폰 화면 폭(px) — 캡처는 390px 기준
-const SCREEN = { big: 282, lg: 282, tri: 262 }
+const SCREEN = { big: 282, lg: 282, tri: 262, axph: 282 }
 const PHONEFLOW = (id, name, from, steps, cls) =>
   `<div class="phone ${cls}" id="${id}"><div class="screen">${flowImgs(id, name, from, steps, SCREEN[cls])}${touches(id, name, steps, SCREEN[cls] / 390)}</div></div>`
+// 스크롤하는 폰: 실제 화면 두 장(맨 위 · 스크롤 뒤)을 이어 붙인 긴 그림을 올리고, 아래 고정 메뉴는 따로 얹는다
+const SCROLLPHONE = (id, name, steps, cls) => {
+  const f = FLOWS[name], w = SCREEN[cls], sc = w / f.w
+  return `<div class="phone ${cls}" id="${id}"><div class="screen"><img class="fimg" id="${id}-scroll" src="assets/flows/${name}-scroll.jpg" style="width:${w}px" alt=""><img class="fimg" src="assets/flows/${name}-nav.jpg" style="width:${w}px;top:${r2(f.navTop * sc)}px" alt="">${stepImgs(id, name, steps, w)}${touches(id, name, steps, sc)}</div></div>`
+}
 const PHONEIMG = (id, src, cls) => `<div class="phone ${cls}" id="${id}"><div class="screen"><img class="fimg" src="${src}" style="width:100%" alt=""></div></div>`
-const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style="width:${BW}px"><div class="bar"><i></i><i></i><i></i><span class="url">${esc(name)}</span></div><div class="vp" style="height:${vph}px">${inner}</div></div>`
+const BROWSER = (id, name, vph, inner, w = BW) => `<div class="browser" id="${id}" style="width:${w}px"><div class="bar"><i></i><i></i><i></i><span class="url">${esc(name)}</span></div><div class="vp" style="height:${vph}px">${inner}</div></div>`
 
 // 1) 두 고객 동시에
 {
@@ -165,45 +171,54 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   tw(`tl.to('#s6-stack', { opacity: 0.45, filter: 'grayscale(1)', duration: 0.5 }, ${r2(K('b6_hard'))});`)
   pop('#s6-grey', K('b6_hard') + 0.1)
 }
-// 7) MVP 가 차이(샘플 4 EduPlaza) → 나중엔 AX: 학습 플랫폼 → 학원 AX, 미용 예약 → 헤어숍 AX (공식 근거는 따로)
+// 7) MVP 가 차이(샘플 로컬맘: 상품 → 바로 구매 → 수량 → 주문 → 결제 완료를 빠르게 눌러 간다)
+//    → 나중엔 AX: 왼쪽 폰(EduPlaza: 강의 목록 스크롤 → 강의 → 수강 시작 → 수강 신청 완료)이 먼저 움직이고,
+//      '+ AI' 를 지나 오른쪽 학원 AX(에듀마스터) 화면을 커서가 눌러 들어간다. 공식 근거는 따로 상자로.
 {
   const b = 7
-  const PAIRS = [['', '', '학습 플랫폼 MVP', '학원 AX', '에듀마스터']]
+  const BW2 = 670, SC2 = BW2 / 1440
   sec(b, `
     <div class="big" id="s7-t1">${lines(['눌러 보여 주는 <em class="peach">MVP</em>가', '차이를 만들어요'])}</div>
     <div class="big" id="s7-t2">${lines(['나중엔 AI를 붙여', '<em class="orange">AX</em>로 키워요'])}</div>
     <div id="s7-a">
       <div class="stack mini">${[-8, 0, 8].map((r) => `<div class="plan" style="transform:rotate(${r}deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div>`).join('')}</div>
-      ${PHONEFLOW('s7-ph', 'edu', 0, [1, 2, 3, 4, 5], 'lg')}
+      ${PHONEFLOW('s7-ph', 'mom', 0, [1, 2, 3, 4, 5], 'lg')}
       <span class="chip c1" id="s7-ch1">심사위원 앞에서</span><span class="chip c2" id="s7-ch2">투자자 앞에서</span>
     </div>
-    ${PAIRS.map(([mob, ax, from, to, name], i) => `<div class="pair" id="s7-p${i}">
-      <p class="pairlbl"><span>${from}</span><em class="orange">→</em><b>${to}</b></p>
-      <div class="abs" style="left:60px;top:600px">${BROWSER(`s7-br${i}`, `${name} · 미래AI랩 자체 AX 데모`, 440, flowImgs('s7-ax', 'ax', 0, [1, 2], BW) + touches('s7-ax', 'ax', [1, 2], SC) + CURSOR('s7-cur'))}</div>
-      ${PHONEIMG(`s7-m${i}`, 'assets/flows/edu-04.jpg', 'mini')}</div>`).join('')}
+    <div class="pair" id="s7-p0">
+      <p class="pairlbl"><span>학습 플랫폼 MVP</span><em class="orange">→</em><b>학원 AX</b></p>
+      ${SCROLLPHONE('s7-m0', 'edu2', [6, 7], 'axph')}
+      <div class="abs" style="left:370px;top:610px">${BROWSER('s7-br0', '에듀마스터 · 미래AI랩 자체 AX 데모', r2(900 * SC2), flowImgs('s7-ax', 'ax', 0, [1, 2], BW2) + touches('s7-ax', 'ax', [1, 2], SC2) + CURSOR('s7-cur'), BW2)}</div>
+    </div>
+    <span class="donepill" id="s7-done">✓ 수강 신청 완료</span>
     <span class="aichip" id="s7-ai">+ AI</span>
-    <div class="official" id="s7-off"><span class="otag">공식 근거</span><p>중소벤처기업부 2026 정책자금<br><b>AX 스프린트 우대트랙</b></p><small>대상·심사기준을 충족한 기업에 적용돼요</small></div>`)
+    <div class="official side" id="s7-off"><span class="otag">공식 근거</span><p>중소벤처기업부 2026 정책자금<br><b>AX 스프린트 우대트랙</b></p><small>대상·심사기준을 충족한 기업에 적용돼요</small></div>`)
   fade(b); reveal('#s7-t1 .ln > span', START[b] + 0.15)
   tw(`tl.from('#s7-a .plan', { opacity: 0, y: 40, duration: 0.35, stagger: 0.08 }, ${r2(START[b] + 0.15)});`)
-  tw(`tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' }, ${r2(K('b7_mvp') - 0.2)});`)
+  tw(`tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.45, ease: 'back.out(1.7)' }, ${r2(START[b] + 0.2)});`)
   tw(`tl.from(['#s7-ch1', '#s7-ch2'], { scale: 0.5, opacity: 0, duration: 0.35, ease: 'back.out(2)', stagger: 0.25 }, ${r2(K('b7_mvp') + 0.45)});`)
   const sw = K('b7_ai') - 0.3
-  { const t0 = START[b] + 0.35; flowTL('s7-ph', [1, 2, 3, 4, 5], t0, r2((sw - 0.25 - t0) / 5)) }
+  { const t0 = r2(START[b] + 0.65); flowTL('s7-ph', [1, 2, 3, 4, 5], t0, r2((sw - 0.3 - t0) / 5)) }
   tw(`tl.to(['#s7-a', '#s7-t1'], { opacity: 0, duration: 0.25 }, ${r2(sw)});`)
   tw(`tl.set('#s7-t2', { opacity: 0 }, ${START[b]});`)
   tw(`tl.set('#s7-t2', { opacity: 1 }, ${r2(sw)});`)
   reveal('#s7-t2 .ln > span', sw + 0.05)
   tw(`tl.from('#s7-p0', { y: 50, opacity: 0, duration: 0.4, ease: 'power2.out' }, ${r2(sw + 0.15)});`)
-  { // PC: 커서가 메뉴를 차례로 눌러 들어간다
-    const A = FLOWS.ax.taps, span = END(b) - sw - 1.0, t1 = r2(sw + 0.9), t2 = r2(sw + 0.9 + span / 2)
-    tw(`tl.fromTo('#s7-cur', { x: ${BW - 300}, y: 300, opacity: 0 }, { opacity: 1, duration: 0.15 }, ${r2(t1 - 0.6)});`)
+  // 폰: 강의 목록을 살짝 내리고 → 강의를 눌러 들어가 → 수강 시작하기 → '수강 신청이 완료됐어요'
+  const f2 = FLOWS.edu2, sc2 = SCREEN.axph / f2.w
+  tw(`tl.to('#s7-m0-scroll', { y: ${-r2(f2.scroll * sc2)}, duration: 0.55, ease: 'power1.inOut' }, ${r2(sw + 0.5)});`)
+  flowTL('s7-m0', [6, 7], r2(sw + 1.2), 0.75)
+  pop('#s7-done', sw + 1.2 + 0.75 + 0.3)  // 폰 속 완료 알림은 작아서 크게 한 번 더
+  pop('#s7-ai', sw + 0.45)
+  rise('#s7-off', K('b7_gov') - 0.1)
+  { // PC: 폰이 끝난 뒤 커서가 AX 메뉴를 차례로 눌러 들어간다
+    const A = FLOWS.ax.taps, t1 = r2(sw + 2.35), t2 = r2(sw + 3.15)
+    tw(`tl.fromTo('#s7-cur', { x: ${BW2 - 200}, y: 250, opacity: 0 }, { opacity: 1, duration: 0.15 }, ${r2(t1 - 0.6)});`)
     ;[[1, t1], [2, t2]].forEach(([st, t]) => {
-      tw(`tl.to('#s7-cur', { x: ${r2(A[st].x * SC - 6)}, y: ${r2(A[st].y * SC - 4)}, duration: 0.5, ease: 'power2.inOut' }, ${r2(t - 0.55)});`)
+      tw(`tl.to('#s7-cur', { x: ${r2(A[st].x * SC2 - 6)}, y: ${r2(A[st].y * SC2 - 4)}, duration: 0.45, ease: 'power2.inOut' }, ${r2(t - 0.5)});`)
     })
     flowTL('s7-ax', [1, 2], t1, r2(t2 - t1))
   }
-  pop('#s7-ai', sw + 0.45)
-  rise('#s7-off', K('b7_gov') - 0.1)
 }
 // 8) 따로 vs 한 번에
 {
@@ -227,13 +242,14 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   tw(`tl.from('#s8-once', { scale: 2.2, opacity: 0, rotation: -18, duration: 0.4, ease: 'power3.out' }, ${r2(K('b8_once') - 0.05)});`)
 }
 // 9) 대충 아님 — 폰 3대(애견샵 · 농산물 · 교육)가 동시에 서서 각자 실제로 눌러 가며 완료까지 간다.
-//    말(미용실·회계 사무소·옷가게)이 나오는 순간에 맞춰 폰을 하나씩 강조한다.
+//    '대충 만들지 않아요' 와 '실제로 이렇게 작동합니다' 사이 1.5초(edits.json) 동안에도 계속 눌러 가고,
+//    폰마다 마지막(예약 완료 · 주문 완료 · 레슨 완료) 화면이 뜰 때 살짝 강조한다.
 {
   const b = 9
   const P = [
-    ['paw', 8, [9, 10, 11, 12, 13], '애견샵', '예약 플랫폼', 'b9_salon'],
-    ['mom', 0, [1, 2, 3, 4, 5], '농산물 유통', '산지직송 커머스', 'b9_acct'],
-    ['edu', 0, [1, 2, 3, 4, 5], '학원', '교육 플랫폼', 'b9_cloth'],
+    ['paw', 8, [9, 10, 11, 12, 13], '애견샵', '예약 플랫폼'],
+    ['mom', 0, [1, 2, 3, 4, 5], '농산물 유통', '산지직송 커머스'],
+    ['edu', 0, [1, 2, 3, 4], '학원', '교육 플랫폼'],
   ]
   sec(b, `
     <div class="big" id="s9-t">${lines(['대충 만들지 않아요', '<em class="peach">실제로 이렇게 작동해요</em>'])}</div>
@@ -242,10 +258,12 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   reveal('#s9-t .ln:nth-child(2) > span', K('b9_works') - 0.5)
   tw(`tl.from('#s9-tri .tcol', { y: 70, opacity: 0, duration: 0.35, ease: 'back.out(1.6)', stagger: 0.1 }, ${r2(START[b] + 0.2)});`)
   const t0 = START[b] + 0.75, t1 = END(b) - 0.5
-  P.forEach(([, , steps, , , k], i) => {
-    flowTL(`s9-p${i}`, steps, r2(t0 + i * 0.22), r2((t1 - t0 - 0.44) / steps.length))
-    tw(`tl.to('#s9-c${i}', { scale: 1.06, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, ${r2(K(k) - 0.1)});`)
-    tw(`tl.to('#s9-c${i} .tl b', { color: '#E8894F', duration: 0.15 }, ${r2(K(k) - 0.1)});`)
+  P.forEach(([, , steps], i) => {
+    const s0 = r2(t0 + i * 0.22), dt = r2((t1 - t0 - 0.44) / steps.length)
+    flowTL(`s9-p${i}`, steps, s0, dt)
+    const done = r2(s0 + (steps.length - 1) * dt + 0.2)  // 마지막(완료) 화면이 뜨는 때
+    tw(`tl.to('#s9-c${i}', { scale: 1.05, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, ${done});`)
+    tw(`tl.to('#s9-c${i} .tl b', { color: '#E8894F', duration: 0.15 }, ${done});`)
   })
 }
 // 10) 개발 몰라도 OK · 요건 먼저 · 2주
@@ -296,14 +314,14 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   tw(`tl.to('#s12-btn', { scale: 1.05, duration: 0.4, ease: 'sine.inOut', yoyo: true, repeat: 3 }, ${r2(K('b12_now'))});`)
   rise('#s12-url', START[b] + 0.9); rise('#s12-logo', START[b] + 1.1); rise('#s12-f', START[b] + 1.3)
 }
-// 13) 상담 멘트 직후 — 샘플 22개를 하나씩 띄우고(약 4.5초) '직접 눌러서 확인해 보세요' 끝 카드(약 3초). 전체 8초, 소리 없음
+// 13) 상담 멘트 직후 — 샘플 22개를 하나씩 띄우고(약 3.9초) '직접 눌러서 확인해 보세요' 끝 카드(약 3.1초). 전체 7초, 소리 없음
 const BURST = [
   ['pawbeauty-top', 'PawBeauty'], ['ax-materix', 'MATERIX'], ['expertmatch-top', 'ExpertMatch'], ['ax-lumiere', 'LUMIÈRE'], ['localmom-top', '로컬맘'], ['ax-seum', '세움정밀'],
   ['eduplaza-top', 'EduPlaza'], ['ax-veloa', 'VELOA'], ['insightai-top', 'InsightAI'], ['ax-edumaster', '에듀마스터'], ['rescuewalk-top', 'RescueWalk'], ['ax-vitalon', 'VITALON'],
   ['cafefocus-top', 'CafeFocus'], ['ax-autobridge', '오토브릿지'], ['scamshield-top', 'ScamShield'], ['ax-livarte', 'LIVARTÉ'], ['freshfridge-top', 'FreshFridge'], ['ax-cleanway', 'CLEANWAY'],
   ['stylecheck-top', 'StyleCheck AI'], ['ax-gounsot', '고운솥'], ['ax-nexmart', 'NEXMART'], ['ax-morfit', 'MORFIT'],
 ]
-const BURST_GAP = 0.2
+const BURST_GAP = 0.155
 {
   const t0 = BURST_START
   html += `<section class="clip scene" id="s13" data-start="${t0}" data-duration="${r2(TOTAL - t0)}" data-track-index="1">
@@ -505,6 +523,9 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .pair { position: absolute; inset: 0; }
 .pairlbl { position: absolute; left: 60px; right: 60px; top: 515px; display: flex; align-items: center; gap: 14px; font-size: 40px; font-weight: 800; color: #AEB6C0; }
 .pairlbl b { color: #fff; font-weight: 900; } .pairlbl em { font-size: 44px; }
+.phone.axph { left: 40px; top: 590px; width: 300px; height: 620px; z-index: 6; }
+.donepill { position: absolute; left: 52px; top: 1140px; padding: 12px 22px; border-radius: 999px; background: #2E9E6A; color: #fff; font-size: 30px; font-weight: 900; box-shadow: 0 12px 30px rgba(0,0,0,.5); z-index: 9; }
+.official.side { left: 370px; right: 40px; top: 1090px; padding: 18px 24px; } .official.side p { font-size: 30px; }
 .phone.mini { left: 40px; top: 760px; width: 170px; height: 350px; padding: 7px; border-radius: 28px; z-index: 6; } .phone.mini .screen { border-radius: 22px; } .phone.mini .mob { width: 156px; }
 /* 9) 폰 3대 */
 .trio { position: absolute; left: 60px; right: 60px; top: 520px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
