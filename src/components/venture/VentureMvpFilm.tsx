@@ -60,7 +60,7 @@ export default function VentureMvpFilm({ onConsult }: { onConsult: () => void })
             <br /> 한 번에 하는 이유
           </h2>
           <p className="mt-3 max-w-md break-keep text-[1.02rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
-            2분이면 충분해요. 자막이 있어 소리 없이 보셔도 되고, 소리를 켜면 대표님께 직접 설명드려요.
+            1분 30초면 충분해요. 자막이 있어 소리 없이 보셔도 되고, 소리를 켜면 직접 설명드려요.
           </p>
           <ul className="mt-5 hidden gap-2 md:grid">
             {POINTS.map((t) => (

@@ -4,7 +4,9 @@ import json, re, sys, difflib
 
 R = sys.argv[1]
 script = open(sys.argv[2], encoding='utf-8').read().strip()
-asr = json.load(open(f'{R}/asr.json', encoding='utf-8'))
+import os
+ASR = os.environ.get('ASR', 'asr.json')  # 속도 조절본은 ASR=asr-fast.json
+asr = json.load(open(f'{R}/{ASR}', encoding='utf-8'))
 
 def norm_chars(s):
     s = s.lower()
@@ -63,7 +65,7 @@ out_lines = []
 for L in lines:
     st = stime[L['offset']]
     en = stime[L['offset'] + L['n'] - 1]
-    out_lines.append({'block': L['block'], 'line': L['line'], 'text': L['text'].replace(' | ', ' ').replace('|', ''), 'start': round(st - 0.08, 2), 'end': round(en + 0.25, 2)})
+    out_lines.append({'block': L['block'], 'line': L['line'], 'text': L['text'].replace(' | ', ' ').replace('|', ''), 'start': round(st - 0.2, 2), 'end': round(en + 0.25, 2)})
 
 # 자막 조각 — 긴 문장은 쉼표·마침표에서 끊고, 두 줄(약 26자) 안으로 묶는다
 MAXC = 28   # 쉼표 조각을 이 길이까지 묶는다
@@ -83,7 +85,7 @@ for L in lines:
         pos = 0
         for m in merged:
             n = len(norm_chars(m)); a = L['offset'] + pos; b = a + n - 1
-            cues.append({'block': L['block'], 'text': m, 'start': round(stime[a] - 0.08, 2), 'end': round(stime[b] + 0.3, 2)})
+            cues.append({'block': L['block'], 'text': m, 'start': round(stime[a] - 0.2, 2), 'end': round(stime[b] + 0.3, 2)})
             pos += n
         continue
     parts = [p for p in re.split(r'(?<=[,.?])\s+', L['text']) if p]
@@ -99,7 +101,7 @@ for L in lines:
         n = len(norm_chars(m))
         a = L['offset'] + pos
         b = a + n - 1
-        cues.append({'block': L['block'], 'text': m, 'start': round(stime[a] - 0.08, 2), 'end': round(stime[b] + 0.3, 2)})
+        cues.append({'block': L['block'], 'text': m, 'start': round(stime[a] - 0.2, 2), 'end': round(stime[b] + 0.3, 2)})
         pos += n
 # 다음 자막과 겹치지 않게, 너무 짧게 사라지지 않게
 for i, c in enumerate(cues):

@@ -12,8 +12,9 @@ const K = (id) => { if (!(id in T.keys)) throw new Error('no key ' + id); return
 const NB = 12
 const START = {}
 for (let b = 1; b <= NB; b++) START[b] = b === 1 ? 0 : r2(L(b).start - 0.25)
-const TOTAL = r2(T.audioEnd + 1.8)
-const END = (b) => (b === NB ? TOTAL : START[b + 1])
+const BURST_START = r2(T.audioEnd + 0.15)
+const TOTAL = r2(BURST_START + 0.15 + 22 * 0.13 + 0.35 + 2.2)
+const END = (b) => (b === NB ? BURST_START : START[b + 1])
 
 let html = '', js = ''
 const tw = (c) => { js += `  ${c}\n` }
@@ -65,7 +66,7 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
     <div class="big" id="s2-t">${lines(['<em class="peach">작동하는 서비스</em>', '+ 벤처기업확인 신청'])}</div>
     ${CERT('s2-cert', 'md')}
     <div class="plus" id="s2-plus">+</div>
-    ${PHONE('s2-ph', 'pawbeauty-mob.jpg', 'md')}
+    ${PHONE('s2-ph', 'localmom-mob.jpg', 'md')}
     <div class="badge" id="s2-badge"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#171B20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>기술기업</b></div>
     <p class="fine" id="s2-f" style="top:1245px">*벤처인증의 정식 명칭은 벤처기업확인이에요. 확인 여부는 확인기관 심사로 정해집니다.</p>`)
   fade(b)
@@ -89,29 +90,30 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   C.forEach((c, i) => pop(`#s3-c${i}`, K(c[3]) - 0.1))
   rise('#s3-f', K('b3_tax') + 0.8)
 }
-// 4) 기술성·성장성 → 눌러 보는 웹앱
+// 4) 기술성·성장성 → 눌러 보는 웹앱 (샘플 2 ExpertMatch: 전문가 찾기 → 전문가 카드)
 {
   const b = 4
-  const m = meta.pawbeauty, vph = 440
+  const m = meta.expertmatch, vph = 440
   const nav = { x: (m.click.x + m.click.width / 2) * SC, y: (m.click.y + m.click.height / 2) * SC }
-  const pet = { x: 540 * SC, y: 370 * SC }
+  const card = { x: 520 * SC, y: 560 * SC }
   sec(b, `
     <div class="big" id="s4-t">${lines(['벤처기업확인은', '<em class="peach">기술성·성장성</em>을 봐요'])}</div>
     <div class="nope" id="s4-doc"><span class="doclines"><i></i><i></i><i style="width:60%"></i></span><p>말로만 하는 기술</p><span class="x">✕</span></div>
-    <div class="abs" style="left:60px;top:800px">${BROWSER('s4-b', 'PawBeauty · 미래AI랩 자체 데모', vph, `<img class="shot" src="assets/shots/pawbeauty-home.jpg" style="width:${BW}px" alt=""><img class="shot" id="s4-inner" src="assets/shots/pawbeauty-inner.jpg" style="width:${BW}px" alt=""><div class="ripple" id="s4-r1" style="left:${r2(nav.x)}px;top:${r2(nav.y)}px"></div><div class="ripple" id="s4-r2" style="left:${r2(pet.x)}px;top:${r2(pet.y)}px"></div>${CURSOR('s4-cur')}`)}</div>
+    <div class="abs" style="left:60px;top:800px">${BROWSER('s4-b', 'ExpertMatch · 미래AI랩 자체 데모', vph, `<img class="shot" src="assets/shots/expertmatch-home.jpg" style="width:${BW}px" alt=""><img class="shot" id="s4-inner" src="assets/shots/expertmatch-inner.jpg" style="width:${BW}px" alt=""><div class="ripple" id="s4-r1" style="left:${r2(nav.x)}px;top:${r2(nav.y)}px"></div><div class="ripple" id="s4-r2" style="left:${r2(card.x)}px;top:${r2(card.y)}px"></div>${CURSOR('s4-cur')}`)}</div>
     <div class="okpill" id="s4-ok">✓ 직접 눌러 보는 웹앱</div>`)
   fade(b); reveal('#s4-t .ln > span', START[b] + 0.15)
   rise('#s4-doc', K('b4_word') - 0.15)
   tw(`tl.to('#s4-doc', { opacity: 0.4, duration: 0.3 }, ${r2(K('b4_click'))});`)
   rise('#s4-b', K('b4_click') - 0.35)
   tw(`tl.set('#s4-inner', { opacity: 0 }, ${START[b]});`)
-  const c0 = K('b4_click') + 0.1
-  tw(`tl.fromTo('#s4-cur', { x: ${BW - 260}, y: ${vph - 80}, opacity: 0 }, { opacity: 1, duration: 0.15 }, ${r2(c0)});`)
-  tw(`tl.to('#s4-cur', { x: ${r2(nav.x - 6)}, y: ${r2(nav.y - 4)}, duration: 0.7, ease: 'power2.inOut' }, ${r2(c0 + 0.1)});`)
-  tw(`tl.fromTo('#s4-r1', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.45 }, ${r2(c0 + 0.82)});`)
-  tw(`tl.to('#s4-inner', { opacity: 1, duration: 0.25 }, ${r2(c0 + 1.0)});`)
-  tw(`tl.to('#s4-cur', { x: ${r2(pet.x - 6)}, y: ${r2(pet.y - 4)}, duration: 0.6, ease: 'power2.inOut' }, ${r2(c0 + 1.2)});`)
-  tw(`tl.fromTo('#s4-r2', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.45 }, ${r2(c0 + 1.85)});`)
+  const c0 = K('b4_click') + 0.05
+  tw(`tl.fromTo('#s4-cur', { x: ${BW - 260}, y: ${vph - 80}, opacity: 0 }, { opacity: 1, duration: 0.12 }, ${r2(c0)});`)
+  tw(`tl.to('#s4-cur', { x: ${r2(nav.x - 6)}, y: ${r2(nav.y - 4)}, duration: 0.6, ease: 'power2.inOut' }, ${r2(c0 + 0.08)});`)
+  tw(`tl.fromTo('#s4-r1', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, ${r2(c0 + 0.7)});`)
+  tw(`tl.to('#s4-inner', { opacity: 1, duration: 0.22 }, ${r2(c0 + 0.85)});`)
+  tw(`tl.to('#s4-cur', { x: ${r2(card.x - 6)}, y: ${r2(card.y - 4)}, duration: 0.5, ease: 'power2.inOut' }, ${r2(c0 + 1.0)});`)
+  tw(`tl.fromTo('#s4-r2', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, ${r2(c0 + 1.55)});`)
+  tw(`tl.to('#s4-inner', { y: -140, duration: 1.2, ease: 'power1.inOut' }, ${r2(c0 + 1.7)});`)
   pop('#s4-ok', K('b4_ok') - 0.1)
 }
 // 5) 아이디어 있든 없든 + 매출로 이어지는 성장 방안
@@ -142,34 +144,43 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   tw(`tl.to('#s6-stack', { opacity: 0.45, filter: 'grayscale(1)', duration: 0.5 }, ${r2(K('b6_hard'))});`)
   pop('#s6-grey', K('b6_hard') + 0.1)
 }
-// 7) MVP 가 차이 → 나중엔 AX (공식 근거는 따로)
+// 7) MVP 가 차이(샘플 4 EduPlaza) → 나중엔 AX: 학습 플랫폼 → 학원 AX, 미용 예약 → 헤어숍 AX (공식 근거는 따로)
 {
   const b = 7
+  const PAIRS = [['eduplaza-mob.jpg', 'ax-edumaster-lg.jpg', '학습 플랫폼 MVP', '학원 AX', '에듀마스터'], ['pawbeauty-mob.jpg', 'ax-lumiere-dash.jpg', '미용 예약 MVP', '헤어숍 AX', 'LUMIÈRE']]
   sec(b, `
     <div class="big" id="s7-t1">${lines(['눌러 보여 주는 <em class="peach">MVP</em>가', '차이를 만들어요'])}</div>
     <div class="big" id="s7-t2">${lines(['나중엔 AI를 붙여', '<em class="orange">AX</em>로 키워요'])}</div>
     <div id="s7-a">
       <div class="stack mini">${[-8, 0, 8].map((r) => `<div class="plan" style="transform:rotate(${r}deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div>`).join('')}</div>
-      ${PHONE('s7-ph', 'pawbeauty-mob.jpg', 'lg')}
+      ${PHONE('s7-ph', 'eduplaza-mob.jpg', 'lg')}
       <span class="chip c1" id="s7-ch1">심사위원 앞에서</span><span class="chip c2" id="s7-ch2">투자자 앞에서</span>
     </div>
-    <div id="s7-b"><div class="abs" style="left:60px;top:560px">${BROWSER('s7-br', 'MATERIX · 미래AI랩 자체 AX 데모', 460, `<img class="shot" id="s7-ax" src="assets/shots/ax-materix.jpg" style="width:${BW}px" alt="">`)}</div>
-      <span class="aichip" id="s7-ai">+ AI</span></div>
+    ${PAIRS.map(([mob, ax, from, to, name], i) => `<div class="pair" id="s7-p${i}">
+      <p class="pairlbl"><span>${from}</span><em class="orange">→</em><b>${to}</b></p>
+      <div class="abs" style="left:60px;top:600px">${BROWSER(`s7-br${i}`, `${name} · 미래AI랩 자체 AX 데모`, 440, `<img class="shot" id="s7-ax${i}" src="assets/shots/${ax}" style="width:${BW}px" alt="">`)}</div>
+      ${PHONE(`s7-m${i}`, mob, 'mini')}</div>`).join('')}
+    <span class="aichip" id="s7-ai">+ AI</span>
     <div class="official" id="s7-off"><span class="otag">공식 근거</span><p>중소벤처기업부 2026 정책자금<br><b>AX 스프린트 우대트랙</b></p><small>대상·심사기준을 충족한 기업에 적용돼요</small></div>`)
   fade(b); reveal('#s7-t1 .ln > span', START[b] + 0.15)
-  tw(`tl.from('#s7-a .plan', { opacity: 0, y: 40, duration: 0.4, stagger: 0.1 }, ${r2(START[b] + 0.2)});`)
-  tw(`tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.55, ease: 'back.out(1.7)' }, ${r2(K('b7_mvp') - 0.2)});`)
-  tw(`tl.to('#s7-ph-img', { y: -560, duration: 3.6, ease: 'power1.inOut' }, ${r2(K('b7_mvp'))});`)
-  tw(`tl.from(['#s7-ch1', '#s7-ch2'], { scale: 0.5, opacity: 0, duration: 0.4, ease: 'back.out(2)', stagger: 0.3 }, ${r2(K('b7_mvp') + 0.6)});`)
-  const sw = K('b7_ai') - 0.35
-  tw(`tl.to(['#s7-a', '#s7-t1'], { opacity: 0, duration: 0.3 }, ${r2(sw)});`)
+  tw(`tl.from('#s7-a .plan', { opacity: 0, y: 40, duration: 0.35, stagger: 0.08 }, ${r2(START[b] + 0.15)});`)
+  tw(`tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' }, ${r2(K('b7_mvp') - 0.2)});`)
+  tw(`tl.to('#s7-ph-img', { y: -560, duration: 3.0, ease: 'power1.inOut' }, ${r2(K('b7_mvp'))});`)
+  tw(`tl.from(['#s7-ch1', '#s7-ch2'], { scale: 0.5, opacity: 0, duration: 0.35, ease: 'back.out(2)', stagger: 0.25 }, ${r2(K('b7_mvp') + 0.45)});`)
+  const sw = K('b7_ai') - 0.3, sw2 = K('b7_gov') - 0.05
+  tw(`tl.to(['#s7-a', '#s7-t1'], { opacity: 0, duration: 0.25 }, ${r2(sw)});`)
+  tw(`tl.set(['#s7-t2', '#s7-p1'], { opacity: 0 }, ${START[b]});`)
   tw(`tl.set('#s7-t2', { opacity: 1 }, ${r2(sw)});`)
-  tw(`tl.set('#s7-t2', { opacity: 0 }, ${START[b]});`)
-  reveal('#s7-t2 .ln > span', sw + 0.1)
-  tw(`tl.from('#s7-br', { y: 50, opacity: 0, duration: 0.5, ease: 'power2.out' }, ${r2(sw + 0.2)});`)
-  tw(`tl.to('#s7-ax', { y: -160, duration: 3.2, ease: 'power1.inOut' }, ${r2(sw + 0.6)});`)
-  pop('#s7-ai', sw + 0.6)
-  rise('#s7-off', K('b7_gov') - 0.1)
+  reveal('#s7-t2 .ln > span', sw + 0.05)
+  tw(`tl.from('#s7-p0', { y: 50, opacity: 0, duration: 0.4, ease: 'power2.out' }, ${r2(sw + 0.15)});`)
+  tw(`tl.to('#s7-ax0', { y: -140, duration: 2.0, ease: 'power1.inOut' }, ${r2(sw + 0.4)});`)
+  tw(`tl.to('#s7-m0-img', { y: -300, duration: 2.0, ease: 'power1.inOut' }, ${r2(sw + 0.4)});`)
+  pop('#s7-ai', sw + 0.45)
+  tw(`tl.to('#s7-p0', { opacity: 0, duration: 0.2 }, ${r2(sw2)});`)
+  tw(`tl.to('#s7-p1', { opacity: 1, duration: 0.25 }, ${r2(sw2)});`)
+  tw(`tl.to('#s7-ax1', { y: -60, duration: 2.4, ease: 'power1.inOut' }, ${r2(sw2 + 0.1)});`)
+  tw(`tl.to('#s7-m1-img', { y: -300, duration: 2.4, ease: 'power1.inOut' }, ${r2(sw2 + 0.1)});`)
+  rise('#s7-off', sw2 + 0.1)
 }
 // 8) 따로 vs 한 번에
 {
@@ -192,43 +203,45 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   steps.forEach(([, k], i) => pop(`#s8-s${i}`, K(k) - 0.05))
   tw(`tl.from('#s8-once', { scale: 2.2, opacity: 0, rotation: -18, duration: 0.4, ease: 'power3.out' }, ${r2(K('b8_once') - 0.05)});`)
 }
-// 9) 대충 아님 — 실제 데모 3개
+// 9) 대충 아님 — 샘플 3 로컬맘을 실제로 눌러 보고, 말에 맞춰 폰 3대(미용실·회계 사무소·옷가게)가 차례로 선다
 {
   const b = 9
-  const D = [['pawbeauty', 'PawBeauty', '동네 반려동물 미용실', '예약·재방문 관리 플랫폼'], ['insightai', 'InsightAI', '회계·경영 자문 사무소', 'AI 경영데이터 분석 서비스'], ['stylecheck', 'StyleCheck AI', '옷가게·의류 쇼핑몰', 'AI 코디 점검 서비스']]
   const vph = 520
-  const m = meta.pawbeauty
-  const cx = r2((m.click.x + m.click.width / 2) * SC), cy = r2((m.click.y + m.click.height / 2) * SC)
+  const m = meta.localmom
+  const cyPage = m.click.y + m.click.height / 2
+  const pan = Math.min(cyPage - 330, m.homeH - 780)
+  const cx = r2((m.click.x + m.click.width / 2) * SC), cy = r2((cyPage - pan) * SC)
+  const P = [['pawbeauty-mob.jpg', '미용실', '예약 플랫폼', 'b9_salon'], ['insightai-mob.jpg', '회계 사무소', 'AI 분석', 'b9_acct'], ['stylecheck-mob.jpg', '옷가게', 'AI 코디', 'b9_cloth']]
   sec(b, `
     <div class="big" id="s9-t">${lines(['대충 만들지 않아요', '<em class="peach">실제로 이렇게 작동해요</em>'])}</div>
-    ${D.map(([s, , f, t], i) => `<div class="dlabel" id="s9-l${i}"><span class="lbl">지금 하는 사업</span>${esc(f)}<p><em class="orange">→</em> ${esc(t)}</p></div>`).join('')}
-    <div class="abs" style="left:60px;top:680px"><div class="browser" id="s9-b" style="width:${BW}px"><div class="bar"><i></i><i></i><i></i>${D.map(([, n], i) => `<span class="url" id="s9-u${i}">${esc(n)} · 미래AI랩 자체 데모</span>`).join('')}</div><div class="vp" style="height:${vph}px">
-      <img class="shot" id="s9-h0" src="assets/shots/pawbeauty-home.jpg" style="width:${BW}px" alt="">
-      <img class="shot" id="s9-i0" src="assets/shots/pawbeauty-inner.jpg" style="width:${BW}px" alt="">
-      <img class="shot" id="s9-h1" src="assets/shots/insightai-home.jpg" style="width:${BW}px" alt="">
-      <img class="shot" id="s9-h2" src="assets/shots/stylecheck-inner.jpg" style="width:${BW}px" alt="">
-      <div class="ripple" id="s9-r" style="left:${cx}px;top:${cy}px"></div>${CURSOR('s9-cur')}</div></div></div>
-    ${PHONE('s9-p0', 'pawbeauty-mob.jpg', 'dm')}${PHONE('s9-p1', 'insightai-mob.jpg', 'dm')}${PHONE('s9-p2', 'stylecheck-mob.jpg', 'dm')}`)
-  fade(b); reveal('#s9-t .ln:nth-child(1) > span', START[b] + 0.15)
-  reveal('#s9-t .ln:nth-child(2) > span', K('b9_works') - 0.6)
-  tw(`tl.set(['#s9-i0', '#s9-h1', '#s9-h2', '#s9-l1', '#s9-l2', '#s9-u1', '#s9-u2', '#s9-p1', '#s9-p2'], { opacity: 0 }, ${START[b]});`)
-  rise('#s9-l0', START[b] + 0.3); rise('#s9-b', START[b] + 0.35); rise('#s9-p0', START[b] + 0.5)
-  tw(`tl.to('#s9-p0-img', { y: -500, duration: 4.5, ease: 'power1.inOut' }, ${r2(START[b] + 0.6)});`)
-  const ck = K('b9_works') - 0.2
-  tw(`tl.fromTo('#s9-cur', { x: ${BW - 260}, y: ${vph - 80}, opacity: 0 }, { opacity: 1, duration: 0.15 }, ${r2(ck - 0.9)});`)
-  tw(`tl.to('#s9-cur', { x: ${r2(cx - 6)}, y: ${r2(cy - 4)}, duration: 0.75, ease: 'power2.inOut' }, ${r2(ck - 0.8)});`)
-  tw(`tl.fromTo('#s9-r', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.45 }, ${r2(ck)});`)
-  tw(`tl.to('#s9-i0', { opacity: 1, duration: 0.25 }, ${r2(ck + 0.2)});`)
-  tw(`tl.to('#s9-cur', { opacity: 0, duration: 0.2 }, ${r2(ck + 0.3)});`)
-  // 말에 맞춰 화면 바꾸기: 미용실 → 회계 사무소 → 옷가게
-  ;[['b9_acct', 1], ['b9_cloth', 2]].forEach(([k, i]) => {
-    const t = K(k) - 0.1
-    tw(`tl.to(['#s9-l${i - 1}', '#s9-u${i - 1}', '#s9-p${i - 1}'], { opacity: 0, duration: 0.18 }, ${r2(t)});`)
-    tw(`tl.to(['#s9-l${i}', '#s9-u${i}', '#s9-p${i}', '#s9-h${i}'], { opacity: 1, duration: 0.2 }, ${r2(t)});`)
-    tw(`tl.to('#s9-p${i}-img', { y: -300, duration: 1.6, ease: 'power1.out' }, ${r2(t)});`)
+    <div id="s9-one">
+      <div class="dlabel" id="s9-l"><span class="lbl">지금 하는 사업</span>농산물 유통 회사<p><em class="orange">→</em> 산지직송 신선식품 커머스</p></div>
+      <div class="abs" style="left:60px;top:680px"><div class="browser" id="s9-b" style="width:${BW}px"><div class="bar"><i></i><i></i><i></i><span class="url">로컬맘 · 미래AI랩 자체 데모</span></div><div class="vp" style="height:${vph}px">
+        <img class="shot" id="s9-h" src="assets/shots/localmom-home.jpg" style="width:${BW}px" alt="">
+        <img class="shot" id="s9-i" src="assets/shots/localmom-inner.jpg" style="width:${BW}px" alt="">
+        <div class="ripple" id="s9-r" style="left:${cx}px;top:${cy}px"></div>${CURSOR('s9-cur')}</div></div></div>
+    </div>
+    <div class="trio" id="s9-tri">${P.map(([img, a, c], i) => `<div class="tcol" id="s9-c${i}"><p class="tl"><span>${a}</span><b><em class="orange">→</em> ${c}</b></p>${PHONE(`s9-p${i}`, img, 'tri')}</div>`).join('')}</div>`)
+  fade(b); reveal('#s9-t .ln:nth-child(1) > span', START[b] + 0.12)
+  reveal('#s9-t .ln:nth-child(2) > span', K('b9_works') - 0.5)
+  tw(`tl.set('#s9-i', { opacity: 0 }, ${START[b]});`)
+  rise('#s9-l', START[b] + 0.2); rise('#s9-b', START[b] + 0.25)
+  tw(`tl.to('#s9-h', { y: ${r2(-pan * SC)}, duration: 0.6, ease: 'power2.inOut' }, ${r2(START[b] + 0.4)});`)
+  const ck = START[b] + 1.55
+  tw(`tl.fromTo('#s9-cur', { x: ${BW - 260}, y: ${vph - 60}, opacity: 0 }, { opacity: 1, duration: 0.12 }, ${r2(ck - 0.75)});`)
+  tw(`tl.to('#s9-cur', { x: ${r2(cx - 6)}, y: ${r2(cy - 4)}, duration: 0.6, ease: 'power2.inOut' }, ${r2(ck - 0.68)});`)
+  tw(`tl.fromTo('#s9-r', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, ${r2(ck)});`)
+  tw(`tl.to('#s9-i', { opacity: 1, duration: 0.22 }, ${r2(ck + 0.15)});`)
+  tw(`tl.to('#s9-cur', { opacity: 0, duration: 0.15 }, ${r2(ck + 0.25)});`)
+  tw(`tl.to('#s9-i', { y: -120, duration: 1.0, ease: 'power1.out' }, ${r2(ck + 0.35)});`)
+  const t3 = Math.max(ck + 1.0, K('b9_works') - 0.45)
+  tw(`tl.to('#s9-one', { opacity: 0, duration: 0.18 }, ${r2(t3)});`)
+  tw(`tl.from('#s9-tri .tcol', { y: 70, opacity: 0, duration: 0.35, ease: 'back.out(1.6)', stagger: 0.1 }, ${r2(t3 + 0.1)});`)
+  P.forEach(([, , , k], i) => {
+    tw(`tl.to('#s9-p${i}-img', { y: -420, duration: ${r2(END(b) - t3)}, ease: 'power1.inOut' }, ${r2(t3 + 0.2)});`)
+    tw(`tl.to('#s9-c${i}', { scale: 1.07, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, ${r2(K(k) - 0.1)});`)
+    tw(`tl.to('#s9-c${i} .tl b', { color: '#E8894F', duration: 0.15 }, ${r2(K(k) - 0.1)});`)
   })
-  tw(`tl.to('#s9-h1', { y: -120, duration: 1.2, ease: 'power1.out' }, ${r2(K('b9_acct'))});`)
-  tw(`tl.to('#s9-h2', { y: -160, duration: 1.6, ease: 'power1.out' }, ${r2(K('b9_cloth'))});`)
 }
 // 10) 개발 몰라도 OK · 요건 먼저 · 2주
 {
@@ -272,10 +285,35 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
     <div class="clogo" id="s12-logo"><img src="assets/logo.png" alt="미래에이아이랩"></div>
     <p class="fine center" id="s12-f" style="top:1190px">2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요.<br>벤처기업확인 여부는 확인기관 심사로 정해집니다.<br>영상 속 화면은 미래AI랩 자체 데모이며 고객사 사례가 아니에요.</p>`)
   tw(`tl.fromTo('#s12', { opacity: 0 }, { opacity: 1, duration: 0.22 }, ${START[b]});`)
+  tw(`tl.to('#s12', { opacity: 0, duration: 0.15 }, ${r2(END(b) - 0.15)});`)
   reveal('#s12-t .ln > span', START[b] + 0.1)
   pop('#s12-btn', START[b] + 0.5)
   tw(`tl.to('#s12-btn', { scale: 1.05, duration: 0.4, ease: 'sine.inOut', yoyo: true, repeat: 3 }, ${r2(K('b12_now'))});`)
   rise('#s12-url', START[b] + 0.9); rise('#s12-logo', START[b] + 1.1); rise('#s12-f', START[b] + 1.3)
+}
+// 13) 상담 멘트 직후 — 샘플 22개 화면을 빠르게 띄우고 끝 카드
+const BURST = [
+  ['pawbeauty-top', 'PawBeauty'], ['ax-materix', 'MATERIX'], ['expertmatch-top', 'ExpertMatch'], ['ax-lumiere', 'LUMIÈRE'], ['localmom-top', '로컬맘'], ['ax-seum', '세움정밀'],
+  ['eduplaza-top', 'EduPlaza'], ['ax-veloa', 'VELOA'], ['insightai-top', 'InsightAI'], ['ax-edumaster', '에듀마스터'], ['rescuewalk-top', 'RescueWalk'], ['ax-vitalon', 'VITALON'],
+  ['cafefocus-top', 'CafeFocus'], ['ax-autobridge', '오토브릿지'], ['scamshield-top', 'ScamShield'], ['ax-livarte', 'LIVARTÉ'], ['freshfridge-top', 'FreshFridge'], ['ax-cleanway', 'CLEANWAY'],
+  ['stylecheck-top', 'StyleCheck AI'], ['ax-gounsot', '고운솥'], ['ax-nexmart', 'NEXMART'], ['ax-morfit', 'MORFIT'],
+]
+const BURST_GAP = 0.13
+{
+  const t0 = BURST_START
+  html += `<section class="clip scene" id="s13" data-start="${t0}" data-duration="${r2(TOTAL - t0)}" data-track-index="1">
+    <p class="bhead" id="s13-h">미래AI랩이 직접 만든 <b>샘플 22개</b></p>
+    <div class="bgrid" id="s13-g">${BURST.map(([img, n], i) => `<figure class="bcell" id="s13-${i}"><img src="assets/shots/${img}.jpg" alt=""><figcaption>${esc(n)}</figcaption></figure>`).join('')}</div>
+    <div class="endcard" id="s13-end"><p class="e1">22개 샘플,</p><p class="e2"><em class="peach">직접 눌러 보세요</em></p><div class="cta small" id="s13-btn">무료 상담 받기 <span>→</span></div><p class="e3">miraeailab.com</p><p class="e4">자체 데모 · 고객사 사례가 아니에요 · 벤처기업확인 여부는 확인기관 심사로 정해집니다</p></div>
+  </section>\n`
+  tw(`tl.fromTo('#s13', { opacity: 0 }, { opacity: 1, duration: 0.15 }, ${t0});`)
+  rise('#s13-h', t0 + 0.05)
+  BURST.forEach((_, i) => tw(`tl.from('#s13-${i}', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, ${r2(t0 + 0.15 + i * BURST_GAP)});`))
+  const te = r2(t0 + 0.15 + BURST.length * BURST_GAP + 0.35)
+  tw(`tl.to('#s13-g', { opacity: 0.22, duration: 0.3 }, ${te});`)
+  tw(`tl.from('#s13-end', { scale: 0.85, opacity: 0, duration: 0.4, ease: 'back.out(1.6)' }, ${te});`)
+  tw(`tl.to('#s13-btn', { scale: 1.05, duration: 0.35, ease: 'sine.inOut', yoyo: true, repeat: 3 }, ${r2(te + 0.5)});`)
+  writeFileSync(new URL('./ticks.json', import.meta.url), JSON.stringify(BURST.map((_, i) => r2(t0 + 0.15 + i * BURST_GAP))))
 }
 // 자막 — 두 줄 안에서 가운데 가까운 띄어쓰기로 끊는다
 // 쉼표 뒤를 먼저 고르고, '한 번에'·'내세울 수'처럼 한 글자 낱말이 떨어지는 자리는 피한다
@@ -456,6 +494,28 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .cta { position: absolute; left: 110px; right: 110px; top: 700px; height: 180px; border-radius: 40px; background: #D47A4A; color: #171B20; font-size: 76px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 20px; box-shadow: 0 30px 80px rgba(212,122,74,.45); }
 .url2 { position: absolute; left: 0; right: 0; top: 920px; text-align: center; font-size: 50px; font-weight: 800; color: #E8B89A; }
 .clogo { position: absolute; left: 50%; top: 1010px; width: 460px; margin-left: -230px; padding: 16px 26px; border-radius: 22px; background: #fff; } .clogo img { width: 100%; display: block; }
+/* 7) AX 짝 */
+.pair { position: absolute; inset: 0; }
+.pairlbl { position: absolute; left: 60px; right: 60px; top: 515px; display: flex; align-items: center; gap: 14px; font-size: 40px; font-weight: 800; color: #AEB6C0; }
+.pairlbl b { color: #fff; font-weight: 900; } .pairlbl em { font-size: 44px; }
+.phone.mini { left: 40px; top: 760px; width: 170px; height: 350px; padding: 7px; border-radius: 28px; z-index: 6; } .phone.mini .screen { border-radius: 22px; } .phone.mini .mob { width: 156px; }
+/* 9) 폰 3대 */
+.trio { position: absolute; left: 60px; right: 60px; top: 520px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.tcol { position: relative; height: 780px; }
+.tl { font-size: 32px; font-weight: 700; color: #AEB6C0; text-align: center; line-height: 1.25; }
+.tl span { display: block; } .tl b { display: block; color: #fff; font-weight: 900; font-size: 36px; }
+.phone.tri { left: 6px; top: 110px; width: 280px; height: 580px; } .phone.tri .mob { width: 262px; }
+/* 13) 22개 */
+.bhead { position: absolute; left: 0; right: 0; top: 250px; text-align: center; font-size: 56px; font-weight: 800; color: #D5DAE0; } .bhead b { color: #E8894F; font-weight: 900; }
+.bgrid { position: absolute; left: 40px; right: 40px; top: 360px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.bcell { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(0,0,0,.45); }
+.bcell img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.bcell figcaption { position: absolute; left: 8px; bottom: 8px; padding: 3px 10px; border-radius: 999px; background: rgba(23,27,32,.85); font-size: 17px; font-weight: 800; }
+.endcard { position: absolute; left: 70px; right: 70px; top: 560px; padding: 60px 40px 50px; border-radius: 40px; background: rgba(16,20,25,.94); box-shadow: 0 30px 90px rgba(0,0,0,.6), inset 0 0 0 2px rgba(232,184,154,.35); text-align: center; }
+.endcard .e1 { font-size: 92px; font-weight: 900; letter-spacing: -0.03em; } .endcard .e2 { font-size: 92px; font-weight: 900; letter-spacing: -0.03em; }
+.cta.small { position: relative; left: auto; right: auto; top: auto; margin: 44px auto 0; width: 740px; height: 150px; font-size: 64px; }
+.endcard .e3 { margin-top: 30px; font-size: 44px; font-weight: 800; color: #E8B89A; }
+.endcard .e4 { margin-top: 18px; font-size: 22px; color: #7C8591; }
 /* 자막 · 진행 막대 */
 .sub { display: flex; align-items: flex-end; justify-content: center; padding: 0 70px 420px; z-index: 40; }
 .sub span { max-width: 900px; padding: 18px 34px; border-radius: 22px; background: rgba(8,10,13,.88); font-size: 54px; font-weight: 800; line-height: 1.32; text-align: center; }

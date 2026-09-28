@@ -1,3 +1,6 @@
 renders/
 snapshots/
 node_modules/
+# 다시 만들 수 있는 중간 소리 파일(tighten.py · ticks.py 로 생성)
+assets/*.wav
+tighten.filter
