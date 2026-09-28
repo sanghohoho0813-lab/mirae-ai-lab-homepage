@@ -13,7 +13,7 @@ const NB = 12
 const START = {}
 for (let b = 1; b <= NB; b++) START[b] = b === 1 ? 0 : r2(L(b).start - 0.25)
 const BURST_START = r2(T.audioEnd + 0.15)
-const TOTAL = r2(BURST_START + 0.15 + 22 * 0.13 + 0.35 + 2.2)
+const TOTAL = r2(BURST_START + 8.0)  // 마지막 22개 화면 + 끝 카드 8초
 const END = (b) => (b === NB ? BURST_START : START[b + 1])
 
 let html = '', js = ''
@@ -30,7 +30,7 @@ const pop = (sel, at) => tw(`tl.from('${sel}', { scale: 0.6, opacity: 0, duratio
 
 // ── 그림 조각
 // 실제 벤처기업확인서 — 기업명·사업자등록번호·대표자·주소·발급번호·날짜는 모두 가린 이미지(2차원 코드 부분은 잘라냄)
-const CERTIMG = (id, cls = '') => `<div class="certimg ${cls}" id="${id}"><img src="assets/shots/cert-masked.jpg" alt=""><span class="mask">기업 정보 가림</span></div>`
+const CERTIMG = (id, cls = '') => `<div class="certimg ${cls}" id="${id}"><img src="assets/shots/cert-masked.jpg" alt=""></div>`
 const PHONE = (id, img, cls = '') => `<div class="phone ${cls}" id="${id}"><div class="screen">${img ? `<img class="mob" id="${id}-img" src="assets/shots/${img}" alt="">` : '<div class="blank"><i></i><i></i><i></i><b>MVP</b></div>'}</div></div>`
 const CURSOR = (id) => `<svg class="cursor" id="${id}" viewBox="0 0 24 24" width="44" height="44"><path d="M4 2.5 L4 19 L8.6 14.8 L11.6 21.4 L14.4 20.2 L11.4 13.7 L17.6 13.4 Z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>`
 const ICON = {
@@ -40,6 +40,26 @@ const ICON = {
   plus: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
 }
 const BW = 960, SC = BW / 1440, MOBW = 212, MS = MOBW / 780
+// ── 실제로 눌러 가는 흐름. flows.json 에 단계별로 누른 위치(원래 화면 px)가 있다.
+//   화면 안에 '시작 화면' 위로, 단계마다 '누르기 직전(a)' · '누른 뒤' 화면을 쌓아 두고 차례로 켠다.
+const FLOWS = JSON.parse(readFileSync(new URL('./assets/flows/flows.json', import.meta.url), 'utf8'))
+const nn = (x) => String(x).padStart(2, '0')
+const flowImgs = (id, name, from, steps, width) =>
+  `<img class="fimg" src="assets/flows/${name}-${nn(from)}.jpg" style="width:${width}px" alt="">` +
+  steps.map((st) => `<img class="fimg" id="${id}-${nn(st)}a" src="assets/flows/${name}-${nn(st)}a.jpg" style="width:${width}px;opacity:0" alt=""><img class="fimg" id="${id}-${nn(st)}" src="assets/flows/${name}-${nn(st)}.jpg" style="width:${width}px;opacity:0" alt="">`).join('')
+const touches = (id, name, steps, sc) =>
+  steps.map((st) => { const t = FLOWS[name].taps[st]; return `<span class="touch" id="${id}-t${st}" style="left:${r2(t.x * sc)}px;top:${r2(t.y * sc)}px"></span>` }).join('')
+const flowTL = (id, steps, t0, dt) => steps.forEach((st, k) => {
+  const t = r2(t0 + k * dt)
+  tw(`tl.set('#${id}-${nn(st)}a', { opacity: 1 }, ${t});`)
+  tw(`tl.fromTo('#${id}-t${st}', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, ${r2(t + 0.04)});`)
+  tw(`tl.to('#${id}-${nn(st)}', { opacity: 1, duration: 0.12 }, ${r2(t + 0.2)});`)
+})
+// 폰 화면 폭(px) — 캡처는 390px 기준
+const SCREEN = { big: 282, lg: 282, tri: 262 }
+const PHONEFLOW = (id, name, from, steps, cls) =>
+  `<div class="phone ${cls}" id="${id}"><div class="screen">${flowImgs(id, name, from, steps, SCREEN[cls])}${touches(id, name, steps, SCREEN[cls] / 390)}</div></div>`
+const PHONEIMG = (id, src, cls) => `<div class="phone ${cls}" id="${id}"><div class="screen"><img class="fimg" src="${src}" style="width:100%" alt=""></div></div>`
 const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style="width:${BW}px"><div class="bar"><i></i><i></i><i></i><span class="url">${esc(name)}</span></div><div class="vp" style="height:${vph}px">${inner}</div></div>`
 
 // 1) 두 고객 동시에
@@ -48,7 +68,7 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   sec(b, `
     <div class="who" id="s1a" style="top:290px">${CERTIMG('s1-cert', 'sm')}<span class="qm" id="s1-q1">?</span>
       <div class="who-txt"><span class="tag">중소기업 대표님</span><p>벤처인증은 필요한데<br><b>내세울 기술</b>이 없다면?</p></div></div>
-    <div class="who" id="s1b" style="top:745px">${PHONE('s1-ph', 'pawbeauty-mob.jpg', 'sm')}<span class="qm" id="s1-q2">?</span>
+    <div class="who" id="s1b" style="top:745px">${PHONEIMG('s1-ph', 'assets/flows/paw-00.jpg', 's1p1')}${PHONEIMG('s1-ph2', 'assets/flows/mom-00.jpg', 's1p2')}<span class="qm" id="s1-q2">?</span>
       <div class="who-txt"><span class="tag">예비창업자</span><p>창업 준비 중인데<br><b>MVP부터</b> 막막하다면?</p></div></div>
     <div class="stamp" id="s1s">둘 다, <em>한 번에</em> 해결</div>`)
   fade(b)
@@ -67,15 +87,15 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
     <div class="big" id="s2-t">${lines(['<em class="peach">작동하는 서비스</em>', '+ 벤처기업확인 신청'])}</div>
     ${CERTIMG('s2-cert', 'md')}
     <div class="plus" id="s2-plus">+</div>
-    ${PHONE('s2-ph', 'pawbeauty-mob.jpg', 'md')}
-    <div class="badge" id="s2-badge"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#171B20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>기술기업</b></div>
+    ${PHONEFLOW('s2-ph', 'paw', 0, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 'big')}
+    <div class="badge left" id="s2-badge"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#171B20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>기술기업</b></div>
     <p class="fine" id="s2-f" style="top:1245px">*벤처인증의 정식 명칭은 벤처기업확인이에요. 확인 여부는 확인기관 심사로 정해집니다.</p>`)
   fade(b)
   reveal('#s2-t .ln:nth-child(1) > span', START[b] + 0.15)
   reveal('#s2-t .ln:nth-child(2) > span', K('b2_cert') - 0.25)
   rise('#s2-ph', START[b] + 0.3); rise('#s2-plus', K('b2_cert') - 0.35); rise('#s2-cert', K('b2_cert') - 0.2)
-  tw(`tl.to('#s2-ph-img', { y: -520, duration: ${r2(END(b) - START[b] - 0.6)}, ease: 'power1.inOut' }, ${r2(START[b] + 0.5)});`)
-  tw(`tl.to(['#s2-cert', '#s2-ph', '#s2-plus'], { opacity: 0.35, duration: 0.4 }, ${r2(K('b2_tech') - 0.1)});`)
+  { const t0 = START[b] + 0.55, t1 = END(b) - 0.45; flowTL('s2-ph', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], t0, r2((t1 - t0) / 13)) }
+  tw(`tl.to(['#s2-cert', '#s2-plus'], { opacity: 0.4, duration: 0.4 }, ${r2(K('b2_tech') - 0.1)});`)
   pop('#s2-badge', K('b2_tech') - 0.05)
   rise('#s2-f', K('b2_tech') + 0.4)
 }
@@ -110,10 +130,10 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   const c0 = K('b4_click') + 0.05
   tw(`tl.fromTo('#s4-cur', { x: ${BW - 260}, y: ${vph - 80}, opacity: 0 }, { opacity: 1, duration: 0.12 }, ${r2(c0)});`)
   tw(`tl.to('#s4-cur', { x: ${r2(nav.x - 6)}, y: ${r2(nav.y - 4)}, duration: 0.6, ease: 'power2.inOut' }, ${r2(c0 + 0.08)});`)
-  tw(`tl.fromTo('#s4-r1', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, ${r2(c0 + 0.7)});`)
+  tw(`tl.fromTo('#s4-r1', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4, immediateRender: false }, ${r2(c0 + 0.7)});`)
   tw(`tl.to('#s4-inner', { opacity: 1, duration: 0.22 }, ${r2(c0 + 0.85)});`)
   tw(`tl.to('#s4-cur', { x: ${r2(card.x - 6)}, y: ${r2(card.y - 4)}, duration: 0.5, ease: 'power2.inOut' }, ${r2(c0 + 1.0)});`)
-  tw(`tl.fromTo('#s4-r2', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, ${r2(c0 + 1.55)});`)
+  tw(`tl.fromTo('#s4-r2', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4, immediateRender: false }, ${r2(c0 + 1.55)});`)
   tw(`tl.to('#s4-inner', { y: -140, duration: 1.2, ease: 'power1.inOut' }, ${r2(c0 + 1.7)});`)
   pop('#s4-ok', K('b4_ok') - 0.1)
 }
@@ -148,34 +168,40 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
 // 7) MVP 가 차이(샘플 4 EduPlaza) → 나중엔 AX: 학습 플랫폼 → 학원 AX, 미용 예약 → 헤어숍 AX (공식 근거는 따로)
 {
   const b = 7
-  const PAIRS = [['eduplaza-mob.jpg', 'ax-edumaster-lg.jpg', '학습 플랫폼 MVP', '학원 AX', '에듀마스터']]
+  const PAIRS = [['', '', '학습 플랫폼 MVP', '학원 AX', '에듀마스터']]
   sec(b, `
     <div class="big" id="s7-t1">${lines(['눌러 보여 주는 <em class="peach">MVP</em>가', '차이를 만들어요'])}</div>
     <div class="big" id="s7-t2">${lines(['나중엔 AI를 붙여', '<em class="orange">AX</em>로 키워요'])}</div>
     <div id="s7-a">
       <div class="stack mini">${[-8, 0, 8].map((r) => `<div class="plan" style="transform:rotate(${r}deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div>`).join('')}</div>
-      ${PHONE('s7-ph', 'eduplaza-mob.jpg', 'lg')}
+      ${PHONEFLOW('s7-ph', 'edu', 0, [1, 2, 3, 4, 5], 'lg')}
       <span class="chip c1" id="s7-ch1">심사위원 앞에서</span><span class="chip c2" id="s7-ch2">투자자 앞에서</span>
     </div>
     ${PAIRS.map(([mob, ax, from, to, name], i) => `<div class="pair" id="s7-p${i}">
       <p class="pairlbl"><span>${from}</span><em class="orange">→</em><b>${to}</b></p>
-      <div class="abs" style="left:60px;top:600px">${BROWSER(`s7-br${i}`, `${name} · 미래AI랩 자체 AX 데모`, 440, `<img class="shot" id="s7-ax${i}" src="assets/shots/${ax}" style="width:${BW}px" alt="">`)}</div>
-      ${PHONE(`s7-m${i}`, mob, 'mini')}</div>`).join('')}
+      <div class="abs" style="left:60px;top:600px">${BROWSER(`s7-br${i}`, `${name} · 미래AI랩 자체 AX 데모`, 440, flowImgs('s7-ax', 'ax', 0, [1, 2], BW) + touches('s7-ax', 'ax', [1, 2], SC) + CURSOR('s7-cur'))}</div>
+      ${PHONEIMG(`s7-m${i}`, 'assets/flows/edu-04.jpg', 'mini')}</div>`).join('')}
     <span class="aichip" id="s7-ai">+ AI</span>
     <div class="official" id="s7-off"><span class="otag">공식 근거</span><p>중소벤처기업부 2026 정책자금<br><b>AX 스프린트 우대트랙</b></p><small>대상·심사기준을 충족한 기업에 적용돼요</small></div>`)
   fade(b); reveal('#s7-t1 .ln > span', START[b] + 0.15)
   tw(`tl.from('#s7-a .plan', { opacity: 0, y: 40, duration: 0.35, stagger: 0.08 }, ${r2(START[b] + 0.15)});`)
   tw(`tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' }, ${r2(K('b7_mvp') - 0.2)});`)
-  tw(`tl.to('#s7-ph-img', { y: -560, duration: 3.0, ease: 'power1.inOut' }, ${r2(K('b7_mvp'))});`)
   tw(`tl.from(['#s7-ch1', '#s7-ch2'], { scale: 0.5, opacity: 0, duration: 0.35, ease: 'back.out(2)', stagger: 0.25 }, ${r2(K('b7_mvp') + 0.45)});`)
   const sw = K('b7_ai') - 0.3
+  { const t0 = START[b] + 0.35; flowTL('s7-ph', [1, 2, 3, 4, 5], t0, r2((sw - 0.25 - t0) / 5)) }
   tw(`tl.to(['#s7-a', '#s7-t1'], { opacity: 0, duration: 0.25 }, ${r2(sw)});`)
   tw(`tl.set('#s7-t2', { opacity: 0 }, ${START[b]});`)
   tw(`tl.set('#s7-t2', { opacity: 1 }, ${r2(sw)});`)
   reveal('#s7-t2 .ln > span', sw + 0.05)
   tw(`tl.from('#s7-p0', { y: 50, opacity: 0, duration: 0.4, ease: 'power2.out' }, ${r2(sw + 0.15)});`)
-  tw(`tl.to('#s7-ax0', { y: -220, duration: ${r2(END(b) - sw - 0.5)}, ease: 'power1.inOut' }, ${r2(sw + 0.4)});`)
-  tw(`tl.to('#s7-m0-img', { y: -420, duration: ${r2(END(b) - sw - 0.5)}, ease: 'power1.inOut' }, ${r2(sw + 0.4)});`)
+  { // PC: 커서가 메뉴를 차례로 눌러 들어간다
+    const A = FLOWS.ax.taps, span = END(b) - sw - 1.0, t1 = r2(sw + 0.9), t2 = r2(sw + 0.9 + span / 2)
+    tw(`tl.fromTo('#s7-cur', { x: ${BW - 300}, y: 300, opacity: 0 }, { opacity: 1, duration: 0.15 }, ${r2(t1 - 0.6)});`)
+    ;[[1, t1], [2, t2]].forEach(([st, t]) => {
+      tw(`tl.to('#s7-cur', { x: ${r2(A[st].x * SC - 6)}, y: ${r2(A[st].y * SC - 4)}, duration: 0.5, ease: 'power2.inOut' }, ${r2(t - 0.55)});`)
+    })
+    flowTL('s7-ax', [1, 2], t1, r2(t2 - t1))
+  }
   pop('#s7-ai', sw + 0.45)
   rise('#s7-off', K('b7_gov') - 0.1)
 }
@@ -200,43 +226,25 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   steps.forEach(([, k], i) => pop(`#s8-s${i}`, K(k) - 0.05))
   tw(`tl.from('#s8-once', { scale: 2.2, opacity: 0, rotation: -18, duration: 0.4, ease: 'power3.out' }, ${r2(K('b8_once') - 0.05)});`)
 }
-// 9) 대충 아님 — 샘플 3 로컬맘을 실제로 눌러 보고, 말에 맞춰 폰 3대(미용실·회계 사무소·옷가게)가 차례로 선다
+// 9) 대충 아님 — 폰 3대(애견샵 · 농산물 · 교육)가 동시에 서서 각자 실제로 눌러 가며 완료까지 간다.
+//    말(미용실·회계 사무소·옷가게)이 나오는 순간에 맞춰 폰을 하나씩 강조한다.
 {
   const b = 9
-  const vph = 520
-  const m = meta.localmom
-  const cyPage = m.click.y + m.click.height / 2
-  const pan = Math.min(cyPage - 330, m.homeH - 780)
-  const cx = r2((m.click.x + m.click.width / 2) * SC), cy = r2((cyPage - pan) * SC)
-  const P = [['pawbeauty-mob.jpg', '미용실', '예약 플랫폼', 'b9_salon'], ['insightai-mob.jpg', '회계 사무소', 'AI 분석', 'b9_acct'], ['stylecheck-mob.jpg', '옷가게', 'AI 코디', 'b9_cloth']]
+  const P = [
+    ['paw', 8, [9, 10, 11, 12, 13], '애견샵', '예약 플랫폼', 'b9_salon'],
+    ['mom', 0, [1, 2, 3, 4, 5], '농산물 유통', '산지직송 커머스', 'b9_acct'],
+    ['edu', 0, [1, 2, 3, 4, 5], '학원', '교육 플랫폼', 'b9_cloth'],
+  ]
   sec(b, `
     <div class="big" id="s9-t">${lines(['대충 만들지 않아요', '<em class="peach">실제로 이렇게 작동해요</em>'])}</div>
-    <div id="s9-one">
-      <div class="dlabel" id="s9-l"><span class="lbl">지금 하는 사업</span>농산물 유통 회사<p><em class="orange">→</em> 산지직송 신선식품 커머스</p></div>
-      <div class="abs" style="left:60px;top:680px"><div class="browser" id="s9-b" style="width:${BW}px"><div class="bar"><i></i><i></i><i></i><span class="url">로컬맘 · 미래AI랩 자체 데모</span></div><div class="vp" style="height:${vph}px">
-        <img class="shot" id="s9-h" src="assets/shots/localmom-home.jpg" style="width:${BW}px" alt="">
-        <img class="shot" id="s9-i" src="assets/shots/localmom-inner.jpg" style="width:${BW}px" alt="">
-        <div class="ripple" id="s9-r" style="left:${cx}px;top:${cy}px"></div>${CURSOR('s9-cur')}</div></div></div>
-    </div>
-    <div class="trio" id="s9-tri">${P.map(([img, a, c], i) => `<div class="tcol" id="s9-c${i}"><p class="tl"><span>${a}</span><b><em class="orange">→</em> ${c}</b></p>${PHONE(`s9-p${i}`, img, 'tri')}</div>`).join('')}</div>`)
+    <div class="trio" id="s9-tri">${P.map(([name, from, steps, a, c], i) => `<div class="tcol" id="s9-c${i}"><p class="tl"><span>${a}</span><b><em class="orange">→</em> ${c}</b></p>${PHONEFLOW(`s9-p${i}`, name, from, steps, 'tri')}</div>`).join('')}</div>`)
   fade(b); reveal('#s9-t .ln:nth-child(1) > span', START[b] + 0.12)
   reveal('#s9-t .ln:nth-child(2) > span', K('b9_works') - 0.5)
-  tw(`tl.set('#s9-i', { opacity: 0 }, ${START[b]});`)
-  rise('#s9-l', START[b] + 0.2); rise('#s9-b', START[b] + 0.25)
-  tw(`tl.to('#s9-h', { y: ${r2(-pan * SC)}, duration: 0.6, ease: 'power2.inOut' }, ${r2(START[b] + 0.4)});`)
-  const ck = START[b] + 1.55
-  tw(`tl.fromTo('#s9-cur', { x: ${BW - 260}, y: ${vph - 60}, opacity: 0 }, { opacity: 1, duration: 0.12 }, ${r2(ck - 0.75)});`)
-  tw(`tl.to('#s9-cur', { x: ${r2(cx - 6)}, y: ${r2(cy - 4)}, duration: 0.6, ease: 'power2.inOut' }, ${r2(ck - 0.68)});`)
-  tw(`tl.fromTo('#s9-r', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, ${r2(ck)});`)
-  tw(`tl.to('#s9-i', { opacity: 1, duration: 0.22 }, ${r2(ck + 0.15)});`)
-  tw(`tl.to('#s9-cur', { opacity: 0, duration: 0.15 }, ${r2(ck + 0.25)});`)
-  tw(`tl.to('#s9-i', { y: -120, duration: 1.0, ease: 'power1.out' }, ${r2(ck + 0.35)});`)
-  const t3 = Math.max(ck + 1.0, K('b9_works') - 0.45)
-  tw(`tl.to('#s9-one', { opacity: 0, duration: 0.18 }, ${r2(t3)});`)
-  tw(`tl.from('#s9-tri .tcol', { y: 70, opacity: 0, duration: 0.35, ease: 'back.out(1.6)', stagger: 0.1 }, ${r2(t3 + 0.1)});`)
-  P.forEach(([, , , k], i) => {
-    tw(`tl.to('#s9-p${i}-img', { y: -420, duration: ${r2(END(b) - t3)}, ease: 'power1.inOut' }, ${r2(t3 + 0.2)});`)
-    tw(`tl.to('#s9-c${i}', { scale: 1.07, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, ${r2(K(k) - 0.1)});`)
+  tw(`tl.from('#s9-tri .tcol', { y: 70, opacity: 0, duration: 0.35, ease: 'back.out(1.6)', stagger: 0.1 }, ${r2(START[b] + 0.2)});`)
+  const t0 = START[b] + 0.75, t1 = END(b) - 0.5
+  P.forEach(([, , steps, , , k], i) => {
+    flowTL(`s9-p${i}`, steps, r2(t0 + i * 0.22), r2((t1 - t0 - 0.44) / steps.length))
+    tw(`tl.to('#s9-c${i}', { scale: 1.06, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, ${r2(K(k) - 0.1)});`)
     tw(`tl.to('#s9-c${i} .tl b', { color: '#E8894F', duration: 0.15 }, ${r2(K(k) - 0.1)});`)
   })
 }
@@ -288,29 +296,35 @@ const BROWSER = (id, name, vph, inner) => `<div class="browser" id="${id}" style
   tw(`tl.to('#s12-btn', { scale: 1.05, duration: 0.4, ease: 'sine.inOut', yoyo: true, repeat: 3 }, ${r2(K('b12_now'))});`)
   rise('#s12-url', START[b] + 0.9); rise('#s12-logo', START[b] + 1.1); rise('#s12-f', START[b] + 1.3)
 }
-// 13) 상담 멘트 직후 — 샘플 22개 화면을 빠르게 띄우고 끝 카드
+// 13) 상담 멘트 직후 — 샘플 22개를 하나씩 띄우고(약 4.5초) '직접 눌러서 확인해 보세요' 끝 카드(약 3초). 전체 8초, 소리 없음
 const BURST = [
   ['pawbeauty-top', 'PawBeauty'], ['ax-materix', 'MATERIX'], ['expertmatch-top', 'ExpertMatch'], ['ax-lumiere', 'LUMIÈRE'], ['localmom-top', '로컬맘'], ['ax-seum', '세움정밀'],
   ['eduplaza-top', 'EduPlaza'], ['ax-veloa', 'VELOA'], ['insightai-top', 'InsightAI'], ['ax-edumaster', '에듀마스터'], ['rescuewalk-top', 'RescueWalk'], ['ax-vitalon', 'VITALON'],
   ['cafefocus-top', 'CafeFocus'], ['ax-autobridge', '오토브릿지'], ['scamshield-top', 'ScamShield'], ['ax-livarte', 'LIVARTÉ'], ['freshfridge-top', 'FreshFridge'], ['ax-cleanway', 'CLEANWAY'],
   ['stylecheck-top', 'StyleCheck AI'], ['ax-gounsot', '고운솥'], ['ax-nexmart', 'NEXMART'], ['ax-morfit', 'MORFIT'],
 ]
-const BURST_GAP = 0.13
+const BURST_GAP = 0.2
 {
   const t0 = BURST_START
   html += `<section class="clip scene" id="s13" data-start="${t0}" data-duration="${r2(TOTAL - t0)}" data-track-index="1">
     <p class="bhead" id="s13-h">미래AI랩이 직접 만든 <b>샘플 22개</b></p>
     <div class="bgrid" id="s13-g">${BURST.map(([img, n], i) => `<figure class="bcell" id="s13-${i}"><img src="assets/shots/${img}.jpg" alt=""><figcaption>${esc(n)}</figcaption></figure>`).join('')}</div>
-    <div class="endcard" id="s13-end"><p class="e1">22개 샘플,</p><p class="e2"><em class="peach">직접 눌러 보세요</em></p><div class="cta small" id="s13-btn">무료 상담 받기 <span>→</span></div><p class="e3">miraeailab.com</p><p class="e4">자체 데모 · 고객사 사례가 아니에요 · 벤처기업확인 여부는 확인기관 심사로 정해집니다</p></div>
+    <div class="endcard" id="s13-end">
+      <p class="e0">미래AI랩이 직접 만든 샘플 22개,</p>
+      <p class="e1">직접 눌러서</p><p class="e1"><em class="peach">확인해 보세요</em></p>
+      <i class="ebar"></i>
+      <p class="e5">어떤 업종이든,<br><b>우리 회사에 맞춰</b> 만들어 드립니다</p>
+      <p class="e3">miraeailab.com</p>
+      <p class="e4">자체 데모 · 고객사 사례가 아니에요</p>
+    </div>
   </section>\n`
   tw(`tl.fromTo('#s13', { opacity: 0 }, { opacity: 1, duration: 0.15 }, ${t0});`)
   rise('#s13-h', t0 + 0.05)
-  BURST.forEach((_, i) => tw(`tl.from('#s13-${i}', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, ${r2(t0 + 0.15 + i * BURST_GAP)});`))
-  const te = r2(t0 + 0.15 + BURST.length * BURST_GAP + 0.35)
-  tw(`tl.to('#s13-g', { opacity: 0.22, duration: 0.3 }, ${te});`)
-  tw(`tl.from('#s13-end', { scale: 0.85, opacity: 0, duration: 0.4, ease: 'back.out(1.6)' }, ${te});`)
-  tw(`tl.to('#s13-btn', { scale: 1.05, duration: 0.35, ease: 'sine.inOut', yoyo: true, repeat: 3 }, ${r2(te + 0.5)});`)
-  writeFileSync(new URL('./music.json', import.meta.url), JSON.stringify({ start: r2(TOTAL - 8), voiceEnd: T.audioEnd, total: TOTAL }))
+  BURST.forEach((_, i) => tw(`tl.from('#s13-${i}', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, ${r2(t0 + 0.2 + i * BURST_GAP)});`))
+  const te = r2(t0 + 0.2 + BURST.length * BURST_GAP + 0.3)
+  tw(`tl.to(['#s13-g', '#s13-h'], { opacity: 0.2, duration: 0.35 }, ${te});`)
+  tw(`tl.from('#s13-end', { scale: 0.88, opacity: 0, duration: 0.45, ease: 'back.out(1.6)' }, ${te});`)
+  tw(`tl.from('#s13-end .e5', { y: 24, opacity: 0, duration: 0.4, ease: 'power2.out' }, ${r2(te + 0.7)});`)
 }
 // 자막 — 두 줄 안에서 가운데 가까운 띄어쓰기로 끊는다
 // 쉼표 뒤를 먼저 고르고, '한 번에'·'내세울 수'처럼 한 글자 낱말이 떨어지는 자리는 피한다
@@ -447,7 +461,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .stack.mini { left: 40px; right: auto; width: 520px; top: 640px; }
 .stack.mini .plan { left: 40px; transform-origin: 50% 90%; opacity: .55; filter: grayscale(1); }
 .chip { position: absolute; padding: 16px 30px; border-radius: 999px; font-size: 38px; font-weight: 900; box-shadow: 0 14px 34px rgba(0,0,0,.45); z-index: 8; }
-.chip.c1 { left: 480px; top: 580px; background: #E8B89A; color: #171B20; }
+.chip.c1 { left: 240px; top: 575px; background: #E8B89A; color: #171B20; }
 .chip.c2 { left: 430px; top: 1150px; background: #D47A4A; color: #171B20; }
 #s7-t2 { opacity: 0; }
 .aichip { position: absolute; right: 70px; top: 520px; padding: 16px 32px; border-radius: 999px; background: #2F6FED; color: #fff; font-size: 44px; font-weight: 900; box-shadow: 0 16px 36px rgba(0,0,0,.45); z-index: 7; }
@@ -504,11 +518,22 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .bcell { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(0,0,0,.45); }
 .bcell img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 .bcell figcaption { position: absolute; left: 8px; bottom: 8px; padding: 3px 10px; border-radius: 999px; background: rgba(23,27,32,.85); font-size: 17px; font-weight: 800; }
-.endcard { position: absolute; left: 70px; right: 70px; top: 560px; padding: 60px 40px 50px; border-radius: 40px; background: rgba(16,20,25,.94); box-shadow: 0 30px 90px rgba(0,0,0,.6), inset 0 0 0 2px rgba(232,184,154,.35); text-align: center; }
+.endcard { position: absolute; left: 70px; right: 70px; top: 470px; padding: 60px 40px 50px; border-radius: 40px; background: rgba(16,20,25,.94); box-shadow: 0 30px 90px rgba(0,0,0,.6), inset 0 0 0 2px rgba(232,184,154,.35); text-align: center; }
 .endcard .e1 { font-size: 92px; font-weight: 900; letter-spacing: -0.03em; } .endcard .e2 { font-size: 92px; font-weight: 900; letter-spacing: -0.03em; }
 .cta.small { position: relative; left: auto; right: auto; top: auto; margin: 44px auto 0; width: 740px; height: 150px; font-size: 64px; }
 .endcard .e3 { margin-top: 30px; font-size: 44px; font-weight: 800; color: #E8B89A; }
 .endcard .e4 { margin-top: 18px; font-size: 22px; color: #7C8591; }
+/* 실제로 눌러 가는 흐름 */
+.fimg { position: absolute; left: 0; top: 0; display: block; }
+.touch { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; background: rgba(255,255,255,.55); box-shadow: 0 0 0 4px rgba(212,122,74,.95); opacity: 0; z-index: 5; }
+.phone.big { left: 650px; top: 560px; width: 300px; height: 620px; }
+.phone.s1p1 { left: 18px; top: 50px; transform: scale(.6) rotate(-6deg); transform-origin: 0 0; }
+.phone.s1p2 { left: 150px; top: 38px; transform: scale(.6) rotate(6deg); transform-origin: 0 0; }
+.badge.left { left: 40px; top: 860px; width: 330px; height: 330px; box-shadow: 0 0 0 14px rgba(212,122,74,.22), 0 30px 70px rgba(0,0,0,.5); }
+.badge.left svg { width: 92px; height: 92px; } .badge.left b { font-size: 62px; }
+.endcard .e0 { font-size: 36px; font-weight: 800; color: #AEB6C0; margin-bottom: 14px; }
+.endcard .ebar { display: block; width: 120px; height: 6px; margin: 36px auto 30px; border-radius: 3px; background: #D47A4A; }
+.endcard .e5 { font-size: 48px; font-weight: 700; line-height: 1.35; color: #D5DAE0; } .endcard .e5 b { color: #E8B89A; font-weight: 900; }
 /* 자막 · 진행 막대 */
 .sub { display: flex; align-items: flex-end; justify-content: center; padding: 0 70px 420px; z-index: 40; }
 .sub span { max-width: 900px; padding: 18px 34px; border-radius: 22px; background: rgba(8,10,13,.88); font-size: 54px; font-weight: 800; line-height: 1.32; text-align: center; }

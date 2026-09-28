@@ -98,7 +98,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .stack.mini { left: 40px; right: auto; width: 520px; top: 640px; }
 .stack.mini .plan { left: 40px; transform-origin: 50% 90%; opacity: .55; filter: grayscale(1); }
 .chip { position: absolute; padding: 16px 30px; border-radius: 999px; font-size: 38px; font-weight: 900; box-shadow: 0 14px 34px rgba(0,0,0,.45); z-index: 8; }
-.chip.c1 { left: 480px; top: 580px; background: #E8B89A; color: #171B20; }
+.chip.c1 { left: 240px; top: 575px; background: #E8B89A; color: #171B20; }
 .chip.c2 { left: 430px; top: 1150px; background: #D47A4A; color: #171B20; }
 #s7-t2 { opacity: 0; }
 .aichip { position: absolute; right: 70px; top: 520px; padding: 16px 32px; border-radius: 999px; background: #2F6FED; color: #fff; font-size: 44px; font-weight: 900; box-shadow: 0 16px 36px rgba(0,0,0,.45); z-index: 7; }
@@ -155,11 +155,22 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 .bcell { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(0,0,0,.45); }
 .bcell img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 .bcell figcaption { position: absolute; left: 8px; bottom: 8px; padding: 3px 10px; border-radius: 999px; background: rgba(23,27,32,.85); font-size: 17px; font-weight: 800; }
-.endcard { position: absolute; left: 70px; right: 70px; top: 560px; padding: 60px 40px 50px; border-radius: 40px; background: rgba(16,20,25,.94); box-shadow: 0 30px 90px rgba(0,0,0,.6), inset 0 0 0 2px rgba(232,184,154,.35); text-align: center; }
+.endcard { position: absolute; left: 70px; right: 70px; top: 470px; padding: 60px 40px 50px; border-radius: 40px; background: rgba(16,20,25,.94); box-shadow: 0 30px 90px rgba(0,0,0,.6), inset 0 0 0 2px rgba(232,184,154,.35); text-align: center; }
 .endcard .e1 { font-size: 92px; font-weight: 900; letter-spacing: -0.03em; } .endcard .e2 { font-size: 92px; font-weight: 900; letter-spacing: -0.03em; }
 .cta.small { position: relative; left: auto; right: auto; top: auto; margin: 44px auto 0; width: 740px; height: 150px; font-size: 64px; }
 .endcard .e3 { margin-top: 30px; font-size: 44px; font-weight: 800; color: #E8B89A; }
 .endcard .e4 { margin-top: 18px; font-size: 22px; color: #7C8591; }
+/* 실제로 눌러 가는 흐름 */
+.fimg { position: absolute; left: 0; top: 0; display: block; }
+.touch { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; background: rgba(255,255,255,.55); box-shadow: 0 0 0 4px rgba(212,122,74,.95); opacity: 0; z-index: 5; }
+.phone.big { left: 650px; top: 560px; width: 300px; height: 620px; }
+.phone.s1p1 { left: 18px; top: 50px; transform: scale(.6) rotate(-6deg); transform-origin: 0 0; }
+.phone.s1p2 { left: 150px; top: 38px; transform: scale(.6) rotate(6deg); transform-origin: 0 0; }
+.badge.left { left: 40px; top: 860px; width: 330px; height: 330px; box-shadow: 0 0 0 14px rgba(212,122,74,.22), 0 30px 70px rgba(0,0,0,.5); }
+.badge.left svg { width: 92px; height: 92px; } .badge.left b { font-size: 62px; }
+.endcard .e0 { font-size: 36px; font-weight: 800; color: #AEB6C0; margin-bottom: 14px; }
+.endcard .ebar { display: block; width: 120px; height: 6px; margin: 36px auto 30px; border-radius: 3px; background: #D47A4A; }
+.endcard .e5 { font-size: 48px; font-weight: 700; line-height: 1.35; color: #D5DAE0; } .endcard .e5 b { color: #E8B89A; font-weight: 900; }
 /* 자막 · 진행 막대 */
 .sub { display: flex; align-items: flex-end; justify-content: center; padding: 0 70px 420px; z-index: 40; }
 .sub span { max-width: 900px; padding: 18px 34px; border-radius: 22px; background: rgba(8,10,13,.88); font-size: 54px; font-weight: 800; line-height: 1.32; text-align: center; }
@@ -169,22 +180,22 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-start="0" data-duration="99.81" data-width="1080" data-height="1920">
+<div id="root" data-composition-id="main" data-start="0" data-duration="102.25" data-width="1080" data-height="1920">
   <div class="glow1"></div><div class="glow2"></div>
   <div class="brand"><span class="logo"><img src="assets/logo.png" alt="미래에이아이랩"></span><span class="tag2">2주 기술사업 빌드</span></div>
   <p class="foot">miraeailab.com · 벤처인증 + 작동하는 MVP</p><div id="prog"><i></i></div>
   <section class="clip scene" id="s1" data-start="0" data-duration="8.76" data-track-index="1">
-    <div class="who" id="s1a" style="top:290px"><div class="certimg sm" id="s1-cert"><img src="assets/shots/cert-masked.jpg" alt=""><span class="mask">기업 정보 가림</span></div><span class="qm" id="s1-q1">?</span>
+    <div class="who" id="s1a" style="top:290px"><div class="certimg sm" id="s1-cert"><img src="assets/shots/cert-masked.jpg" alt=""></div><span class="qm" id="s1-q1">?</span>
       <div class="who-txt"><span class="tag">중소기업 대표님</span><p>벤처인증은 필요한데<br><b>내세울 기술</b>이 없다면?</p></div></div>
-    <div class="who" id="s1b" style="top:745px"><div class="phone sm" id="s1-ph"><div class="screen"><img class="mob" id="s1-ph-img" src="assets/shots/pawbeauty-mob.jpg" alt=""></div></div><span class="qm" id="s1-q2">?</span>
+    <div class="who" id="s1b" style="top:745px"><div class="phone s1p1" id="s1-ph"><div class="screen"><img class="fimg" src="assets/flows/paw-00.jpg" style="width:100%" alt=""></div></div><div class="phone s1p2" id="s1-ph2"><div class="screen"><img class="fimg" src="assets/flows/mom-00.jpg" style="width:100%" alt=""></div></div><span class="qm" id="s1-q2">?</span>
       <div class="who-txt"><span class="tag">예비창업자</span><p>창업 준비 중인데<br><b>MVP부터</b> 막막하다면?</p></div></div>
     <div class="stamp" id="s1s">둘 다, <em>한 번에</em> 해결</div></section>
 <section class="clip scene" id="s2" data-start="8.76" data-duration="6.57" data-track-index="1">
     <div class="big" id="s2-t"><div class="ln"><span><em class="peach">작동하는 서비스</em></span></div><div class="ln"><span>+ 벤처기업확인 신청</span></div></div>
-    <div class="certimg md" id="s2-cert"><img src="assets/shots/cert-masked.jpg" alt=""><span class="mask">기업 정보 가림</span></div>
+    <div class="certimg md" id="s2-cert"><img src="assets/shots/cert-masked.jpg" alt=""></div>
     <div class="plus" id="s2-plus">+</div>
-    <div class="phone md" id="s2-ph"><div class="screen"><img class="mob" id="s2-ph-img" src="assets/shots/pawbeauty-mob.jpg" alt=""></div></div>
-    <div class="badge" id="s2-badge"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#171B20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>기술기업</b></div>
+    <div class="phone big" id="s2-ph"><div class="screen"><img class="fimg" src="assets/flows/paw-00.jpg" style="width:282px" alt=""><img class="fimg" id="s2-ph-01a" src="assets/flows/paw-01a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-01" src="assets/flows/paw-01.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-02a" src="assets/flows/paw-02a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-02" src="assets/flows/paw-02.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-03a" src="assets/flows/paw-03a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-03" src="assets/flows/paw-03.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-04a" src="assets/flows/paw-04a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-04" src="assets/flows/paw-04.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-05a" src="assets/flows/paw-05a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-05" src="assets/flows/paw-05.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-06a" src="assets/flows/paw-06a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-06" src="assets/flows/paw-06.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-07a" src="assets/flows/paw-07a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-07" src="assets/flows/paw-07.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-08a" src="assets/flows/paw-08a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-08" src="assets/flows/paw-08.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-09a" src="assets/flows/paw-09a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-09" src="assets/flows/paw-09.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-10a" src="assets/flows/paw-10a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-10" src="assets/flows/paw-10.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-11a" src="assets/flows/paw-11a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-11" src="assets/flows/paw-11.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-12a" src="assets/flows/paw-12a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-12" src="assets/flows/paw-12.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-13a" src="assets/flows/paw-13a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s2-ph-13" src="assets/flows/paw-13.jpg" style="width:282px;opacity:0" alt=""><span class="touch" id="s2-ph-t1" style="left:141px;top:339.12px"></span><span class="touch" id="s2-ph-t2" style="left:151.12px;top:219.82px"></span><span class="touch" id="s2-ph-t3" style="left:232.11px;top:584.25px"></span><span class="touch" id="s2-ph-t4" style="left:141px;top:271.88px"></span><span class="touch" id="s2-ph-t5" style="left:232.11px;top:582.08px"></span><span class="touch" id="s2-ph-t6" style="left:60.74px;top:363.71px"></span><span class="touch" id="s2-ph-t7" style="left:232.11px;top:582.08px"></span><span class="touch" id="s2-ph-t8" style="left:154.02px;top:247.29px"></span><span class="touch" id="s2-ph-t9" style="left:232.11px;top:582.08px"></span><span class="touch" id="s2-ph-t10" style="left:141px;top:425.17px"></span><span class="touch" id="s2-ph-t11" style="left:111.35px;top:594.37px"></span><span class="touch" id="s2-ph-t12" style="left:232.11px;top:582.08px"></span><span class="touch" id="s2-ph-t13" style="left:212.58px;top:582.08px"></span></div></div>
+    <div class="badge left" id="s2-badge"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#171B20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>기술기업</b></div>
     <p class="fine" id="s2-f" style="top:1245px">*벤처인증의 정식 명칭은 벤처기업확인이에요. 확인 여부는 확인기관 심사로 정해집니다.</p></section>
 <section class="clip scene" id="s3" data-start="15.33" data-duration="12.47" data-track-index="1">
     <div class="big" id="s3-t"><div class="ln"><span>벤처인증,</span></div><div class="ln"><span><em class="peach">왜 받을까요?</em></span></div></div>
@@ -211,13 +222,13 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
     <div class="big" id="s7-t2"><div class="ln"><span>나중엔 AI를 붙여</span></div><div class="ln"><span><em class="orange">AX</em>로 키워요</span></div></div>
     <div id="s7-a">
       <div class="stack mini"><div class="plan" style="transform:rotate(-8deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div><div class="plan" style="transform:rotate(0deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div><div class="plan" style="transform:rotate(8deg)"><p>사업계획서</p><i></i><i></i><i style="width:70%"></i></div></div>
-      <div class="phone lg" id="s7-ph"><div class="screen"><img class="mob" id="s7-ph-img" src="assets/shots/eduplaza-mob.jpg" alt=""></div></div>
+      <div class="phone lg" id="s7-ph"><div class="screen"><img class="fimg" src="assets/flows/edu-00.jpg" style="width:282px" alt=""><img class="fimg" id="s7-ph-01a" src="assets/flows/edu-01a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-01" src="assets/flows/edu-01.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-02a" src="assets/flows/edu-02a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-02" src="assets/flows/edu-02.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-03a" src="assets/flows/edu-03a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-03" src="assets/flows/edu-03.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-04a" src="assets/flows/edu-04a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-04" src="assets/flows/edu-04.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-05a" src="assets/flows/edu-05a.jpg" style="width:282px;opacity:0" alt=""><img class="fimg" id="s7-ph-05" src="assets/flows/edu-05.jpg" style="width:282px;opacity:0" alt=""><span class="touch" id="s7-ph-t1" style="left:141px;top:461.32px"></span><span class="touch" id="s7-ph-t2" style="left:203.18px;top:533.63px"></span><span class="touch" id="s7-ph-t3" style="left:141px;top:190.17px"></span><span class="touch" id="s7-ph-t4" style="left:178.6px;top:265.37px"></span><span class="touch" id="s7-ph-t5" style="left:59.29px;top:304.42px"></span></div></div>
       <span class="chip c1" id="s7-ch1">심사위원 앞에서</span><span class="chip c2" id="s7-ch2">투자자 앞에서</span>
     </div>
     <div class="pair" id="s7-p0">
       <p class="pairlbl"><span>학습 플랫폼 MVP</span><em class="orange">→</em><b>학원 AX</b></p>
-      <div class="abs" style="left:60px;top:600px"><div class="browser" id="s7-br0" style="width:960px"><div class="bar"><i></i><i></i><i></i><span class="url">에듀마스터 · 미래AI랩 자체 AX 데모</span></div><div class="vp" style="height:440px"><img class="shot" id="s7-ax0" src="assets/shots/ax-edumaster-lg.jpg" style="width:960px" alt=""></div></div></div>
-      <div class="phone mini" id="s7-m0"><div class="screen"><img class="mob" id="s7-m0-img" src="assets/shots/eduplaza-mob.jpg" alt=""></div></div></div>
+      <div class="abs" style="left:60px;top:600px"><div class="browser" id="s7-br0" style="width:960px"><div class="bar"><i></i><i></i><i></i><span class="url">에듀마스터 · 미래AI랩 자체 AX 데모</span></div><div class="vp" style="height:440px"><img class="fimg" src="assets/flows/ax-00.jpg" style="width:960px" alt=""><img class="fimg" id="s7-ax-01a" src="assets/flows/ax-01a.jpg" style="width:960px;opacity:0" alt=""><img class="fimg" id="s7-ax-01" src="assets/flows/ax-01.jpg" style="width:960px;opacity:0" alt=""><img class="fimg" id="s7-ax-02a" src="assets/flows/ax-02a.jpg" style="width:960px;opacity:0" alt=""><img class="fimg" id="s7-ax-02" src="assets/flows/ax-02.jpg" style="width:960px;opacity:0" alt=""><span class="touch" id="s7-ax-t1" style="left:69.33px;top:300px"></span><span class="touch" id="s7-ax-t2" style="left:93.33px;top:126px"></span><svg class="cursor" id="s7-cur" viewBox="0 0 24 24" width="44" height="44"><path d="M4 2.5 L4 19 L8.6 14.8 L11.6 21.4 L14.4 20.2 L11.4 13.7 L17.6 13.4 Z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg></div></div></div>
+      <div class="phone mini" id="s7-m0"><div class="screen"><img class="fimg" src="assets/flows/edu-04.jpg" style="width:100%" alt=""></div></div></div>
     <span class="aichip" id="s7-ai">+ AI</span>
     <div class="official" id="s7-off"><span class="otag">공식 근거</span><p>중소벤처기업부 2026 정책자금<br><b>AX 스프린트 우대트랙</b></p><small>대상·심사기준을 충족한 기업에 적용돼요</small></div></section>
 <section class="clip scene" id="s8" data-start="65.1" data-duration="8.89" data-track-index="1">
@@ -229,14 +240,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
     <div class="stamp small" id="s8-once">한 번에</div></section>
 <section class="clip scene" id="s9" data-start="73.99" data-duration="6.66" data-track-index="1">
     <div class="big" id="s9-t"><div class="ln"><span>대충 만들지 않아요</span></div><div class="ln"><span><em class="peach">실제로 이렇게 작동해요</em></span></div></div>
-    <div id="s9-one">
-      <div class="dlabel" id="s9-l"><span class="lbl">지금 하는 사업</span>농산물 유통 회사<p><em class="orange">→</em> 산지직송 신선식품 커머스</p></div>
-      <div class="abs" style="left:60px;top:680px"><div class="browser" id="s9-b" style="width:960px"><div class="bar"><i></i><i></i><i></i><span class="url">로컬맘 · 미래AI랩 자체 데모</span></div><div class="vp" style="height:520px">
-        <img class="shot" id="s9-h" src="assets/shots/localmom-home.jpg" style="width:960px" alt="">
-        <img class="shot" id="s9-i" src="assets/shots/localmom-inner.jpg" style="width:960px" alt="">
-        <div class="ripple" id="s9-r" style="left:171px;top:220px"></div><svg class="cursor" id="s9-cur" viewBox="0 0 24 24" width="44" height="44"><path d="M4 2.5 L4 19 L8.6 14.8 L11.6 21.4 L14.4 20.2 L11.4 13.7 L17.6 13.4 Z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg></div></div></div>
-    </div>
-    <div class="trio" id="s9-tri"><div class="tcol" id="s9-c0"><p class="tl"><span>미용실</span><b><em class="orange">→</em> 예약 플랫폼</b></p><div class="phone tri" id="s9-p0"><div class="screen"><img class="mob" id="s9-p0-img" src="assets/shots/pawbeauty-mob.jpg" alt=""></div></div></div><div class="tcol" id="s9-c1"><p class="tl"><span>회계 사무소</span><b><em class="orange">→</em> AI 분석</b></p><div class="phone tri" id="s9-p1"><div class="screen"><img class="mob" id="s9-p1-img" src="assets/shots/insightai-mob.jpg" alt=""></div></div></div><div class="tcol" id="s9-c2"><p class="tl"><span>옷가게</span><b><em class="orange">→</em> AI 코디</b></p><div class="phone tri" id="s9-p2"><div class="screen"><img class="mob" id="s9-p2-img" src="assets/shots/stylecheck-mob.jpg" alt=""></div></div></div></div></section>
+    <div class="trio" id="s9-tri"><div class="tcol" id="s9-c0"><p class="tl"><span>애견샵</span><b><em class="orange">→</em> 예약 플랫폼</b></p><div class="phone tri" id="s9-p0"><div class="screen"><img class="fimg" src="assets/flows/paw-08.jpg" style="width:262px" alt=""><img class="fimg" id="s9-p0-09a" src="assets/flows/paw-09a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-09" src="assets/flows/paw-09.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-10a" src="assets/flows/paw-10a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-10" src="assets/flows/paw-10.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-11a" src="assets/flows/paw-11a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-11" src="assets/flows/paw-11.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-12a" src="assets/flows/paw-12a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-12" src="assets/flows/paw-12.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-13a" src="assets/flows/paw-13a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p0-13" src="assets/flows/paw-13.jpg" style="width:262px;opacity:0" alt=""><span class="touch" id="s9-p0-t9" style="left:215.65px;top:540.79px"></span><span class="touch" id="s9-p0-t10" style="left:131px;top:395.02px"></span><span class="touch" id="s9-p0-t11" style="left:103.46px;top:552.22px"></span><span class="touch" id="s9-p0-t12" style="left:215.65px;top:540.79px"></span><span class="touch" id="s9-p0-t13" style="left:197.51px;top:540.79px"></span></div></div></div><div class="tcol" id="s9-c1"><p class="tl"><span>농산물 유통</span><b><em class="orange">→</em> 산지직송 커머스</b></p><div class="phone tri" id="s9-p1"><div class="screen"><img class="fimg" src="assets/flows/mom-00.jpg" style="width:262px" alt=""><img class="fimg" id="s9-p1-01a" src="assets/flows/mom-01a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-01" src="assets/flows/mom-01.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-02a" src="assets/flows/mom-02a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-02" src="assets/flows/mom-02.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-03a" src="assets/flows/mom-03a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-03" src="assets/flows/mom-03.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-04a" src="assets/flows/mom-04a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-04" src="assets/flows/mom-04.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-05a" src="assets/flows/mom-05a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p1-05" src="assets/flows/mom-05.jpg" style="width:262px;opacity:0" alt=""><span class="touch" id="s9-p1-t1" style="left:69.19px;top:283.5px"></span><span class="touch" id="s9-p1-t2" style="left:151.83px;top:499.82px"></span><span class="touch" id="s9-p1-t3" style="left:150.48px;top:298.28px"></span><span class="touch" id="s9-p1-t4" style="left:131px;top:499.82px"></span><span class="touch" id="s9-p1-t5" style="left:131px;top:499.82px"></span></div></div></div><div class="tcol" id="s9-c2"><p class="tl"><span>학원</span><b><em class="orange">→</em> 교육 플랫폼</b></p><div class="phone tri" id="s9-p2"><div class="screen"><img class="fimg" src="assets/flows/edu-00.jpg" style="width:262px" alt=""><img class="fimg" id="s9-p2-01a" src="assets/flows/edu-01a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-01" src="assets/flows/edu-01.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-02a" src="assets/flows/edu-02a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-02" src="assets/flows/edu-02.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-03a" src="assets/flows/edu-03a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-03" src="assets/flows/edu-03.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-04a" src="assets/flows/edu-04a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-04" src="assets/flows/edu-04.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-05a" src="assets/flows/edu-05a.jpg" style="width:262px;opacity:0" alt=""><img class="fimg" id="s9-p2-05" src="assets/flows/edu-05.jpg" style="width:262px;opacity:0" alt=""><span class="touch" id="s9-p2-t1" style="left:131px;top:428.61px"></span><span class="touch" id="s9-p2-t2" style="left:188.77px;top:495.78px"></span><span class="touch" id="s9-p2-t3" style="left:131px;top:176.68px"></span><span class="touch" id="s9-p2-t4" style="left:165.93px;top:246.55px"></span><span class="touch" id="s9-p2-t5" style="left:55.09px;top:282.83px"></span></div></div></div></div></section>
 <section class="clip scene" id="s10" data-start="80.65" data-duration="4.66" data-track-index="1">
     <div class="big" id="s10-t"><div class="ln"><span>개발을 몰라도</span></div><div class="ln"><span><em class="peach">괜찮습니다</em></span></div></div>
     <span class="pro big2" id="s10-req">✓ 벤처 요건부터 먼저 확인</span>
@@ -254,10 +258,17 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
     <p class="url2" id="s12-url">miraeailab.com</p>
     <div class="clogo" id="s12-logo"><img src="assets/logo.png" alt="미래에이아이랩"></div>
     <p class="fine center" id="s12-f" style="top:1190px">2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요.<br>벤처기업확인 여부는 확인기관 심사로 정해집니다.<br>영상 속 화면은 미래AI랩 자체 데모이며 고객사 사례가 아니에요.</p></section>
-<section class="clip scene" id="s13" data-start="94.25" data-duration="5.56" data-track-index="1">
+<section class="clip scene" id="s13" data-start="94.25" data-duration="8" data-track-index="1">
     <p class="bhead" id="s13-h">미래AI랩이 직접 만든 <b>샘플 22개</b></p>
     <div class="bgrid" id="s13-g"><figure class="bcell" id="s13-0"><img src="assets/shots/pawbeauty-top.jpg" alt=""><figcaption>PawBeauty</figcaption></figure><figure class="bcell" id="s13-1"><img src="assets/shots/ax-materix.jpg" alt=""><figcaption>MATERIX</figcaption></figure><figure class="bcell" id="s13-2"><img src="assets/shots/expertmatch-top.jpg" alt=""><figcaption>ExpertMatch</figcaption></figure><figure class="bcell" id="s13-3"><img src="assets/shots/ax-lumiere.jpg" alt=""><figcaption>LUMIÈRE</figcaption></figure><figure class="bcell" id="s13-4"><img src="assets/shots/localmom-top.jpg" alt=""><figcaption>로컬맘</figcaption></figure><figure class="bcell" id="s13-5"><img src="assets/shots/ax-seum.jpg" alt=""><figcaption>세움정밀</figcaption></figure><figure class="bcell" id="s13-6"><img src="assets/shots/eduplaza-top.jpg" alt=""><figcaption>EduPlaza</figcaption></figure><figure class="bcell" id="s13-7"><img src="assets/shots/ax-veloa.jpg" alt=""><figcaption>VELOA</figcaption></figure><figure class="bcell" id="s13-8"><img src="assets/shots/insightai-top.jpg" alt=""><figcaption>InsightAI</figcaption></figure><figure class="bcell" id="s13-9"><img src="assets/shots/ax-edumaster.jpg" alt=""><figcaption>에듀마스터</figcaption></figure><figure class="bcell" id="s13-10"><img src="assets/shots/rescuewalk-top.jpg" alt=""><figcaption>RescueWalk</figcaption></figure><figure class="bcell" id="s13-11"><img src="assets/shots/ax-vitalon.jpg" alt=""><figcaption>VITALON</figcaption></figure><figure class="bcell" id="s13-12"><img src="assets/shots/cafefocus-top.jpg" alt=""><figcaption>CafeFocus</figcaption></figure><figure class="bcell" id="s13-13"><img src="assets/shots/ax-autobridge.jpg" alt=""><figcaption>오토브릿지</figcaption></figure><figure class="bcell" id="s13-14"><img src="assets/shots/scamshield-top.jpg" alt=""><figcaption>ScamShield</figcaption></figure><figure class="bcell" id="s13-15"><img src="assets/shots/ax-livarte.jpg" alt=""><figcaption>LIVARTÉ</figcaption></figure><figure class="bcell" id="s13-16"><img src="assets/shots/freshfridge-top.jpg" alt=""><figcaption>FreshFridge</figcaption></figure><figure class="bcell" id="s13-17"><img src="assets/shots/ax-cleanway.jpg" alt=""><figcaption>CLEANWAY</figcaption></figure><figure class="bcell" id="s13-18"><img src="assets/shots/stylecheck-top.jpg" alt=""><figcaption>StyleCheck AI</figcaption></figure><figure class="bcell" id="s13-19"><img src="assets/shots/ax-gounsot.jpg" alt=""><figcaption>고운솥</figcaption></figure><figure class="bcell" id="s13-20"><img src="assets/shots/ax-nexmart.jpg" alt=""><figcaption>NEXMART</figcaption></figure><figure class="bcell" id="s13-21"><img src="assets/shots/ax-morfit.jpg" alt=""><figcaption>MORFIT</figcaption></figure></div>
-    <div class="endcard" id="s13-end"><p class="e1">22개 샘플,</p><p class="e2"><em class="peach">직접 눌러 보세요</em></p><div class="cta small" id="s13-btn">무료 상담 받기 <span>→</span></div><p class="e3">miraeailab.com</p><p class="e4">자체 데모 · 고객사 사례가 아니에요 · 벤처기업확인 여부는 확인기관 심사로 정해집니다</p></div>
+    <div class="endcard" id="s13-end">
+      <p class="e0">미래AI랩이 직접 만든 샘플 22개,</p>
+      <p class="e1">직접 눌러서</p><p class="e1"><em class="peach">확인해 보세요</em></p>
+      <i class="ebar"></i>
+      <p class="e5">어떤 업종이든,<br><b>우리 회사에 맞춰</b> 만들어 드립니다</p>
+      <p class="e3">miraeailab.com</p>
+      <p class="e4">자체 데모 · 고객사 사례가 아니에요</p>
+    </div>
   </section>
 
   <div class="clip sub" id="sub0" data-start="0" data-duration="3.05" data-track-index="9"><span>벤처인증, 받아야 하는데<br>내세울 기술이 없으신가요?</span></div><div class="clip sub" id="sub1" data-start="3.07" data-duration="3.39" data-track-index="9"><span>혹은 창업 준비 중인데,<br>MVP부터 막막하신가요?</span></div><div class="clip sub" id="sub2" data-start="6.48" data-duration="2.51" data-track-index="9"><span>저희가 둘 다, 한 번에<br>해결해 드릴게요.</span></div><div class="clip sub" id="sub3" data-start="9.01" data-duration="2.13" data-track-index="9"><span>작동하는 서비스를<br>직접 만들고,</span></div><div class="clip sub" id="sub4" data-start="11.16" data-duration="1.53" data-track-index="9"><span>벤처기업확인 신청까지.</span></div><div class="clip sub" id="sub5" data-start="12.71" data-duration="2.85" data-track-index="9"><span>회사를 진짜 기술기업으로<br>만들어 드립니다.</span></div><div class="clip sub" id="sub6" data-start="15.58" data-duration="1.87" data-track-index="9"><span>벤처인증, 왜 받을까요?</span></div><div class="clip sub" id="sub7" data-start="17.47" data-duration="3.01" data-track-index="9"><span>요건을 갖춘 창업 기업은<br>법인세·소득세를</span></div><div class="clip sub" id="sub8" data-start="20.5" data-duration="2.63" data-track-index="9"><span>최대 5년간 절반까지<br>줄일 수 있고,</span></div><div class="clip sub" id="sub9" data-start="23.15" data-duration="2.27" data-track-index="9"><span>정책자금·보증<br>심사에선 우대,</span></div><div class="clip sub" id="sub10" data-start="25.44" data-duration="2.59" data-track-index="9"><span>정부지원사업에선 가점을<br>받을 수 있어요.</span></div><div class="clip sub" id="sub11" data-start="28.05" data-duration="3.34" data-track-index="9"><span>그런데 벤처기업확인은<br>기술성과 성장성을 봅니다.</span></div><div class="clip sub" id="sub12" data-start="31.41" data-duration="1.4" data-track-index="9"><span>그래서 말로 하는<br>기술보다는,</span></div><div class="clip sub" id="sub13" data-start="32.83" data-duration="2.23" data-track-index="9"><span>기능을 하나하나<br>눌러 볼 수 있는 웹앱이</span></div><div class="clip sub" id="sub14" data-start="35.08" data-duration="1.61" data-track-index="9"><span>훨씬 설득력 있죠.</span></div><div class="clip sub" id="sub15" data-start="36.71" data-duration="1.84" data-track-index="9"><span>아이디어가 있으면<br>그 아이디어로,</span></div><div class="clip sub" id="sub16" data-start="38.57" data-duration="2.26" data-track-index="9"><span>없으면 9년 차<br>경영컨설턴트가</span></div><div class="clip sub" id="sub17" data-start="40.85" data-duration="2.23" data-track-index="9"><span>지금 하는 사업에서<br>직접 찾아 드립니다.</span></div><div class="clip sub" id="sub18" data-start="43.1" data-duration="2.58" data-track-index="9"><span>매출로 이어지는<br>성장 방안까지 짜서,</span></div><div class="clip sub" id="sub19" data-start="45.7" data-duration="3.83" data-track-index="9"><span>융자·투자·지원사업에서<br>내세울 수 있게 준비해 드려요.</span></div><div class="clip sub" id="sub20" data-start="49.55" data-duration="2.43" data-track-index="9"><span>정책자금, 정부지원사업<br>준비 중이신가요?</span></div><div class="clip sub" id="sub21" data-start="52.04" data-duration="2.81" data-track-index="9"><span>요즘은 누구나 AI로<br>쓰는 사업계획서만으론</span></div><div class="clip sub" id="sub22" data-start="54.87" data-duration="1.99" data-track-index="9"><span>눈에 띄기 정말 어려워졌죠.</span></div><div class="clip sub" id="sub23" data-start="56.88" data-duration="3.16" data-track-index="9"><span>직접 눌러 보여 주는<br>MVP가 그 차이를 만들어요.</span></div><div class="clip sub" id="sub24" data-start="60.06" data-duration="1.81" data-track-index="9"><span>나중엔 여기에 AI를 붙여,</span></div><div class="clip sub" id="sub25" data-start="61.89" data-duration="3.44" data-track-index="9"><span>정부가 적극 지원하기 시작한<br>AX로도 키울 수 있고요.</span></div><div class="clip sub" id="sub26" data-start="65.35" data-duration="2.44" data-track-index="9"><span>보통은 벤처인증은<br>컨설팅 회사에,</span></div><div class="clip sub" id="sub27" data-start="67.81" data-duration="2.27" data-track-index="9"><span>MVP는 개발사에<br>따로 맡기죠.</span></div><div class="clip sub" id="sub28" data-start="70.1" data-duration="1.89" data-track-index="9"><span>저희는 설계부터 제작,<br>신청,</span></div><div class="clip sub" id="sub29" data-start="72.01" data-duration="2.2" data-track-index="9"><span>컨설팅까지 한 번에<br>해 드립니다.</span></div><div class="clip sub" id="sub30" data-start="74.24" data-duration="2.35" data-track-index="9"><span>MVP도 절대 대충<br>만들지 않아요.</span></div><div class="clip sub" id="sub31" data-start="76.61" data-duration="1.67" data-track-index="9"><span>실제로 이렇게 작동합니다.</span></div><div class="clip sub" id="sub32" data-start="78.3" data-duration="2.58" data-track-index="9"><span>미용실도, 회계 사무소도,<br>옷가게도요.</span></div><div class="clip sub" id="sub33" data-start="80.9" data-duration="1.73" data-track-index="9"><span>개발을 몰라도 괜찮습니다.</span></div><div class="clip sub" id="sub34" data-start="82.65" data-duration="2.89" data-track-index="9"><span>요건부터 먼저 짚고,<br>2주 안에 끝내 드립니다.</span></div><div class="clip sub" id="sub35" data-start="85.56" data-duration="2.74" data-track-index="9"><span>런칭 기념으로<br>선착순 5개사만,</span></div><div class="clip sub" id="sub36" data-start="88.32" data-duration="2.94" data-track-index="9"><span>500만원이 아닌 300만원에<br>진행해 드리고 있어요.</span></div><div class="clip sub" id="sub37" data-start="91.28" data-duration="1.15" data-track-index="9"><span>우리 회사도 될지,</span></div><div class="clip sub" id="sub38" data-start="92.45" data-duration="1.89" data-track-index="9"><span>지금 바로 상담부터<br>받아 보세요.</span></div>
@@ -281,8 +292,46 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.from('#s2-ph', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 9.06);
   tl.from('#s2-plus', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 11.01);
   tl.from('#s2-cert', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 11.16);
-  tl.to('#s2-ph-img', { y: -520, duration: 5.97, ease: 'power1.inOut' }, 9.26);
-  tl.to(['#s2-cert', '#s2-ph', '#s2-plus'], { opacity: 0.35, duration: 0.4 }, 13.74);
+  tl.set('#s2-ph-01a', { opacity: 1 }, 9.31);
+  tl.fromTo('#s2-ph-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 9.35);
+  tl.to('#s2-ph-01', { opacity: 1, duration: 0.12 }, 9.51);
+  tl.set('#s2-ph-02a', { opacity: 1 }, 9.74);
+  tl.fromTo('#s2-ph-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 9.78);
+  tl.to('#s2-ph-02', { opacity: 1, duration: 0.12 }, 9.94);
+  tl.set('#s2-ph-03a', { opacity: 1 }, 10.17);
+  tl.fromTo('#s2-ph-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 10.21);
+  tl.to('#s2-ph-03', { opacity: 1, duration: 0.12 }, 10.37);
+  tl.set('#s2-ph-04a', { opacity: 1 }, 10.6);
+  tl.fromTo('#s2-ph-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 10.64);
+  tl.to('#s2-ph-04', { opacity: 1, duration: 0.12 }, 10.8);
+  tl.set('#s2-ph-05a', { opacity: 1 }, 11.03);
+  tl.fromTo('#s2-ph-t5', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 11.07);
+  tl.to('#s2-ph-05', { opacity: 1, duration: 0.12 }, 11.23);
+  tl.set('#s2-ph-06a', { opacity: 1 }, 11.46);
+  tl.fromTo('#s2-ph-t6', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 11.5);
+  tl.to('#s2-ph-06', { opacity: 1, duration: 0.12 }, 11.66);
+  tl.set('#s2-ph-07a', { opacity: 1 }, 11.89);
+  tl.fromTo('#s2-ph-t7', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 11.93);
+  tl.to('#s2-ph-07', { opacity: 1, duration: 0.12 }, 12.09);
+  tl.set('#s2-ph-08a', { opacity: 1 }, 12.32);
+  tl.fromTo('#s2-ph-t8', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 12.36);
+  tl.to('#s2-ph-08', { opacity: 1, duration: 0.12 }, 12.52);
+  tl.set('#s2-ph-09a', { opacity: 1 }, 12.75);
+  tl.fromTo('#s2-ph-t9', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 12.79);
+  tl.to('#s2-ph-09', { opacity: 1, duration: 0.12 }, 12.95);
+  tl.set('#s2-ph-10a', { opacity: 1 }, 13.18);
+  tl.fromTo('#s2-ph-t10', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 13.22);
+  tl.to('#s2-ph-10', { opacity: 1, duration: 0.12 }, 13.38);
+  tl.set('#s2-ph-11a', { opacity: 1 }, 13.61);
+  tl.fromTo('#s2-ph-t11', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 13.65);
+  tl.to('#s2-ph-11', { opacity: 1, duration: 0.12 }, 13.81);
+  tl.set('#s2-ph-12a', { opacity: 1 }, 14.04);
+  tl.fromTo('#s2-ph-t12', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 14.08);
+  tl.to('#s2-ph-12', { opacity: 1, duration: 0.12 }, 14.24);
+  tl.set('#s2-ph-13a', { opacity: 1 }, 14.47);
+  tl.fromTo('#s2-ph-t13', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 14.51);
+  tl.to('#s2-ph-13', { opacity: 1, duration: 0.12 }, 14.67);
+  tl.to(['#s2-cert', '#s2-plus'], { opacity: 0.4, duration: 0.4 }, 13.74);
   tl.from('#s2-badge', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 13.79);
   tl.from('#s2-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 14.24);
   tl.fromTo('#s3', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 15.33);
@@ -302,10 +351,10 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.set('#s4-inner', { opacity: 0 }, 27.8);
   tl.fromTo('#s4-cur', { x: 700, y: 360, opacity: 0 }, { opacity: 1, duration: 0.12 }, 33.08);
   tl.to('#s4-cur', { x: 280.09, y: 53.59, duration: 0.6, ease: 'power2.inOut' }, 33.16);
-  tl.fromTo('#s4-r1', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, 33.78);
+  tl.fromTo('#s4-r1', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4, immediateRender: false }, 33.78);
   tl.to('#s4-inner', { opacity: 1, duration: 0.22 }, 33.93);
   tl.to('#s4-cur', { x: 340.67, y: 369.33, duration: 0.5, ease: 'power2.inOut' }, 34.08);
-  tl.fromTo('#s4-r2', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, 34.63);
+  tl.fromTo('#s4-r2', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4, immediateRender: false }, 34.63);
   tl.to('#s4-inner', { y: -140, duration: 1.2, ease: 'power1.inOut' }, 34.78);
   tl.from('#s4-ok', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 35.49);
   tl.fromTo('#s5', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 36.46);
@@ -327,15 +376,36 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.from('#s7-t1 .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 56.78);
   tl.from('#s7-a .plan', { opacity: 0, y: 40, duration: 0.35, stagger: 0.08 }, 56.78);
   tl.from('#s7-ph', { scale: 0.7, opacity: 0, duration: 0.5, ease: 'back.out(1.7)' }, 57.8);
-  tl.to('#s7-ph-img', { y: -560, duration: 3.0, ease: 'power1.inOut' }, 58);
   tl.from(['#s7-ch1', '#s7-ch2'], { scale: 0.5, opacity: 0, duration: 0.35, ease: 'back.out(2)', stagger: 0.25 }, 58.45);
+  tl.set('#s7-ph-01a', { opacity: 1 }, 56.98);
+  tl.fromTo('#s7-ph-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 57.02);
+  tl.to('#s7-ph-01', { opacity: 1, duration: 0.12 }, 57.18);
+  tl.set('#s7-ph-02a', { opacity: 1 }, 57.68);
+  tl.fromTo('#s7-ph-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 57.72);
+  tl.to('#s7-ph-02', { opacity: 1, duration: 0.12 }, 57.88);
+  tl.set('#s7-ph-03a', { opacity: 1 }, 58.38);
+  tl.fromTo('#s7-ph-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 58.42);
+  tl.to('#s7-ph-03', { opacity: 1, duration: 0.12 }, 58.58);
+  tl.set('#s7-ph-04a', { opacity: 1 }, 59.08);
+  tl.fromTo('#s7-ph-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 59.12);
+  tl.to('#s7-ph-04', { opacity: 1, duration: 0.12 }, 59.28);
+  tl.set('#s7-ph-05a', { opacity: 1 }, 59.78);
+  tl.fromTo('#s7-ph-t5', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 59.82);
+  tl.to('#s7-ph-05', { opacity: 1, duration: 0.12 }, 59.98);
   tl.to(['#s7-a', '#s7-t1'], { opacity: 0, duration: 0.25 }, 60.72);
   tl.set('#s7-t2', { opacity: 0 }, 56.63);
   tl.set('#s7-t2', { opacity: 1 }, 60.72);
   tl.from('#s7-t2 .ln > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 60.77);
   tl.from('#s7-p0', { y: 50, opacity: 0, duration: 0.4, ease: 'power2.out' }, 60.87);
-  tl.to('#s7-ax0', { y: -220, duration: 3.88, ease: 'power1.inOut' }, 61.12);
-  tl.to('#s7-m0-img', { y: -420, duration: 3.88, ease: 'power1.inOut' }, 61.12);
+  tl.fromTo('#s7-cur', { x: 660, y: 300, opacity: 0 }, { opacity: 1, duration: 0.15 }, 61.02);
+  tl.to('#s7-cur', { x: 63.33, y: 296, duration: 0.5, ease: 'power2.inOut' }, 61.07);
+  tl.to('#s7-cur', { x: 87.33, y: 122, duration: 0.5, ease: 'power2.inOut' }, 62.76);
+  tl.set('#s7-ax-01a', { opacity: 1 }, 61.62);
+  tl.fromTo('#s7-ax-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 61.66);
+  tl.to('#s7-ax-01', { opacity: 1, duration: 0.12 }, 61.82);
+  tl.set('#s7-ax-02a', { opacity: 1 }, 63.31);
+  tl.fromTo('#s7-ax-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 63.35);
+  tl.to('#s7-ax-02', { opacity: 1, duration: 0.12 }, 63.51);
   tl.from('#s7-ai', { scale: 0.6, opacity: 0, duration: 0.5, ease: 'back.out(1.8)' }, 61.17);
   tl.from('#s7-off', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 61.99);
   tl.fromTo('#s8', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 65.1);
@@ -356,26 +426,57 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.to('#s9', { opacity: 0, duration: 0.18 }, 80.47);
   tl.from('#s9-t .ln:nth-child(1) > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 74.11);
   tl.from('#s9-t .ln:nth-child(2) > span', { yPercent: 110, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 76.59);
-  tl.set('#s9-i', { opacity: 0 }, 73.99);
-  tl.from('#s9-l', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 74.19);
-  tl.from('#s9-b', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 74.24);
-  tl.to('#s9-h', { y: -515.44, duration: 0.6, ease: 'power2.inOut' }, 74.39);
-  tl.fromTo('#s9-cur', { x: 700, y: 460, opacity: 0 }, { opacity: 1, duration: 0.12 }, 74.79);
-  tl.to('#s9-cur', { x: 165, y: 216, duration: 0.6, ease: 'power2.inOut' }, 74.86);
-  tl.fromTo('#s9-r', { scale: 0.3, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.4 }, 75.54);
-  tl.to('#s9-i', { opacity: 1, duration: 0.22 }, 75.69);
-  tl.to('#s9-cur', { opacity: 0, duration: 0.15 }, 75.79);
-  tl.to('#s9-i', { y: -120, duration: 1.0, ease: 'power1.out' }, 75.89);
-  tl.to('#s9-one', { opacity: 0, duration: 0.18 }, 76.64);
-  tl.from('#s9-tri .tcol', { y: 70, opacity: 0, duration: 0.35, ease: 'back.out(1.6)', stagger: 0.1 }, 76.74);
-  tl.to('#s9-p0-img', { y: -420, duration: 4.01, ease: 'power1.inOut' }, 76.84);
-  tl.to('#s9-c0', { scale: 1.07, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 78.4);
+  tl.from('#s9-tri .tcol', { y: 70, opacity: 0, duration: 0.35, ease: 'back.out(1.6)', stagger: 0.1 }, 74.19);
+  tl.set('#s9-p0-09a', { opacity: 1 }, 74.74);
+  tl.fromTo('#s9-p0-t9', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 74.78);
+  tl.to('#s9-p0-09', { opacity: 1, duration: 0.12 }, 74.94);
+  tl.set('#s9-p0-10a', { opacity: 1 }, 75.73);
+  tl.fromTo('#s9-p0-t10', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75.77);
+  tl.to('#s9-p0-10', { opacity: 1, duration: 0.12 }, 75.93);
+  tl.set('#s9-p0-11a', { opacity: 1 }, 76.72);
+  tl.fromTo('#s9-p0-t11', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.76);
+  tl.to('#s9-p0-11', { opacity: 1, duration: 0.12 }, 76.92);
+  tl.set('#s9-p0-12a', { opacity: 1 }, 77.71);
+  tl.fromTo('#s9-p0-t12', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.75);
+  tl.to('#s9-p0-12', { opacity: 1, duration: 0.12 }, 77.91);
+  tl.set('#s9-p0-13a', { opacity: 1 }, 78.7);
+  tl.fromTo('#s9-p0-t13', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 78.74);
+  tl.to('#s9-p0-13', { opacity: 1, duration: 0.12 }, 78.9);
+  tl.to('#s9-c0', { scale: 1.06, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 78.4);
   tl.to('#s9-c0 .tl b', { color: '#E8894F', duration: 0.15 }, 78.4);
-  tl.to('#s9-p1-img', { y: -420, duration: 4.01, ease: 'power1.inOut' }, 76.84);
-  tl.to('#s9-c1', { scale: 1.07, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 79.08);
+  tl.set('#s9-p1-01a', { opacity: 1 }, 74.96);
+  tl.fromTo('#s9-p1-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75);
+  tl.to('#s9-p1-01', { opacity: 1, duration: 0.12 }, 75.16);
+  tl.set('#s9-p1-02a', { opacity: 1 }, 75.95);
+  tl.fromTo('#s9-p1-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75.99);
+  tl.to('#s9-p1-02', { opacity: 1, duration: 0.12 }, 76.15);
+  tl.set('#s9-p1-03a', { opacity: 1 }, 76.94);
+  tl.fromTo('#s9-p1-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.98);
+  tl.to('#s9-p1-03', { opacity: 1, duration: 0.12 }, 77.14);
+  tl.set('#s9-p1-04a', { opacity: 1 }, 77.93);
+  tl.fromTo('#s9-p1-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.97);
+  tl.to('#s9-p1-04', { opacity: 1, duration: 0.12 }, 78.13);
+  tl.set('#s9-p1-05a', { opacity: 1 }, 78.92);
+  tl.fromTo('#s9-p1-t5', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 78.96);
+  tl.to('#s9-p1-05', { opacity: 1, duration: 0.12 }, 79.12);
+  tl.to('#s9-c1', { scale: 1.06, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 79.08);
   tl.to('#s9-c1 .tl b', { color: '#E8894F', duration: 0.15 }, 79.08);
-  tl.to('#s9-p2-img', { y: -420, duration: 4.01, ease: 'power1.inOut' }, 76.84);
-  tl.to('#s9-c2', { scale: 1.07, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 80.08);
+  tl.set('#s9-p2-01a', { opacity: 1 }, 75.18);
+  tl.fromTo('#s9-p2-t1', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 75.22);
+  tl.to('#s9-p2-01', { opacity: 1, duration: 0.12 }, 75.38);
+  tl.set('#s9-p2-02a', { opacity: 1 }, 76.17);
+  tl.fromTo('#s9-p2-t2', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 76.21);
+  tl.to('#s9-p2-02', { opacity: 1, duration: 0.12 }, 76.37);
+  tl.set('#s9-p2-03a', { opacity: 1 }, 77.16);
+  tl.fromTo('#s9-p2-t3', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 77.2);
+  tl.to('#s9-p2-03', { opacity: 1, duration: 0.12 }, 77.36);
+  tl.set('#s9-p2-04a', { opacity: 1 }, 78.15);
+  tl.fromTo('#s9-p2-t4', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 78.19);
+  tl.to('#s9-p2-04', { opacity: 1, duration: 0.12 }, 78.35);
+  tl.set('#s9-p2-05a', { opacity: 1 }, 79.14);
+  tl.fromTo('#s9-p2-t5', { scale: 0.4, opacity: 0.95 }, { scale: 1.5, opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, 79.18);
+  tl.to('#s9-p2-05', { opacity: 1, duration: 0.12 }, 79.34);
+  tl.to('#s9-c2', { scale: 1.06, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 }, 80.08);
   tl.to('#s9-c2 .tl b', { color: '#E8894F', duration: 0.15 }, 80.08);
   tl.fromTo('#s10', { opacity: 0 }, { opacity: 1, duration: 0.22 }, 80.65);
   tl.to('#s10', { opacity: 0, duration: 0.18 }, 85.13);
@@ -402,31 +503,31 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.from('#s12-f', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 92.33);
   tl.fromTo('#s13', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 94.25);
   tl.from('#s13-h', { y: 36, opacity: 0, duration: 0.42, ease: 'power2.out' }, 94.3);
-  tl.from('#s13-0', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 94.4);
-  tl.from('#s13-1', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 94.53);
-  tl.from('#s13-2', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 94.66);
-  tl.from('#s13-3', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 94.79);
-  tl.from('#s13-4', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 94.92);
-  tl.from('#s13-5', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 95.05);
-  tl.from('#s13-6', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 95.18);
-  tl.from('#s13-7', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 95.31);
-  tl.from('#s13-8', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 95.44);
-  tl.from('#s13-9', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 95.57);
-  tl.from('#s13-10', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 95.7);
-  tl.from('#s13-11', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 95.83);
-  tl.from('#s13-12', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 95.96);
-  tl.from('#s13-13', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 96.09);
-  tl.from('#s13-14', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 96.22);
-  tl.from('#s13-15', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 96.35);
-  tl.from('#s13-16', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 96.48);
-  tl.from('#s13-17', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 96.61);
-  tl.from('#s13-18', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 96.74);
-  tl.from('#s13-19', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 96.87);
-  tl.from('#s13-20', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 97);
-  tl.from('#s13-21', { scale: 0.3, opacity: 0, duration: 0.22, ease: 'back.out(2.2)' }, 97.13);
-  tl.to('#s13-g', { opacity: 0.22, duration: 0.3 }, 97.61);
-  tl.from('#s13-end', { scale: 0.85, opacity: 0, duration: 0.4, ease: 'back.out(1.6)' }, 97.61);
-  tl.to('#s13-btn', { scale: 1.05, duration: 0.35, ease: 'sine.inOut', yoyo: true, repeat: 3 }, 98.11);
+  tl.from('#s13-0', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.45);
+  tl.from('#s13-1', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.65);
+  tl.from('#s13-2', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 94.85);
+  tl.from('#s13-3', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.05);
+  tl.from('#s13-4', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.25);
+  tl.from('#s13-5', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.45);
+  tl.from('#s13-6', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.65);
+  tl.from('#s13-7', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 95.85);
+  tl.from('#s13-8', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.05);
+  tl.from('#s13-9', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.25);
+  tl.from('#s13-10', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.45);
+  tl.from('#s13-11', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.65);
+  tl.from('#s13-12', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 96.85);
+  tl.from('#s13-13', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.05);
+  tl.from('#s13-14', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.25);
+  tl.from('#s13-15', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.45);
+  tl.from('#s13-16', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.65);
+  tl.from('#s13-17', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 97.85);
+  tl.from('#s13-18', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 98.05);
+  tl.from('#s13-19', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 98.25);
+  tl.from('#s13-20', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 98.45);
+  tl.from('#s13-21', { scale: 0.3, opacity: 0, duration: 0.26, ease: 'back.out(2)' }, 98.65);
+  tl.to(['#s13-g', '#s13-h'], { opacity: 0.2, duration: 0.35 }, 99.15);
+  tl.from('#s13-end', { scale: 0.88, opacity: 0, duration: 0.45, ease: 'back.out(1.6)' }, 99.15);
+  tl.from('#s13-end .e5', { y: 24, opacity: 0, duration: 0.4, ease: 'power2.out' }, 99.85);
   tl.from('#sub0 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 0);
   tl.from('#sub1 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 3.07);
   tl.from('#sub2 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 6.48);
@@ -466,7 +567,7 @@ em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #E8894F; 
   tl.from('#sub36 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 88.32);
   tl.from('#sub37 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 91.28);
   tl.from('#sub38 span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, 92.45);
-  tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: 99.81, ease: 'none' }, 0);
+  tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: 102.25, ease: 'none' }, 0);
 
   window.__timelines["main"] = tl;
   tl.seek(0);
