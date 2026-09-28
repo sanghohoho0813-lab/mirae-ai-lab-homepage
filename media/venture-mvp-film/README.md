@@ -1,9 +1,12 @@
 # 2주 기술사업 빌드 — 1분 소개 영상 원본
 
+> **지금 페이지에는 쓰지 않아요.** 목소리를 넣은 릴스(9:16) 판 `media/venture-mvp-reel/`로 바뀌었어요.
+> 이 폴더는 첫 판(4:5, 76초, 자막만)의 원본과 v2 대본(`script-v2.md`)을 보관해요.
+
 기술사업·MVP 페이지(`/business-services/venture-mvp`) 세 번째 구간에 들어가는 영상의 원본입니다.
 [HyperFrames](https://github.com/heygen-com/hyperframes)(HTML → 영상)로 만들었습니다.
 
-- 결과물: `public/business/venture-mvp/mvp-film.mp4`(H.264) · `mvp-film.webm`(VP9, H.264 를 못 트는 브라우저용)
+- 결과물(당시): `mvp-film.mp4`(H.264) · `mvp-film.webm`(VP9) — 지금은 public 에서 뺐어요
   — 1080×1350(4:5), 76초, 소리 없음·자막 포함
 - 포스터: `public/business/venture-mvp/mvp-film-poster.webp` — 자막 없이 뽑은 52초 장면(영상 컨트롤과 자막이 겹치지 않게)
 
