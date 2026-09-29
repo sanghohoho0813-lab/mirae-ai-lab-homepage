@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AX_PREVIEW_NOTE } from './axFinalHome'
-import { AX_GUIDE_PATH } from '../../lib/businessRoutes'
+import { AX_GUIDE_PATH, AX_START_PATH, SHOW_AX_GUIDE } from '../../lib/businessRoutes'
 
 const HEADER_OFFSET = 68
 
@@ -111,10 +111,12 @@ export default function SampleQuickNav({
     window.history.back()
   }
 
-  const scrollToGroup = (id: string) => {
-    // AX 시작 페이지(스토리 01~03)에는 샘플 구간이 없다 — 샘플이 있는 AX 상세 안내의 그 구간으로 보낸다
+  const scrollToGroup = (target: string) => {
+    // AX 상세 안내를 숨긴 동안에는 두 묶음 모두 AX 페이지의 '직접 만든 화면 22개'(#samples)에 모여 있다
+    const id = !SHOW_AX_GUIDE && !document.getElementById(target) ? 'samples' : target
+    // 이 화면에 그 구간이 없으면 샘플이 있는 페이지의 그 구간으로 보낸다
     if (!document.getElementById(id)) {
-      navigate(`${AX_GUIDE_PATH}#${id}`)
+      navigate(SHOW_AX_GUIDE ? `${AX_GUIDE_PATH}#${id}` : `${AX_START_PATH}#${id}`)
       return
     }
     const targetY = () => {

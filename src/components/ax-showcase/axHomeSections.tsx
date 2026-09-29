@@ -8,7 +8,7 @@ const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
 
 /** SECTION 1 — Hero. "경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX"가 5초 안에 읽히게 한다.
- *  배지 · 한 문장 · 두 문단, 그리고 바로 아래 직접 만든 화면 22개까지가 첫인상이다.
+ *  배지 · 한 문장 · 두 문단. 직접 만든 화면 22개(AxSamplesBand)는 소개 영상 2편 다음으로 옮겼다.
  *  키워드 칩과 버튼은 두지 않는다.
  *  정책자금·정부지원사업·투자는 AX 의 목적이 아니라 "그 변화를 더 강하게 설명할 수 있는 자리"로만 말한다.
  *  승인·선정을 약속하는 표현은 절대 쓰지 않는다. */
@@ -19,9 +19,9 @@ export function AxHeroV2() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#050B11]" />
 
-      {/* 문장 묶음이 첫 화면을 가득 채운다 — 샘플은 화면 경계 아래에서 시작해,
-          스크롤을 조금만 내리면 "업종별 AX…" 줄부터 눈에 들어온다.
-          폰에서는 첫 화면에 그 줄이 보이지 않게 한 화면을 통째로 쓰고,
+      {/* 문장 묶음이 첫 화면을 가득 채운다 — 소개 영상 구간은 화면 경계 아래에서 시작해,
+          스크롤을 조금만 내리면 밝은 영상 구간이 눈에 들어온다.
+          폰에서는 첫 화면에 그 구간이 보이지 않게 한 화면을 통째로 쓰고,
           PC 는 3.5rem 만 덜어 제목이 경계에 살짝 걸치게 둔다.
           320px 같은 작은 화면에서는 문단이 두 개라 여백부터 줄여 한 화면에 담는다. */}
       {/* 폰에서는 하단 고정 바(약 64px)가 처음부터 떠 있으므로 아래 여백을 그만큼 더 둔다 (pb-24 / 작은 화면 pb-20) */}
@@ -50,11 +50,22 @@ export function AxHeroV2() {
           ‘이 회사, 진짜 이렇게 일하네’ 하고 <b className="font-bold text-[#FAFAF8]">화면으로 확인</b>할 수 있어요.
         </p>
       </div>
+    </section>
+  )
+}
 
-      {/* 첫 화면 경계 바로 아래 — 설명 대신 실제로 만든 화면 22개.
-          히어로 안이라 배경 경계가 보이지 않지만, 자리로는 "다음 장"처럼 읽힌다. */}
-      <div className={`relative w-full ${wrap} px-5 pb-16 pt-4 sm:px-6 sm:pb-20 sm:pt-6`}>
-        <div className="-mx-5 sm:-mx-6">
+/** 직접 만든 화면 22개 — 소개 영상 2편 바로 다음. 히어로와 같은 먹색 바탕에 두 줄로 흐른다(눌러서 실제 화면 열기). */
+export function AxSamplesBand() {
+  return (
+    <section id="samples" className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
+      <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16`}>
+        <p className="text-[1.02rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.1rem]">AX PREVIEW</p>
+        <h2 className="mt-2 break-keep text-[1.75rem] font-black leading-[1.3] text-[#FAFAF8] sm:text-[2.3rem]">
+          직접 만든 화면 22개,
+          <br /> <span className="text-[#E8B89A]">눌러서 확인해 보세요</span>
+        </h2>
+        <div className="-mx-5 mt-7 sm:-mx-6 sm:mt-9">
           <AxSampleStrip />
         </div>
       </div>

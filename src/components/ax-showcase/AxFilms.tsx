@@ -1,0 +1,291 @@
+// AX 소개 영상 2편(릴스 9:16, 대표님 목소리 + 자막 + 배경음악) — 히어로 바로 다음, '직접 만든 화면 22개' 바로 앞.
+// 기술사업·MVP 페이지의 소개 영상(VentureMvpFilm)과 같은 방식이다.
+//  - 첫 상태는 '소리 없는 미리보기': 화면에 절반 이상 보이면 소리 없이 자동 재생(움직임으로 눈길을 끈다).
+//    갑자기 소리가 나면 불쾌할 수 있어 소리는 절대 먼저 켜지 않는다. 움직임 줄이기 설정이면 자동 재생도 하지 않는다.
+//  - 영상 위 전체가 '소리 켜고 처음부터 보기' 버튼 — 누르면 소리를 켜고 처음부터 한 번 재생(기본 컨트롤 표시).
+//    한 편을 소리 켜고 보면 다른 편은 멈춘다(두 소리가 겹치지 않게).
+//  - 1편이 끝나면 '2편 이어서 보기', 2편이 끝나면 '화면 직접 눌러 보기(아래 22개로)' · '3분 AX Fit 진단 받기'.
+//  - preload="none" — 이 구간 근처에 오기 전에는 영상을 받지 않는다(첫 화면 속도 보호).
+//  - 영상 원본(HyperFrames)·녹음·자막 파일은 media/ax-videos/ 에 있다. 게시본은 대표님이 음악을 넣어 다듬은 최종본.
+// ⚠️ 영상 속 화면은 자체 데모(샘플)다 — 아래 안내 문구를 지우지 않는다.
+import { useEffect, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from 'react'
+import { Link } from 'react-router-dom'
+
+type Film = {
+  no: 1 | 2
+  mp4: string
+  webm: string
+  poster: string
+  length: string
+  title: string
+  lead: string
+  points: readonly string[]
+}
+
+const FILMS: readonly [Film, Film] = [
+  {
+    no: 1,
+    mp4: '/business/ax/ax-film-1.mp4',
+    webm: '/business/ax/ax-film-1.webm',
+    poster: '/business/ax/ax-film-1-poster.webp',
+    length: '4분 29초',
+    title: 'AX가 뭐고, 왜 필요한가',
+    lead: '정책자금·투자·지원사업 심사에서 왜 ‘보여 줄 화면’이 중요해졌는지, AX가 회사 안과 밖을 어떻게 잇는지 담았어요.',
+    points: ['심사에서 결국 보는 것 — 계획보다 실제 화면', '최근 3년 사례 250건 가까이에서 반복된 흐름', '회사 안 운영과 고객 플랫폼을 잇는 AX'],
+  },
+  {
+    no: 2,
+    mp4: '/business/ax/ax-film-2.mp4',
+    webm: '/business/ax/ax-film-2.webm',
+    poster: '/business/ax/ax-film-2-poster.webp',
+    length: '4분 15초',
+    title: '어떻게 진행하고, 얼마가 드나',
+    lead: '진단부터 2주 안에 기본 틀을 만드는 진행 4단계, 비용과 정산 방식, 정책자금·지원사업 신청까지 담았어요.',
+    points: ['진단 → 2주 안에 MVP·기본 틀 → 데이터 쌓기 → 인증·재무', 'MVP 500만 · 플랫폼형 1,500만 · 풀 패키지 3,000만 원부터', '착수금으로 시작 · 개발비 후불 가능 · 유지보수 1년 무상'],
+  },
+]
+
+type Mode = 'preview' | 'sound' | 'ended'
+type FilmHandle = { playWithSound: () => void; pause: () => void }
+
+export default function AxFilms({ samplesAnchor, diagnosisHref }: { samplesAnchor: string; diagnosisHref: string }) {
+  const first = useRef<FilmHandle>(null)
+  const second = useRef<FilmHandle>(null)
+
+  return (
+    <section id="films" data-ax-films className="relative scroll-mt-16 overflow-hidden bg-[#F4ECE4] text-[#171B20]">
+      <div aria-hidden className="pointer-events-none absolute -right-28 top-10 h-[24rem] w-[24rem] rounded-full bg-[#D47A4A]/20 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -left-24 top-[45%] h-[18rem] w-[18rem] rounded-full bg-[#E8B89A]/35 blur-3xl" />
+
+      <div className="relative mx-auto max-w-6xl px-5 pt-11 text-center sm:px-6 sm:pt-16">
+        <p className="inline-flex items-center gap-2 rounded-full bg-[#171B20] px-4 py-2 text-[0.98rem] font-black text-white shadow-md sm:text-[1.02rem]">
+          <span aria-hidden className="relative flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E8894F] opacity-75 motion-reduce:animate-none" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#E8894F]" />
+          </span>
+          꼭 봐 주세요
+        </p>
+        <h2 className="mt-4 break-keep text-[2rem] font-black leading-[1.18] tracking-tight sm:text-[2.6rem]">
+          영상 두 편으로
+          <br /> <span className="text-[#C8612E]">모든 설명</span>을 드려요
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem]">
+          순서대로 보시면 돼요. <b className="font-black text-[#171B20]">1편</b>은 AX가 무엇이고 왜 필요한지, <b className="font-black text-[#171B20]">2편</b>은 어떻게 진행되고 얼마가 드는지예요. 두 편 모두 자막이 있어요.
+        </p>
+      </div>
+
+      <FilmBlock
+        ref={first}
+        film={FILMS[0]}
+        onSound={() => second.current?.pause()}
+        end={(replay) => (
+          <>
+            <p className="break-keep text-[1.2rem] font-black leading-snug">
+              이어서 2편에서
+              <br /> 진행 방식과 비용을 보세요
+            </p>
+            <button type="button" onClick={() => second.current?.playWithSound()} className={END_PRIMARY}>
+              2편 이어서 보기 <span aria-hidden>▶</span>
+            </button>
+            <button type="button" onClick={replay} className={END_REPLAY}>
+              1편 처음부터 다시 보기
+            </button>
+          </>
+        )}
+      />
+      <div aria-hidden className="relative mx-auto h-px max-w-4xl bg-[#171B20]/10" />
+      <FilmBlock
+        ref={second}
+        film={FILMS[1]}
+        flip
+        onSound={() => first.current?.pause()}
+        end={(replay) => (
+          <>
+            <p className="break-keep text-[1.2rem] font-black leading-snug">
+              이제 화면을
+              <br /> 직접 눌러 보세요
+            </p>
+            <button
+              type="button"
+              onClick={() => document.getElementById(samplesAnchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className={END_PRIMARY}
+            >
+              화면 직접 눌러 보기 <span aria-hidden>↓</span>
+            </button>
+            <Link to={diagnosisHref} className={END_SECONDARY}>
+              3분 AX Fit 진단 받기 <span aria-hidden>→</span>
+            </Link>
+            <button type="button" onClick={replay} className={END_REPLAY}>
+              2편 처음부터 다시 보기
+            </button>
+          </>
+        )}
+      />
+    </section>
+  )
+}
+
+const END_PRIMARY =
+  'flex min-h-12 w-full max-w-[16rem] items-center justify-center gap-1.5 rounded-xl bg-[#E8894F] px-4 text-[1.02rem] font-black text-[#171B20] transition-colors hover:bg-[#E8B89A]'
+const END_SECONDARY =
+  'flex min-h-12 w-full max-w-[16rem] items-center justify-center gap-1.5 rounded-xl bg-white/10 px-4 text-[1.02rem] font-bold text-white ring-1 ring-white/25 transition-colors hover:bg-white/20'
+const END_REPLAY = 'min-h-11 px-3 text-[0.92rem] font-semibold text-slate-300 underline underline-offset-4 hover:text-white'
+
+function FilmBlock({
+  ref,
+  film,
+  flip = false,
+  onSound,
+  end,
+}: {
+  ref?: Ref<FilmHandle>
+  film: Film
+  /** PC 에서 영상을 왼쪽에 둔다(두 편이 지그재그로 읽히게) */
+  flip?: boolean
+  /** 이 편을 소리 켜고 볼 때 — 다른 편을 멈춘다 */
+  onSound: () => void
+  /** 끝까지 봤을 때 띄울 버튼들 */
+  end: (replay: () => void) => ReactNode
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const boxRef = useRef<HTMLDivElement>(null)
+  const [mode, setMode] = useState<Mode>('preview')
+  const modeRef = useRef<Mode>('preview')
+  modeRef.current = mode
+
+  // 미리보기일 때만: 보이면 소리 없이 재생, 벗어나면 멈춘다. 소리 켠 뒤에는 벗어날 때 멈추기만 한다
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v || typeof IntersectionObserver === 'undefined') return
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) v.pause()
+        else if (modeRef.current === 'preview' && !reduce) v.play().catch(() => {})
+      },
+      { threshold: 0.5 },
+    )
+    io.observe(v)
+    return () => io.disconnect()
+  }, [])
+
+  const playWithSound = () => {
+    const v = videoRef.current
+    if (!v) return
+    onSound()
+    v.muted = false
+    v.loop = false
+    v.currentTime = 0
+    v.play().catch(() => {})
+    setMode('sound')
+    // 재생을 먼저 부른 뒤 영상이 화면 가운데 오게 옮긴다
+    boxRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+  useImperativeHandle(ref, () => ({ playWithSound, pause: () => videoRef.current?.pause() }))
+
+  const label = `영상 ${film.no} · ${film.title}`
+
+  return (
+    <div
+      id={`film-${film.no}`}
+      data-ax-film={film.no}
+      className={`relative mx-auto max-w-6xl scroll-mt-16 px-5 py-11 sm:px-6 sm:py-16 md:grid md:items-center md:gap-12 lg:gap-16 ${flip ? 'md:grid-cols-[minmax(0,400px)_1fr]' : 'md:grid-cols-[1fr_minmax(0,400px)]'}`}
+    >
+      <div className={`text-center md:text-left ${flip ? 'md:order-2' : ''}`}>
+        <p className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-1.5 text-[0.98rem] font-black text-[#C8612E] ring-1 ring-[#D47A4A]/40">
+          <span className="grid h-6 w-6 place-items-center rounded-full bg-[#171B20] text-[0.82rem] text-white">{film.no}</span>
+          영상 {film.no}
+          <span className="font-bold text-[#6B7680]">· {film.length}</span>
+        </p>
+        <h3 className="mt-3.5 break-keep text-[1.7rem] font-black leading-[1.25] tracking-tight sm:text-[2.1rem]">{film.title}</h3>
+        <p className="mx-auto mt-3 max-w-md break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem] md:mx-0">{film.lead}</p>
+        <ul className="mt-5 hidden gap-2 md:grid">
+          {film.points.map((t) => (
+            <li key={t} className="flex items-start gap-2 break-keep text-[1.02rem] font-semibold text-[#343B44]">
+              <span aria-hidden className="font-black text-[#D47A4A]">
+                ✓
+              </span>
+              {t}
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          onClick={playWithSound}
+          data-ax-film-cta
+          className="shine-cta mt-7 hidden min-h-14 items-center gap-2.5 rounded-2xl bg-[#171B20] px-7 text-[1.12rem] font-black text-white shadow-xl shadow-[#171B20]/20 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 md:inline-flex"
+        >
+          <span aria-hidden className="grid h-8 w-8 place-items-center rounded-full bg-[#E8894F] text-[0.9rem] text-[#171B20]">
+            ▶
+          </span>
+          영상 {film.no} 소리 켜고 보기
+        </button>
+      </div>
+
+      <figure className={`mt-7 md:mt-0 ${flip ? 'md:order-1' : ''}`}>
+        {/* 세로 영상이 폰 화면을 넘지 않게: 폭 = min(100%, 화면 높이 72% × 9/16) */}
+        <div
+          ref={boxRef}
+          data-ax-video-box
+          className="relative mx-auto w-full max-w-[min(100%,calc(72svh*9/16))] rounded-[1.4rem] p-1.5 shadow-[0_30px_70px_-20px_rgba(200,97,46,0.55)] ring-2 ring-[#D47A4A]/70 md:max-w-[400px]"
+        >
+          <video
+            ref={videoRef}
+            data-ax-video
+            poster={film.poster}
+            width={1080}
+            height={1920}
+            muted
+            loop
+            playsInline
+            controls={mode === 'sound'}
+            preload="none"
+            onEnded={() => setMode('ended')}
+            aria-label={`${label} — 소개 영상 ${film.length} (자막 포함)`}
+            className="block aspect-[9/16] h-auto w-full rounded-[1.1rem] bg-[#0E1114]"
+          >
+            {/* 대부분의 브라우저는 MP4(H.264)를, H.264 를 못 트는 브라우저는 WebM(VP9)을 받는다 */}
+            <source src={film.mp4} type="video/mp4" />
+            <source src={film.webm} type="video/webm" />
+          </video>
+
+          {/* 소리 없는 미리보기 — 영상 위 전체가 '소리 켜고 처음부터 보기' 버튼 */}
+          {mode === 'preview' && (
+            <button
+              type="button"
+              onClick={playWithSound}
+              data-ax-sound
+              aria-label={`소리 켜고 ${label} 처음부터 보기 (${film.length})`}
+              className="group absolute inset-1.5 flex flex-col items-center justify-end overflow-hidden rounded-[1.1rem] bg-gradient-to-t from-[#0E1114]/90 via-[#0E1114]/15 to-transparent px-4 pb-6 text-white focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[#E8894F]"
+            >
+              <span className="absolute left-3 top-3 rounded-full bg-[#0E1114]/75 px-3 py-1.5 text-[0.8rem] font-bold text-slate-200 ring-1 ring-white/15">
+                🔇 소리 꺼진 미리보기
+              </span>
+              <span aria-hidden className="relative mb-4 grid h-20 w-20 place-items-center">
+                <span className="absolute inset-0 animate-ping rounded-full bg-[#E8894F]/45 motion-reduce:animate-none" />
+                <span className="relative grid h-20 w-20 place-items-center rounded-full bg-[#E8894F] pl-1.5 text-[1.9rem] text-[#171B20] shadow-2xl shadow-black/50 transition-transform group-hover:scale-105">
+                  ▶
+                </span>
+              </span>
+              <span className="whitespace-nowrap rounded-full bg-white px-5 py-2.5 text-[1.08rem] font-black text-[#171B20] shadow-lg min-[380px]:text-[1.15rem]">
+                소리 켜고 처음부터 보기
+              </span>
+              <span className="mt-2 text-[0.88rem] font-semibold text-slate-200">
+                영상 {film.no} · {film.length}
+              </span>
+            </button>
+          )}
+
+          {mode === 'ended' && (
+            <div data-ax-film-end className="absolute inset-1.5 flex flex-col items-center justify-center gap-3 rounded-[1.1rem] bg-[#0E1114]/85 px-6 text-center text-white backdrop-blur-[2px]">
+              {end(playWithSound)}
+            </div>
+          )}
+        </div>
+        <figcaption className="mt-3 break-keep text-center text-[0.82rem] leading-relaxed text-[#6B7680]">
+          영상 속 화면은 미래AI랩이 직접 만든 자체 데모예요. 고객사 사례가 아니에요.
+        </figcaption>
+      </figure>
+    </div>
+  )
+}

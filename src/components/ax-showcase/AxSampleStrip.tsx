@@ -154,7 +154,7 @@ function Row({ items, dir, label, count }: { items: StripItem[]; dir: 1 | -1; la
 
 export default function AxSampleStrip() {
   return (
-    <div id="samples" className="scroll-mt-16 space-y-4 sm:space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       <Row label="업종별 AX와 고객 플랫폼" count={axItems.length} items={axItems} dir={1} />
       <Row label="아이디어 MVP(먼저 써 보는 시험판)" count={mvpItems.length} items={mvpItems} dir={-1} />
       <p className="px-5 text-[0.82rem] leading-relaxed text-slate-500 sm:px-6 sm:text-[0.9rem]">

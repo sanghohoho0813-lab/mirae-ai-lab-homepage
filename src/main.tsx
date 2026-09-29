@@ -1,6 +1,6 @@
 import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import './index.css'
 
 // 빌드 메타데이터를 <html> dataset 에 기록(배포 커밋 확인용, 비노출)
@@ -20,6 +20,7 @@ import CanonicalLink from './components/CanonicalLink'
 import AppErrorBoundary from './components/AppErrorBoundary'
 import RouteFallback from './components/RouteFallback'
 import { lazyPage, reloadOnce } from './lib/chunkRecovery'
+import { AX_START_PATH, SHOW_AX_GUIDE, axStartHashFor } from './lib/businessRoutes'
 
 // ── 화면별 코드 분할 ─────────────────────────────────────────────────────
 // 예전엔 어느 페이지로 들어오든 관리자·결제·마이페이지까지 한 파일(1.48MB)로 받았다.
@@ -67,6 +68,12 @@ window.addEventListener('vite:preloadError', (event) => {
   if (reloadOnce()) event.preventDefault()
 })
 
+// AX 상세 안내(스토리 04~12)를 숨긴 동안 — 예전 링크(#portfolio·#faq 등)로 들어와도 AX 페이지의 같은 성격 구간으로 보낸다
+function AxGuideHidden() {
+  const { hash } = useLocation()
+  return <Navigate to={`${AX_START_PATH}${axStartHashFor(hash)}`} replace />
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
@@ -113,8 +120,8 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/business-services" element={<BusinessServicesPage />} />
               <Route path="/business-services/ax-start" element={<AxStartPage />} />
               <Route path="/business-services/venture-mvp" element={<VentureMvpPage />} />
-              {/* 스토리 04~12 + Preview·MVP·실제 프로젝트·FAQ */}
-              <Route path="/business-services/ax" element={<BusinessAxGuidePage />} />
+              {/* 스토리 04~12 + Preview·MVP·실제 프로젝트·FAQ — 잠시 숨김(SHOW_AX_GUIDE). 숨긴 동안에는 AX 페이지로 보낸다 */}
+              <Route path="/business-services/ax" element={SHOW_AX_GUIDE ? <BusinessAxGuidePage /> : <AxGuideHidden />} />
               <Route path="/ax-industries/:slug" element={<AxIndustryDetailPage />} />
               <Route path="/saved" element={<SavedItemsPage />} />
               <Route path="/business-diagnosis" element={<BusinessDiagnosisPage />} />

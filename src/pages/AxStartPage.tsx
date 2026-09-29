@@ -6,7 +6,9 @@ import KakaoFloat from '../components/KakaoFloat'
 import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import BusinessHeader from '../components/business/BusinessHeader'
 import BusinessStickyCta from '../components/business/BusinessStickyCta'
-import { AxHeroV2 } from '../components/ax-showcase/axHomeSections'
+import { AxHeroV2, AxSamplesBand } from '../components/ax-showcase/axHomeSections'
+import AxFilms from '../components/ax-showcase/AxFilms'
+import AxFaqSection from '../components/ax-showcase/AxFaqSection'
 import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
 import { AX_GUIDE_PATH, AX_START_PATH, BUSINESS_NAV } from '../lib/businessRoutes'
@@ -17,7 +19,11 @@ import { canonicalUrl } from '../lib/site'
 
 // AX 진입 페이지 (/business-services/ax-start) — 예전 /business-services 홈을 그대로 옮겨 보존한 화면.
 // /business-services 는 이제 AX 도입 / 기술사업·MVP 를 고르는 2-Track 선택 페이지이고,
-// 거기서 "AX 도입 알아보기" 를 고르면 여기로 온다. 히어로 + 스토리 01~03 + 이어보기 구성은 손대지 않았다.
+// 거기서 "AX 도입 알아보기" 를 고르면 여기로 온다.
+//
+// 지금 구성(기술사업·MVP 페이지처럼 간결하게): 히어로 → 소개 영상 2편 → 직접 만든 화면 22개 → FAQ → 마무리.
+// 스토리 01~03 · 이어보기('AX 상세 안내 보기')와 AX 상세 안내(스토리 04~12)는 지우지 않고 잠시 숨겼다
+// (SHOW_STORY 아래 · businessRoutes 의 SHOW_AX_GUIDE). 아래 설명은 숨기기 전 구성에 대한 것이다.
 //
 // 미래AI랩 = 중소기업 맞춤형 실행 AX 설계·구축 전문회사 (경영컨설턴트 출신 AX Architect).
 // 정책·정부지원·자금조달은 AX 의 주목적이 아니라, 실제 AX 성과와 기업자산이 이후 성장 과정에서
@@ -33,6 +39,8 @@ const PAGE_DESC =
 
 // 이 트랙에서 진단으로 갈 때는 ?interest=ax 를 붙여 유입을 구분한다
 const AX_DIAG_HREF = withInterest('/business-diagnosis', 'ax')
+// 스토리 01~03 + 이어보기('AX 상세 안내 보기') — 소개 영상 2편이 대신 설명하므로 잠시 숨김. 다시 보이려면 true
+const SHOW_STORY = false
 
 export default function AxStartPage() {
   const [historyCount] = useState(() => loadHistory().length)
@@ -98,36 +106,71 @@ export default function AxStartPage() {
       {/* 1. Hero — 무엇을 파는 회사인지 5초 안에 */}
       <AxHeroV2 />
 
-      {/* ── 스토리 01~03 (Drive 1.1 … 3.7) ───────────────────────────────────────
-          01 계획보다 강한 증거 / 02 이런 상황이신가요
-          03 사업계획서의 시대가 달라졌습니다 + 업종 예시(그려진 버튼 → 실제 샘플 AX 화면)
-          03 이 "그런데 AX가 정확히 뭘까요?" 로 끝나고, 그 답부터는 상세 안내로 넘어간다. */}
-      <AxStoryImages names={S(1)} />
-      <AxStoryImages names={S(2)} />
-      <AxStoryImages names={S(3)} />
+      {/* 2. 소개 영상 2편 — 1편 AX가 뭐고 왜 필요한가 / 2편 어떻게 진행하고 얼마가 드나 */}
+      <AxFilms samplesAnchor="samples" diagnosisHref={AX_DIAG_HREF} />
 
-      {/* 이어보기 — 03 의 마지막 질문을 그대로 받는다 */}
+      {/* 3. 직접 만든 화면 22개(업종별 AX와 고객 플랫폼 12 + 아이디어 MVP 10) */}
+      <AxSamplesBand />
+
+      {/* 4. FAQ */}
+      <AxFaqSection />
+
+      {/* 5. 마무리 — 버튼 두 개만 */}
       <div ref={bridgeRef}>
         <section id="cta" className="border-t border-[#343B44] bg-[#171B20]">
-          {/* 설명 문구 없이 버튼 두 개만 — 03 이 이미 "그런데 AX가 정확히 뭘까요?" 로 끝난다 */}
-          <div className="mx-auto max-w-3xl px-5 py-12 text-center sm:px-6 sm:py-16">
-            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                to={AX_GUIDE_PATH}
-                className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto"
-              >
-                AX 상세 안내 보기 <span aria-hidden>→</span>
-              </Link>
-              <Link
-                to={AX_DIAG_HREF}
-                className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto"
-              >
+          <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
+            <h2 className="break-keep text-[1.7rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.1rem]">
+              다음 단계로 가려면,<br className="hidden sm:block" /> 지금 무엇을 보여줘야 할까요?
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl break-keep text-[1.18rem] leading-[1.7] text-slate-300 sm:text-[1.26rem]">
+              무엇을 만들지 미리 정하지 않으셔도 돼요. 지금 사업과 고객, 일하는 방식을 보고 무엇부터 할지 같이 정해요.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link to={AX_DIAG_HREF} className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto">
                 3분 AX Fit 진단 받기
               </Link>
+              <a href="#samples" className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
+                AX 화면 직접 보기
+              </a>
             </div>
           </div>
         </section>
       </div>
+
+      {/* ── 잠시 숨김: 스토리 01~03 (Drive 1.1 … 3.7) + 이어보기 ─────────────────────
+          01 계획보다 강한 증거 / 02 이런 상황이신가요
+          03 사업계획서의 시대가 달라졌습니다 + 업종 예시(그려진 버튼 → 실제 샘플 AX 화면)
+          03 이 "그런데 AX가 정확히 뭘까요?" 로 끝나고, 그 답부터는 상세 안내로 넘어간다. */}
+      {SHOW_STORY && (
+        <>
+          <AxStoryImages names={S(1)} />
+          <AxStoryImages names={S(2)} />
+          <AxStoryImages names={S(3)} />
+
+          {/* 이어보기 — 03 의 마지막 질문을 그대로 받는다 */}
+          <div>
+            <section className="border-t border-[#343B44] bg-[#171B20]">
+              {/* 설명 문구 없이 버튼 두 개만 — 03 이 이미 "그런데 AX가 정확히 뭘까요?" 로 끝난다 */}
+              <div className="mx-auto max-w-3xl px-5 py-12 text-center sm:px-6 sm:py-16">
+                <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <Link
+                    to={AX_GUIDE_PATH}
+                    className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto"
+                  >
+                    AX 상세 안내 보기 <span aria-hidden>→</span>
+                  </Link>
+                  <Link
+                    to={AX_DIAG_HREF}
+                    className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto"
+                  >
+                    3분 AX Fit 진단 받기
+                  </Link>
+                </div>
+              </div>
+            </section>
+          </div>
+        </>
+      )}
 
       <LegalFooter />
       <KakaoFloat />
@@ -139,7 +182,7 @@ export default function AxStartPage() {
           히어로 아래 여백(pb-24)이 바 높이만큼 확보돼 문장이 가려지지 않는다. */}
       <BusinessStickyCta visible={!atEnd} onOpenSampleNav={() => setSampleNavOpen(true)} diagnosisHref={AX_DIAG_HREF} />
 
-      {/* 홈에는 상담 폼을 여는 곳이 없다(이어보기는 버튼 두 개만). 상담은 카톡 버튼과 상세 안내의 CTA 에서 연다. */}
+      {/* 이 페이지에는 상담 폼을 여는 곳이 없다(마무리는 버튼 두 개만). 상담은 카톡 버튼과 진단 결과에서 연다. */}
       {previewDevice && !isPreviewEmbedded && (
         <ViewportPreview
           device={previewDevice}

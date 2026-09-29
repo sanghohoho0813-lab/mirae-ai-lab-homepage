@@ -13,6 +13,7 @@ import AxBusinessIdeaCard from '../components/ax-showcase/AxBusinessIdeaCard'
 import AxFiveStageViewer from '../components/ax-showcase/AxFiveStageViewer'
 import { AX_V2_DISCLAIMER, AX_V2_INDUSTRIES, axV2Industry } from '../data/axIndustryShowcaseV2'
 import { canonicalUrl } from '../lib/site'
+import { AX_SAMPLES_HREF } from '../lib/businessRoutes'
 
 const band = 'px-5 py-10 sm:py-14'
 const inner = 'mx-auto max-w-[880px]'
@@ -101,7 +102,7 @@ export default function AxIndustryDetailPage() {
             <Link to="/business-diagnosis" className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 text-[1.26rem] sm:text-[1.15rem] font-black text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-400">
               우리 회사 AX 가능성 진단
             </Link>
-            <Link to="/business-services/ax#portfolio" className="flex min-h-[52px] items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10">
+            <Link to={AX_SAMPLES_HREF} className="flex min-h-[52px] items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-white/10">
               AX 화면 직접 보기
             </Link>
           </div>

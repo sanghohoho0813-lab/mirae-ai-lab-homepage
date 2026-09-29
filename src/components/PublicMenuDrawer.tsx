@@ -10,6 +10,7 @@ import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
 import { loginPathWithNext } from '../lib/authRouting'
 import { scrollToSection } from '../lib/businessPageScroll'
+import { AX_GUIDE_PATH, AX_START_PATH, SHOW_AX_GUIDE } from '../lib/businessRoutes'
 import Avatar from './account/Avatar'
 import BrandLogo from './BrandLogo'
 import ConsultModal from './ConsultModal'
@@ -78,15 +79,23 @@ const BUSINESS_MENU: MenuConfig = {
       no: '02',
       heading: 'AX 살펴보기',
       accent: 'cyan',
-      items: [
-        { no: '1', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: '/business-services/ax#portfolio' },
-        { no: '2', label: '실제 기업 프로젝트', desc: '지금 현장에서 만들고 있는 프로젝트', to: '/business-services/ax#real-projects' },
-        { no: '3', label: 'AX가 뭐예요?', desc: '디지털화와 뭐가 다른지', to: '/business-services/ax#ax-definition' },
-        { no: '4', label: '성과를 성장으로', desc: 'AX 성과를 다음 단계로 잇는 방법', to: '/business-services/ax#growth' },
-        { no: '5', label: '왜 미래AI랩이에요?', desc: '따로따로가 아니라 한 흐름으로', to: '/business-services/ax#why-mirae' },
-        // 프로그램 상세페이지 전면 개정 중 — 이동을 막고 한 줄로만 알린다 (프로그램 안내·수행체계·성장 로드맵)
-        { no: '6', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
-      ],
+      // AX 상세 안내(스토리 04~12)를 숨긴 동안에는 AX 페이지의 소개 영상 2편 · 직접 만든 화면 22개로 보낸다
+      items: SHOW_AX_GUIDE
+        ? [
+            { no: '1', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_GUIDE_PATH}#portfolio` },
+            { no: '2', label: '실제 기업 프로젝트', desc: '지금 현장에서 만들고 있는 프로젝트', to: `${AX_GUIDE_PATH}#real-projects` },
+            { no: '3', label: 'AX가 뭐예요?', desc: '디지털화와 뭐가 다른지', to: `${AX_GUIDE_PATH}#ax-definition` },
+            { no: '4', label: '성과를 성장으로', desc: 'AX 성과를 다음 단계로 잇는 방법', to: `${AX_GUIDE_PATH}#growth` },
+            { no: '5', label: '왜 미래AI랩이에요?', desc: '따로따로가 아니라 한 흐름으로', to: `${AX_GUIDE_PATH}#why-mirae` },
+            // 프로그램 상세페이지 전면 개정 중 — 이동을 막고 한 줄로만 알린다 (프로그램 안내·수행체계·성장 로드맵)
+            { no: '6', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
+          ]
+        : [
+            { no: '1', label: 'AX가 뭐예요?', desc: '영상 1 · AX가 뭐고, 왜 필요한가', to: `${AX_START_PATH}#film-1` },
+            { no: '2', label: '진행 방식과 비용', desc: '영상 2 · 어떻게 진행하고, 얼마가 드나', to: `${AX_START_PATH}#film-2` },
+            { no: '3', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_START_PATH}#samples` },
+            { no: '4', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
+          ],
     },
     {
       no: '03',
@@ -103,8 +112,8 @@ const BUSINESS_MENU: MenuConfig = {
       heading: '고객지원',
       accent: 'slate',
       items: [
-        // 정책자금 상세(개정 중) 대신 AX 상세 안내의 FAQ 로
-        { label: '자주 묻는 질문', to: '/business-services/ax#faq' },
+        // 정책자금 상세(개정 중) 대신 AX 페이지의 FAQ 로
+        { label: '자주 묻는 질문', to: `${SHOW_AX_GUIDE ? AX_GUIDE_PATH : AX_START_PATH}#faq` },
         { label: '이용약관', to: '/terms', match: (p) => p === '/terms' },
         { label: '개인정보처리방침', to: '/privacy', match: (p) => p === '/privacy' },
         { label: '환불·취소 정책', to: '/refund-policy', match: (p) => p === '/refund-policy' },

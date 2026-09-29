@@ -5,7 +5,7 @@
 // ⚠️ 고객사 사례가 아니다 — 아래에 '자체 데모'라고 분명히 적는다. 없는 성과·숫자는 붙이지 않는다.
 import { Link } from 'react-router-dom'
 import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
-import { AX_GUIDE_PATH } from '../../lib/businessRoutes'
+import { AX_SAMPLES_HREF } from '../../lib/businessRoutes'
 
 /** 샘플 창(SampleQuickNav)의 '아이디어 MVP Preview' 묶음 id 와 같다 — 이 페이지에선 여기로 스크롤한다 */
 export const VENTURE_MVP_EXAMPLES_ID = 'mvp-refs'
@@ -94,9 +94,9 @@ export default function VentureMvpExamples() {
           ))}
         </ul>
 
-        {/* 22개 중 나머지 12개(업종별 AX)는 AX 상세 안내에 있다 — 마지막 카드(AI 코디 점검) 바로 다음에 잇는다 */}
+        {/* 22개 중 나머지 12개(업종별 AX)는 AX 페이지에 있다 — 마지막 카드(AI 코디 점검) 바로 다음에 잇는다 */}
         <Link
-          to={`${AX_GUIDE_PATH}#portfolio`}
+          to={AX_SAMPLES_HREF}
           data-mvp-more-ax
           className="group mt-4 flex min-h-14 items-center justify-between gap-3 rounded-2xl bg-[#171B20] px-5 py-3 text-white shadow-sm transition-colors hover:bg-[#343B44]"
         >

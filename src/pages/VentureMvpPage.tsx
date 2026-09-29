@@ -22,7 +22,7 @@ import VentureMvpExamples, { VENTURE_MVP_EXAMPLES_ID } from '../components/ventu
 import VentureMvpFilm, { type VentureMvpFilmHandle } from '../components/venture/VentureMvpFilm'
 import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import { VENTURE_MVP_DIR, VENTURE_MVP_HOTSPOTS, VENTURE_MVP_IMAGES, type VentureMvpHotspot } from '../data/ventureMvpImages'
-import { AX_GUIDE_PATH, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
+import { AX_SAMPLES_HREF, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { rememberInterest } from '../lib/interestTrack'
 import { usePageMeta } from '../lib/pageMeta'
 
@@ -34,8 +34,8 @@ const PAGE_DESC =
 const CONSULT_SOURCE = '기술사업·MVP 상세페이지 (venture-mvp)'
 /** 상담카드에 이미 선택된 상태로 표시할 메인 신청 서비스 — 추가 관심 항목과 섞이지 않는다 */
 const PRESET_SERVICE = '기술사업 · MVP · 벤처기업확인 패키지'
-// 22개 샘플(업종별 AX 12 + 아이디어 MVP 10)은 AX 상세 안내의 Preview 묶음에 이미 있다 — 같은 곳으로 보낸다
-const SAMPLES_HREF = `${AX_GUIDE_PATH}#portfolio`
+// 22개 샘플(업종별 AX 12 + 아이디어 MVP 10)은 AX 페이지의 '직접 만든 화면 22개'에 모여 있다 — 같은 곳으로 보낸다
+const SAMPLES_HREF = AX_SAMPLES_HREF
 // 09 "벤처기업확인 혜택 보기" — 벤처인증 패키지(혁신성장형) 상세에 제도 혜택이 정리돼 있다
 const VENTURE_BENEFIT_HREF = '/business-services/venture-innovation'
 const HOTSPOT_CLS =
