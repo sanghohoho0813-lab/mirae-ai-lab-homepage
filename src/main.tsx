@@ -17,6 +17,7 @@ import AuthGuard from './components/auth/AuthGuard'
 import GuestOnly from './components/auth/GuestOnly'
 import ScrollToTop from './components/ScrollToTop'
 import CanonicalLink from './components/CanonicalLink'
+import HistoryNav, { installHistoryNav } from './components/HistoryNav'
 import AppErrorBoundary from './components/AppErrorBoundary'
 import RouteFallback from './components/RouteFallback'
 import { lazyPage, reloadOnce } from './lib/chunkRecovery'
@@ -74,6 +75,9 @@ function AxGuideHidden() {
   return <Navigate to={`${AX_START_PATH}${axStartHashFor(hash)}`} replace />
 }
 
+// 뒤로·앞으로 버튼이 쓸 위치 기록 — 라우터가 첫 칸을 쓰기 전에 설치한다
+installHistoryNav()
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
@@ -81,6 +85,7 @@ createRoot(document.getElementById('root')!).render(
         <AuthProvider>
           <ScrollToTop />
           <CanonicalLink />
+          <HistoryNav />
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<GatewayPage />} />
