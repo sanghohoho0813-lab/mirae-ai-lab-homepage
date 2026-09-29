@@ -61,14 +61,19 @@ export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () =
           </ol>
 
           {/* 가격 — 서비스 선택 01 카드와 같은 숫자 */}
+          {/* 정상가를 작게 흐리게 두면 '원래 300만원' 처럼 읽혀서, 정상가를 크게 두고 붉은 선으로 지운 뒤 할인 금액을 붙인다 */}
           <div data-mvp-price className="mt-6 max-w-xl rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-[1rem] font-bold text-slate-400 line-through decoration-[#D47A4A] decoration-2">정상가 500만원</span>
+              <p className="flex items-baseline gap-2.5">
+                <span className="text-[0.95rem] font-bold text-slate-400">정상가</span>
+                <del className="text-[1.6rem] font-black leading-none tabular-nums text-slate-300 decoration-[#FF6B4A] decoration-[3px] sm:text-[1.8rem]">500만원</del>
+              </p>
               <span className="rounded-full bg-[#D47A4A] px-3 py-1 text-[0.85rem] font-black text-[#171B20]">선착순 5개사</span>
             </div>
-            <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-[1.1rem] font-black text-white">런칭 파트너</span>
+            <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              <span className="text-[1.1rem] font-black text-white">런칭 파트너 특가</span>
               <span className="text-[2.6rem] font-black leading-none tracking-tight text-[#E8894F] sm:text-[3rem]">300만원</span>
+              <span className="rounded-full bg-[#FF6B4A] px-3 py-1.5 text-[0.9rem] font-black leading-none text-white">200만원 할인</span>
             </p>
           </div>
 

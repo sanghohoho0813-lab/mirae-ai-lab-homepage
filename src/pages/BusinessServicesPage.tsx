@@ -3,7 +3,7 @@
 // 보존했고, 여기서는 "지금 필요한 변화가 어느 쪽인지" 만 고르게 한다 — 선택은 즉시, 설명은 선택 이후에.
 // 두 트랙 모두 결국 같은 3분 진단 → 결과 → 상담 퍼널로 합류한다.
 //
-// 순서: 01 = 2주 기술사업 빌드(BASIC · 런칭 파트너 300만원), 02 = 풀 AX 구축(ADVANCED · 500만원부터 · 대표 상품).
+// 순서: 01 = 2주 기술사업 빌드(BASIC · 정상가 500만원, 런칭 파트너 특가 300만원), 02 = 풀 AX 구축(ADVANCED · 500만원부터 · 대표 상품).
 //   더 큰 상품·메인 상품이 02 라는 게 한눈에 읽히게 02 를 어두운 카드 + 샴페인 골드로, 01 은 밝은 카드로 둔다.
 //   폰 첫 화면에서 02 머리(ADVANCED)가 살짝 보이도록 01 과 위 안내를 폰에서만 조밀하게 한다.
 //   data-track 값(ax / venture-mvp)은 유입 구분에 쓰이므로 순서가 바뀌어도 그대로 둔다.
@@ -144,11 +144,19 @@ export default function BusinessServicesPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-3 flex flex-wrap items-baseline gap-x-2.5 gap-y-1 sm:mt-4">
-                <span className="text-[0.92rem] font-bold text-[#8A939C] line-through">정상가 500만원</span>
-                <span className="text-[0.86rem] font-black text-[#B35A2A]">런칭 파트너</span>
-                <span className="text-[1.5rem] font-black leading-none tracking-tight text-[#171B20] sm:text-[1.75rem]">300만원</span>
-              </p>
+              {/* 가격 — '원래 500만원인데 지금 300만원' 이 한눈에 읽히게: 정상가를 크게 두고 붉은 선으로 지운 뒤,
+                  아래 줄에 런칭 파트너 가격과 할인 금액을 붙인다(상세 페이지 첫 화면과 같은 숫자) */}
+              <div className="mt-3 rounded-2xl bg-[#171B20]/[0.035] px-4 py-3 ring-1 ring-inset ring-[#171B20]/10 sm:mt-4">
+                <p className="flex items-baseline gap-2">
+                  <span className="text-[0.84rem] font-bold text-[#646E78]">정상가</span>
+                  <del className="text-[1.2rem] font-black tabular-nums text-[#646E78] decoration-[#D2462E] decoration-[2.5px] sm:text-[1.3rem]">500만원</del>
+                </p>
+                <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="text-[0.88rem] font-black text-[#B35A2A]">런칭 파트너 특가</span>
+                  <span className="text-[1.6rem] font-black leading-none tracking-tight text-[#171B20] sm:text-[1.8rem]">300만원</span>
+                  <span className="rounded-full bg-[#D2462E] px-2.5 py-1 text-[0.8rem] font-black leading-none text-white">200만원 할인</span>
+                </p>
+              </div>
             </div>
 
             <span className="relative mt-4 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-[#171B20] px-5 text-[1.05rem] font-black text-white transition-colors group-hover:bg-[#343B44] sm:mt-auto sm:min-h-[52px]">
