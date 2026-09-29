@@ -1,5 +1,5 @@
 // 3분 AX Fit — 단일 흐름 오케스트레이터.
-// 화면: start → question(10) → report → gate(상담 신청) → report(접수됨)
+// 화면: start → question(최대 12, 예비창업 7) → report → gate(상담 신청) → report(접수됨)
 // 빠른 전환(단일선택 자동 진행), 답변은 localStorage 즉시 저장, 서버 동기화는 완료·제출 시점.
 import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -304,8 +304,8 @@ export default function BusinessDiagnosisPage() {
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
-  // 함께 검토하고 싶은 분야 — 메인 결과와 분리된 선택 항목. interests 에 분야 이름으로 저장해
-  // 상담 메일에 그대로 전달한다. 하나라도 고르면 예전 단일 키도 같이 남겨 서버 플래그와 호환시킨다.
+  // 함께 검토하고 싶은 분야 — 상담 신청 폼의 선택 항목(상담 이유는 진단 질문에서 이미 받는다).
+  // interests 에 분야 이름으로 저장해 상담 메일에 그대로 전달한다. 하나라도 고르면 예전 단일 키도 같이 남겨 서버 플래그와 호환시킨다.
   const AREAS = CONSULT_INTEREST_AREAS as readonly string[]
   const growthInterests = session.interests.filter((k) => AREAS.includes(k))
   function setGrowthInterests(v: string[]) {
@@ -430,8 +430,6 @@ export default function BusinessDiagnosisPage() {
             report={report}
             submitted={submitted}
             consultationConsented={consultationConsented}
-            growthInterests={growthInterests}
-            onGrowthInterestsChange={setGrowthInterests}
             onWantConsult={openGate}
             onRestart={handleRestart}
             onPrint={() => trackEvent(sRef.current.sessionId, 'report_printed', '1')}

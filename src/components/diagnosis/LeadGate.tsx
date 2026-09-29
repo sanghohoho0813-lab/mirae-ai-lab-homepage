@@ -1,5 +1,6 @@
 // AX Fit 상담 신청 — 일반 상담 신청(ConsultModal)과 같은 항목을 받는다.
-// 연락처 + 회사 정보(업력·업종·연매출·직원 수·지역) + 함께 검토하고 싶은 분야까지 한 폼에서 받고,
+// 연락처 + 회사 정보(연매출·지역) + 함께 검토하고 싶은 분야까지 한 폼에서 받고,
+// (업력·업종·직원 수는 진단 질문에서 이미 받았으니 여기서 다시 묻지 않는다)
 // 제출은 진단 리드(/api/business-diagnosis)로 보내 AX Fit 답변·결과와 함께 남긴다.
 // 개인정보 동의(필수)와 상담/마케팅 동의(선택)는 분리, 기본 미체크.
 // 상품(썸네일) 선택은 두지 않는다 — 분야 이름만 고른다.
@@ -18,6 +19,9 @@ type Props = {
   onInterestsChange: (v: string[]) => void
   onSubmit: (form: LeadFormData & { privacyConsentVersion: string; honeypot?: string; formElapsedMs: number }) => void
 }
+
+// 진단 질문(사업 단계·업종·인원)과 겹치는 항목은 뺀다
+const GATE_COMPANY_FIELDS = CONSULT_COMPANY_FIELDS.filter((f) => !['업력', '업종', '직원 수'].includes(f.key))
 
 const inputCls =
   'w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-[#C99257] focus:outline-none focus:ring-2 focus:ring-[#C99257]/20'
@@ -111,7 +115,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
           <p className={labelCls}>회사 정보 (선택)</p>
           <p className="mt-0.5 text-xs text-slate-500">알려 주시면 상담 전에 미리 살펴보고 연락드려요.</p>
           <div className="mt-3 space-y-3">
-            {CONSULT_COMPANY_FIELDS.map((f) => (
+            {GATE_COMPANY_FIELDS.map((f) => (
               <div key={f.key}>
                 <p className="text-[0.82rem] font-semibold text-slate-500">{f.label}</p>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -139,7 +143,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
 
         {/* 함께 검토하고 싶은 분야 — 결과화면에서 고른 값이 그대로 이어진다 */}
         <div>
-          <label className={labelCls}>함께 검토하고 싶은 분야 (선택)</label>
+          <label className={labelCls}>그 밖에 함께 검토하고 싶은 분야 (선택)</label>
           <div className="mt-1.5">
             <InterestPicker idPrefix="lg" value={interests} onChange={onInterestsChange} />
           </div>

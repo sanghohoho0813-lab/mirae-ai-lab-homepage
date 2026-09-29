@@ -1,41 +1,30 @@
 // 3분 AX Fit 결과 — 설문 결과표가 아니라 "진단서"처럼 읽히게 구성한다.
-//   ① 판정 카드(어두운 패널): 한 문장 판정 + 등급 + AX Fit Score + 4단계 중 현재 위치
-//   ② 지금 걸려 있는 3가지: 카드 3장으로 흩어 놓지 않고 한 박스 안에서 1·2·3 을
-//      색·크기·정보량으로 차등한다. 무게는 대표님이 고른 답(거의 항상/자주/가끔)을
-//      그대로 되돌려 보여주는 것으로 만든다 — 없는 수치나 금액을 만들지 않는다.
-//   ③ 같은 박스 아래 어두운 띠: "이대로 두면" 을 한 곳에 모은다(긴박감은 여기 한 번만).
-//   ④ 그럼, 무엇부터: 권장 방향과 다음 행동을 한 섹션으로 합친다.
-//   → 함께 검토할 분야 → 상담 CTA
-// ⚠️ 정책자금·지원금 상품, 금액, 상세페이지 링크는 두지 않는다.
-//    성장·정책 관심은 메인 결과와 분리된 선택 항목으로만 받는다.
-import { useEffect, useState } from 'react'
-import type { AxFitGrade, AxFitProblem, AxFitReport as Report, SeverityTone } from '../../types/businessDiagnosis'
-import { GRADE_META } from '../../lib/businessDiagnosisEngine'
+//   ① 판정 카드(어두운 패널): 상황 요약 → 한 문장 판정 → 추천 시작 상품(가격) → MVP·플랫폼형·풀 패키지 사다리
+//      → 대표님 답에서 뽑은 '이 상품을 권하는 이유' → 정산 안내
+//   ② 대표님 상황에 맞춰 같이 준비할 것: 상담 이유(정책자금·지원사업·투자·인증…)별 한 줄
+//   ③ 지금 걸려 있는 문제: 업무 신호 4개 중 강한 것 — 한 박스 안에서 1·2·3 을 색·크기로 차등하고,
+//      아래 어두운 띠에 "이대로 두면" 을 모은다. 무게는 대표님이 고른 답을 그대로 되돌려 보여준다.
+//   ④ 그럼, 무엇부터: 권장 방향과 다음 행동 → 상담 CTA
+// ⚠️ 가격은 영상 2편·서비스 선택 페이지와 같은 '부터' 금액만 쓴다. 승인·선정을 약속하는 말은 쓰지 않는다.
+import { useState } from 'react'
+import type { AxFitProblem, AxFitReport as Report } from '../../types/businessDiagnosis'
+import { PACKAGE_META, PACKAGE_ORDER } from '../../lib/businessDiagnosisEngine'
 import { isInAppBrowser, isIos, runPrint } from '../../lib/printPage'
-import InterestPicker from '../consult/InterestPicker'
 
 type Props = {
   report: Report
   submitted: boolean
   consultationConsented: boolean
-  /** 함께 검토하고 싶은 분야 — 메인 결과와 분리해서, 분야 이름만 여러 개 고른다 */
-  growthInterests?: string[]
-  onGrowthInterestsChange?: (v: string[]) => void
   onWantConsult: () => void
   onRestart: () => void
   onPrint?: () => void
 }
 
-const GRADE_ORDER: AxFitGrade[] = ['NO_GO', 'LITE', 'FULL', 'HIGH']
-
-// 판정 카드(어두운 배경)에서 쓰는 등급 색. 인쇄용 대체는 각 요소에서 print: 로 지정한다.
-const VERDICT_SKIN: Record<SeverityTone, { fill: string; edge: string; chip: string; on: string; text: string }> = {
-  blue: { fill: 'bg-[#D8A871]', edge: 'bg-[#D8A871]', chip: 'bg-[#D8A871]/15 text-[#F0DCC0] ring-1 ring-inset ring-[#E0B386]/30', on: 'bg-[#C99257] text-white', text: 'text-[#E6C396]' },
-  green: { fill: 'bg-emerald-400', edge: 'bg-emerald-400', chip: 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/30', on: 'bg-emerald-500 text-white', text: 'text-emerald-300' },
-  amber: { fill: 'bg-amber-400', edge: 'bg-amber-400', chip: 'bg-amber-400/15 text-amber-200 ring-1 ring-inset ring-amber-300/30', on: 'bg-amber-400 text-slate-900', text: 'text-amber-300' },
-  orange: { fill: 'bg-orange-400', edge: 'bg-orange-400', chip: 'bg-orange-400/15 text-orange-200 ring-1 ring-inset ring-orange-300/30', on: 'bg-orange-400 text-slate-900', text: 'text-orange-300' },
-  red: { fill: 'bg-red-500', edge: 'bg-red-500', chip: 'bg-red-500/15 text-red-200 ring-1 ring-inset ring-red-400/30', on: 'bg-red-500 text-white', text: 'text-red-300' },
-}
+const CheckIcon = ({ className = '' }: { className?: string }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" className={`mt-[3px] shrink-0 ${className}`} aria-hidden>
+    <path d="M5 12.5 10 17.5 19 7" />
+  </svg>
+)
 
 // 1·2·3 의 무게 차이 — 같은 박스 안에서 색·번호 크기·글자 크기·정보량이 순서대로 줄어든다.
 // (순서를 나타내는 옷이고, 강도는 아래 SEV_SKIN 이 따로 맡는다)
@@ -96,8 +85,29 @@ function SeverityMeter({ severity, answerLabel }: { severity?: number; answerLab
   )
 }
 
-/** ② 지금 걸려 있는 3가지 + ③ 이대로 두면 — 하나의 박스로 묶는다 */
+/** ② 대표님 상황에 맞춰 같이 준비할 것 — 상담 이유별 한 줄 */
+function FocusCard({ items }: { items: Report['focus'] }) {
+  if (!items || items.length === 0) return null
+  return (
+    <section className="mt-8 print:break-inside-avoid">
+      <p className={`${eyebrow} text-[#B37744]`}>대표님 상황에 맞춰</p>
+      <h2 className={h2Cls}>상담에서 같이 준비할 것</h2>
+      <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+        {items.map((f) => (
+          <li key={f.title} className="rounded-2xl border border-[#EBDCCB] bg-[#FBF7F2] px-4 py-3.5">
+            <p className="text-[0.98rem] font-black text-slate-900">{f.title}</p>
+            <p className="mt-1 break-keep text-[0.95rem] leading-relaxed text-slate-600">{f.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+/** ③ 지금 걸려 있는 문제 + 이대로 두면 — 하나의 박스로 묶는다 */
 function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; painCount?: number; painTotal?: number }) {
+  // 예비창업은 업무 질문을 묻지 않았다
+  if (painTotal === 0) return null
   if (items.length === 0) {
     return (
       <section className="mt-8">
@@ -113,7 +123,7 @@ function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; 
   return (
     <section className="mt-8 print:break-inside-avoid">
       <p className={`${eyebrow} text-red-600`}>대표님이 답하신 내용</p>
-      <h2 className={h2Cls}>지금 회사에서 가장 크게<br className="sm:hidden" /> 걸려 있는 3가지</h2>
+      <h2 className={h2Cls}>지금 회사에서 가장 크게<br className="sm:hidden" /> 걸려 있는 {items.length === 1 ? '곳' : `${items.length}가지`}</h2>
       {painCount != null && painTotal != null && (
         <p className="mt-3 inline-flex flex-wrap items-baseline gap-x-1.5 rounded-xl bg-slate-100 px-3.5 py-2 text-[0.95rem] font-semibold text-slate-600">
           업무 질문 <b className="text-[1.05rem] font-black text-slate-900">{painTotal}개</b> 중
@@ -172,9 +182,7 @@ function ActionPlan({ report }: { report: Report }) {
       <ul className="mt-4 space-y-2">
         {report.direction.points.map((t) => (
           <li key={t} className="flex items-start gap-2.5 rounded-xl bg-[#F6ECE1]/70 px-4 py-3">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" className="mt-[3px] shrink-0 text-[#B37744]" aria-hidden>
-              <path d="M5 12.5 10 17.5 19 7" />
-            </svg>
+            <CheckIcon className="text-[#B37744]" />
             <p className="break-keep text-[1rem] font-semibold leading-relaxed text-slate-800">{t}</p>
           </li>
         ))}
@@ -194,11 +202,13 @@ function ActionPlan({ report }: { report: Report }) {
         ))}
       </ol>
 
-      <div className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-xl bg-slate-50 px-4 py-3">
-        <span className="text-[0.8rem] font-black text-slate-400">내부 담당자</span>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[0.82rem] font-black text-slate-700 ring-1 ring-inset ring-slate-200">{report.readiness.label}</span>
-        <span className="break-keep text-[0.95rem] font-medium text-slate-500">{report.readiness.note}</span>
-      </div>
+      {report.readiness && (
+        <div className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-xl bg-slate-50 px-4 py-3">
+          <span className="text-[0.8rem] font-black text-slate-400">내부 담당자</span>
+          <span className="rounded-full bg-white px-2.5 py-1 text-[0.82rem] font-black text-slate-700 ring-1 ring-inset ring-slate-200">{report.readiness.label}</span>
+          <span className="break-keep text-[0.95rem] font-medium text-slate-500">{report.readiness.note}</span>
+        </div>
+      )}
     </section>
   )
 }
@@ -206,14 +216,15 @@ function ActionPlan({ report }: { report: Report }) {
 // 마무리 상담 CTA — 방금 읽은 3가지와 바로 이어지게.
 // 걸리는 지점이 없던 대표님에게는 '이 중'이 가리킬 것이 없으니 문장을 바꾼다.
 function ClosingConsultCTA({ onConsult, hasProblems }: { onConsult: () => void; hasProblems: boolean }) {
+  // 걸린 문제가 없거나(예비창업 포함) 있으면 문장만 바꾼다
   return (
     <section data-closing-cta className="mt-9 print:hidden">
       <div className="rounded-[1.4rem] border-2 border-[#EBCBAA] bg-gradient-to-b from-[#F6ECE1] to-white p-6 text-center sm:p-7">
         <h3 className="break-keep text-[1.32rem] font-black leading-tight tracking-tight text-slate-900 sm:text-2xl">
           {hasProblems ? (
-            <>이 중 무엇부터 손볼지,<br className="sm:hidden" /> 같이 정리해 드립니다.</>
+            <>무엇부터 어디까지 만들지,<br className="sm:hidden" /> 같이 정리해 드립니다.</>
           ) : (
-            <>지금 구성이 맞는지,<br className="sm:hidden" /> 같이 확인해 드립니다.</>
+            <>어디서부터 시작할지,<br className="sm:hidden" /> 같이 정해 드립니다.</>
           )}
         </h3>
         <p className="mx-auto mt-2.5 max-w-md break-keep text-[0.98rem] leading-relaxed text-slate-600">
@@ -232,42 +243,10 @@ function ClosingConsultCTA({ onConsult, hasProblems }: { onConsult: () => void; 
   )
 }
 
-export default function AxFitReportView({
-  report,
-  submitted,
-  consultationConsented,
-  growthInterests = [],
-  onGrowthInterestsChange,
-  onWantConsult,
-  onRestart,
-  onPrint,
-}: Props) {
-  const [count, setCount] = useState(0)
+export default function AxFitReportView({ report, submitted, consultationConsented, onWantConsult, onRestart, onPrint }: Props) {
   const [printHelp, setPrintHelp] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
-  useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce) {
-      setCount(report.score)
-      return
-    }
-    let raf = 0
-    let start: number | null = null
-    const step = (ts: number) => {
-      if (start === null) start = ts
-      const p = Math.min(1, (ts - start) / 600)
-      setCount(Math.round(report.score * (1 - Math.pow(1 - p, 3))))
-      if (p < 1) raf = requestAnimationFrame(step)
-    }
-    const t = setTimeout(() => (raf = requestAnimationFrame(step)), 250)
-    return () => {
-      clearTimeout(t)
-      cancelAnimationFrame(raf)
-    }
-  }, [report.score])
-
-  const meta = GRADE_META[report.grade]
-  const skin = VERDICT_SKIN[meta.tone]
+  const stepping = report.target !== report.grade
 
   // 인쇄가 실제로 시작됐는지 확인해, 안 되는 브라우저(카톡·네이버 앱 안 등)에서는 다른 방법을 안내한다
   async function handlePrint() {
@@ -289,8 +268,8 @@ export default function AxFitReportView({
 
   return (
     <div data-print-region className="mx-auto w-full max-w-[860px] px-5 pb-24 pt-6 sm:pt-8">
-      {/* ① 판정 카드 — 첫 화면에서 판정 한 문장이 가장 먼저 읽히게 */}
-      <section className="animate-rise-in overflow-hidden rounded-[1.6rem] bg-slate-900 p-6 text-white shadow-xl shadow-slate-900/15 sm:p-8 print:bg-white print:text-slate-900 print:shadow-none print:ring-1 print:ring-slate-300">
+      {/* ① 판정 카드 — 첫 화면에서 '어디서 시작할지'가 가장 먼저 읽히게 */}
+      <section className="animate-rise-in overflow-hidden rounded-[1.6rem] bg-[#0B0E12] p-6 text-white shadow-xl shadow-slate-900/15 sm:p-8 print:bg-white print:text-slate-900 print:shadow-none print:ring-1 print:ring-slate-300">
         <div className="flex items-center gap-2">
           <span aria-hidden className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
@@ -300,67 +279,79 @@ export default function AxFitReportView({
           <p className={`${eyebrow} text-emerald-300 print:text-emerald-700`}>3분 AX Fit 진단 완료</p>
         </div>
 
-        <h1 className="mt-3.5 break-keep text-[1.68rem] font-black leading-[1.28] tracking-tight sm:text-[2.2rem]">{report.headline}</h1>
+        {/* 대표님이 답한 상황 — 한 줄 요약 */}
+        {report.situation.length > 0 && (
+          <ul className="mt-3.5 flex flex-wrap gap-1.5" aria-label="답하신 상황">
+            {report.situation.map((c) => (
+              <li key={c.label} className="rounded-full bg-white/[0.07] px-2.5 py-1 text-[0.8rem] font-bold text-slate-300 ring-1 ring-inset ring-white/10 print:bg-slate-100 print:text-slate-600">
+                {c.value}
+              </li>
+            ))}
+          </ul>
+        )}
 
-        {/* 등급 + 점수 — 판정 문장을 뒷받침하는 근거 두 줄 */}
-        <div className="mt-5 flex flex-wrap items-center gap-2.5">
-          <span data-ax-grade={report.grade} className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-[1.02rem] font-black ${skin.chip} print:ring-slate-300 print:text-slate-900`}>
-            <span aria-hidden className={`h-3.5 w-1 rounded-full ${skin.edge}`} />
-            {report.gradeLabel}
-          </span>
-          <span className="text-[0.95rem] font-bold text-slate-400 print:text-slate-600">
-            {/* 0 → 70 으로 올라갈 때 자릿수가 늘며 옆 글자가 밀리지 않도록 자리를 미리 잡는다 */}
-            AX Fit Score <b className="ml-1 inline-block min-w-[2.2ch] text-right text-[1.4rem] tabular-nums text-white print:text-slate-900">{count}</b>
-            <span className="text-slate-500"> / 100</span>
-          </span>
+        <h1 className="mt-3.5 break-keep text-[1.62rem] font-black leading-[1.3] tracking-tight sm:text-[2.1rem]">{report.headline}</h1>
+
+        {/* 추천 시작 상품 */}
+        <div data-ax-grade={report.grade} className="mt-5 rounded-2xl bg-white/[0.05] p-4 ring-1 ring-inset ring-[#D8A871]/40 sm:p-5 print:bg-white print:ring-slate-300">
+          <p className="text-[0.76rem] font-black tracking-[0.16em] text-[#D8A871] print:text-[#9A5F2F]">추천 시작</p>
+          <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+            <p className="text-[1.7rem] font-black leading-tight tracking-tight text-white print:text-slate-900">{report.gradeLabel}</p>
+            <p className="text-[1.08rem] font-black tabular-nums text-[#E6C396] print:text-[#9A5F2F]">{report.priceFrom}</p>
+          </div>
+          <p className="mt-1.5 break-keep text-[0.98rem] leading-relaxed text-slate-300 print:text-slate-700">{report.gradeDesc}</p>
         </div>
-        <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-white/12 print:bg-slate-200">
-          <div className={`h-full rounded-full transition-[width] duration-500 ease-out ${skin.fill}`} style={{ width: `${count}%` }} />
-        </div>
 
-        <p className="mt-4 break-keep text-[1.02rem] font-semibold leading-relaxed text-slate-300 print:text-slate-700">{report.gradeDesc}</p>
-
-        {/* 4단계 중 현재 위치 */}
-        <ol className="mt-5 grid grid-cols-4 gap-1.5" aria-label="AX Fit 등급 단계">
-          {GRADE_ORDER.map((g, i) => {
-            const on = g === report.grade
+        {/* MVP → 플랫폼형 → 풀 패키지 — 시작과 목표를 표시한다 */}
+        <ol className="mt-3 grid grid-cols-3 gap-1.5" aria-label="상품 단계">
+          {PACKAGE_ORDER.map((g, i) => {
+            const isStart = g === report.grade
+            const isTarget = stepping && g === report.target
             return (
               <li
                 key={g}
-                aria-current={on ? 'step' : undefined}
-                className={`rounded-lg px-1 py-2 text-center text-[0.75rem] font-black leading-tight sm:text-[0.82rem] ${
-                  on ? skin.on : 'bg-white/8 text-slate-500 print:bg-slate-100 print:text-slate-400'
+                aria-current={isStart ? 'step' : undefined}
+                className={`rounded-xl px-1.5 py-2 text-center leading-tight ${
+                  isStart
+                    ? 'bg-[#D8A871] text-[#0B0E12]'
+                    : isTarget
+                      ? 'bg-white/[0.04] text-[#E6C396] ring-1 ring-inset ring-[#D8A871]/70'
+                      : 'bg-white/[0.06] text-slate-500 print:bg-slate-100 print:text-slate-400'
                 }`}
               >
-                <span className="block text-[0.75rem] font-bold opacity-70">{i + 1}단계</span>
-                {GRADE_META[g].label}
+                <span className="block text-[0.7rem] font-bold opacity-80">{isStart ? '여기서 시작' : isTarget ? '목표' : `STEP ${i + 1}`}</span>
+                <span className="mt-0.5 block text-[0.9rem] font-black sm:text-[0.98rem]">{PACKAGE_META[g].label}</span>
+                <span className="mt-0.5 block text-[0.68rem] font-semibold tabular-nums opacity-80 sm:text-[0.74rem]">{PACKAGE_META[g].price}</span>
               </li>
             )
           })}
         </ol>
-        <p className="mt-3 break-keep text-[0.82rem] leading-relaxed text-slate-400 print:text-slate-500">
-          이 점수는 승인이나 선정 가능성을 뜻하지 않습니다. 지금 일하는 방식으로 볼 때, 우리 회사에 따로 AX를 만드는 게 맞는지 가늠하는 내부 기준입니다.
+
+        {/* 이 상품을 권하는 이유 — 대표님 답에서만 뽑는다 */}
+        {report.reasons.length > 0 && (
+          <ul className="mt-5 space-y-2">
+            {report.reasons.map((r) => (
+              <li key={r} className="flex items-start gap-2.5">
+                <CheckIcon className="text-[#D8A871]" />
+                <p className="break-keep text-[0.98rem] font-semibold leading-relaxed text-slate-200 print:text-slate-700">{r}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <p className="mt-5 break-keep border-t border-white/10 pt-4 text-[0.84rem] leading-relaxed text-slate-400 print:border-slate-200 print:text-slate-500">
+          {report.paymentNote} 어떤 상품이든 벤처기업확인 신청까지 함께 준비해요.
         </p>
       </section>
 
-      {/* ② 지금 걸려 있는 3가지 + ③ 이대로 두면 */}
+      {/* ② 상황별로 같이 준비할 것 */}
+      <FocusCard items={report.focus} />
+
+      {/* ③ 지금 걸려 있는 문제 + 이대로 두면 */}
       <ProblemsCard items={report.topProblems} painCount={report.painCount} painTotal={report.painTotal} />
 
       {/* ④ 그럼, 무엇부터 */}
       <ActionPlan report={report} />
-
-      {/* 함께 검토하고 싶은 분야 — 메인 결과와 분리된 선택 항목. 썸네일·가격 없이 목차별로 고른다. */}
-      {onGrowthInterestsChange && !submitted && (
-        <section className="mt-9 rounded-2xl border border-slate-200 bg-white px-4 py-4 print:hidden sm:px-5">
-          <p className="text-[1rem] font-black text-slate-900">함께 검토하고 싶은 분야가 있으신가요? (선택)</p>
-          <p className="mt-1 text-[0.85rem] leading-snug text-slate-500">
-            AX로 쌓인 데이터와 성과는 다른 분야에서도 근거가 될 수 있어요. 고르신 분야는 상담 때 같이 봐요.
-          </p>
-          <div className="mt-3">
-            <InterestPicker idPrefix="fit" value={growthInterests} onChange={onGrowthInterestsChange} />
-          </div>
-        </section>
-      )}
 
       {/* 상담 CTA — 제출 전에만 */}
       {!submitted ? (

@@ -78,7 +78,7 @@ function ResultsList() {
                   <p className="mt-2 text-[1.02rem] font-black leading-snug text-slate-900">{r.snapshot.headline}</p>
                   <div className="mt-2 flex items-center gap-3">
                     <span className="text-sm font-bold text-slate-500">
-                      {r.snapshot.gradeLabel} · AX Fit <span className="tabular-nums text-slate-900">{r.snapshot.score}점</span>
+                      추천 시작 {r.snapshot.gradeLabel} · <span className="tabular-nums text-slate-900">{r.snapshot.priceFrom}</span>
                     </span>
                     <span className="text-sm font-semibold text-[#B37744]">결과 다시 보기 →</span>
                   </div>

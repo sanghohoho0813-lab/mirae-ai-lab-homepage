@@ -1,135 +1,99 @@
-// 3분 AX Fit — 점수·등급 엔진.
-// ⚠️ 여기서 계산되는 점수는 승인·선정 확률이 아니라 "우리 회사에 별도 AX가 맞는지"를
-//    가늠하는 내부 판단 지표(0~100, 5점 단위)입니다. 지나치게 정밀한 숫자를 만들지 않습니다.
+// 3분 AX Fit — 추천 엔진.
+// 답을 보고 세 가지 상품 중 '어디서 시작할지'와 '결국 어디까지 갈지'를 정한다.
+//   MVP 500만원부터 · 플랫폼형 1,500만원부터 · 풀 패키지(AX + 플랫폼) 3,000만원부터
+// ⚠️ 승인·선정 가능성을 판단하지 않는다. 상담 전에 범위를 맞추기 위한 안내다.
 //
-// 구성
-//  - 문제 강도 (업무 문항 12개 합, 최대 36) → 60점   ※ 문항 수가 바뀌어도 비율로 환산한다
-//  - 고유 업무 (uniqueWork, 최대 3)          → 25점
-//  - 내부 담당자 (internalOwner, 최대 3)     → 15점
-//
-// 등급
-//  - NO_GO  '지금은 정비 먼저'   : 점수 35 미만
-//  - LITE   '작게 시작'         : 35~54, 또는 고유 업무가 약해(uniqueWork ≤ 1) 기성 도구로 해결될 가능성이 큰 경우(점수 70 미만)
-//  - FULL   '전면 구축 후보'    : 55 이상이고 고유 업무가 분명한 경우
-//  - HIGH   '최우선 검토'       : 75 이상 + 고유 업무 분명 + 대표 의존(askProgress+ceoLoadGrows ≥ 4) + 데이터 축적 가능성(dataUnused ≥ 2)
-// ⚠️ 서버(api/business-diagnosis.ts 의 axFitGrade)가 같은 규칙으로 다시 계산한다 — 문항을 바꾸면 양쪽을 같이 고친다.
-import type { AxFitGrade, AxFitProblem, AxFitReport, DiagnosisAnswers, SeverityTone } from '../types/businessDiagnosis'
-import { DEGREE_OPTIONS, DEGREE_VALUE, DIAGNOSIS_VERSION, OWNER_VALUE } from '../data/businessDiagnosisQuestions'
+// 규칙
+//  1. 시작 = '가장 먼저 만들고 싶은 것' (시제품 → MVP · 고객 화면 → 플랫폼형 · 운영 화면/둘 다 → 풀 패키지)
+//     '모르겠어요'면 업무 신호로 추정한다.
+//  2. 목표 = 시작과 업무 신호로 본 필요 중 큰 쪽
+//     - 고객 신호: 고객 요청을 사람이 넘김(manualHandoff ≥ 2) 또는 상담 이유에 '고객 서비스'
+//     - 운영 신호: 반복 입력 + 대표 확인 ≥ 4, 고유 업무 ≥ 2, 또는 상담 이유에 '업무 정리'
+//     - 운영 신호가 있으면 풀 패키지(AX는 풀 패키지에 들어 있다), 고객 신호만 있으면 플랫폼형
+//  3. 예산이 500만 원 안팎이면 MVP, 1,500만 원 안팎이면 플랫폼형까지만 먼저 시작한다(목표는 그대로).
+// ⚠️ 서버(api/business-diagnosis.ts 의 axPackage)가 같은 규칙으로 다시 계산한다 — 바꾸면 양쪽을 같이 고친다.
+import type { AxFitGrade, AxFitProblem, AxFitReport, DiagnosisAnswers } from '../types/businessDiagnosis'
+import { DEGREE_OPTIONS, DEGREE_VALUE, DIAGNOSIS_VERSION, WORK_SIGNAL_IDS, isPreStartup, questions } from '../data/businessDiagnosisQuestions'
 
-// 질문 순서와 같게 둔다 — TOP 3 동점은 먼저 나온 질문이 앞선다
-const PROBLEM_IDS = [
-  'repeatInput', 'docRepeat', 'askProgress', 'toolGaps', 'manualHandoff', 'repeatQuestions',
-  'missDelay', 'priorityByMemory', 'handover', 'dataUnused', 'revenueLeak', 'ceoLoadGrows',
-] as const
-const PAIN_MAX = PROBLEM_IDS.length * 3
-/** 점수에 들어가는 업무 문항 — 결과지의 "13개 중 N개" 는 이 목록 기준이다 */
-const PAIN_IDS = [...PROBLEM_IDS, 'uniqueWork'] as const
-
-const val = (a: DiagnosisAnswers, id: string): number => {
-  const v = a[id]
-  return typeof v === 'string' ? (DEGREE_VALUE[v] ?? 0) : 0
-}
+const one = (a: DiagnosisAnswers, id: string): string | undefined => (typeof a[id] === 'string' ? (a[id] as string) : undefined)
+const many = (a: DiagnosisAnswers, id: string): string[] => (Array.isArray(a[id]) ? (a[id] as string[]) : [])
+const val = (a: DiagnosisAnswers, id: string): number => DEGREE_VALUE[one(a, id) ?? ''] ?? 0
+/** 보기 값 → 화면 글자 (질문 데이터에서 찾는다) */
+const optionLabel = (id: string, v?: string): string => questions.find((q) => q.id === id)?.options.find((o) => o.value === v)?.label ?? ''
 /** 고른 답을 그대로 (예: '거의 항상 그래요') — 결과지에서 대표님 답을 되돌려 보여준다 */
-const answerLabel = (a: DiagnosisAnswers, id: string): string => {
-  const v = a[id]
-  return typeof v === 'string' ? (DEGREE_OPTIONS.find((o) => o.value === v)?.label ?? '') : ''
-}
-const ownerVal = (a: DiagnosisAnswers): number => {
-  const v = a['internalOwner']
-  return typeof v === 'string' ? (OWNER_VALUE[v] ?? 0) : 0
-}
+const degreeLabel = (a: DiagnosisAnswers, id: string): string => DEGREE_OPTIONS.find((o) => o.value === one(a, id))?.label ?? ''
 
 /** 5점 단위 반올림 — 가짜 정밀도를 만들지 않는다 */
 const round5 = (n: number) => Math.max(0, Math.min(100, Math.round(n / 5) * 5))
 
-export const GRADE_META: Record<AxFitGrade, { label: string; desc: string; headline: string; tone: SeverityTone }> = {
-  NO_GO: {
-    label: '지금은 정비 먼저',
-    desc: '새 시스템을 들이기 전에 엑셀과 카톡부터 정리하면 되는 단계예요.',
-    headline: '지금은 새로 만들기보다 정리가 먼저예요.',
-    tone: 'blue',
+export const PACKAGE_ORDER: readonly AxFitGrade[] = ['MVP', 'PLATFORM', 'FULL']
+const rank = (p: AxFitGrade) => PACKAGE_ORDER.indexOf(p)
+
+export const PACKAGE_META: Record<AxFitGrade, { label: string; ro: string; short: string; price: string; desc: string; headline: string }> = {
+  MVP: {
+    label: 'MVP',
+    ro: 'MVP로',
+    short: '보여 줄 시제품',
+    price: '500만원부터',
+    desc: '꼭 필요한 기능만 담아 실제로 눌러 볼 수 있게 만든 화면이에요. 심사·투자 자리에서도 켜서 보여 줄 수 있어요.',
+    headline: '작게, 꼭 필요한 화면 하나부터 만드는 게 맞아요.',
   },
-  LITE: {
-    label: '작게 시작',
-    desc: '전체를 바꾸기보다, 자주 막히는 일부터 손보면 되는 단계예요.',
-    headline: '작게 시작하는 게 맞아요.',
-    tone: 'amber',
+  PLATFORM: {
+    label: '플랫폼형',
+    ro: '플랫폼형으로',
+    short: '고객이 쓰는 화면',
+    price: '1,500만원부터',
+    desc: '고객·거래처가 직접 주문하고 예약하는 화면이에요. 쓰는 만큼 데이터가 쌓여요.',
+    headline: '고객이 쓰는 플랫폼부터 여는 게 맞아요.',
   },
   FULL: {
-    label: '전면 구축 후보',
-    desc: '우리 회사 방식대로 도는 전용 시스템에 AI 판단까지 붙이길 권해요.',
-    headline: '전면 구축까지 검토해 볼 만한 회사예요.',
-    tone: 'orange',
-  },
-  HIGH: {
-    label: '최우선 검토',
-    desc: '일이 복잡하고 대표님 손을 많이 타는 데다, 쌓아 둔 기록도 쓸 데가 많아요.',
-    headline: '지금 AX를 우선 검토해 볼 때예요.',
-    tone: 'red',
+    label: '풀 패키지',
+    ro: '풀 패키지로',
+    short: 'AX + 플랫폼',
+    price: '3,000만원부터',
+    desc: '회사 운영(AX)과 고객 플랫폼을 한 번에 이어요. 회사 현황과 AI 판단이 대표님 폰 한 화면에 나와요.',
+    headline: 'AX와 플랫폼을 함께 잇는 풀 패키지가 맞아요.',
   },
 }
 
-// 문제 카드 문안 — 질문별 (문제 / 왜 문제인지 / 그대로 두면)
+const START_BY_TARGET: Record<string, AxFitGrade> = { demo: 'MVP', customer: 'PLATFORM', internal: 'FULL', both: 'FULL' }
+const BUDGET_CAP: Record<string, AxFitGrade> = { under500: 'MVP', around1500: 'PLATFORM' }
+
+function signals(a: DiagnosisAnswers) {
+  const reasons = many(a, 'reason')
+  const customer = val(a, 'manualHandoff') >= 2 || reasons.includes('service')
+  const internal = val(a, 'repeatInput') + val(a, 'ceoCheck') >= 4 || val(a, 'uniqueWork') >= 2 || reasons.includes('ops')
+  return { customer, internal }
+}
+
+/** 시작 상품과 목표 상품 — 서버 axPackage 와 같은 규칙 */
+export function recommendPackage(a: DiagnosisAnswers): { start: AxFitGrade; target: AxFitGrade; capped: boolean } {
+  const sig = signals(a)
+  const needed: AxFitGrade = sig.internal ? 'FULL' : sig.customer ? 'PLATFORM' : 'MVP'
+  const chosen = START_BY_TARGET[one(a, 'buildTarget') ?? '']
+  const first = chosen ?? needed
+  const target = rank(needed) > rank(first) ? needed : first
+  const cap = BUDGET_CAP[one(a, 'budget') ?? '']
+  const start = cap && rank(first) > rank(cap) ? cap : first
+  return { start, target, capped: start !== first }
+}
+
+// 업무 신호 카드 문안 — (문제 / 왜 문제인지 / 그대로 두면)
 const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: string }> = {
   repeatInput: {
     title: '같은 정보를 여러 곳에 반복 입력',
     why: '옮겨 적을 때마다 오타가 나고, 직원 시간도 거기에 들어가요.',
     ifIgnored: '거래가 늘면 입력도 같이 늘어서, 사람을 더 뽑아도 끝이 안 나요.',
   },
-  docRepeat: {
-    title: '견적서, 계약서, 보고서를 매번 처음부터 작성',
-    why: '비슷한 서류인데도 예전 파일을 찾아 복사하고 고치는 데 시간이 들어요.',
-    ifIgnored: '거래가 늘수록 서류 만드는 시간도 늘고, 숫자 실수도 같이 늘어요.',
-  },
-  askProgress: {
-    title: '진행 상황을 직접 물어봐야 알 수 있음',
+  ceoCheck: {
+    title: '진행 상황을 대표님이 직접 묻고 확인해야 돌아감',
     why: "담당자 머릿속에만 있으니, '그거 어떻게 됐어요?' 묻는 것부터 일이 돼요.",
-    ifIgnored: '대표님이 자리를 비우면 회사 일도 같이 멈춰요.',
-  },
-  toolGaps: {
-    title: '엑셀, 카톡, 전화, ERP 사이에서 일이 끊김',
-    why: '카톡에서 엑셀로 옮기는 사이를 사람이 메우고, 실수도 거기서 나요.',
-    ifIgnored: '회사 상황을 한 번에 볼 곳이 없어 결정이 늦어져요.',
+    ifIgnored: '회사가 커질수록 확인할 일도 같이 늘고, 대표님이 자리를 비우면 일이 멈춰요.',
   },
   manualHandoff: {
-    title: '고객 요청과 주문, 예약을 사람이 직접 전달',
+    title: '고객 주문과 예약, 문의를 사람이 직접 전달',
     why: '문의가 담당자 폰에서 멈추면, 답이 언제 나갈지는 그 사람 사정에 달려요.',
     ifIgnored: '고객이 늘수록 빠뜨리는 주문과 늦는 답변도 같이 늘어요.',
-  },
-  repeatQuestions: {
-    title: '고객이 묻는 같은 질문에 매번 사람이 답함',
-    why: '가격, 일정, 절차처럼 답이 정해진 질문도 직원이 하나하나 다시 설명하고 있어요.',
-    ifIgnored: '문의가 몰리는 날엔 답이 늦어지고, 그사이 고객이 다른 곳을 알아봐요.',
-  },
-  missDelay: {
-    title: '빠뜨리거나 늦어져 다시 확인하는 일이 반복',
-    why: '알려 주는 곳이 없어서, 사람 기억으로 겨우 막고 있는 거예요.',
-    ifIgnored: '다시 확인하느라 정작 일할 시간이 계속 줄어요.',
-  },
-  priorityByMemory: {
-    title: '무엇부터 할지 담당자의 경험과 기억에 의존',
-    why: '누가 맡느냐에 따라 순서도, 결과도 달라져요.',
-    ifIgnored: '담당자가 바뀌면 순서를 처음부터 다시 잡아야 해요.',
-  },
-  handover: {
-    title: '담당자가 바뀌면 일이 멈추고 인수인계가 오래 걸림',
-    why: '일하는 방법과 거래처 사정이 사람 머릿속에만 있어서예요.',
-    ifIgnored: '한 사람이 그만두면, 그 사람이 알던 것도 같이 회사를 떠나요.',
-  },
-  dataUnused: {
-    title: '데이터는 있는데 결정할 때 쓰지 못함',
-    why: '거래 기록은 엑셀에 쌓여만 있고, 결정할 땐 안 꺼내 봐요.',
-    ifIgnored: '감으로 내린 결정이 맞았는지 확인할 길이 계속 없어요.',
-  },
-  revenueLeak: {
-    title: '다시 살 고객, 추가 제안할 거래처를 놓침',
-    why: '언제 다시 연락할지 알려 주는 곳이 없어, 담당자 기억에 맡기고 있어요.',
-    ifIgnored: '새 고객 찾는 데만 힘을 쓰고, 이미 손에 쥔 매출 기회는 흘려보내요.',
-  },
-  ceoLoadGrows: {
-    title: '회사가 커질수록 대표님과 관리자가 확인할 일도 늘어남',
-    why: '회사가 클수록 대표님이 더 바쁘다면, 시스템이 할 일을 대표님이 하고 있는 거예요.',
-    ifIgnored: '매출이 두 배가 되면 대표님 일도 두 배가 돼요.',
   },
   uniqueWork: {
     title: '기존 ERP·POS·SaaS로는 안 되는 우리 회사만의 일',
@@ -138,53 +102,45 @@ const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: stri
   },
 }
 
-// 권장 AX 방향 — 문제 묶음별 한 줄
-type Cluster = { id: string; qs: string[]; point: string }
-const CLUSTERS: Cluster[] = [
-  { id: 'connect', qs: ['repeatInput', 'toolGaps'], point: '한 번만 입력하면 필요한 곳에 같이 들어가게 해요.' },
-  { id: 'docs', qs: ['docRepeat'], point: '쌓인 기록으로 견적서와 보고서 초안을 바로 만들어요.' },
-  { id: 'visibility', qs: ['askProgress', 'ceoLoadGrows'], point: '안 물어봐도 진행 상황이 한 화면에 보여요.' },
-  { id: 'customer', qs: ['manualHandoff'], point: '주문, 예약, 문의가 들어오면 담당자에게 바로 넘어가게 해요.' },
-  { id: 'answers', qs: ['repeatQuestions'], point: '답이 정해진 질문은 AI가 먼저 답하고, 사람은 꼭 필요한 문의만 받아요.' },
-  { id: 'judgment', qs: ['missDelay', 'priorityByMemory'], point: '놓치기 쉬운 일과 먼저 할 일을 AI가 먼저 알려 줘요.' },
-  { id: 'handover', qs: ['handover'], point: '누가 언제 무엇을 했는지 기록이 남아, 사람이 바뀌어도 일이 이어져요.' },
-  { id: 'data', qs: ['dataUnused'], point: '쌓인 기록을 한눈에 보는 우리 회사 현황판(대시보드)을 만들어요.' },
-  { id: 'revenue', qs: ['revenueLeak'], point: '다시 연락할 때가 된 고객과 추가 제안할 거래처를 먼저 알려 줘요.' },
-  { id: 'unique', qs: ['uniqueWork'], point: '시중 프로그램으로 안 되던 일을 전용 시스템으로 만들어요.' },
-]
-
-function topClusterPoints(a: DiagnosisAnswers, max: number): string[] {
-  return CLUSTERS.map((c, i) => ({ c, i, s: c.qs.reduce((sum, q) => sum + val(a, q), 0) / c.qs.length }))
-    .filter((x) => x.s >= 1)
-    .sort((x, y) => y.s - x.s || x.i - y.i)
-    .slice(0, max)
-    .map((x) => x.c.point)
+// 업무 신호별 권장 방향 한 줄
+const SIGNAL_POINT: Record<string, string> = {
+  repeatInput: '한 번만 입력하면 필요한 곳에 같이 들어가게 해요.',
+  ceoCheck: '안 물어봐도 진행 상황이 한 화면에 보여요.',
+  manualHandoff: '주문, 예약, 문의가 들어오면 담당자에게 바로 넘어가게 해요.',
+  uniqueWork: '시중 프로그램으로 안 되던 일을 전용 시스템으로 만들어요.',
 }
 
-export function computeAxFitGrade(a: DiagnosisAnswers): { grade: AxFitGrade; score: number } {
-  const pain = PROBLEM_IDS.reduce((sum, id) => sum + val(a, id), 0) // 0~PAIN_MAX(36)
-  const unique = val(a, 'uniqueWork') // 0~3
-  const owner = ownerVal(a) // 0~3
-  const score = round5((pain / PAIN_MAX) * 60 + (unique / 3) * 25 + (owner / 3) * 15)
+// 상담 이유별로 같이 준비할 것 — 제도 결과를 약속하지 않고 '무엇을 준비하는지'만 말한다
+const FOCUS: Record<string, { title: string; text: string }> = {
+  fund: { title: '정책자금', text: '지금 신청할 수 있는 자금과 시기를 같이 보고, 신청 서류에 넣을 화면과 자료를 준비해요.' },
+  grant: { title: '정부지원사업', text: '사업계획서에 넣을 실제 화면을 마감 일정에 맞춰 준비해요.' },
+  invest: { title: '투자 유치', text: 'IR 자리에서 켜서 보여 줄 화면과 지표를 먼저 정리해요.' },
+  cert: { title: '벤처기업확인·인증', text: '벤처기업확인 신청까지 함께 준비해요.' },
+  ops: { title: '업무 정리', text: '반복 입력과 대표님 확인이 많은 일부터 줄여요.' },
+  service: { title: '고객 서비스', text: '고객이 가장 많이 하는 요청(주문·예약·문의)부터 화면으로 열어요.' },
+}
 
-  const ceoDependency = val(a, 'askProgress') + val(a, 'ceoLoadGrows') // 0~6
-  const dataPotential = val(a, 'dataUnused') // 0~3
-
-  let grade: AxFitGrade
-  if (score < 35) grade = 'NO_GO'
-  else if (unique <= 1 && score < 70) grade = 'LITE'
-  else if (score < 55) grade = 'LITE'
-  else if (score >= 75 && unique >= 2 && ceoDependency >= 4 && dataPotential >= 2) grade = 'HIGH'
-  else grade = 'FULL'
-  return { grade, score }
+const SHORT: Record<'bizStage' | 'teamSize' | 'timeline', Record<string, string>> = {
+  bizStage: { pre: '예비창업', early: '창업 3년 미만', growth: '업력 3~7년', mature: '업력 7년 이상' },
+  teamSize: { solo: '1인', small: '2~4명', mid: '5~19명', large: '20~49명', over: '50명 이상' },
+  timeline: { within1m: '1개월 안', within3m: '3개월 안', within6m: '6개월 안', none: '일정 미정' },
 }
 
 export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
-  const { grade, score } = computeAxFitGrade(answers)
-  const meta = GRADE_META[grade]
+  const pre = isPreStartup(answers)
+  const { start, target, capped } = recommendPackage(answers)
+  const meta = PACKAGE_META[start]
+  const reasonsPicked = many(answers, 'reason')
+  const buildTarget = one(answers, 'buildTarget')
+  const budget = one(answers, 'budget')
 
-  // 현재 가장 큰 문제 TOP 3 — 업무 문항(고유 업무 포함) 중 강도 높은 순(동점은 질문 순서)
-  const ranked = PAIN_IDS.map((id, i) => ({ id, i, v: val(answers, id) }))
+  // 업무 신호 — 예비창업은 묻지 않는다
+  const workIds = pre ? [] : [...WORK_SIGNAL_IDS]
+  const workSum = workIds.reduce((sum, id) => sum + val(answers, id), 0)
+  const score = workIds.length ? round5((workSum / (workIds.length * 3)) * 100) : 0
+
+  const ranked = workIds
+    .map((id, i) => ({ id, i, v: val(answers, id) }))
     .filter((x) => x.v >= 1)
     .sort((x, y) => y.v - x.v || x.i - y.i)
     .slice(0, 3)
@@ -194,72 +150,106 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
     ...PROBLEM_COPY[x.id],
     tone: idx === 0 ? 'orange' : 'amber',
     severity: x.v,
-    answerLabel: answerLabel(answers, x.id),
+    answerLabel: degreeLabel(answers, x.id),
   }))
+  const painCount = workIds.filter((id) => val(answers, id) >= 2).length
 
-  // '자주 그래요' 이상으로 답한 문항 수 — 문제가 몇 군데에 퍼져 있는지 한 숫자로 보여준다
-  const painCount = PAIN_IDS.filter((id) => val(answers, id) >= 2).length
+  // 상황 요약 칩 — 보기 문장('~이에요') 대신 짧은 이름으로
+  const situation = [
+    { label: '단계', value: SHORT.bizStage[one(answers, 'bizStage') ?? ''] ?? '' },
+    { label: '업종', value: optionLabel('industry', one(answers, 'industry')) },
+    { label: '인원', value: SHORT.teamSize[one(answers, 'teamSize') ?? ''] ?? '' },
+    { label: '일정', value: SHORT.timeline[one(answers, 'timeline') ?? ''] ?? '' },
+  ].filter((c) => c.value)
 
-  // 권장 AX 방향
-  const clusterPoints = topClusterPoints(answers, 2)
+  // 이 상품을 권하는 이유 — 대표님 답에서만 뽑는다
+  const why: string[] = []
+  if (buildTarget && buildTarget !== 'unsure') why.push(`먼저 만들고 싶은 것 — ${optionLabel('buildTarget', buildTarget)}`)
+  else why.push('만들 것은 상담에서 같이 정해요. 지금 답으로는 이 구성이 가장 가까워요.')
+  if (pre && start === 'MVP') why.push('창업 전이라, 보여 줄 수 있는 화면부터 갖추는 게 순서예요.')
+  // 업무 신호 — 목표가 풀 패키지면 운영 쪽 근거를, 아니면 고객 쪽 근거를 먼저 든다
+  const customerWhy: string[] = []
+  const internalWhy: string[] = []
+  if (!pre && val(answers, 'manualHandoff') >= 2) customerWhy.push('고객 주문·예약·문의를 사람이 일일이 넘기고 있어요.')
+  if (reasonsPicked.includes('service') && customerWhy.length === 0) customerWhy.push('고객이 쓸 서비스를 만들고 싶다고 하셨어요.')
+  if (!pre && val(answers, 'repeatInput') + val(answers, 'ceoCheck') >= 4) internalWhy.push('반복 입력과 대표님 확인이 일의 흐름을 막고 있어요.')
+  if (!pre && val(answers, 'uniqueWork') >= 2) internalWhy.push('시중 프로그램으로 안 되는 우리 회사만의 일이 있어요.')
+  why.push(...(target === 'FULL' ? [...internalWhy, ...customerWhy] : [...customerWhy, ...internalWhy]))
+  if (start === 'MVP' && buildTarget !== 'demo' && (reasonsPicked.includes('grant') || reasonsPicked.includes('invest'))) why.push('심사·투자 자리에서 보여 줄 화면이 먼저 필요해요.')
+  const capLine = capped ? `예산에 맞춰 ${PACKAGE_META[start].ro} 먼저 시작하고, 쓰면서 넓혀 가요.` : ''
+  const reasons = [...why.slice(0, capLine ? 2 : 3), ...(capLine ? [capLine] : [])]
+
+  // 상담 이유별로 같이 준비할 것 (+ 1개월 안 일정)
+  const focus = reasonsPicked.filter((r) => FOCUS[r]).map((r) => FOCUS[r])
+  if (one(answers, 'timeline') === 'within1m') focus.unshift({ title: '1개월 안 일정', text: '마감에 맞출 수 있는 범위부터 정하고, 2주 안에 기본 틀을 만들어요.' })
+
+  // 비용·정산 안내 — 영상 2편과 같은 말로
+  const deferred = budget === 'afterFunding' || reasonsPicked.includes('fund') || reasonsPicked.includes('grant')
+  const paymentNote =
+    '금액은 시작 기준이에요. 범위는 상담에서 정하고, 자금 승인 여부와 관계없이 진행 정도에 따라 정산해요.' +
+    (deferred ? ' 자금 흐름이 부담되면 착수금으로 시작하고, 개발비는 자금이 들어온 뒤 후불로 정산할 수도 있어요.' : '')
+
+  // 권장 방향 + 다음 행동 (시작 상품 기준)
+  const signalPoints = ranked.filter((x) => x.v >= 2).map((x) => SIGNAL_POINT[x.id])
+  const steppingUp = rank(target) > rank(start) ? `반응을 보며 ${PACKAGE_META[target].label}까지 한 단계씩 넓혀요.` : ''
   const direction =
-    grade === 'NO_GO'
+    start === 'MVP'
       ? {
-          title: '지금 쓰는 도구부터 정리하세요',
-          points: [
-            '엑셀, 카톡방, ERP에 각각 뭘 남길지부터 정해 두세요.',
-            '옮겨 적는 일이 눈에 띄게 늘면, 그때 작게 시작해요.',
-          ],
+          title: '꼭 필요한 화면 하나부터 만드세요',
+          points: ['꼭 보여 줄 기능 1~2개만 골라, 2주 안에 눌러 볼 수 있게 만들어요.', ...signalPoints.slice(0, 1), ...(steppingUp ? [steppingUp] : [])],
         }
-      : grade === 'LITE'
+      : start === 'PLATFORM'
         ? {
-            title: '제일 자주 막히는 일 하나부터 시작하세요',
-            points: [...clusterPoints, '한 번에 다 바꾸지 않고, 한 곳만 먼저 이어 봐요.'],
+            title: '고객이 쓰는 화면부터 여세요',
+            points: [
+              '주문, 예약, 문의가 들어오면 담당자에게 바로 넘어가게 해요.',
+              '고객이 쓰는 만큼 데이터가 쌓여, 다음 단계를 정할 근거가 돼요.',
+              ...(steppingUp ? [steppingUp] : []),
+            ],
           }
-        : grade === 'FULL'
-          ? {
-              title: '우리 회사만의 일부터 시스템으로 옮기세요',
-              points: [...clusterPoints, "AI가 '이것부터 하세요' 하고 알려 줄 업무도 같이 골라요."],
-            }
-          : {
-              title: '전면 구축 설계를 먼저 검토해 보세요',
-              points: [...clusterPoints, '대표님 확인을 줄이도록 운영 화면과 AI 판단을 함께 설계해요.'],
-            }
-
-  // 내부 담당자 준비 상태
-  const owner = answers['internalOwner']
-  const readiness =
-    owner === 'dedicated'
-      ? { label: '전담자 있음', note: '함께 쓸 담당자가 있어, 만든 뒤 빨리 자리 잡을 수 있어요.' }
-      : owner === 'partTime'
-        ? { label: '겸임 담당자 있음', note: '겸임으로도 시작할 수 있어요. 처음엔 대표님과 같이 챙겨 볼 날을 정해 두세요.' }
-        : owner === 'ceo'
-          ? { label: '대표가 직접', note: '대표님이 직접 쓰면서 시작해도 돼요. 자리 잡을 즈음엔 맡을 사람을 정해 두세요.' }
-          : { label: '아직 없음', note: '같이 쓸 담당자부터 정해 두세요.' }
-
-  // 다음 행동
+        : {
+            title: '회사 운영과 고객 화면을 한 번에 이으세요',
+            points: [...signalPoints.slice(0, 2), '회사 현황과 AI 판단을 대표님 폰 한 화면에서 봐요.'],
+          }
   const nextActions =
-    grade === 'NO_GO'
-      ? ['도구를 정리한 뒤, 반복 입력이 늘면 이 진단을 다시 해 보세요.', '원하시면 상담에서 지금 도구 구성만 짧게 봐 드려요.']
-      : grade === 'LITE'
-        ? ['제일 자주 막히는 일 1개를 골라, 상담에서 어디까지 할지 정하세요.', '같이 쓸 담당자를 먼저 정해 두면 진행이 빨라져요.']
-        : grade === 'FULL'
-          ? ['AX Blueprint 상담부터 시작하세요. 사업과 업무를 같이 보고, 무엇부터 어디까지 만들지와 성과 지표(KPI)를 정해요.', '1차 AX Build는 효과가 가장 큰 핵심 업무 하나로 시작해요.']
-          : ['AX Fit 상담을 신청해, 사업과 업무 분석 일정부터 잡으세요.', '1차 구축 범위는 운영 화면부터 검토해요.']
-  // ⚠️ 담당자 안내(readiness.note)는 결과지에서 '내부 담당자' 칸으로 따로 보여준다 —
-  //    여기에 또 넣으면 같은 문장이 바로 위아래에 두 번 나온다.
+    start === 'MVP'
+      ? ['상담에서 일정과, 꼭 보여 줄 기능 1~2개를 정해요.', '2주 안에 MVP를 만들고, 반응을 보며 다음 단계를 정해요.']
+      : start === 'PLATFORM'
+        ? ['상담에서 고객이 가장 많이 하는 요청부터 정해요.', '2주 안에 기본 틀을 열고, 실제로 쓰면서 다듬어요.']
+        : ['AX Blueprint 상담에서 사업과 업무를 같이 보고, 무엇부터 어디까지 만들지와 성과 지표(KPI)를 정해요.', '2주 안에 기본 틀을 잡은 뒤, 실제 업무 자료로 다듬고 테스트해요.']
+
+  // 내부 담당자 준비 상태 — 예비창업은 묻지 않는다
+  const owner = one(answers, 'internalOwner')
+  const readiness =
+    pre || !owner
+      ? null
+      : owner === 'dedicated'
+        ? { label: '전담자 있음', note: '함께 쓸 담당자가 있어, 만든 뒤 빨리 자리 잡을 수 있어요.' }
+        : owner === 'partTime'
+          ? { label: '겸임 담당자 있음', note: '겸임으로도 시작할 수 있어요. 처음엔 대표님과 같이 챙겨 볼 날을 정해 두세요.' }
+          : owner === 'ceo'
+            ? { label: '대표가 직접', note: '대표님이 직접 쓰면서 시작해도 돼요. 자리 잡을 즈음엔 맡을 사람을 정해 두세요.' }
+            : { label: '아직 없음', note: '같이 쓸 담당자부터 정해 두세요.' }
+
+  const headline = start === target ? meta.headline : `${meta.ro} 시작해, ${PACKAGE_META[target].label}까지 한 단계씩 가는 게 맞아요.`
 
   return {
     version: DIAGNOSIS_VERSION,
-    grade,
+    grade: start,
+    target,
     gradeLabel: meta.label,
     gradeDesc: meta.desc,
+    priceFrom: meta.price,
     score,
-    headline: meta.headline,
+    headline,
     summary: meta.desc,
+    situation,
+    reasons,
+    focus,
+    paymentNote,
     topProblems,
     painCount,
-    painTotal: PAIN_IDS.length,
+    painTotal: workIds.length,
     direction,
     nextActions,
     readiness,

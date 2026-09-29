@@ -3,6 +3,7 @@
 // 답변은 localStorage 즉시 저장, 서버 동기화는 완료·제출 시점 중심. 이벤트는 중요 행동만.
 import type { AxFitReport, DiagnosisAnswers, DiagnosisSession, LeadFormData } from '../types/businessDiagnosis'
 import { AX_FIT_INFO, questions } from '../data/businessDiagnosisQuestions'
+import { PACKAGE_META } from './businessDiagnosisEngine'
 import { interestTrackLabel, loadInterest } from './interestTrack'
 import { postJson } from './apiFetch'
 
@@ -53,21 +54,27 @@ export type StageMeta = {
   stageDurations?: Partial<Record<number, number>>
 }
 
-/** 서버 result_summary — 관리자 화면·알림 메일이 읽는 요약. 상품 추천은 없다. */
+/** 서버 result_summary — 관리자 화면·알림 메일이 읽는 요약. gradeLabel = 추천 시작 상품 */
 function reportSnapshot(report: AxFitReport) {
   return {
     depth: 1,
     version: report.version,
     grade: report.grade,
     gradeLabel: report.gradeLabel,
+    target: report.target,
+    targetLabel: PACKAGE_META[report.target].label,
+    priceFrom: report.priceFrom,
     score: report.score,
     headline: report.headline,
     summary: report.summary,
+    situation: report.situation.map((c) => `${c.label} ${c.value}`),
+    reasons: report.reasons,
+    focus: report.focus.map((f) => `${f.title} — ${f.text}`),
     topTask: report.nextActions[0] ?? '',
     overallScore: report.score,
     topProblems: report.topProblems.map((p) => `${p.rank}. ${p.title}`),
     direction: [report.direction.title, ...report.direction.points],
-    readiness: `${report.readiness.label} — ${report.readiness.note}`,
+    readiness: report.readiness ? `${report.readiness.label} — ${report.readiness.note}` : '',
     // 메일 템플릿 호환 키
     strengths: [report.direction.title, ...report.direction.points],
     improvements: report.topProblems.map((p) => `${p.rank}. ${p.title} — ${p.why}`),
@@ -132,7 +139,8 @@ export async function submitLead(
     foundAdvantages: [],
     skippedBenefits: [],
     utm: session.utm ?? null,
-    form,
+    // 업종은 진단 질문에서 받는다 — 리드 목록의 업종 칸에 한글 이름으로 남긴다
+    form: { ...form, industry: session.answers.industry ? answerLabel('industry', session.answers.industry) : undefined },
     stageMeta,
     scores: [{ area: 'axFit', score: report.score, priority: report.gradeLabel }],
     resultSummary: reportSnapshot(report),

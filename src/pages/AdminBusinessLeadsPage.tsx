@@ -42,14 +42,27 @@ const STATUS_LABELS: Record<string, string> = {
 
 const FLAG_LABELS: Record<string, string> = {
   hot: 'HOT',
-  ax_high_priority: 'HIGH PRIORITY',
-  ax_full_candidate: 'FULL 후보',
-  ax_lite: 'LITE',
-  ax_no_go: 'NO-GO',
+  pkg_mvp: '추천 MVP',
+  pkg_platform: '추천 플랫폼형',
+  pkg_full: '추천 풀 패키지',
+  pkg_step_up: '단계 확장',
+  need_fund: '정책자금',
+  need_grant: '지원사업',
+  need_invest: '투자 앞둠',
+  need_cert: '인증 준비',
+  deadline_1m: '1개월 안 일정',
+  budget_ready: '예산 1,500만+',
+  budget_after_funding: '자금 후 결정',
+  just_browsing: '정보형',
+  over_50: '50인 이상',
   growth_interest: '성장전략 관심',
   no_internal_owner: '담당자 미정',
   consultation_opt_in: '상담동의',
   // 구버전 리드
+  ax_high_priority: 'HIGH PRIORITY(구)',
+  ax_full_candidate: 'FULL 후보(구)',
+  ax_lite: 'LITE(구)',
+  ax_no_go: 'NO-GO(구)',
   funding_urgent: '자금긴급(구)',
   certification_interest: '인증관심(구)',
   employment_interest: '고용관심(구)',
@@ -66,6 +79,11 @@ const GRADE_TONE: Record<string, string> = {
 
 // 한글 표기로 바꾸기 전에 저장된 리드도 계속 색이 붙도록 영문 키를 함께 남겨 둔다
 const AX_TONE: Record<string, string> = {
+  // v6 — 추천 시작 상품
+  '풀 패키지': 'bg-orange-100 text-orange-800',
+  플랫폼형: 'bg-amber-100 text-amber-800',
+  MVP: 'bg-sky-50 text-sky-800',
+  // v5 이하 — AX Fit 등급
   '최우선 검토': 'bg-red-100 text-red-700',
   '전면 구축 후보': 'bg-orange-100 text-orange-800',
   '작게 시작': 'bg-amber-100 text-amber-800',
@@ -76,12 +94,15 @@ const AX_TONE: Record<string, string> = {
   'NO-GO': 'bg-blue-50 text-blue-700',
 }
 
+// v6: 시급성·예산·적합도·행동의향·준비도·가점 / 구버전 키(clarity·completeness)도 그대로 읽는다
 const BREAKDOWN_LABELS: Record<string, string> = {
-  urgency: '문제 강도',
-  fit: '서비스 적합도',
-  clarity: '문제 명확성',
+  urgency: '시급성',
+  budget: '예산·자금',
+  fit: '적합도',
+  readiness: '준비도',
+  clarity: '문제 명확성(구)',
   intent: '행동의향',
-  completeness: '정보 완성도',
+  completeness: '정보 완성도(구)',
   bonus: '가점',
   penalty: '감점',
 }
@@ -90,7 +111,21 @@ const BREAKDOWN_LABELS: Record<string, string> = {
 function consultationChecklist(answers: Record<string, string | string[]>): string[] {
   const one = (id: string) => (typeof answers[id] === 'string' ? (answers[id] as string) : undefined)
   const strong = (id: string) => ['often', 'always'].includes(one(id) ?? '')
+  const many = (id: string) => (Array.isArray(answers[id]) ? (answers[id] as string[]) : [])
+  const reasons = many('reason')
   const out: string[] = []
+  // v6 — 상황·이유·시기·예산부터
+  if (one('timeline') === 'within1m') out.push('일정이 1개월 안입니다. 정확한 마감일과 제출해야 할 것부터 확인해주세요.')
+  if (reasons.includes('fund')) out.push('필요한 정책자금(운전·시설)과 금액, 기존 대출·신용 상황을 확인해주세요.')
+  if (reasons.includes('grant')) out.push('준비 중인 지원사업 이름과 마감일, 지난 신청 이력을 확인해주세요.')
+  if (reasons.includes('invest')) out.push('투자 일정(IR 날짜)과 투자자에게 보여 줄 지표를 확인해주세요.')
+  if (reasons.includes('cert')) out.push('준비 중인 인증(벤처기업확인 등)과 지금 요건을 얼마나 갖췄는지 확인해주세요.')
+  if (one('budget') === 'afterFunding') out.push('자금이 들어온 뒤 정하고 싶다고 했습니다. 착수금 가능 범위와 자금 입금 예상 시기를 확인해주세요.')
+  if (one('budget') === 'unknown' || reasons.includes('explore')) out.push('예산이나 목적이 아직 정해지지 않았습니다. 결정하는 사람과 검토 시기를 확인해주세요.')
+  if (one('buildTarget') === 'unsure') out.push('만들 것이 정해지지 않았습니다. 고객 화면과 운영 화면 중 무엇이 더 급한지 같이 정해주세요.')
+  if (one('teamSize') === 'over') out.push('직원 50명 이상으로 답했습니다. 대상 범위(50인 미만) 안인지 규모를 확인해주세요.')
+  if (strong('ceoCheck')) out.push('대표가 하루에 직접 확인하는 업무가 무엇인지, 몇 번이나 확인하는지 확인해주세요.')
+  // 업무 신호(구버전 문항 포함)
   if (strong('repeatInput') || strong('toolGaps')) out.push('지금 쓰는 도구(엑셀·카톡·ERP 등)와 그 사이에서 사람이 옮겨 적는 구간을 확인해주세요.')
   if (strong('askProgress') || strong('ceoLoadGrows')) out.push('대표·관리자가 하루에 직접 확인하는 업무가 무엇인지, 몇 번이나 확인하는지 확인해주세요.')
   if (strong('manualHandoff')) out.push('고객 요청·주문·예약이 어떤 채널로 들어와 누가 어떻게 내부로 넘기는지 확인해주세요.')
@@ -106,6 +141,9 @@ function consultationChecklist(answers: Record<string, string | string[]>): stri
   if (out.length === 0) out.push('진단 답변 전반을 확인하며 우선 과제를 함께 정리해주세요.')
   return out
 }
+
+/** 결과 요약의 목록 칸 — 문자열 배열만 꺼낸다 */
+const summaryList = (v: unknown): string[] => (Array.isArray(v) ? v.map(String).filter(Boolean) : [])
 
 function axLabel(s?: SessionRow | null): string {
   const g = s?.result_summary?.gradeLabel
@@ -428,7 +466,7 @@ export default function AdminBusinessLeadsPage() {
                     {/* 플래그 */}
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {(lead.flags ?? []).map((f) => (
-                        <span key={f} className={`rounded-full px-2 py-0.5 text-[11px] font-black ${f === 'hot' ? 'bg-red-100 text-red-700' : f === 'ax_high_priority' ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-600'}`}>
+                        <span key={f} className={`rounded-full px-2 py-0.5 text-[11px] font-black ${f === 'hot' || f === 'deadline_1m' ? 'bg-red-100 text-red-700' : f === 'ax_high_priority' || f.startsWith('pkg_') ? 'bg-orange-100 text-orange-700' : f === 'just_browsing' || f === 'over_50' ? 'bg-slate-200 text-slate-500' : 'bg-slate-100 text-slate-600'}`}>
                           {FLAG_LABELS[f] ?? f}
                         </span>
                       ))}
@@ -441,7 +479,17 @@ export default function AdminBusinessLeadsPage() {
                     <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
                       <div className="flex flex-wrap items-center gap-2 text-xs">
                         <span className={`rounded-md px-2 py-1 font-black ${AX_TONE[ax] ?? 'bg-slate-900 text-white'}`}>{ax}</span>
-                        {r?.score !== undefined && <span className="rounded-md bg-slate-100 px-2 py-1 font-bold text-slate-700">AX Fit Score {String(r.score)}</span>}
+                        {r?.priceFrom !== undefined && (
+                          <span className="rounded-md bg-slate-100 px-2 py-1 font-bold text-slate-700">
+                            {String(r.priceFrom)}
+                            {r.targetLabel && r.targetLabel !== r.gradeLabel ? ` → 목표 ${String(r.targetLabel)}` : ''}
+                          </span>
+                        )}
+                        {r?.score !== undefined && (
+                          <span className="rounded-md bg-slate-100 px-2 py-1 font-bold text-slate-700">
+                            {r.priceFrom !== undefined ? '업무 신호' : 'AX Fit Score'} {String(r.score)}
+                          </span>
+                        )}
                         <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-600">
                           소요 {session?.total_duration_seconds ?? session?.stage1_duration_seconds ?? '-'}s
                         </span>
@@ -451,9 +499,28 @@ export default function AdminBusinessLeadsPage() {
                       </div>
                       {r?.headline && <p className="mt-3 text-sm font-black text-slate-900">{String(r.headline)}</p>}
                       {r?.summary && <p className="mt-1 text-sm text-slate-600">{String(r.summary)}</p>}
+                      {summaryList(r?.situation).length > 0 && (
+                        <p className="mt-2 flex flex-wrap gap-1">
+                          {summaryList(r?.situation).map((t) => (
+                            <span key={t} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">{t}</span>
+                          ))}
+                        </p>
+                      )}
+                      {summaryList(r?.reasons).length > 0 && (
+                        <>
+                          <p className="mt-3 text-[11px] font-black uppercase tracking-wide text-slate-400">추천 이유</p>
+                          <ul className="mt-1 space-y-0.5 text-sm text-slate-700">{summaryList(r?.reasons).map((t) => <li key={t}>· {t}</li>)}</ul>
+                        </>
+                      )}
+                      {summaryList(r?.focus).length > 0 && (
+                        <>
+                          <p className="mt-3 text-[11px] font-black uppercase tracking-wide text-slate-400">상담에서 같이 준비할 것</p>
+                          <ul className="mt-1 space-y-0.5 text-sm text-slate-700">{summaryList(r?.focus).map((t) => <li key={t}>· {t}</li>)}</ul>
+                        </>
+                      )}
                       {list(r?.topProblems ?? r?.improvements).length > 0 && (
                         <>
-                          <p className="mt-3 text-[11px] font-black uppercase tracking-wide text-slate-400">가장 큰 문제 TOP 3</p>
+                          <p className="mt-3 text-[11px] font-black uppercase tracking-wide text-slate-400">업무에서 걸리는 문제</p>
                           <ul className="mt-1 space-y-0.5 text-sm text-slate-700">{list(r?.topProblems ?? r?.improvements).map((t) => <li key={t}>· {t}</li>)}</ul>
                         </>
                       )}
@@ -553,8 +620,11 @@ export default function AdminBusinessLeadsPage() {
                           <dd className="font-semibold text-slate-800">{answerLabel(q.id, a[q.id])}</dd>
                         </div>
                       ))}
-                      {questions.every((q) => a[q.id] === undefined) && Object.keys(a).length > 0 && (
-                        <div className="px-3 py-2 text-xs text-slate-400">구버전 진단 답변 — 원본 코드값: {JSON.stringify(a).slice(0, 300)}</div>
+                      {Object.keys(a).some((k) => !questions.some((q) => q.id === k)) && (
+                        <div className="px-3 py-2 text-xs text-slate-400">
+                          구버전 문항 답변 — 원본 코드값:{' '}
+                          {JSON.stringify(Object.fromEntries(Object.entries(a).filter(([k]) => !questions.some((q) => q.id === k)))).slice(0, 300)}
+                        </div>
                       )}
                     </dl>
 

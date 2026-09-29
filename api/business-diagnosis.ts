@@ -124,14 +124,27 @@ const depthLabel = (d: string) => (d === 'comprehensive' ? 'AX Fit 진단 완료
 // 리드 플래그 → 한글 라벨
 const FLAG_LABELS: Record<string, string> = {
   hot: '🔥 최우선(핫리드)',
-  ax_high_priority: 'AX HIGH PRIORITY',
-  ax_full_candidate: 'AX FULL 후보',
-  ax_lite: 'AX LITE',
-  ax_no_go: 'AX NO-GO',
+  pkg_mvp: '추천 시작: MVP',
+  pkg_platform: '추천 시작: 플랫폼형',
+  pkg_full: '추천 시작: 풀 패키지',
+  pkg_step_up: '단계적 확장 대상',
+  need_fund: '정책자금 필요',
+  need_grant: '정부지원사업 준비',
+  need_invest: '투자 유치 앞둠',
+  need_cert: '벤처기업확인·인증 준비',
+  deadline_1m: '⏰ 1개월 안 일정',
+  budget_ready: '예산 1,500만 원 이상',
+  budget_after_funding: '자금 들어온 뒤 결정(후불 희망)',
+  just_browsing: '알아보는 중(정보형)',
+  over_50: '50인 이상(대상 확인 필요)',
   growth_interest: '정책·R&D·성장전략 함께 검토 희망',
   no_internal_owner: '내부 담당자 미정',
   consultation_opt_in: '상담 신청 동의',
   // 구버전 리드 호환
+  ax_high_priority: 'AX HIGH PRIORITY(구)',
+  ax_full_candidate: 'AX FULL 후보(구)',
+  ax_lite: 'AX LITE(구)',
+  ax_no_go: 'AX NO-GO(구)',
   funding_urgent: '자금 시급(구)',
   certification_interest: '인증 관심(구)',
   employment_interest: '고용지원금 관심(구)',
@@ -165,7 +178,12 @@ async function sendDiagnosisEmail(p: {
   const str = (k: string) => (typeof s[k] === 'string' ? (s[k] as string) : '')
   const num = (k: string) => (typeof s[k] === 'number' ? String(s[k]) : '')
   const axGrade = str('gradeLabel') || str('grade')
-  const axScore = num('score') || num('overallScore')
+  // v6 부터는 추천 상품(시작 → 목표)을 보여 준다. 점수는 구버전 결과에만 붙인다
+  const isPkg = typeof s.priceFrom === 'string'
+  const axScore = isPkg ? '' : num('score') || num('overallScore')
+  const pkgTxt = isPkg
+    ? `${axGrade} (${str('priceFrom')})${str('targetLabel') && str('targetLabel') !== axGrade ? ` → 목표 ${str('targetLabel')}` : ''}`
+    : ''
   const stageTxt = p.completedStage ? (p.depth ? depthLabel(p.depth) : `${p.completedStage}단계 완료`) : '-'
 
   // 상담 폼에서 고른 추가 정보 — 있으면 표에 추가
@@ -185,7 +203,11 @@ async function sendDiagnosisEmail(p: {
     ['상담 동의', p.consultationConsent ? '동의' : '미동의'],
     ['마케팅 동의', p.marketingConsent ? '동의' : '미동의'],
     ['진단', stageTxt],
-    ...(axGrade ? ([['AX Fit 등급', axScore ? `${axGrade} · ${axScore}점` : axGrade]] as Array<[string, string]>) : []),
+    ...(pkgTxt
+      ? ([['추천 상품', pkgTxt]] as Array<[string, string]>)
+      : axGrade
+        ? ([['AX Fit 등급', axScore ? `${axGrade} · ${axScore}점` : axGrade]] as Array<[string, string]>)
+        : []),
     ['상담 우선순위', `${p.score}점 · ${p.grade}등급`],
     ['분류', p.flags.length ? p.flags.map(flagLabel).join(', ') : '-'],
     ['접수 시간', receivedAt],
@@ -194,7 +216,9 @@ async function sendDiagnosisEmail(p: {
   // 결과 요약 — 관리자에겐 부차적이라 접어서 노출(지원 클라이언트 한정).
   const foldBlocks: Array<[string, string[]]> = [
     ['핵심 요약', [str('headline'), str('summary'), str('readiness')].filter(Boolean)],
-    ['현재 가장 큰 문제 TOP 3', asLines(s.improvements)],
+    ['추천 이유', asLines(s.reasons)],
+    ['상담에서 같이 준비할 것', asLines(s.focus)],
+    ['업무에서 걸리는 문제', asLines(s.improvements)],
     ['권장 AX 방향', asLines(s.strengths)],
     ['다음 행동', asLines(s.actionPlan)],
     ['선결 과제', asLines(s.prerequisites)],
@@ -322,36 +346,37 @@ function jsonCap(v: unknown, maxLen: number): unknown {
 
 const one = (a: Record<string, unknown>, id: string) => (typeof a[id] === 'string' ? (a[id] as string) : undefined)
 
-// ── AX Fit 등급 (서버 재계산) — 프론트 엔진(src/lib/businessDiagnosisEngine.ts)과 같은 규칙 ──
+// ── 추천 상품 (서버 재계산) — 프론트 엔진(src/lib/businessDiagnosisEngine.ts 의 recommendPackage)과 같은 규칙 ──
+// MVP 500만원부터 · 플랫폼형 1,500만원부터 · 풀 패키지(AX + 플랫폼) 3,000만원부터
 const DEGREE: Record<string, number> = { no: 0, sometimes: 1, often: 2, always: 3 }
 const OWNER: Record<string, number> = { dedicated: 3, partTime: 2, ceo: 1, none: 0 }
-// 질문 순서 그대로 — 프론트 PROBLEM_IDS 와 같은 목록이어야 한다
-const AX_PROBLEM_QS = [
-  'repeatInput', 'docRepeat', 'askProgress', 'toolGaps', 'manualHandoff', 'repeatQuestions',
-  'missDelay', 'priorityByMemory', 'handover', 'dataUnused', 'revenueLeak', 'ceoLoadGrows',
-]
-const AX_PAIN_MAX = AX_PROBLEM_QS.length * 3
-const AX_ALL_QS = [...AX_PROBLEM_QS, 'uniqueWork', 'internalOwner']
+type AxPkg = 'MVP' | 'PLATFORM' | 'FULL'
+const PKG_ORDER: AxPkg[] = ['MVP', 'PLATFORM', 'FULL']
+const PKG_START_BY_TARGET: Record<string, AxPkg> = { demo: 'MVP', customer: 'PLATFORM', internal: 'FULL', both: 'FULL' }
+const PKG_BUDGET_CAP: Record<string, AxPkg> = { under500: 'MVP', around1500: 'PLATFORM' }
+const many = (a: Record<string, unknown>, id: string): string[] => (Array.isArray(a[id]) ? (a[id] as unknown[]).map(String) : [])
 
-export function axFitGrade(answers: Record<string, unknown>): { grade: 'NO_GO' | 'LITE' | 'FULL' | 'HIGH'; score: number; pain: number; unique: number; owner: number } {
+// 질문 목록(서버 기준) — 예비창업은 업무 신호 4개와 내부 담당자를 묻지 않는다
+const AX_WORK_QS = ['repeatInput', 'ceoCheck', 'manualHandoff', 'uniqueWork']
+const AX_BASE_QS = ['bizStage', 'industry', 'teamSize', 'reason', 'timeline', 'buildTarget', 'budget']
+const axExpectedQs = (a: Record<string, unknown>) => (one(a, 'bizStage') === 'pre' ? AX_BASE_QS : [...AX_BASE_QS, ...AX_WORK_QS, 'internalOwner'])
+
+export function axPackage(answers: Record<string, unknown>): { start: AxPkg; target: AxPkg } {
   const v = (id: string) => DEGREE[one(answers, id) ?? ''] ?? 0
-  const pain = AX_PROBLEM_QS.reduce((sum, id) => sum + v(id), 0) // 0~AX_PAIN_MAX(36)
-  const unique = v('uniqueWork') // 0~3
-  const owner = OWNER[one(answers, 'internalOwner') ?? ''] ?? 0 // 0~3
-  const raw = (pain / AX_PAIN_MAX) * 60 + (unique / 3) * 25 + (owner / 3) * 15
-  const score = Math.max(0, Math.min(100, Math.round(raw / 5) * 5))
-  const ceoDependency = v('askProgress') + v('ceoLoadGrows')
-  const dataPotential = v('dataUnused')
-  let grade: 'NO_GO' | 'LITE' | 'FULL' | 'HIGH'
-  if (score < 35) grade = 'NO_GO'
-  else if (unique <= 1 && score < 70) grade = 'LITE'
-  else if (score < 55) grade = 'LITE'
-  else if (score >= 75 && unique >= 2 && ceoDependency >= 4 && dataPotential >= 2) grade = 'HIGH'
-  else grade = 'FULL'
-  return { grade, score, pain, unique, owner }
+  const rank = (p: AxPkg) => PKG_ORDER.indexOf(p)
+  const reasons = many(answers, 'reason')
+  const customer = v('manualHandoff') >= 2 || reasons.includes('service')
+  const internal = v('repeatInput') + v('ceoCheck') >= 4 || v('uniqueWork') >= 2 || reasons.includes('ops')
+  const needed: AxPkg = internal ? 'FULL' : customer ? 'PLATFORM' : 'MVP'
+  const first = PKG_START_BY_TARGET[one(answers, 'buildTarget') ?? ''] ?? needed
+  const target = rank(needed) > rank(first) ? needed : first
+  const cap = PKG_BUDGET_CAP[one(answers, 'budget') ?? '']
+  const start = cap && rank(first) > rank(cap) ? cap : first
+  return { start, target }
 }
 
-// ── 리드 점수 (서버 기준) — 상담 우선순위 점수 0~100 (AX 적합성·승인 가능성 아님) ──
+// ── 리드 점수 (서버 기준) — 상담 우선순위 0~100. '진성 고객인가'를 가늠한다(승인 가능성 아님) ──
+//  A 시급성 25 · B 예산·자금 25 · C 적합도 20 · D 행동의향 15 · E 준비도 10 · F 가점 5
 export function scoreLead(answers: Record<string, unknown>, interests: string[], form: {
   consultationConsent: boolean
   preferredContactTime?: string
@@ -360,31 +385,43 @@ export function scoreLead(answers: Record<string, unknown>, interests: string[],
   contactMethod?: string
 }) {
   const cap = (n: number, m: number) => Math.min(n, m)
-  const ax = axFitGrade(answers)
   const v = (id: string) => DEGREE[one(answers, id) ?? ''] ?? 0
+  const reasons = many(answers, 'reason')
+  const timeline = one(answers, 'timeline') ?? ''
+  const budget = one(answers, 'budget') ?? ''
+  const size = one(answers, 'teamSize') ?? ''
+  const pre = one(answers, 'bizStage') === 'pre'
+  const pkg = axPackage(answers)
 
-  // A. 문제 강도 = 실행 긴급도 (25)
-  const a = cap(Math.round((ax.pain / AX_PAIN_MAX) * 25), 25)
+  // A. 시급성 (25) — 일정 + 자금·지원사업·투자·인증 같은 뚜렷한 계기
+  const TIMELINE_PTS: Record<string, number> = { within1m: 15, within3m: 11, within6m: 6, none: 2 }
+  const triggers = ['fund', 'grant', 'invest', 'cert'].filter((r) => reasons.includes(r)).length
+  const a = cap((TIMELINE_PTS[timeline] ?? 0) + cap(triggers * 4, 10), 25)
 
-  // B. 서비스 적합도 (25) — 고유 업무 + 내부 담당자
-  const b = cap(ax.unique * 5 + (ax.owner === 3 ? 10 : ax.owner === 2 ? 7 : ax.owner === 1 ? 3 : 0), 25)
+  // B. 예산·자금 (25) — 후불(자금 입금 뒤 정산)도 이 회사의 정상 진행 방식이라 중간 점수를 준다
+  const BUDGET_PTS: Record<string, number> = { over3000: 25, around1500: 20, afterFunding: 18, under500: 12, unknown: 5 }
+  const b = BUDGET_PTS[budget] ?? 0
 
-  // C. 문제의 명확성 (20) — '거의 항상' 답변 수
-  const alwaysCount = AX_ALL_QS.filter((q) => q !== 'internalOwner' && v(q) === 3).length
-  const c = cap(alwaysCount * 4, 20)
+  // C. 적합도 (20) — 만들 것이 분명한가 + 업무 신호 + 대상 규모(50인 미만)
+  const bt = one(answers, 'buildTarget')
+  const work = AX_WORK_QS.reduce((sum, id) => sum + v(id), 0) // 0~12
+  let c = (bt && bt !== 'unsure' ? 8 : 0) + (pre ? 6 : Math.round((work / 12) * 8)) + (size && size !== 'solo' && size !== 'over' ? 4 : 0)
+  if (size === 'over') c = Math.min(c, 6)
+  c = cap(c, 20)
 
   // D. 행동의향 (15)
   let d = 0
-  d += cap(interests.length * 4, 8)
-  if (form.consultationConsent) d += 5
-  if (form.contactMethod) d += 2
+  if (form.consultationConsent) d += 8
+  if (form.contactMethod) d += 3
+  if (reasons.length > 0 && !reasons.includes('explore')) d += 4
   d = cap(d, 15)
 
-  // E. 정보 완성도 (10)
-  const answered = AX_ALL_QS.filter((q) => answers[q] !== undefined).length
-  let e = Math.round((answered / AX_ALL_QS.length) * 8)
-  if (form.phoneOk) e += 2
-  e = cap(e, 10)
+  // E. 준비도 (10) — 내부 담당자 + 답한 비율 + 연락처
+  const expected = axExpectedQs(answers)
+  const answered = expected.filter((q) => answers[q] !== undefined && !(Array.isArray(answers[q]) && (answers[q] as unknown[]).length === 0)).length
+  const owner = OWNER[one(answers, 'internalOwner') ?? ''] ?? 0
+  const ownerPts = pre ? 2 : owner === 3 ? 5 : owner === 2 ? 4 : owner === 1 ? 2 : 0
+  const e = cap(ownerPts + Math.round((answered / expected.length) * 3) + (form.phoneOk ? 2 : 0), 10)
 
   // F. 가점 (5)
   let f = 0
@@ -396,14 +433,25 @@ export function scoreLead(answers: Record<string, unknown>, interests: string[],
   const total = Math.max(0, Math.min(100, a + b + c + d + e + f - penalty))
   const grade = total >= 75 ? 'A' : total >= 50 ? 'B' : 'C'
 
+  const budgetReady = budget === 'over3000' || budget === 'around1500'
   const flags: string[] = []
-  if (total >= 85 || (ax.grade === 'HIGH' && form.consultationConsent)) flags.push('hot')
-  flags.push(ax.grade === 'HIGH' ? 'ax_high_priority' : ax.grade === 'FULL' ? 'ax_full_candidate' : ax.grade === 'LITE' ? 'ax_lite' : 'ax_no_go')
+  if (total >= 85 || (timeline === 'within1m' && budgetReady && form.consultationConsent)) flags.push('hot')
+  flags.push(pkg.start === 'FULL' ? 'pkg_full' : pkg.start === 'PLATFORM' ? 'pkg_platform' : 'pkg_mvp')
+  if (pkg.target !== pkg.start) flags.push('pkg_step_up')
+  if (reasons.includes('fund')) flags.push('need_fund')
+  if (reasons.includes('grant')) flags.push('need_grant')
+  if (reasons.includes('invest')) flags.push('need_invest')
+  if (reasons.includes('cert')) flags.push('need_cert')
+  if (timeline === 'within1m') flags.push('deadline_1m')
+  if (budgetReady) flags.push('budget_ready')
+  if (budget === 'afterFunding') flags.push('budget_after_funding')
+  if (reasons.includes('explore') || (timeline === 'none' && (budget === 'unknown' || !budget))) flags.push('just_browsing')
+  if (size === 'over') flags.push('over_50')
   if (interests.some((k) => /정책|R&D|성장/.test(k))) flags.push('growth_interest')
-  if (ax.owner === 0) flags.push('no_internal_owner')
+  if (!pre && one(answers, 'internalOwner') === 'none') flags.push('no_internal_owner')
   if (form.consultationConsent) flags.push('consultation_opt_in')
 
-  return { total, grade, flags, breakdown: { urgency: a, fit: b, clarity: c, intent: d, completeness: e, bonus: f, penalty } }
+  return { total, grade, flags, breakdown: { urgency: a, budget: b, fit: c, intent: d, readiness: e, bonus: f, penalty } }
 }
 
 export default async function handler(req: any, res: any) {

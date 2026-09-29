@@ -1,7 +1,7 @@
 // 3분 AX Fit 시작 화면 — 설문지가 아니라 '판단 시작' 느낌 (토스풍 간결 모션).
-// 결과 등급 4단계를 미리 보여주어, 무엇을 판단하는 진단인지 먼저 알린다.
+// 결과로 나오는 상품 세 가지(MVP · 플랫폼형 · 풀 패키지)를 미리 보여주어, 무엇을 판단하는 진단인지 먼저 알린다.
 import { AX_FIT_INFO, QUESTION_COUNT } from '../../data/businessDiagnosisQuestions'
-import { GRADE_META } from '../../lib/businessDiagnosisEngine'
+import { PACKAGE_META, PACKAGE_ORDER } from '../../lib/businessDiagnosisEngine'
 
 type Props = {
   hasSaved: boolean
@@ -9,7 +9,7 @@ type Props = {
   onResume: () => void
 }
 
-const GRADE_CARDS = (['NO_GO', 'LITE', 'FULL', 'HIGH'] as const).map((g) => ({ key: g, ...GRADE_META[g] }))
+const PACKAGE_CARDS = PACKAGE_ORDER.map((g) => ({ key: g, ...PACKAGE_META[g] }))
 
 export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
   // 폰에서는 위에서부터 읽히게(가운데 정렬은 위쪽이 비어 보인다), PC 는 세로 가운데
@@ -17,32 +17,28 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
     <div className="mx-auto flex min-h-[calc(100dvh-57px)] max-w-[720px] flex-col justify-start px-5 py-8 sm:justify-center sm:py-14">
       <p className="animate-rise-in text-sm font-black uppercase tracking-widest text-[#B37744]">{AX_FIT_INFO.name}</p>
       <h1 className="animate-rise-in mt-3 text-[1.6rem] font-black leading-[1.3] tracking-tight text-slate-900 [animation-delay:60ms] sm:text-[2.2rem]">
-        우리 회사는<br className="sm:hidden" /> 어디부터 바꿔야 할까요?
+        우리 회사는<br className="sm:hidden" /> 어디서부터 시작하면 될까요?
       </h1>
       <p className="animate-rise-in mt-4 max-w-lg break-keep text-base leading-relaxed text-slate-600 [animation-delay:120ms] sm:text-lg">
-        모든 회사가 <b className="font-bold text-slate-900">전면 구축</b>까지 갈 필요는 없어요.
-      </p>
-      <p className="animate-rise-in mt-1.5 max-w-lg break-keep text-base leading-relaxed text-slate-600 [animation-delay:150ms] sm:text-lg">
-        지금 일하는 방식을 보고,<br className="sm:hidden" />{' '}
-        <b className="font-bold text-slate-900">어디서부터 시작하면 될지</b> 알려 드려요.
+        지금 상황과 일하는 방식을 보고,<br className="sm:hidden" />{' '}
+        <b className="font-bold text-slate-900">세 가지 중 어디서 시작하면 될지</b> 알려 드려요.
       </p>
 
-      {/* 결과 등급 4단계 미리보기 — 폰에서는 2×2 로 접어(설명 생략) 시작 버튼이 첫 화면 안에 들어오게 한다 */}
-      <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:grid-cols-1 sm:gap-3">
-        {GRADE_CARDS.map((c, i) => (
-          <div
+      {/* 결과로 나오는 상품 세 가지 — 폰에서도 한 줄 세 칸(설명 생략)이라 시작 버튼이 첫 화면 안에 들어온다 */}
+      <ol className="mt-6 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-3">
+        {PACKAGE_CARDS.map((c, i) => (
+          <li
             key={c.key}
-            className="animate-rise-in flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm sm:gap-4 sm:rounded-2xl sm:p-5"
+            className="animate-rise-in flex flex-col rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm sm:rounded-2xl sm:p-5"
             style={{ animationDelay: `${140 + i * 70}ms` }}
           >
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#F6ECE1] text-sm font-black text-[#9A5F2F] sm:h-11 sm:w-11 sm:rounded-xl sm:text-base">{i + 1}</span>
-            <div className="min-w-0">
-              <p className="break-keep text-[0.92rem] font-extrabold leading-snug text-slate-900 sm:text-base">{c.label}</p>
-              <p className="mt-0.5 hidden text-sm leading-snug text-slate-500 sm:block">{c.desc}</p>
-            </div>
-          </div>
+            <span className="text-[0.72rem] font-black tracking-[0.12em] text-[#B37744] sm:text-[0.78rem]">STEP {i + 1}</span>
+            <span className="mt-1 break-keep text-[1.02rem] font-black leading-tight text-slate-900 sm:text-[1.2rem]">{c.label}</span>
+            <span className="mt-0.5 break-keep text-[0.8rem] font-semibold leading-snug text-slate-500 sm:text-[0.9rem]">{c.short}</span>
+            <span className="mt-auto pt-2 text-[0.8rem] font-black tabular-nums text-[#9A5F2F] sm:text-[0.92rem]">{c.price}</span>
+          </li>
         ))}
-      </div>
+      </ol>
 
       {/* CTA */}
       <div className="animate-rise-in mt-8 flex flex-col gap-2.5 [animation-delay:440ms]">
@@ -54,7 +50,7 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
           3분 AX Fit 시작하기
           <span aria-hidden>→</span>
         </button>
-        <p className="text-center text-[0.85rem] font-medium text-slate-500">질문 {QUESTION_COUNT}개 · 약 3분 · 로그인 없이 시작</p>
+        <p className="text-center text-[0.85rem] font-medium text-slate-500">질문 {QUESTION_COUNT}개 이내 · 약 3분 · 로그인 없이 시작</p>
         {hasSaved && (
           <button
             type="button"
