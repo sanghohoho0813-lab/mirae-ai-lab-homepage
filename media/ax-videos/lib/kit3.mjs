@@ -240,4 +240,22 @@ const PREMIUM_CSS = `
 .chap span { background: rgba(11,14,19,.55); color: ${G2}; box-shadow: inset 0 0 0 1px rgba(216,168,113,.45); font-weight: 600; letter-spacing: .03em; font-size: 26px; }
 .note span { background: rgba(9,11,15,.74); box-shadow: inset 0 0 0 1px rgba(216,168,113,.35); color: ${G2}; font-weight: 600; }
 .fine { color: #7D8590; font-weight: 500; }
+.stp { background: rgba(255,255,255,.72); color: #8A9099; box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.06), 0 14px 36px rgba(60,40,20,.07); }
+.stp .num { background: #EDE6DC; color: #8A9099; } .stp.done { color: #5E6670; } .stp.done .num { background: #C99257; color: #fff; }
+.stp.on { background: #15181D; color: #F4F1EC; box-shadow: 0 30px 70px rgba(21,24,29,.3); } .stp.on .num { background: ${G}; color: #15110C; } .stp.on small { color: ${G2}; } .stp.on > .ic.lg { color: ${G}; }
+.stp b { font-weight: 800; } .stp small { font-weight: 500; }
+.pcard { background: rgba(255,255,255,.75); box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.06), 0 16px 40px rgba(60,40,20,.08); }
+.pnum { background: ${G}; color: #15110C; } .ptop em { background: #EDE3D6; color: #8A5C2E; }
+.pcard.on { background: #15181D; color: #F4F1EC; box-shadow: 0 30px 70px rgba(21,24,29,.3), 0 0 0 2px ${G}; } .pcard.on .ptop em { background: rgba(216,168,113,.2); color: ${G2}; }
+.pval b { color: #A5703C; font-weight: 800; } .pcard.on .pval b { color: ${G}; } .pval span { font-weight: 600; }
+.days i { background: ${G}; } .days i:nth-child(n+8) { background: rgba(216,168,113,.3); }
+.cb i { background: #2E353F; } .cb.hot i { background: linear-gradient(180deg, ${G}, rgba(216,168,113,.45)); box-shadow: 0 20px 60px rgba(216,168,113,.25); } .cb span { color: #A9B0B8; font-weight: 700; } .cb.hot span { color: ${G}; }
+.stage4 { display: flex; gap: 12px; } .stage4 i { display: block; width: 90px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.14); } .stage4 i.on { background: ${G}; }
+.bgL .stage4 i { background: rgba(21,24,29,.12); } .bgL .stage4 i.on { background: #C99257; }
+.stairs { position: absolute; left: 120px; right: 120px; height: 620px; display: flex; align-items: flex-end; gap: 26px; }
+.stairs div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.stairs i { display: block; border-radius: 18px 18px 6px 6px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); }
+.stairs b { display: block; margin-top: 18px; text-align: center; font-size: 36px; font-weight: 700; color: #C9CFD6; white-space: nowrap; }
+.stairs div.on i { background: rgba(216,168,113,.14); box-shadow: inset 0 0 0 1.5px ${G}; } .stairs div.on b { color: ${G}; }
+.climber { position: absolute; width: 56px; height: 56px; border-radius: 50%; background: ${G}; box-shadow: 0 0 0 10px rgba(216,168,113,.18), 0 0 40px rgba(216,168,113,.6); }
 `

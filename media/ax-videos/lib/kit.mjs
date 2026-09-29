@@ -383,7 +383,7 @@ export function kit(B) {
     const html = `${o.eb ? chipAt(`${id}-eb`, o.eb, 260, o.ebc || '') : ''}<div class="checks" style="top:${o.top ?? 420}px">${o.items.map((it, i) => `<div class="chk" id="${id}-${i}"><span class="box" id="${id}-b${i}">${ic(o.xmark ? 'x' : 'check')}</span><b>${it[0]}</b></div>`).join('')}</div>${o.center ? `<div class="kt m c" id="${id}-t" style="top:${o.centerY ?? 1100}px">${WT(o.center)}</div>` : ''}${o.extra || ''}`
     shot(t, html, o.shot)
     if (o.eb) from(`#${id}-eb`, t + 0.05, 'y: -30, opacity: 0', 0.3)
-    o.items.forEach((it, i) => { from(`#${id}-${i}`, t + 0.08 + i * 0.1, 'x: 400, opacity: 0', 0.35); from(`#${id}-b${i} .ic`, it[1] ?? t + 0.5 + i * 0.3, 'scale: 0, opacity: 0', 0.3, 'back.out(2.4)'); if (!o.xmark) tw(`tl.to('#${id}-b${i}', { backgroundColor: '#2FA66A', duration: 0.2 }, ${r2(it[1] ?? t + 0.5 + i * 0.3)});`) })
+    o.items.forEach((it, i) => { from(`#${id}-${i}`, t + 0.08 + i * 0.1, 'x: 400, opacity: 0', 0.35); from(`#${id}-b${i} .ic`, it[1] ?? t + 0.5 + i * 0.3, 'scale: 0, opacity: 0', 0.3, 'back.out(2.4)'); if (!o.xmark) tw(`tl.to('#${id}-b${i}', { backgroundColor: '${o.okColor || '#2FA66A'}', duration: 0.2 }, ${r2(it[1] ?? t + 0.5 + i * 0.3)});`) })
     if (o.center) words(`#${id}-t`, o.centerAt ?? t + 0.6)
     return id
   }
