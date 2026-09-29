@@ -49,10 +49,10 @@ export const ICON = {
 }
 export const ic = (k, cls = '') => `<i class="ic ${cls}">${ICON[k]}</i>`
 
-export function createBuild(dir, { title, tag }) {
+export function createBuild(dir, { title, tag, premium = false }) {
   const T = JSON.parse(readFileSync(`${dir}/timing.json`, 'utf8'))
   const FLOWS = JSON.parse(readFileSync(`${dir}/assets/flows/flows.json`, 'utf8'))
-  let js = '', css = '', overlays = ''
+  let js = '', css = '', cssLast = '', overlays = ''
   const tw = (c) => { js += `  ${c}\n` }
   const L = (b, l = 1) => { const x = T.lines.find((y) => y.block === b && y.line === l); if (!x) throw new Error(`no line ${b}.${l}`); return x }
   const K = (id) => { if (!(id in T.keys)) throw new Error('no key ' + id); return T.keys[id] }
@@ -87,16 +87,17 @@ export function createBuild(dir, { title, tag }) {
   // ── 샷
   const shots = []
   let seq = 0
-  const TRANS = ['slideL', 'zoom', 'slideU', 'wipe', 'flash', 'slideR', 'zoomOut', 'cut']
-  const BGS = ['bgA', 'bgB', 'bgC', 'bgL', 'bgA', 'bgD', 'bgB', 'bgL']
+  const TRANS = premium ? ['fade', 'rise', 'fadeBlur', 'wipeUp', 'fade', 'scaleIn'] : ['slideL', 'zoom', 'slideU', 'wipe', 'flash', 'slideR', 'zoomOut', 'cut']
+  const BGS = premium ? ['bgA', 'bgB', 'bgA', 'bgD', 'bgA', 'bgB'] : ['bgA', 'bgB', 'bgC', 'bgL', 'bgA', 'bgD', 'bgB', 'bgL']
   const CAMS = ['in', 'out', 'driftL', 'in', 'driftR', 'out']
+  const CAMK = premium ? 0.035 : 0.07, DRIFT = premium ? 12 : 24
   function shot(t0, inner, o = {}) {
     const i = seq++
     const id = o.id || `sh${i}`
     shots.push({ id, t0: r2(t0), inner, trans: o.trans || TRANS[i % TRANS.length], bg: o.bg || BGS[i % BGS.length], cam: o.cam || CAMS[i % CAMS.length] })
     return id
   }
-  const OVER = 0.3
+  const OVER = premium ? 0.55 : 0.3
   function renderShots(TOTAL) {
     shots.sort((a, b) => a.t0 - b.t0)
     let out = ''
@@ -114,12 +115,17 @@ export function createBuild(dir, { title, tag }) {
         else if (s.trans === 'wipe') tw(`tl.fromTo('${sel}', { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.4, ease: 'power3.inOut', immediateRender: false }, ${t});`)
         else if (s.trans === 'flash') { tw(`tl.from('${sel}', { opacity: 0, duration: 0.12 }, ${t});`); tw(`tl.fromTo('#flash', { opacity: 0.85 }, { opacity: 0, duration: 0.3, immediateRender: false }, ${t});`) }
         else if (s.trans === 'cut') { /* 바로 바꾼다 */ }
+        else if (s.trans === 'fade') tw(`tl.from('${sel}', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, ${t});`)
+        else if (s.trans === 'rise') tw(`tl.from('${sel}', { y: 90, opacity: 0, duration: 0.75, ease: 'expo.out' }, ${t});`)
+        else if (s.trans === 'scaleIn') tw(`tl.from('${sel}', { scale: 1.06, opacity: 0, duration: 0.7, ease: 'power2.out' }, ${t});`)
+        else if (s.trans === 'fadeBlur') tw(`tl.fromTo('${sel}', { opacity: 0, filter: 'blur(14px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out', immediateRender: false }, ${t});`)
+        else if (s.trans === 'wipeUp') tw(`tl.fromTo('${sel}', { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'power3.inOut', immediateRender: false }, ${t});`)
       }
       const cam = `#${s.id}-cam`
-      if (s.cam === 'in') tw(`tl.fromTo('${cam}', { scale: 1 }, { scale: 1.07, duration: ${d}, ease: 'none' }, ${t});`)
-      else if (s.cam === 'out') tw(`tl.fromTo('${cam}', { scale: 1.07 }, { scale: 1, duration: ${d}, ease: 'none' }, ${t});`)
-      else if (s.cam === 'driftL') tw(`tl.fromTo('${cam}', { x: 24, scale: 1.04 }, { x: -24, scale: 1.04, duration: ${d}, ease: 'none' }, ${t});`)
-      else if (s.cam === 'driftR') tw(`tl.fromTo('${cam}', { x: -24, scale: 1.04 }, { x: 24, scale: 1.04, duration: ${d}, ease: 'none' }, ${t});`)
+      if (s.cam === 'in') tw(`tl.fromTo('${cam}', { scale: 1 }, { scale: ${1 + CAMK}, duration: ${d}, ease: 'none' }, ${t});`)
+      else if (s.cam === 'out') tw(`tl.fromTo('${cam}', { scale: ${1 + CAMK} }, { scale: 1, duration: ${d}, ease: 'none' }, ${t});`)
+      else if (s.cam === 'driftL') tw(`tl.fromTo('${cam}', { x: ${DRIFT}, scale: ${1 + CAMK * 0.6} }, { x: -${DRIFT}, scale: ${1 + CAMK * 0.6}, duration: ${d}, ease: 'none' }, ${t});`)
+      else if (s.cam === 'driftR') tw(`tl.fromTo('${cam}', { x: -${DRIFT}, scale: ${1 + CAMK * 0.6} }, { x: ${DRIFT}, scale: ${1 + CAMK * 0.6}, duration: ${d}, ease: 'none' }, ${t});`)
     })
     return out
   }
@@ -127,13 +133,16 @@ export function createBuild(dir, { title, tag }) {
   // ── 움직임 도구(절대 시간)
   const from = (sel, t, v, d = 0.45, ease = 'power3.out') => tw(`tl.from('${sel}', { ${v}, duration: ${d}, ease: '${ease}' }, ${r2(t)});`)
   const to = (sel, t, v, d = 0.4, ease = 'power2.out') => tw(`tl.to('${sel}', { ${v}, duration: ${d}, ease: '${ease}' }, ${r2(t)});`)
-  const pop = (sel, t, d = 0.45) => from(sel, t, "scale: 0.4, opacity: 0", d, 'back.out(1.9)')
-  const rise = (sel, t, d = 0.42) => from(sel, t, 'y: 60, opacity: 0', d, 'power3.out')
-  const slam = (sel, t) => from(sel, t, 'scale: 1.8, opacity: 0', 0.3, 'power4.out')
+  // 고급 모드: 튀는 움직임 대신 천천히 자리 잡는다
+  const pop = (sel, t, d = 0.45) => premium ? from(sel, t, 'scale: 0.86, opacity: 0', 0.7, 'expo.out') : from(sel, t, "scale: 0.4, opacity: 0", d, 'back.out(1.9)')
+  const rise = (sel, t, d = 0.42) => premium ? from(sel, t, 'y: 40, opacity: 0', 0.7, 'expo.out') : from(sel, t, 'y: 60, opacity: 0', d, 'power3.out')
+  const slam = (sel, t) => premium ? from(sel, t, 'scale: 1.08, opacity: 0', 0.8, 'expo.out') : from(sel, t, 'scale: 1.8, opacity: 0', 0.3, 'power4.out')
   const stagger = (sel, t, v, each = 0.1, d = 0.4, ease = 'back.out(1.7)') => tw(`tl.from('${sel}', { ${v}, duration: ${d}, ease: '${ease}', stagger: ${each} }, ${r2(t)});`)
-  const words = (sel, t, each = 0.08) => tw(`tl.from('${sel} .w', { yPercent: 115, opacity: 0, duration: 0.42, ease: 'power3.out', stagger: ${each} }, ${r2(t)});`)
-  const pulse = (sel, t, n = 2) => tw(`tl.to('${sel}', { scale: 1.08, duration: 0.22, ease: 'sine.inOut', yoyo: true, repeat: ${n * 2 - 1} }, ${r2(t)});`)
-  const shake = (sel, t) => { tw(`tl.fromTo('${sel}', { x: 0 }, { x: 14, duration: 0.05, yoyo: true, repeat: 7, ease: 'none', immediateRender: false }, ${r2(t)});`); tw(`tl.set('${sel}', { x: 0 }, ${r2(t + 0.45)});`) }
+  const words = (sel, t, each = 0.08) => premium
+    ? tw(`tl.from('${sel} .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: ${Math.max(each, 0.07)} }, ${r2(t)});`)
+    : tw(`tl.from('${sel} .w', { yPercent: 115, opacity: 0, duration: 0.42, ease: 'power3.out', stagger: ${each} }, ${r2(t)});`)
+  const pulse = (sel, t, n = 2) => premium ? tw(`tl.to('${sel}', { scale: 1.03, duration: 0.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, ${r2(t)});`) : tw(`tl.to('${sel}', { scale: 1.08, duration: 0.22, ease: 'sine.inOut', yoyo: true, repeat: ${n * 2 - 1} }, ${r2(t)});`)
+  const shake = (sel, t) => { if (premium) return; tw(`tl.fromTo('${sel}', { x: 0 }, { x: 14, duration: 0.05, yoyo: true, repeat: 7, ease: 'none', immediateRender: false }, ${r2(t)});`); tw(`tl.set('${sel}', { x: 0 }, ${r2(t + 0.45)});`) }
   const count = (sel, t, a, b, d = 1.1, fmt = "Math.round(v).toLocaleString('ko-KR')") =>
     tw(`(function(){ const o = { v: ${a} }; const el = document.querySelector('${sel}'); tl.to(o, { v: ${b}, duration: ${d}, ease: 'power2.out', onUpdate: () => { const v = o.v; el.textContent = ${fmt}; } }, ${r2(t)}); })();`)
   const draw = (sel, t, d = 0.8) => tw(`tl.fromTo('${sel}', { strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: ${d}, ease: 'power2.inOut', immediateRender: true }, ${r2(t)});`)
@@ -170,11 +179,18 @@ export function createBuild(dir, { title, tag }) {
   let fz = 0
   function freeze(t, d, label, sub = '') {
     const id = `fz${fz++}`
-    overlays += `<div class="clip freeze" id="${id}" data-start="${r2(t)}" data-duration="${r2(d)}" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="${id}-l"><b>${label}</b>${sub ? `<small>${sub}</small>` : ''}</div></div>\n`
-    tw(`tl.fromTo('#flash', { opacity: 0.9 }, { opacity: 0, duration: 0.25, immediateRender: false }, ${r2(t)});`)
-    tw(`tl.from('#${id} .fzv', { opacity: 0, duration: 0.15 }, ${r2(t)});`)
-    tw(`tl.from('#${id}-l', { scale: 1.6, opacity: 0, duration: 0.3, ease: 'power4.out' }, ${r2(t + 0.05)});`)
-    tw(`tl.to('#${id}-l', { scale: 1.04, duration: ${r2(Math.max(0.3, d - 0.4))}, ease: 'none' }, ${r2(t + 0.35)});`)
+    overlays += `<div class="clip freeze" id="${id}" data-start="${r2(t)}" data-duration="${r2(d)}" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="${id}-l"><i></i><b>${label}</b>${sub ? `<small>${sub}</small>` : ''}<i></i></div></div>\n`
+    if (premium) {
+      tw(`tl.from('#${id} .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, ${r2(t)});`)
+      tw(`tl.from('#${id}-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, ${r2(t + 0.08)});`)
+      tw(`tl.fromTo('#${id}-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, ${r2(t + 0.12)});`)
+      tw(`tl.to('#${id}', { opacity: 0, duration: 0.2 }, ${r2(t + d - 0.2)});`)
+    } else {
+      tw(`tl.fromTo('#flash', { opacity: 0.9 }, { opacity: 0, duration: 0.25, immediateRender: false }, ${r2(t)});`)
+      tw(`tl.from('#${id} .fzv', { opacity: 0, duration: 0.15 }, ${r2(t)});`)
+      tw(`tl.from('#${id}-l', { scale: 1.6, opacity: 0, duration: 0.3, ease: 'power4.out' }, ${r2(t + 0.05)});`)
+      tw(`tl.to('#${id}-l', { scale: 1.04, duration: ${r2(Math.max(0.3, d - 0.4))}, ease: 'none' }, ${r2(t + 0.35)});`)
+    }
   }
 
   // ── 자막
@@ -203,10 +219,11 @@ export function createBuild(dir, { title, tag }) {
 
   function finish(TOTAL, extraHtml = '') {
     const shotHtml = renderShots(TOTAL)
+    if (premium) js = js.replace(/back\.out\([0-9.]*\)/g, 'expo.out')
     let subs = ''
     T.cues.forEach((c, i) => {
       subs += `<div class="clip sub" id="sub${i}" data-start="${c.start}" data-duration="${r2(c.end - c.start)}" data-track-index="9"><span>${twoLines(c.text)}</span></div>`
-      tw(`tl.from('#sub${i} span', { y: 12, opacity: 0, duration: 0.14, ease: 'power1.out' }, ${c.start});`)
+      tw(`tl.from('#sub${i} span', { y: ${premium ? 6 : 12}, opacity: 0, duration: ${premium ? 0.2 : 0.14}, ease: 'power1.out' }, ${c.start});`)
     })
     tw(`tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: ${TOTAL}, ease: 'none' }, 0);`)
     const doc = `<!doctype html>
@@ -219,6 +236,7 @@ export function createBuild(dir, { title, tag }) {
 ${[['Medium', 500], ['SemiBold', 600], ['Bold', 700], ['ExtraBold', 800], ['Black', 900]].map(([n, w]) => `@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-${n}.subset.woff2') format('woff2'); font-weight: ${w}; font-display: block; }`).join('\n')}
 ${BASE_CSS}
 ${css}
+${cssLast}
 </style>
 </head>
 <body>
@@ -248,7 +266,7 @@ ${js}
     console.log('index.html · subtitles.srt', 'TOTAL', TOTAL, 's · shots', shots.length, '· 평균', r2(TOTAL / shots.length), '초')
   }
 
-  return { T, FLOWS, tw, L, K, C, at, wt, silBefore, shot, from, to, pop, rise, slam, stagger, words, pulse, shake, count, draw, WT, phone, phoneImg, runFlow, stepAt, freeze, finish, BREAKS, addCss: (c) => { css += c }, addOverlay: (h) => { overlays += h }, twoLines }
+  return { T, FLOWS, tw, L, K, C, at, wt, silBefore, shot, from, to, pop, rise, slam, stagger, words, pulse, shake, count, draw, WT, phone, phoneImg, runFlow, stepAt, freeze, finish, BREAKS, addCss: (c) => { css += c }, addCssLast: (c) => { cssLast += c }, addOverlay: (h) => { overlays += h }, twoLines }
 }
 
 const BASE_CSS = `

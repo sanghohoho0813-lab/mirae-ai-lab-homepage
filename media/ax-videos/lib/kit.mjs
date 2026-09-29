@@ -287,7 +287,7 @@ export function kit(B) {
       ${o.fine ? fineAt(`${id}-f`, o.fine, o.fineY ?? 1290) : ''}${o.extra || ''}`
     shot(t, html, o.shot)
     if (o.eb) from(`#${id}-eb`, t + 0.05, 'y: -30, opacity: 0', 0.3)
-    from(`#${id}-a`, t + 0.05, 'x: -700, opacity: 0', 0.4, 'power3.out')
+    from(`#${id}-a`, o.aAt ?? t + 0.05, 'x: -700, opacity: 0', 0.4, 'power3.out')
     from(`#${id}-ar`, o.arAt ?? t + 0.45, 'y: -60, opacity: 0', 0.3)
     from(`#${id}-b`, o.bAt ?? t + 0.7, 'scale: 0.4, opacity: 0', 0.45, 'back.out(1.8)')
     if (o.fine) from(`#${id}-f`, t + 0.3, 'opacity: 0', 0.3)

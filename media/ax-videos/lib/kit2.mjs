@@ -46,11 +46,11 @@ export function kit2(B, K) {
   function flowRows(t, o) {
     const id = uid('fr'), rows = o.rows
     const html = `${o.eb ? chipAt(`${id}-eb`, o.eb, 250, o.ebc || '') : ''}<div class="frows" style="top:${o.top ?? 360}px">${rows.map((r, i) => `<div class="frow" id="${id}-r${i}"><b>${r}</b>${['db', 'users', 'link'].map((k, j) => `<span class="fstep s${j}">${ic(k, 'lg')}</span>${j < 2 ? '<i class="farr"></i>' : ''}`).join('')}</div>`).join('')}</div>
-      ${o.center ? `<div class="kt m c" id="${id}-t" style="top:${o.centerY ?? 1130}px">${WT(o.center)}</div>` : ''}`
+      ${o.center ? `<div class="kt m c" id="${id}-t" style="top:${o.centerY ?? 1130}px">${WT(o.center)}</div>` : ''}${o.extra || ''}`
     shot(t, html, o.shot)
     if (o.eb) from(`#${id}-eb`, t + 0.05, 'y: -30, opacity: 0', 0.3)
     tw(`tl.from('#${id}-r0, #${id}-r1, #${id}-r2', { x: -600, opacity: 0, duration: 0.4, ease: 'power3.out', stagger: 0.1 }, ${r2(t + 0.05)});`)
-    ;[0, 1, 2].forEach((j) => tw(`tl.to('[id^="${id}-r"] .s${j}', { backgroundColor: '#F0894A', color: '#171B20', scale: 1.12, duration: 0.25, ease: 'back.out(2)' }, ${r2((o.at ?? t + 0.6) + j * 0.35)});`))
+    ;[0, 1, 2].forEach((j) => { const at = o.stepsAt ? o.stepsAt[j] : (o.at ?? t + 0.6) + j * 0.35; if (at != null) tw(`tl.to('[id^="${id}-r"] .s${j}', { backgroundColor: '${o.lit || '#F0894A'}', color: '#171B20', scale: 1.12, duration: 0.25, ease: 'back.out(2)' }, ${r2(at)});`) })
     if (o.center) words(`#${id}-t`, o.centerAt ?? t + 0.9)
     return id
   }
@@ -117,15 +117,16 @@ export function kit2(B, K) {
   function twoPhones(t, o) {
     const id = uid('tp'), sw = 330
     const html = `<div class="abs" style="left:50px;top:${o.top ?? 330}px">${phone(`${id}-a`, o.a.name, o.a.base, o.a.steps || [], sw)}</div>
-      <div class="abs" style="left:${1080 - 50 - sw - 20}px;top:${o.top ?? 330}px">${phone(`${id}-b`, o.b.name, o.b.base, o.b.steps || [], sw)}</div>
+      <div class="abs" style="left:${1080 - 50 - sw - 20}px;top:${o.top ?? 330}px">${phone(`${id}-b`, o.b.name, o.b.base, o.b.steps || [], sw, '', o.b.swap ? `<img class="fimg" id="${id}-bsw" src="${o.b.swap}" style="width:${sw}px;opacity:0" alt="">` : '')}</div>
       <div class="cx" style="top:${(o.top ?? 330) - 90}px"><div class="tplab"><span class="chip">${o.a.label}</span><span class="chip hot">${o.b.label}</span></div></div>
       <svg class="tpw" viewBox="0 0 200 60" style="top:${(o.top ?? 330) + 330}px"><path id="${id}-w" d="M10 30 C 60 0, 140 60, 190 30"/></svg>
-      ${o.mid ? `<div class="cx" style="top:${(o.top ?? 330) + 300}px"><span class="midic" id="${id}-m">${ic(o.mid, 'lg')}</span></div>` : ''}`
+      ${o.mid ? `<div class="cx" style="top:${(o.top ?? 330) + 300}px"><span class="midic" id="${id}-m">${ic(o.mid, 'lg')}</span></div>` : ''}${o.extra || ''}`
     shot(t, html, o.shot)
     from(`#${id}-a`, t + 0.02, 'x: -500, rotation: -6', 0.45, 'power3.out')
     from(`#${id}-b`, t + 0.1, 'x: 500, rotation: 6', 0.45, 'power3.out')
     tw(`tl.fromTo('#${id}-w', { strokeDashoffset: 300 }, { strokeDashoffset: 0, duration: 0.5, immediateRender: true }, ${r2(o.linkAt ?? t + 0.5)});`)
     if (o.mid) pop(`#${id}-m`, (o.linkAt ?? t + 0.5) + 0.3)
+    if (o.b.swap) tw(`tl.to('#${id}-bsw', { opacity: 1, duration: 0.35 }, ${r2(o.b.swapAt)});`)
     if (o.a.run) runFlow(`${id}-a`, o.a.name, o.a.steps, o.a.run[0], o.a.run[1])
     if (o.b.run) runFlow(`${id}-b`, o.b.name, o.b.steps, o.b.run[0], o.b.run[1])
     return id
@@ -185,12 +186,13 @@ export function kit2(B, K) {
 
   // 3분 진단 버튼
   function cta(t, o) {
-    const id = uid('ct')
+    const id = uid('ct'), t0 = t
+    t = o.at ?? t
     const html = `<div class="cx" style="top:330px"><div class="timer" id="${id}-tm"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="trk"/><circle cx="50" cy="50" r="44" class="arc" id="${id}-arc"/></svg><b>3<small>분</small></b></div></div>
       <div class="cx" style="top:800px"><div class="ctab" id="${id}-b">${ic('target', 'lg')}<span>3분 기업성장·AX Fit 진단</span></div></div>
       <span class="touch" id="${id}-tap" style="left:540px;top:880px"></span>
       <div class="cx" style="top:1010px"><span class="chip" id="${id}-u">miraeailab.com</span></div>`
-    shot(t, html, { bg: 'bgC', ...(o.shot || {}) })
+    shot(t0, html, { bg: 'bgC', ...(o.shot || {}) })
     from(`#${id}-tm`, t + 0.02, 'scale: 0.4, opacity: 0', 0.4, 'back.out(1.8)')
     tw(`tl.fromTo('#${id}-arc', { strokeDashoffset: 277 }, { strokeDashoffset: 0, duration: 1.6, ease: 'power1.inOut', immediateRender: true }, ${r2(t + 0.2)});`)
     from(`#${id}-b`, t + 0.35, 'y: 120, opacity: 0', 0.4, 'back.out(1.6)')
