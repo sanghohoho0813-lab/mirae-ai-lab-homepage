@@ -3,8 +3,9 @@
 // 보존했고, 여기서는 "지금 필요한 변화가 어느 쪽인지" 만 고르게 한다 — 선택은 즉시, 설명은 선택 이후에.
 // 두 트랙 모두 결국 같은 3분 진단 → 결과 → 상담 퍼널로 합류한다.
 //
-// 순서: 01 = 2주 기술사업 빌드(런칭 파트너 모집 중), 02 = 풀 AX 구축.
-//   지금 먼저 내보내는 상품이 01 이라 위(모바일)·왼쪽(PC)에 두고 어두운 카드로 무게를 준다.
+// 순서: 01 = 2주 기술사업 빌드(BASIC · 런칭 파트너 300만원), 02 = 풀 AX 구축(ADVANCED · 500만원부터 · 대표 상품).
+//   더 큰 상품·메인 상품이 02 라는 게 한눈에 읽히게 02 를 어두운 카드 + 샴페인 골드로, 01 은 밝은 카드로 둔다.
+//   폰 첫 화면에서 02 머리(ADVANCED)가 살짝 보이도록 01 과 위 안내를 폰에서만 조밀하게 한다.
 //   data-track 값(ax / venture-mvp)은 유입 구분에 쓰이므로 순서가 바뀌어도 그대로 둔다.
 // 두 카드의 차이는 "없던 걸 새로 만든다 ↔ 지금 하는 걸 바꾼다" 한 줄로 가장 먼저 읽히게 한다.
 import { Link } from 'react-router-dom'
@@ -41,30 +42,39 @@ const SME_POINTS = [
   },
 ] as const
 
-/** 카드 머리 — 큰 번호 + 상태 배지 / 상품 이름 / 무엇이 다른지 한 줄.
+/** 카드 머리 — 큰 번호 + 등급(BASIC / ADVANCED) + 상태 배지 / 상품 이름 / 무엇이 다른지 한 줄.
  *  배지를 absolute 로 띄우면 360px 에서 상품명 위로 겹쳐서, 번호와 같은 줄에 흐름대로 둔다. */
-function CardHead({ no, name, diff, badge, tone }: { no: string; name: string; diff: string; badge: string; tone: 'dark' | 'light' }) {
+function CardHead({ no, tier, name, diff, badge, tone }: { no: string; tier: 'BASIC' | 'ADVANCED'; name: string; diff: string; badge: string; tone: 'dark' | 'light' }) {
   const dark = tone === 'dark'
   return (
     <>
-      <div className="flex items-start justify-between gap-2">
-        <span
-          aria-hidden
-          className={`shrink-0 text-[2.7rem] font-black leading-[0.8] tracking-tighter sm:text-[3.2rem] ${dark ? 'text-[#D47A4A]' : 'text-[#171B20]'}`}
-        >
-          {no}
+      <div className="flex items-center justify-between gap-2">
+        <span className="flex min-w-0 items-center gap-2.5">
+          <span
+            aria-hidden
+            className={`shrink-0 text-[2.2rem] font-black leading-[0.8] tracking-tighter sm:text-[3.2rem] ${dark ? 'text-[#E6C396]' : 'text-[#171B20]'}`}
+          >
+            {no}
+          </span>
+          <span
+            className={`shrink-0 rounded-md px-2 py-1 text-[0.8rem] font-black tracking-[0.14em] sm:text-[0.86rem] ${
+              dark ? 'bg-gradient-to-r from-[#E6C396] to-[#C99257] text-[#15110C] shadow-sm shadow-[#C99257]/30' : 'bg-[#171B20]/[0.06] text-[#646E78] ring-1 ring-inset ring-[#171B20]/10'
+            }`}
+          >
+            {tier}
+          </span>
         </span>
         <span
           className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.76rem] font-black ${
-            dark ? 'bg-[#D47A4A] text-[#171B20]' : 'bg-[#171B20]/[0.06] text-[#646E78]'
+            dark ? 'bg-[#E6C396]/15 text-[#E6C396] ring-1 ring-inset ring-[#E6C396]/45' : 'bg-[#D47A4A] text-[#171B20]'
           }`}
         >
-          {dark && <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#171B20]" />}
+          <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${dark ? 'bg-[#E6C396]' : 'bg-[#171B20]'}`} />
           {badge}
         </span>
       </div>
       <p className={`mt-3 break-keep text-[1.08rem] font-black leading-tight tracking-tight sm:text-[1.18rem] ${dark ? 'text-white' : 'text-[#171B20]'}`}>{name}</p>
-      <p className={`mt-1 break-keep text-[0.88rem] font-bold leading-snug ${dark ? 'text-[#E8B89A]' : 'text-[#B35A2A]'}`}>{diff}</p>
+      <p className={`mt-1 break-keep text-[0.88rem] font-bold leading-snug ${dark ? 'text-[#E6C396]' : 'text-[#B35A2A]'}`}>{diff}</p>
     </>
   )
 }
@@ -83,7 +93,7 @@ export default function BusinessServicesPage() {
       </header>
 
       {/* 위 여백을 넉넉히 두면 768px(태블릿)에서 두 카드 CTA 가 첫 화면 밖으로 밀린다 */}
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-6">
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-6">
         <div className="text-center">
           {/* 첫 줄부터 누구를 위한 서비스인지 못 박는다 — AX 를 대기업 얘기로 넘겨짚지 않게 */}
           {/* 글자 1.2배 (0.84 → 1.01rem · PC 0.9 → 1.08rem). Pretendard 기준 360px 폰에서도 한 줄 */}
@@ -94,86 +104,90 @@ export default function BusinessServicesPage() {
               <span className="text-[#B35A2A]">50인 미만 중소기업</span>을 위한 AX · 기술사업
             </span>
           </p>
-          <h1 className="hero-anim mt-3.5 text-[1.7rem] font-black leading-[1.25] tracking-tight [animation-delay:60ms] sm:text-[2.4rem]">
+          <h1 className="hero-anim mt-3 text-[1.55rem] font-black leading-[1.25] tracking-tight [animation-delay:60ms] sm:mt-3.5 sm:text-[2.4rem]">
             대표님, 지금 필요한 변화는<br className="sm:hidden" /> 어느 쪽인가요?
           </h1>
-          <p className="hero-anim mx-auto mt-3 max-w-2xl text-[1.02rem] leading-relaxed text-[#646E78] [animation-delay:120ms] sm:text-[1.12rem]">
-            없던 사업을 새로 만들지,<br className="sm:hidden" /> 하던 일을 바꿀지만 고르시면 돼요.
+          {/* 폰에서는 뺀다 — 두 카드의 한 줄(없던 기술사업을 2주 안에 / 하던 일을 더 편하게)이 같은 말을 하고, 02 카드가 첫 화면에 보여야 한다 */}
+          <p className="hero-anim mx-auto mt-3 hidden max-w-2xl text-[1.12rem] leading-relaxed text-[#646E78] [animation-delay:120ms] sm:block">
+            없던 사업을 새로 만들지, 하던 일을 바꿀지만 고르시면 돼요.
           </p>
         </div>
 
-        <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-6">
-          {/* 01 — 2주 기술사업 빌드 : 지금 먼저 내보내는 상품. 어두운 카드로 무게를 준다(상세페이지와도 이어진다) */}
+        <div className="mt-4 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-6">
+          {/* 01 BASIC — 2주 기술사업 빌드 : 밝은 카드. 가격이 분명한 입문 상품 */}
           <Link
             to={VENTURE_MVP_PATH}
             data-track="venture-mvp"
-            aria-label="01 2주 기술사업 빌드 — 아이디어는 작동하는 서비스로, 회사는 벤처기업으로. 2주 기술사업 패키지 보기"
-            className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#D47A4A]/30 bg-gradient-to-br from-[#171B20] via-[#1F252C] to-[#343B44] p-5 pt-6 text-white shadow-lg shadow-[#171B20]/25 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/70 hover:shadow-2xl hover:shadow-[#171B20]/35 [animation-delay:200ms] sm:p-7"
+            aria-label="01 BASIC 2주 기술사업 빌드 — 아이디어는 작동하는 서비스로, 회사는 벤처기업으로. 런칭 파트너 300만원. 2주 기술사업 패키지 보기"
+            className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#E7EAEE] bg-[#FFFDF9] p-4 pt-5 text-[#171B20] shadow-lg shadow-[#D47A4A]/10 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/50 hover:shadow-2xl hover:shadow-[#D47A4A]/20 [animation-delay:200ms] sm:p-7"
           >
-            <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#D47A4A]/25 opacity-70 blur-3xl transition-opacity group-hover:opacity-100" />
+            <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#E8B89A]/40 blur-3xl" />
 
             <div className="relative">
-              <CardHead no="01" name="2주 기술사업 빌드" diff="없던 기술사업을 2주 안에" badge="선착순 5개사" tone="dark" />
-              <h2 className="mt-4 text-[1.5rem] font-black leading-[1.25] tracking-tight sm:text-[1.8rem]">
-                아이디어는 서비스로,<br />회사는 <span className="text-[#E8894F]">벤처기업으로</span>
+              <CardHead no="01" tier="BASIC" name="2주 기술사업 빌드" diff="없던 기술사업을 2주 안에" badge="선착순 5개사" tone="light" />
+              <h2 className="mt-3 text-[1.32rem] font-black leading-[1.25] tracking-tight sm:mt-4 sm:text-[1.8rem]">
+                아이디어는 서비스로,<br />회사는 <span className="text-[#C8612E]">벤처기업으로</span>
               </h2>
-              <p className="mt-3 text-[0.96rem] leading-relaxed text-slate-300 sm:text-[1.02rem]">
-                지금 하는 사업에서 기술사업 아이디어를 찾고, <b className="font-bold text-white">바로 써 볼 수 있는 첫 버전(MVP)</b>과
+              {/* 폰에서는 설명 대신 아래 세 단계(기술사업 → MVP → 벤처기업확인)만 — 02 카드가 첫 화면에 보이게 */}
+              <p className="mt-3 hidden text-[1.02rem] leading-relaxed text-[#343B44] sm:block">
+                지금 하는 사업에서 기술사업 아이디어를 찾고, <b className="font-bold text-[#171B20]">바로 써 볼 수 있는 첫 버전(MVP)</b>과
                 벤처기업확인 신청까지 한 번에 끝내요.
               </p>
-              <ul className="mt-4 flex flex-wrap items-center gap-1.5" aria-label="패키지 구성">
+              <ul className="mt-3 flex flex-wrap items-center gap-1.5 sm:mt-4" aria-label="패키지 구성">
                 {MVP_STEPS.map((s, i) => (
                   <li key={s} className="flex items-center gap-1.5">
-                    {i > 0 && <span aria-hidden className="text-[0.8rem] text-slate-500">→</span>}
-                    <span className="rounded-full bg-white/[0.08] px-3 py-1 text-[0.84rem] font-bold text-slate-100 ring-1 ring-inset ring-white/15">{s}</span>
+                    {i > 0 && <span aria-hidden className="text-[0.8rem] text-[#8A939C]">→</span>}
+                    <span className="rounded-full bg-[#171B20]/[0.05] px-3 py-1 text-[0.84rem] font-bold text-[#343B44] ring-1 ring-inset ring-[#171B20]/10">{s}</span>
                   </li>
                 ))}
               </ul>
-              {/* 가격 — 이 카드에만 있다. 지금 고를 이유가 가장 분명한 자리 */}
-              <p className="mt-4 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                <span className="text-[0.92rem] font-bold text-slate-400 line-through">정상가 500만원</span>
-                <span className="text-[0.86rem] font-black text-[#E8B89A]">런칭 파트너</span>
-                <span className="text-[1.6rem] font-black leading-none tracking-tight text-white sm:text-[1.75rem]">300만원</span>
+              <p className="mt-3 flex flex-wrap items-baseline gap-x-2.5 gap-y-1 sm:mt-4">
+                <span className="text-[0.92rem] font-bold text-[#8A939C] line-through">정상가 500만원</span>
+                <span className="text-[0.86rem] font-black text-[#B35A2A]">런칭 파트너</span>
+                <span className="text-[1.5rem] font-black leading-none tracking-tight text-[#171B20] sm:text-[1.75rem]">300만원</span>
               </p>
             </div>
 
-            <span className="shine-cta relative mt-5 inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-5 text-[1.05rem] font-black text-[#171B20] transition-colors group-hover:bg-[#E8B89A] sm:mt-auto sm:pt-0">
-              2주 기술사업 패키지 보기 <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+            <span className="relative mt-4 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-[#171B20] px-5 text-[1.05rem] font-black text-white transition-colors group-hover:bg-[#343B44] sm:mt-auto sm:min-h-[52px]">
+              2주 기술사업 패키지 보기 <span aria-hidden className="text-[#E8B89A] transition-transform group-hover:translate-x-1">→</span>
             </span>
           </Link>
 
-          {/* 02 — 풀 AX 구축 : 아이보리·웜 화이트. 이미 하고 있는 업무를 바꾸는 쪽 */}
+          {/* 02 ADVANCED — 풀 AX 구축 : 대표 상품. 어두운 카드 + 샴페인 골드로 '더 큰 상품'이 한눈에 읽히게 */}
           <Link
             to={AX_START_PATH}
             data-track="ax"
-            aria-label="02 풀 AX 구축 — 회사 전체를 AX로 바꿔요. AX 도입 알아보기"
-            className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#E7EAEE] bg-[#FFFDF9] p-5 pt-6 text-[#171B20] shadow-lg shadow-[#D47A4A]/10 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/50 hover:shadow-2xl hover:shadow-[#D47A4A]/20 [animation-delay:300ms] sm:p-7"
+            aria-label="02 ADVANCED 풀 AX 구축 — 회사 전체를 AX로 바꿔요. 대표 상품, 500만원부터. AX 도입 알아보기"
+            className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#D8A871]/50 bg-gradient-to-br from-[#12161B] via-[#1B2027] to-[#2C3138] p-4 pt-5 text-white shadow-xl shadow-[#171B20]/30 ring-1 ring-inset ring-[#E6C396]/15 transition duration-200 hover:-translate-y-1 hover:border-[#E6C396]/85 hover:shadow-2xl hover:shadow-[#171B20]/40 [animation-delay:300ms] sm:p-7"
           >
-            <span aria-hidden className="pointer-events-none absolute -left-16 -top-20 h-56 w-56 rounded-full bg-[#E8B89A]/45 blur-3xl" />
+            <span aria-hidden className="pointer-events-none absolute -left-16 -top-20 h-56 w-56 rounded-full bg-[#D8A871]/25 opacity-80 blur-3xl transition-opacity group-hover:opacity-100" />
 
             <div className="relative">
-              <CardHead no="02" name="풀 AX 구축" diff="하던 일을 더 편하게 바꿔요" badge="상담 후 범위 결정" tone="light" />
-              <h2 className="mt-4 text-[1.5rem] font-black leading-[1.25] tracking-tight sm:text-[1.8rem]">
-                회사 전체를<br />AX로 바꿔요
+              <CardHead no="02" tier="ADVANCED" name="풀 AX 구축" diff="하던 일을 더 편하게 바꿔요" badge="대표 상품" tone="dark" />
+              <h2 className="mt-3 text-[1.32rem] font-black leading-[1.25] tracking-tight sm:mt-4 sm:text-[1.8rem]">
+                회사 전체를<br /><span className="text-[#E6C396]">AX로</span> 바꿔요
               </h2>
-              <p className="mt-3 text-[0.96rem] leading-relaxed text-[#343B44] sm:text-[1.02rem]">
+              <p className="mt-3 text-[0.96rem] leading-relaxed text-slate-300 sm:text-[1.02rem]">
                 반복 업무, 고객 응대, 여기저기 흩어진 데이터를 한 화면으로 모아요.{' '}
-                <b className="font-bold text-[#171B20]">일은 줄고, 놓치던 매출은 다시 챙길 수 있어요.</b>
+                <b className="font-bold text-white">일은 줄고, 놓치던 매출은 다시 챙길 수 있어요.</b>
               </p>
               <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="핵심 키워드">
                 {AX_KEYWORDS.map((k) => (
-                  <li key={k} className="rounded-full bg-[#171B20]/[0.05] px-3 py-1 text-[0.84rem] font-bold text-[#343B44] ring-1 ring-inset ring-[#171B20]/10">
+                  <li key={k} className="rounded-full bg-white/[0.08] px-3 py-1 text-[0.84rem] font-bold text-slate-100 ring-1 ring-inset ring-white/15">
                     {k}
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-[0.9rem] font-semibold leading-relaxed text-[#646E78]">
-                먼저 <b className="font-bold text-[#343B44]">3분 진단</b>으로 우리 회사에 맞는지부터 볼게요.
+              {/* 가격 — 범위(MVP · 플랫폼 · 풀 패키지)에 따라 달라서 '부터'로만 적는다 */}
+              <p className="mt-4 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <span className="text-[1.5rem] font-black leading-none tracking-tight text-white sm:text-[1.75rem]">500만원</span>
+                <span className="text-[1.05rem] font-black text-[#E6C396]">부터</span>
+                <span className="text-[0.86rem] font-semibold text-slate-400">· 범위는 3분 진단과 상담 뒤에 정해요</span>
               </p>
             </div>
 
-            <span className="shine-cta relative mt-5 inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-[#171B20] px-5 text-[1.05rem] font-black text-white transition-colors group-hover:bg-[#343B44] sm:mt-auto">
-              AX 도입 알아보기 <span aria-hidden className="text-[#E8B89A] transition-transform group-hover:translate-x-1">→</span>
+            <span className="shine-cta relative mt-4 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E6C396] to-[#C99257] px-5 text-[1.05rem] font-black text-[#15110C] transition-[filter] group-hover:brightness-110 sm:mt-auto sm:min-h-[52px]">
+              AX 도입 알아보기 <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
             </span>
           </Link>
         </div>

@@ -6,6 +6,8 @@ import { AX_CORE_VALUES, AX_METHOD_STEPS, AX_SELECTION_DECLINE, AX_SELECTION_PRI
 const band = 'px-5 py-16 sm:px-6 sm:py-24'
 const wrap = 'mx-auto max-w-5xl'
 const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-900 sm:text-[2.795rem]'
+// 히어로 문장에서 떨어지면 어색한 말 덩어리 — 한 음절만 다음 줄로 넘어가지 않게 통째로 줄바꿈한다
+const NW = 'whitespace-nowrap'
 
 /** SECTION 1 — Hero. "경영컨설턴트가 설계하는 중소기업 맞춤형 실행 AX"가 5초 안에 읽히게 한다.
  *  배지 · 한 문장 · 두 문단. 직접 만든 화면 22개(AxSamplesBand)는 소개 영상 2편 다음으로 옮겼다.
@@ -26,8 +28,8 @@ export function AxHeroV2() {
           320px 같은 작은 화면에서는 문단이 두 개라 여백부터 줄여 한 화면에 담는다. */}
       {/* 폰에서는 하단 고정 바(약 64px)가 처음부터 떠 있으므로 아래 여백을 그만큼 더 둔다 (pb-24 / 작은 화면 pb-20) */}
       <div className={`relative flex min-h-[calc(100svh-53px)] sm:min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-24 pt-12 max-[359px]:pb-20 max-[359px]:pt-7 [@media(max-height:700px)]:pb-20 [@media(max-height:700px)]:pt-7 sm:px-6 sm:pb-12 sm:pt-14`}>
-        {/* 390px 에서 한 줄에 들어가도록 모바일 글자를 조금 줄인다 (기준 대비 1.1배) */}
-        <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-full border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.99rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[1.078rem] sm:px-4 sm:text-[1.155rem]">
+        {/* 폰에서는 두 줄로 떨어지므로 알약 대신 둥근 네모로 둔다(PC 는 한 줄 알약) */}
+        <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-2xl border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.99rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[1.078rem] sm:rounded-full sm:px-4 sm:text-[1.155rem]">
           <span>
             경영컨설턴트가 설계하는 <span className="whitespace-nowrap">50인 미만 중소기업 맞춤 AX</span>
           </span>
@@ -35,19 +37,24 @@ export function AxHeroV2() {
 
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
         <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-[359px]:mt-6 max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] max-[359px]:text-[2.0rem] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
-          {/* PC 에서도 같은 자리에서 끊어 두 줄로 읽히게 한다 */}
-          대표님 머릿속에만 있던 일,<br />
-          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">이제 회사가 기억합니다</span>.
+          {/* PC 는 두 줄, 폰은 말 덩어리(nowrap)대로 네 줄 — '일,' 한 음절만 다음 줄로 떨어지지 않게 한다 */}
+          <span className={NW}>대표님 머릿속에만</span> <span className={NW}>있던 일,</span>
+          <br />
+          <span className="text-[#D47A4A] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_14px_30px_rgba(212,122,74,0.2)]">
+            <span className={NW}>이제 회사가</span> <span className={NW}>기억합니다<span className="text-[#FAFAF8]">.</span></span>
+          </span>
         </h1>
         {/* 두 문단 — 문단마다 흰 글자(구체적인 대상) 하나와 브랜드색(남는 결과) 하나만 집어,
             읽는 눈이 어디에 멈출지 분명하게 한다. 줄간격은 1.85 로 넉넉히 둔다. */}
         <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-[359px]:mt-5 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-8 sm:text-[1.44rem]">
-          <b className="font-bold text-[#FAFAF8]">엑셀, 카톡, ERP</b>에 흩어진 일을 한 화면에 모아요.<br className="hidden sm:block" />{' '}
-          누가 언제 뭘 했는지 남고, <b className="font-bold text-[#E8B89A]">먼저 챙길 일은 AI가 알려 줘요</b>.
+          <span className={NW}><b className="font-bold text-[#FAFAF8]">엑셀, 카톡, ERP</b>에 흩어진 일을</span> <span className={NW}>한 화면에 모아요.</span>
+          <br className="hidden sm:block" /> <span className={NW}>누가 언제 뭘 했는지 남고,</span>{' '}
+          <span className={NW}><b className="font-bold text-[#E8B89A]">먼저 챙길 일은 AI가 알려 줘요</b>.</span>
         </p>
         <p style={{ animationDelay: '0.46s' }} className="hero-anim mt-5 max-[359px]:mt-4 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-6 sm:text-[1.44rem]">
-          <b className="font-bold text-[#E8B89A]">정책자금, 정부지원사업, 투자</b> 심사에서도<br className="hidden sm:block" />{' '}
-          ‘이 회사, 진짜 이렇게 일하네’ 하고 <b className="font-bold text-[#FAFAF8]">화면으로 확인</b>할 수 있어요.
+          <span className={NW}><b className="font-bold text-[#E8B89A]">정책자금, 정부지원사업,</b></span> <span className={NW}><b className="font-bold text-[#E8B89A]">투자</b> 심사에서도</span>
+          <br className="hidden sm:block" /> <span className={NW}>‘이 회사, 진짜 이렇게 일하네’</span> 하고{' '}
+          <span className={NW}><b className="font-bold text-[#FAFAF8]">화면으로 확인</b>할 수 있어요.</span>
         </p>
       </div>
     </section>

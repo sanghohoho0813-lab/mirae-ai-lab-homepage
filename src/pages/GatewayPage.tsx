@@ -102,14 +102,15 @@ export default function GatewayPage() {
         <div style={{ animationDelay: '0.16s' }} className="hero-anim w-full rounded-2xl border border-slate-200/70 bg-white/72 px-4 py-2.5 backdrop-blur-[3px] sm:px-8 sm:py-6">
           {/* AX 를 처음 보는 분이 대부분이라 단어 바로 옆 괄호로 뜻을 밝힌다.
               "설계자가 설계하는" 이 되지 않게 뒤 동사는 "만드는" 으로 둔다. */}
-          <p className="text-center text-[0.95rem] font-semibold leading-snug text-slate-600 min-[380px]:text-[1.0rem] sm:text-[1.25rem]">
+          <p className="text-center text-[1.06rem] font-semibold leading-snug text-slate-600 min-[380px]:text-[1.13rem] sm:text-[1.38rem]">
             9년 차 경영컨설턴트가 설계하는 <b className="whitespace-nowrap font-bold text-slate-800">50인 미만 중소기업</b> AX
             <span className="mt-0.5 block text-[0.84em] font-medium text-slate-500">AX = AI로 회사가 일하는 방식을 바꾸는 것</span>
           </p>
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-center text-[0.78rem] font-medium leading-snug text-slate-500 min-[380px]:gap-x-2 min-[380px]:text-[0.86rem] sm:mt-3.5 sm:gap-x-3 sm:text-[1.0rem] sm:leading-normal">
+          {/* 폰은 한 줄에 하나씩 — 줄바꿈된 줄 머리에 '·' 가 붙어 보이던 것을 없앤다. PC 는 한 줄로 이어 쓴다 */}
+          <div className="mt-2 flex flex-col items-center gap-y-0.5 text-center text-[0.9rem] font-medium leading-snug text-slate-500 min-[380px]:text-[0.96rem] sm:mt-3.5 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-3 sm:text-[1.1rem] sm:leading-normal">
             {trustItems.map((t, i) => (
-              <span key={t} className="inline-flex items-center gap-2 sm:gap-3">
-                {i > 0 && <span aria-hidden className="text-slate-300">·</span>}
+              <span key={t} className="inline-flex items-center gap-3">
+                {i > 0 && <span aria-hidden className="hidden text-slate-300 sm:inline">·</span>}
                 {t}
               </span>
             ))}
@@ -122,7 +123,7 @@ export default function GatewayPage() {
           <div className="mt-2.5 border-t border-slate-200/80 pt-2.5 sm:mt-5 sm:pt-5">
             <div className="border-l-2 border-[#D47A4A]/45 pl-3.5 sm:pl-5">
               {/* 별도 안내 버튼 없이, 주황색 특허 문구 자체를 눌러 5건을 펼친다 */}
-              <p className="max-w-md break-keep text-[0.9rem] leading-relaxed text-slate-600 sm:max-w-none sm:text-[1.08rem]">
+              <p className="max-w-md break-keep text-[1rem] leading-relaxed text-slate-600 min-[380px]:text-[1.05rem] sm:max-w-none sm:text-[1.18rem]">
                 업무 자동화, 다음 할 일 추천 같은{' '}
                 <button
                   type="button"
@@ -140,8 +141,8 @@ export default function GatewayPage() {
                 <ol id="gateway-patent-techs" className="animate-fade-in mt-2 space-y-1.5 sm:mt-3 sm:space-y-2">
                   {AX_PATENT_TECHS.map((t) => (
                     <li key={t.no} className="flex items-baseline gap-2.5 break-keep text-left sm:gap-3.5">
-                      <span className="shrink-0 text-[0.74rem] font-black tabular-nums text-[#B35A2A] sm:text-[0.85rem]">{t.no}</span>
-                      <span className="text-[0.86rem] leading-snug text-slate-600 sm:text-[1.0rem]">
+                      <span className="shrink-0 text-[0.82rem] font-black tabular-nums text-[#B35A2A] sm:text-[0.92rem]">{t.no}</span>
+                      <span className="text-[0.95rem] leading-snug text-slate-600 sm:text-[1.08rem]">
                         <b className="font-bold text-slate-800">{t.name}</b>
                         <span className="text-slate-400"> · {t.sub}</span>
                       </span>
@@ -151,7 +152,7 @@ export default function GatewayPage() {
               )}
             </div>
             {/* 좁은 화면에서는 장식용 영문을 빼고 날짜만 남긴다 — 한 줄 높이를 지켜야 역할 선택 카드가 안 밀린다 */}
-            <p className="mt-1.5 text-center text-[0.76rem] font-bold tracking-[0.14em] text-slate-500 sm:mt-2.5 sm:text-[0.85rem] sm:tracking-[0.2em]">
+            <p className="mt-1.5 text-center text-[0.84rem] font-bold tracking-[0.14em] text-slate-500 sm:mt-2.5 sm:text-[0.92rem] sm:tracking-[0.2em]">
               <span className="sm:hidden">{AX_PATENT_FILED_LABEL}</span>
               <span className="hidden sm:inline">{AX_PATENT_META} 출원 완료</span>
             </p>
@@ -166,15 +167,15 @@ export default function GatewayPage() {
               to={c.to}
               aria-label={c.aria}
               style={{ animationDelay: `${0.32 + i * 0.12}s` }}
-              className={`hero-anim group relative flex min-h-[8rem] flex-col overflow-hidden rounded-3xl px-5 py-3.5 transition duration-200 hover:-translate-y-1.5 sm:min-h-[15.5rem] sm:px-9 sm:py-9 ${c.card}`}
+              className={`hero-anim group relative flex min-h-[8rem] flex-col overflow-hidden rounded-3xl px-5 py-3 transition duration-200 hover:-translate-y-1.5 sm:min-h-[15.5rem] sm:px-9 sm:py-9 ${c.card}`}
             >
               <span aria-hidden className={`pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full blur-2xl ${c.glow}`} />
-              <span aria-hidden className={`relative grid h-12 w-12 place-items-center rounded-2xl text-xl sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-3xl sm:text-4xl ${c.iconBox}`}>
+              <span aria-hidden className={`relative grid h-10 w-10 place-items-center rounded-xl text-lg sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-3xl sm:text-4xl ${c.iconBox}`}>
                 {c.icon}
               </span>
               {/* 아이콘을 위로 올려 글줄 폭을 넉넉히 준다 — 좁은 화면에서도 질문이 두 줄 안에 떨어지게.
                   질문은 아이콘 바로 아래에서 시작한다(두 카드의 질문 높이가 같게). 화살표만 카드 아래 오른쪽에 둔다 */}
-              <span className="relative mt-3.5 flex flex-1 items-start justify-between gap-3 sm:mt-6 sm:gap-5">
+              <span className="relative mt-2.5 flex flex-1 items-start justify-between gap-3 sm:mt-6 sm:gap-5">
                 <span className="min-w-0">
                   <span className="block text-[1.26rem] font-extrabold leading-[1.35] tracking-tight text-white min-[380px]:text-[1.36rem] sm:text-[1.85rem] sm:leading-[1.28]">
                     {c.lines.map((line) => (
