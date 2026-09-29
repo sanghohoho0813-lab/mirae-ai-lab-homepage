@@ -5,7 +5,7 @@
 //  - 영상 위 전체가 '소리 켜고 처음부터 보기' 버튼 — 누르면 소리를 켜고 처음부터 한 번 재생(기본 컨트롤 표시).
 //  - 히어로의 '영상으로 모든 내용 확인하기' 도 ref 의 playWithSound 로 같은 동작을 한다(누른 순간 바로 재생해야
 //    iOS 에서도 소리가 난다 — 스크롤보다 재생을 먼저 부른다).
-//  - 끝까지 보면 '샘플 직접 눌러 보기(아래 예시로)' · '무료로 상담받기' 를 띄운다.
+//  - 끝까지 보면 '샘플 직접 눌러 보기(아래 예시로)' · '상담 신청하기' 를 띄운다.
 //  - preload="none" — 이 구간 근처에 오기 전에는 영상을 받지 않는다(첫 화면 속도 보호).
 //  - 영상 원본(HyperFrames)·녹음·자막 파일은 media/venture-mvp-reel/ 에 있다. 게시본은 대표님이 한 번 더 다듬은 최종본.
 // ⚠️ 영상 속 화면은 자체 데모다 — 아래 안내 문구를 지우지 않는다.
@@ -182,7 +182,7 @@ export default function VentureMvpFilm({
                   onClick={onConsult}
                   className="flex min-h-12 w-full max-w-[16rem] items-center justify-center gap-1.5 rounded-xl bg-white/10 px-4 text-[1.02rem] font-bold text-white ring-1 ring-white/25 transition-colors hover:bg-white/20"
                 >
-                  무료로 상담받기 <span aria-hidden>→</span>
+                  상담 신청하기 <span aria-hidden>→</span>
                 </button>
                 <button type="button" onClick={playWithSound} className="min-h-11 px-3 text-[0.92rem] font-semibold text-slate-300 underline underline-offset-4 hover:text-white">
                   처음부터 다시 보기

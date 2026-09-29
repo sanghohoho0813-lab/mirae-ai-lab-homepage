@@ -859,7 +859,7 @@ export default function FundingConsultingDetailPage() {
 
       {/* Mobile sticky CTA — 최종 CTA 노출 시 자동 숨김 */}
       {showBar && !atEnd && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
+        <div data-bottom-bar className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] backdrop-blur-md sm:hidden">
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[1.2rem] sm:text-[1.417rem] font-black text-slate-900">{FLAGSHIP.name}</span>
             <span className="block truncate text-[1.1rem] sm:text-[1.3rem] font-medium text-slate-500">3분 AX 진단으로 시작하세요</span>

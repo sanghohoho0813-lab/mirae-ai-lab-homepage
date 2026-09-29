@@ -2,6 +2,7 @@
 // 노란 알약은 광고처럼 튀어서, 먹색 바탕에 카카오 노랑 말풍선만 남긴다.
 // 모바일 하단 고정 CTA(약 64px)와 브라우저 safe-area 위에 위치해 겹치지 않게 한다.
 // 모바일 첫 화면에서는 히어로의 메인 CTA를 가리지 않도록, 조금 스크롤한 뒤에만 나타난다.
+// 뒤로·앞으로 알약(HistoryNav)이 떠 있으면 그 바로 위로 살짝 올라간다 — 높이는 HistoryNav 가 --mirae-kakao-bottom 으로 알려 준다.
 import { useEffect, useState } from 'react'
 import { consultLinks } from '../config/businessInfo'
 
@@ -33,7 +34,7 @@ export default function KakaoFloat() {
       aria-label="카카오톡으로 상담하기 (새 탭에서 열림)"
       aria-hidden={!shown}
       tabIndex={shown ? undefined : -1}
-      className={`fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] z-40 inline-flex items-center gap-2 rounded-full bg-[#171B20]/95 p-3.5 text-[1.17rem] font-bold text-white shadow-lg shadow-black/25 ring-1 ring-white/10 backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#0B0E12] sm:right-6 sm:bottom-6 sm:py-3 sm:pl-3.5 sm:pr-4 sm:text-[0.98rem] ${
+      className={`fixed right-4 bottom-[var(--mirae-kakao-bottom,calc(env(safe-area-inset-bottom,0px)+84px))] z-40 inline-flex items-center gap-2 rounded-full bg-[#171B20]/95 p-3.5 text-[1.17rem] font-bold text-white shadow-lg shadow-black/25 ring-1 ring-white/10 backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#0B0E12] sm:right-6 sm:bottom-[var(--mirae-kakao-bottom,1.5rem)] sm:py-3 sm:pl-3.5 sm:pr-4 sm:text-[0.98rem] ${
         shown ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'
       }`}
     >

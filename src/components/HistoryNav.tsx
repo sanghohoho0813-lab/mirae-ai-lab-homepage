@@ -1,5 +1,6 @@
 // 사이트 공용 뒤로 · 앞으로 버튼 — 카카오톡·네이버 앱 안 브라우저처럼 주소창 버튼이 없는 곳에서도
-// 실수로 뒤로 간 걸 되돌릴 수 있게 한다. 화면 왼쪽 아래 작은 알약 하나.
+// 실수로 뒤로 간 걸 되돌릴 수 있게 한다. 화면 오른쪽 아래 작은 알약 하나 — 아래 고정 바가 있으면 그 바로 위,
+// 카카오톡 상담 버튼은 이 알약 위로 살짝 올라간다(--mirae-kakao-bottom).
 //
 // 브라우저는 '앞으로 갈 곳이 있는지'를 알려 주지 않아서, 이 탭 안에서의 위치를 history.state 에 직접 적어 둔다.
 //  - pushState(새 이동)  → 위치 +1, 앞으로 갈 곳은 사라진다(max = 위치)
@@ -9,7 +10,7 @@
 //    그 빈 칸으로 '앞으로' 가면 아무 일도 안 일어나 보이므로, 창을 닫으며 돌아온 경우엔 앞으로 갈 곳을 지운다.
 // 뒤로 버튼은 이 사이트 안의 첫 칸(위치 0)에서 꺼진다 — 버튼으로 사이트 밖(카톡 대화방 등)으로 나가지 않게.
 // 동작은 history.back()/forward() 그대로라, 각 페이지의 뒤로가기 처리(진단 화면 등)와 폰 뒤로가기가 똑같이 움직인다.
-import { useEffect, useReducer } from 'react'
+import { useEffect, useLayoutEffect, useReducer, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const POS = '__miraePos'
@@ -114,9 +115,15 @@ export function installHistoryNav() {
 // 자체 이동 버튼이 있거나(진단: 이전·처음부터) 아래 고정 바가 화면 전체에 깔리는 곳(결제), 곧바로 밖으로 나가는 곳(초대 링크)
 const HIDDEN = [/^\/business-diagnosis\/?$/, /^\/checkout\//, /^\/payment\//, /^\/pass\//]
 
+// 사이트의 버튼 크기(폰 34px · PC 32px) + 알약 테두리 — 카톡 버튼을 얼마나 올릴지 계산할 때 쓴다
+const PILL_H = { mobile: 38, wide: 36 }
+
 export default function HistoryNav() {
   const { pathname } = useLocation()
   const [, rerender] = useReducer((x: number) => x + 1, 0)
+  // 화면 맨 아래에 깔린 고정 바(data-bottom-bar) 높이 — 있으면 그 바로 위에 붙는다
+  const [barH, setBarH] = useState(0)
+  const [wide, setWide] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 640)
 
   useEffect(() => {
     installHistoryNav()
@@ -127,34 +134,82 @@ export default function HistoryNav() {
     }
   }, [])
 
-  if (typeof window === 'undefined') return null
-  // 미리보기 틀(iframe) 안에서는 띄우지 않는다
-  if (window.self !== window.top) return null
-  if (HIDDEN.some((re) => re.test(pathname))) return null
+  // 고정 바는 스크롤 위치에 따라 나타나고 사라져서, 스크롤·화면 크기·DOM 변화 때마다 다시 잰다(한 프레임에 한 번)
+  useEffect(() => {
+    let raf = 0
+    const measure = () => {
+      raf = 0
+      setWide(window.innerWidth >= 640)
+      let h = 0
+      document.querySelectorAll<HTMLElement>('[data-bottom-bar]').forEach((el) => {
+        const r = el.getBoundingClientRect()
+        if (r.height > 0 && r.bottom >= window.innerHeight - 2) h = Math.max(h, window.innerHeight - r.top)
+      })
+      setBarH(Math.round(h))
+    }
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(measure)
+    }
+    measure()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    const mo = new MutationObserver(schedule)
+    mo.observe(document.body, { childList: true, subtree: true })
+    return () => {
+      if (raf) cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      mo.disconnect()
+    }
+  }, [pathname])
 
-  const pos = posOf(window.history.state) ?? 0
+  const inFrame = typeof window !== 'undefined' && window.self !== window.top
+  const hiddenRoute = HIDDEN.some((re) => re.test(pathname))
+  const pos = typeof window !== 'undefined' ? (posOf(window.history.state) ?? 0) : 0
   const canBack = pos > 0
   const canForward = pos < max
   // 처음 들어와 갈 곳이 없으면 아예 숨긴다 — 두 번째 화면부터 나타난다
-  if (!canBack && !canForward) return null
+  const visible = !inFrame && !hiddenRoute && (canBack || canForward)
+
+  // 오른쪽 아래 — 아래 고정 바가 있으면 바로 위(8px), 없으면 폰 16px · PC 24px
+  const pillH = wide ? PILL_H.wide : PILL_H.mobile
+  const bottom = wide ? '24px' : barH > 0 ? `${barH + 8}px` : 'calc(env(safe-area-inset-bottom, 0px) + 16px)'
+
+  // 카카오톡 상담 버튼은 이 알약 바로 위로 살짝 올린다(원래 자리보다 낮아지지는 않게)
+  useLayoutEffect(() => {
+    const root = document.documentElement
+    if (!visible) {
+      root.style.removeProperty('--mirae-kakao-bottom')
+      return
+    }
+    const above = wide ? `${24 + pillH + 10}px` : barH > 0 ? `${barH + 8 + pillH + 10}px` : `calc(env(safe-area-inset-bottom, 0px) + ${16 + pillH + 10}px)`
+    const base = wide ? '24px' : 'calc(env(safe-area-inset-bottom, 0px) + 84px)'
+    root.style.setProperty('--mirae-kakao-bottom', `max(${base}, ${above})`)
+    return () => {
+      root.style.removeProperty('--mirae-kakao-bottom')
+    }
+  }, [visible, wide, barH, pillH])
+
+  if (!visible) return null
 
   const btn =
-    'grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-white/12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#E6C396] disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent sm:h-9 sm:w-9'
+    'grid h-[34px] w-[34px] place-items-center rounded-full transition-colors hover:bg-white/12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#E6C396] disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent sm:h-8 sm:w-8'
 
   return (
     <nav
       aria-label="페이지 이동"
       data-history-nav
-      className="animate-fade-in fixed bottom-[calc(env(safe-area-inset-bottom,0px)+88px)] left-3 z-30 flex items-center rounded-full bg-[#0B0E12]/75 p-0.5 text-white shadow-[0_10px_28px_-10px_rgba(0,0,0,0.55)] ring-1 ring-white/15 backdrop-blur-md sm:bottom-6 sm:left-6 print:hidden"
+      style={{ bottom }}
+      className="animate-fade-in fixed right-3 z-30 flex items-center rounded-full bg-[#0B0E12]/70 p-0.5 text-white shadow-[0_8px_22px_-10px_rgba(0,0,0,0.5)] ring-1 ring-white/15 backdrop-blur-md transition-[bottom] duration-200 sm:right-6 print:hidden"
     >
       <button type="button" className={btn} onClick={() => window.history.back()} disabled={!canBack} aria-label="뒤로 가기" title="뒤로 가기">
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M12.5 4.5 7 10l5.5 5.5" />
         </svg>
       </button>
-      <span aria-hidden className="h-4 w-px bg-white/15" />
+      <span aria-hidden className="h-3.5 w-px bg-white/15" />
       <button type="button" className={btn} onClick={() => window.history.forward()} disabled={!canForward} aria-label="앞으로 가기" title="앞으로 가기">
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M7.5 4.5 13 10l-5.5 5.5" />
         </svg>
       </button>

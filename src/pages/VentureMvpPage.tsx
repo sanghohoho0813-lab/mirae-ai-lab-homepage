@@ -205,6 +205,7 @@ export default function VentureMvpPage() {
       {pastTop && !atEnd && (
         <div
           data-mvp-sticky
+          data-bottom-bar
           className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-[#E7EAEE] bg-[#FAFAF8]/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(23,27,32,0.08)] backdrop-blur-md sm:hidden"
         >
           {/* basis 0 + min-w-0 이 있어야 글자 길이가 아니라 비율이 폭을 정한다 */}
@@ -213,7 +214,7 @@ export default function VentureMvpPage() {
             onClick={() => setConsultOpen(true)}
             className="flex min-h-12 min-w-0 flex-[6_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#D47A4A] px-2 text-[0.92rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] min-[400px]:text-[1rem]"
           >
-            무료로 상담받기 <span aria-hidden>→</span>
+            상담 신청하기 <span aria-hidden>→</span>
           </button>
           <button
             type="button"

@@ -86,7 +86,7 @@ export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () =
               data-mvp-hero-cta
               className="shine-cta flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#D47A4A] px-6 text-[1.15rem] font-black text-[#171B20] shadow-xl shadow-[#D47A4A]/25 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] motion-reduce:hover:translate-y-0 sm:px-4 sm:text-[1.2rem]"
             >
-              무료로 상담받기 <span aria-hidden>→</span>
+              상담 신청하기 <span aria-hidden>→</span>
             </button>
             <button
               type="button"

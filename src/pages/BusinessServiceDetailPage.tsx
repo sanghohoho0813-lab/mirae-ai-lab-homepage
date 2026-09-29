@@ -698,7 +698,7 @@ export default function BusinessServiceDetailPage() {
 
       {/* Mobile sticky CTA — 상담 모드에선 '가능 여부 확인' 진단형 프레이밍 */}
       {showBar && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
+        <div data-bottom-bar className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:hidden">
           {inquiryOnly ? (
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[0.92rem] font-black text-slate-900">우리 회사도 될까요?</span>

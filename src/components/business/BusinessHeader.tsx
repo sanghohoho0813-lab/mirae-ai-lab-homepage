@@ -65,8 +65,8 @@ export default function BusinessHeader({
               <span className="absolute -right-0.5 -top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-black text-white">{cart.length > 99 ? '99+' : cart.length}</span>
             </Link>
           )}
-          {/* 헤더는 폭이 빠듯해 Primary 라벨을 줄여 쓴다(1280px 에서 우측 그룹이 밀려 가로 스크롤이 생겼던 것 방지) */}
-          <Link to={diagnosisHref} className="hidden items-center gap-1.5 whitespace-nowrap rounded-full bg-[#171B20] px-4 py-2 text-[1.2rem] font-semibold text-[#F4F1EC] shadow-sm transition-colors hover:bg-[#0B0E12] sm:inline-flex sm:text-[1rem]">AX 가능성 진단 <span aria-hidden className="text-[#E6C396]">→</span></Link>
+          {/* 헤더는 폭이 빠듯해 Primary 라벨을 줄여 쓴다 — 태블릿(lg 미만)은 '서비스 찾기', PC 는 '우리 회사에 맞는 서비스 찾기' */}
+          <Link to={diagnosisHref} className="hidden items-center gap-1.5 whitespace-nowrap rounded-full bg-[#171B20] px-4 py-2 text-[1.2rem] font-semibold text-[#F4F1EC] shadow-sm transition-colors hover:bg-[#0B0E12] sm:inline-flex sm:text-[1rem]"><span className="hidden lg:inline">우리 회사에 맞는</span>서비스 찾기 <span aria-hidden className="text-[#E6C396]">→</span></Link>
           {/* 화면 미리보기 — 떠다니지 않고 헤더 안, 햄버거 옆에 둔다 */}
           {!isPreviewEmbedded && (
             <button
