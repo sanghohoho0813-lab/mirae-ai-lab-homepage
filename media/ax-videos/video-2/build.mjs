@@ -177,6 +177,6 @@ K.stamp(c('11.3.3'), { text: '일관된 스토리', color: 'orange', at: w('일�
 K.big(c('11.4.0'), { icon: 'q', text: '어디서부터<br>*시작할까?*', size: 'l', y: 700, shot: { bg: 'bgB' } })
 X.cta(c('11.4.1'), { tapAt: w('확인해', '11.4.1') })
 const ENDV = T.cues[T.cues.length - 1].end
-X.endCard(ENDV - 0.1, { eb: '지금 바로', card: '<span class="no">3분 · 무료</span><h3>기업성장·AX Fit<br>진단 받기</h3><ul><li>miraeailab.com</li><li>무료 상담</li><li>샘플 22개 직접 눌러 보기</li></ul>' })
+X.endCard(ENDV - 0.1, { eb: '지금 바로', card: '<span class="no">3분 · 무료</span><h3>기업성장·AX Fit<br>진단 받기</h3><ul><li>miraeailab.com</li><li>무료 상담</li><li>샘플 직접 눌러 보기</li></ul>' })
 
 B.finish(r2(ENDV + 3.2))
