@@ -16,6 +16,19 @@ type Props = {
   onSkip?: () => void
 }
 
+/** 제목 속 '(한글 풀이)' 는 작고 옅게 — 예: ERP(경영관리 프로그램). 문자열 자체는 메일·관리자 화면에 그대로 쓴다 */
+function glossed(text: string): ReactNode[] {
+  return text.split(/(\([^)]*\))/).map((part, i) =>
+    part.startsWith('(') && part.endsWith(')') ? (
+      <span key={i} className="whitespace-nowrap text-[0.72em] font-semibold tracking-normal text-slate-500">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  )
+}
+
 export default function DiagnosisQuestion({ question, value, feedback, inlinePanel, onSelect, onNext, onPrev, canPrev, onSkip }: Props) {
   const isMulti = question.type === 'multi'
   const selected = isMulti ? (Array.isArray(value) ? value : []) : typeof value === 'string' ? value : undefined
@@ -43,8 +56,17 @@ export default function DiagnosisQuestion({ question, value, feedback, inlinePan
 
   return (
     <div key={question.id} className="animate-rise-in mx-auto flex w-full max-w-[720px] flex-1 flex-col px-5 pb-32 pt-6 sm:pb-10 sm:pt-9">
-      <h2 className="text-2xl font-black leading-[1.3] tracking-tight text-slate-900 sm:text-[1.8rem]">{question.title}</h2>
+      <h2 className="text-2xl font-black leading-[1.3] tracking-tight text-slate-900 sm:text-[1.8rem]">{glossed(question.title)}</h2>
       {question.desc && <p className="mt-2 text-base leading-relaxed text-slate-500">{question.desc}</p>}
+      {question.note && (
+        <p className="mt-3 flex items-start gap-2 rounded-xl bg-slate-50 px-3.5 py-3 text-[0.88rem] leading-relaxed text-slate-600 ring-1 ring-inset ring-slate-200">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className="mt-[3px] shrink-0 text-slate-400" aria-hidden>
+            <circle cx="12" cy="12" r="9.5" />
+            <path d="M12 11v5.5M12 7.6v.2" />
+          </svg>
+          <span className="break-keep">{question.note}</span>
+        </p>
+      )}
 
       {feedback && (
         <div

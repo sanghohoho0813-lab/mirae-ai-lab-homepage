@@ -24,6 +24,8 @@ export type DiagnosisQuestion = {
   type: 'single' | 'multi'
   title: string
   desc?: string
+  /** 보기 위에 늘 보이는 짧은 안내 상자 (예: 정책자금·지원사업·투자는 보장하지 않는다는 말) */
+  note?: string
   options: DiagnosisOption[]
   /** true 면 '나중에 답하기' 허용 */
   optional?: boolean
@@ -86,6 +88,8 @@ export type AxFitReport = {
   reasons: string[]
   /** 상담 이유별로 같이 준비할 것 */
   focus: { title: string; text: string }[]
+  /** 정책자금·지원사업·투자를 고른 경우 — 보장하지 않는다는 안내 (구버전 저장 결과에는 없다) */
+  focusNote?: string
   /** 비용·정산 안내 한 줄 */
   paymentNote: string
   /** 현재 가장 큰 문제 TOP 3 */

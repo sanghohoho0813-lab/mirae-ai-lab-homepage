@@ -96,7 +96,7 @@ const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: stri
     ifIgnored: '고객이 늘수록 빠뜨리는 주문과 늦는 답변도 같이 늘어요.',
   },
   uniqueWork: {
-    title: '기존 ERP·POS·SaaS로는 안 되는 우리 회사만의 일',
+    title: '기존 프로그램(ERP·POS·SaaS)으로는 안 되는 우리 회사만의 일',
     why: '이 일이 우리 회사의 강점이자, 지금 자주 막히는 곳이에요.',
     ifIgnored: '계속 사람 손으로 처리하면 그 노하우가 회사에 남지 않아요.',
   },
@@ -182,6 +182,10 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
   // 상담 이유별로 같이 준비할 것 (+ 1개월 안 일정)
   const focus = reasonsPicked.filter((r) => FOCUS[r]).map((r) => FOCUS[r])
   if (one(answers, 'timeline') === 'within1m') focus.unshift({ title: '1개월 안 일정', text: '마감에 맞출 수 있는 범위부터 정하고, 2주 안에 기본 틀을 만들어요.' })
+  // AX가 자금을 받기 위한 수단으로 읽히지 않게 — 자금·지원사업·투자를 고르면 보장하지 않는다는 말을 붙인다
+  const focusNote = ['fund', 'grant', 'invest'].some((r) => reasonsPicked.includes(r))
+    ? 'AX로 만든 화면과 데이터는 정책자금·지원사업·투자 심사에서 참고 자료나 가점 요소가 될 수 있을 뿐, 승인·선정·투자를 보장하지 않아요. 결과는 기관과 투자자의 심사로 정해져요.'
+    : undefined
 
   // 비용·정산 안내 — 영상 2편과 같은 말로
   const deferred = budget === 'afterFunding' || reasonsPicked.includes('fund') || reasonsPicked.includes('grant')
@@ -246,6 +250,7 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
     situation,
     reasons,
     focus,
+    focusNote,
     paymentNote,
     topProblems,
     painCount,

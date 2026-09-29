@@ -86,7 +86,7 @@ function SeverityMeter({ severity, answerLabel }: { severity?: number; answerLab
 }
 
 /** ② 대표님 상황에 맞춰 같이 준비할 것 — 상담 이유별 한 줄 */
-function FocusCard({ items }: { items: Report['focus'] }) {
+function FocusCard({ items, note }: { items: Report['focus']; note?: string }) {
   if (!items || items.length === 0) return null
   return (
     <section className="mt-8 print:break-inside-avoid">
@@ -100,6 +100,7 @@ function FocusCard({ items }: { items: Report['focus'] }) {
           </li>
         ))}
       </ul>
+      {note && <p className="mt-2.5 break-keep text-[0.84rem] leading-relaxed text-slate-500">※ {note}</p>}
     </section>
   )
 }
@@ -345,7 +346,7 @@ export default function AxFitReportView({ report, submitted, consultationConsent
       </section>
 
       {/* ② 상황별로 같이 준비할 것 */}
-      <FocusCard items={report.focus} />
+      <FocusCard items={report.focus} note={report.focusNote} />
 
       {/* ③ 지금 걸려 있는 문제 + 이대로 두면 */}
       <ProblemsCard items={report.topProblems} painCount={report.painCount} painTotal={report.painTotal} />
