@@ -30,7 +30,7 @@ const GRADE_ORDER: AxFitGrade[] = ['NO_GO', 'LITE', 'FULL', 'HIGH']
 
 // 판정 카드(어두운 배경)에서 쓰는 등급 색. 인쇄용 대체는 각 요소에서 print: 로 지정한다.
 const VERDICT_SKIN: Record<SeverityTone, { fill: string; edge: string; chip: string; on: string; text: string }> = {
-  blue: { fill: 'bg-blue-400', edge: 'bg-blue-400', chip: 'bg-blue-400/15 text-blue-200 ring-1 ring-inset ring-blue-300/30', on: 'bg-blue-500 text-white', text: 'text-blue-300' },
+  blue: { fill: 'bg-[#D8A871]', edge: 'bg-[#D8A871]', chip: 'bg-[#D8A871]/15 text-[#F0DCC0] ring-1 ring-inset ring-[#E0B386]/30', on: 'bg-[#C99257] text-white', text: 'text-[#E6C396]' },
   green: { fill: 'bg-emerald-400', edge: 'bg-emerald-400', chip: 'bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-300/30', on: 'bg-emerald-500 text-white', text: 'text-emerald-300' },
   amber: { fill: 'bg-amber-400', edge: 'bg-amber-400', chip: 'bg-amber-400/15 text-amber-200 ring-1 ring-inset ring-amber-300/30', on: 'bg-amber-400 text-slate-900', text: 'text-amber-300' },
   orange: { fill: 'bg-orange-400', edge: 'bg-orange-400', chip: 'bg-orange-400/15 text-orange-200 ring-1 ring-inset ring-orange-300/30', on: 'bg-orange-400 text-slate-900', text: 'text-orange-300' },
@@ -166,13 +166,13 @@ function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; 
 function ActionPlan({ report }: { report: Report }) {
   return (
     <section className="mt-9 print:break-inside-avoid">
-      <p className={`${eyebrow} text-blue-600`}>그럼, 무엇부터 할까요?</p>
+      <p className={`${eyebrow} text-[#B37744]`}>그럼, 무엇부터 할까요?</p>
       <h2 className={h2Cls}>{report.direction.title}</h2>
 
       <ul className="mt-4 space-y-2">
         {report.direction.points.map((t) => (
-          <li key={t} className="flex items-start gap-2.5 rounded-xl bg-blue-50/70 px-4 py-3">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" className="mt-[3px] shrink-0 text-blue-600" aria-hidden>
+          <li key={t} className="flex items-start gap-2.5 rounded-xl bg-[#F6ECE1]/70 px-4 py-3">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" className="mt-[3px] shrink-0 text-[#B37744]" aria-hidden>
               <path d="M5 12.5 10 17.5 19 7" />
             </svg>
             <p className="break-keep text-[1rem] font-semibold leading-relaxed text-slate-800">{t}</p>
@@ -208,7 +208,7 @@ function ActionPlan({ report }: { report: Report }) {
 function ClosingConsultCTA({ onConsult, hasProblems }: { onConsult: () => void; hasProblems: boolean }) {
   return (
     <section data-closing-cta className="mt-9 print:hidden">
-      <div className="rounded-[1.4rem] border-2 border-blue-200 bg-gradient-to-b from-blue-50 to-white p-6 text-center sm:p-7">
+      <div className="rounded-[1.4rem] border-2 border-[#EBCBAA] bg-gradient-to-b from-[#F6ECE1] to-white p-6 text-center sm:p-7">
         <h3 className="break-keep text-[1.32rem] font-black leading-tight tracking-tight text-slate-900 sm:text-2xl">
           {hasProblems ? (
             <>이 중 무엇부터 손볼지,<br className="sm:hidden" /> 같이 정리해 드립니다.</>
@@ -222,7 +222,7 @@ function ClosingConsultCTA({ onConsult, hasProblems }: { onConsult: () => void; 
         <button
           type="button"
           onClick={onConsult}
-          className="shine-cta mt-5 inline-flex min-h-[56px] w-full max-w-sm items-center justify-center gap-1.5 rounded-2xl bg-blue-600 px-8 py-3.5 text-lg font-black text-white shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          className="shine-cta mt-5 inline-flex min-h-[56px] w-full max-w-sm items-center justify-center gap-1.5 rounded-2xl bg-[#171B20] px-8 py-3.5 text-lg font-black text-white shadow-lg shadow-[#171B20]/15 transition-all hover:-translate-y-0.5 hover:bg-[#0B0E12] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C99257]"
         >
           AX Fit 상담 신청하기 <span aria-hidden>→</span>
         </button>

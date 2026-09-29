@@ -20,7 +20,7 @@ type Props = {
 }
 
 const inputCls =
-  'w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
+  'w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-[#C99257] focus:outline-none focus:ring-2 focus:ring-[#C99257]/20'
 const labelCls = 'block text-sm font-bold text-slate-700'
 
 export default function LeadGate({ submitting, errorMessage, interests, onInterestsChange, onSubmit }: Props) {
@@ -68,7 +68,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
 
   return (
     <div className="animate-rise-in mx-auto mt-8 w-full max-w-[640px] rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5 sm:p-8">
-      <p className="text-sm font-black uppercase tracking-widest text-blue-600">AX Fit 상담 신청</p>
+      <p className="text-sm font-black uppercase tracking-widest text-[#B37744]">AX Fit 상담 신청</p>
       <h2 className="mt-2 text-xl font-black leading-[1.3] tracking-tight text-slate-900 sm:text-2xl">
         진단 결과를 보고,<br className="sm:hidden" /> 어디부터 손댈지 같이 정해 드려요
       </h2>
@@ -124,7 +124,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
                         aria-pressed={on}
                         onClick={() => setCompany((c) => ({ ...c, [f.key]: on ? '' : opt }))}
                         className={`min-h-10 rounded-lg border px-3 py-1.5 text-[0.86rem] font-semibold transition ${
-                          on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                          on ? 'border-[#C99257] bg-[#F6ECE1] text-[#9A5F2F]' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
                         }`}
                       >
                         {opt}
@@ -158,7 +158,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
                   onClick={() => setContactMethod(on ? '' : m)}
                   aria-pressed={on}
                   className={`rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
-                    on ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                    on ? 'border-[#C99257] bg-[#F6ECE1] text-[#9A5F2F]' : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   {m === '전화' ? '📞 전화' : '💬 카톡·문자'}
@@ -171,11 +171,11 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         {/* 동의 — 필수/선택 분리, 기본 미체크 */}
         <div className="space-y-2.5 rounded-2xl bg-slate-50 p-4">
           <label className="flex cursor-pointer items-start gap-2.5">
-            <input type="checkbox" checked={privacyOk} onChange={(e) => setPrivacyOk(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600" />
+            <input type="checkbox" checked={privacyOk} onChange={(e) => setPrivacyOk(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-[#B37744]" />
             <span className="min-w-0">
               <span className="text-sm font-bold text-slate-800">{PRIVACY_CONSENT.required.label}</span>
               <span className="mt-0.5 block text-xs leading-snug text-slate-500">{PRIVACY_CONSENT.required.summary}</span>
-              <button type="button" onClick={() => setPrivacyOpen((o) => !o)} className="mt-0.5 inline-flex min-h-9 items-center text-xs font-semibold text-blue-600 underline underline-offset-2">
+              <button type="button" onClick={() => setPrivacyOpen((o) => !o)} className="mt-0.5 inline-flex min-h-9 items-center text-xs font-semibold text-[#B37744] underline underline-offset-2">
                 {privacyOpen ? '내용 접기' : '자세히 보기'}
               </button>
               {privacyOpen && (
@@ -189,14 +189,14 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
           </label>
           {touched && !privacyOk && <p className="text-xs font-semibold text-red-500">상담을 신청하려면 개인정보 수집·이용에 동의해 주세요.</p>}
           <label className="flex cursor-pointer items-start gap-2.5">
-            <input type="checkbox" checked={consultOk} onChange={(e) => setConsultOk(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600" />
+            <input type="checkbox" checked={consultOk} onChange={(e) => setConsultOk(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-[#B37744]" />
             <span className="min-w-0">
               <span className="text-sm font-bold text-slate-800">{PRIVACY_CONSENT.consultation.label}</span>
               <span className="mt-0.5 block text-xs leading-snug text-slate-500">{PRIVACY_CONSENT.consultation.summary}</span>
             </span>
           </label>
           <label className="flex cursor-pointer items-start gap-2.5">
-            <input type="checkbox" checked={marketingOk} onChange={(e) => setMarketingOk(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600" />
+            <input type="checkbox" checked={marketingOk} onChange={(e) => setMarketingOk(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-[#B37744]" />
             <span className="min-w-0">
               <span className="text-sm font-bold text-slate-800">{PRIVACY_CONSENT.marketing.label}</span>
               <span className="mt-0.5 block text-xs leading-snug text-slate-500">{PRIVACY_CONSENT.marketing.summary}</span>
@@ -226,7 +226,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
           type="button"
           onClick={handleSubmit}
           disabled={submitting}
-          className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-4 text-lg font-black text-white shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-[#171B20] px-6 py-4 text-lg font-black text-white shadow-lg shadow-[#171B20]/15 transition-all hover:-translate-y-0.5 hover:bg-[#0B0E12] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C99257]"
         >
           {submitting ? '접수하고 있어요…' : 'AX Fit 상담 신청하기'}
         </button>

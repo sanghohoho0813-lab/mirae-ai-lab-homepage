@@ -365,7 +365,7 @@ export default function BusinessDiagnosisPage() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-white text-slate-900 antialiased [word-break:keep-all]">
-      <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b border-black/[0.06] bg-[#FBFAF7]/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2.5">
           <div className="flex min-w-0 items-center gap-2">
             <BrandLogo to={backHref} onClick={handleBrandClick} tagline={AX_FIT_INFO.name} imgClassName="h-9 max-w-[150px] sm:h-10 sm:max-w-[180px]" />
@@ -388,7 +388,7 @@ export default function BusinessDiagnosisPage() {
               <button
                 type="button"
                 onClick={handleRestart}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#C99257]"
               >
                 처음부터
               </button>
@@ -408,7 +408,7 @@ export default function BusinessDiagnosisPage() {
         {screen === 'question' && current && (
           <>
             {qIdx === 0 && (
-              <p className="animate-rise-in mx-auto mt-6 w-full max-w-[720px] px-5 text-sm font-bold text-blue-600">{AX_FIT_INFO.copy}</p>
+              <p className="animate-rise-in mx-auto mt-6 w-full max-w-[720px] px-5 text-sm font-bold text-[#B37744]">{AX_FIT_INFO.copy}</p>
             )}
             <DiagnosisQuestion
               question={current}
@@ -461,7 +461,7 @@ export default function BusinessDiagnosisPage() {
           <button
             type="button"
             onClick={openGate}
-            className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-5 text-[1rem] font-black text-white shadow-sm transition-colors hover:bg-blue-700"
+            className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-[#171B20] px-5 text-[1rem] font-black text-white shadow-sm transition-colors hover:bg-[#0B0E12]"
           >
             AX Fit 상담 신청하기 <span aria-hidden>→</span>
           </button>

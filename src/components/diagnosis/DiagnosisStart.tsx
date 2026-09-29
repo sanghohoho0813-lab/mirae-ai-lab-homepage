@@ -15,7 +15,7 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
   // 폰에서는 위에서부터 읽히게(가운데 정렬은 위쪽이 비어 보인다), PC 는 세로 가운데
   return (
     <div className="mx-auto flex min-h-[calc(100dvh-57px)] max-w-[720px] flex-col justify-start px-5 py-8 sm:justify-center sm:py-14">
-      <p className="animate-rise-in text-sm font-black uppercase tracking-widest text-blue-600">{AX_FIT_INFO.name}</p>
+      <p className="animate-rise-in text-sm font-black uppercase tracking-widest text-[#B37744]">{AX_FIT_INFO.name}</p>
       <h1 className="animate-rise-in mt-3 text-[1.6rem] font-black leading-[1.3] tracking-tight text-slate-900 [animation-delay:60ms] sm:text-[2.2rem]">
         우리 회사는<br className="sm:hidden" /> 어디부터 바꿔야 할까요?
       </h1>
@@ -35,7 +35,7 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
             className="animate-rise-in flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm sm:gap-4 sm:rounded-2xl sm:p-5"
             style={{ animationDelay: `${140 + i * 70}ms` }}
           >
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-blue-50 text-sm font-black text-blue-700 sm:h-11 sm:w-11 sm:rounded-xl sm:text-base">{i + 1}</span>
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#F6ECE1] text-sm font-black text-[#9A5F2F] sm:h-11 sm:w-11 sm:rounded-xl sm:text-base">{i + 1}</span>
             <div className="min-w-0">
               <p className="break-keep text-[0.92rem] font-extrabold leading-snug text-slate-900 sm:text-base">{c.label}</p>
               <p className="mt-0.5 hidden text-sm leading-snug text-slate-500 sm:block">{c.desc}</p>
@@ -49,7 +49,7 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
         <button
           type="button"
           onClick={onStart}
-          className="flex min-h-[56px] items-center justify-center gap-1.5 rounded-2xl bg-blue-600 px-7 py-4 text-lg font-black text-white shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          className="flex min-h-[56px] items-center justify-center gap-1.5 rounded-2xl bg-[#171B20] px-7 py-4 text-lg font-black text-white shadow-lg shadow-[#171B20]/15 transition-all hover:-translate-y-0.5 hover:bg-[#0B0E12] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C99257]"
         >
           3분 AX Fit 시작하기
           <span aria-hidden>→</span>
@@ -59,7 +59,7 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
           <button
             type="button"
             onClick={onResume}
-            className="flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-7 py-3.5 text-base font-bold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+            className="flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-7 py-3.5 text-base font-bold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#C99257]"
           >
             이어서 진단하기
           </button>

@@ -16,7 +16,8 @@ function ChevronDown() {
   )
 }
 
-export default function AccountMenu({ className = '' }: { className?: string }) {
+export default function AccountMenu({ className = '', tone = 'light' }: { className?: string; /** dark: 먹색 배경 위(첫 화면) */ tone?: 'light' | 'dark' }) {
+  const dark = tone === 'dark'
   const { user, profile, roles, memberType, needsOnboarding, isAdmin, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -51,13 +52,13 @@ export default function AccountMenu({ className = '' }: { className?: string }) 
       <div className={`flex items-center gap-2 ${className}`}>
         <Link
           to={next}
-          className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+          className={`rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${dark ? 'text-slate-300 hover:bg-white/10 hover:text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
         >
           로그인
         </Link>
         <Link
           to="/signup"
-          className="rounded-lg bg-slate-900 px-3.5 py-2 text-sm font-bold text-white transition-colors hover:bg-slate-700"
+          className={`rounded-lg px-3.5 py-2 text-sm font-bold transition-colors ${dark ? 'bg-[#F2EDE6] text-[#0B0E12] hover:bg-white' : 'bg-slate-900 text-white hover:bg-slate-700'}`}
         >
           회원가입
         </Link>
@@ -89,10 +90,10 @@ export default function AccountMenu({ className = '' }: { className?: string }) 
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={menuId}
-        className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+        className={`flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 ${dark ? 'hover:bg-white/10' : 'hover:bg-slate-100'}`}
       >
         <Avatar name={name} imageUrl={avatarUrl} size={32} />
-        <span className="hidden max-w-[8rem] truncate text-sm font-bold text-slate-800 sm:inline">{name}</span>
+        <span className={`hidden max-w-[8rem] truncate text-sm font-bold sm:inline ${dark ? 'text-white' : 'text-slate-800'}`}>{name}</span>
         <span className="text-slate-400"><ChevronDown /></span>
       </button>
 

@@ -83,9 +83,11 @@ export default function BusinessServicesPage() {
   usePageMeta(PAGE_TITLE, PAGE_DESC, BUSINESS_CHOOSER_PATH)
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[#FAFAF8] text-[#171B20] antialiased [word-break:keep-all]">
+    <div className="relative flex min-h-dvh flex-col overflow-hidden bg-[#F7F4EF] text-[#171B20] antialiased [word-break:keep-all]">
+      {/* 아주 옅은 골드 빛 — 아이보리 바탕에 깊이만 준다 */}
+      <div aria-hidden className="pointer-events-none absolute -right-48 -top-40 h-[36rem] w-[36rem] rounded-full bg-[#E6C396]/25 blur-3xl" />
       {/* 작은 헤더 — 고르기 전이라 AX 쪽 메뉴를 먼저 보여주지 않는다 */}
-      <header className="sticky top-0 z-30 border-b border-[#E7EAEE] bg-[#FAFAF8]/90 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b border-black/[0.06] bg-[#FBFAF7]/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
           <BrandLogo to="/" tagline="대표님 서비스 선택" imgClassName="h-9 max-w-[150px] sm:h-10 sm:max-w-[190px]" />
           <HeaderAccount variant="business" />
@@ -93,18 +95,19 @@ export default function BusinessServicesPage() {
       </header>
 
       {/* 위 여백을 넉넉히 두면 768px(태블릿)에서 두 카드 CTA 가 첫 화면 밖으로 밀린다 */}
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-6">
+      <main className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-4 sm:px-6 sm:pb-14 sm:pt-8">
         <div className="text-center">
           {/* 첫 줄부터 누구를 위한 서비스인지 못 박는다 — AX 를 대기업 얘기로 넘겨짚지 않게 */}
           {/* 글자 1.2배 (0.84 → 1.01rem · PC 0.9 → 1.08rem). Pretendard 기준 360px 폰에서도 한 줄 */}
-          <p className="hero-anim inline-flex items-center gap-2 rounded-full border border-[#D47A4A]/35 bg-white px-3.5 py-2 text-[1.01rem] font-black text-[#171B20] shadow-sm min-[380px]:px-4 sm:text-[1.08rem]">
-            <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[#D47A4A]" />
+          <p className="hero-anim inline-flex items-center gap-3 text-[1.01rem] font-bold text-[#343B44] sm:text-[1.08rem]">
+            <span aria-hidden className="h-px w-6 shrink-0 bg-[#C99257]/70 sm:w-10" />
             {/* 한 덩어리로 묶는다 — 나누면 gap-2 가 '중소기업'과 '을' 사이에 끼어든다 */}
             <span className="break-keep">
-              <span className="text-[#B35A2A]">50인 미만 중소기업</span>을 위한 AX · 기술사업
+              <span className="text-[#A5703C]">50인 미만 중소기업</span>을 위한 AX · 기술사업
             </span>
+            <span aria-hidden className="h-px w-6 shrink-0 bg-[#C99257]/70 sm:w-10" />
           </p>
-          <h1 className="hero-anim mt-3 text-[1.55rem] font-black leading-[1.25] tracking-tight [animation-delay:60ms] sm:mt-3.5 sm:text-[2.4rem]">
+          <h1 className="hero-anim mt-3 text-[1.55rem] font-bold leading-[1.25] tracking-[-0.03em] text-[#0B0E12] [animation-delay:60ms] sm:mt-4 sm:text-[2.55rem]">
             대표님, 지금 필요한 변화는<br className="sm:hidden" /> 어느 쪽인가요?
           </h1>
           {/* 폰에서는 뺀다 — 두 카드의 한 줄(없던 기술사업을 2주 안에 / 하던 일을 더 편하게)이 같은 말을 하고, 02 카드가 첫 화면에 보여야 한다 */}
@@ -237,7 +240,7 @@ export default function BusinessServicesPage() {
         </details>
       </main>
 
-      <LegalFooter />
+      <LegalFooter tone="dark" />
       <KakaoFloat />
     </div>
   )

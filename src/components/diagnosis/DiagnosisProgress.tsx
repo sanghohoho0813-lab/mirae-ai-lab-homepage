@@ -18,14 +18,14 @@ export default function DiagnosisProgress({ questionNumber, total, percent, onBa
             type="button"
             onClick={onBack}
             aria-label={backLabel}
-            className="grid h-11 w-11 -ml-2 place-items-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+            className="grid h-11 w-11 -ml-2 place-items-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#C99257]"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M15 6l-6 6 6 6" />
             </svg>
           </button>
           <div className="min-w-0 flex-1 text-center">
-            <p className="text-xs font-black uppercase tracking-wide text-blue-600">AX FIT</p>
+            <p className="text-xs font-black uppercase tracking-wide text-[#B37744]">AX FIT</p>
             <p className="truncate text-sm font-bold text-slate-900">{AX_FIT_INFO.name}</p>
           </div>
           <p className="shrink-0 whitespace-nowrap text-right text-[12px] font-semibold text-slate-500 sm:text-sm">
@@ -35,7 +35,7 @@ export default function DiagnosisProgress({ questionNumber, total, percent, onBa
         {/* 진행률 바 */}
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={Math.round(percent)} aria-valuemin={0} aria-valuemax={100} aria-label="진단 진행률">
           <div
-            className="h-full rounded-full bg-blue-600 transition-[width] duration-500 ease-out"
+            className="h-full rounded-full bg-[#171B20] transition-[width] duration-500 ease-out"
             style={{ width: `${percent}%` }}
           />
         </div>

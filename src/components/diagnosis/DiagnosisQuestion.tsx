@@ -54,7 +54,7 @@ export default function DiagnosisQuestion({ question, value, feedback, inlinePan
               ? 'bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200'
               : feedback.tone === 'good'
                 ? 'bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200'
-                : 'bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200'
+                : 'bg-[#F6ECE1] text-[#7E4B22] ring-1 ring-inset ring-[#EBCBAA]'
           }`}
         >
           {feedback.text}
@@ -71,17 +71,17 @@ export default function DiagnosisQuestion({ question, value, feedback, inlinePan
               role={isMulti ? 'checkbox' : 'radio'}
               aria-checked={isSel}
               onClick={() => choose(opt.value)}
-              className={`flex min-h-[56px] items-center justify-between gap-3 rounded-2xl border-2 px-4.5 py-3.5 text-left transition-all duration-150 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
-                isSel ? 'border-blue-600 bg-blue-50/70 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+              className={`flex min-h-[56px] items-center justify-between gap-3 rounded-2xl border-2 px-4.5 py-3.5 text-left transition-all duration-150 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C99257] ${
+                isSel ? 'border-[#B37744] bg-[#F6ECE1]/70 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
               }`}
             >
               <span className="min-w-0">
-                <span className={`block text-base font-bold leading-snug ${isSel ? 'text-blue-800' : 'text-slate-800'}`}>{opt.label}</span>
+                <span className={`block text-base font-bold leading-snug ${isSel ? 'text-[#7E4B22]' : 'text-slate-800'}`}>{opt.label}</span>
                 {opt.desc && <span className="mt-0.5 block text-sm leading-snug text-slate-400">{opt.desc}</span>}
               </span>
               <span
                 aria-hidden
-                className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-colors ${isSel ? 'border-blue-600 bg-blue-600' : 'border-slate-300 bg-white'}`}
+                className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition-colors ${isSel ? 'border-[#B37744] bg-[#171B20]' : 'border-slate-300 bg-white'}`}
               >
                 {isSel && (
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round">
@@ -109,7 +109,7 @@ export default function DiagnosisQuestion({ question, value, feedback, inlinePan
               type="button"
               onClick={onPrev}
               disabled={!canPrev}
-              className="min-h-[52px] rounded-xl border border-slate-300 bg-white px-5 py-3 text-base font-bold text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+              className="min-h-[52px] rounded-xl border border-slate-300 bg-white px-5 py-3 text-base font-bold text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#C99257]"
             >
               이전
             </button>
@@ -118,7 +118,7 @@ export default function DiagnosisQuestion({ question, value, feedback, inlinePan
                 type="button"
                 onClick={onNext}
                 disabled={(selected as string[]).length === 0}
-                className="flex min-h-[52px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-6 py-3 text-base font-black text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                className="flex min-h-[52px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#171B20] px-6 py-3 text-base font-black text-white shadow-sm transition-colors hover:bg-[#0B0E12] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C99257]"
               >
                 다음 <span aria-hidden>→</span>
               </button>

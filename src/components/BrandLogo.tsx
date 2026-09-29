@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const LOGO_SRC = '/brand/mirae-ai-lab-logo-transparent.png'
-/** 어두운 배경용 — 무채색 글자만 흰색으로 바꾼 버전 */
+/** 어두운 배경용 — 원본 로고에서 글자(무채색)만 아이보리로 바꾼 버전. M 마크 색은 그대로 */
 const LOGO_SRC_LIGHT = '/brand/mirae-ai-lab-logo-light.png'
 const DEFAULT_TAGLINE = 'MIRAE AI LAB · Business AX Company'
 // 폰에서는 헤더 폭이 모자라 긴 태그라인이 'Business A…' 로 잘린다. 로고 그림에 이미 MIRAE AI LAB 이 있으니

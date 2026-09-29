@@ -33,7 +33,7 @@ export default function BusinessHeader({
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-black/[0.06] bg-[#FBFAF7]/85 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[88rem] items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-5 lg:gap-6">
         {/* 태그라인은 그대로 두되, 폰에서는 짧은 판(Business AX Company)을 온전히 보여 준다 */}
         {/* 아주 좁은 화면(320px)에서는 남은 폭만큼만 차지하고 태그라인이 …로 줄어든다 */}
@@ -46,9 +46,9 @@ export default function BusinessHeader({
           taglineClassName="text-[0.64rem]! tracking-[0.14em]! sm:text-[0.7rem]! sm:tracking-[0.16em]!"
         />
         {/* 헤더 폭이 빠듯해 xl 이상에서 핵심 3개만 보인다. 나머지는 햄버거 메뉴에 있다. */}
-        <nav className="hidden shrink-0 items-center gap-4 whitespace-nowrap text-[1.02rem] font-medium text-slate-600 xl:flex">
+        <nav className="hidden shrink-0 items-center gap-6 whitespace-nowrap text-[0.98rem] font-medium text-[#4A535D] xl:flex">
           {navLinks.map((l) => (
-            <Link key={l.href} to={l.href} className="transition-colors hover:text-slate-900">
+            <Link key={l.href} to={l.href} className="relative py-1 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-[#C99257] after:transition-transform hover:text-[#0B0E12] hover:after:scale-x-100">
               {l.label}
             </Link>
           ))}
@@ -66,7 +66,7 @@ export default function BusinessHeader({
             </Link>
           )}
           {/* 헤더는 폭이 빠듯해 Primary 라벨을 줄여 쓴다(1280px 에서 우측 그룹이 밀려 가로 스크롤이 생겼던 것 방지) */}
-          <Link to={diagnosisHref} className="hidden whitespace-nowrap rounded-lg bg-[#D47A4A] px-4 py-2 text-[1.2rem] sm:text-[1.05rem] font-semibold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:inline-flex">AX 가능성 진단</Link>
+          <Link to={diagnosisHref} className="hidden items-center gap-1.5 whitespace-nowrap rounded-full bg-[#171B20] px-4 py-2 text-[1.2rem] font-semibold text-[#F4F1EC] shadow-sm transition-colors hover:bg-[#0B0E12] sm:inline-flex sm:text-[1rem]">AX 가능성 진단 <span aria-hidden className="text-[#E6C396]">→</span></Link>
           {/* 화면 미리보기 — 떠다니지 않고 헤더 안, 햄버거 옆에 둔다 */}
           {!isPreviewEmbedded && (
             <button
@@ -74,7 +74,7 @@ export default function BusinessHeader({
               onClick={onOpenPreview}
               aria-label="PC·스마트폰 화면 미리보기"
               title="PC ↔ 스마트폰 화면 미리보기"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#D47A4A]/40 text-[#171B20] transition-colors hover:bg-[#F3D9C8]/50 xl:h-auto xl:w-auto xl:px-2.5 xl:py-1.5 xl:text-[0.88rem] xl:font-bold"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-black/10 text-[#343B44] transition-colors hover:border-[#C99257]/60 hover:bg-white xl:h-auto xl:w-auto xl:px-3 xl:py-1.5 xl:text-[0.86rem] xl:font-semibold"
             >
               {/* xl 미만은 아이콘만 — 모바일은 로고 태그라인 자리를, PC 는 헤더 폭을 아낀다 */}
               <svg viewBox="0 0 24 24" className="h-[19px] w-[19px] xl:hidden" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

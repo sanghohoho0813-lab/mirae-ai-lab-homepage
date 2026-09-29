@@ -77,7 +77,7 @@ export default function VentureMvpPage() {
   return (
     <div className="flex min-h-dvh flex-col bg-[#FAFAF8] pb-[4.5rem] text-[#171B20] antialiased [word-break:keep-all] sm:pb-0">
       {/* 작은 헤더 — 로고 · 뒤로 · 상담 신청. 메뉴는 두지 않는다 */}
-      <header className="sticky top-0 z-30 border-b border-[#E7EAEE] bg-[#FAFAF8]/92 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b border-black/[0.06] bg-[#FBFAF7]/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-2 sm:px-6 sm:py-2.5">
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">
             <BrandLogo
@@ -97,7 +97,7 @@ export default function VentureMvpPage() {
             <button
               type="button"
               onClick={() => setConsultOpen(true)}
-              className="inline-flex min-h-9 items-center whitespace-nowrap rounded-lg bg-[#D47A4A] px-3 text-[0.86rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] sm:min-h-10 sm:px-4 sm:text-[1rem]"
+              className="inline-flex min-h-9 items-center whitespace-nowrap rounded-full bg-[#171B20] px-3.5 text-[0.86rem] font-semibold text-[#F4F1EC] shadow-sm transition-colors hover:bg-[#0B0E12] sm:min-h-10 sm:px-4 sm:text-[0.98rem]"
             >
               상담 신청
             </button>
@@ -189,7 +189,7 @@ export default function VentureMvpPage() {
         </div>
       </main>
 
-      <LegalFooter />
+      <LegalFooter tone="dark" />
       <KakaoFloat />
 
       {/* 샘플 창 — PC 는 카톡 버튼 옆 알약, 모바일은 아래 고정 바 오른쪽 버튼이 연다(AX 페이지와 같은 방식).

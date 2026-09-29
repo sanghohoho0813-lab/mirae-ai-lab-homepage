@@ -3,6 +3,13 @@
 @theme {
   --font-sans: 'Pretendard Variable', Pretendard, ui-sans-serif, system-ui, -apple-system,
     'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  /* 고급 톤 — 먹색 · 아이보리 · 샴페인 골드(AX 소개 영상과 같은 색) */
+  --color-ink: #0B0E12;
+  --color-ink-2: #171B20;
+  --color-ivory: #F7F4EF;
+  --color-gold: #D8A871;
+  --color-gold-2: #E6C396;
+  --color-gold-3: #C99257;
 }
 
 @layer base {
@@ -16,6 +23,21 @@
   body {
     font-family: var(--font-sans);
     letter-spacing: -0.01em;
+  }
+
+  /* 제목은 줄 길이를 고르게, 문단은 마지막 줄에 한 단어만 남지 않게 */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: rgba(216, 168, 113, 0.32);
   }
 }
 
@@ -103,10 +125,10 @@
 .animate-icon-pop { animation: icon-pop 0.34s cubic-bezier(0.22, 1, 0.36, 1); }
 .animate-save-burst { animation: save-burst 0.45s ease-out forwards; }
 
-/* ── CTA 반짝임(셀프 진단 유도) — 버튼 위를 대각선 하이라이트가 천천히 훑고 지나감 ── */
+/* ── CTA 반짝임 — 대각선 하이라이트가 가끔(7초에 한 번) 옅게 훑고 지나간다. 번쩍이는 광고 느낌이 나지 않게 ── */
 @keyframes cta-shine {
   0% { transform: translateX(-140%) skewX(-20deg); }
-  55%, 100% { transform: translateX(360%) skewX(-20deg); }
+  30%, 100% { transform: translateX(360%) skewX(-20deg); }
 }
 .shine-cta { position: relative; overflow: hidden; }
 .shine-cta::after {
@@ -116,9 +138,9 @@
   left: 0;
   height: 100%;
   width: 45%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.28), transparent);
   transform: translateX(-140%) skewX(-20deg);
-  animation: cta-shine 4s ease-in-out infinite;
+  animation: cta-shine 7s cubic-bezier(0.45, 0, 0.2, 1) 1.5s infinite;
   pointer-events: none;
 }
 
@@ -136,12 +158,12 @@
 
 /* ── 첫 화면 등장 — 위에서부터 차례로, 전체 1.2초 안에 끝난다 ── */
 @keyframes hero-rise {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }
 }
 .hero-anim {
   opacity: 0;
-  animation: hero-rise 0.58s cubic-bezier(0.22, 0.61, 0.24, 1) both;
+  animation: hero-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

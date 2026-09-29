@@ -172,7 +172,7 @@ export default function AxStartPage() {
         </>
       )}
 
-      <LegalFooter />
+      <LegalFooter tone="dark" />
       <KakaoFloat />
 
       {/* 스크롤 중 어디서나 AX Preview 로 — 평소엔 비켜서 있는 작은 손잡이 */}

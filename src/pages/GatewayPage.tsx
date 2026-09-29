@@ -1,64 +1,49 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import NetworkBackdrop from '../components/NetworkBackdrop'
 import LegalFooter from '../components/LegalFooter'
 import BrandLogo from '../components/BrandLogo'
 import AccountMenu from '../components/account/AccountMenu'
-import { AX_PATENT_COUNT, AX_PATENT_FILED_LABEL, AX_PATENT_META, AX_PATENT_TECHS } from '../data/axPatentTech'
+import { AX_PATENT_COUNT, AX_PATENT_FILED_ON, AX_PATENT_TECHS } from '../data/axPatentTech'
 
-// 루트(/) 역할 선택 게이트웨이.
-// 화면 순서: 로고(좌상단) → 우리가 누구인지(자격·경험 + 기술자산) → 역할 선택 카드.
-// 선택 카드가 주인공이되, 고르기 전에 누가 만드는 회사인지 먼저 읽히게 위쪽에 붙였다.
-// 좁은 화면에서도 카드가 첫 화면 안에 남도록 위쪽 블록은 최대한 조밀하게 둔다.
+// 루트(/) 역할 선택 게이트웨이 — 회사의 첫인상.
+// 화면 순서: 로고 → 누가 만드는 회사인가(한 문장 + 자격 네 칸) → 역할 선택(두 개의 문).
+// 톤은 AX 소개 영상과 같은 먹색 + 샴페인 골드. 밝은 파란 카드·이모지·점선 네트워크 배경은 광고 페이지처럼 보여 걷어냈다.
+// 좁은 화면에서도 두 개의 문이 첫 화면 안에 남도록 위쪽 블록은 조밀하게 둔다.
 
-// 맨 윗줄에 "9년차 경영컨설턴트 & AX 설계자가" 로 합쳤으므로 목록에서는 뺀다
-const trustItems = [
-  '정책자금·인증·사업계획 실무',
-  'ISO 인증 심사원',
-  'AI 경영지원 도구 직접 개발',
-  '지원금·환급·자금 누적 100억 원 이상',
-]
+// 자격·경험 — 숫자(또는 짧은 이름) 하나 + 설명 한 줄. 네 번째 칸(특허)은 눌러서 5건을 펼친다.
+const credentials = [
+  { big: '9년', small: '정책자금·인증·사업계획 실무' },
+  { big: 'ISO', small: '인증 심사원' },
+  { big: '100억 원+', small: '지원금·환급·자금 누적' },
+] as const
 
 type Choice = {
   to: string
-  icon: string
+  kicker: string
   lines: readonly string[]
   desc: string
   aria: string
-  card: string
-  glow: string
-  iconBox: string
-  descColor: string
-  arrow: string
+  light: boolean
 }
 
-// 대표님 = 밝은 블루(경영지원 서비스) / 컨설턴트 = 다크+사이언(AI 실무 도구)
+// 대표님 = 아이보리 카드(주 고객, 먼저 눈에 들어온다) / 컨설턴트 = 먹색 유리 카드
 const choices: readonly Choice[] = [
   {
     to: '/business-services',
-    icon: '🏢',
+    kicker: 'FOR CEO · 대표님',
     lines: ['중소기업 대표님 또는', '예비창업가이신가요?'],
-    // AX 하나만 파는 것처럼 읽히지 않게 — 선택 페이지에서 AX 도입 / 기술사업·MVP 로 갈린다
-    // 선택 페이지의 순서(01 기술사업·MVP → 02 AX 도입)와 같은 순서로 읽히게 한다
+    // AX 하나만 파는 것처럼 읽히지 않게 — 선택 페이지에서 기술사업·MVP / AX 도입으로 갈린다
     desc: '우리 회사에 맞는 다음 한 걸음을 찾아 드려요. 아이디어를 서비스로 만드는 기술사업부터 회사 전체 AX까지요.',
     aria: '중소기업 대표님 또는 예비창업가이신가요? AX 도입과 기술사업·MVP 중 고르기',
-    card: 'bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30',
-    glow: 'bg-white/20',
-    iconBox: 'bg-white/15 ring-1 ring-inset ring-white/20',
-    descColor: 'text-blue-50/90',
-    arrow: 'text-white',
+    light: true,
   },
   {
     to: '/consultants',
-    icon: '🧑‍💼',
+    kicker: 'FOR CONSULTANTS · 컨설턴트',
     lines: ['컨설턴트이신가요?'],
     desc: '서류는 한 번만 받고, 고객사 정보는 어디서든 한눈에. 컨설턴트를 위한 운영 OS예요.',
     aria: '컨설턴트이신가요? 컨설턴트 운영 OS 보기',
-    card: 'bg-gradient-to-br from-slate-800 to-slate-950 shadow-lg shadow-slate-900/30 hover:shadow-2xl hover:shadow-sky-500/20',
-    glow: 'bg-sky-400/25',
-    iconBox: 'bg-white/10 ring-1 ring-inset ring-white/15',
-    descColor: 'text-slate-300',
-    arrow: 'text-sky-300',
+    light: false,
   },
 ]
 
@@ -71,130 +56,136 @@ export default function GatewayPage() {
   }, [])
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-white text-slate-900 antialiased [word-break:keep-all]">
-      {/* Background: soft glow + AI network */}
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#0B0E12] text-white antialiased [word-break:keep-all]">
+      {/* 배경 — 위 오른쪽 골드 빛, 아래 왼쪽 푸른 회색 빛, 아주 옅은 격자 */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 -top-40 h-[32rem] w-[32rem] rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute -bottom-48 right-[-8rem] h-[34rem] w-[34rem] rounded-full bg-sky-400/10 blur-3xl" />
+        <div className="absolute -right-40 -top-48 h-[40rem] w-[40rem] rounded-full bg-[#D8A871]/[0.13] blur-3xl" />
+        <div className="absolute -bottom-56 -left-40 h-[36rem] w-[36rem] rounded-full bg-[#5A78AA]/[0.12] blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.6)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_50%_30%,black,transparent_70%)]" />
       </div>
-      <NetworkBackdrop />
 
-      {/* 모바일은 좌상단, PC 는 가운데 — 계정 컨트롤은 PC 에서 오른쪽 끝에 띄운다 */}
-      <div className="hero-anim relative z-20 flex w-full items-start justify-between gap-2 px-3 pt-3 sm:justify-center sm:px-8 sm:pt-9">
+      {/* 위 — 로고와 계정 */}
+      <div className="hero-anim relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-4 pt-3 sm:px-8 sm:pt-7">
         {/* 모바일은 로고 자체를 키우는 대신 태그라인을 접는다 — 그래야 오른쪽 로그인 버튼이 잘리지 않는다 */}
         <BrandLogo
           to="/"
-          className="sm:items-center"
-          imgClassName="h-[3.1rem] max-w-none min-[380px]:h-14 sm:h-16 sm:max-w-[330px]"
-          taglineClassName="hidden! sm:block! sm:text-[0.78rem]! sm:tracking-[0.18em]!"
+          tone="dark"
+          imgClassName="h-[2.9rem] max-w-none min-[380px]:h-[3.2rem] sm:h-14 sm:max-w-[300px]"
+          taglineClassName="hidden! sm:block! sm:text-[0.74rem]! sm:tracking-[0.2em]!"
         />
-        <div className="shrink-0 rounded-full bg-white/70 px-1 shadow-sm ring-1 ring-slate-200 backdrop-blur sm:absolute sm:right-8 sm:top-6">
-          <AccountMenu />
-        </div>
+        <AccountMenu tone="dark" className="shrink-0" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-5 py-4 sm:px-8 sm:py-10">
-        <h1 className="sr-only">미래AI랩 — 50인 미만 중소기업 맞춤형 AX와 컨설턴트용 AI 실무 도구</h1>
-
-        {/* 고르기 전에 먼저 읽히는 부분 — 누가 만드는 회사인가.
-            배경의 큰 워터마크 글씨와 겹쳐 읽기 어려웠던 곳이라, 옅은 판을 깔아 글자를 살린다. */}
-        <div style={{ animationDelay: '0.16s' }} className="hero-anim w-full rounded-2xl border border-slate-200/70 bg-white/72 px-4 py-2.5 backdrop-blur-[3px] sm:px-8 sm:py-6">
-          {/* AX 를 처음 보는 분이 대부분이라 단어 바로 옆 괄호로 뜻을 밝힌다.
-              "설계자가 설계하는" 이 되지 않게 뒤 동사는 "만드는" 으로 둔다. */}
-          <p className="text-center text-[1.06rem] font-semibold leading-snug text-slate-600 min-[380px]:text-[1.13rem] sm:text-[1.38rem]">
-            9년 차 경영컨설턴트가 설계하는 <b className="whitespace-nowrap font-bold text-slate-800">50인 미만 중소기업</b> AX
-            <span className="mt-0.5 block text-[0.84em] font-medium text-slate-500">AX = AI로 회사가 일하는 방식을 바꾸는 것</span>
+      {/* 본문 */}
+      <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-6 pt-3 sm:px-8 sm:pb-14 sm:pt-10">
+        {/* 누가 만드는 회사인가 */}
+        <section style={{ animationDelay: '0.12s' }} className="hero-anim text-center">
+          <p className="inline-flex items-center gap-3 text-[0.72rem] font-semibold tracking-[0.26em] text-[#D8A871] sm:gap-4 sm:text-[0.8rem] sm:tracking-[0.32em]">
+            <span aria-hidden className="h-px w-6 bg-[#D8A871]/60 sm:w-10" />
+            MIRAE AI LAB
+            <span aria-hidden className="h-px w-6 bg-[#D8A871]/60 sm:w-10" />
           </p>
-          {/* 폰은 한 줄에 하나씩 — 줄바꿈된 줄 머리에 '·' 가 붙어 보이던 것을 없앤다. PC 는 한 줄로 이어 쓴다 */}
-          <div className="mt-2 flex flex-col items-center gap-y-0.5 text-center text-[0.9rem] font-medium leading-snug text-slate-500 min-[380px]:text-[0.96rem] sm:mt-3.5 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-3 sm:text-[1.1rem] sm:leading-normal">
-            {trustItems.map((t, i) => (
-              <span key={t} className="inline-flex items-center gap-3">
-                {i > 0 && <span aria-hidden className="hidden text-slate-300 sm:inline">·</span>}
-                {t}
-              </span>
+          <h1 className="mt-3 text-[1.62rem] font-bold leading-[1.3] tracking-[-0.03em] text-[#F4F1EC] min-[380px]:text-[1.75rem] sm:mt-5 sm:text-[2.9rem] sm:leading-[1.22]">
+            9년 차 경영컨설턴트가 설계하는
+            <br />
+            <span className="text-[#E6C396]">50인 미만 중소기업 AX</span>
+          </h1>
+          {/* AX 를 처음 보는 분이 대부분이라 바로 아래에서 뜻을 밝힌다 */}
+          <p className="mt-2 text-[0.98rem] text-slate-400 min-[380px]:text-[1.03rem] sm:mt-4 sm:text-[1.15rem]">
+            AX = AI로 회사가 일하는 방식을 바꾸는 것 <span className="hidden sm:inline">· AI 경영지원 도구 직접 개발</span>
+          </p>
+        </section>
+
+        {/* 자격 네 칸 — 가는 선으로 나눈다. 네 번째 칸(특허)을 누르면 기술 5건이 펼쳐진다 */}
+        <section style={{ animationDelay: '0.22s' }} className="hero-anim mx-auto mt-4 w-full max-w-4xl sm:mt-9" aria-label="자격과 경험">
+          <div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm sm:grid-cols-4">
+            {credentials.map((c, i) => (
+              <div key={c.big} className={`px-3 py-2.5 text-center sm:px-4 sm:py-5 ${i % 2 === 1 ? 'border-l border-white/10' : ''} ${i >= 2 ? 'border-t border-white/10 sm:border-t-0' : ''} ${i === 2 ? 'sm:border-l' : ''}`}>
+                <p className="text-[1.12rem] font-bold tracking-tight text-[#F4F1EC] sm:text-[1.5rem]">{c.big}</p>
+                <p className="mt-0.5 text-[0.8rem] leading-snug text-slate-400 min-[380px]:text-[0.86rem] sm:mt-1 sm:text-[0.92rem]">{c.small}</p>
+              </div>
             ))}
-          </div>
-
-          {/* 기술자산 — 배지 없이 얇은 선 아래에만 둔다.
-              강조는 왼쪽 가는 선과 "특허 5건 출원" 한 곳에만 주고, 자세한 기술은 접어 둔다.
-              펼쳐도 발명의 명칭 원문이 아니라 상세페이지와 같은 쉬운 말로 보여준다
-              (출원번호·명칭 원문은 공개하지 않는다). */}
-          <div className="mt-2.5 border-t border-slate-200/80 pt-2.5 sm:mt-5 sm:pt-5">
-            <div className="border-l-2 border-[#D47A4A]/45 pl-3.5 sm:pl-5">
-              {/* 별도 안내 버튼 없이, 주황색 특허 문구 자체를 눌러 5건을 펼친다 */}
-              <p className="max-w-md break-keep text-[1rem] leading-relaxed text-slate-600 min-[380px]:text-[1.05rem] sm:max-w-none sm:text-[1.18rem]">
-                업무 자동화, 다음 할 일 추천 같은{' '}
-                <button
-                  type="button"
-                  onClick={() => setTechOpen((v) => !v)}
-                  aria-expanded={techOpen}
-                  aria-controls="gateway-patent-techs"
-                  className="-my-2 inline-flex items-baseline gap-1 whitespace-nowrap rounded py-2 font-black text-[#B35A2A] underline decoration-[#D47A4A]/45 underline-offset-4 transition-colors hover:text-[#8F4520] hover:decoration-[#8F4520]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D47A4A]/60"
-                >
-                  AX 핵심기술 특허 {AX_PATENT_COUNT}건 출원
-                  <span aria-hidden className={techOpen ? 'inline-block rotate-180 transition-transform' : 'inline-block transition-transform'}>▾</span>
-                </button>
-              </p>
-
-              {techOpen && (
-                <ol id="gateway-patent-techs" className="animate-fade-in mt-2 space-y-1.5 sm:mt-3 sm:space-y-2">
-                  {AX_PATENT_TECHS.map((t) => (
-                    <li key={t.no} className="flex items-baseline gap-2.5 break-keep text-left sm:gap-3.5">
-                      <span className="shrink-0 text-[0.82rem] font-black tabular-nums text-[#B35A2A] sm:text-[0.92rem]">{t.no}</span>
-                      <span className="text-[0.95rem] leading-snug text-slate-600 sm:text-[1.08rem]">
-                        <b className="font-bold text-slate-800">{t.name}</b>
-                        <span className="text-slate-400"> · {t.sub}</span>
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-              )}
+            <div className="border-l border-t border-white/10 text-center sm:border-t-0">
+              <button
+                type="button"
+                onClick={() => setTechOpen((v) => !v)}
+                aria-expanded={techOpen}
+                aria-controls="gateway-patent-techs"
+                className="group h-full w-full px-3 py-2.5 transition-colors hover:bg-white/[0.04] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#D8A871] sm:px-4 sm:py-5"
+              >
+                <span className="block text-[1.12rem] font-bold tracking-tight text-[#E6C396] sm:text-[1.5rem]">
+                  특허 {AX_PATENT_COUNT}건
+                  <span aria-hidden className={`ml-1 inline-block text-[0.7em] transition-transform ${techOpen ? 'rotate-180' : ''}`}>▾</span>
+                </span>
+                <span className="mt-0.5 block text-[0.8rem] leading-snug text-slate-400 underline decoration-[#D8A871]/40 underline-offset-4 min-[380px]:text-[0.86rem] sm:mt-1 sm:text-[0.92rem]">AX 핵심기술 출원</span>
+              </button>
             </div>
-            {/* 좁은 화면에서는 장식용 영문을 빼고 날짜만 남긴다 — 한 줄 높이를 지켜야 역할 선택 카드가 안 밀린다 */}
-            <p className="mt-1.5 text-center text-[0.84rem] font-bold tracking-[0.14em] text-slate-500 sm:mt-2.5 sm:text-[0.92rem] sm:tracking-[0.2em]">
-              <span className="sm:hidden">{AX_PATENT_FILED_LABEL}</span>
-              <span className="hidden sm:inline">{AX_PATENT_META} 출원 완료</span>
-            </p>
           </div>
-        </div>
 
-        {/* 역할 선택 — 이 화면의 목적 */}
-        <div className="mt-2 grid w-full gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-7">
+          {/* 펼쳐도 발명의 명칭 원문이 아니라 쉬운 말로 보여 준다(출원번호·명칭 원문은 공개하지 않는다). 특허는 '출원'만 쓴다 */}
+          {techOpen && (
+            <div id="gateway-patent-techs" className="animate-fade-in mt-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left sm:mt-3 sm:px-6 sm:py-4">
+              <ol className="grid gap-1.5 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-2">
+                {AX_PATENT_TECHS.map((t) => (
+                  <li key={t.no} className="flex items-baseline gap-2.5 break-keep sm:gap-3">
+                    <span className="shrink-0 text-[0.8rem] font-bold tabular-nums text-[#D8A871] sm:text-[0.86rem]">{t.no}</span>
+                    <span className="text-[0.92rem] leading-snug text-slate-300 sm:text-[0.98rem]">
+                      <b className="font-semibold text-[#F4F1EC]">{t.name}</b>
+                      <span className="text-slate-500"> · {t.sub}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-2 text-right text-[0.78rem] font-semibold tracking-[0.12em] text-slate-500">{AX_PATENT_FILED_ON} 출원 완료</p>
+            </div>
+          )}
+        </section>
+
+        {/* 역할 선택 — 이 화면의 목적. 두 개의 문 */}
+        <div className="mt-4 grid w-full gap-2.5 sm:mt-10 sm:grid-cols-2 sm:gap-6">
           {choices.map((c, i) => (
             <Link
               key={c.to}
               to={c.to}
               aria-label={c.aria}
-              style={{ animationDelay: `${0.32 + i * 0.12}s` }}
-              className={`hero-anim group relative flex min-h-[8rem] flex-col overflow-hidden rounded-3xl px-5 py-3 transition duration-200 hover:-translate-y-1.5 sm:min-h-[15.5rem] sm:px-9 sm:py-9 ${c.card}`}
+              style={{ animationDelay: `${0.34 + i * 0.12}s` }}
+              className={`hero-anim group relative flex flex-col overflow-hidden rounded-[1.6rem] px-5 py-4 transition duration-300 hover:-translate-y-1 sm:min-h-[16rem] sm:px-9 sm:py-8 ${
+                c.light
+                  ? 'bg-[#F2EDE6] text-[#0B0E12] shadow-[0_30px_80px_-30px_rgba(216,168,113,0.45)] ring-1 ring-[#E6C396]/60 hover:shadow-[0_40px_90px_-30px_rgba(216,168,113,0.6)]'
+                  : 'bg-white/[0.04] text-white ring-1 ring-white/12 backdrop-blur hover:bg-white/[0.06] hover:ring-[#D8A871]/50'
+              }`}
             >
-              <span aria-hidden className={`pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full blur-2xl ${c.glow}`} />
-              <span aria-hidden className={`relative grid h-10 w-10 place-items-center rounded-xl text-lg sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-3xl sm:text-4xl ${c.iconBox}`}>
-                {c.icon}
-              </span>
-              {/* 아이콘을 위로 올려 글줄 폭을 넉넉히 준다 — 좁은 화면에서도 질문이 두 줄 안에 떨어지게.
-                  질문은 아이콘 바로 아래에서 시작한다(두 카드의 질문 높이가 같게). 화살표만 카드 아래 오른쪽에 둔다 */}
-              <span className="relative mt-2.5 flex flex-1 items-start justify-between gap-3 sm:mt-6 sm:gap-5">
+              {/* 모서리 빛 */}
+              <span aria-hidden className={`pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full blur-3xl ${c.light ? 'bg-[#E6C396]/45' : 'bg-[#D8A871]/15'}`} />
+              <span className={`relative text-[0.72rem] font-bold tracking-[0.2em] sm:text-[0.8rem] ${c.light ? 'text-[#A5703C]' : 'text-[#D8A871]'}`}>{c.kicker}</span>
+              <span className="relative mt-2 flex flex-1 items-end justify-between gap-4 sm:mt-5">
                 <span className="min-w-0">
-                  <span className="block text-[1.26rem] font-extrabold leading-[1.35] tracking-tight text-white min-[380px]:text-[1.36rem] sm:text-[1.85rem] sm:leading-[1.28]">
+                  <span className={`block text-[1.3rem] font-bold leading-[1.32] tracking-[-0.025em] min-[380px]:text-[1.4rem] sm:text-[1.95rem] sm:leading-[1.25] ${c.light ? 'text-[#0B0E12]' : 'text-[#F4F1EC]'}`}>
                     {c.lines.map((line) => (
                       <span key={line} className="block">{line}</span>
                     ))}
                   </span>
-                  <span className={`mt-1.5 block text-[0.9rem] leading-relaxed sm:mt-3 sm:text-[1.1rem] ${c.descColor}`}>{c.desc}</span>
+                  <span className={`mt-1.5 block text-[0.9rem] leading-relaxed sm:mt-3 sm:text-[1.05rem] ${c.light ? 'text-[#4A535D]' : 'text-slate-400'}`}>{c.desc}</span>
                 </span>
-                <span aria-hidden className={`shrink-0 self-end text-2xl font-black leading-none transition-transform group-hover:translate-x-1 sm:text-[2.4rem] ${c.arrow}`}>
-                  →
+                {/* 화살표 — 가는 테두리 원 */}
+                <span
+                  aria-hidden
+                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-full transition-all duration-300 group-hover:translate-x-1 sm:h-14 sm:w-14 ${
+                    c.light ? 'bg-[#0B0E12] text-[#E6C396]' : 'text-[#E6C396] ring-1 ring-[#D8A871]/50 group-hover:bg-[#D8A871] group-hover:text-[#0B0E12]'
+                  }`}
+                >
+                  <svg viewBox="0 0 20 20" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 10h11M11 5.5 15.5 10 11 14.5" />
+                  </svg>
                 </span>
               </span>
             </Link>
           ))}
         </div>
-      </div>
+      </main>
 
       <div className="relative z-10">
-        <LegalFooter />
+        <LegalFooter tone="dark" />
       </div>
     </div>
   )
