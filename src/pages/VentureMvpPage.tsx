@@ -1,6 +1,6 @@
 // 기술사업 · MVP · 벤처기업확인 패키지 (/business-services/venture-mvp).
 // 순서: 글자 히어로(VentureMvpHero) → 소개 영상(VentureMvpFilm, '꼭 봐 주세요') → '예를 들면'(자체 데모 10개 + AX 12개 더 보기)
-//   → 마지막 CTA('우리 회사도 가능할까요?'). 영상이 '샘플 22개, 직접 눌러서 확인해 보세요' 로 끝나서 바로 예시로 이어진다.
+//   → 자주 묻는 질문(AX 페이지와 같은 모양, 이 상품에 맞춘 질문) → 마지막 CTA('우리 회사도 가능할까요?'). 영상이 '샘플 22개, 직접 눌러서 확인해 보세요' 로 끝나서 바로 예시로 이어진다.
 //   히어로의 '영상으로 모든 내용 확인하기' 를 누르면 영상이 소리를 켜고 처음부터 재생된다.
 // Drive 상세페이지 이미지 02~15 는 대표님 요청으로 잠시 숨겨 두었다(SHOW_STORY_IMAGES). 나중에 FAQ 로 마무리할 예정.
 //  - 02→15 순서 고정, 원본 비율 그대로(width:100%; height:auto), 이미지 사이 여백 없음
@@ -21,6 +21,8 @@ import VentureMvpHero from '../components/venture/VentureMvpHero'
 import VentureMvpExamples, { VENTURE_MVP_EXAMPLES_ID } from '../components/venture/VentureMvpExamples'
 import VentureMvpFilm, { type VentureMvpFilmHandle } from '../components/venture/VentureMvpFilm'
 import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
+import FaqSection from '../components/ax-showcase/AxFaqSection'
+import { VENTURE_MVP_FAQ } from '../data/ventureMvpFaq'
 import { VENTURE_MVP_DIR, VENTURE_MVP_HOTSPOTS, VENTURE_MVP_IMAGES, type VentureMvpHotspot } from '../data/ventureMvpImages'
 import { AX_SAMPLES_HREF, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { rememberInterest } from '../lib/interestTrack'
@@ -156,7 +158,10 @@ export default function VentureMvpPage() {
           </div>
         )}
 
-        {/* 마지막 CTA — 예시(또는 상세 이미지)가 끝나자마자 이어지도록 위쪽 경계선·여백을 두지 않는다 */}
+        {/* 자주 묻는 질문 — 맨 마지막 CTA 바로 앞 */}
+        <FaqSection items={VENTURE_MVP_FAQ} />
+
+        {/* 마지막 CTA — FAQ 가 끝나자마자 이어지도록 위쪽 경계선·여백을 두지 않는다 */}
         <div ref={ctaRef}>
           <section className="bg-[#171B20] text-white">
             <div className="mx-auto max-w-[880px] px-5 py-14 text-center sm:px-6 sm:py-16">

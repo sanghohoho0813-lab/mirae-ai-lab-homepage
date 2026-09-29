@@ -1,11 +1,34 @@
 // 13 FAQ — 인포그래픽 이미지가 끝난 뒤 HTML/CSS 로 쓰는 자주 묻는 질문 (PDF "AX 상세페이지 카피 14섹션 최종 압축본" 13번 그대로).
 // 이미지가 아니라 실제 텍스트라 검색·복사·읽기 도구가 읽을 수 있고, 내용이 바뀌면 여기만 고치면 된다.
+// 같은 모양의 FAQ 를 2주 기술사업 빌드 페이지도 쓴다(items 로 질문 목록만 바꿔 끼운다).
 
-export const AX_FAQ = [
+export type FaqItem = {
+  q: string
+  a: string
+  /** 답 아래 짧은 강조 목록 (예: 신속 · 능동 · 퀄리티) */
+  points?: readonly { t: string; d: string }[]
+  /** 강조 목록 앞에 붙는 한 문장 */
+  lead?: string
+}
+
+// 두 상품 FAQ 공통 — 위쪽(두 번째)에 둔다. 개발사를 깎아내리기보다 '보통 이렇다'로 차이를 설명한다.
+export const DIFF_FAQ: FaqItem = {
+  q: '개발사나 컨설팅 회사와는 무엇이 다른가요?',
+  a: '개발사는 보통 요청받은 것을 만드는 데 집중해요. 기획·디자인·개발로 사람과 역할이 나뉘어 있어, 말씀하신 내용이 반영되기까지 소통이 길어지고 그만큼 시간과 비용도 늘어요.\n\n컨설팅 회사는 사업계획과 서류에는 강하지만 직접 만들지는 않는 경우가 많아요. 기본적인 개발은 하더라도, 프로그램을 기획하고 구조를 짜서 고객이 보기 편하고 쓰기 편한 화면까지 완성하기는 쉽지 않아요.',
+  lead: '미래AI랩은 노무·세무·법무를 아우르는 중소기업 컨설팅 현장에서 9년을 보낸 경영컨설턴트가 기획부터 개발까지 직접 챙겨요.',
+  points: [
+    { t: '신속', d: '기획하는 사람과 만드는 사람이 같아서, 말씀하신 내용이 바로 반영돼요. 수정·보완·재실행을 빠르게 반복해요.' },
+    { t: '능동', d: '요청을 기다리지 않아요. 심사위원과 투자자 눈에 매력적으로 보일 사업을 먼저 기획해 제안하고, 현실적으로 실현할 수 있는 아이디어도 함께 드려요.' },
+    { t: '퀄리티', d: '보기 좋은 화면에서 멈추지 않고, 실제로 쓰이고 심사에서 설명되는 수준까지 완성도 있게 끌고 가요.' },
+  ],
+}
+
+export const AX_FAQ: readonly FaqItem[] = [
   {
     q: 'AX가 정확히 뭔가요?',
     a: 'AI와 데이터로 회사가 일하는 방식을 바꾸는 일이에요. 고객 요청이 들어오면 담당자 할 일로 바로 잡히고, 급하거나 위험한 건 AI가 먼저 알려 줘요. 직원이 처리한 결과는 다시 데이터로 쌓여요.',
   },
+  DIFF_FAQ,
   {
     q: 'AX나 MVP, 플랫폼을 만들면 정책자금이나 투자에 선정이 보장되나요?',
     a: 'AX, MVP, 플랫폼, 특허 어느 것도 정책자금·정부지원사업·투자 선정을 보장하지 않습니다. 심사에서는 재무, 신용, 시장성, 기술성, 사업성을 함께 봅니다. 그래도 새 분야로 커 나갈 회사라는 걸 눈으로 보여 줄 수 있어, 심사에서 받는 인상은 완전히 달라집니다. 큰 가점 요소라고 보셔도 됩니다.',
@@ -58,9 +81,9 @@ export const AX_FAQ = [
     q: '저희 아이디어 방향을 그대로 만들어주시나요, 다른 제안도 해주시나요?',
     a: '둘 다 해요. 정부지원사업에 낼 아이디어가 시장조사까지 끝나 있고 완성도가 높다면 그대로 만들고, 손보면 좋아질 부분만 말씀드려요. 아이디어가 없으면 저희가 먼저 방향을 잡아 드리고, 대표님은 의견만 주시면 돼요. 9년 차 컨설턴트가 직접 참여하고 최신 정책과 시장 정보를 계속 챙기고 있어, 어느 쪽이든 맞춰 갈 수 있어요.',
   },
-] as const
+]
 
-export default function AxFaqSection() {
+export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqItem[] }) {
   return (
     <section id="faq" className="scroll-mt-16 border-t border-[#E7EAEE] bg-[#FAFAF8]">
       <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-20">
@@ -73,7 +96,7 @@ export default function AxFaqSection() {
         </p>
 
         <div className="mt-9 space-y-3 sm:mt-11">
-          {AX_FAQ.map((f, i) => (
+          {items.map((f, i) => (
             <details key={f.q} className="group rounded-2xl border border-[#E7EAEE] bg-white shadow-[0_6px_20px_rgba(23,27,32,0.04)] open:border-[#D47A4A]/45">
               <summary className="flex min-h-[60px] cursor-pointer list-none items-start gap-3 px-5 py-4 text-[1.12rem] font-black leading-snug text-[#171B20] transition-colors hover:bg-[#FAFAF8] sm:items-center sm:text-[1.22rem] [&::-webkit-details-marker]:hidden">
                 <span aria-hidden className="mt-0.5 shrink-0 text-[0.95rem] font-black tracking-tight text-[#D47A4A] sm:mt-0">Q{String(i + 1).padStart(2, '0')}</span>
@@ -81,7 +104,23 @@ export default function AxFaqSection() {
                 <span aria-hidden className="shrink-0 text-[#A36A4B] transition-transform group-open:rotate-180">⌄</span>
               </summary>
               <div className="border-t border-[#E7EAEE] px-5 py-4 sm:px-6 sm:py-5">
-                <p className="break-keep text-[1.06rem] leading-[1.8] text-[#343B44] sm:text-[1.14rem]">{f.a}</p>
+                {/* 빈 줄(\n\n)로 문단을 나눈다 */}
+                {f.a.split('\n\n').map((para, pi) => (
+                  <p key={pi} className={`break-keep text-[1.06rem] leading-[1.8] text-[#343B44] sm:text-[1.14rem] ${pi > 0 ? 'mt-2.5' : ''}`}>
+                    {para}
+                  </p>
+                ))}
+                {f.lead && <p className="mt-3 break-keep text-[1.06rem] font-bold leading-[1.75] text-[#171B20] sm:text-[1.14rem]">{f.lead}</p>}
+                {f.points && (
+                  <ul className="mt-3 grid gap-2">
+                    {f.points.map((pt) => (
+                      <li key={pt.t} className="flex items-start gap-3 rounded-xl bg-[#FAF3EC] px-4 py-3 ring-1 ring-inset ring-[#EBCBAA]/70">
+                        <span className="mt-0.5 shrink-0 rounded-md bg-[#171B20] px-2 py-0.5 text-[0.86rem] font-black text-[#E8B89A]">{pt.t}</span>
+                        <span className="break-keep text-[1rem] leading-[1.7] text-[#343B44] sm:text-[1.06rem]">{pt.d}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </details>
           ))}
