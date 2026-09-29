@@ -119,7 +119,7 @@ function asLines(v: unknown): string[] {
 }
 
 const bizTypeLabel = (t: string) => (t === 'corp' ? '법인' : t === 'individual' ? '개인사업자' : t === 'pre' ? '예비창업' : t || '-')
-const depthLabel = (d: string) => (d === 'comprehensive' ? 'AX Fit 10문항 완료' : d === 'funding' ? '(구) 자금 단계' : d === 'basic' ? '(구) 기본 단계' : d || '-')
+const depthLabel = (d: string) => (d === 'comprehensive' ? 'AX Fit 진단 완료' : d === 'funding' ? '(구) 자금 단계' : d === 'basic' ? '(구) 기본 단계' : d || '-')
 
 // 리드 플래그 → 한글 라벨
 const FLAG_LABELS: Record<string, string> = {
@@ -325,15 +325,20 @@ const one = (a: Record<string, unknown>, id: string) => (typeof a[id] === 'strin
 // ── AX Fit 등급 (서버 재계산) — 프론트 엔진(src/lib/businessDiagnosisEngine.ts)과 같은 규칙 ──
 const DEGREE: Record<string, number> = { no: 0, sometimes: 1, often: 2, always: 3 }
 const OWNER: Record<string, number> = { dedicated: 3, partTime: 2, ceo: 1, none: 0 }
-const AX_PROBLEM_QS = ['repeatInput', 'askProgress', 'toolGaps', 'manualHandoff', 'missDelay', 'priorityByMemory', 'dataUnused', 'ceoLoadGrows']
+// 질문 순서 그대로 — 프론트 PROBLEM_IDS 와 같은 목록이어야 한다
+const AX_PROBLEM_QS = [
+  'repeatInput', 'docRepeat', 'askProgress', 'toolGaps', 'manualHandoff', 'repeatQuestions',
+  'missDelay', 'priorityByMemory', 'handover', 'dataUnused', 'revenueLeak', 'ceoLoadGrows',
+]
+const AX_PAIN_MAX = AX_PROBLEM_QS.length * 3
 const AX_ALL_QS = [...AX_PROBLEM_QS, 'uniqueWork', 'internalOwner']
 
 export function axFitGrade(answers: Record<string, unknown>): { grade: 'NO_GO' | 'LITE' | 'FULL' | 'HIGH'; score: number; pain: number; unique: number; owner: number } {
   const v = (id: string) => DEGREE[one(answers, id) ?? ''] ?? 0
-  const pain = AX_PROBLEM_QS.reduce((sum, id) => sum + v(id), 0) // 0~24
+  const pain = AX_PROBLEM_QS.reduce((sum, id) => sum + v(id), 0) // 0~AX_PAIN_MAX(36)
   const unique = v('uniqueWork') // 0~3
   const owner = OWNER[one(answers, 'internalOwner') ?? ''] ?? 0 // 0~3
-  const raw = (pain / 24) * 60 + (unique / 3) * 25 + (owner / 3) * 15
+  const raw = (pain / AX_PAIN_MAX) * 60 + (unique / 3) * 25 + (owner / 3) * 15
   const score = Math.max(0, Math.min(100, Math.round(raw / 5) * 5))
   const ceoDependency = v('askProgress') + v('ceoLoadGrows')
   const dataPotential = v('dataUnused')
@@ -359,7 +364,7 @@ export function scoreLead(answers: Record<string, unknown>, interests: string[],
   const v = (id: string) => DEGREE[one(answers, id) ?? ''] ?? 0
 
   // A. 문제 강도 = 실행 긴급도 (25)
-  const a = cap(Math.round((ax.pain / 24) * 25), 25)
+  const a = cap(Math.round((ax.pain / AX_PAIN_MAX) * 25), 25)
 
   // B. 서비스 적합도 (25) — 고유 업무 + 내부 담당자
   const b = cap(ax.unique * 5 + (ax.owner === 3 ? 10 : ax.owner === 2 ? 7 : ax.owner === 1 ? 3 : 0), 25)

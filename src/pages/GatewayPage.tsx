@@ -23,10 +23,31 @@ type Choice = {
   lines: readonly string[]
   desc: string
   aria: string
-  light: boolean
+  tone: Tone
 }
 
-// 대표님 = 아이보리 카드(주 고객, 먼저 눈에 들어온다) / 컨설턴트 = 먹색 유리 카드
+// 대표님 = 아이보리 카드(주 고객, 먼저 눈에 들어온다) / 컨설턴트 = 깊은 남색 카드(컨설턴트 페이지의 파란 톤과 이어진다).
+// 두 카드 모두 '꽉 찬 색면 + 반대색 화살표 원'으로 무게를 맞춘다 — 한쪽만 투명 유리면 빈 칸처럼 보인다.
+type Tone = 'ivory' | 'navy'
+const TONE: Record<Tone, { card: string; glow: string; kicker: string; title: string; desc: string; arrow: string }> = {
+  ivory: {
+    card: 'bg-[#F2EDE6] text-[#0B0E12] shadow-[0_30px_80px_-30px_rgba(216,168,113,0.45)] ring-1 ring-[#E6C396]/60 hover:shadow-[0_40px_90px_-30px_rgba(216,168,113,0.6)]',
+    glow: 'bg-[#E6C396]/45',
+    kicker: 'text-[#A5703C]',
+    title: 'text-[#0B0E12]',
+    desc: 'text-[#4A535D]',
+    arrow: 'bg-[#0B0E12] text-[#E6C396]',
+  },
+  navy: {
+    card: 'bg-[linear-gradient(135deg,#25406A_0%,#182C4A_52%,#101E34_100%)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_30px_80px_-30px_rgba(74,124,196,0.55)] ring-1 ring-[#8DB3E2]/30 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_40px_90px_-30px_rgba(74,124,196,0.7)] hover:ring-[#A9C8EE]/50',
+    glow: 'bg-[#6FA3E0]/35',
+    kicker: 'text-[#A9C8EE]',
+    title: 'text-[#F4F1EC]',
+    desc: 'text-[#C3CFDF]',
+    arrow: 'bg-[#E6C396] text-[#101E34]',
+  },
+}
+
 const choices: readonly Choice[] = [
   {
     to: '/business-services',
@@ -35,7 +56,7 @@ const choices: readonly Choice[] = [
     // AX 하나만 파는 것처럼 읽히지 않게 — 선택 페이지에서 기술사업·MVP / AX 도입으로 갈린다
     desc: '우리 회사에 맞는 다음 한 걸음을 찾아 드려요. 아이디어를 서비스로 만드는 기술사업부터 회사 전체 AX까지요.',
     aria: '중소기업 대표님 또는 예비창업가이신가요? AX 도입과 기술사업·MVP 중 고르기',
-    light: true,
+    tone: 'ivory',
   },
   {
     to: '/consultants',
@@ -43,7 +64,7 @@ const choices: readonly Choice[] = [
     lines: ['컨설턴트이신가요?'],
     desc: '서류는 한 번만 받고, 고객사 정보는 어디서든 한눈에. 컨설턴트를 위한 운영 OS예요.',
     aria: '컨설턴트이신가요? 컨설턴트 운영 OS 보기',
-    light: false,
+    tone: 'navy',
   },
 ]
 
@@ -149,30 +170,24 @@ export default function GatewayPage() {
               to={c.to}
               aria-label={c.aria}
               style={{ animationDelay: `${0.34 + i * 0.12}s` }}
-              className={`hero-anim group relative flex flex-col overflow-hidden rounded-[1.6rem] px-5 py-4 transition duration-300 hover:-translate-y-1 sm:min-h-[16rem] sm:px-9 sm:py-8 ${
-                c.light
-                  ? 'bg-[#F2EDE6] text-[#0B0E12] shadow-[0_30px_80px_-30px_rgba(216,168,113,0.45)] ring-1 ring-[#E6C396]/60 hover:shadow-[0_40px_90px_-30px_rgba(216,168,113,0.6)]'
-                  : 'bg-white/[0.04] text-white ring-1 ring-white/12 backdrop-blur hover:bg-white/[0.06] hover:ring-[#D8A871]/50'
-              }`}
+              className={`hero-anim group relative flex flex-col overflow-hidden rounded-[1.6rem] px-5 py-4 transition duration-300 hover:-translate-y-1 sm:min-h-[16rem] sm:px-9 sm:py-8 ${TONE[c.tone].card}`}
             >
               {/* 모서리 빛 */}
-              <span aria-hidden className={`pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full blur-3xl ${c.light ? 'bg-[#E6C396]/45' : 'bg-[#D8A871]/15'}`} />
-              <span className={`relative text-[0.72rem] font-bold tracking-[0.2em] sm:text-[0.8rem] ${c.light ? 'text-[#A5703C]' : 'text-[#D8A871]'}`}>{c.kicker}</span>
+              <span aria-hidden className={`pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full blur-3xl ${TONE[c.tone].glow}`} />
+              <span className={`relative text-[0.72rem] font-bold tracking-[0.2em] sm:text-[0.8rem] ${TONE[c.tone].kicker}`}>{c.kicker}</span>
               <span className="relative mt-2 flex flex-1 items-end justify-between gap-4 sm:mt-5">
                 <span className="min-w-0">
-                  <span className={`block text-[1.3rem] font-bold leading-[1.32] tracking-[-0.025em] min-[380px]:text-[1.4rem] sm:text-[1.95rem] sm:leading-[1.25] ${c.light ? 'text-[#0B0E12]' : 'text-[#F4F1EC]'}`}>
+                  <span className={`block text-[1.3rem] font-bold leading-[1.32] tracking-[-0.025em] min-[380px]:text-[1.4rem] sm:text-[1.95rem] sm:leading-[1.25] ${TONE[c.tone].title}`}>
                     {c.lines.map((line) => (
                       <span key={line} className="block">{line}</span>
                     ))}
                   </span>
-                  <span className={`mt-1.5 block text-[0.9rem] leading-relaxed sm:mt-3 sm:text-[1.05rem] ${c.light ? 'text-[#4A535D]' : 'text-slate-400'}`}>{c.desc}</span>
+                  <span className={`mt-1.5 block text-[0.9rem] leading-relaxed sm:mt-3 sm:text-[1.05rem] ${TONE[c.tone].desc}`}>{c.desc}</span>
                 </span>
-                {/* 화살표 — 가는 테두리 원 */}
+                {/* 화살표 — 꽉 찬 원 */}
                 <span
                   aria-hidden
-                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-full transition-all duration-300 group-hover:translate-x-1 sm:h-14 sm:w-14 ${
-                    c.light ? 'bg-[#0B0E12] text-[#E6C396]' : 'text-[#E6C396] ring-1 ring-[#D8A871]/50 group-hover:bg-[#D8A871] group-hover:text-[#0B0E12]'
-                  }`}
+                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-full transition-all duration-300 group-hover:translate-x-1 sm:h-14 sm:w-14 ${TONE[c.tone].arrow}`}
                 >
                   <svg viewBox="0 0 20 20" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 10h11M11 5.5 15.5 10 11 14.5" />

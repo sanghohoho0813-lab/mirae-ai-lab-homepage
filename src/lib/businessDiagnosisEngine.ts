@@ -3,20 +3,26 @@
 //    가늠하는 내부 판단 지표(0~100, 5점 단위)입니다. 지나치게 정밀한 숫자를 만들지 않습니다.
 //
 // 구성
-//  - 문제 강도 (1~8번 합, 최대 24)      → 60점
-//  - 고유 업무 (9번, 최대 3)            → 25점
-//  - 내부 담당자 (10번, 최대 3)         → 15점
+//  - 문제 강도 (업무 문항 12개 합, 최대 36) → 60점   ※ 문항 수가 바뀌어도 비율로 환산한다
+//  - 고유 업무 (uniqueWork, 최대 3)          → 25점
+//  - 내부 담당자 (internalOwner, 최대 3)     → 15점
 //
 // 등급
 //  - NO_GO  '지금은 정비 먼저'   : 점수 35 미만
-//  - LITE   '작게 시작'         : 35~54, 또는 고유 업무가 약해(9번 ≤ 1) 기성 도구로 해결될 가능성이 큰 경우(점수 70 미만)
+//  - LITE   '작게 시작'         : 35~54, 또는 고유 업무가 약해(uniqueWork ≤ 1) 기성 도구로 해결될 가능성이 큰 경우(점수 70 미만)
 //  - FULL   '전면 구축 후보'    : 55 이상이고 고유 업무가 분명한 경우
-//  - HIGH   '최우선 검토'       : 75 이상 + 고유 업무 분명 + 대표 의존(2·8번 합 ≥ 4) + 데이터 축적 가능성(7번 ≥ 2)
+//  - HIGH   '최우선 검토'       : 75 이상 + 고유 업무 분명 + 대표 의존(askProgress+ceoLoadGrows ≥ 4) + 데이터 축적 가능성(dataUnused ≥ 2)
+// ⚠️ 서버(api/business-diagnosis.ts 의 axFitGrade)가 같은 규칙으로 다시 계산한다 — 문항을 바꾸면 양쪽을 같이 고친다.
 import type { AxFitGrade, AxFitProblem, AxFitReport, DiagnosisAnswers, SeverityTone } from '../types/businessDiagnosis'
 import { DEGREE_OPTIONS, DEGREE_VALUE, DIAGNOSIS_VERSION, OWNER_VALUE } from '../data/businessDiagnosisQuestions'
 
-const PROBLEM_IDS = ['repeatInput', 'askProgress', 'toolGaps', 'manualHandoff', 'missDelay', 'priorityByMemory', 'dataUnused', 'ceoLoadGrows'] as const
-/** 점수에 들어가는 업무 문항 — 결과지의 "9개 중 N개" 는 이 목록 기준이다 */
+// 질문 순서와 같게 둔다 — TOP 3 동점은 먼저 나온 질문이 앞선다
+const PROBLEM_IDS = [
+  'repeatInput', 'docRepeat', 'askProgress', 'toolGaps', 'manualHandoff', 'repeatQuestions',
+  'missDelay', 'priorityByMemory', 'handover', 'dataUnused', 'revenueLeak', 'ceoLoadGrows',
+] as const
+const PAIN_MAX = PROBLEM_IDS.length * 3
+/** 점수에 들어가는 업무 문항 — 결과지의 "13개 중 N개" 는 이 목록 기준이다 */
 const PAIN_IDS = [...PROBLEM_IDS, 'uniqueWork'] as const
 
 const val = (a: DiagnosisAnswers, id: string): number => {
@@ -70,6 +76,11 @@ const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: stri
     why: '옮겨 적을 때마다 오타가 나고, 직원 시간도 거기에 들어가요.',
     ifIgnored: '거래가 늘면 입력도 같이 늘어서, 사람을 더 뽑아도 끝이 안 나요.',
   },
+  docRepeat: {
+    title: '견적서, 계약서, 보고서를 매번 처음부터 작성',
+    why: '비슷한 서류인데도 예전 파일을 찾아 복사하고 고치는 데 시간이 들어요.',
+    ifIgnored: '거래가 늘수록 서류 만드는 시간도 늘고, 숫자 실수도 같이 늘어요.',
+  },
   askProgress: {
     title: '진행 상황을 직접 물어봐야 알 수 있음',
     why: "담당자 머릿속에만 있으니, '그거 어떻게 됐어요?' 묻는 것부터 일이 돼요.",
@@ -85,6 +96,11 @@ const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: stri
     why: '문의가 담당자 폰에서 멈추면, 답이 언제 나갈지는 그 사람 사정에 달려요.',
     ifIgnored: '고객이 늘수록 빠뜨리는 주문과 늦는 답변도 같이 늘어요.',
   },
+  repeatQuestions: {
+    title: '고객이 묻는 같은 질문에 매번 사람이 답함',
+    why: '가격, 일정, 절차처럼 답이 정해진 질문도 직원이 하나하나 다시 설명하고 있어요.',
+    ifIgnored: '문의가 몰리는 날엔 답이 늦어지고, 그사이 고객이 다른 곳을 알아봐요.',
+  },
   missDelay: {
     title: '빠뜨리거나 늦어져 다시 확인하는 일이 반복',
     why: '알려 주는 곳이 없어서, 사람 기억으로 겨우 막고 있는 거예요.',
@@ -95,10 +111,20 @@ const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: stri
     why: '누가 맡느냐에 따라 순서도, 결과도 달라져요.',
     ifIgnored: '담당자가 바뀌면 순서를 처음부터 다시 잡아야 해요.',
   },
+  handover: {
+    title: '담당자가 바뀌면 일이 멈추고 인수인계가 오래 걸림',
+    why: '일하는 방법과 거래처 사정이 사람 머릿속에만 있어서예요.',
+    ifIgnored: '한 사람이 그만두면, 그 사람이 알던 것도 같이 회사를 떠나요.',
+  },
   dataUnused: {
     title: '데이터는 있는데 결정할 때 쓰지 못함',
     why: '거래 기록은 엑셀에 쌓여만 있고, 결정할 땐 안 꺼내 봐요.',
     ifIgnored: '감으로 내린 결정이 맞았는지 확인할 길이 계속 없어요.',
+  },
+  revenueLeak: {
+    title: '다시 살 고객, 추가 제안할 거래처를 놓침',
+    why: '언제 다시 연락할지 알려 주는 곳이 없어, 담당자 기억에 맡기고 있어요.',
+    ifIgnored: '새 고객 찾는 데만 힘을 쓰고, 이미 손에 쥔 매출 기회는 흘려보내요.',
   },
   ceoLoadGrows: {
     title: '회사가 커질수록 대표님과 관리자가 확인할 일도 늘어남',
@@ -116,10 +142,14 @@ const PROBLEM_COPY: Record<string, { title: string; why: string; ifIgnored: stri
 type Cluster = { id: string; qs: string[]; point: string }
 const CLUSTERS: Cluster[] = [
   { id: 'connect', qs: ['repeatInput', 'toolGaps'], point: '한 번만 입력하면 필요한 곳에 같이 들어가게 해요.' },
+  { id: 'docs', qs: ['docRepeat'], point: '쌓인 기록으로 견적서와 보고서 초안을 바로 만들어요.' },
   { id: 'visibility', qs: ['askProgress', 'ceoLoadGrows'], point: '안 물어봐도 진행 상황이 한 화면에 보여요.' },
   { id: 'customer', qs: ['manualHandoff'], point: '주문, 예약, 문의가 들어오면 담당자에게 바로 넘어가게 해요.' },
+  { id: 'answers', qs: ['repeatQuestions'], point: '답이 정해진 질문은 AI가 먼저 답하고, 사람은 꼭 필요한 문의만 받아요.' },
   { id: 'judgment', qs: ['missDelay', 'priorityByMemory'], point: '놓치기 쉬운 일과 먼저 할 일을 AI가 먼저 알려 줘요.' },
+  { id: 'handover', qs: ['handover'], point: '누가 언제 무엇을 했는지 기록이 남아, 사람이 바뀌어도 일이 이어져요.' },
   { id: 'data', qs: ['dataUnused'], point: '쌓인 기록을 한눈에 보는 우리 회사 현황판(대시보드)을 만들어요.' },
+  { id: 'revenue', qs: ['revenueLeak'], point: '다시 연락할 때가 된 고객과 추가 제안할 거래처를 먼저 알려 줘요.' },
   { id: 'unique', qs: ['uniqueWork'], point: '시중 프로그램으로 안 되던 일을 전용 시스템으로 만들어요.' },
 ]
 
@@ -132,10 +162,10 @@ function topClusterPoints(a: DiagnosisAnswers, max: number): string[] {
 }
 
 export function computeAxFitGrade(a: DiagnosisAnswers): { grade: AxFitGrade; score: number } {
-  const pain = PROBLEM_IDS.reduce((sum, id) => sum + val(a, id), 0) // 0~24
+  const pain = PROBLEM_IDS.reduce((sum, id) => sum + val(a, id), 0) // 0~PAIN_MAX(36)
   const unique = val(a, 'uniqueWork') // 0~3
   const owner = ownerVal(a) // 0~3
-  const score = round5((pain / 24) * 60 + (unique / 3) * 25 + (owner / 3) * 15)
+  const score = round5((pain / PAIN_MAX) * 60 + (unique / 3) * 25 + (owner / 3) * 15)
 
   const ceoDependency = val(a, 'askProgress') + val(a, 'ceoLoadGrows') // 0~6
   const dataPotential = val(a, 'dataUnused') // 0~3
@@ -153,7 +183,7 @@ export function computeAxFit(answers: DiagnosisAnswers): AxFitReport {
   const { grade, score } = computeAxFitGrade(answers)
   const meta = GRADE_META[grade]
 
-  // 현재 가장 큰 문제 TOP 3 — 1~9번 중 강도 높은 순(동점은 질문 순서)
+  // 현재 가장 큰 문제 TOP 3 — 업무 문항(고유 업무 포함) 중 강도 높은 순(동점은 질문 순서)
   const ranked = PAIN_IDS.map((id, i) => ({ id, i, v: val(answers, id) }))
     .filter((x) => x.v >= 1)
     .sort((x, y) => y.v - x.v || x.i - y.i)

@@ -149,7 +149,10 @@ export default function BusinessDiagnosisPage() {
     const saved = loadSession()
     if (!saved || saved.completed) return handleStart()
     const qs = stageQuestions(1, saved.answers)
-    const idx = saved.currentQuestionId ? qs.findIndex((q) => q.id === saved.currentQuestionId) : 0
+    const at = saved.currentQuestionId ? qs.findIndex((q) => q.id === saved.currentQuestionId) : 0
+    // 문항이 늘어난 뒤 이어하는 경우 — 보던 질문보다 앞에 안 푼 질문이 있으면 거기부터 연다
+    const firstEmpty = qs.findIndex((q) => saved.answers[q.id] === undefined)
+    const idx = firstEmpty >= 0 && (at < 0 || firstEmpty < at) ? firstEmpty : at
     enter(saved, idx < 0 ? 0 : idx)
   }
 

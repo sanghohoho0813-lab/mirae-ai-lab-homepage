@@ -1,6 +1,6 @@
 // AX Fit 상담 신청 — 일반 상담 신청(ConsultModal)과 같은 항목을 받는다.
 // 연락처 + 회사 정보(업력·업종·연매출·직원 수·지역) + 함께 검토하고 싶은 분야까지 한 폼에서 받고,
-// 제출은 진단 리드(/api/business-diagnosis)로 보내 10문항 답변·AX Fit 결과와 함께 남긴다.
+// 제출은 진단 리드(/api/business-diagnosis)로 보내 AX Fit 답변·결과와 함께 남긴다.
 // 개인정보 동의(필수)와 상담/마케팅 동의(선택)는 분리, 기본 미체크.
 // 상품(썸네일) 선택은 두지 않는다 — 분야 이름만 고른다.
 import { useEffect, useRef, useState } from 'react'
@@ -73,7 +73,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
         진단 결과를 보고,<br className="sm:hidden" /> 어디부터 손댈지 같이 정해 드려요
       </h2>
       <p className="mt-2.5 text-[0.95rem] leading-relaxed text-slate-600">
-        답하신 10개 질문과 결과를 보고 담당자가 연락드릴게요.
+        답하신 질문과 결과를 보고 담당자가 연락드릴게요.
       </p>
 
       <div className="mt-6 space-y-4">

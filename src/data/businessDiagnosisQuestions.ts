@@ -1,11 +1,13 @@
 // 3분 AX Fit — 질문 데이터 (화면 로직과 분리).
-// 10문항, 모두 정도 선택형. 질문을 추가/수정할 때 이 파일만 고치면 됩니다.
+// 14문항, 모두 정도 선택형. 질문을 추가/수정할 때 이 파일과 점수 엔진(PROBLEM_IDS·PROBLEM_COPY·CLUSTERS),
+// 서버 재계산(api/business-diagnosis.ts 의 AX_PROBLEM_QS)을 같이 고칩니다.
 //
-// 1~9번: 현재 업무방식의 문제·복잡도 신호 (아니요 0 → 거의 항상 그래요 3)
-// 10번:  새 시스템을 실제로 함께 쓸 내부 담당자 유무 (준비도)
+// 1~13번: 현재 업무방식의 문제·복잡도 신호 (아니요 0 → 거의 항상 그래요 3). 13번(uniqueWork)은 고유 업무.
+// 14번:   새 시스템을 실제로 함께 쓸 내부 담당자 유무 (준비도)
+// 문항을 늘려도 저장 버전(DIAGNOSIS_VERSION)은 올리지 않는다 — 기존 답은 그대로 쓰고, 이어하기는 안 푼 질문부터 연다.
 import type { DiagnosisAnswers, DiagnosisQuestion, DiagnosisStage, InlineFeedback } from '../types/businessDiagnosis'
 
-// v5: 종합 경영진단 → AX Fit 10문항. 구버전 세션·결과는 호환되지 않아 안전 초기화한다.
+// v5: 종합 경영진단 → AX Fit(10문항 → 14문항으로 확장, 같은 v5). 구버전 세션·결과는 호환되지 않아 안전 초기화한다.
 export const DIAGNOSIS_VERSION = 5
 
 export const AX_FIT_INFO = {
@@ -28,7 +30,7 @@ export const DEGREE_OPTIONS = [
 
 export const DEGREE_VALUE: Record<string, number> = { no: 0, sometimes: 1, often: 2, always: 3 }
 
-/** 10번 내부 담당자 — 준비도 값 */
+/** 마지막 문항(내부 담당자) — 준비도 값 */
 export const OWNER_VALUE: Record<string, number> = { dedicated: 3, partTime: 2, ceo: 1, none: 0 }
 
 const degree = (id: string, title: string, desc?: string): DiagnosisQuestion => ({
@@ -41,13 +43,18 @@ const degree = (id: string, title: string, desc?: string): DiagnosisQuestion => 
 })
 
 export const questions: DiagnosisQuestion[] = [
+  // 입력·서류 → 진행·연결 → 고객 응대 → 판단·사람 의존 → 데이터·매출 → 성장 부담 순으로 묻는다
   degree('repeatInput', '같은 정보를 여러 곳에 반복해서 입력하고 있나요?', '예: 카톡으로 받은 주문을 엑셀에 적고, ERP에 또 넣는 식이요.'),
+  degree('docRepeat', '견적서, 계약서, 보고서 같은 서류를 매번 처음부터 새로 만드나요?', '예: 지난번 견적서를 찾아 복사한 뒤 품목과 금액을 하나하나 고치는 식이요.'),
   degree('askProgress', '일이 어디까지 됐는지, 대표님이나 관리자가 직접 물어봐야 아나요?'),
   degree('toolGaps', '엑셀, 카톡, 전화, ERP를 오가다 일이 중간에 끊기나요?'),
   degree('manualHandoff', '고객 주문이나 예약, 문의를 사람이 일일이 담당자에게 넘기나요?'),
+  degree('repeatQuestions', '고객이나 거래처가 묻는 같은 질문에, 직원이 매번 직접 답하나요?', '예: 가격, 재고, 배송 일정, 예약 가능 시간처럼 답이 정해진 질문이요.'),
   degree('missDelay', '빠뜨리거나 늦어져서 다시 챙겨야 하는 일이 반복되나요?'),
   degree('priorityByMemory', '무슨 일을 먼저 할지, 담당자의 경험이나 기억에 맡기고 있나요?'),
+  degree('handover', '담당자가 바뀌거나 자리를 비우면, 그 사람이 하던 일이 멈추거나 인수인계가 오래 걸리나요?'),
   degree('dataUnused', '거래처, 고객, 업무 기록은 있는데 결정할 때 잘 활용하지 못하나요?'),
+  degree('revenueLeak', '다시 연락할 때가 된 고객이나, 추가로 제안할 거래처를 놓치고 있나요?', '예: 재구매 시기, 계약 갱신일, 견적만 받고 끝난 고객이요.'),
   degree('ceoLoadGrows', '직원이나 거래가 늘수록, 대표님이나 관리자가 확인할 일도 같이 늘고 있나요?'),
   degree('uniqueWork', '기존 ERP, POS, SaaS로는 해결이 안 되는 우리 회사만의 일이 있나요?', '시중 프로그램에 없는 기능을 엑셀이나 사람 손으로 메우고 있다면 해당돼요.'),
   {

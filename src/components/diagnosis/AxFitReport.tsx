@@ -217,7 +217,7 @@ function ClosingConsultCTA({ onConsult, hasProblems }: { onConsult: () => void; 
           )}
         </h3>
         <p className="mx-auto mt-2.5 max-w-md break-keep text-[0.98rem] leading-relaxed text-slate-600">
-          연락처만 남겨 주세요. 답하신 10개 질문과 결과를 보고 담당자가 연락드려요.
+          연락처만 남겨 주세요. 답하신 질문과 결과를 보고 담당자가 연락드려요.
         </p>
         <button
           type="button"

@@ -78,7 +78,7 @@ export default function SubmitDoneOverlay({ open, onClose, consultationConsented
             : '진단 결과도 저장했어요. 담당 컨설턴트가 차례로 연락드릴게요.'}
         </p>
         <p className="mt-2 text-[0.85rem] leading-relaxed text-slate-400">
-          답하신 10개 질문과 결과도 담당자에게 같이 전달됐어요.
+          답하신 질문과 결과도 담당자에게 같이 전달됐어요.
         </p>
 
         <button
