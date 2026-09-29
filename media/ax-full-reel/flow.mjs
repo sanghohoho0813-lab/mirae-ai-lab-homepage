@@ -1,5 +1,5 @@
 // 데모 사이트를 모바일(또는 PC)로 열어 steps 대로 눌러 가며 화면·누른 위치를 저장한다.
-// 사용: node flow.mjs <name> <url> <mobile|desktop> '<steps json>'   (steps: [{text|sel, nth?, wait?, scroll?, fill?, value?}])
+// 사용: node flow.mjs <name> <url> <mobile|desktop> '<steps json>'   (steps: [{text|sel|xy, nth?, wait?, scroll?, fill?, value?}])
 import { chromium } from 'playwright'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { cf } from './prod_relay.mjs'
@@ -24,6 +24,12 @@ for (let i = 0; i < steps.length; i++) {
   if (s.scroll) { await p.evaluate((y) => window.scrollBy(0, y), s.scroll); await p.waitForTimeout(500) }
   // 입력칸 채우기(누른 자리 없음) — {fill: 선택자, value: 값}
   if (s.fill) { const f = p.locator(s.fill).first(); await f.scrollIntoViewIfNeeded().catch(() => {}); await f.fill(s.value || '').catch((e) => console.log('  ! fill fail', s.fill, e.message.slice(0, 60))) }
+  // 좌표로 누르기 — {xy: [x, y]} (글자로 못 찾는 하단 탭 등)
+  if (s.xy) {
+    tap = { x: s.xy[0], y: s.xy[1] }
+    await p.screenshot({ path: `${OUT}/${String(i + 1).padStart(2, '0')}a.png` })
+    await p.mouse.click(s.xy[0], s.xy[1])
+  }
   if (s.text || s.sel) {
     const loc = s.sel ? p.locator(s.sel) : p.getByText(s.text, { exact: !!s.exact })
     const el = loc.nth(s.nth || 0)

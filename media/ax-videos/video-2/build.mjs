@@ -1,6 +1,7 @@
-// 영상 2 · 어떻게 진행하고, 얼마가 드나 — v2(고급판)
-// 영상 1 v2 와 같은 톤(먹색 + 샴페인 골드, 유리 카드, 부드러운 전환). 화면 전환은 영상 1보다 약 15% 느리게(47장면, 평균 5.3초).
-// AX 화면은 고운솥 식당·반려동물 대신 세움 제조(대시보드·AI 판단)·거래처 포털·벨로아 커머스·루미에르 헤어숍 샘플을 쓴다.
+// 영상 2 · 어떻게 진행하고, 얼마가 드나 — v3(고급판)
+// 영상 1 v2 와 같은 톤(먹색 + 샴페인 골드, 유리 카드, 부드러운 전환). 화면 전환은 영상 1보다 약 15% 느리게.
+// v3: 샘플 화면은 네 가지만 — 18 LIVARTÉ(인테리어) · 15 오토브릿지(자동차 정비) · 20 MATERIX(건축자재 유통) · 11 세움(제조).
+//     비용 구간은 녹음 순서를 바꿨다(reorder.py): 가격 → 정산 시점 뒤로 → 착수금·개발비 후불 → 한 단계씩 → 풀 패키지·유지보수 → 진행 정도에 따라 정산.
 import { createBuild, r2, ic } from '../lib/lib.mjs'
 import { kit } from '../lib/kit.mjs'
 import { kit2 } from '../lib/kit2.mjs'
@@ -36,6 +37,12 @@ B.addCssLast(`
 .cb { width: 260px; display: flex; flex-direction: column; align-items: center; gap: 18px; } .cb i { display: block; width: 100%; border-radius: 22px 22px 6px 6px; } .cb span { font-size: 38px; text-align: center; line-height: 1.2; }
 .walker2 { position: absolute; left: 470px; top: 700px; width: 140px; height: 140px; color: #E6C396; } .walker2 .ic { width: 100%; height: 100%; }
 .bub.sm { font-size: 50px; padding: 26px 40px; }
+.fan { position: absolute; }
+.shim { position: relative; overflow: hidden; padding: 30px 56px 32px; border-radius: 28px; text-align: center; background: linear-gradient(180deg, rgba(216,168,113,.17), rgba(216,168,113,.05)); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.55), 0 0 36px rgba(216,168,113,.16); }
+.shim small { display: block; margin-bottom: 10px; font-size: 26px; font-weight: 600; letter-spacing: .14em; color: rgba(230,195,150,.75); }
+.shim .shm { display: block; font-size: 50px; font-weight: 700; line-height: 1.34; letter-spacing: -.01em; color: transparent; background: linear-gradient(100deg, #D8A871 0%, #D8A871 40%, #FFF4DE 50%, #D8A871 60%, #D8A871 100%); background-size: 260% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; }
+.shim .shm b { font-weight: 800; }
+.shim .shl { position: absolute; top: -30%; bottom: -30%; left: 0; width: 110px; background: linear-gradient(90deg, rgba(255,244,222,0), rgba(255,244,222,.28), rgba(255,244,222,0)); transform: skewX(-20deg); }
 `)
 // 단계 머리(STEP n / 4 + 네 칸 막대 + 제목)
 function stage(n, title, at, y = 300) {
@@ -114,21 +121,22 @@ K.chapter(c('6.1.0'), '③ 도입하면 달라지는 모습')
 { const t = c('6.1.0'), k = c('6.2.0')
   const g = P.cards([{ ic: 'money', label: '매출', at: w('매출', k) - 0.1 }, { ic: 'db', label: '재고', at: w('재고', k) - 0.1 }, { ic: 'team', label: '직원별 처리 현황', at: w('직원별', k) - 0.1 }], { y: 560 })
   P.scene(t, [H([{ at: t + 0.1, text: '이렇게 *달라집니다*', size: 'xl' }], { y: 300 }), g.html], { bg: 'bgC', trans: 'fade' }) }
-{ // 6.2.1–6.2.3 — 대표님 폰(제조 대시보드) · 잘 팔리는 상품(커머스) — 서로 다른 샘플
+{ // 6.2.1–6.2.3 — 대표님 폰(MATERIX 대시보드) · 오토브릿지 AX 대시보드 — 서로 다른 샘플
   const t = c('6.2.1'), sw = 330, id = K.uid('tp')
   const html = `<div class="cx" style="top:250px"><span class="chip" id="${id}-t">${SAMPLE}</span></div>
-    <div id="${id}-a">${phonePart(`${id}-pa`, 'seum', 1, [], sw, 60, 330)}<div class="cx" style="top:1100px;left:60px;right:auto;width:${sw + 16}px"><span class="chip hot">대표님 폰 · 수치</span></div></div>
-    <div id="${id}-b">${phonePart(`${id}-pb`, 'veloa', 2, [], sw, 1080 - 60 - sw - 16, 330)}<div class="cx" style="top:1100px;left:auto;right:60px;width:${sw + 16}px"><span class="chip">잘 팔리는 상품</span></div></div>`
+    <div id="${id}-a">${phonePart(`${id}-pa`, 'mxax', 0, [], sw, 60, 330)}<div class="cx" style="top:1100px;left:60px;right:auto;width:${sw + 16}px"><span class="chip hot">대표님 폰 · 수치</span></div></div>
+    <div id="${id}-b">${phonePart(`${id}-pb`, 'abax', 1, [], sw, 1080 - 60 - sw - 16, 330)}<div class="cx" style="top:1100px;left:auto;right:60px;width:${sw + 16}px"><span class="chip" id="${id}-bl">잘 되는 것 · 새는 곳</span></div></div>`
   B.shot(t, html, { bg: 'bgA', trans: 'fade' })
   from(`#${id}-t`, t + 0.1, 'opacity: 0', 0.6, 'power1.out')
   from(`#${id}-a`, t + 0.05, 'opacity: 0, y: 60', 0.9, 'expo.out')
   from(`#${id}-b`, w('어떤', '6.2.2') - 0.2, 'opacity: 0, y: 60', 0.9, 'expo.out')
-  to(`#${id}-pb .screen > img`, w('어디서', '6.2.3'), 'y: -120', 1.4, 'power2.inOut') }
+  tw(`tl.to('#${id}-bl', { backgroundColor: '#D8A871', color: '#15110C', duration: 0.5, ease: 'power1.out' }, ${r2(w('어디서', '6.2.3'))});`) }
 { const t = c('6.3.0')
   K.phoneShot(t, { name: 'seum', base: 1, steps: [2, 3], run: [w('다음에', '6.3.1') - 0.3, c('6.3.1') + 3.2], top: 340, sw: 340, label: 'AI 판단 · 근거까지', lbc: 'hot', labelY: 1110,
     extra: H([{ at: t + 0.1, text: 'AI는 *한 걸음 더*', size: 's', y: 225 }]), shot: { bg: 'bgB', trans: 'fade' } }) }
 { const t = c('6.4.0')
-  K.phoneShot(t, { name: 'lumiere', base: 1, steps: [2], run: [w('밀고', t) - 0.1, w('밀고', t) + 0.5], top: 340, sw: 340, label: SAMPLE, labelY: 1110,
+  // LIVARTÉ AI Project Center — 견적 전환 Opportunity(더 밀고) · 공사 지연 Risk(막고)
+  K.phoneShot(t, { name: 'lvax', base: 1, steps: [2], run: [w('밀고', t) - 0.3, w('밀고', t) + 0.3], top: 340, sw: 340, label: SAMPLE, labelY: 1110,
     extra: H([{ at: t + 0.1, text: '잘 되는 건 *더 밀고*', size: 's', y: 225 }, { at: c('6.4.1'), text: '새는 것은 *막고*', size: 's', y: 225 }]), shot: { bg: 'bgD', trans: 'fade' } }) }
 { const t = c('6.5.0'), k = c('6.5.1'), id = K.uid('rl')
   const roles = [['user', '대표 · 전체'], ['team', '점장 · 매장'], ['lock', '직원 · 내 업무']]
@@ -141,16 +149,31 @@ K.chapter(c('6.1.0'), '③ 도입하면 달라지는 모습')
     extra: `<div class="walker2" id="${id}">${ic('user')}</div>` + H([{ at: t + 0.1, text: '담당자가 바뀌어도 *기록은 그대로*', size: 's' }, { at: c('6.6.1'), text: '인수인계 부담 *↓*', size: 's' }], { y: 1070 }), shot: { bg: 'bgB', trans: 'wipeUp' } })
   from(`#${id}`, t + 0.2, 'opacity: 0, scale: 0.7', 0.7, 'expo.out')
   to(`#${id}`, w('바뀌어도', t) - 0.1, 'x: 440, opacity: 0', 1.1, 'power2.in') }
-K.phoneShot(c('6.7.0'), { name: 'seumportal', base: 0, steps: [1, 2, 3, 4], run: [c('6.7.0') + 0.4, c('6.7.2') + 0.6], top: 340, sw: 340, label: '거래처가 직접 견적 요청 · 샘플', lbc: 'hot', labelY: 1110,
-  extra: H([{ at: c('6.7.2'), text: '매일 *데이터*가 쌓인다', size: 's', y: 225 }]), shot: { bg: 'bgD', trans: 'fade' } })
+{ // 6.7 — 고객(오토브릿지 정비 예약) · 거래처(MATERIX 자재 견적)가 직접
+  const t = c('6.7.0'), sw = 330, id = K.uid('cu'), k = c('6.7.1')
+  const html = `<div id="${id}-a">${phonePart(`${id}-pa`, 'abcu', 0, [1, 2], sw, 60, 330)}<div class="cx" style="top:1100px;left:60px;right:auto;width:${sw + 16}px"><span class="chip hot">고객 · 정비 예약</span></div></div>
+    <div id="${id}-b">${phonePart(`${id}-pb`, 'mxcu', 0, [1, 2], sw, 1080 - 60 - sw - 16, 330)}<div class="cx" style="top:1100px;left:auto;right:60px;width:${sw + 16}px"><span class="chip">거래처 · 자재 견적</span></div></div>`
+    + H([{ at: t + 0.1, text: '고객·거래처가 *직접*', size: 's' }, { at: c('6.7.2'), text: '매일 *데이터*가 쌓인다', size: 's' }], { y: 215 })
+  B.shot(t, html, { bg: 'bgD', trans: 'fade' })
+  from(`#${id}-a`, t + 0.05, 'opacity: 0, y: 60', 0.9, 'expo.out')
+  from(`#${id}-b`, k - 0.1, 'opacity: 0, y: 60', 0.9, 'expo.out')
+  runFlow(`${id}-pa`, 'abcu', [1, 2], t + 0.5, k + 0.6)
+  runFlow(`${id}-pb`, 'mxcu', [1, 2], k + 0.8, c('6.7.2') + 0.9) }
 K.morph(c('6.8.0'), { from: ['db', '쌓인 데이터'], to: ['rocket', '새 서비스 출시'], aAt: c('6.9.0') - 0.2, arAt: w('출시해서', '6.9.0') - 0.3, bAt: w('출시해서', '6.9.0'),
   extra: H([{ at: c('6.8.0') + 0.1, text: '심사용만이 *아니에요*', y: 1040 }]), shot: { bg: 'bgC', trans: 'fade' } })
 K.chart(c('6.9.1'), { mode: 'up', tagOurs: '구독 서비스', tagOursX: 360, tagOursY: 330, tagOursAt: w('구독', '6.9.1'), tagTop: '새로운 사업', tagTopX: 640, tagTopAt: w('사업으로', '6.9.2'), shot: { bg: 'bgD', trans: 'fade' } })
 
-K.browser(c('7.1.0'), { src: SH('ax-lumiere-dash'), tag: SAMPLE, top: 360, d: 7.6, zoom: 1.14,
-  extra: H([{ at: c('7.1.0') + 0.2, text: '밖에서 보기에도 *달라요*' }, { at: w('투자하고', '7.2.1') - 0.2, text: '*투자하고 싶은* 회사로' }], { y: 1110 }), shot: { bg: 'bgA', trans: 'fade' } })
+{ // 7.1–7.2 — 쌓인 화면: 네 샘플(인테리어 · 자재 유통 · 정비 · 제조)이 부채꼴로
+  const t = c('7.1.0'), id = K.uid('fan'), sw = 250
+  const items = [['lvcu-00', -7, 40, 440], ['mxax-00', -2.5, 285, 395], ['abcu-00', 2.5, 530, 395], ['seum-02', 7, 775, 440]]
+  const html = P.eyebrow('샘플 화면 · 인테리어 · 자재 유통 · 정비 · 제조', 250, t + 0.05)
+    + items.map(([n, r, x, y], i) => `<div class="fan" style="left:${x}px;top:${y}px;transform:rotate(${r}deg);z-index:${i === 1 || i === 2 ? 2 : 1}">${B.phoneImg(`${id}-${i}`, FL(n), sw)}</div>`).join('')
+    + H([{ at: t + 0.2, text: '밖에서 보기에도 *달라요*' }, { at: w('투자하고', '7.2.1') - 0.2, text: '*투자하고 싶은* 회사로' }], { y: 1110 })
+  B.shot(t, html, { bg: 'bgA', trans: 'fade' })
+  tw(`tl.from('${items.map((_, i) => `#${id}-${i}`).join(', ')}', { y: 140, opacity: 0, duration: 1.0, ease: 'expo.out', stagger: 0.16 }, ${r2(t + 0.15)});`)
+  tw(`tl.to('#${id}-1, #${id}-2', { y: -18, duration: 1.2, ease: 'sine.inOut' }, ${r2(w('투자하고', '7.2.1') - 0.3)});`) }
 { const t = c('7.3.0')
-  const id = K.room(t, { extra: `<div id="eb73">${P.eyebrow('심사 자리', 690, t + 0.1)}</div>`, q: '“그래서, 다음은<br>어떻게 되나요?”', qAt: w('그래서', '7.3.1') - 0.1, qY: 780, qType: 0.9, show: FL('seum-01'), showAt: c('7.3.2') - 0.1, showY: 640, react: 'ok', reactAt: w('답할', '7.3.2') - 0.2, shot: { trans: 'fade' } })
+  const id = K.room(t, { extra: `<div id="eb73">${P.eyebrow('심사 자리', 690, t + 0.1)}</div>`, q: '“그래서, 다음은<br>어떻게 되나요?”', qAt: w('그래서', '7.3.1') - 0.1, qY: 780, qType: 0.9, show: FL('mxax-01'), showAt: c('7.3.2') - 0.1, showY: 640, react: 'ok', reactAt: w('답할', '7.3.2') - 0.2, shot: { trans: 'fade' } })
   to(`#${id}-q`, c('7.3.2') - 0.25, 'opacity: 0, y: -20', 0.4, 'power2.in')
   to('#eb73', c('7.3.2') - 0.25, 'opacity: 0', 0.3, 'power1.in') }
 K.chart(c('7.4.0'), { mode: 'gap', tagTop: 'AI 도입 회사', tagTopX: 560, tagTopAt: c('7.4.0') + 1.0, tagOurs: '그렇지 않은 회사', tagOursX: 440, tagOursY: 480, tagOursAt: w('그렇지', '7.4.1'), d: 2.0,
@@ -160,16 +183,25 @@ K.chart(c('7.4.0'), { mode: 'gap', tagTop: 'AI 도입 회사', tagTopX: 560, tag
   const [, e] = fzBefore(8, 1, '먼저 도입한 회사가 유리', '샘플에서 직접 눌러 보세요')
   K.note(t + 0.4, r2(e - t - 0.4), '<span>▶ 샘플에서 직접 눌러 보세요 · miraeailab.com</span>', 1240) }
 
-// ━━ ④ 비용
+// ━━ ④ 비용 — 가격 바로 뒤에 '정산 시점 뒤로 · 착수금 + 개발비 후불'이 나오도록 녹음 순서를 바꿨다
 K.chapter(c('8.1.0'), '④ 비용')
 { const t = c('8.1.0')
   const PR = [{ name: 'MVP', tag: '최소 기능 제품', v: '500', n: 500, at: w('500만', '8.2.0') - 0.4 }, { name: '플랫폼형', tag: '고객이 쓰는', v: '1,500', n: 1500, at: w('1500만', '8.2.1') - 0.4 }, { name: '풀 패키지', tag: 'AX + 플랫폼', v: '3,000', n: 3000, at: w('3000만', '8.2.3') - 0.5 }]
   const id = K.prices(t, { eb: '비용', items: PR, top: 340, shot: { bg: 'bgL', trans: 'fade' } })
   tw(`tl.set('#${id}-2', { attr: { class: 'pcard on' } }, ${r2(w('풀', '8.2.2') - 0.1)});`) }
-fzBefore(8, 3, '500 · 1,500 · 3,000만 원부터', 'MVP · 플랫폼형 · 풀 패키지')
-{ const t = c('8.3.0'), id = K.uid('st')
+K.link(c('8.3.0'), { a: { ic: 'bank', label: '자금 입금' }, b: { ic: 'money', label: '그 뒤 정산', cls: 'hot' }, linkAt: w('들어온', '8.3.1') - 0.2,
+  extra: H([{ at: c('8.3.0') + 0.1, text: '자금 흐름이 *부담*된다면' }, { at: w('뒤로', '8.3.1') - 0.3, text: '정산 시점을 *뒤로*' }], { y: 1060 }), shot: { bg: 'bgB', trans: 'fade' } })
+{ const t = c('8.4.0'), k = w('5번', '8.4.1') - 0.3, id = K.uid('n5')
+  P.scene(t, [P.eyebrow('1년 동안 · 지원금 + 정책자금', 280, t + 0.05), P.number({ from: 1, to: 5, suf: '번 이상', y: 440, at: k, d: 0.6 }), `<p class="ksub" id="${id}" style="top:740px">신청해 드립니다</p>`,
+    K.fineAt(`${id}-f`, '선정·승인은 기관 심사에 따라 달라요', 1290)], { bg: 'bgC', trans: 'fade' })
+  from(`#${id}`, k + 0.4, 'opacity: 0, y: 14', 0.7, 'expo.out'); from(`#${id}-f`, t + 0.5, 'opacity: 0', 0.6, 'power1.out') }
+{ const t = c('8.4.2')
+  const g = P.cards([{ ic: 'user', label: '처음엔 컨설팅 착수금만', at: t + 0.1, checkAt: w('내시면', t) - 0.2 }, { ic: 'gear', label: '개발비는 후불로도 가능', hl: true, at: w('후별로도', '8.4.3') - 0.2, checkAt: w('후별로도', '8.4.3') + 0.3 }], { y: 420 })
+  P.scene(t, [g.html, H([{ at: c('8.4.4'), text: '초기 부담 *크지 않아요*' }], { y: 900 })], { bg: 'bgA', trans: 'fade' }) }
+fzBefore(9, 1, '개발비 후불 가능', '착수금으로 시작')
+{ const t = c('9.1.0'), id = K.uid('st')
   const hs = [240, 400, 560], names = ['MVP', '플랫폼형', '풀 패키지']
-  const k1 = w('MVP나', t), k2 = w('단계씩', '8.3.1') - 0.2
+  const k1 = w('MVP나', t), k2 = w('단계씩', '9.1.1') - 0.2
   const html = `${P.eyebrow('처음엔 작게 시작해도', 250, t + 0.05)}<div class="stairs" style="top:340px">${hs.map((h, i) => `<div id="${id}-${i}"><i style="height:${h}px"></i><b>${names[i]}</b></div>`).join('')}</div>
     <span class="climber" id="${id}-c" style="left:${120 + 105}px;top:${340 + 620 - 240 - 90}px"></span>${H([{ at: k2, text: '한 단계씩 *올라가도* 돼요' }], { y: 1080 })}`
   B.shot(t, html, { bg: 'bgD', trans: 'fade' })
@@ -180,62 +212,59 @@ fzBefore(8, 3, '500 · 1,500 · 3,000만 원부터', 'MVP · 플랫폼형 · 풀
   tw(`tl.to('#${id}-c', { x: 560, y: -320, duration: 0.7, ease: 'power2.inOut' }, ${r2(k2 + 0.9)});`)
   tw(`tl.set('#${id}-1', { attr: { class: 'on' } }, ${r2(k2 + 0.7)});`)
   tw(`tl.set('#${id}-2', { attr: { class: 'on' } }, ${r2(k2 + 1.6)});`) }
-{ const t = c('8.4.0')
-  const g = P.cards([{ ic: 'rocket', label: '2주 · 기본 틀', at: t + 0.2, checkAt: w('잡은', t) }, { ic: 'gear', label: '커스터마이징', at: w('커스터마이징과', '8.4.1') - 0.1 }, { ic: 'check', label: '테스트', at: w('테스트를', '8.4.1') - 0.1 }], { y: 400 })
+{ const t = c('9.2.0')
+  const g = P.cards([{ ic: 'rocket', label: '2주 · 기본 틀', at: t + 0.2, checkAt: w('잡은', t) }, { ic: 'gear', label: '커스터마이징', at: w('커스터마이징과', '9.2.1') - 0.1 }, { ic: 'check', label: '테스트', at: w('테스트를', '9.2.1') - 0.1 }], { y: 400 })
   P.scene(t, [P.eyebrow('풀 패키지 진행', 300, t + 0.05), g.html], { bg: 'bgA', trans: 'fade' }) }
-{ const t = c('8.4.2')
-  P.scene(t, [P.eyebrow('기본 AX·플랫폼 유지보수', 520, t + 0.1), P.seal('1년 무상', 600, w('무상으로', '8.4.3') - 0.2, 'gold')], { bg: 'bgC', trans: 'fadeBlur' }) }
-fzBefore(9, 1, '유지보수 1년 무상', '기본 AX·플랫폼')
-{ const t = c('9.1.0')
-  const g = P.cards([{ ic: 'user', label: '컨설팅', at: w('컨설팅과', t) - 0.1 }, { ic: 'gear', label: '개발', at: w('개발에', t) - 0.1 }], { layout: 'row', y: 440 })
-  P.scene(t, [P.eyebrow('이 금액은', 320, t + 0.05), g.html.replace('gcards row', 'gcards row two'), H([{ at: w('관계없이', '9.1.1') - 0.3, text: '자금 승인과 *관계없이*', size: 's' }, { at: c('9.1.2'), text: '진행한 만큼 *정산*', size: 's' }], { y: 900 })], { bg: 'bgL', trans: 'wipeUp' }) }
-K.link(c('9.2.0'), { a: { ic: 'bank', label: '자금 입금' }, b: { ic: 'money', label: '그 뒤 정산', cls: 'hot' }, linkAt: w('들어온', '9.2.1') - 0.2,
-  extra: H([{ at: c('9.2.0') + 0.1, text: '자금 흐름이 *부담*된다면' }, { at: w('뒤로', '9.2.1') - 0.3, text: '정산 시점을 *뒤로*' }], { y: 1060 }), shot: { bg: 'bgB', trans: 'fade' } })
-{ const t = c('9.3.0'), k = w('5번', '9.3.1') - 0.3, id = K.uid('n5')
-  P.scene(t, [P.eyebrow('1년 동안 · 지원금 + 정책자금', 280, t + 0.05), P.number({ from: 1, to: 5, suf: '번 이상', y: 440, at: k, d: 0.6 }), `<p class="ksub" id="${id}" style="top:740px">신청해 드립니다</p>`,
-    K.fineAt(`${id}-f`, '선정·승인은 기관 심사에 따라 달라요', 1290)], { bg: 'bgC', trans: 'fade' })
-  from(`#${id}`, k + 0.4, 'opacity: 0, y: 14', 0.7, 'expo.out'); from(`#${id}-f`, t + 0.5, 'opacity: 0', 0.6, 'power1.out') }
-{ const t = c('9.3.2')
-  const g = P.cards([{ ic: 'user', label: '처음엔 컨설팅 착수금만', at: t + 0.1, checkAt: w('내시면', t) - 0.2 }, { ic: 'gear', label: '개발비는 후불로도 가능', hl: true, at: w('후별로도', '9.3.3') - 0.2, checkAt: w('후별로도', '9.3.3') + 0.3 }], { y: 420 })
-  P.scene(t, [g.html, H([{ at: c('9.3.4'), text: '초기 부담 *크지 않아요*' }], { y: 900 })], { bg: 'bgA', trans: 'fade' }) }
-fzBefore(10, 2, '개발비 후불 가능', '착수금으로 시작')
+{ const t = c('9.2.2')
+  P.scene(t, [P.eyebrow('기본 AX·플랫폼 유지보수', 520, t + 0.1), P.seal('1년 무상', 600, w('무상으로', '9.2.3') - 0.2, 'gold')], { bg: 'bgC', trans: 'fadeBlur' }) }
+fzBefore(10, 1, '유지보수 1년 무상', '기본 AX·플랫폼')
+{ // 10.1 — 이 금액은 … 진행 정도에 따라 정산 + 반짝이는 안내(후불로 하기로 했으면 후불로 정산)
+  const t = c('10.1.0'), id = K.uid('pay'), a = w('진행', '10.1.2') + 0.15
+  const g = P.cards([{ ic: 'user', label: '컨설팅', at: w('컨설팅과', t) - 0.1 }, { ic: 'gear', label: '개발', at: w('개발에', t) - 0.1 }], { layout: 'row', y: 420 })
+  P.scene(t, [P.eyebrow('이 금액은', 300, t + 0.05), g.html.replace('gcards row', 'gcards row two'),
+    H([{ at: w('관계없이', '10.1.1') - 0.3, text: '자금 승인과 *관계없이*', size: 's' }, { at: c('10.1.2'), text: '진행한 만큼 *정산*', size: 's' }], { y: 830 }),
+    `<div class="cx" style="top:1010px"><div class="shim" id="${id}"><i class="shl"></i><small>후불로 하기로 했다면</small><span class="shm">후불로 진행하기로 한 경우에는<br><b>후불로 정산</b>합니다</span></div></div>`], { bg: 'bgB', trans: 'wipeUp' })
+  from(`#${id}`, a, 'opacity: 0, y: 26, scale: 0.97', 0.9, 'expo.out')
+  tw(`tl.fromTo('#${id} .shm', { backgroundPosition: '100% 0' }, { backgroundPosition: '0% 0', duration: 1.2, ease: 'sine.inOut', repeat: 2, repeatDelay: 0.35, immediateRender: true }, ${r2(a + 0.35)});`)
+  tw(`tl.fromTo('#${id} .shl', { x: -160 }, { x: 980, duration: 1.2, ease: 'sine.inOut', repeat: 2, repeatDelay: 0.35, immediateRender: true }, ${r2(a + 0.35)});`)
+  tw(`tl.to('#${id}', { boxShadow: 'inset 0 0 0 1.5px rgba(236,204,160,.95), 0 0 64px rgba(216,168,113,.34)', duration: 0.8, ease: 'sine.inOut', yoyo: true, repeat: 3 }, ${r2(a + 0.3)});`) }
 
 // ━━ ⑤ 자금 신청·관리
-K.chapter(c('10.2.0'), '⑤ 자금 신청·관리')
-{ const t = c('10.2.0')
+K.chapter(c('11.2.0'), '⑤ 자금 신청·관리')
+{ const t = c('11.2.0')
   const g = P.cards([{ ic: 'bank', label: '정책자금', at: w('정책자금과', t) - 0.1 }, { ic: 'gov', label: '지원사업', at: w('지원사업', t) - 0.1 }], { layout: 'row', y: 440 })
-  P.scene(t, [g.html.replace('gcards row', 'gcards row two'), H([{ at: c('10.2.1'), text: '신청까지 *쭉 함께*' }], { y: 900 })], { bg: 'bgL', trans: 'fade' }) }
-{ const t = c('10.3.0'), id = K.uid('ch')
-  const steps = [['AX 개발', w('개발부터', '10.3.1') - 0.2], ['인증', w('인증까지', '10.3.1') - 0.1], ['자금 신청', w('하나의', '10.3.2')]]
+  P.scene(t, [g.html.replace('gcards row', 'gcards row two'), H([{ at: c('11.2.1'), text: '신청까지 *쭉 함께*' }], { y: 900 })], { bg: 'bgL', trans: 'fade' }) }
+{ const t = c('11.3.0'), id = K.uid('ch')
+  const steps = [['AX 개발', w('개발부터', '11.3.1') - 0.2], ['인증', w('인증까지', '11.3.1') - 0.1], ['자금 신청', w('하나의', '11.3.2')]]
   steps.forEach(([, a], i) => from(`#${id}-${i}`, a, 'opacity: 0, y: 14', 0.7, 'expo.out'))
-  tw(`tl.to('#${id} span', { color: '#15110C', backgroundColor: '#D8A871', duration: 0.4, stagger: 0.15 }, ${r2(w('설계하다', '10.3.2') - 0.2)});`)
+  tw(`tl.to('#${id} span', { color: '#15110C', backgroundColor: '#D8A871', duration: 0.4, stagger: 0.15 }, ${r2(w('설계하다', '11.3.2') - 0.2)});`)
   P.scene(t, [P.licon('book', 280, t + 0.05), H([{ at: t + 0.15, text: '심사는 *스토리*', size: 'l' }], { y: 500 }),
     `<div class="cx" style="top:760px"><div class="chain" id="${id}">${steps.map(([l], i) => `${i ? '<i></i>' : ''}<span id="${id}-${i}">${l}</span>`).join('')}</div></div>`,
-    H([{ at: w('설계하다', '10.3.2') - 0.1, text: '하나의 *스토리*로 설계', size: 's' }], { y: 900 })], { bg: 'bgB', trans: 'fade' }) }
-K.checks(c('10.3.3'), { okColor: '#C99257', eb: '처음부터 연결', items: [['사업계획서', c('10.3.3') + 0.4], ['인증 서류', c('10.3.3') + 0.9], ['자금 신청서', c('10.3.3') + 1.4]], shot: { bg: 'bgL', trans: 'fade' } })
-K.people(c('10.4.0'), { y: 480, items: [['ai', '추가 개발'], ['shield', '인증'], ['bank', '자금']], react: 'ok', reactAt: w('같은', '10.4.1'),
-  extra: H([{ at: c('10.4.0') + 0.1, text: '따로 맡길 *필요 없이*' }, { at: w('같은', '10.4.1') - 0.1, text: '*한 팀*이 이어서' }], { y: 960 }), shot: { bg: 'bgA', trans: 'fade' } })
-{ const t = c('10.4.2'), id = K.uid('cp')
+    H([{ at: w('설계하다', '11.3.2') - 0.1, text: '하나의 *스토리*로 설계', size: 's' }], { y: 900 })], { bg: 'bgB', trans: 'fade' }) }
+K.checks(c('11.3.3'), { okColor: '#C99257', eb: '처음부터 연결', items: [['사업계획서', c('11.3.3') + 0.4], ['인증 서류', c('11.3.3') + 0.9], ['자금 신청서', c('11.3.3') + 1.4]], shot: { bg: 'bgL', trans: 'fade' } })
+K.people(c('11.4.0'), { y: 480, items: [['ai', '추가 개발'], ['shield', '인증'], ['bank', '자금']], react: 'ok', reactAt: w('같은', '11.4.1'),
+  extra: H([{ at: c('11.4.0') + 0.1, text: '따로 맡길 *필요 없이*' }, { at: w('같은', '11.4.1') - 0.1, text: '*한 팀*이 이어서' }], { y: 960 }), shot: { bg: 'bgA', trans: 'fade' } })
+{ const t = c('11.4.2'), id = K.uid('cp')
   const html = `<div class="cmp" id="${id}"><div class="cb g"><i style="height:520px"></i><span>일반 정책자금<br>컨설팅</span></div><div class="cb hot"><i style="height:300px"></i><span>미래AI랩</span></div></div>
-    ${K.fineAt(`${id}-f`, '구체 수수료는 상담 때 안내드려요', 1290)}${H([{ at: t + 0.1, text: '수수료는 *낮게*', size: 's' }, { at: c('10.5.0'), text: '자세한 건 *상담 때*', size: 's' }], { y: 250 })}`
+    ${K.fineAt(`${id}-f`, '구체 수수료는 상담 때 안내드려요', 1290)}${H([{ at: t + 0.1, text: '수수료는 *낮게*', size: 's' }, { at: c('11.5.0'), text: '자세한 건 *상담 때*', size: 's' }], { y: 250 })}`
   B.shot(t, html, { bg: 'bgD', trans: 'fade' })
   tw(`tl.from('#${id} .cb i', { scaleY: 0, transformOrigin: '50% 100%', duration: 0.9, ease: 'expo.out', stagger: 0.4 }, ${r2(t + 0.2)});`)
   from(`#${id}-f`, t + 0.8, 'opacity: 0', 0.6, 'power1.out') }
 B.addCssLast(`.cmp { top: 420px; height: 700px; }`)
 
 // ━━ ⑥ 정리
-K.chapter(c('11.1.0'), '⑥ 정리')
-K.steps(c('11.1.0'), { eb: '정리', items: STEPS, active: -1, top: 330, activeAt: [w('진단으로', '11.2.0'), w('2주', '11.2.1'), w('데이터를', '11.2.2'), w('기업', '11.2.3')], shot: { trans: 'fade' } })
-{ const t = c('11.3.0'), id = K.uid('ch3')
-  const steps = [['기획', w('기획부터', '11.3.1')], ['개발', w('개발', '11.3.1') + 0.1], ['자금 신청', w('자금', '11.3.1')]]
+K.chapter(c('12.1.0'), '⑥ 정리')
+K.steps(c('12.1.0'), { eb: '정리', items: STEPS, active: -1, top: 330, activeAt: [w('진단으로', '12.2.0'), w('2주', '12.2.1'), w('데이터를', '12.2.2'), w('기업', '12.2.3')], shot: { trans: 'fade' } })
+{ const t = c('12.3.0'), id = K.uid('ch3')
+  const steps = [['기획', w('기획부터', '12.3.1')], ['개발', w('개발', '12.3.1') + 0.1], ['자금 신청', w('자금', '12.3.1')]]
   steps.forEach(([, a], i) => from(`#${id}-${i}`, a, 'opacity: 0, y: 14', 0.7, 'expo.out'))
   K.chart(t, { mode: 'up', top: 520, tagTop: '새 기능 · 새 사업', tagTopX: 520, tagTopAt: w('새', t),
     extra: P.eyebrow('회사가 커져도', 250, t + 0.05) + `<div class="cx" style="top:340px"><div class="chain" id="${id}">${steps.map(([l], i) => `${i ? '<i></i>' : ''}<span id="${id}-${i}">${l}</span>`).join('')}</div></div>`, shot: { bg: 'bgA', trans: 'fade' } }) }
-{ const t = c('11.3.2')
-  P.scene(t, [P.eyebrow('한 팀이 이어서', 520, t + 0.05), P.seal('일관된 스토리', 600, w('일관되게', '11.3.3') - 0.2, 'gold')], { bg: 'bgC', trans: 'fadeBlur' }) }
-X.cta(c('11.4.0'), { at: c('11.4.1'), tapAt: w('확인해', '11.4.1'), shot: { bg: 'bgC', trans: 'fade' } })
-{ const t = c('11.4.0'), id = K.uid('q11')
-  B.addOverlay(`<div class="clip" id="${id}" data-start="${r2(t)}" data-duration="${r2(c('11.4.1') - t + 0.1)}" data-track-index="5">${H([{ at: t + 0.1, text: '어디서부터 *시작할까?*', size: 'l' }], { y: 760 })}</div>\n`) }
+{ const t = c('12.3.2')
+  P.scene(t, [P.eyebrow('한 팀이 이어서', 520, t + 0.05), P.seal('일관된 스토리', 600, w('일관되게', '12.3.3') - 0.2, 'gold')], { bg: 'bgC', trans: 'fadeBlur' }) }
+X.cta(c('12.4.0'), { at: c('12.4.1'), tapAt: w('확인해', '12.4.1'), shot: { bg: 'bgC', trans: 'fade' } })
+{ const t = c('12.4.0'), id = K.uid('q11')
+  B.addOverlay(`<div class="clip" id="${id}" data-start="${r2(t)}" data-duration="${r2(c('12.4.1') - t + 0.1)}" data-track-index="5">${H([{ at: t + 0.1, text: '어디서부터 *시작할까?*', size: 'l' }], { y: 760 })}</div>\n`) }
 const ENDV = T.cues[T.cues.length - 1].end
 X.endCard(ENDV - 0.1, { eb: '지금 바로', card: '<span class="no">3분 · 무료</span><h3>기업성장·AX Fit<br>진단 받기</h3><ul><li>miraeailab.com</li><li>무료 상담</li><li>샘플 직접 눌러 보기</li></ul>', shot: { trans: 'fade' } })
 

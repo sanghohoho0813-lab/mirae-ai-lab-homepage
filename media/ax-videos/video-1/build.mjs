@@ -1,4 +1,5 @@
-// 영상 1 · AX가 뭐고, 왜 필요한가 — v2(고급판)
+// 영상 1 · AX가 뭐고, 왜 필요한가 — v3(고급판)
+// v3: 폰·브라우저 샘플 화면을 고운솥 식당·반려동물 대신 13 CLEANWAY(시설관리 AX·고객 관리) · 18 LIVARTÉ(인테리어 AX·견적 상담·AI 스타일)로 바꿨다.
 // 한 화면을 4~6초 두고(약 58장면), 그 안에서 말에 맞춰 요소가 차분히 쌓인다.
 // 먹색 + 샴페인 골드, 유리 카드·가는 선, 부드러운 전환(페이드·블러·와이프), 느린 카메라.
 import { createBuild, r2, ic } from '../lib/lib.mjs'
@@ -84,13 +85,13 @@ fzBefore(2, 9, '보여 줄 게 없다')
   const t = c('2.9.0'), sw = 330, id = K.uid('p2r')
   const html = `<div class="ghost sm" id="${id}-g" style="left:90px;top:420px"><span class="gq">계획</span></div>
     <svg class="p2r" id="${id}-a" viewBox="0 0 170 60" style="left:405px;top:670px"><path d="M8 30 H150 M130 12 L152 30 L130 48"/></svg>
-    <div class="abs" style="left:${1080 - 90 - sw - 16}px;top:320px">${phone(`${id}-p`, 'gsbk2', 0, [1, 2, 3], sw)}</div>
+    <div class="abs" style="left:${1080 - 90 - sw - 16}px;top:320px">${phone(`${id}-p`, 'lvcu', 0, [1, 2], sw)}</div>
     ${H([{ at: w('실제로', '2.9.1') - 0.2, text: '*실제로* 보여 주는 시대' }], { y: 1120 })}`
   B.shot(t, html, { bg: 'bgA', trans: 'fade' })
   from(`#${id}-g`, t + 0.05, 'opacity: 0, x: -40', 0.8, 'expo.out')
   tw(`tl.fromTo('#${id}-a path', { strokeDashoffset: 400 }, { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut', immediateRender: true }, ${r2(w('넘어서', t) - 0.1)});`)
   from(`#${id}-p`, w('넘어서', t) + 0.2, 'opacity: 0, x: 60', 0.9, 'expo.out')
-  runFlow(`${id}-p`, 'gsbk2', [1, 2, 3], w('실제로', '2.9.1'), c('2.9.1') + 3.0)
+  runFlow(`${id}-p`, 'lvcu', [1, 2], w('실제로', '2.9.1'), c('2.9.1') + 2.4)
 }
 K.chart(c('2.10.0'), { mode: 'up', top: 700, at: c('2.11.0') + 0.1, d: 1.4, tagTop: '다음 단계', tagTopX: 640, tagTopY: 10, tagTopAt: w('다음', '2.11.0') + 0.3,
   extra: P.licon('target', 250, c('2.10.0') + 0.1) + H([{ at: c('2.10.0') + 0.2, text: '결국 보는 건 *하나*', y: 470 }, { at: c('2.11.0'), text: '다음 단계로 *커질 수 있는가*', size: 's', y: 480 }]), shot: { bg: 'bgRoom', trans: 'fade' } })
@@ -133,13 +134,13 @@ X.flowRows(c('4.3.0'), { eb: '반복되는 흐름', rows: ['사례 A', '사례 B
 { // 4.4.1–4.4.2 — 고객 플랫폼(폰) ↔ 회사 안 운영
   const t = c('4.4.1'), sw = 330, id = K.uid('pl')
   const k = w('연결해', '4.4.2') - 0.2
-  const html = `<div class="abs" style="left:90px;top:300px">${phone(`${id}-p`, 'paw', 0, [1, 2, 3], sw)}</div>
+  const html = `<div class="abs" style="left:90px;top:300px">${phone(`${id}-p`, 'cwcare', 0, [1], sw)}</div>
     <svg class="p2r" id="${id}-a" viewBox="0 0 170 60" style="left:458px;top:620px"><path d="M8 30 H162"/></svg>
     <div class="node hot" id="${id}-n" style="left:640px;top:500px;width:350px;height:300px">${ic('gear', 'xl')}<b>회사 안 운영</b></div>
     ${H([{ at: t + 0.1, text: '고객이 쓰는 *플랫폼*' }, { at: k, text: '운영과 *하나로* 연결' }], { y: 1110 })}`
   B.shot(t, html, { bg: 'bgD', trans: 'fade' })
   from(`#${id}-p`, t + 0.05, 'opacity: 0, y: 60', 0.9, 'expo.out')
-  runFlow(`${id}-p`, 'paw', [1, 2, 3], t + 0.5, k - 0.2)
+  runFlow(`${id}-p`, 'cwcare', [1], t + 0.8, k - 0.2)
   from(`#${id}-n`, k - 0.3, 'opacity: 0, x: 60', 0.8, 'expo.out')
   tw(`tl.fromTo('#${id}-a path', { strokeDashoffset: 400 }, { strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut', immediateRender: true }, ${r2(k)});`) }
 
@@ -184,28 +185,28 @@ K.link(c('7.1.0'), { a: { ic: 'building', label: '안' }, b: { ic: 'users', labe
   const t = c('7.2.0'), sw = 330, id = K.uid('in'), k = w('모아', '7.2.1') - 0.2
   const items = [['team', '직원', w('직원', t)], ['users', '고객', w('고객', t)], ['db', '재고', w('재고', t)], ['money', '정산', w('정산을', t)]]
   const html = `${P.eyebrow('안 · 회사 운영', 230, t + 0.05)}${items.map(([k2, l], i) => `<div class="sitem" id="${id}-${i}" style="left:80px;top:${360 + i * 150}px">${ic(k2, 'lg')}<b>${l}</b></div>`).join('')}
-    <div class="abs" style="left:${1080 - 80 - sw - 16}px;top:300px">${phone(`${id}-p`, 'gsax', 1, [], sw)}</div>
+    <div class="abs" style="left:${1080 - 80 - sw - 16}px;top:300px">${phone(`${id}-p`, 'lvax', 0, [], sw)}</div>
     ${H([{ at: k, text: '대표님 폰 *한 화면*에' }], { y: 1110 })}`
   B.shot(t, html, { bg: 'bgA', trans: 'fade' })
   items.forEach(([, , a], i) => from(`#${id}-${i}`, a - 0.1, 'opacity: 0, x: -40', 0.7, 'expo.out'))
   from(`#${id}-p`, t + 0.1, 'opacity: 0, y: 60', 0.9, 'expo.out')
   items.forEach((_, i) => to(`#${id}-${i}`, k + i * 0.08, 'x: 600, y: ' + (250 - i * 150) + ', scale: 0.4, opacity: 0', 0.8, 'power2.in'))
   tw(`tl.to('#${id}-p', { boxShadow: '0 50px 110px rgba(0,0,0,.55), 0 0 0 3px #D8A871', duration: 0.5 }, ${r2(k + 0.6)});`) }
-K.phoneShot(c('7.2.2'), { name: 'gsbk2', base: 0, steps: [1, 2, 3, 4, 5], run: [w('직접', '7.2.3') - 0.2, c('7.2.3') + 3.4], label: '밖 · 고객이 직접 예약', lbc: 'hot', shot: { bg: 'bgB', trans: 'fade' } })
-X.twoPhones(c('7.3.0'), { a: { name: 'gsbk2', base: 5, label: '밖 · 고객' }, b: { name: 'gsax', base: 1, label: '안 · 대표님', swap: FL('gsax-02'), swapAt: w('알려', '7.3.2') - 0.3 }, mid: 'ai', linkAt: c('7.3.0') + 0.5,
+K.phoneShot(c('7.2.2'), { name: 'lvcu', base: 0, steps: [1, 2], run: [w('직접', '7.2.3') - 0.2, c('7.2.3') + 2.4], label: '밖 · 고객이 직접 견적 상담', lbc: 'hot', shot: { bg: 'bgB', trans: 'fade' } })
+X.twoPhones(c('7.3.0'), { a: { name: 'cwcare', base: 1, label: '밖 · 고객' }, b: { name: 'cwax', base: 1, label: '안 · 대표님', swap: FL('cwax-02'), swapAt: w('알려', '7.3.2') - 0.3 }, mid: 'ai', linkAt: c('7.3.0') + 0.5,
   extra: H([{ at: w('읽고', '7.3.1') - 0.3, text: 'AI가 데이터를 *읽고*', size: 's' }, { at: w('알려', '7.3.2') - 0.3, text: '*다음 할 일*까지', size: 's' }], { y: 1110 }), shot: { bg: 'bgD', trans: 'fade' } })
 { // 7.4 — 샘플 화면 위로 성장선이 그려진다
   const t = c('7.4.0'), id = K.uid('gl')
-  K.browser(t, { src: SH('ax-gounsot'), tag: '샘플 화면', top: 360, d: 6.0, zoom: 1.12,
+  K.browser(t, { src: SH('ax-livarte'), tag: '샘플 화면', top: 360, d: 6.0, zoom: 1.08, panX: 25, panY: -12,
     extra: `<svg class="gline" id="${id}" viewBox="0 0 980 612" style="top:410px"><path d="M40 560 C 260 540, 420 460, 560 360 S 820 120, 940 70"/></svg><span class="ctag hot2" id="${id}-t" style="left:700px;top:430px">성장 계획</span>` + H([{ at: c('7.4.2'), text: '화면으로 *직접* 보여 준다' }], { y: 1110 }),
     shot: { bg: 'bgA', trans: 'fade' } })
   tw(`tl.fromTo('#${id} path', { strokeDashoffset: 1600 }, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', immediateRender: true }, ${r2(w('성장할', '7.4.1') - 0.4)});`)
   from(`#${id}-t`, w('성장할', '7.4.1') + 0.8, 'opacity: 0, y: 10', 0.6, 'expo.out') }
 { const t = c('8.1.0')
-  const id = K.room(t, { me: '“자금이 들어오면<br>하겠습니다…”', meY: 720, meAt: t + 0.05, cross: true, crossAt: w('대신에', t) - 0.1, show: FL('gsax-01'), showAt: c('8.1.1'), showY: 640, react: 'ok', reactAt: w('보여', '8.1.1'), shot: { trans: 'fade' } })
+  const id = K.room(t, { me: '“자금이 들어오면<br>하겠습니다…”', meY: 720, meAt: t + 0.05, cross: true, crossAt: w('대신에', t) - 0.1, show: FL('lvax-02'), showAt: c('8.1.1'), showY: 640, react: 'ok', reactAt: w('보여', '8.1.1'), shot: { trans: 'fade' } })
   to(`#${id}-m`, c('8.1.1') - 0.1, 'opacity: 0, y: -20', 0.4, 'power2.in') }
 { const t = c('8.1.2'), id = K.uid('bq')
-  K.phoneShot(t, { name: 'paw', base: 3, steps: [4, 5, 6, 7], run: [c('8.1.3') + 0.1, c('8.1.3') + 2.2], top: 440, sw: 350,
+  K.phoneShot(t, { name: 'lvstyle', base: 0, steps: [1, 2], run: [c('8.1.3') + 0.1, c('8.1.3') + 1.6], top: 440, sw: 350,
     extra: `<div class="cx" style="top:230px"><div class="bub jb sm" id="${id}">“이거 진짜 되나요?”</div></div>`, shot: { bg: 'bgRoom', trans: 'fade' } })
   from(`#${id}`, t + 0.05, 'opacity: 0, y: -20', 0.7, 'expo.out') }
 K.chart(c('8.2.0'), { mode: 'recover', at: w('다음', '8.2.1') - 1.0, d: 1.0, tagOurs: '멈춰 보였던 회사', tagOursX: 110, tagOursY: 380, tagOursAt: c('8.2.0') + 0.5, tagTop: '다음 단계', tagTopX: 700, tagTopAt: w('다음', '8.2.1') + 0.6,
@@ -235,8 +236,9 @@ K.notifs(c('9.4.0'), { eb: '매일 알림', items: [{ ic: 'bell', t: '새 지원
 // ━━ ⑦ 닫기
 K.chapter(c('10.1.0'), '⑦ 닫기')
 { const t = c('10.1.0')
-  const id = K.room(t, { extra: P.eyebrow('다음 심사', 690, t + 0.1), q: '“그래서, 다음은<br>어떻게 되나요?”', qAt: c('10.1.1'), qY: 780, qType: 1.0, show: FL('gsbk2-11'), showAt: w('화면을', '10.1.3') - 0.3, showY: 640, react: 'ok', reactAt: w('보여', '10.1.3'), shot: { trans: 'fade' } })
-  to(`#${id}-q`, w('화면을', '10.1.3') - 0.45, 'opacity: 0, y: -20', 0.4, 'power2.in') }
+  const id = K.room(t, { extra: `<div id="eb101">${P.eyebrow('다음 심사', 690, t + 0.1)}</div>`, q: '“그래서, 다음은<br>어떻게 되나요?”', qAt: c('10.1.1'), qY: 780, qType: 1.0, show: FL('cwax-01'), showAt: w('화면을', '10.1.3') - 0.3, showY: 640, react: 'ok', reactAt: w('보여', '10.1.3'), shot: { trans: 'fade' } })
+  to(`#${id}-q`, w('화면을', '10.1.3') - 0.45, 'opacity: 0, y: -20', 0.4, 'power2.in')
+  to('#eb101', w('화면을', '10.1.3') - 0.45, 'opacity: 0', 0.3, 'power1.in') }
 X.cta(c('10.2.0'), { at: c('10.3.0'), tapAt: c('10.3.1') + 0.2, shot: { bg: 'bgC', trans: 'fade' } })
 { const t = c('10.2.0'), id = K.uid('q10')
   B.addOverlay(`<div class="clip" id="${id}" data-start="${r2(t)}" data-duration="${r2(c('10.3.0') - t + 0.1)}" data-track-index="5">${H([{ at: t + 0.1, text: '무엇부터 *보여 줄까?*', size: 'l' }], { y: 760 })}</div>\n`) }

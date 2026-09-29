@@ -107,6 +107,7 @@ def snap(w):
     ws, we = w['s'], w['e']
     for a, b in widened:
         if a < ws < b < we: ws = b - 0.02
+        elif a < ws and we <= b and b - ws > 0.35: ws, we = b - 0.02, b - 0.02 + (we - ws)  # 쉼 속에 통째로 찍힌 짧은 단어(예: '이')는 쉼 끝으로
         if ws < a < we < b: we = a + 0.05
     return {'s': ws, 'e': we, 'w': w['w']}
 fast = []
