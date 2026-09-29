@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Medium.subset.woff2') format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-SemiBold.subset.woff2') format('woff2'); font-weight: 600; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Bold.subset.woff2') format('woff2'); font-weight: 700; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-ExtraBold.subset.woff2') format('woff2'); font-weight: 800; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Black.subset.woff2') format('woff2'); font-weight: 900; font-display: block; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #171B20; }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #171B20; color: #fff; font-family: 'Pretendard', sans-serif; word-break: keep-all; }
+em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #F0894A; } .green { color: #7FD8A4; } .red { color: #FF6B6E; } .blue { color: #7EB2FF; }
+.clip { position: absolute; inset: 0; }
+.shot { overflow: hidden; }
+.cam { position: absolute; inset: 0; transform-origin: 50% 45%; }
+.bgA { background: radial-gradient(circle at 85% 8%, rgba(212,122,74,.38), rgba(212,122,74,0) 45%), #171B20; }
+.bgB { background: radial-gradient(circle at 10% 90%, rgba(80,130,220,.30), rgba(80,130,220,0) 50%), #10161F; }
+.bgC { background: radial-gradient(circle at 50% 0%, rgba(240,137,74,.30), rgba(240,137,74,0) 55%), #221914; }
+.bgD { background: radial-gradient(circle at 20% 15%, rgba(127,216,164,.22), rgba(127,216,164,0) 50%), #121A17; }
+.bgL { background: radial-gradient(circle at 80% 10%, rgba(240,137,74,.25), rgba(240,137,74,0) 50%), #F4ECE4; color: #171B20; }
+.bgL .peach { color: #C8612E; } .bgL .muted { color: #5A636D; }
+.muted { color: #9AA3AD; }
+.ic { display: inline-flex; width: 44px; height: 44px; color: currentColor; flex: none; } .ic svg { width: 100%; height: 100%; }
+.ic.lg { width: 80px; height: 80px; } .ic.xl { width: 150px; height: 150px; }
+.wm { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 6px; } .w { display: inline-block; }
+.kt { position: absolute; left: 64px; right: 64px; font-weight: 900; letter-spacing: -0.035em; line-height: 1.14; }
+.kt.xl { font-size: 128px; } .kt.l { font-size: 104px; } .kt.m { font-size: 84px; } .kt.s { font-size: 64px; } .kt.c { text-align: center; }
+.eyebrow { position: absolute; left: 64px; font-size: 34px; font-weight: 900; letter-spacing: .08em; color: #F0894A; }
+.pill { display: inline-flex; align-items: center; gap: 12px; padding: 16px 32px; border-radius: 999px; font-weight: 900; }
+.card { border-radius: 30px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); }
+.bgL .card { background: #fff; box-shadow: 0 16px 40px rgba(23,27,32,.12), inset 0 0 0 1px rgba(23,27,32,.06); }
+.abs { position: absolute; }
+.fimg { position: absolute; left: 0; top: 0; display: block; }
+.touch { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; background: rgba(255,255,255,.55); box-shadow: 0 0 0 4px rgba(212,122,74,.95); opacity: 0; z-index: 5; }
+.phone { position: absolute; padding: 10px; border-radius: 44px; background: #0E1114; box-shadow: 0 40px 90px rgba(0,0,0,.55), 0 0 0 2px rgba(255,255,255,.16); }
+.phone .screen { position: relative; overflow: hidden; border-radius: 34px; background: #fff; aspect-ratio: 390 / 844; }
+.fine { position: absolute; left: 70px; right: 70px; font-size: 24px; font-weight: 600; line-height: 1.45; color: #8A939C; } .fine.c { text-align: center; } .bgL .fine { color: #6B7680; }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; z-index: 35; pointer-events: none; }
+.freeze { z-index: 34; }
+.fzv { position: absolute; inset: 0; backdrop-filter: grayscale(.9) brightness(.45) blur(3px); background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 40%, rgba(0,0,0,.6) 100%); }
+.fzb { position: absolute; right: 64px; top: 220px; padding: 10px 18px; border-radius: 12px; background: rgba(0,0,0,.6); color: #fff; font-size: 30px; font-weight: 900; letter-spacing: -2px; }
+.fzl { position: absolute; left: 50px; right: 50px; top: 760px; text-align: center; }
+.fzl b { display: inline-block; padding: 26px 50px; border-radius: 28px; background: #F0894A; color: #171B20; font-size: 76px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; box-shadow: 0 30px 80px rgba(240,137,74,.45); }
+.fzl small { display: block; margin-top: 22px; font-size: 40px; font-weight: 800; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,.8); }
+.brand { position: absolute; top: 96px; left: 56px; right: 56px; height: 60px; display: flex; align-items: center; justify-content: space-between; z-index: 30; }
+.brand .logo { height: 60px; padding: 9px 16px; background: #fff; border-radius: 14px; display: flex; align-items: center; box-shadow: 0 6px 20px rgba(0,0,0,.25); } .brand .logo img { height: 42px; }
+.brand .tag2 { padding: 10px 18px; border-radius: 999px; background: rgba(16,20,25,.78); font-size: 25px; font-weight: 800; color: #E8B89A; }
+.sub { display: flex; align-items: flex-end; justify-content: center; padding: 0 60px 400px; z-index: 40; }
+.sub span { max-width: 960px; padding: 18px 34px; border-radius: 22px; background: rgba(8,10,13,.9); color: #fff; font-size: 50px; font-weight: 800; line-height: 1.32; text-align: center; }
+.foot { position: absolute; left: 70px; right: 70px; top: 1664px; text-align: center; font-size: 26px; font-weight: 700; color: #7C8591; z-index: 30; }
+#prog { position: absolute; left: 70px; right: 70px; top: 1726px; height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); overflow: hidden; z-index: 30; }
+#prog i { display: block; width: 100%; height: 100%; background: #D47A4A; transform-origin: 0 50%; }
+
+
+.cx { position: absolute; left: 0; right: 0; display: flex; justify-content: center; }
+.chip { display: inline-flex; align-items: center; gap: 10px; padding: 12px 28px; border-radius: 999px; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 2px rgba(255,255,255,.18); font-size: 34px; font-weight: 800; color: #E8B89A; white-space: nowrap; }
+.chip.big { font-size: 46px; padding: 16px 36px; }
+.chip.hot { background: #F0894A; color: #171B20; box-shadow: 0 16px 40px rgba(240,137,74,.4); }
+.chip.ok { background: #2FA66A; color: #fff; box-shadow: none; }
+.chip.gray { background: rgba(255,255,255,.1); color: #C9D0D8; }
+.bgL .chip { background: #fff; color: #C8612E; box-shadow: 0 8px 24px rgba(23,27,32,.1); }
+.bgL .chip.hot { background: #F0894A; color: #171B20; }
+.abs0 { position: absolute; }
+.ksub { position: absolute; left: 70px; right: 70px; text-align: center; font-size: 44px; font-weight: 700; line-height: 1.35; color: #C9D0D8; }
+.bgL .ksub { color: #4A535C; }
+.kt .hl { font-style: normal; color: #F0894A; } .bgL .kt .hl { color: #C8612E; }
+.kt { text-shadow: 0 6px 30px rgba(0,0,0,.25); } .bgL .kt { text-shadow: none; }
+.bigic { display: inline-flex; width: 230px; height: 230px; padding: 44px; border-radius: 60px; background: rgba(240,137,74,.16); color: #F0894A; box-shadow: inset 0 0 0 3px rgba(240,137,74,.4); }
+.bigic .ic { width: 100%; height: 100%; }
+.bigic.red { background: rgba(255,107,110,.14); color: #FF6B6E; box-shadow: inset 0 0 0 3px rgba(255,107,110,.4); }
+.bigic.green { background: rgba(127,216,164,.14); color: #7FD8A4; box-shadow: inset 0 0 0 3px rgba(127,216,164,.4); }
+.bigic.blue { background: rgba(126,178,255,.14); color: #7EB2FF; box-shadow: inset 0 0 0 3px rgba(126,178,255,.4); }
+.bgL .bigic { background: #fff; box-shadow: 0 20px 50px rgba(23,27,32,.12); color: #C8612E; }
+.tiles { position: absolute; left: 90px; right: 90px; display: flex; gap: 26px; }
+.tiles.col { flex-direction: column; } .tiles.row { justify-content: center; } .tiles.row .tile { flex-direction: column; width: 280px; height: 300px; justify-content: center; text-align: center; }
+.tile { position: relative; display: flex; align-items: center; gap: 30px; padding: 34px 44px; border-radius: 34px; font-size: 58px; font-weight: 900; letter-spacing: -0.03em; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.tile.c0 { background: #F0894A; color: #171B20; } .tile.c1 { background: #2E6BD6; color: #fff; } .tile.c2 { background: #2FA66A; color: #fff; } .tile.c3 { background: #fff; color: #171B20; }
+.tile.dark { background: #232A33; color: #fff; box-shadow: inset 0 0 0 2px rgba(255,255,255,.14); } .tile.red { background: #D8474B; color: #fff; }
+.tile .ic.lg { width: 90px; height: 90px; }
+.tile .tx, .tile .tok { position: absolute; right: 30px; top: 50%; margin-top: -50px; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.tile .tx { background: #D8474B; color: #fff; } .tile .tok { background: #fff; color: #2FA66A; }
+.tile .tx .ic, .tile .tok .ic { width: 60px; height: 60px; }
+.tiles.row .tile .tx, .tiles.row .tile .tok { top: -30px; right: -20px; margin: 0; }
+.stamp { padding: 30px 60px; border: 12px solid currentColor; border-radius: 30px; font-size: 128px; font-weight: 900; letter-spacing: -0.02em; transform: rotate(-6deg); background: rgba(0,0,0,.25); }
+.stamp.red { color: #FF6B6E; } .stamp.green { color: #7FD8A4; } .stamp.orange { color: #F0894A; }
+.bgL .stamp { background: rgba(255,255,255,.7); } .bgL .stamp.green { color: #2FA66A; } .bgL .stamp.red { color: #D8474B; }
+.cnt { position: absolute; left: 0; right: 0; display: flex; align-items: baseline; justify-content: center; gap: 14px; font-weight: 900; letter-spacing: -0.04em; }
+.cnt b { font-size: 250px; line-height: 1; color: #F0894A; font-variant-numeric: tabular-nums; }
+.cnt .suf, .cnt .pre { font-size: 96px; color: #fff; } .bgL .cnt .suf, .bgL .cnt .pre { color: #171B20; } .bgL .cnt b { color: #C8612E; }
+.cnt.mid b { font-size: 190px; } .cnt.mid .suf { font-size: 80px; }
+.brw { position: absolute; left: 50px; width: 980px; border-radius: 26px; overflow: hidden; background: #0E1114; box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 2px rgba(255,255,255,.12); }
+.brw .bar { height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 20px; background: #1E242C; }
+.brw .bar i { width: 14px; height: 14px; border-radius: 50%; background: #3A434E; } .brw .bar i:first-child { background: #F26B5B; } .brw .bar i:nth-child(2) { background: #F2C14E; } .brw .bar i:nth-child(3) { background: #5BC27A; }
+.brw .bar span { margin-left: 16px; font-size: 22px; font-weight: 600; color: #8A939C; }
+.brw .vp { position: relative; width: 980px; height: 612px; overflow: hidden; background: #fff; }
+.brw .vp img { position: absolute; left: 0; top: 0; width: 980px; transform-origin: 30% 20%; }
+.btag { position: absolute; right: 18px; bottom: 18px; padding: 8px 16px; border-radius: 10px; background: rgba(0,0,0,.72); color: #fff; font-size: 22px; font-weight: 800; }
+.wall { position: absolute; left: 50%; transform: translateX(-50%); display: grid; gap: 12px; }
+.wall img { width: 100%; height: 100%; object-fit: cover; object-position: top left; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.wallc { padding: 30px 56px; border-radius: 36px; background: #F0894A; color: #171B20; font-size: 96px; font-weight: 900; letter-spacing: -0.03em; box-shadow: 0 30px 80px rgba(0,0,0,.5); text-align: center; line-height: 1.1; }
+.wallc small { display: block; font-size: 38px; font-weight: 800; margin-top: 8px; }
+.bgRoom { background: radial-gradient(ellipse at 50% 0%, rgba(126,178,255,.22), rgba(126,178,255,0) 60%), #0F141B; }
+.stage { position: absolute; left: 0; right: 0; top: 0; height: 670px; background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)); }
+.judges { position: absolute; left: 100px; right: 100px; top: 300px; display: flex; justify-content: space-between; }
+.judge { position: relative; width: 230px; height: 260px; display: flex; flex-direction: column; align-items: center; }
+.judge .head { width: 110px; height: 110px; border-radius: 50%; background: #3B4654; }
+.judge .body { width: 210px; height: 120px; margin-top: 10px; border-radius: 100px 100px 20px 20px; background: #2C3541; }
+.judge .nm { position: absolute; bottom: -8px; padding: 6px 18px; border-radius: 8px; background: #E8E2DA; color: #171B20; font-size: 24px; font-weight: 800; }
+.judge .react { position: absolute; top: -30px; right: 10px; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; font-weight: 900; padding: 16px; }
+.judge .react.ok { background: #2FA66A; color: #fff; } .judge .react.q { background: #F2C14E; color: #171B20; } .judge .react.meh { background: #6B7280; color: #fff; }
+.desk { position: absolute; left: 60px; right: 60px; top: 570px; height: 34px; border-radius: 10px; background: #5A4636; box-shadow: 0 20px 40px rgba(0,0,0,.4); }
+.bub { position: relative; max-width: 920px; padding: 34px 50px; border-radius: 40px; font-size: 64px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.2; text-align: center; }
+.bub span { display: inline-block; }
+.bub.jb { background: #fff; color: #171B20; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.bub.jb::before { content: ''; position: absolute; left: 50%; top: -30px; margin-left: -24px; border: 24px solid transparent; border-bottom: 30px solid #fff; border-top: 0; }
+.bub.mb { background: #2E6BD6; color: #fff; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.bub.mb::after { content: ''; position: absolute; left: 50%; bottom: -30px; margin-left: -24px; border: 24px solid transparent; border-top: 30px solid #2E6BD6; border-bottom: 0; }
+.bub .strike { position: absolute; left: 30px; right: 30px; top: 50%; height: 12px; margin-top: -6px; border-radius: 6px; background: #FF6B6E; transform-origin: 0 50%; }
+.phone.held { box-shadow: 0 40px 90px rgba(0,0,0,.6), 0 0 0 3px #F0894A; }
+.docs { position: absolute; left: 90px; right: 90px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 22px; }
+.doc { position: relative; height: 200px; border-radius: 14px; background: #fff; box-shadow: 0 10px 24px rgba(23,27,32,.12); padding: 26px 18px; display: flex; flex-direction: column; gap: 14px; }
+.doc i { display: block; height: 10px; border-radius: 5px; background: #E3DDD5; } .doc i:nth-child(2) { width: 80%; } .doc i:nth-child(4) { width: 60%; }
+.doc em { position: absolute; right: 10px; bottom: 10px; padding: 3px 8px; border-radius: 6px; background: #EDE7FF; color: #6B4FD8; font-size: 18px; font-weight: 900; }
+.doc.ours { background: #FFF1E7; box-shadow: 0 0 0 5px #F0894A, 0 16px 40px rgba(240,137,74,.35); z-index: 2; }
+.doc.ours b { position: absolute; left: -20px; right: -20px; top: -46px; text-align: center; font-size: 24px; font-weight: 900; color: #C8612E; white-space: nowrap; }
+.chart { position: absolute; left: 80px; width: 920px; height: 600px; overflow: visible; }
+.chart .ax { fill: none; stroke: rgba(255,255,255,.25); stroke-width: 4; } .bgL .chart .ax { stroke: rgba(23,27,32,.2); }
+.chart .pl { fill: none; stroke-width: 14; stroke-linecap: round; stroke-dasharray: 1400; }
+.chart .pl.gray { stroke: #5B6571; stroke-width: 10; } .chart .pl.hot { stroke: #F0894A; }
+.ctag { position: absolute; padding: 10px 22px; border-radius: 14px; background: #fff; color: #171B20; font-size: 34px; font-weight: 900; white-space: nowrap; }
+.ctag.hot2 { background: #F0894A; }
+.bars { position: absolute; left: 110px; right: 110px; height: 760px; display: flex; align-items: flex-end; justify-content: space-between; }
+.bar2 { width: 170px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.bar2 i { display: block; width: 100%; border-radius: 18px 18px 6px 6px; background: #4B5563; }
+.bar2.hot i { background: #F0894A; }
+.bar2 span { font-size: 32px; font-weight: 800; color: #C9D0D8; white-space: nowrap; } .bar2.hot span { color: #F0894A; }
+.cut { position: absolute; left: -30px; right: -30px; height: 0; border-top: 6px dashed #7FD8A4; }
+.cut span { position: absolute; right: 0; top: -58px; font-size: 30px; font-weight: 900; color: #7FD8A4; }
+.gapmark { position: absolute; width: 150px; border: 5px solid #FF6B6E; border-radius: 10px; background: rgba(255,107,110,.25); }
+.gapmark b { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); padding: 10px 22px; border-radius: 14px; background: #FF6B6E; color: #fff; font-size: 44px; font-weight: 900; white-space: nowrap; }
+.rain { position: absolute; inset: 0; }
+.rchip { position: absolute; top: 0; padding: 22px 36px; border-radius: 22px; font-size: 44px; font-weight: 900; white-space: nowrap; box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+.rchip.r0 { background: #fff; color: #171B20; } .rchip.r1 { background: #6B4FD8; color: #fff; } .rchip.r2 { background: #2E6BD6; color: #fff; } .rchip.r3 { background: #F0894A; color: #171B20; }
+.lane { position: absolute; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, rgba(255,255,255,.25) 0 40px, transparent 40px 80px); }
+.runner { position: absolute; left: 0; width: 100px; height: 100px; color: #9AA3AD; }
+.runner .ic { width: 100px; height: 100px; }
+.runner .spd { position: absolute; right: 100%; top: 40%; width: 180px; height: 6px; background: linear-gradient(90deg, rgba(154,163,173,0), rgba(154,163,173,.8)); border-radius: 3px; }
+.runner.ours { color: #F0894A; width: 240px; height: auto; display: flex; flex-direction: column; align-items: center; }
+.runner.ours .ic { width: 130px; height: 130px; } .runner.ours b { font-size: 34px; font-weight: 900; white-space: nowrap; }
+.sitem { position: absolute; display: flex; align-items: center; gap: 16px; padding: 22px 30px; border-radius: 26px; background: #fff; color: #171B20; font-size: 44px; font-weight: 900; box-shadow: 0 20px 50px rgba(0,0,0,.35); white-space: nowrap; }
+.sitem.dark { background: #232A33; color: #fff; box-shadow: inset 0 0 0 2px rgba(255,255,255,.16); } .sitem.hot { background: #F0894A; }
+.sitem .ic.lg { width: 70px; height: 70px; }
+.core { position: absolute; width: 300px; height: 300px; border-radius: 70px; background: #F0894A; color: #171B20; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 0 0 16px rgba(240,137,74,.2), 0 30px 90px rgba(240,137,74,.5); }
+.core .ic.xl { width: 150px; height: 150px; } .core b { font-size: 42px; font-weight: 900; }
+.node { position: absolute; width: 360px; height: 330px; border-radius: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: #232A33; color: #fff; box-shadow: inset 0 0 0 3px rgba(255,255,255,.14), 0 30px 70px rgba(0,0,0,.35); }
+.node.hot { background: #F0894A; color: #171B20; box-shadow: 0 30px 70px rgba(240,137,74,.35); } .node.blue { background: #2E6BD6; }
+.node b { font-size: 50px; font-weight: 900; } .node .ic.xl { width: 130px; height: 130px; }
+.bgL .node { background: #fff; color: #171B20; box-shadow: 0 20px 50px rgba(23,27,32,.12); } .bgL .node.hot { background: #F0894A; }
+.wire { position: absolute; left: 0; width: 1080px; height: 200px; overflow: visible; }
+.wire path { fill: none; stroke: #F0894A; stroke-width: 10; stroke-dasharray: 400; stroke-linecap: round; }
+.pkt { position: absolute; left: 0; opacity: 0; width: 22px; height: 22px; margin-top: -11px; border-radius: 50%; background: #FFD8BE; box-shadow: 0 0 20px #F0894A; }
+.midic { display: inline-flex; width: 120px; height: 120px; padding: 22px; border-radius: 50%; background: #fff; color: #C8612E; box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+.midic .ic.lg { width: 76px; height: 76px; }
+.mcard { position: absolute; left: 120px; right: 120px; height: 190px; border-radius: 36px; display: flex; align-items: center; gap: 30px; padding: 0 50px; font-size: 58px; font-weight: 900; letter-spacing: -0.03em; }
+.mcard.a { background: #232A33; color: #C9D0D8; box-shadow: inset 0 0 0 2px rgba(255,255,255,.14); }
+.mcard.b { background: #F0894A; color: #171B20; box-shadow: 0 30px 80px rgba(240,137,74,.35); }
+.mcard .ic.lg { width: 96px; height: 96px; }
+.marrow { display: inline-flex; width: 90px; height: 90px; color: #F0894A; transform: rotate(0deg); }
+.marrow .ic { width: 90px; height: 90px; }
+.people { position: absolute; left: 60px; right: 60px; display: flex; justify-content: space-around; }
+.person { position: relative; width: 290px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.pav { width: 230px; height: 230px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #2C3541; color: #E8B89A; box-shadow: inset 0 0 0 3px rgba(255,255,255,.12); }
+.pav .ic.lg { width: 120px; height: 120px; }
+.bgL .pav { background: #fff; color: #C8612E; box-shadow: 0 16px 40px rgba(23,27,32,.12); }
+.person b { font-size: 44px; font-weight: 900; white-space: nowrap; }
+.prx { position: absolute; top: -40px; right: 10px; width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 56px; padding: 18px; }
+.prx.heart { background: #FF6B8A; color: #fff; } .prx.ok { background: #2FA66A; color: #fff; } .prx.star { background: #F2C14E; color: #171B20; } .prx.q { background: #F2C14E; color: #171B20; font-weight: 900; }
+.prx .ic { width: 100%; height: 100%; }
+.pz { position: absolute; width: 440px; height: 280px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; font-size: 60px; font-weight: 900; }
+.pz.a { left: 60px; background: #2E6BD6; color: #fff; border-radius: 40px 0 0 40px; } .pz.b { right: 60px; background: #F0894A; color: #171B20; border-radius: 0 40px 40px 0; }
+.pz .ic.lg { width: 100px; height: 100px; }
+.bld { position: relative; width: 560px; height: 620px; color: #E8B89A; }
+.bld > .ic { width: 560px; height: 620px; }
+.bin { position: absolute; width: 110px; height: 110px; padding: 20px; border-radius: 26px; background: #fff; color: #C8612E; }
+.bin .ic { width: 70px; height: 70px; }
+.crack { position: absolute; left: 30%; top: 5%; width: 40%; height: 90%; overflow: visible; }
+.crack path { fill: none; stroke: #FF6B6E; stroke-width: 3; stroke-dasharray: 200; }
+.crowd { position: absolute; left: 60px; right: 60px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 18px 10px; color: #5B6571; }
+.crowd span { display: flex; justify-content: center; } .crowd .ic { width: 100px; height: 100px; } .crowd .me { color: #F0894A; }
+.steps { position: absolute; left: 70px; right: 70px; display: flex; flex-direction: column; gap: 22px; }
+.stp { display: flex; align-items: center; gap: 30px; padding: 30px 40px; border-radius: 34px; background: #fff; color: #9AA3AD; box-shadow: 0 10px 30px rgba(23,27,32,.08); }
+.stp .num { flex: none; width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #EFE9E2; font-size: 48px; font-weight: 900; color: #9AA3AD; padding: 20px; }
+.stp .num .ic { width: 50px; height: 50px; }
+.stp div { flex: 1; } .stp b { display: block; font-size: 52px; font-weight: 900; letter-spacing: -0.03em; } .stp small { display: block; margin-top: 4px; font-size: 32px; font-weight: 700; }
+.stp > .ic.lg { width: 80px; height: 80px; opacity: .5; }
+.stp.done { color: #6B7680; } .stp.done .num { background: #2FA66A; color: #fff; }
+.stp.on { background: #171B20; color: #fff; transform-origin: 50% 50%; box-shadow: 0 30px 70px rgba(23,27,32,.3); padding: 44px 40px; }
+.stp.on .num { background: #F0894A; color: #171B20; } .stp.on b { font-size: 64px; } .stp.on small { color: #E8B89A; } .stp.on > .ic.lg { opacity: 1; color: #F0894A; }
+.nstack { position: absolute; left: 80px; right: 80px; display: flex; flex-direction: column; gap: 20px; }
+.ntf { display: flex; align-items: center; gap: 24px; padding: 28px 30px; border-radius: 30px; background: rgba(255,255,255,.95); color: #171B20; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+.nic { flex: none; width: 90px; height: 90px; border-radius: 24px; padding: 18px; background: #F0894A; color: #171B20; display: flex; }
+.nic.blue { background: #2E6BD6; color: #fff; } .nic.green { background: #2FA66A; color: #fff; } .nic .ic { width: 54px; height: 54px; }
+.ntf div { flex: 1; } .ntf b { display: block; font-size: 40px; font-weight: 900; letter-spacing: -0.02em; } .ntf small { display: block; font-size: 28px; font-weight: 700; color: #6B7680; margin-top: 4px; }
+.ntf em { font-style: normal; align-self: flex-start; font-size: 24px; font-weight: 700; color: #8A939C; }
+.checks { position: absolute; left: 110px; right: 110px; display: flex; flex-direction: column; gap: 26px; }
+.chk { display: flex; align-items: center; gap: 30px; padding: 26px 34px; border-radius: 28px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 2px rgba(255,255,255,.14); }
+.bgL .chk { background: #fff; box-shadow: 0 10px 30px rgba(23,27,32,.08); }
+.chk .box { flex: none; width: 84px; height: 84px; border-radius: 22px; background: rgba(255,255,255,.14); color: #fff; padding: 16px; display: flex; }
+.bgL .chk .box { background: #EFE9E2; }
+.chk .box .ic { width: 52px; height: 52px; } .chk b { font-size: 50px; font-weight: 900; letter-spacing: -0.02em; }
+.prices { position: absolute; left: 70px; right: 70px; display: flex; flex-direction: column; gap: 24px; }
+.pcard { padding: 34px 44px; border-radius: 36px; background: #fff; color: #171B20; box-shadow: 0 16px 40px rgba(23,27,32,.1); }
+.pcard.on { background: #171B20; color: #fff; box-shadow: 0 30px 70px rgba(23,27,32,.35), 0 0 0 5px #F0894A; }
+.pcard.dim { opacity: .45; }
+.ptop { display: flex; align-items: center; gap: 20px; } .pnum { width: 60px; height: 60px; border-radius: 50%; background: #F0894A; color: #171B20; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; }
+.ptop b { font-size: 46px; font-weight: 900; letter-spacing: -0.02em; } .ptop em { font-style: normal; margin-left: auto; padding: 8px 18px; border-radius: 999px; background: #FFF1E7; color: #C8612E; font-size: 26px; font-weight: 800; }
+.pcard.on .ptop em { background: #F0894A; color: #171B20; }
+.pval { margin-top: 10px; display: flex; align-items: baseline; gap: 12px; } .pval b { font-size: 110px; font-weight: 900; letter-spacing: -0.04em; color: #C8612E; font-variant-numeric: tabular-nums; } .pcard.on .pval b { color: #F0894A; }
+.pval span { font-size: 40px; font-weight: 800; }
+.chap { z-index: 31; } .chap span { position: absolute; left: 56px; top: 176px; padding: 10px 22px; border-radius: 12px; background: #F0894A; color: #171B20; font-size: 28px; font-weight: 900; }
+.bgOld { background: radial-gradient(circle at 50% 30%, #5A4A38, #211A14); }
+.bgOld .bigic { background: rgba(232,184,154,.14); color: #E8B89A; box-shadow: inset 0 0 0 3px rgba(232,184,154,.35); }
+.dots { position: absolute; left: 140px; right: 140px; top: 820px; display: grid; grid-template-columns: repeat(25, 1fr); gap: 10px; }
+.dots i { display: block; width: 22px; height: 22px; border-radius: 50%; background: #F0894A; opacity: .85; }
+.ksub .red { color: #FF6B6E; font-weight: 900; }
+.note { position: absolute; left: 60px; right: 60px; text-align: center; font-size: 30px; font-weight: 800; color: #fff; } .note span { display: inline-block; padding: 12px 24px; border-radius: 14px; background: rgba(8,10,13,.82); }
+
+.bgT { background: #F0894A; }
+.ttbg { position: absolute; left: 0; right: 0; top: 480px; height: 700px; background: #FFF4EC; transform: skewY(-4deg); }
+.ttbg.soft { top: 420px; height: 760px; background: rgba(255,255,255,.06); }
+.ttno { padding: 12px 34px; border-radius: 999px; background: #171B20; color: #F0894A; font-size: 48px; font-weight: 900; letter-spacing: .02em; }
+.ttbar { display: block; width: 240px; height: 14px; border-radius: 7px; background: #171B20; }
+.ghost { position: relative; width: 420px; height: 800px; border-radius: 60px; border: 8px dashed rgba(255,255,255,.45); display: flex; align-items: center; justify-content: center; }
+.bgL .ghost { border-color: rgba(23,27,32,.35); }
+.gq { font-size: 260px; font-weight: 900; color: #F0894A; }
+.lens { position: absolute; width: 190px; height: 190px; padding: 30px; border-radius: 50%; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 8px #fff; color: #fff; }
+.lens .ic { width: 100%; height: 100%; }
+.bgBlue { background: #0E2A4A; }
+.bpgrid { position: absolute; inset: 0; background-image: linear-gradient(rgba(126,178,255,.14) 2px, transparent 2px), linear-gradient(90deg, rgba(126,178,255,.14) 2px, transparent 2px); background-size: 60px 60px; }
+.bpsvg { position: absolute; left: 240px; width: 600px; height: 700px; overflow: visible; }
+.bpsvg path { fill: none; stroke: #BFD8FF; stroke-width: 6; stroke-dasharray: 3000; }
+.wfsvg { position: absolute; left: 90px; width: 900px; height: 900px; overflow: visible; }
+.wfsvg rect, .wfsvg path { fill: none; stroke: #BFD8FF; stroke-width: 5; stroke-dasharray: 2400; }
+.frows { position: absolute; left: 70px; right: 70px; display: flex; flex-direction: column; gap: 30px; }
+.frow { display: flex; align-items: center; gap: 18px; padding: 26px 30px; border-radius: 30px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); }
+.frow b { width: 230px; font-size: 42px; font-weight: 900; color: #E8B89A; white-space: nowrap; }
+.fstep { width: 130px; height: 130px; border-radius: 34px; display: flex; align-items: center; justify-content: center; background: #2C3541; color: #9AA3AD; }
+.fstep .ic.lg { width: 76px; height: 76px; }
+.farr { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); }
+.sky { position: absolute; left: 80px; right: 80px; bottom: 560px; height: 900px; display: flex; align-items: flex-end; justify-content: space-between; }
+.sky span { width: 160px; display: grid; grid-template-columns: repeat(3, 1fr); align-content: start; gap: 18px; padding: 30px 22px; border-radius: 16px 16px 0 0; background: linear-gradient(180deg, #3B4654, #232A33); }
+.sky i { height: 36px; border-radius: 6px; background: rgba(255,214,150,.5); }
+.bigx { display: inline-flex; width: 380px; height: 380px; padding: 60px; border-radius: 50%; background: #D8474B; color: #fff; box-shadow: 0 30px 90px rgba(216,71,75,.5); }
+.bigx .ic { width: 100%; height: 100%; }
+.axbig { font-size: 360px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: #F0894A; text-shadow: 0 30px 90px rgba(240,137,74,.45); }
+.axrow { position: absolute; left: 40px; right: 40px; display: flex; align-items: center; justify-content: center; gap: 14px; }
+.axrow .sitem { position: static; flex-direction: column; padding: 22px 22px; font-size: 38px; }
+.axrow em { font-style: normal; font-size: 60px; font-weight: 900; color: #F0894A; }
+.official { position: absolute; left: 70px; right: 70px; padding: 40px 40px 30px; border-radius: 30px; background: #F4F7FB; color: #171B20; box-shadow: 0 30px 80px rgba(0,0,0,.4); }
+.otag { position: absolute; left: 36px; top: -26px; padding: 10px 22px; border-radius: 12px; background: #2E6BD6; color: #fff; font-size: 30px; font-weight: 900; }
+.orow { padding: 16px 0; border-bottom: 2px solid #E1E7EF; } .orow:last-child { border: 0; }
+.orow b { font-size: 40px; font-weight: 900; color: #1F4FA8; } .orow p { font-size: 40px; font-weight: 800; margin-top: 4px; } .orow small { display: block; font-size: 26px; font-weight: 700; color: #6B7680; margin-top: 4px; }
+.tplab { display: flex; gap: 240px; }
+.tpw { position: absolute; left: 440px; width: 200px; height: 60px; overflow: visible; }
+.tpw path { fill: none; stroke: #F0894A; stroke-width: 8; stroke-dasharray: 300; stroke-linecap: round; }
+.sys { position: absolute; left: 80px; right: 80px; padding: 34px; border-radius: 40px; background: #fff; color: #171B20; box-shadow: 0 30px 80px rgba(23,27,32,.18); }
+.shead { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; margin-bottom: 14px; border-bottom: 2px solid #EFE9E2; }
+.shead .ic { width: 60px; height: 60px; color: #C8612E; } .shead b { font-size: 44px; font-weight: 900; } .shead em { margin-left: auto; font-style: normal; padding: 6px 16px; border-radius: 10px; background: #EFE9E2; color: #6B7680; font-size: 24px; font-weight: 800; }
+.srow { display: flex; justify-content: space-between; align-items: center; padding: 24px 10px; border-bottom: 2px solid #F4EFE9; font-size: 40px; }
+.srow span { color: #6B7680; font-weight: 700; } .srow b { font-weight: 900; }
+.sbtn { margin-top: 26px; padding: 30px; border-radius: 24px; background: #F0894A; color: #171B20; text-align: center; font-size: 44px; font-weight: 900; }
+.sys .touch { margin-left: -30px; }
+.dcard { display: flex; align-items: center; gap: 26px; margin-top: 20px; padding: 30px; border-radius: 28px; background: #FFF4EC; }
+.dcard.c1 { background: #EEF4FF; } .dcard.c2 { background: #EAF7F0; }
+.dcard .ic.lg { width: 90px; height: 90px; color: #C8612E; } .dcard.c1 .ic.lg { color: #2E6BD6; } .dcard.c2 .ic.lg { color: #2FA66A; }
+.dcard small { display: block; font-size: 30px; font-weight: 800; color: #6B7680; } .dcard b { display: block; font-size: 50px; font-weight: 900; letter-spacing: -0.02em; }
+.door { position: absolute; left: 700px; top: 380px; width: 300px; height: 460px; padding: 40px; border-radius: 30px; background: #232A33; color: #9AA3AD; }
+.door .ic { width: 100%; height: 100%; }
+.walker { position: absolute; left: 200px; top: 420px; width: 300px; display: flex; flex-direction: column; align-items: center; gap: 10px; color: #E8B89A; }
+.walker .ic { width: 280px; height: 280px; } .walker b { font-size: 40px; font-weight: 900; white-space: nowrap; }
+.dbars { position: absolute; left: 150px; right: 150px; top: 460px; height: 600px; display: flex; align-items: flex-end; gap: 22px; }
+.dbars i { flex: 1; border-radius: 14px 14px 4px 4px; background: linear-gradient(180deg, #F0894A, rgba(240,137,74,.35)); }
+.timer { position: relative; width: 400px; height: 400px; }
+.timer svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer .trk { fill: none; stroke: rgba(255,255,255,.12); stroke-width: 8; } .timer .arc { fill: none; stroke: #F0894A; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 277; }
+.timer b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 190px; font-weight: 900; color: #fff; } .timer b small { font-size: 70px; margin-left: 6px; }
+.ctab { display: flex; align-items: center; gap: 22px; padding: 40px 50px; border-radius: 34px; background: #F0894A; color: #171B20; font-size: 54px; font-weight: 900; letter-spacing: -0.03em; box-shadow: 0 30px 80px rgba(240,137,74,.45); white-space: nowrap; }
+.ctab .ic.lg { width: 76px; height: 76px; }
+.ecard { position: absolute; left: 80px; right: 80px; padding: 50px 50px 46px; border-radius: 44px; background: #fff; color: #171B20; box-shadow: 0 40px 100px rgba(0,0,0,.45); }
+.ecard .no { display: inline-block; padding: 8px 22px; border-radius: 999px; background: #171B20; color: #F0894A; font-size: 34px; font-weight: 900; }
+.ecard h3 { margin-top: 20px; font-size: 84px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.15; }
+.ecard ul { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 14px; list-style: none; }
+.ecard li { padding: 12px 24px; border-radius: 999px; background: #FFF1E7; color: #C8612E; font-size: 34px; font-weight: 800; }
+.earrow { display: inline-flex; width: 110px; height: 110px; padding: 20px; border-radius: 50%; background: #F0894A; color: #171B20; }
+.earrow .ic { width: 100%; height: 100%; }
+
+
+/* ── 고급 모드 덮어쓰기 ── */
+#root { background: #0B0E13; }
+.bgA { background: radial-gradient(1200px 900px at 85% -10%, rgba(216,168,113,.15), rgba(216,168,113,0) 60%), radial-gradient(900px 700px at -10% 110%, rgba(90,120,170,.12), rgba(90,120,170,0) 60%), #0B0E13; }
+.bgB { background: radial-gradient(1100px 800px at 10% 0%, rgba(120,150,205,.14), rgba(120,150,205,0) 60%), radial-gradient(800px 600px at 100% 100%, rgba(216,168,113,.08), rgba(216,168,113,0) 60%), #0A0E15; }
+.bgC { background: radial-gradient(1000px 800px at 50% -5%, rgba(216,168,113,.20), rgba(216,168,113,0) 65%), #110E0B; }
+.bgD { background: radial-gradient(1000px 800px at 90% 100%, rgba(216,168,113,.12), rgba(216,168,113,0) 60%), radial-gradient(900px 700px at 0% 0%, rgba(110,150,140,.10), rgba(110,150,140,0) 60%), #0C1011; }
+.bgL { background: radial-gradient(1100px 800px at 85% 0%, rgba(216,168,113,.20), rgba(216,168,113,0) 60%), #F2EDE6; color: #15181D; }
+.bgRoom { background: radial-gradient(900px 620px at 50% 0%, rgba(216,168,113,.13), rgba(216,168,113,0) 62%), #0B0E13; }
+.bgBlue { background: radial-gradient(1000px 800px at 50% 0%, rgba(216,168,113,.10), rgba(216,168,113,0) 60%), #0A121C; }
+.bgOld { background: radial-gradient(900px 700px at 50% 20%, rgba(216,168,113,.16), rgba(216,168,113,0) 60%), #14100C; }
+.bgT { background: radial-gradient(900px 700px at 50% 45%, rgba(216,168,113,.14), rgba(216,168,113,0) 65%), #0B0E13; }
+.shot::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,.38) 100%); }
+.bgL.shot::after { background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 60%, rgba(60,40,20,.10) 100%); }
+.bpgrid { background-image: linear-gradient(rgba(216,168,113,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(216,168,113,.07) 1px, transparent 1px); background-size: 72px 72px; }
+.kt { font-weight: 800; letter-spacing: -0.045em; line-height: 1.18; text-shadow: none; color: #F4F1EC; }
+.bgL .kt { color: #15181D; }
+.kt.xl { font-size: 116px; } .kt.l { font-size: 94px; } .kt.m { font-size: 76px; } .kt.s { font-size: 58px; }
+.kt .hl { color: #D8A871; } .bgL .kt .hl { color: #A5703C; }
+.hd { position: absolute; left: 0; right: 0; }
+.hds { position: absolute; left: 80px; right: 80px; top: 0; transform: translateY(var(--hsy, 210px)); text-align: center; font-size: 36px; font-weight: 500; color: #A9B0B8; letter-spacing: -0.01em; }
+.bgL .hds { color: #5E6670; }
+.ksub { font-size: 38px; font-weight: 500; color: #A9B0B8; }
+.chip { background: rgba(11,14,19,.35); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.5); color: #E6C396; font-size: 28px; font-weight: 600; letter-spacing: .03em; padding: 10px 26px; }
+.chip.big { font-size: 34px; padding: 13px 32px; }
+.chip.hot { background: #D8A871; color: #15110C; box-shadow: none; }
+.chip.gray { color: #A9B0B8; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.18); }
+.bgL .chip { background: rgba(255,255,255,.5); box-shadow: inset 0 0 0 1.5px rgba(165,112,60,.45); color: #A5703C; } .bgL .chip.hot { background: #C99257; color: #15110C; }
+.eyeb { display: inline-flex; align-items: center; gap: 22px; font-size: 26px; font-weight: 600; letter-spacing: .14em; color: #E6C396; white-space: nowrap; }
+.eyeb i { display: block; width: 60px; height: 1.5px; background: #D8A871; opacity: .7; }
+.bgL .eyeb { color: #A5703C; } .bgL .eyeb i { background: #A5703C; }
+.licon, .bigic { display: inline-flex; width: 168px; height: 168px; padding: 46px; border-radius: 50%; background: rgba(216,168,113,.06); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.45); color: #D8A871; }
+.licon .ic, .bigic .ic { width: 100%; height: 100%; }
+.bigic.red, .licon.red { color: #E39A88; box-shadow: inset 0 0 0 1.5px rgba(227,154,136,.45); background: rgba(227,154,136,.06); }
+.bigic.green, .licon.green { color: #A8D5B8; box-shadow: inset 0 0 0 1.5px rgba(168,213,184,.45); background: rgba(168,213,184,.06); }
+.bgL .licon, .bgL .bigic { background: rgba(255,255,255,.6); box-shadow: inset 0 0 0 1.5px rgba(165,112,60,.4); color: #A5703C; }
+.gcards { position: absolute; left: 90px; right: 90px; display: flex; flex-direction: column; gap: 22px; }
+.gcards.row { flex-direction: row; justify-content: center; gap: 20px; }
+.gcard { position: relative; display: flex; align-items: center; gap: 28px; padding: 32px 38px; border-radius: 28px; background: rgba(255,255,255,.045); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1), 0 24px 60px rgba(0,0,0,.25); color: #F4F1EC; }
+.gcards.row .gcard { flex-direction: column; width: 280px; padding: 40px 20px 34px; text-align: center; gap: 18px; }
+.gcard.hl { background: rgba(216,168,113,.1); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.6), 0 24px 60px rgba(0,0,0,.3); }
+.gcard .ic.lg { width: 70px; height: 70px; color: #D8A871; flex: none; }
+.gtx { flex: 1; min-width: 0; } .gtx b { display: block; font-size: 48px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; } .gtx small { display: block; margin-top: 6px; font-size: 28px; font-weight: 500; color: #9BA3AD; }
+.gcards.row .gtx b { font-size: 42px; white-space: normal; }
+.gbar { position: relative; display: block; margin-top: 18px; height: 10px; border-radius: 5px; background: rgba(255,255,255,.08); }
+.gbar i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; border-radius: 5px; background: linear-gradient(90deg, rgba(216,168,113,.5), #D8A871); transform-origin: 0 50%; }
+.gbar em { position: absolute; right: -2px; top: -10px; width: 4px; height: 30px; border-radius: 2px; background: #F4F1EC; }
+.gck { flex: none; width: 72px; height: 72px; padding: 18px; border-radius: 50%; background: #D8A871; color: #15110C; display: flex; }
+.gck .ic { width: 100%; height: 100%; }
+.gcards.row .gck { position: absolute; top: -22px; right: -14px; }
+.bgL .gcard { background: rgba(255,255,255,.7); box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.06), 0 20px 50px rgba(60,40,20,.08); color: #15181D; }
+.bgL .gcard .ic.lg { color: #A5703C; } .bgL .gtx small { color: #6B737D; }
+.seal { position: relative; padding: 26px 56px; font-size: 92px; font-weight: 800; letter-spacing: -0.03em; color: #F4F1EC; text-align: center; white-space: nowrap; }
+.seal i { display: block; height: 1.5px; background: linear-gradient(90deg, rgba(216,168,113,0), #D8A871, rgba(216,168,113,0)); }
+.seal b { display: block; padding: 22px 0; font-weight: 800; }
+.seal.gold b { color: #D8A871; } .bgL .seal { color: #15181D; }
+.pdots { position: absolute; left: 170px; right: 170px; display: grid; gap: 12px; }
+.pdots i { display: block; width: 16px; height: 16px; border-radius: 50%; background: #D8A871; opacity: .7; }
+.ptline { position: absolute; left: 160px; right: 160px; height: 1.5px; background: linear-gradient(90deg, rgba(216,168,113,0), #D8A871, rgba(216,168,113,0)); }
+.pteb { font-size: 30px; font-weight: 600; letter-spacing: .3em; color: #E6C396; }
+.tile { background: rgba(255,255,255,.05); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); font-size: 48px; font-weight: 700; }
+.tile.c0, .tile.c1, .tile.c2, .tile.c3, .tile.dark, .tile.red { background: rgba(255,255,255,.05); color: #F4F1EC; }
+.tile .ic.lg { color: #D8A871; } .tile .tok { background: #D8A871; color: #15110C; } .tile .tx { background: #B85C50; }
+.cnt b { color: #D8A871; font-weight: 800; font-size: 230px; } .cnt .suf, .cnt .pre { font-weight: 600; font-size: 84px; color: #F4F1EC; }
+.bgL .cnt b { color: #A5703C; } .bgL .cnt .suf { color: #15181D; }
+.cnt.mid b { font-size: 170px; } .cnt.mid .suf { font-size: 70px; }
+.phone { padding: 8px; border-radius: 42px; background: #06080B; box-shadow: 0 50px 110px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.16); }
+.phone .screen { border-radius: 34px; }
+.phone.held { box-shadow: 0 40px 90px rgba(0,0,0,.6), 0 0 0 2px #D8A871; }
+.touch { background: rgba(255,255,255,.35); box-shadow: 0 0 0 3px #D8A871; }
+.brw { border-radius: 18px; box-shadow: 0 50px 110px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.1); }
+.brw .bar { background: #13171D; } .btag { background: rgba(11,14,19,.72); color: #E6C396; box-shadow: inset 0 0 0 1px rgba(216,168,113,.5); font-weight: 600; }
+.judge .head { background: #2A323D; } .judge .body { background: #1E242C; }
+.judge .nm { background: rgba(11,14,19,.6); color: #A9B0B8; font-weight: 600; font-size: 22px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+.judge .react.ok { background: #D8A871; color: #15110C; } .judge .react.q { background: #F2EDE6; } .judge .react.meh { background: #3A424D; }
+.desk { height: 3px; background: linear-gradient(90deg, rgba(216,168,113,0), #D8A871, rgba(216,168,113,0)); box-shadow: none; }
+.stage { background: none; }
+.bub { font-size: 58px; font-weight: 800; }
+.bub.jb { background: #F2EDE6; color: #15181D; box-shadow: 0 30px 80px rgba(0,0,0,.45); } .bub.jb::before { border-bottom-color: #F2EDE6; }
+.bub.mb { background: #1B2129; color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12), 0 30px 80px rgba(0,0,0,.45); } .bub.mb::after { border-top-color: #1B2129; }
+.bub .strike { background: #D98C7C; height: 8px; }
+.doc { background: #F7F3EE; } .doc i { background: #E7E0D6; }
+.doc.ours { background: #FFF8EF; box-shadow: 0 0 0 4px #D8A871, 0 16px 40px rgba(216,168,113,.3); } .doc.ours b { color: #A5703C; }
+.doc em { background: #ECE6DC; color: #7A6A55; }
+.chart .ax { stroke: rgba(255,255,255,.18); stroke-width: 2; } .bgL .chart .ax { stroke: rgba(21,24,29,.18); }
+.chart .pl.hot { stroke: #D8A871; stroke-width: 10; filter: drop-shadow(0 0 14px rgba(216,168,113,.45)); } .chart .pl.gray { stroke: #3A424D; stroke-width: 7; }
+.ctag { background: rgba(11,14,19,.55); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.3); font-weight: 700; font-size: 32px; }
+.ctag.hot2 { background: #D8A871; color: #15110C; box-shadow: none; }
+.bar2 i { background: #2E353F; } .bar2.hot i { background: linear-gradient(180deg, #D8A871, rgba(216,168,113,.55)); } .bar2 span { font-weight: 600; } .bar2.hot span { color: #D8A871; }
+.cut { border-top: 3px dashed rgba(244,241,236,.6); } .cut span { color: #F4F1EC; font-weight: 600; }
+.gapmark { border: 3px solid #D98C7C; background: rgba(217,140,124,.18); } .gapmark b { background: #D98C7C; color: #15110C; }
+.rchip { background: rgba(255,255,255,.06); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14); font-weight: 700; font-size: 40px; backdrop-filter: blur(6px); }
+.rchip.r0, .rchip.r1, .rchip.r2, .rchip.r3 { background: rgba(20,24,30,.78); color: #F4F1EC; }
+.rchip.r1, .rchip.r3 { color: #E6C396; box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.45); }
+.bigx { width: 300px; height: 300px; padding: 70px; background: rgba(217,140,124,.12); color: #E39A88; box-shadow: inset 0 0 0 2px #D98C7C, 0 30px 90px rgba(0,0,0,.4); }
+.gck.x { background: #3A424D; color: #F4F1EC; }
+.runner { color: #4A525D; } .runner.ours { color: #D8A871; } .runner .spd { background: linear-gradient(90deg, rgba(154,163,173,0), rgba(154,163,173,.5)); }
+.lane { background: repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 40px, transparent 40px 80px); height: 2px; }
+.sitem { background: rgba(255,255,255,.06); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14), 0 20px 50px rgba(0,0,0,.3); font-weight: 700; font-size: 40px; }
+.sitem.dark { background: rgba(255,255,255,.04); color: #C9CFD6; } .sitem.hot { background: rgba(216,168,113,.12); box-shadow: inset 0 0 0 1.5px #D8A871; }
+.sitem .ic.lg { color: #D8A871; }
+.bgL .sitem { background: #fff; color: #15181D; box-shadow: 0 16px 40px rgba(60,40,20,.1); }
+.core { background: #D8A871; color: #15110C; box-shadow: 0 0 0 14px rgba(216,168,113,.12), 0 30px 90px rgba(216,168,113,.25); border-radius: 50%; }
+.node { background: rgba(255,255,255,.05); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12), 0 30px 70px rgba(0,0,0,.3); border-radius: 36px; }
+.node .ic.xl { color: #D8A871; width: 110px; height: 110px; } .node b { font-size: 44px; font-weight: 700; }
+.node.hot { background: rgba(216,168,113,.12); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px #D8A871, 0 30px 70px rgba(0,0,0,.35); } .node.hot .ic.xl { color: #E6C396; }
+.bgL .node { background: rgba(255,255,255,.75); color: #15181D; } .bgL .node .ic.xl { color: #A5703C; } .bgL .node.hot { background: rgba(216,168,113,.18); box-shadow: inset 0 0 0 1.5px #C99257; color: #15181D; }
+.wire path { stroke: #D8A871; stroke-width: 4; } .pkt { width: 16px; height: 16px; margin-top: -8px; background: #E6C396; box-shadow: 0 0 16px #D8A871; }
+.midic { background: #F2EDE6; color: #A5703C; }
+.mcard { font-size: 52px; font-weight: 700; border-radius: 30px; }
+.mcard.a { background: rgba(255,255,255,.045); color: #C9CFD6; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1); }
+.mcard.b { background: rgba(216,168,113,.12); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px #D8A871, 0 30px 80px rgba(0,0,0,.35); }
+.mcard .ic.lg { color: #D8A871; } .marrow { color: #D8A871; }
+.pav { background: rgba(255,255,255,.05); color: #D8A871; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14); width: 210px; height: 210px; }
+.person b { font-weight: 700; font-size: 40px; }
+.bgL .pav { background: rgba(255,255,255,.75); color: #A5703C; }
+.prx.heart, .prx.star, .prx.ok { background: #D8A871; color: #15110C; } .prx { width: 80px; height: 80px; font-size: 44px; padding: 16px; }
+.pz { font-size: 54px; font-weight: 700; } .pz.a { background: #18202B; color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); } .pz.b { background: #D8A871; color: #15110C; }
+.pz.a .ic.lg { color: #D8A871; }
+.bld { color: rgba(216,168,113,.85); } .bin { background: #F2EDE6; color: #A5703C; }
+.crack path { stroke: #D98C7C; }
+.crowd { color: #2C333C; } .crowd .me { color: #D8A871; }
+.ntf { background: rgba(242,237,230,.96); } .nic { background: #D8A871; color: #15110C; } .nic.blue { background: #1B2129; color: #E6C396; } .nic.green { background: #1B2129; color: #A8D5B8; }
+.sys { border-radius: 34px; } .sbtn { background: #D8A871; color: #15110C; } .shead .ic { color: #A5703C; }
+.dcard { background: #FBF6EF; } .dcard.c1 { background: #F4F1EC; } .dcard.c2 { background: #F7F3EA; }
+.dcard .ic.lg, .dcard.c1 .ic.lg, .dcard.c2 .ic.lg { color: #A5703C; }
+.wallc { background: rgba(11,14,19,.82); color: #F4F1EC; font-size: 90px; box-shadow: inset 0 0 0 1.5px #D8A871, 0 30px 80px rgba(0,0,0,.5); backdrop-filter: blur(6px); }
+.wallc small { color: #E6C396; font-weight: 600; }
+.wall img { border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+.official { background: #F4F1EC; } .otag { background: #1B2129; color: #E6C396; }
+.axbig { color: #D8A871; text-shadow: 0 30px 90px rgba(216,168,113,.3); font-size: 320px; }
+.axrow em { color: #D8A871; }
+.ghost { border: 3px dashed rgba(216,168,113,.45); } .gq { color: #D8A871; font-weight: 800; }
+.lens { box-shadow: inset 0 0 0 5px #F4F1EC; }
+.bpsvg path, .wfsvg rect, .wfsvg path { stroke: #E6C396; stroke-width: 3; }
+.frow { background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1); } .frow b { color: #E6C396; font-weight: 700; }
+.fstep { background: #1B2129; color: #6E7780; } .farr { background: rgba(255,255,255,.15); height: 2px; }
+.dbars i { background: linear-gradient(180deg, #D8A871, rgba(216,168,113,.2)); }
+.timer .arc { stroke: #D8A871; } .timer .trk { stroke: rgba(255,255,255,.1); }
+.ctab { background: #D8A871; color: #15110C; box-shadow: 0 30px 80px rgba(216,168,113,.3); font-weight: 800; }
+.ttbg.soft { background: rgba(255,255,255,.03); }
+.ecard { background: #F2EDE6; } .ecard .no { background: #15181D; color: #E6C396; } .ecard li { background: #EDE3D6; color: #8A5C2E; }
+.earrow { background: #D8A871; color: #15110C; }
+.door { background: rgba(255,255,255,.05); color: #6E7780; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); }
+.walker { color: #E6C396; }
+.fzv { backdrop-filter: grayscale(1) brightness(.33) blur(5px); background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 40%, rgba(0,0,0,.5) 100%); }
+.fzb { top: 230px; right: 60px; background: none; box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.6); color: #E6C396; font-size: 22px; padding: 10px 14px; border-radius: 50%; }
+.fzl { top: 790px; }
+.fzl i { display: block; width: 560px; height: 1.5px; margin: 0 auto; background: linear-gradient(90deg, rgba(216,168,113,0), #D8A871, rgba(216,168,113,0)); }
+.fzl b { display: block; padding: 26px 20px; background: none; color: #F4F1EC; font-size: 70px; font-weight: 800; box-shadow: none; letter-spacing: -0.035em; }
+.fzl small { margin: 0 0 26px; color: #E6C396; font-size: 34px; font-weight: 600; text-shadow: none; }
+.sub span { background: rgba(9,11,15,.74); backdrop-filter: blur(8px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); font-size: 48px; font-weight: 700; padding: 16px 32px; border-radius: 18px; letter-spacing: -0.01em; }
+.brand .tag2 { background: rgba(11,14,19,.55); color: #E6C396; box-shadow: inset 0 0 0 1px rgba(216,168,113,.35); font-weight: 600; }
+#prog { height: 4px; background: rgba(255,255,255,.1); } #prog i { background: #D8A871; }
+.foot { color: #6F7780; font-weight: 600; }
+.chap span { background: rgba(11,14,19,.55); color: #E6C396; box-shadow: inset 0 0 0 1px rgba(216,168,113,.45); font-weight: 600; letter-spacing: .03em; font-size: 26px; }
+.note span { background: rgba(9,11,15,.74); box-shadow: inset 0 0 0 1px rgba(216,168,113,.35); color: #E6C396; font-weight: 600; }
+.fine { color: #7D8590; font-weight: 500; }
+.stp { background: rgba(255,255,255,.72); color: #8A9099; box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.06), 0 14px 36px rgba(60,40,20,.07); }
+.stp .num { background: #EDE6DC; color: #8A9099; } .stp.done { color: #5E6670; } .stp.done .num { background: #C99257; color: #fff; }
+.stp.on { background: #15181D; color: #F4F1EC; box-shadow: 0 30px 70px rgba(21,24,29,.3); } .stp.on .num { background: #D8A871; color: #15110C; } .stp.on small { color: #E6C396; } .stp.on > .ic.lg { color: #D8A871; }
+.stp b { font-weight: 800; } .stp small { font-weight: 500; }
+.pcard { background: rgba(255,255,255,.75); box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.06), 0 16px 40px rgba(60,40,20,.08); }
+.pnum { background: #D8A871; color: #15110C; } .ptop em { background: #EDE3D6; color: #8A5C2E; }
+.pcard.on { background: #15181D; color: #F4F1EC; box-shadow: 0 30px 70px rgba(21,24,29,.3), 0 0 0 2px #D8A871; } .pcard.on .ptop em { background: rgba(216,168,113,.2); color: #E6C396; }
+.pval b { color: #A5703C; font-weight: 800; } .pcard.on .pval b { color: #D8A871; } .pval span { font-weight: 600; }
+.days i { background: #D8A871; } .days i:nth-child(n+8) { background: rgba(216,168,113,.3); }
+.cb i { background: #2E353F; } .cb.hot i { background: linear-gradient(180deg, #D8A871, rgba(216,168,113,.45)); box-shadow: 0 20px 60px rgba(216,168,113,.25); } .cb span { color: #A9B0B8; font-weight: 700; } .cb.hot span { color: #D8A871; }
+.stage4 { display: flex; gap: 12px; } .stage4 i { display: block; width: 90px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.14); } .stage4 i.on { background: #D8A871; }
+.bgL .stage4 i { background: rgba(21,24,29,.12); } .bgL .stage4 i.on { background: #C99257; }
+.stairs { position: absolute; left: 120px; right: 120px; height: 620px; display: flex; align-items: flex-end; gap: 26px; }
+.stairs div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.stairs i { display: block; border-radius: 18px 18px 6px 6px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); }
+.stairs b { display: block; margin-top: 18px; text-align: center; font-size: 36px; font-weight: 700; color: #C9CFD6; white-space: nowrap; }
+.stairs div.on i { background: rgba(216,168,113,.14); box-shadow: inset 0 0 0 1.5px #D8A871; } .stairs div.on b { color: #D8A871; }
+.climber { position: absolute; width: 56px; height: 56px; border-radius: 50%; background: #D8A871; box-shadow: 0 0 0 10px rgba(216,168,113,.18), 0 0 40px rgba(216,168,113,.6); }
+
+.shotf { position: relative; border-radius: 26px; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 1.5px rgba(216,168,113,.35); background: #0E1114; }
+.shotf img { display: block; width: 100%; }
+.shotf .ring { position: absolute; border-radius: 14px; box-shadow: 0 0 0 4px #D8A871, 0 0 36px rgba(216,168,113,.55); opacity: 0; }
+.shotf .lbl { position: absolute; left: 22px; top: 18px; padding: 8px 18px; border-radius: 999px; background: rgba(11,14,19,.82); color: #E6C396; font-size: 26px; font-weight: 700; box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.45); }
+.clients { position: absolute; left: 60px; right: 60px; display: flex; flex-wrap: wrap; justify-content: center; gap: 22px; }
+.clients span { padding: 22px 38px; border-radius: 24px; font-size: 44px; font-weight: 800; color: #F4F1EC; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.4); }
+.thought { position: absolute; padding: 20px 30px; border-radius: 22px; font-size: 38px; font-weight: 700; color: #F4F1EC; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14); white-space: nowrap; }
+.thought b { color: #E6C396; font-weight: 800; }
+.chatb { position: absolute; max-width: 780px; padding: 30px 40px; border-radius: 36px; font-size: 46px; font-weight: 700; line-height: 1.32; }
+.chatb small { display: block; margin-bottom: 8px; font-size: 26px; font-weight: 600; opacity: .6; }
+.chatb.me { right: 80px; background: #1B2129; color: #F4F1EC; border-bottom-right-radius: 10px; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12), 0 30px 80px rgba(0,0,0,.45); }
+.chatb.you { left: 80px; background: #F2EDE6; color: #15181D; border-bottom-left-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.chatb.gold { background: linear-gradient(135deg, #E6C396, #C99257); color: #15110C; }
+.dcal { width: 640px; padding: 34px 40px; border-radius: 28px; background: rgba(255,255,255,.045); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1), 0 24px 60px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.dcal b { font-size: 44px; font-weight: 800; color: #F4F1EC; } .dcal small { display: block; font-size: 30px; color: #A9B0B8; font-weight: 500; margin-top: 6px; }
+.dcal em { min-width: 200px; text-align: center; font-style: normal; font-size: 40px; font-weight: 900; padding: 12px 24px; border-radius: 16px; color: #E6C396; box-shadow: inset 0 0 0 2px rgba(216,168,113,.6); position: relative; }
+.dcal em .late { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 16px; background: #7A2E2E; color: #F6DADA; box-shadow: inset 0 0 0 2px #B55454; opacity: 0; white-space: nowrap; font-size: 34px; }
+.meter { position: absolute; left: 150px; right: 150px; }
+.meter .lab { display: flex; justify-content: space-between; font-size: 36px; font-weight: 700; color: #E6C396; margin-bottom: 18px; }
+.meter .trk { height: 28px; border-radius: 14px; background: rgba(255,255,255,.08); overflow: hidden; }
+.meter .trk i { display: block; height: 100%; width: 100%; transform-origin: 0 50%; border-radius: 14px; background: linear-gradient(90deg, #B98A55, #E6C396); }
+.fan { position: relative; width: 520px; height: 440px; }
+.fan i { position: absolute; left: 110px; top: 20px; width: 300px; height: 400px; border-radius: 20px; background: linear-gradient(160deg, #26303B, #151A21); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.5), 0 30px 70px rgba(0,0,0,.45); }
+.fan i::before { content: ''; position: absolute; left: 34px; right: 34px; top: 46px; height: 18px; border-radius: 9px; background: rgba(230,195,150,.7); box-shadow: 0 50px 0 rgba(255,255,255,.14), 0 90px 0 rgba(255,255,255,.1), 0 130px 0 rgba(255,255,255,.1), 0 170px 0 rgba(255,255,255,.08); }
+.qmark { position: absolute; left: 0; right: 0; text-align: center; font-size: 220px; line-height: 1; font-weight: 900; color: rgba(216,168,113,.35); }
+.osname { position: absolute; left: 0; right: 0; text-align: center; font-size: 104px; font-weight: 900; letter-spacing: .01em; color: #F4F1EC; }
+.osname em { font-style: normal; color: #E6C396; }
+.hl-row { position: absolute; left: 16px; right: 16px; height: 96px; border-radius: 14px; box-shadow: inset 0 0 0 3px #D8A871; background: rgba(216,168,113,.1); opacity: 0; }
+.flowdown { position: absolute; left: 0; right: 0; display: flex; justify-content: center; color: #D8A871; }
+.flowdown .ic { width: 70px; height: 70px; }
+.dchips { position: absolute; left: 0; right: 0; display: flex; justify-content: center; gap: 18px; }
+.dchips span { display: inline-flex; align-items: center; gap: 12px; padding: 18px 28px; border-radius: 20px; font-size: 34px; font-weight: 700; color: #F4F1EC; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14); }
+.dchips .ic { width: 40px; height: 40px; color: #E6C396; }
+.cscreen { width: 640px; padding: 36px 40px 26px; border-radius: 40px; background: #F2EDE6; color: #15181D; box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 10px #1B2129, 0 0 0 11.5px rgba(216,168,113,.4); }
+.cscreen h4 { margin: 0 0 6px; font-size: 26px; font-weight: 700; color: #A5703C; letter-spacing: .08em; }
+.cscreen h5 { margin: 0 0 18px; font-size: 40px; font-weight: 900; }
+.cscreen .st { display: flex; align-items: center; gap: 20px; padding: 15px 0; font-size: 36px; font-weight: 700; color: #8A8F96; border-top: 1px solid rgba(21,24,29,.08); }
+.cscreen .st i { width: 30px; height: 30px; border-radius: 50%; background: #D9D3CA; flex: none; }
+.cscreen .st.done { color: #15181D; } .cscreen .st.done i { background: #C99257; }
+.cscreen .st.now { color: #15181D; font-weight: 900; } .cscreen .st.now i { background: #15181D; box-shadow: 0 0 0 8px rgba(201,146,87,.35); }
+.cscreen .foot2 { margin-top: 12px; font-size: 24px; color: #8A8F96; text-align: center; }
+.net { position: absolute; left: 90px; width: 900px; height: 700px; }
+.net line { stroke: rgba(216,168,113,.55); stroke-width: 3; }
+.net circle { fill: #1B2129; stroke: rgba(216,168,113,.8); stroke-width: 3; }
+.net circle.me { fill: #D8A871; stroke: #E6C396; }
+.net text { fill: #F4F1EC; font-size: 30px; font-weight: 800; text-anchor: middle; font-family: Pretendard; }
+.net text.me { fill: #15110C; font-size: 32px; }
+.lt { position: absolute; left: 70px; right: 70px; display: flex; justify-content: space-between; }
+.lt::before { content: ''; position: absolute; left: 120px; right: 120px; top: 44px; height: 3px; background: rgba(216,168,113,.35); }
+.lt div { position: relative; width: 300px; text-align: center; }
+.lt div i { display: block; width: 90px; height: 90px; margin: 0 auto 24px; border-radius: 50%; background: #1B2129; box-shadow: inset 0 0 0 3px rgba(216,168,113,.6); }
+.lt div.on i { background: radial-gradient(circle, #E6C396 0 30%, #1B2129 32%); box-shadow: inset 0 0 0 3px #E6C396, 0 0 40px rgba(216,168,113,.5); }
+.lt b { display: block; font-size: 40px; font-weight: 900; color: #F4F1EC; } .lt small { display: block; margin-top: 10px; font-size: 30px; font-weight: 600; color: #A9B0B8; line-height: 1.35; }
+.ctabtn { display: inline-flex; align-items: center; gap: 22px; padding: 38px 70px; border-radius: 999px; background: linear-gradient(135deg, #E6C396, #C99257); color: #15110C; font-size: 62px; font-weight: 900; box-shadow: 0 30px 80px rgba(216,168,113,.3); }
+.ctabtn .ic { width: 64px; height: 64px; }
+
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="155.81" data-width="1080" data-height="1920">
+  <section class="clip shot bgA" id="sh0" data-start="0" data-duration="9.08" data-track-index="1"><div class="cam" id="sh0-cam"><div class="cx" style="top:270px"><span class="eyeb" id="eb1"><i></i>컨설턴트의 하루<i></i></span></div><div class="hd" id="hd2-0" style="top:330px"><div class="kt m c"><span class="wm"><span class="w">요즘</span></span> <span class="wm"><span class="w">하루,</span></span> <span class="wm"><span class="w"><em class="hl">어떻게</em></span></span><br><span class="wm"><span class="w">흘러가세요?</span></span></div></div><div class="gcards col" style="top:560px"><div class="gcard " id="gc0-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>고객사 서류 찾기</b><small>카톡 · 메일 · 사진첩을 뒤져서</small><span class="gbar"><i id="gc0-0-bar"></i><em></em></span></div></div><div class="gcard " id="gc0-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i><div class="gtx"><b>“어디까지 됐어요?” 답장</b><small>고객사마다 따로</small><span class="gbar"><i id="gc0-1-bar"></i><em></em></span></div></div></div></div></section>
+<section class="clip shot bgB" id="sh1" data-start="8.53" data-duration="3.95" data-track-index="2"><div class="cam" id="sh1-cam"><div class="gcards col" style="top:440px"><div class="gcard hl" id="nx3"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M12 2.5c3.5 2.2 5.5 6 5.5 10.5l-2.5 3h-6l-2.5-3C6.5 8.5 8.5 4.7 12 2.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2" fill="currentColor"/><path d="M9.5 19l2.5 2.5 2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>다음 계약 준비</b><small>제안서 · 추가 컨설팅 설계</small></div></div></div><div class="cx" style="top:700px"><span class="chip" id="nx3-c">내일로 → 모레로 →</span></div><div class="hd" id="hd4-0" style="top:900px"><div class="kt m c"><span class="wm"><span class="w">늘</span></span> <span class="wm"><span class="w"><em class="hl">뒤로</em></span></span> <span class="wm"><span class="w">밀린다</span></span></div></div></div></section>
+<section class="clip shot bgT" id="sh2" data-start="11.93" data-duration="2.7" data-track-index="1"><div class="cam" id="sh2-cam"><div class="ptline" id="pt5-a" style="top:640px"></div>
+      <div class="cx" style="top:690px"><span class="pteb" id="pt5-e">MIRAE AI LAB OS · 컨설턴트용</span></div>
+      <div class="kt xl c" id="pt5-t" style="top:790px"><span class="wm"><span class="w">고객</span></span> <span class="wm"><span class="w">앞에서,</span></span><br><span class="wm"><span class="w"><em class="hl">더</em></span></span> <span class="wm"><span class="w"><em class="hl">전문가처럼</em></span></span></div>
+      <div class="ptline" id="pt5-b" style="top:1120px"></div></div></section>
+<section class="clip shot bgA" id="sh3" data-start="14.08" data-duration="5.02" data-track-index="2"><div class="cam" id="sh3-cam"><div class="cx" style="top:300px"><span class="eyeb" id="eb8"><i></i>고객사가 늘어나면<i></i></span></div><div class="clients" id="cl7" style="top:420px"><span id="cl7-0">A사</span><span id="cl7-1">B사</span><span id="cl7-2">C사</span><span id="cl7-3">D사</span><span id="cl7-4">E사</span></div><div class="hd" id="hd9-0" style="top:900px"><div class="kt m c"><span class="wm"><span class="w">일은</span></span> <span class="wm"><span class="w">이렇게</span></span> <span class="wm"><span class="w"><em class="hl">흩어진다</em></span></span></div></div></div></section>
+<section class="clip shot bgB" id="sh4" data-start="18.55" data-duration="5.52" data-track-index="1"><div class="cam" id="sh4-cam"><div class="sitem " id="sc11-0" style="left:110px;top:380px;transform:rotate(-4deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i><b>카톡</b></div><div class="sitem " id="sc11-1" style="left:640px;top:420px;transform:rotate(3deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 7l8.5 6 8.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>메일</b></div><div class="sitem " id="sc11-2" style="left:150px;top:700px;transform:rotate(3deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10" r="1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18l5.5-5 4 3.5 3-2.5 3.5 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>사진첩</b></div><div class="sitem " id="sc11-3" style="left:560px;top:740px;transform:rotate(-3deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="#1F7A4D"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></i><b>엑셀 속 사업자번호</b></div>
+      <div class="cx" style="top:270px"><span class="eyeb" id="eb10"><i></i>서류는 어디에?<i></i></span></div></div></section>
+<section class="clip shot bgD" id="sh5" data-start="23.52" data-duration="5.41" data-track-index="2"><div class="cam" id="sh5-cam"><div class="cx" style="top:330px"><span class="licon " id="li13"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z" fill="currentColor"/></svg></i></span></div><div class="thought" id="th12-0" style="left:90px;top:640px">2차 기성 <b>수금 D-3</b></div><div class="thought" id="th12-1" style="left:470px;top:800px">정책자금 <b>신청 마감 D-2</b></div><div class="thought" id="th12-2" style="left:150px;top:960px">C사 <b>다음 연락</b> · 금요일</div><div class="hd" id="hd14-0" style="top:1120px"><div class="kt m c"><span class="wm"><span class="w"><em class="hl">머릿속</em>에만</span></span> <span class="wm"><span class="w">있다</span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh6" data-start="28.38" data-duration="7.37" data-track-index="1"><div class="cam" id="sh6-cam"><div class="hd" id="hd17-0" style="top:300px"><div class="kt m c"><span class="wm"><span class="w">더</span></span> <span class="wm"><span class="w">큰</span></span> <span class="wm"><span class="w">문제는</span></span><br><span class="wm"><span class="w"><em class="hl">따로</em></span></span> <span class="wm"><span class="w">있다</span></span></div></div><div class="hd" id="hd17-1" style="top:300px"><div class="kt m c"><span class="wm"><span class="w">고객은</span></span> <span class="wm"><span class="w"><em class="hl">조용히</em></span></span><br><span class="wm"><span class="w">불안해진다</span></span></div></div><div class="chatb me" id="ch16-a" style="top:620px"><small>컨설턴트</small>사업자등록증, 한 번만<br>더 보내 주시겠어요?</div><div class="chatb you" id="ch16-b" style="top:900px"><small>고객사 대표님</small>…지난번에 보냈는데요?</div></div></section>
+<section class="clip shot bgB" id="sh7" data-start="35.2" data-duration="4.95" data-track-index="2"><div class="cam" id="sh7-cam"><div class="cx" style="top:330px"><div class="dcal" id="tr18-c"><div><b>B사 정책자금 신청</b><small>서류 최종 확인</small></div><em>D-0<span class="late" id="tr18-l">마감 지남</span></em></div></div><div class="meter" id="tr18-m" style="top:640px"><div class="lab"><span>쌓아 온 신뢰</span></div><div class="trk"><i id="tr18-i"></i></div></div><div class="hd" id="hd19-0" style="top:900px"><div class="kt m c"><span class="wm"><span class="w">신뢰가</span></span> <span class="wm"><span class="w"><em class="hl">한</em></span></span> <span class="wm"><span class="w"><em class="hl">번에</em></span></span><br><span class="wm"><span class="w">흔들린다</span></span></div></div></div></section>
+<section class="clip shot bgD" id="sh8" data-start="39.6" data-duration="5.7" data-track-index="1"><div class="cam" id="sh8-cam"><div class="gcards row two" style="top:420px"><div class="gcard " id="gc20-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M12 2.5c3.5 2.2 5.5 6 5.5 10.5l-2.5 3h-6l-2.5-3C6.5 8.5 8.5 4.7 12 2.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2" fill="currentColor"/><path d="M9.5 19l2.5 2.5 2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>추가 계약</b></div></div><div class="gcard " id="gc20-1"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i><div class="gtx"><b>소개</b></div></div></div><div class="hd" id="hd21-0" style="top:900px"><div class="kt m c"><span class="wm"><span class="w">조용히</span></span> <span class="wm"><span class="w"><em class="hl">멀어진다</em></span></span></div></div></div></section>
+<section class="clip shot bgC" id="sh9" data-start="44.75" data-duration="4.58" data-track-index="2"><div class="cam" id="sh9-cam"><div class="cx" style="top:280px"><span class="eyeb" id="eb23"><i></i>다음 계약을 부르는 건<i></i></span></div><div class="cx" style="top:400px"><div class="fan" id="fn22"><i style="transform:rotate(-9deg) translateX(-70px)"></i><i style="transform:rotate(7deg) translateX(70px)"></i><i></i></div></div><div class="hd" id="hd24-0" style="top:960px"><div class="kt m c"><span class="wm"><span class="w">화려한</span></span> <span class="wm"><span class="w"><em class="hl">제안서</em>보다</span></span></div></div></div></section>
+<section class="clip shot bgC" id="sh10" data-start="48.78" data-duration="5.87" data-track-index="1"><div class="cam" id="sh10-cam"><div class="cx" style="top:300px"><span class="eyeb" id="eb25"><i></i>가장 강한 영업<i></i></span></div><div class="qmark" style="top:380px">“</div><div class="hd" id="hd26-0" style="top:560px"><div class="kt l c"><span class="wm"><span class="w">그</span></span> <span class="wm"><span class="w">컨설턴트는</span></span><br><span class="wm"><span class="w"><em class="hl">관리가</em></span></span> <span class="wm"><span class="w"><em class="hl">확실해</em></span></span></div></div><div class="cx" style="top:900px"><div class="seal gold" id="sl27"><i></i><b>이 한마디</b><i></i></div></div></div></section>
+<section class="clip shot bgC" id="sh11" data-start="54.1" data-duration="5.18" data-track-index="2"><div class="cam" id="sh11-cam"><div class="cx" style="top:480px"><span class="eyeb" id="eb30"><i></i>그래서 만들었습니다<i></i></span></div><div class="osname" id="os29" style="top:560px">MIRAE AI LAB <em>OS</em></div><p class="ksub" id="os29-s" style="top:720px">컨설턴트 운영 OS</p></div></section>
+<section class="clip shot bgA" id="sh12" data-start="58.73" data-duration="4.99" data-track-index="1"><div class="cam" id="sh12-cam"><div class="cx" style="top:280px"><span class="eyeb" id="eb32"><i></i>만든 사람<i></i></span></div><div class="cnt " id="nb33" style="top:360px"><b id="nb33-n">1</b><span class="suf">년</span></div><p class="ksub" id="yr31" style="top:660px">세무 · 노무 · 법무 · 자금 현장의 일을 담아</p><div class="cx" style="top:860px"><div class="seal gold" id="sl34"><i></i><b>매일 직접 쓰는 기능만</b><i></i></div></div></div></section>
+<section class="clip shot bgB" id="sh13" data-start="63.17" data-duration="4.81" data-track-index="2"><div class="cam" id="sh13-cam">
+      <div class="brw" id="bw37" style="top:400px"><div class="bar"><i></i><i></i><i></i><span></span></div><div class="vp"><img id="bw37-img" src="assets/cs/dash.jpg" alt=""></div><span class="btag">예시 화면 · 가상 데이터</span></div>
+      <div class="cx" style="top:290px"><span class="eyeb" id="eb35"><i></i>아침에 열면<i></i></span></div><div class="hd" id="hd36-0" style="top:1110px"><div class="kt s c"><span class="wm"><span class="w">오늘</span></span> <span class="wm"><span class="w">꼭</span></span> <span class="wm"><span class="w">할</span></span> <span class="wm"><span class="w">일이</span></span><br><span class="wm"><span class="w"><em class="hl">정리돼</em></span></span> <span class="wm"><span class="w">있다</span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh14" data-start="67.43" data-duration="4.49" data-track-index="1"><div class="cam" id="sh14-cam"><div class="cx" style="top:300px"><span class="eyeb" id="eb39"><i></i>먼저 할 세 가지<i></i></span></div><div class="cx" style="top:400px"><div class="shotf" id="t338" style="width:960px"><img src="assets/cs/dash-top3.png" alt=""><span class="hl-row" id="t338-r0" style="top:68.12px;height:91.88px"></span><span class="hl-row" id="t338-r1" style="top:169.5px;height:91.88px"></span><span class="hl-row" id="t338-r2" style="top:269.31px;height:91.88px"></span></div></div><div class="hd" id="hd40-0" style="top:860px"><div class="kt s c"><span class="wm"><span class="w"><em class="hl">이유</em>와</span></span> <span class="wm"><span class="w">함께</span></span> <span class="wm"><span class="w">알려</span></span> <span class="wm"><span class="w">준다</span></span></div></div><p class="fine c" id="t338-f" style="top:1000px">예시 화면 · 가상 데이터</p></div></section>
+<section class="clip shot bgD" id="sh15" data-start="71.37" data-duration="5.18" data-track-index="2"><div class="cam" id="sh15-cam"><div class="gcards col" style="top:340px"><div class="gcard " id="gc41-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>사업자등록증</b></div><span class="gck" id="gc41-0-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div><div class="gcard " id="gc41-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>재무제표</b></div><span class="gck" id="gc41-1-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div><div class="gcard " id="gc41-2"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>4대보험 가입자명부</b></div><span class="gck" id="gc41-2-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div><div class="hd" id="hd42-0" style="top:900px"><div class="kt m c"><span class="wm"><span class="w">서류는</span></span> <span class="wm"><span class="w"><em class="hl">한</em></span></span> <span class="wm"><span class="w"><em class="hl">번만</em></span></span></div></div><div class="hd" id="hd42-1" style="top:900px"><div class="kt m c"><span class="wm"><span class="w">밖에서도</span></span> <span class="wm"><span class="w"><em class="hl">폰으로</em></span></span></div></div></div></section>
+<section class="clip shot bgB" id="sh16" data-start="76" data-duration="5.45" data-track-index="1"><div class="cam" id="sh16-cam"><div class="cx" style="top:290px"><div class="shotf" id="hc43" style="width:700px"><img src="assets/cs/hero-card.png" alt=""><span class="ring" id="hc43-a" style="left:29.62px;top:140.31px;width:318.04px;height:96.66px"></span><span class="ring" id="hc43-b" style="left:29.62px;top:244.77px;width:640.76px;height:130.96px"></span></div></div><div class="hd" id="hd44-0" style="top:1010px"><div class="kt s c"><span class="wm"><span class="w">고객사</span></span> <span class="wm"><span class="w">정보가</span></span> <span class="wm"><span class="w"><em class="hl">한</em></span></span> <span class="wm"><span class="w"><em class="hl">화면에</em></span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh17" data-start="80.9" data-duration="5.43" data-track-index="2"><div class="cam" id="sh17-cam"><div class="nstack" style="top:360px"><div class="ntf" id="nt47-0"><span class="nic "><i class="ic "><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 9.5v5M18 9.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i></span><div><b>A사 2차 기성 수금</b><small>수금 예정일 D-3</small></div><em>오늘</em></div><div class="ntf" id="nt47-1"><span class="nic "><i class="ic "><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i></span><div><b>B사 정책자금 신청 마감</b><small>D-2 · 서류 최종 확인</small></div><em>오늘</em></div><div class="ntf" id="nt47-2"><span class="nic "><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i></span><div><b>C사 다음 연락</b><small>금요일 · 진행 상황 공유</small></div><em>이번 주</em></div></div><p class="fine c" id="nt47-f" style="top:1290px">예시 화면 · 가상 데이터</p><div class="cx" style="top:270px"><span class="eyeb" id="eb45"><i></i>먼저 알려 주는 것<i></i></span></div><div class="hd" id="hd46-0" style="top:960px"><div class="kt m c"><span class="wm"><span class="w">OS가</span></span> <span class="wm"><span class="w"><em class="hl">먼저</em></span></span> <span class="wm"><span class="w">챙긴다</span></span></div></div></div></section>
+<section class="clip shot bgD" id="sh18" data-start="85.78" data-duration="5.95" data-track-index="1"><div class="cam" id="sh18-cam"><div class="dchips" id="ib48-d" style="top:300px"><span><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z" fill="currentColor"/></svg></i>고객</span><span><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>서류 올림</span><span><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i>요청 남김</span></div><div class="flowdown" id="ib48-a" style="top:430px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3.5v16M5 12.5l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i></div><div class="cx" style="top:540px"><div class="shotf" id="ib48" style="width:560px"><img src="assets/cs/dash-inbox.png" alt=""></div></div><p class="fine c" id="ib48-f" style="top:1150px">예시 화면 · 가상 데이터</p></div></section>
+<section class="clip shot bgB" id="sh19" data-start="91.18" data-duration="5.85" data-track-index="2"><div class="cam" id="sh19-cam"><div class="gcards row two" style="top:380px"><div class="gcard " id="gc49-0"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg></i><div class="gtx"><b>내부 메모 · 초안</b><small>고객에겐 안 보여요</small></div></div><div class="gcard hl" id="gc49-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>정리된 결과</b><small>고객 화면에만</small></div></div></div><div class="hd" id="hd50-0" style="top:900px"><div class="kt s c"><span class="wm"><span class="w">“어디까지</span></span> <span class="wm"><span class="w">됐어요?”</span></span><br><span class="wm"><span class="w"><em class="hl">카톡이</em></span></span> <span class="wm"><span class="w"><em class="hl">줄어든다</em></span></span></div></div></div></section>
+<section class="clip shot bgC" id="sh20" data-start="96.48" data-duration="3.17" data-track-index="1"><div class="cam" id="sh20-cam"><div class="cx" style="top:470px"><span class="licon " id="li52"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/></svg></i></span></div><div class="hd" id="hd53-0" style="top:690px"><div class="kt l c"><span class="wm"><span class="w">여기서부터가</span></span><br><span class="wm"><span class="w"><em class="hl">진짜</em></span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh21" data-start="99.1" data-duration="4.95" data-track-index="2"><div class="cam" id="sh21-cam"><div class="dchips" id="nx54-d" style="top:330px"><span><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>사업자등록증</span><span><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>재무제표</span><span><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>4대보험 명부</span></div><div class="cx" style="top:620px"><div class="shotf" id="nx54" style="width:900px"><img src="assets/cs/hero-next.png" alt=""></div></div><div class="hd" id="hd55-0" style="top:980px"><div class="kt s c"><span class="wm"><span class="w">다음</span></span> <span class="wm"><span class="w">제안</span></span> <span class="wm"><span class="w">거리를</span></span><br><span class="wm"><span class="w"><em class="hl">찾아</em></span></span> <span class="wm"><span class="w"><em class="hl">준다</em></span></span></div></div><p class="fine c" id="nx54-f" style="top:1250px">예시 화면 · 가상 데이터</p></div></section>
+<section class="clip shot bgD" id="sh22" data-start="103.5" data-duration="6.18" data-track-index="1"><div class="cam" id="sh22-cam"><div class="gcards col" style="top:300px"><div class="gcard " id="gc56-0"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="6" cy="8" r="2.6" fill="currentColor"/><circle cx="12" cy="6.5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="2.6" fill="currentColor"/><path d="M1.5 19c0-3 2-5 4.5-5s4.5 2 4.5 5zM7 19.5c0-3.5 2.2-6 5-6s5 2.5 5 6zM13.5 19c0-3 2-5 4.5-5s4.5 2 4.5 5z" fill="currentColor" opacity=".85"/></svg></i><div class="gtx"><b>고용지원금 매니저</b></div></div><div class="gcard " id="gc56-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 4h-4a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h4z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i><div class="gtx"><b>기업부설연구소 OS</b></div></div><div class="gcard " id="gc56-2"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>정책자금 진단</b></div></div><div class="gcard " id="gc56-3"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 9.5v5M18 9.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>세금 계산기</b></div></div></div><div class="hd" id="hd57-0" style="top:1090px"><div class="kt s c"><span class="wm"><span class="w">다음</span></span> <span class="wm"><span class="w">모듈로</span></span> <span class="wm"><span class="w"><em class="hl">그대로</em></span></span></div></div></div></section>
+<section class="clip shot bgC" id="sh23" data-start="109.13" data-duration="6.57" data-track-index="2"><div class="cam" id="sh23-cam"><div class="chatb gold" id="up58" style="top:330px;right:90px">“대표님, 다음엔<br>이걸 해 보시죠.”</div><div class="gcards col" style="top:720px"><div class="gcard hl" id="gc59-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M12 2.5c3.5 2.2 5.5 6 5.5 10.5l-2.5 3h-6l-2.5-3C6.5 8.5 8.5 4.7 12 2.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2" fill="currentColor"/><path d="M9.5 19l2.5 2.5 2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>추가 계약</b><small>같은 고객사, 다음 컨설팅</small></div><span class="gck" id="gc59-0-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div><div class="hd" id="hd60-0" style="top:1010px"><div class="kt s c"><span class="wm"><span class="w">추가</span></span> <span class="wm"><span class="w">계약이</span></span> <span class="wm"><span class="w"><em class="hl">자연스럽게</em></span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh24" data-start="115.15" data-duration="3.43" data-track-index="1"><div class="cam" id="sh24-cam"><div class="people" style="top:460px"><div class="person" id="pp63-0"><span class="pav"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z" fill="currentColor"/></svg></i></span><b>고객사 대표님</b><span class="prx star" id="pp63-x0"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/></svg></i></span></div><div class="person" id="pp63-1"><span class="pav"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z" fill="currentColor"/></svg></i></span><b>컨설턴트님</b><span class="prx star" id="pp63-x1"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/></svg></i></span></div></div>
+      <div class="hd" id="hd62-0" style="top:900px"><div class="kt m c"><span class="wm"><span class="w">첫</span></span> <span class="wm"><span class="w">미팅부터</span></span><br><span class="wm"><span class="w"><em class="hl">달라</em></span></span> <span class="wm"><span class="w"><em class="hl">보인다</em></span></span></div></div></div></section>
+<section class="clip shot bgB" id="sh25" data-start="118.03" data-duration="5.25" data-track-index="2"><div class="cam" id="sh25-cam"><div class="chatb me" id="cs64-q" style="top:250px;right:90px;font-size:40px">“서류는 여기 올려 주시고,<br>진행 상황은 여기서 보시면 돼요.”</div><div class="cx" style="top:560px"><div class="cscreen" id="cs64"><h4>고객 화면 · 예시</h4><h5>B사 · 정책자금 신청</h5><div class="st done" id="cs64-0"><i></i>준비 중</div><div class="st done" id="cs64-1"><i></i>자료 확인 중</div><div class="st now" id="cs64-2"><i></i>진행 중</div><div class="st " id="cs64-3"><i></i>기관 접수</div><div class="st " id="cs64-4"><i></i>결과 대기</div><div class="st " id="cs64-5"><i></i>완료</div><p class="foot2">예시 화면 · 가상 데이터</p></div></div></div></section>
+<section class="clip shot bgA" id="sh26" data-start="122.73" data-duration="5.78" data-track-index="1"><div class="cam" id="sh26-cam"><div class="cx" style="top:250px"><span class="chip" id="tl65-c">크레탑 분석기 · 실제 도구 화면</span></div><div class="cx" style="top:330px"><div class="shotf" id="tl65" style="width:820px"><img src="assets/cs/tool-cretop.png" alt=""></div></div><div class="cx" style="top:770px"><span class="chip" id="tl66-c">창업감면 판정기 · 실제 도구 화면</span></div><div class="cx" style="top:850px"><div class="shotf" id="tl66" style="width:780px"><img src="assets/cs/tool-tax.png" alt=""></div></div></div></section>
+<section class="clip shot bgD" id="sh27" data-start="127.96" data-duration="7.8" data-track-index="2"><div class="cam" id="sh27-cam"><div class="cx" style="top:300px"><span class="eyeb" id="eb69"><i></i>써 보면 달라지는 것<i></i></span></div><div class="gcards col" style="top:400px"><div class="gcard " id="gc68-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 21V4h9v17" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 12h7M18 9l3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>헛걸음이 사라지고</b></div><span class="gck" id="gc68-0-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div><div class="gcard " id="gc68-1"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i><div class="gtx"><b>같은 시간에 더 많은 고객사를</b></div><span class="gck" id="gc68-1-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div><div class="gcard " id="gc68-2"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 4h-4a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h4z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i><div class="gtx"><b>처음 맡는 분야도 금방</b></div><span class="gck" id="gc68-2-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div></div></section>
+<section class="clip shot bgC" id="sh28" data-start="135.21" data-duration="4.42" data-track-index="1"><div class="cam" id="sh28-cam"><svg class="net" id="nw70" viewBox="0 0 900 700" style="top:300px">
+    <line id="nw70-l0" x1="450" y1="330" x2="450" y2="110" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><line id="nw70-l1" x1="450" y1="330" x2="700" y2="470" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><line id="nw70-l2" x1="450" y1="330" x2="200" y2="470" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><line id="nw70-l3" x1="450" y1="110" x2="250" y2="70" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><line id="nw70-l4" x1="450" y1="110" x2="650" y2="70" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><line id="nw70-l5" x1="700" y1="470" x2="830" y2="300" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><line id="nw70-l6" x1="700" y1="470" x2="790" y2="620" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><line id="nw70-l7" x1="200" y1="470" x2="110" y2="620" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><line id="nw70-l8" x1="200" y1="470" x2="70" y2="300" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+    <g id="nw70-o0"><circle cx="250" cy="70" r="42"/></g><g id="nw70-o1"><circle cx="650" cy="70" r="42"/></g><g id="nw70-o2"><circle cx="830" cy="300" r="42"/></g><g id="nw70-o3"><circle cx="790" cy="620" r="42"/></g><g id="nw70-o4"><circle cx="110" cy="620" r="42"/></g><g id="nw70-o5"><circle cx="70" cy="300" r="42"/></g>
+    <g id="nw70-m0"><circle cx="450" cy="110" r="56"/><text x="450" y="121">소개</text></g><g id="nw70-m1"><circle cx="700" cy="470" r="56"/><text x="700" y="481">소개</text></g><g id="nw70-m2"><circle cx="200" cy="470" r="56"/><text x="200" y="481">소개</text></g>
+    <g id="nw70-c"><circle class="me" cx="450" cy="330" r="92"/><text class="me" x="450" y="341">컨설턴트님</text></g></svg><div class="hd" id="hd71-0" style="top:1070px"><div class="kt m c"><span class="wm"><span class="w">소개가</span></span> <span class="wm"><span class="w"><em class="hl">소개를</em></span></span> <span class="wm"><span class="w">부른다</span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh29" data-start="139.08" data-duration="6.2" data-track-index="2"><div class="cam" id="sh29-cam"><svg class="chart" id="ch73" viewBox="0 0 920 600" style="top:520px"><path class="ax" d="M60 40 V560 H880"/><path class="pl hot" d="M60 520 C 260 500, 380 420, 520 330 S 780 120, 860 70"/></svg>
+      
+      <span class="ctag hot2" id="ch73-tt" style="left:640px;top:540px">다음 계약</span>
+      <div class="hd" id="hd72-0" style="top:250px"><div class="kt m c"><span class="wm"><span class="w">일이</span></span> <span class="wm"><span class="w"><em class="hl">일을</em></span></span> <span class="wm"><span class="w"><em class="hl">부르는</em></span></span><br><span class="wm"><span class="w">컨설턴트</span></span></div></div><div class="hd" id="hd72-1" style="top:250px"><div class="kt m c"><span class="wm"><span class="w">이제</span></span> <span class="wm"><span class="w"><em class="hl">컨설턴트님</em></span></span><br><span class="wm"><span class="w">차례예요</span></span></div></div></div></section>
+<section class="clip shot bgB" id="sh30" data-start="144.73" data-duration="4.28" data-track-index="1"><div class="cam" id="sh30-cam"><div class="cx" style="top:300px"><span class="eyeb" id="eb76"><i></i>출시 일정<i></i></span></div><div class="lt" id="lt75" style="top:440px"><div class="" id="lt75-0"><i></i><b>지금</b><small>다듬는 중</small></div><div class="on" id="lt75-1"><i></i><b>2026년 10월</b><small>운영 · 기업성장<br>모듈부터</small></div><div class="" id="lt75-2"><i></i><b>그다음</b><small>절세·재무 등<br>하나씩</small></div></div><div class="hd" id="hd77-0" style="top:900px"><div class="kt m c"><span class="wm"><span class="w">모듈을</span></span> <span class="wm"><span class="w"><em class="hl">하나씩</em></span></span> <span class="wm"><span class="w">연다</span></span></div></div><p class="fine c" id="lt75-f" style="top:1250px">모듈별 일정은 바뀔 수 있어요</p></div></section>
+<section class="clip shot bgC" id="sh31" data-start="148.46" data-duration="4.6" data-track-index="2"><div class="cam" id="sh31-cam"><div class="cx" style="top:360px"><span class="eyeb" id="eb79"><i></i>가장 먼저 써 보고 싶다면<i></i></span></div><div class="cx" style="top:560px"><span class="ctabtn" id="cta78"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>오픈 소식 받기</span></div><span class="touch" id="cta78-t" style="left:720px;top:640px"></span><div class="cx" style="top:800px"><span class="chip" id="cta78-u">miraeailab.com/consultants</span></div></div></section>
+<section class="clip shot bgC" id="sh32" data-start="152.51" data-duration="3.3" data-track-index="1"><div class="cam" id="sh32-cam"><div class="ttbg soft"></div><div class="cx" style="top:330px"><span class="chip hot big" id="ec80-e">MIRAE AI LAB OS</span></div>
+      <div class="ecard" id="ec80-c" style="top:480px"><span class="no">2026년 10월부터 하나씩</span><h3>오픈 소식<br>받기</h3><ul><li>miraeailab.com/consultants</li><li>모듈을 열 때마다 먼저 연락</li><li>도입 문의 · 직접 답해 드려요</li></ul></div>
+      <div class="cx" style="top:1060px"><span class="earrow" id="ec80-a"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3.5v16M5 12.5l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div></section>
+
+  
+  <div class="clip chap" id="cp6" data-start="14.08" data-duration="2.6" data-track-index="7"><span>① 문제</span></div>
+<div class="clip chap" id="cp15" data-start="28.38" data-duration="2.6" data-track-index="7"><span>② 더 깊은 문제</span></div>
+<div class="clip freeze" id="fz0" data-start="43.3" data-duration="1.25" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz0-l"><i></i><b>신뢰가 흔들리면</b><small>추가 계약도, 소개도 멀어진다</small><i></i></div></div>
+<div class="clip freeze" id="fz1" data-start="52.65" data-duration="1.25" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz1-l"><i></i><b>관리가 곧 영업이다</b><i></i></div></div>
+<div class="clip chap" id="cp28" data-start="54.1" data-duration="2.6" data-track-index="7"><span>③ 해결</span></div>
+<div class="clip chap" id="cp51" data-start="96.48" data-duration="2.6" data-track-index="7"><span>④ 다음 계약</span></div>
+<div class="clip freeze" id="fz2" data-start="113.7" data-duration="1.25" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz2-l"><i></i><b>올려 둔 서류가, 다음 계약으로</b><i></i></div></div>
+<div class="clip chap" id="cp61" data-start="115.15" data-duration="2.6" data-track-index="7"><span>⑤ 새 고객</span></div>
+<div class="clip chap" id="cp67" data-start="127.96" data-duration="2.6" data-track-index="7"><span>⑥ 달라지는 것</span></div>
+<div class="clip freeze" id="fz3" data-start="143.28" data-duration="1.25" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz3-l"><i></i><b>일이 일을 부르는 컨설턴트</b><i></i></div></div>
+<div class="clip chap" id="cp74" data-start="144.73" data-duration="2.6" data-track-index="7"><span>⑦ 오픈</span></div>
+
+  <div class="brand"><span class="logo"><img src="assets/logo.png" alt="미래에이아이랩"></span><span class="tag2">MIRAE AI LAB OS · 컨설턴트용</span></div>
+  <p class="foot">miraeailab.com · 컨설턴트 운영 OS 소개</p><div id="prog"><i></i></div>
+  <div id="flash"></div>
+  <div class="clip sub" id="sub0" data-start="0.35" data-duration="2.83" data-track-index="9"><span>컨설턴트님,<br>요즘 하루 어떻게 흘러가세요?</span></div><div class="clip sub" id="sub1" data-start="3.53" data-duration="1.87" data-track-index="9"><span>고객사 서류 찾다가 하루,</span></div><div class="clip sub" id="sub2" data-start="5.55" data-duration="2.63" data-track-index="9"><span>“어디까지 됐어요?”<br>카톡에 답하다 하루.</span></div><div class="clip sub" id="sub3" data-start="8.53" data-duration="1.7" data-track-index="9"><span>정작 다음 계약 준비는</span></div><div class="clip sub" id="sub4" data-start="10.38" data-duration="1.5" data-track-index="9"><span>늘 뒤로 밀리죠.</span></div><div class="clip sub" id="sub5" data-start="14.08" data-duration="2.1" data-track-index="9"><span>고객사가 다섯 곳만 넘어가도</span></div><div class="clip sub" id="sub6" data-start="16.33" data-duration="1.87" data-track-index="9"><span>일은 이렇게 흩어집니다.</span></div><div class="clip sub" id="sub7" data-start="18.55" data-duration="2.07" data-track-index="9"><span>서류는 카톡, 메일, 사진첩에.</span></div><div class="clip sub" id="sub8" data-start="20.77" data-duration="2.4" data-track-index="9"><span>사업자등록번호는 엑셀 어딘가에.</span></div><div class="clip sub" id="sub9" data-start="23.52" data-duration="2.56" data-track-index="9"><span>수금일, 신청 마감, 다음에 연락할 날은</span></div><div class="clip sub" id="sub10" data-start="26.23" data-duration="1.6" data-track-index="9"><span>머릿속에만 있고요.</span></div><div class="clip sub" id="sub11" data-start="28.38" data-duration="1.87" data-track-index="9"><span>더 큰 문제는 따로 있어요.</span></div><div class="clip sub" id="sub12" data-start="30.6" data-duration="2.1" data-track-index="9"><span>같은 서류를 두 번 달라고 하면</span></div><div class="clip sub" id="sub13" data-start="32.85" data-duration="2" data-track-index="9"><span>고객은 조용히 불안해지고,</span></div><div class="clip sub" id="sub14" data-start="35.2" data-duration="1.5" data-track-index="9"><span>마감 하나 놓치면</span></div><div class="clip sub" id="sub15" data-start="36.85" data-duration="2.4" data-track-index="9"><span>쌓아 온 신뢰가 한 번에 흔들립니다.</span></div><div class="clip sub" id="sub16" data-start="39.6" data-duration="2" data-track-index="9"><span>그러면 추가 계약도, 소개도</span></div><div class="clip sub" id="sub17" data-start="41.75" data-duration="1.5" data-track-index="9"><span>조용히 멀어지죠.</span></div><div class="clip sub" id="sub18" data-start="44.75" data-duration="1.97" data-track-index="9"><span>결국 다음 계약을 부르는 건</span></div><div class="clip sub" id="sub19" data-start="46.87" data-duration="1.56" data-track-index="9"><span>화려한 제안서보다</span></div><div class="clip sub" id="sub20" data-start="48.78" data-duration="2.17" data-track-index="9"><span>“그 컨설턴트는 관리가 확실해”</span></div><div class="clip sub" id="sub21" data-start="51.1" data-duration="1.5" data-track-index="9"><span>이 한마디예요.</span></div><div class="clip sub" id="sub22" data-start="54.1" data-duration="1.73" data-track-index="9"><span>그래서 만들었습니다.</span></div><div class="clip sub" id="sub23" data-start="55.98" data-duration="2.4" data-track-index="9"><span>컨설턴트 운영 OS, MIRAE AI LAB OS.</span></div><div class="clip sub" id="sub24" data-start="58.73" data-duration="1.67" data-track-index="9"><span>9년 현장의 일을 담아,</span></div><div class="clip sub" id="sub25" data-start="60.55" data-duration="2.27" data-track-index="9"><span>매일 직접 쓰는 기능만 넣었어요.</span></div><div class="clip sub" id="sub26" data-start="63.17" data-duration="1.5" data-track-index="9"><span>아침에 열면</span></div><div class="clip sub" id="sub27" data-start="64.82" data-duration="2.26" data-track-index="9"><span>오늘 꼭 처리할 일이 정리돼 있고,</span></div><div class="clip sub" id="sub28" data-start="67.43" data-duration="1.5" data-track-index="9"><span>먼저 할 세 가지를</span></div><div class="clip sub" id="sub29" data-start="69.08" data-duration="1.74" data-track-index="9"><span>이유와 함께 알려 줘요.</span></div><div class="clip sub" id="sub30" data-start="71.37" data-duration="1.86" data-track-index="9"><span>서류는 한 번만 받으면 끝.</span></div><div class="clip sub" id="sub31" data-start="73.38" data-duration="2.27" data-track-index="9"><span>밖에서도 폰으로 바로 꺼내 봐요.</span></div><div class="clip sub" id="sub32" data-start="76" data-duration="2.53" data-track-index="9"><span>사업자등록번호부터 받은 서류까지,</span></div><div class="clip sub" id="sub33" data-start="78.68" data-duration="1.87" data-track-index="9"><span>고객사 정보가 한 화면에.</span></div><div class="clip sub" id="sub34" data-start="80.9" data-duration="2.57" data-track-index="9"><span>받을 돈, 신청 마감, 다음에 연락할 날은</span></div><div class="clip sub" id="sub35" data-start="83.62" data-duration="1.61" data-track-index="9"><span>OS가 먼저 챙겨 줘요.</span></div><div class="clip sub" id="sub36" data-start="85.78" data-duration="2.5" data-track-index="9"><span>고객이 서류를 올리고 요청을 남기면</span></div><div class="clip sub" id="sub37" data-start="88.43" data-duration="2.4" data-track-index="9"><span>내 상담신청함으로 바로 들어오고,</span></div><div class="clip sub" id="sub38" data-start="91.18" data-duration="2.23" data-track-index="9"><span>정리된 결과만 고객에게 보이니</span></div><div class="clip sub" id="sub39" data-start="93.56" data-duration="2.37" data-track-index="9"><span>“어디까지 됐어요?” 카톡이 줄어요.</span></div><div class="clip sub" id="sub40" data-start="96.48" data-duration="2.27" data-track-index="9"><span>그리고 여기서부터가 진짜예요.</span></div><div class="clip sub" id="sub41" data-start="99.1" data-duration="1.5" data-track-index="9"><span>올려 둔 서류가</span></div><div class="clip sub" id="sub42" data-start="100.75" data-duration="2.4" data-track-index="9"><span>다음에 제안할 거리를 찾아 줍니다.</span></div><div class="clip sub" id="sub43" data-start="103.5" data-duration="3.26" data-track-index="9"><span>고용지원금, 기업부설연구소,<br>정책자금, 세금까지</span></div><div class="clip sub" id="sub44" data-start="106.91" data-duration="1.87" data-track-index="9"><span>다음 모듈로 이어지니까,</span></div><div class="clip sub" id="sub45" data-start="109.13" data-duration="2.23" data-track-index="9"><span>“대표님, 다음엔 이걸 해 보시죠.”</span></div><div class="clip sub" id="sub46" data-start="111.51" data-duration="2.14" data-track-index="9"><span>추가 계약이 자연스러워져요.</span></div><div class="clip sub" id="sub47" data-start="115.15" data-duration="2.53" data-track-index="9"><span>새 고객과의 첫 미팅부터 달라 보여요.</span></div><div class="clip sub" id="sub48" data-start="118.03" data-duration="1.9" data-track-index="9"><span>“서류는 여기 올려 주시고,</span></div><div class="clip sub" id="sub49" data-start="120.08" data-duration="2.3" data-track-index="9"><span>진행 상황은 여기서 보시면 돼요.”</span></div><div class="clip sub" id="sub50" data-start="122.73" data-duration="2.13" data-track-index="9"><span>크레탑 분석기, 세금 계산기로</span></div><div class="clip sub" id="sub51" data-start="125.01" data-duration="2.4" data-track-index="9"><span>그 자리에서 숫자로 보여 드리고요.</span></div><div class="clip sub" id="sub52" data-start="127.96" data-duration="1.6" data-track-index="9"><span>헛걸음은 사라지고,</span></div><div class="clip sub" id="sub53" data-start="129.71" data-duration="2.54" data-track-index="9"><span>같은 시간에 더 많은 고객사를 챙기고,</span></div><div class="clip sub" id="sub54" data-start="132.6" data-duration="2.26" data-track-index="9"><span>처음 맡는 분야도 금방 따라잡고,</span></div><div class="clip sub" id="sub55" data-start="135.21" data-duration="1.5" data-track-index="9"><span>관리가 확실하니</span></div><div class="clip sub" id="sub56" data-start="136.86" data-duration="1.87" data-track-index="9"><span>소개가 소개를 부르고요.</span></div><div class="clip sub" id="sub57" data-start="139.08" data-duration="2" data-track-index="9"><span>일이 일을 부르는 컨설턴트,</span></div><div class="clip sub" id="sub58" data-start="141.23" data-duration="2" data-track-index="9"><span>이제 컨설턴트님 차례예요.</span></div><div class="clip sub" id="sub59" data-start="144.73" data-duration="1.5" data-track-index="9"><span>2026년 10월부터</span></div><div class="clip sub" id="sub60" data-start="146.38" data-duration="1.73" data-track-index="9"><span>모듈을 하나씩 엽니다.</span></div><div class="clip sub" id="sub61" data-start="148.46" data-duration="1.87" data-track-index="9"><span>가장 먼저 써 보고 싶다면,</span></div><div class="clip sub" id="sub62" data-start="150.48" data-duration="2.13" data-track-index="9"><span>지금 오픈 소식을 받아 두세요.</span></div>
+</div>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  tl.from('#gc0-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 3.43);
+  tl.fromTo('#gc0-0-bar', { scaleX: 0 }, { scaleX: 0.92, duration: 1.4, ease: 'power2.out', immediateRender: true }, 3.63);
+  tl.from('#gc0-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 5.45);
+  tl.fromTo('#gc0-1-bar', { scaleX: 0 }, { scaleX: 0.96, duration: 1.4, ease: 'power2.out', immediateRender: true }, 5.65);
+  tl.from('#eb1', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 0.1);
+  tl.fromTo('#eb1 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 0.2);
+  tl.from('#hd2-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 0.25);
+  tl.from('#hd4-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 10.44);
+  tl.from('#nx3', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 8.63);
+  tl.from('#nx3-c', { opacity: 0, x: -30, duration: 0.7, ease: 'expo.out' }, 10.34);
+  tl.to('#nx3', { x: 60, scale: 0.94, opacity: 0.3, duration: 1.4, ease: 'power2.inOut' }, 10.64);
+  tl.fromTo('#pt5-a, #pt5-b', { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: 'power3.inOut', immediateRender: true }, 11.98);
+  tl.from('#pt5-e', { opacity: 0, y: 12, duration: 1, ease: 'expo.out' }, 12.13);
+  tl.from('#pt5-t .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.1 }, 12.23);
+  tl.from('#cp6 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 14.08);
+  tl.to('#cp6 span', { opacity: 0, duration: 0.3 }, 16.38);
+  tl.from('#eb8', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 14.13);
+  tl.fromTo('#eb8 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 14.23);
+  tl.from('#hd9-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 16.33);
+  tl.from('#cl7 span', { y: 40, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.14 }, 14.38);
+  tl.to('#cl7-0', { x: -60, y: -40, rotation: -8, opacity: 0.55, duration: 1.2, ease: 'power2.out' }, 16.43);
+  tl.to('#cl7-1', { x: 40, y: 60, rotation: 6, opacity: 0.55, duration: 1.2, ease: 'power2.out' }, 16.48);
+  tl.to('#cl7-2', { x: -30, y: 80, rotation: -5, opacity: 0.55, duration: 1.2, ease: 'power2.out' }, 16.53);
+  tl.to('#cl7-3', { x: 70, y: -50, rotation: 9, opacity: 0.55, duration: 1.2, ease: 'power2.out' }, 16.58);
+  tl.to('#cl7-4', { x: -80, y: 30, rotation: 7, opacity: 0.55, duration: 1.2, ease: 'power2.out' }, 16.63);
+  tl.from('#eb10', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 18.6);
+  tl.fromTo('#eb10 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 18.7);
+  tl.from('#sc11-0', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 19.07);
+  tl.from('#sc11-1', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 19.42);
+  tl.from('#sc11-2', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 19.77);
+  tl.from('#sc11-3', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 22.03);
+  tl.to('#sc11-0', { x: -30, y: -20, rotation: -6, opacity: 0.6, duration: 1.2, ease: 'power2.out' }, 21.77);
+  tl.to('#sc11-1', { x: 30, y: -30, rotation: 5, opacity: 0.6, duration: 1.2, ease: 'power2.out' }, 21.85);
+  tl.to('#sc11-2', { x: -40, y: 30, rotation: 5, opacity: 0.6, duration: 1.2, ease: 'power2.out' }, 21.93);
+  tl.to('#sc11-3', { x: 30, y: 40, rotation: -5, opacity: 0.6, duration: 1.2, ease: 'power2.out' }, 22.01);
+  tl.from('#li13', { scale: 0.85, opacity: 0, duration: 0.8, ease: 'expo.out' }, 23.57);
+  tl.from('#hd14-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 26.23);
+  tl.from('#th12-0', { y: 30, opacity: 0, duration: 0.8, ease: 'expo.out' }, 23.48);
+  tl.from('#th12-1', { y: 30, opacity: 0, duration: 0.8, ease: 'expo.out' }, 24.26);
+  tl.from('#th12-2', { y: 30, opacity: 0, duration: 0.8, ease: 'expo.out' }, 25.05);
+  tl.to('#th12-0, #th12-1, #th12-2', { opacity: 0.25, filter: 'blur(6px)', duration: 1.2, ease: 'power1.inOut', stagger: 0.25 }, 26.63);
+  tl.from('#cp15 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 28.38);
+  tl.to('#cp15 span', { opacity: 0, duration: 0.3 }, 30.68);
+  tl.from('#hd17-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 28.48);
+  tl.to('#hd17-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 32.55);
+  tl.from('#hd17-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 32.85);
+  tl.from('#ch16-a', { y: 40, opacity: 0, duration: 0.8, ease: 'expo.out' }, 30.6);
+  tl.from('#ch16-b', { y: 40, opacity: 0, duration: 0.8, ease: 'expo.out' }, 33.05);
+  tl.from('#hd19-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 36.85);
+  tl.from('#tr18-c', { y: 40, opacity: 0, duration: 0.8, ease: 'expo.out' }, 35.3);
+  tl.to('#tr18-l', { opacity: 1, duration: 0.4, ease: 'power1.out' }, 36.27);
+  tl.from('#tr18-m', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 35.6);
+  tl.fromTo('#tr18-i', { scaleX: 0 }, { scaleX: 0.92, duration: 1.0, ease: 'power2.out', immediateRender: true }, 35.7);
+  tl.to('#tr18-i', { scaleX: 0.3, duration: 0.9, ease: 'power3.in' }, 38.07);
+  tl.from('#gc20-0', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 40.03);
+  tl.from('#gc20-1', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 40.84);
+  tl.from('#hd21-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 41.75);
+  tl.to('#gc20-0', { x: -70, opacity: 0.3, duration: 1.4, ease: 'power2.inOut' }, 41.95);
+  tl.to('#gc20-1', { x: 70, opacity: 0.3, duration: 1.4, ease: 'power2.inOut' }, 42.05);
+  tl.from('#fz0 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 43.3);
+  tl.from('#fz0-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 43.38);
+  tl.fromTo('#fz0-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 43.42);
+  tl.to('#fz0', { opacity: 0, duration: 0.2 }, 44.35);
+  tl.from('#eb23', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 44.8);
+  tl.fromTo('#eb23 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 44.9);
+  tl.from('#hd24-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 46.87);
+  tl.from('#fn22 i', { y: 60, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.12 }, 45.05);
+  tl.to('#fn22', { opacity: 0.3, filter: "grayscale(1)", duration: 1, ease: 'power1.inOut' }, 47.47);
+  tl.from('#eb25', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 48.83);
+  tl.fromTo('#eb25 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 48.93);
+  tl.from('#hd26-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 48.93);
+  tl.from('#sl27', { opacity: 0, scale: 1.05, duration: 0.9, ease: 'expo.out' }, 51.1);
+  tl.fromTo('#sl27 i', { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'power3.inOut', immediateRender: true }, 51.2);
+  tl.from('#fz1 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 52.65);
+  tl.from('#fz1-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 52.73);
+  tl.fromTo('#fz1-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 52.77);
+  tl.to('#fz1', { opacity: 0, duration: 0.2 }, 53.7);
+  tl.from('#cp28 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 54.1);
+  tl.to('#cp28 span', { opacity: 0, duration: 0.3 }, 56.4);
+  tl.from('#eb30', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 54.15);
+  tl.fromTo('#eb30 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 54.25);
+  tl.from('#os29', { opacity: 0, y: 30, scale: 0.98, duration: 1.1, ease: 'expo.out' }, 55.78);
+  tl.from('#os29-s', { opacity: 0, y: 16, duration: 0.8, ease: 'expo.out' }, 56.38);
+  tl.from('#eb32', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 58.78);
+  tl.fromTo('#eb32 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 58.88);
+  tl.from('#nb33', { y: 30, opacity: 0, duration: 0.8, ease: 'expo.out' }, 58.74);
+  (function(){ const o = { v: 1 }; const el = document.querySelector('#nb33-n'); tl.to(o, { v: 9, duration: 0.8, ease: 'power2.out', onUpdate: () => { const v = o.v; el.textContent = Math.round(v).toLocaleString('ko-KR'); } }, 58.79); })();
+  tl.from('#sl34', { opacity: 0, scale: 1.05, duration: 0.9, ease: 'expo.out' }, 60.55);
+  tl.fromTo('#sl34 i', { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'power3.inOut', immediateRender: true }, 60.65);
+  tl.from('#yr31', { opacity: 0, y: 14, duration: 0.7, ease: 'expo.out' }, 59.04);
+  tl.from('#eb35', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 63.22);
+  tl.fromTo('#eb35 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 63.32);
+  tl.from('#hd36-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 64.82);
+  tl.from('#bw37', { y: 260, rotationX: 28, transformPerspective: 1400, opacity: 0, duration: 0.5, ease: 'power3.out' }, 63.19);
+  tl.fromTo('#bw37-img', { scale: 1.02, x: 0, y: 0 }, { scale: 1.16, x: 60, y: 40, duration: 4.4, ease: 'sine.inOut' }, 63.17);
+  tl.from('#eb39', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 67.48);
+  tl.fromTo('#eb39 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 67.58);
+  tl.from('#hd40-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 69.08);
+  tl.from('#t338', { y: 40, opacity: 0, duration: 0.9, ease: 'expo.out' }, 67.58);
+  tl.to('#t338-r0', { opacity: 1, duration: 0.3 }, 69.08); tl.to('#t338-r0', { opacity: 0, duration: 0.3 }, 69.5);
+  tl.to('#t338-r1', { opacity: 1, duration: 0.3 }, 69.53); tl.to('#t338-r1', { opacity: 0, duration: 0.3 }, 69.95);
+  tl.to('#t338-r2', { opacity: 1, duration: 0.3 }, 69.98); tl.to('#t338-r2', { opacity: 0, duration: 0.3 }, 70.4);
+  tl.from('#t338-f', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 68.03);
+  tl.from('#gc41-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 71.47);
+  tl.from('#gc41-0-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 71.97);
+  tl.from('#gc41-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 71.62);
+  tl.from('#gc41-1-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 72.22);
+  tl.from('#gc41-2', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 71.77);
+  tl.from('#gc41-2-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 72.47);
+  tl.from('#hd42-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 71.67);
+  tl.to('#hd42-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 73.08);
+  tl.from('#hd42-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 73.38);
+  tl.from('#hd44-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 78.68);
+  tl.from('#hc43', { y: 50, opacity: 0, duration: 0.9, ease: 'expo.out' }, 76.1);
+  tl.to('#hc43-a', { opacity: 1, duration: 0.35 }, 76.26); tl.to('#hc43-a', { opacity: 0, duration: 0.3 }, 77.31);
+  tl.to('#hc43-b', { opacity: 1, duration: 0.35 }, 77.51);
+  tl.from('#eb45', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 80.95);
+  tl.fromTo('#eb45 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 81.05);
+  tl.from('#hd46-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 83.62);
+  tl.from('#nt47-0', { y: -160, opacity: 0, scale: 0.9, duration: 0.4, ease: 'expo.out' }, 80.96);
+  tl.from('#nt47-1', { y: -160, opacity: 0, scale: 0.9, duration: 0.4, ease: 'expo.out' }, 81.74);
+  tl.from('#nt47-2', { y: -160, opacity: 0, scale: 0.9, duration: 0.4, ease: 'expo.out' }, 82.53);
+  tl.from('#nt47-f', { opacity: 0, duration: 0.3, ease: 'power3.out' }, 81.2);
+  tl.from('#ib48-d span', { y: 30, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.2 }, 85.93);
+  tl.from('#ib48-a', { y: -30, opacity: 0, duration: 0.7, ease: 'expo.out' }, 88.13);
+  tl.from('#ib48', { y: 50, opacity: 0, duration: 0.9, ease: 'expo.out' }, 88.43);
+  tl.from('#ib48-f', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 88.83);
+  tl.from('#gc49-0', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 91.28);
+  tl.from('#gc49-1', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 91.7);
+  tl.from('#hd50-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 93.56);
+  tl.from('#cp51 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 96.48);
+  tl.to('#cp51 span', { opacity: 0, duration: 0.3 }, 98.78);
+  tl.from('#li52', { scale: 0.85, opacity: 0, duration: 0.8, ease: 'expo.out' }, 96.53);
+  tl.from('#hd53-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 96.63);
+  tl.from('#hd55-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 100.75);
+  tl.from('#nx54-d span', { y: -30, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.15 }, 99.2);
+  tl.to('#nx54-d span', { y: 230, opacity: 0, scale: 0.8, duration: 0.9, ease: 'power2.in', stagger: 0.12 }, 100.15);
+  tl.from('#nx54', { y: 40, opacity: 0, duration: 0.9, ease: 'expo.out' }, 100.65);
+  tl.from('#nx54-f', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 101.05);
+  tl.from('#gc56-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 103.46);
+  tl.from('#gc56-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 104.22);
+  tl.from('#gc56-2', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 105.27);
+  tl.from('#gc56-3', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 105.89);
+  tl.from('#hd57-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 106.91);
+  tl.from('#gc59-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 111.51);
+  tl.from('#gc59-0-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 112.11);
+  tl.from('#hd60-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 111.81);
+  tl.from('#up58', { y: 40, opacity: 0, duration: 0.9, ease: 'expo.out' }, 109.23);
+  tl.from('#fz2 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 113.7);
+  tl.from('#fz2-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 113.78);
+  tl.fromTo('#fz2-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 113.82);
+  tl.to('#fz2', { opacity: 0, duration: 0.2 }, 114.75);
+  tl.from('#cp61 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 115.15);
+  tl.to('#cp61 span', { opacity: 0, duration: 0.3 }, 117.45);
+  tl.from('#hd62-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 115.35);
+  tl.from('#pp63-0', { y: 200, opacity: 0, duration: 0.4, ease: 'expo.out' }, 115.23);
+  tl.from('#pp63-1', { y: 200, opacity: 0, duration: 0.4, ease: 'expo.out' }, 115.41);
+  tl.from('[id^="pp63-x"]', { scale: 0, y: 40, opacity: 0, duration: 0.35, ease: 'expo.out', stagger: 0.14 }, 116.15);
+  tl.from('#cs64-q', { y: 30, opacity: 0, duration: 0.8, ease: 'expo.out' }, 118.13);
+  tl.from('#cs64', { y: 60, opacity: 0, duration: 0.9, ease: 'expo.out' }, 119.88);
+  tl.from('#cs64 .st', { x: -20, opacity: 0, duration: 0.5, ease: 'expo.out', stagger: 0.12 }, 120.08);
+  tl.from('#tl65-c, #tl65', { y: 40, opacity: 0, duration: 0.9, ease: 'expo.out' }, 122.83);
+  tl.from('#tl66-c, #tl66', { y: 40, opacity: 0, duration: 0.9, ease: 'expo.out' }, 123.75);
+  tl.from('#cp67 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 127.96);
+  tl.to('#cp67 span', { opacity: 0, duration: 0.3 }, 130.26);
+  tl.from('#gc68-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 128.06);
+  tl.from('#gc68-0-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 128.76);
+  tl.from('#gc68-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 129.71);
+  tl.from('#gc68-1-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 130.51);
+  tl.from('#gc68-2', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 132.6);
+  tl.from('#gc68-2-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 133.4);
+  tl.from('#eb69', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 128.01);
+  tl.fromTo('#eb69 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 128.11);
+  tl.from('#hd71-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 136.86);
+  tl.from('#nw70-c', { opacity: 0, scale: 0.8, transformOrigin: "50% 50%", duration: 0.8, ease: 'expo.out' }, 135.31);
+  tl.to('#nw70-l0, #nw70-l1, #nw70-l2', { strokeDashoffset: 0, duration: 0.6, ease: 'power2.out', stagger: 0.1 }, 135.81);
+  tl.from('#nw70-m0, #nw70-m1, #nw70-m2', { opacity: 0, scale: 0.6, transformOrigin: "50% 50%", duration: 0.7, ease: 'expo.out', stagger: 0.12 }, 136.11);
+  tl.to('#nw70-l3, #nw70-l4, #nw70-l5, #nw70-l6, #nw70-l7, #nw70-l8', { strokeDashoffset: 0, duration: 0.6, ease: 'power2.out', stagger: 0.08 }, 136.86);
+  tl.from('#nw70-o0, #nw70-o1, #nw70-o2, #nw70-o3, #nw70-o4, #nw70-o5', { opacity: 0, scale: 0.5, transformOrigin: "50% 50%", duration: 0.7, ease: 'expo.out', stagger: 0.08 }, 137.16);
+  tl.from('#hd72-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 139.18);
+  tl.to('#hd72-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 140.93);
+  tl.from('#hd72-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 141.23);
+  tl.fromTo('#ch73 .pl', { strokeDashoffset: 1400 }, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', stagger: 0.12, immediateRender: true }, 139.18);
+  tl.from('#ch73-tt', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 140.28);
+  tl.from('#fz3 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 143.28);
+  tl.from('#fz3-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 143.36);
+  tl.fromTo('#fz3-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 143.4);
+  tl.to('#fz3', { opacity: 0, duration: 0.2 }, 144.33);
+  tl.from('#cp74 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 144.73);
+  tl.to('#cp74 span', { opacity: 0, duration: 0.3 }, 147.03);
+  tl.from('#eb76', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 144.78);
+  tl.fromTo('#eb76 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 144.88);
+  tl.from('#hd77-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 146.38);
+  tl.from('#lt75-0', { y: 30, opacity: 0, duration: 0.7, ease: 'expo.out' }, 144.93);
+  tl.from('#lt75-1', { y: 30, opacity: 0, duration: 0.7, ease: 'expo.out' }, 145.24);
+  tl.from('#lt75-2', { y: 30, opacity: 0, duration: 0.7, ease: 'expo.out' }, 146.48);
+  tl.from('#lt75-f', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 145.33);
+  tl.from('#eb79', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 148.51);
+  tl.fromTo('#eb79 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 148.61);
+  tl.from('#cta78', { scale: 0.92, opacity: 0, duration: 0.9, ease: 'expo.out' }, 148.76);
+  tl.fromTo('#cta78-t', { scale: 0.4, opacity: 0.95 }, { scale: 1.6, opacity: 0, duration: 0.5, ease: 'power2.out', immediateRender: false }, 150.88);
+  tl.to('#cta78', { scale: 0.96, duration: 0.12, yoyo: true, repeat: 1 }, 150.88);
+  tl.from('#cta78-u', { opacity: 0, y: 14, duration: 0.7, ease: 'expo.out' }, 150.48);
+  tl.from('#ec80-e', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 152.61);
+  tl.from('#ec80-c', { y: 200, opacity: 0, duration: 0.5, ease: 'expo.out' }, 152.76);
+  tl.from('#ec80-a', { opacity: 0, duration: 0.3, ease: 'power3.out' }, 153.11);
+  tl.to('#ec80-a', { y: 24, duration: 0.45, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 153.41);
+  tl.fromTo('#sh0-cam', { scale: 1 }, { scale: 1.035, duration: 9.08, ease: 'none' }, 0);
+  tl.from('#sh1', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 8.53);
+  tl.fromTo('#sh1-cam', { scale: 1.035 }, { scale: 1, duration: 3.95, ease: 'none' }, 8.53);
+  tl.from('#sh2', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 11.93);
+  tl.fromTo('#sh2-cam', { scale: 1 }, { scale: 1.035, duration: 2.7, ease: 'none' }, 11.93);
+  tl.from('#sh3', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 14.08);
+  tl.fromTo('#sh3-cam', { scale: 1 }, { scale: 1.035, duration: 5.02, ease: 'none' }, 14.08);
+  tl.fromTo('#sh4', { opacity: 0, filter: 'blur(14px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out', immediateRender: false }, 18.55);
+  tl.fromTo('#sh4-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 5.52, ease: 'none' }, 18.55);
+  tl.from('#sh5', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 23.52);
+  tl.fromTo('#sh5-cam', { scale: 1.035 }, { scale: 1, duration: 5.41, ease: 'none' }, 23.52);
+  tl.from('#sh6', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 28.38);
+  tl.fromTo('#sh6-cam', { scale: 1 }, { scale: 1.035, duration: 7.37, ease: 'none' }, 28.38);
+  tl.from('#sh7', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 35.2);
+  tl.fromTo('#sh7-cam', { scale: 1.035 }, { scale: 1, duration: 4.95, ease: 'none' }, 35.2);
+  tl.from('#sh8', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 39.6);
+  tl.fromTo('#sh8-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 5.7, ease: 'none' }, 39.6);
+  tl.from('#sh9', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 44.75);
+  tl.fromTo('#sh9-cam', { scale: 1 }, { scale: 1.035, duration: 4.58, ease: 'none' }, 44.75);
+  tl.fromTo('#sh10', { opacity: 0, filter: 'blur(14px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out', immediateRender: false }, 48.78);
+  tl.fromTo('#sh10-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 5.87, ease: 'none' }, 48.78);
+  tl.from('#sh11', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 54.1);
+  tl.fromTo('#sh11-cam', { scale: 1 }, { scale: 1.035, duration: 5.18, ease: 'none' }, 54.1);
+  tl.from('#sh12', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 58.73);
+  tl.fromTo('#sh12-cam', { scale: 1 }, { scale: 1.035, duration: 4.99, ease: 'none' }, 58.73);
+  tl.from('#sh13', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 63.17);
+  tl.fromTo('#sh13-cam', { scale: 1.035 }, { scale: 1, duration: 4.81, ease: 'none' }, 63.17);
+  tl.from('#sh14', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 67.43);
+  tl.fromTo('#sh14-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 4.49, ease: 'none' }, 67.43);
+  tl.fromTo('#sh15', { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'power3.inOut', immediateRender: false }, 71.37);
+  tl.fromTo('#sh15-cam', { scale: 1 }, { scale: 1.035, duration: 5.18, ease: 'none' }, 71.37);
+  tl.from('#sh16', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 76);
+  tl.fromTo('#sh16-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 5.45, ease: 'none' }, 76);
+  tl.from('#sh17', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 80.9);
+  tl.fromTo('#sh17-cam', { scale: 1.035 }, { scale: 1, duration: 5.43, ease: 'none' }, 80.9);
+  tl.from('#sh18', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 85.78);
+  tl.fromTo('#sh18-cam', { scale: 1 }, { scale: 1.035, duration: 5.95, ease: 'none' }, 85.78);
+  tl.from('#sh19', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 91.18);
+  tl.fromTo('#sh19-cam', { scale: 1.035 }, { scale: 1, duration: 5.85, ease: 'none' }, 91.18);
+  tl.fromTo('#sh20', { opacity: 0, filter: 'blur(14px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out', immediateRender: false }, 96.48);
+  tl.fromTo('#sh20-cam', { scale: 1 }, { scale: 1.035, duration: 3.17, ease: 'none' }, 96.48);
+  tl.from('#sh21', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 99.1);
+  tl.fromTo('#sh21-cam', { scale: 1 }, { scale: 1.035, duration: 4.95, ease: 'none' }, 99.1);
+  tl.from('#sh22', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 103.5);
+  tl.fromTo('#sh22-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 6.18, ease: 'none' }, 103.5);
+  tl.from('#sh23', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 109.13);
+  tl.fromTo('#sh23-cam', { scale: 1.035 }, { scale: 1, duration: 6.57, ease: 'none' }, 109.13);
+  tl.from('#sh24', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 115.15);
+  tl.fromTo('#sh24-cam', { scale: 1 }, { scale: 1.035, duration: 3.43, ease: 'none' }, 115.15);
+  tl.from('#sh25', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 118.03);
+  tl.fromTo('#sh25-cam', { scale: 1.035 }, { scale: 1, duration: 5.25, ease: 'none' }, 118.03);
+  tl.from('#sh26', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 122.73);
+  tl.fromTo('#sh26-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 5.78, ease: 'none' }, 122.73);
+  tl.from('#sh27', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 127.96);
+  tl.fromTo('#sh27-cam', { scale: 1 }, { scale: 1.035, duration: 7.8, ease: 'none' }, 127.96);
+  tl.from('#sh28', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 135.21);
+  tl.fromTo('#sh28-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 4.42, ease: 'none' }, 135.21);
+  tl.from('#sh29', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 139.08);
+  tl.fromTo('#sh29-cam', { scale: 1.035 }, { scale: 1, duration: 6.2, ease: 'none' }, 139.08);
+  tl.from('#sh30', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 144.73);
+  tl.fromTo('#sh30-cam', { scale: 1 }, { scale: 1.035, duration: 4.28, ease: 'none' }, 144.73);
+  tl.from('#sh31', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 148.46);
+  tl.fromTo('#sh31-cam', { scale: 1 }, { scale: 1.035, duration: 4.6, ease: 'none' }, 148.46);
+  tl.from('#sh32', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 152.51);
+  tl.fromTo('#sh32-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 3.3, ease: 'none' }, 152.51);
+  tl.from('#sub0 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 0.35);
+  tl.from('#sub1 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 3.53);
+  tl.from('#sub2 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 5.55);
+  tl.from('#sub3 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 8.53);
+  tl.from('#sub4 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 10.38);
+  tl.from('#sub5 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 14.08);
+  tl.from('#sub6 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 16.33);
+  tl.from('#sub7 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 18.55);
+  tl.from('#sub8 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 20.77);
+  tl.from('#sub9 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 23.52);
+  tl.from('#sub10 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 26.23);
+  tl.from('#sub11 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 28.38);
+  tl.from('#sub12 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 30.6);
+  tl.from('#sub13 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 32.85);
+  tl.from('#sub14 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 35.2);
+  tl.from('#sub15 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 36.85);
+  tl.from('#sub16 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 39.6);
+  tl.from('#sub17 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 41.75);
+  tl.from('#sub18 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 44.75);
+  tl.from('#sub19 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 46.87);
+  tl.from('#sub20 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 48.78);
+  tl.from('#sub21 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 51.1);
+  tl.from('#sub22 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 54.1);
+  tl.from('#sub23 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 55.98);
+  tl.from('#sub24 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 58.73);
+  tl.from('#sub25 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 60.55);
+  tl.from('#sub26 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 63.17);
+  tl.from('#sub27 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 64.82);
+  tl.from('#sub28 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 67.43);
+  tl.from('#sub29 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 69.08);
+  tl.from('#sub30 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 71.37);
+  tl.from('#sub31 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 73.38);
+  tl.from('#sub32 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 76);
+  tl.from('#sub33 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 78.68);
+  tl.from('#sub34 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 80.9);
+  tl.from('#sub35 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 83.62);
+  tl.from('#sub36 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 85.78);
+  tl.from('#sub37 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 88.43);
+  tl.from('#sub38 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 91.18);
+  tl.from('#sub39 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 93.56);
+  tl.from('#sub40 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 96.48);
+  tl.from('#sub41 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 99.1);
+  tl.from('#sub42 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 100.75);
+  tl.from('#sub43 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 103.5);
+  tl.from('#sub44 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 106.91);
+  tl.from('#sub45 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 109.13);
+  tl.from('#sub46 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 111.51);
+  tl.from('#sub47 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 115.15);
+  tl.from('#sub48 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 118.03);
+  tl.from('#sub49 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 120.08);
+  tl.from('#sub50 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 122.73);
+  tl.from('#sub51 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 125.01);
+  tl.from('#sub52 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 127.96);
+  tl.from('#sub53 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 129.71);
+  tl.from('#sub54 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 132.6);
+  tl.from('#sub55 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 135.21);
+  tl.from('#sub56 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 136.86);
+  tl.from('#sub57 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 139.08);
+  tl.from('#sub58 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 141.23);
+  tl.from('#sub59 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 144.73);
+  tl.from('#sub60 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 146.38);
+  tl.from('#sub61 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 148.46);
+  tl.from('#sub62 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 150.48);
+  tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: 155.81, ease: 'none' }, 0);
+
+  window.__timelines["main"] = tl;
+  tl.seek(0);
+</script>
+</body>
+</html>

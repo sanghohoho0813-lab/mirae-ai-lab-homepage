@@ -6,6 +6,22 @@
 |---|---|---|---|
 | `video-1/` | 영상 1 · AX가 뭐고, 왜 필요한가 — **v3** | 약 4분 27초(말 4분 24초 + 끝 화면 3초) | 1.1배 |
 | `video-2/` | 영상 2 · 어떻게 진행하고, 얼마가 드나 — **v3** | 약 4분 11초(말 4분 8초 + 끝 화면 3초) | 1.08배 |
+| `consultant/` | 컨설턴트 운영 OS 소개(MIRAE AI LAB OS) — 자막 전용 | 약 2분 36초(자막 153초 + 끝 화면 3초) | 읽는 속도 초당 7.5자 |
+
+## 컨설턴트 운영 OS 소개 영상(`consultant/`)
+
+목소리 없이 자막 중심으로 만든 컨설턴트용 영상. 영상 1·2와 같은 고급 모드·9:16·한 화면 4~5초(33장면)·중요한 말 뒤 1.5초 멈춤.
+대본·장면표는 `consultant/script.md`.
+
+- 녹음이 없으므로 `synth.py` 가 `spoken.txt` 를 읽는 속도로 나눠 `timing.json` · `asr-fast.json`(단어 시간) · `sil-fast.json`(쉼)을 만든다.
+  그다음은 영상 1·2와 똑같이 `node build.mjs` → 렌더. 멈춤 자리는 `edits.json` 의 `gapBefore`.
+- 화면은 `/consultants` 페이지의 예시 화면(오늘 화면·고객사 카드, 가상 데이터)을 캡처해 자른 것(`assets/cs/`)과 실제 도구 화면(크레탑 분석기·창업감면 판정기).
+- 정식 출시 전이라 속도·성과 숫자, 가격, 무료 체험, 이용 후기는 넣지 않는다. 화면에는 '예시 화면 · 가상 데이터'.
+
+```bash
+cd consultant && python3 synth.py && node build.mjs
+npx --yes hyperframes@0.8.79 render --fps 30 --quality high -o renders/consultant.mp4
+```
 
 ## v3 — 샘플 화면 교체 · 영상 2 비용 순서 변경
 
