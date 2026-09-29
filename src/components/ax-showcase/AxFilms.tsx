@@ -152,6 +152,9 @@ function FilmBlock({
   const [mode, setMode] = useState<Mode>('preview')
   const modeRef = useRef<Mode>('preview')
   modeRef.current = mode
+  // 소리 켜고 재생을 시작한 시각 — 이어서 보기로 화면 밖의 편을 틀 때, 스크롤 전에 남아 있던
+  // '화면 밖' 알림이 막 시작한 재생을 멈추지 않게 잠깐 무시한다
+  const soundAt = useRef(0)
 
   // 미리보기일 때만: 보이면 소리 없이 재생, 벗어나면 멈춘다. 소리 켠 뒤에는 벗어날 때 멈추기만 한다
   useEffect(() => {
@@ -160,8 +163,9 @@ function FilmBlock({
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     const io = new IntersectionObserver(
       ([e]) => {
-        if (!e.isIntersecting) v.pause()
-        else if (modeRef.current === 'preview' && !reduce) v.play().catch(() => {})
+        if (!e.isIntersecting) {
+          if (performance.now() - soundAt.current > 1500) v.pause()
+        } else if (modeRef.current === 'preview' && !reduce) v.play().catch(() => {})
       },
       { threshold: 0.5 },
     )
@@ -173,6 +177,7 @@ function FilmBlock({
     const v = videoRef.current
     if (!v) return
     onSound()
+    soundAt.current = performance.now()
     v.muted = false
     v.loop = false
     v.currentTime = 0
