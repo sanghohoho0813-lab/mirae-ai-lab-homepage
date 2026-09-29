@@ -1,0 +1,58 @@
+# AX 영상 1·2 (릴스 9:16, 녹음 맞춤) 원본
+
+대표님이 직접 녹음·컷 편집한 목소리에 맞춰 [HyperFrames](https://github.com/heygen-com/hyperframes) 로 만든 두 편입니다.
+
+| 폴더 | 제목 | 길이 | 속도 |
+|---|---|---|---|
+| `video-1/` | 영상 1 · AX가 뭐고, 왜 필요한가 | 약 4분 27초(말 4분 24초 + 끝 화면 3초) | 1.1배 |
+| `video-2/` | 영상 2 · 어떻게 진행하고, 얼마가 드나 | 약 4분 11초(말 4분 8초 + 끝 화면 3초) | 1.08배 |
+
+## 만드는 방식
+
+- **자막 조각마다 화면이 바뀐다.** 한 샷 평균 2.5초(영상 1: 105샷, 영상 2: 94샷). 샷마다 들어오는 방식(밀기·확대·와이프·번쩍)과 느린 카메라 움직임이 다르다.
+- **글자는 핵심어만.** 나머지는 그림·숫자(올라가며 세기)·실제 데모 폰 화면(눌러 가는 흐름)으로 보여 준다.
+- **프리즈(1~1.3초):** 중요한 말 뒤 쉼에서 화면을 흑백·흐림으로 멈추고 한 줄로 강조한다.
+  - 영상 1: 여기서 갈립니다 · 보여 줄 게 없다 · 사례 250건 가까이 분석 · 15억 원 보증·금융지원 · 다음 단계가 보이는 회사
+  - 영상 2: 2주 안에 MVP·기본 틀 · 먼저 도입한 회사가 유리(+샘플에서 직접 눌러 보세요) · 500·1,500·3,000만 원부터 · 유지보수 1년 무상 · 개발비 후불 가능
+- 쉼: 쉼표 0.2초 · 문장 0.35초 · 장면 0.45초(기술사업·MVP 1분 42초 영상과 같다). 훅이 끝나면 제목 카드.
+- 장이 바뀔 때 왼쪽 위에 장 이름(② 문제 · 심사장 …)이 잠깐 뜬다.
+
+## 자막 = 실제 목소리
+
+`spoken-script.txt` 는 대본 원문, `spoken.txt` 는 **녹음에서 실제로 말한 대로 고친 자막**이다(받아쓰기로 대조).
+영상 2 녹음에는 같은 안내(정책자금·지원사업 신청 + 수수료)가 두 번 들어 있어 앞의 한 번을 뺐다(`edits.json` 의 `drop`).
+
+## 파일
+
+| 파일 | 내용 |
+|---|---|
+| `lib/lib.mjs` | 샷 틀(전환·카메라)·자막·프리즈·단어 시간 찾기 |
+| `lib/kit.mjs` · `lib/kit2.mjs` | 샷 부품(큰 글자·타일·도장·숫자·폰 흐름·브라우저·심사장·그래프·단계·가격 카드·진단 버튼 등) |
+| `assets/` | 두 영상이 함께 쓰는 폰트·로고·데모 화면(`shots`, `flows`) — 각 영상 `assets/` 에 심볼릭 링크 |
+| `video-N/assets/voice.mp3` | 대표님 녹음(컷 편집본) |
+| `video-N/spoken.txt` | 자막(빈 줄 = 장면, `\|` = 자막 끊는 곳) |
+| `video-N/edits.json` | 프리즈용 쉼(`gapBefore`, 줄인 뒤 초) · 뺄 문장(`drop`) |
+| `video-N/build.mjs` | 장면표 — 자막 조각마다 어떤 샷을 쓸지 |
+
+## 다시 만들기
+
+```bash
+cd video-1                      # video-2 는 SPEED=1.08
+python3 asr.py .                # 받아쓰기 → asr.json (faster-whisper)
+python3 align.py . spoken.txt keys.json && cp timing.json timing-orig.json
+SPEED=1.1 python3 tighten.py . ffmpeg          # 쉼 정리·배속 → assets/voice-fast.wav, asr-fast.json, sil-fast.json
+ASR=asr-fast.json python3 align.py . spoken.txt keys.json
+node build.mjs                  # → index.html, subtitles.srt
+npx --yes hyperframes@0.8.79 render --fps 30 --quality high -o renders/video.mp4
+# 목소리 합치기(고화질): libx264 CRF 18 · AAC 192k 48kHz
+ffmpeg -i renders/video.mp4 -i assets/voice-fast.wav -filter_complex "[1:a]apad[a]" -map 0:v -map "[a]" -t <길이> \
+  -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -c:a aac -b:a 192k -ar 48000 -movflags +faststart out.mp4
+```
+
+## 지켜야 할 것
+
+- 사례는 **조사 사례 요약 · 미래AI랩 실적 아님**, 정책은 **공식 근거** 상자로 따로.
+- 인증은 **'신청까지 함께 준비'**, 결과·기간은 외부기관 심사에 따른다는 각주. 특허는 **'출원'** 만.
+- 실제 프로젝트는 업종만(업체명 비공개). 진단 시스템·알림·업무 공간 화면은 **예시 화면**.
+- 영상 1의 "올해 중소벤처기업부가 … 7,540억 원 규모의 융자 지원" 은 녹음 그대로 자막에 두고, 화면에는 정확한 근거
+  (AX-Sprint 7,540억 원 규모 지원 발표 · 정책브리핑 2026.3 / 중진공 정책자금 AX 스프린트 우대트랙)를 보여 준다. 다시 녹음할 때 표현을 맞추는 것이 좋다.
