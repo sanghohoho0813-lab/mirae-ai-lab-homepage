@@ -22,7 +22,7 @@ import { usePageMeta } from '../lib/pageMeta'
 
 const PAGE_TITLE = '대표님 서비스 선택 | 미래AI랩 — 50인 미만 중소기업 AX · 기술사업·MVP'
 const PAGE_DESC =
-  '50인 미만 중소기업을 위한 AX와 기술사업을 만들어요. 아이디어는 작동하는 서비스로, 회사는 벤처기업으로 — 2주 MVP·벤처기업확인 패키지부터, 정책자금·지원사업·투자에서 경쟁력 있는 회사로 만드는 AX 도입까지.'
+  '50인 미만 중소기업을 위한 AX와 기술사업을 만들어요. 아이디어는 작동하는 웹앱 서비스로, 회사는 벤처기업으로 — 2주 MVP·벤처기업확인 패키지부터, 정책자금·지원사업·투자에서 경쟁력 있는 회사로 만드는 AX 도입까지.'
 
 // "AX = 대기업" 이라는 인상을 먼저 걷어내는 자리.
 // 새로 지어낸 말은 두지 않는다 — 셋 다 이미 사이트에 있는 사실을 끌어올린 것이다.
@@ -222,7 +222,7 @@ export default function BusinessServicesPage() {
       </header>
 
       {/* 위 여백을 넉넉히 두면 768px(태블릿)에서 두 카드 CTA 가 첫 화면 밖으로 밀린다 */}
-      <main className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-4 sm:px-6 sm:pb-14 sm:pt-8">
+      <main className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pb-10 pt-3 sm:px-6 sm:pb-14 sm:pt-8">
         <div className="text-center">
           {/* 첫 줄부터 누구를 위한 서비스인지 못 박는다 — AX 를 대기업 얘기로 넘겨짚지 않게 */}
           {/* 글자 1.2배 (0.84 → 1.01rem · PC 0.9 → 1.08rem). Pretendard 기준 360px 폰에서도 한 줄 */}
@@ -230,11 +230,11 @@ export default function BusinessServicesPage() {
             <span aria-hidden className="h-px w-6 shrink-0 bg-[#C99257]/70 sm:w-10" />
             {/* 한 덩어리로 묶는다 — 나누면 gap-2 가 '중소기업'과 '을' 사이에 끼어든다 */}
             <span className="break-keep">
-              <span className="text-[#A5703C]">50인 미만 중소기업</span>을 위한 AX · 기술사업
+              <span className="text-[#A5703C]">50인 미만 중소기업</span>을 위한 <span className="whitespace-nowrap">AX · 기술사업</span>
             </span>
             <span aria-hidden className="h-px w-6 shrink-0 bg-[#C99257]/70 sm:w-10" />
           </p>
-          <h1 className="hero-anim mt-3 text-[1.55rem] font-bold leading-[1.25] tracking-[-0.03em] text-[#0B0E12] [animation-delay:60ms] sm:mt-4 sm:text-[2.55rem]">
+          <h1 className="hero-anim mt-2 text-[1.55rem] font-bold leading-[1.25] tracking-[-0.03em] text-[#0B0E12] [animation-delay:60ms] sm:mt-4 sm:text-[2.55rem]">
             대표님, 지금 필요한 변화는<br className="sm:hidden" /> 어느 쪽인가요?
           </h1>
           {/* 폰에서는 뺀다 — 두 카드의 한 줄(없던 기술사업을 2주 안에 / 지금 회사를 한 단계 위로)이 같은 말을 하고, 02 카드가 첫 화면에 보여야 한다 */}
@@ -243,25 +243,29 @@ export default function BusinessServicesPage() {
           </p>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-6">
+        <div className="mt-3 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-6">
           {/* 01 BASIC — 2주 기술사업 빌드 : 밝은 카드. 가격이 분명한 입문 상품 */}
           <Link
             to={VENTURE_MVP_PATH}
             data-track="venture-mvp"
-            aria-label="01 BASIC 2주 기술사업 빌드 — 아이디어는 작동하는 서비스로, 회사는 벤처기업으로. 런칭 파트너 300만원. 2주 기술사업 패키지 보기"
+            aria-label="01 BASIC 2주 기술사업 빌드 — 아이디어는 작동하는 웹앱 서비스로, 회사는 벤처기업으로. 런칭 파트너 300만원. 2주 기술사업 패키지 보기"
             className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#E7EAEE] bg-[#FFFDF9] p-4 pt-5 text-[#171B20] shadow-lg shadow-[#D47A4A]/10 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/50 hover:shadow-2xl hover:shadow-[#D47A4A]/20 [animation-delay:200ms] sm:p-7"
           >
             <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#E8B89A]/40 blur-3xl" />
 
             <div className="relative sm:flex-1">
               <CardHead no="01" tier="BASIC" name="2주 기술사업 빌드" diff="없던 기술사업을 2주 안에" tone="light" visual={<VentureVisual />}>
-                <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
-                  아이디어는 서비스로,<br />회사는 <span className="text-[#C8612E]">벤처기업으로</span>
+                <h2 className="mt-2.5 text-[1.2rem] font-black leading-[1.28] tracking-tight sm:mt-4 sm:leading-[1.3] sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
+                  {/* 폰에서는 '아이디어는 작동하는 / 웹앱 서비스로, / 회사는 벤처기업으로' — 말 덩어리대로만 끊는다 */}
+                  <span className="whitespace-nowrap">아이디어는</span> <span className="whitespace-nowrap">작동하는</span>{' '}
+                  <span className="whitespace-nowrap">웹앱 서비스로,</span>
+                  <br />
+                  회사는 <span className="text-[#C8612E]">벤처기업으로</span>
                 </h2>
               </CardHead>
               {/* 가격 — '원래 500만원인데 지금 300만원' 이 한눈에 읽히게: 정상가를 크게 두고 붉은 선으로 지운 뒤,
                   아래 줄에 런칭 파트너 가격과 할인 금액을 붙인다(상세 페이지 첫 화면과 같은 숫자) */}
-              <div className="mt-3.5 rounded-2xl bg-[#171B20]/[0.035] px-4 py-3 ring-1 ring-inset ring-[#171B20]/10 sm:mt-5">
+              <div className="mt-3 rounded-2xl bg-[#171B20]/[0.035] px-4 py-3 ring-1 ring-inset ring-[#171B20]/10 sm:mt-5">
                 <p className="flex items-baseline gap-2">
                   <span className="text-[0.84rem] font-bold text-[#646E78]">정상가</span>
                   <del className="text-[1.2rem] font-black tabular-nums text-[#646E78] decoration-[#D2462E] decoration-[2.5px] sm:text-[1.3rem]">500만원</del>
@@ -272,17 +276,17 @@ export default function BusinessServicesPage() {
                   <span className="rounded-full bg-[#D2462E] px-2.5 py-1 text-[0.8rem] font-black leading-none text-white">200만원 할인</span>
                 </p>
                 {/* 선착순은 카드 머리가 아니라 할인 바로 아래 — 가격과 한 덩어리로 읽힌다 */}
-                <p className="mt-2">
+                <p className="mt-1.5 sm:mt-2">
                   <span data-first-come className="inline-flex items-center gap-1.5 rounded-full bg-[#D47A4A] px-2.5 py-1 text-[0.8rem] font-black leading-none text-[#171B20]">
                     <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#171B20]" />
                     선착순 5개사
                   </span>
                 </p>
-                <p className="mt-2 break-keep text-[0.74rem] leading-snug text-[#646E78]">벤처기업확인 심사 수수료는 별도예요.</p>
+                <p className="mt-1.5 break-keep text-[0.74rem] leading-snug text-[#646E78] sm:mt-2">벤처기업확인 심사 수수료는 별도예요.</p>
               </div>
             </div>
 
-            <span className="relative mt-4 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-[#171B20] px-5 text-[1.05rem] font-black text-white transition-colors group-hover:bg-[#343B44] sm:min-h-[52px]">
+            <span className="relative mt-3.5 inline-flex min-h-[50px] sm:mt-4 w-full items-center justify-center gap-2 rounded-xl bg-[#171B20] px-5 text-[1.05rem] font-black text-white transition-colors group-hover:bg-[#343B44] sm:min-h-[52px]">
               2주 기술사업 패키지 보기 <span aria-hidden className="text-[#E8B89A] transition-transform group-hover:translate-x-1">→</span>
             </span>
           </Link>
@@ -307,12 +311,12 @@ export default function BusinessServicesPage() {
                 visual={<AxVisual />}
                 note={
                   <>
-                    <b className="font-black text-[#E6C396]">AX</b> = 회사가 일하는 방식을 AI 도입으로 바꾸는 것
+                    <b className="font-black text-[#E6C396]">AX</b> = 회사가 일하는 방식을 AI 도입을 통해 바꾸는 것
                   </>
                 }
               >
                 {/* AX 상세 첫 화면 제목과 같은 말 — 폰에서는 가운뎃점 뒤(<wbr />)에서만 끊는다 */}
-                <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
+                <h2 className="mt-2.5 text-[1.2rem] font-black leading-[1.28] tracking-tight sm:mt-4 sm:leading-[1.3] sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
                   AX 도입으로
                   <br />
                   <span className="whitespace-nowrap">정책자금·</span>

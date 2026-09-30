@@ -111,9 +111,12 @@ export default function GatewayPage() {
             <br />
             <span className="text-[#E6C396]">50인 미만 중소기업 AX</span>
           </h1>
-          {/* AX 를 처음 보는 분이 대부분이라 바로 아래에서 뜻을 밝힌다 */}
-          <p className="mt-2 text-[0.98rem] text-slate-400 min-[380px]:text-[1.03rem] sm:mt-4 sm:text-[1.15rem]">
-            AX = AI로 회사가 일하는 방식을 바꾸는 것 <span className="hidden sm:inline">· AI 경영지원 도구 직접 개발</span>
+          {/* AX 를 처음 보는 분이 대부분이라 바로 아래에서 뜻을 밝힌다 — 흐린 회색이면 눈에 안 띄어서,
+              'AX' 는 금색 굵게, 뜻은 밝은 아이보리로. 폰에서는 '…방식을 / AI 도입을 통해…' 로 끊는다 */}
+          <p data-ax-def className="mt-2 text-[0.98rem] font-medium text-[#EDE3D4] min-[380px]:text-[1.03rem] sm:mt-4 sm:text-[1.15rem]">
+            <b className="font-black text-[#E6C396]">AX</b> <span className="whitespace-nowrap">= 회사가 일하는 방식을</span>{' '}
+            <span className="whitespace-nowrap">AI 도입을 통해 바꾸는 것</span>{' '}
+            <span className="hidden font-normal text-slate-400 sm:inline">· AI 경영지원 도구 직접 개발</span>
           </p>
         </section>
 
