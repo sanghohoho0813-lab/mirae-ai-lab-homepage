@@ -9,12 +9,44 @@ const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-90
 // 히어로 문장에서 떨어지면 어색한 말 덩어리 — 한 음절만 다음 줄로 넘어가지 않게 통째로 줄바꿈한다
 const NW = 'whitespace-nowrap'
 
-/** SECTION 1 — Hero. 배지 · 한 문장 · 두 문단. 직접 만든 화면 22개(AxSamplesBand)는 소개 영상 2편 다음에 있다.
+/** SECTION 1 — Hero. 한 문장(제목) · 짧은 한 문단 · 상자 하나(시간·비용 ↓ · 매출 ↑ · 혁신기업). 직접 만든 화면 22개(AxSamplesBand)는 소개 영상 2편 다음에 있다.
  *  키워드 칩과 버튼은 두지 않는다.
  *  대표님 방향(2026-09): 중소기업 대표가 수천만원을 쓰는 이유는 '업무 효율'보다 '성장과 생존'이다.
  *  → 제목은 '정책자금·지원사업·투자에서 경쟁력 있는 회사로', 1문단은 왜(이미 시도하고 실제로 보여 주는 혁신기업을 더 선호한다),
  *    2문단은 AX 가 실제로 하는 일(시간·비용은 줄이고 매출은 올린다). 서비스 선택 02 카드도 같은 말을 쓴다.
  *  승인·선정을 약속하는 표현은 절대 쓰지 않는다('경쟁력 있는 회사로' 까지만). */
+// 첫 화면 상자 세 칸 — 글 대신 큰 화살표로 '무엇이 달라지는지' 한눈에(시간·비용 ↓ · 매출 ↑ · 혁신기업)
+const ARROW = 'h-7 w-7 sm:h-8 sm:w-8'
+const AX_HERO_GAINS = [
+  {
+    label: '시간·비용',
+    note: '낭비는 줄이고',
+    icon: (
+      <svg viewBox="0 0 24 24" className={ARROW} fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 4v15M6 13l6 6 6-6" />
+      </svg>
+    ),
+  },
+  {
+    label: '매출',
+    note: '더 끌어올리고',
+    icon: (
+      <svg viewBox="0 0 24 24" className={ARROW} fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20V5M6 11l6-6 6 6" />
+      </svg>
+    ),
+  },
+  {
+    label: '혁신기업으로',
+    note: '만들어 드려요',
+    icon: (
+      <svg viewBox="0 0 24 24" className={ARROW} fill="currentColor">
+        <path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3L3.5 11l6.3-2.2z" />
+      </svg>
+    ),
+  },
+] as const
+
 export function AxHeroV2() {
   return (
     <section className="relative overflow-hidden bg-[#050B11]">
@@ -26,8 +58,7 @@ export function AxHeroV2() {
           스크롤을 조금만 내리면 밝은 영상 구간이 눈에 들어온다.
           폰에서는 첫 화면에 그 구간이 보이지 않게 한 화면을 통째로 쓰고,
           PC 는 3.5rem 만 덜어 제목이 경계에 살짝 걸치게 둔다.
-          320px 같은 작은 화면에서는 문단이 두 개라 여백부터 줄여 한 화면에 담는다.
-          세로가 짧은 폰(높이 760px 이하, 예: 360×740)은 위 여백·문단 간격·줄간격을 조금 줄여 두 문단이 하단 바 위에 들어가게 한다. */}
+          320px 같은 작은 화면·세로가 짧은 폰(높이 760px 이하)은 위 여백부터 줄여 한 화면에 담는다. */}
       {/* 폰에서는 하단 고정 바(약 64px)가 처음부터 떠 있으므로 아래 여백을 그만큼 더 둔다 (pb-24 / 작은 화면 pb-20) */}
       <div className={`relative flex min-h-[calc(100svh-53px)] sm:min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-24 pt-12 max-[359px]:pb-20 max-[359px]:pt-7 [@media(max-height:700px)]:pb-20 [@media(max-height:700px)]:pt-7 [@media(max-width:639px)_and_(max-height:760px)]:pt-7 sm:px-6 sm:pb-12 sm:pt-14`}>
         {/* 윗배지(경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤 AX)는 뺐다 — 서비스 선택 화면과 헤더에서 이미 본다 */}
@@ -46,24 +77,30 @@ export function AxHeroV2() {
           </span>{' '}
           <span className={NW}>만들어 드려요.</span>
         </h1>
-        {/* 두 문단 — 문단마다 흰 글자(무엇) 하나와 브랜드색(남는 결과) 하나만 집어, 읽는 눈이 어디에 멈출지 분명하게 한다.
-            1문단: 왜 지금(심사위원·투자자는 이미 시도하고 실제로 보여 주는 회사 · 시대 흐름에 맞게 성장하는 혁신기업을 더 선호한다) · 2문단: 무엇을 해 주나(시간·비용은 줄이고 매출은 더 끌어올릴 수 있게 만든다) */}
-        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-[359px]:mt-5 [@media(max-width:639px)_and_(max-height:760px)]:mt-5 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] [@media(max-width:639px)_and_(max-height:760px)]:leading-[1.72] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-8 sm:text-[1.44rem]">
-          <span className={NW}><b className="font-bold text-[#FAFAF8]">누구나 AI로</b> 그럴듯한</span> <span className={NW}>계획서를 쓰는 요즘,</span>
-          <br className="hidden sm:block" /> <span className={NW}>심사위원과 투자자는</span>{' '}
+        {/* 글자가 많으면 눈에 안 들어와서(대표님 피드백), 2주 기술사업 빌드 첫 화면처럼 '짧은 한 문단 + 상자 하나' 로 둔다.
+            문단: 왜(심사위원·투자자는 이미 시도하고 실제로 보여 주는 혁신기업을 더 선호한다).
+            상자: 무엇을 해 주나(AI와 데이터로 일하는 회사로 → 시간·비용 ↓ · 매출 ↑ · 혁신기업으로) — 글 대신 큰 화살표로 한눈에 */}
+        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-3xl break-keep text-[1.22rem] font-medium leading-[1.7] text-[#E7EAEE] max-[359px]:mt-5 max-[359px]:text-[1.08rem] sm:mt-8 sm:text-[1.4rem]">
+          <span className={NW}>심사위원과 투자자는</span>{' '}
           <span className={NW}><b className="font-bold text-[#E8B89A]">이미 시도하고</b></span>{' '}
-          <span className={NW}><b className="font-bold text-[#E8B89A]">실제로 보여 주는 회사,</b></span>{' '}
-          <br className="hidden lg:block" />
-          <span className={NW}>시대 흐름에 맞게</span> <span className={NW}>성장하는 <b className="font-bold text-[#FAFAF8]">혁신기업</b>을</span>{' '}
-          <span className={NW}>더 선호해요.</span>
+          <span className={NW}><b className="font-bold text-[#E8B89A]">실제로 보여 주는</b></span>{' '}
+          <span className={NW}><b className="font-bold text-[#FAFAF8]">혁신기업</b>을</span> <span className={NW}>더 선호해요.</span>
         </p>
-        <p style={{ animationDelay: '0.46s' }} className="hero-anim mt-5 max-[359px]:mt-4 [@media(max-width:639px)_and_(max-height:760px)]:mt-4 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] [@media(max-width:639px)_and_(max-height:760px)]:leading-[1.72] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-6 sm:text-[1.44rem]">
-          <span className={NW}>대표님의 회사를</span> <span className={NW}><b className="font-bold text-[#FAFAF8]">AI와 데이터로</b></span>{' '}
-          <span className={NW}>일하는 회사로 바꿔,</span>
-          <br className="hidden sm:block" /> <span className={NW}>낭비되는 시간과 비용은</span> <span className={NW}>줄이고</span>{' '}
-          <span className={NW}><b className="font-bold text-[#E8B89A]">매출은 더 끌어올릴 수 있는</b></span>{' '}
-          <span className={NW}><b className="font-bold text-[#E8B89A]">혁신기업</b>으로</span> <span className={NW}>만들어 드려요.</span>
-        </p>
+        <div data-ax-hero-card style={{ animationDelay: '0.46s' }} className="hero-anim mt-7 w-full max-w-xl rounded-2xl border border-white/10 bg-white/[0.04] p-4 max-[359px]:mt-5 sm:mt-8 sm:p-5">
+          <p className="break-keep text-[1rem] font-medium leading-snug text-slate-300 sm:text-[1.08rem]">
+            <span className={NW}>대표님의 회사를</span> <span className={NW}><b className="font-bold text-[#FAFAF8]">AI와 데이터로</b></span>{' '}
+            <span className={NW}>일하는 회사로</span>
+          </p>
+          <ul className="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:gap-3">
+            {AX_HERO_GAINS.map((g) => (
+              <li key={g.label} className="flex flex-col items-center rounded-xl bg-white/[0.05] px-1.5 py-3 text-center ring-1 ring-inset ring-white/10 sm:py-4">
+                <span className="whitespace-nowrap text-[clamp(0.86rem,3.9vw,1.02rem)] font-black text-[#FAFAF8] sm:text-[1.08rem]">{g.label}</span>
+                <span aria-hidden className="my-1.5 text-[#E8B89A]">{g.icon}</span>
+                <span className="whitespace-nowrap text-[clamp(0.76rem,3.4vw,0.88rem)] font-semibold text-slate-400 sm:text-[0.92rem]">{g.note}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   )
