@@ -12,7 +12,7 @@ const NW = 'whitespace-nowrap'
 /** SECTION 1 — Hero. 배지 · 한 문장 · 두 문단. 직접 만든 화면 22개(AxSamplesBand)는 소개 영상 2편 다음에 있다.
  *  키워드 칩과 버튼은 두지 않는다.
  *  대표님 방향(2026-09): 중소기업 대표가 수천만원을 쓰는 이유는 '업무 효율'보다 '성장과 생존'이다.
- *  → 제목은 '정책자금·지원사업·투자에서 경쟁력 있는 회사로', 1문단은 왜(심사위원·투자자는 온라인으로 더 크게 성장할 회사를 찾는다),
+ *  → 제목은 '정책자금·지원사업·투자에서 경쟁력 있는 회사로', 1문단은 왜(이미 시도하고 실제로 보여 주는 혁신기업을 더 선호한다),
  *    2문단은 AX 가 실제로 하는 일(시간·비용은 줄이고 매출은 올린다). 서비스 선택 02 카드도 같은 말을 쓴다.
  *  승인·선정을 약속하는 표현은 절대 쓰지 않는다('경쟁력 있는 회사로' 까지만). */
 export function AxHeroV2() {
@@ -46,12 +46,15 @@ export function AxHeroV2() {
           <span className={NW}>만들어 드려요.</span>
         </h1>
         {/* 두 문단 — 문단마다 흰 글자(무엇) 하나와 브랜드색(남는 결과) 하나만 집어, 읽는 눈이 어디에 멈출지 분명하게 한다.
-            1문단: 왜 지금(심사위원·투자자는 온라인으로 더 크게 성장할 회사를 찾는다) · 2문단: 무엇을 해 주나(시간·비용은 줄이고 매출은 올린다) */}
+            1문단: 왜 지금(심사위원·투자자는 이미 시도하고 실제로 보여 주는 회사 · 시대 흐름에 맞게 성장하는 혁신기업을 더 선호한다) · 2문단: 무엇을 해 주나(시간·비용은 줄이고 매출은 올린다) */}
         <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-[359px]:mt-5 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-8 sm:text-[1.44rem]">
           <span className={NW}><b className="font-bold text-[#FAFAF8]">누구나 AI로</b> 그럴듯한</span> <span className={NW}>계획서를 쓰는 요즘,</span>
           <br className="hidden sm:block" /> <span className={NW}>심사위원과 투자자는</span>{' '}
-          <span className={NW}><b className="font-bold text-[#E8B89A]">온라인으로 더 크게</b></span>{' '}
-          <span className={NW}><b className="font-bold text-[#E8B89A]">성장할 수 있는 회사</b>를</span> <span className={NW}>찾아요.</span>
+          <span className={NW}><b className="font-bold text-[#E8B89A]">이미 시도하고</b></span>{' '}
+          <span className={NW}><b className="font-bold text-[#E8B89A]">실제로 보여 주는 회사,</b></span>{' '}
+          <br className="hidden lg:block" />
+          <span className={NW}>시대 흐름에 맞게</span> <span className={NW}>성장하는 <b className="font-bold text-[#FAFAF8]">혁신기업</b>을</span>{' '}
+          <span className={NW}>더 선호해요.</span>
         </p>
         <p style={{ animationDelay: '0.46s' }} className="hero-anim mt-5 max-[359px]:mt-4 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-6 sm:text-[1.44rem]">
           <span className={NW}><b className="font-bold text-[#FAFAF8]">AI와 데이터로</b></span> <span className={NW}>일하는 회사로 바꿔,</span>

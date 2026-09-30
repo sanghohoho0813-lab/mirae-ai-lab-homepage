@@ -7,9 +7,8 @@ import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
 import { VENTURE_FEE_SHORT } from '../../data/ventureFee'
 
 const STEPS = ['기술사업 아이디어', '작동하는 MVP', '벤처기업확인 신청'] as const
-const CHECKS = ['아이디어가 없어도 OK — 지금 사업에서 찾아 드려요', '경영컨설턴트 1:1 설계', '벤처기업확인 신청까지'] as const
 
-export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () => void; onWatch: () => void }) {
+export default function VentureMvpHero() {
   // PC 오른쪽 — 실제로 눌러 볼 수 있는 자체 데모 한 장(광고처럼 '화면'이 먼저 보이게)
   const demo = PORTFOLIO_SAMPLES.find((s) => s.slug === 'pawbeauty')
 
@@ -20,12 +19,8 @@ export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () =
 
       <div className="relative mx-auto max-w-6xl px-5 pb-12 pt-9 sm:px-6 sm:pb-16 sm:pt-14 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12">
         <div>
-          <p className="inline-flex items-center gap-2 rounded-full border border-[#D47A4A]/40 bg-white/[0.04] px-3.5 py-1.5 text-[0.9rem] font-bold text-[#E8B89A] sm:text-[0.95rem]">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#D47A4A]" />
-            경영컨설턴트가 설계하는 2주 기술사업 빌드
-          </p>
-
-          <h1 className="mt-5 break-keep text-[1.95rem] font-black leading-[1.24] tracking-tight min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[2.9rem] xl:text-[3.05rem]">
+          {/* 윗줄 배지·버튼 두 개·체크 목록·작은 안내문은 뺐다(대표님 방향: 심플하게) — 상담은 폰 하단 바와 아래 영상 구간에서 */}
+          <h1 className="break-keep text-[1.95rem] font-black leading-[1.24] tracking-tight min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[2.9rem] xl:text-[3.05rem]">
             {/* 줄은 뜻 단위로 끊는다. 폰·PC(오른쪽에 화면이 있어 폭이 좁다)는 다섯 줄,
                 가운데 폭(태블릿)은 첫 두 줄을 합쳐 네 줄:
                 '아이디어는 / 작동하는 웹앱 서비스로 / 만들어드리고, / 회사는 벤처기업으로 / 만들어드려요.'
@@ -83,48 +78,6 @@ export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () =
             {/* 벤처기업확인은 신청 '준비'까지가 이 금액 — 확인기관에 내는 심사 수수료는 별도라는 걸 가격 바로 아래에 */}
             <p data-mvp-fee-note className="mt-2.5 break-keep text-[0.8rem] leading-snug text-slate-400">{VENTURE_FEE_SHORT}</p>
           </div>
-
-          {/* 상담(주) · 영상(보조) — 폰은 위아래, 태블릿·PC 는 나란히 두어 첫 화면에 둘 다 보이게 한다.
-              영상 버튼을 누르면 바로 아래 소개 영상이 소리를 켜고 처음부터 재생된다 */}
-          <div className="mt-5 grid max-w-xl gap-3 sm:grid-cols-[1fr_1.15fr]">
-            <button
-              type="button"
-              onClick={onConsult}
-              data-mvp-hero-cta
-              className="shine-cta flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#D47A4A] px-6 text-[1.15rem] font-black text-[#171B20] shadow-xl shadow-[#D47A4A]/25 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] motion-reduce:hover:translate-y-0 sm:px-4 sm:text-[1.2rem]"
-            >
-              상담 신청하기 <span aria-hidden>→</span>
-            </button>
-            <button
-              type="button"
-              onClick={onWatch}
-              data-mvp-hero-watch
-              className="flex min-h-14 w-full items-center justify-center gap-3 rounded-2xl border border-white/25 bg-white/[0.07] px-4 py-2 text-left text-white transition-colors hover:border-[#E8B89A]/70 hover:bg-white/[0.12]"
-            >
-              <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#E8894F] pl-0.5 text-[0.9rem] text-[#171B20]">
-                ▶
-              </span>
-              <span className="leading-tight">
-                <span className="block text-[1.06rem] font-black sm:text-[0.98rem]">영상으로 모든 내용 확인하기</span>
-                <span className="mt-0.5 block text-[0.82rem] font-bold text-[#E8B89A]">1분 42초 · 소리 켜고 처음부터</span>
-              </span>
-            </button>
-          </div>
-
-          <ul className="mt-4 grid max-w-xl gap-1.5 text-[0.95rem] text-slate-300">
-            {CHECKS.map((c) => (
-              <li key={c} className="flex items-start gap-2 break-keep">
-                <span aria-hidden className="font-black text-[#E8B89A]">
-                  ✓
-                </span>
-                {c}
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-4 max-w-xl break-keep text-[0.8rem] leading-relaxed text-slate-500">
-            2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요. 벤처기업확인 여부는 확인기관 심사로 정해지고, 심사 수수료는 확인기관에 별도로 내야 해요.
-          </p>
         </div>
 
         {/* PC 오른쪽 — 실제로 눌러 볼 수 있는 자체 데모 화면 한 장 */}

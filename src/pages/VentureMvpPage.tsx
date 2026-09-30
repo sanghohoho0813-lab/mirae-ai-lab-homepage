@@ -51,7 +51,6 @@ const SHOW_STORY_IMAGES = false
 
 export default function VentureMvpPage() {
   usePageMeta(PAGE_TITLE, PAGE_DESC, VENTURE_MVP_PATH)
-  const [pastTop, setPastTop] = useState(false)
   const [atEnd, setAtEnd] = useState(false)
   const [consultOpen, setConsultOpen] = useState(false)
   const [sampleNavOpen, setSampleNavOpen] = useState(false)
@@ -62,13 +61,7 @@ export default function VentureMvpPage() {
     rememberInterest('venture-mvp')
   }, [])
 
-  // 모바일 하단 고정 CTA — 첫 화면을 어느 정도 본 뒤에만 띄우고, 하단 CTA 가 보이면 숨긴다
-  useEffect(() => {
-    const sync = () => setPastTop(window.scrollY > 480)
-    sync()
-    window.addEventListener('scroll', sync, { passive: true })
-    return () => window.removeEventListener('scroll', sync)
-  }, [])
+  // 모바일 하단 고정 CTA — 첫 화면에 버튼을 두지 않으므로(심플하게) 처음부터 띄우고, 맨 아래 CTA 가 보이면 숨긴다(AX 상세와 같은 방식)
   useEffect(() => {
     const el = ctaRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -77,7 +70,7 @@ export default function VentureMvpPage() {
     return () => io.disconnect()
   }, [])
 
-  const barVisible = pastTop && !atEnd
+  const barVisible = !atEnd
 
   return (
     <div className="flex min-h-dvh flex-col bg-[#FAFAF8] pb-[4.5rem] text-[#171B20] antialiased [word-break:keep-all] sm:pb-0">
@@ -112,7 +105,7 @@ export default function VentureMvpPage() {
       </header>
 
       <main className="flex-1">
-        <VentureMvpHero onConsult={() => setConsultOpen(true)} onWatch={() => filmRef.current?.playWithSound()} />
+        <VentureMvpHero />
         <VentureMvpFilm ref={filmRef} onConsult={() => setConsultOpen(true)} samplesAnchor={VENTURE_MVP_EXAMPLES_ID} />
         <VentureMvpExamples />
 
