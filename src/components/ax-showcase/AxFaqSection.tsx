@@ -3,12 +3,13 @@
 // 같은 모양의 FAQ 를 2주 기술사업 빌드 페이지도 쓴다(items 로 질문 목록만 바꿔 끼운다).
 // 답이 길어 보이지 않게 핵심 키워드·문장만 '**굵게**' 로 표시한다(검은 굵은 글씨, 답 하나에 한두 곳만).
 import type { ReactNode } from 'react'
+import { VENTURE_BENEFITS } from '../../data/ventureBenefits'
 
-/** '**…**' 부분만 굵은 검은 글씨로 */
-function rich(text: string): ReactNode[] {
+/** '**…**' 부분만 굵은 글씨로 (기본은 검은색, 어두운 상자 안에서는 색을 바꿔 쓴다) */
+function rich(text: string, boldCls = 'font-bold text-[#171B20]'): ReactNode[] {
   return text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
     i % 2 === 1 ? (
-      <b key={i} className="font-bold text-[#171B20]">
+      <b key={i} className={boldCls}>
         {part}
       </b>
     ) : (
@@ -17,13 +18,26 @@ function rich(text: string): ReactNode[] {
   )
 }
 
+/** 답 안의 작은 숫자 표 (예: 이익별 5년 절세액). 칸 글자도 '**…**' 로 굵게 쓸 수 있다. */
+export type FaqTable = {
+  n?: string
+  title: string
+  head: readonly string[]
+  rows: readonly (readonly string[])[]
+  note?: string
+}
+
 export type FaqItem = {
   q: string
   a: string
+  /** 답 바로 아래 숫자 표 */
+  tables?: readonly FaqTable[]
   /** 답 아래 짧은 강조 목록 (예: 신속 · 능동 · 퀄리티) */
   points?: readonly { t: string; d: string }[]
   /** 강조 목록 앞에 붙는 한 문장 */
   lead?: string
+  /** 강조 목록 뒤 어두운 상자 한 줄 (예: 비용과 혜택 비교) */
+  callout?: string
   /** 강조 목록 뒤에 붙는 문단 (빈 줄로 문단을 나눈다) */
   tail?: string
 }
@@ -47,6 +61,13 @@ export const AX_FAQ: readonly FaqItem[] = [
     a: '**AI와 데이터로 회사가 일하는 방식을 바꾸는 일**이에요. 고객 요청이 들어오면 담당자 할 일로 바로 잡히고, 급하거나 위험한 건 AI가 먼저 알려 줘요. 직원이 처리한 결과는 다시 데이터로 쌓여요.',
   },
   DIFF_FAQ,
+  // 벤처기업확인은 어떤 상품이든 기본 포함(AX 영상 2와 같은 원칙) — 혜택 숫자는 2주 기술사업 빌드 FAQ 와 같은 것을 쓴다
+  {
+    q: 'AX 풀 패키지에도 벤처기업확인이 포함되나요?',
+    a: '**네, 포함입니다.** AX 풀 패키지를 진행하시면 **벤처기업확인 신청까지 추가 비용 없이** 함께 준비해요. 법으로 제한된 업종이 아니라면 확인을 받으실 때까지 끝까지 함께해요.\n\n벤처기업확인 하나만 받아도, 요건을 갖춘 회사는 이 정도 혜택을 받을 수 있어요.',
+    ...VENTURE_BENEFITS,
+    callout: '벤처기업확인 하나로도 이만큼 차이가 생길 수 있어서, **AX 풀 패키지에는 기본으로 넣었어요.**',
+  },
   {
     q: 'AX나 MVP, 플랫폼을 만들면 정책자금이나 투자에 선정이 보장되나요?',
     a: 'AX, MVP, 플랫폼, 특허 어느 것도 정책자금·정부지원사업·투자 **선정을 보장하지 않습니다.** 심사에서는 재무, 신용, 시장성, 기술성, 사업성을 함께 봅니다. 그래도 새 분야로 커 나갈 회사라는 걸 눈으로 보여 줄 수 있어, **심사에서 받는 인상은 완전히 달라집니다.** 큰 가점 요소라고 보셔도 됩니다.',
@@ -128,6 +149,45 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                     {rich(para)}
                   </p>
                 ))}
+                {f.tables?.map((tb) => (
+                  <div key={tb.title} className="mt-4 overflow-hidden rounded-xl ring-1 ring-inset ring-[#EBCBAA]/80">
+                    <p className="flex items-start gap-2.5 bg-[#171B20] px-3.5 py-2.5 sm:px-4">
+                      {tb.n && <span className="mt-0.5 shrink-0 rounded-md bg-[#E8B89A] px-2 py-0.5 text-[0.86rem] font-black text-[#171B20]">{tb.n}</span>}
+                      <span className="break-keep text-[1rem] font-black leading-[1.55] text-white sm:text-[1.06rem]">{tb.title}</span>
+                    </p>
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse text-[0.92rem] tabular-nums sm:text-[1.02rem]">
+                        <thead>
+                          <tr className="bg-[#FAF3EC]">
+                            {tb.head.map((h, hi) => (
+                              <th key={h} scope="col" className={`whitespace-nowrap px-2.5 py-2 text-[0.82rem] font-bold text-[#6B7680] sm:px-4 sm:text-[0.9rem] ${hi === 0 ? 'text-left' : 'text-right'}`}>
+                                {h}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {tb.rows.map((row) => (
+                            <tr key={row[0]} className="border-t border-[#F0E4D8]">
+                              {row.map((cell, ci) =>
+                                ci === 0 ? (
+                                  <th key={ci} scope="row" className="whitespace-nowrap px-2.5 py-2.5 text-left font-bold text-[#343B44] sm:px-4">
+                                    {cell}
+                                  </th>
+                                ) : (
+                                  <td key={ci} className="whitespace-nowrap px-2.5 py-2.5 text-right text-[#343B44] sm:px-4">
+                                    {rich(cell, 'font-black text-[#B4532A]')}
+                                  </td>
+                                ),
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {tb.note && <p className="break-keep border-t border-[#F0E4D8] bg-[#FFFCF9] px-3.5 py-2 text-[0.82rem] leading-[1.6] text-[#8A939C] sm:px-4 sm:text-[0.88rem]">{tb.note}</p>}
+                  </div>
+                ))}
                 {f.lead && <p className="mt-3 break-keep text-[1.06rem] font-bold leading-[1.75] text-[#171B20] sm:text-[1.14rem]">{f.lead}</p>}
                 {f.points && (
                   <ul className="mt-3 grid gap-2">
@@ -138,6 +198,11 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                       </li>
                     ))}
                   </ul>
+                )}
+                {f.callout && (
+                  <p className="mt-4 break-keep rounded-xl bg-[#171B20] px-4 py-3.5 text-[1.02rem] leading-[1.75] text-white/90 sm:px-5 sm:text-[1.1rem]">
+                    {rich(f.callout, 'font-black text-[#E8B89A]')}
+                  </p>
                 )}
                 {f.tail &&
                   f.tail.split('\n\n').map((para, pi) => (
