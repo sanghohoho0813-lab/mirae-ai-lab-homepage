@@ -9,7 +9,7 @@ import { businessInfo, consultLinks, legalLinks } from '../config/businessInfo'
 
 const serviceLinks = [
   { to: '/business-services/venture-mvp', label: '2주 기술사업 빌드' },
-  { to: '/business-services/ax-start', label: '풀 AX 구축' },
+  { to: '/business-services/ax-start', label: 'Full AX 구축' },
   { to: '/business-diagnosis', label: '3분 AX Fit 진단' },
   { to: '/consultants', label: '컨설턴트 운영 OS' },
 ] as const

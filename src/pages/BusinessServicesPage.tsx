@@ -3,13 +3,14 @@
 // 보존했고, 여기서는 "지금 필요한 변화가 어느 쪽인지" 만 고르게 한다 — 선택은 즉시, 설명은 선택 이후에.
 // 두 트랙 모두 결국 같은 3분 진단 → 결과 → 상담 퍼널로 합류한다.
 //
-// 순서: 01 = 2주 기술사업 빌드(BASIC · 정상가 500만원, 런칭 파트너 특가 300만원), 02 = 풀 AX 구축(ADVANCED · 500만원부터 · 대표 상품).
+// 순서: 01 = 2주 기술사업 빌드(BASIC · 정상가 500만원, 런칭 파트너 특가 300만원), 02 = Full AX 구축(ADVANCED · 500만원부터 · 대표 상품).
 //   더 큰 상품·메인 상품이 02 라는 게 한눈에 읽히게 02 를 어두운 카드 + 샴페인 골드로, 01 은 밝은 카드로 둔다.
 //   폰 첫 화면에서 02 머리(ADVANCED)가 살짝 보이도록 01 과 위 안내를 폰에서만 조밀하게 한다.
 //   data-track 값(ax / venture-mvp)은 유입 구분에 쓰이므로 순서가 바뀌어도 그대로 둔다.
 // 두 카드의 차이는 "없던 걸 새로 만든다 ↔ 지금 회사를 키운다" 한 줄로 가장 먼저 읽히게 한다.
-// 카드는 아주 단순하게(대표님 방향 2026-09): 큰 상품 이름 → 한 줄 → 핵심 문장 → 가격 → 버튼. 키워드·단계 칩은 두지 않는다
-// (자세한 설명은 상세 페이지에서). 02 카드 문장은 AX 상세 첫 화면과 같은 말(경쟁력 있는 회사 · 시간·비용↓ 매출↑)을 쓴다.
+// 카드는 아주 단순하게(대표님 방향 2026-09): 큰 상품 이름 → 한 줄 → 핵심 문장 → 가격 → 버튼. 설명 문단·키워드·단계 칩은 두지 않는다
+// (자세한 설명은 상세 페이지에서). 두 카드는 같은 구성으로 대칭을 맞춘다. 02 문장은 AX 상세 첫 화면 제목과 같은 말(경쟁력 있는 회사로).
+// 상품 이름은 '2주 기술사업 빌드' · 'Full AX 구축' — '프로그램'을 붙이면 큰 글씨에서 폰 두 줄로 떨어져서 붙이지 않는다.
 import { Link } from 'react-router-dom'
 import BrandLogo from '../components/BrandLogo'
 import HeaderAccount from '../components/account/HeaderAccount'
@@ -74,8 +75,9 @@ function CardHead({ no, tier, name, diff, badge, tone }: { no: string; tier: 'BA
           </span>
         )}
       </div>
-      {/* 상품 이름이 카드에서 가장 먼저 읽히게 — 아래 문장(h2)보다 크게 */}
-      <p data-card-name className={`mt-3.5 break-keep text-[1.62rem] font-black leading-[1.15] tracking-tight sm:mt-4 sm:text-[2.05rem] ${dark ? 'text-white' : 'text-[#171B20]'}`}>{name}</p>
+      {/* 상품 이름이 카드에서 가장 먼저 읽히게 — 아래 문장(h2)보다 크게(예전 1.62/2.05rem 의 1.3배).
+          폰·태블릿(두 칸)에서도 한 줄에 들어가게 화면 폭에 맞춰 줄이고, 넓은 화면에서 2.66rem 까지 */}
+      <p data-card-name className={`mt-3.5 whitespace-nowrap text-[clamp(1.7rem,8.6vw,2.1rem)] font-black leading-[1.12] tracking-tight sm:mt-4 sm:text-[clamp(1.6rem,3.6vw,2.66rem)] ${dark ? 'text-white' : 'text-[#171B20]'}`}>{name}</p>
       <p className={`mt-1.5 break-keep text-[0.95rem] font-bold leading-snug sm:text-[1.02rem] ${dark ? 'text-[#E6C396]' : 'text-[#B35A2A]'}`}>{diff}</p>
     </>
   )
@@ -128,16 +130,11 @@ export default function BusinessServicesPage() {
           >
             <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#E8B89A]/40 blur-3xl" />
 
-            <div className="relative">
+            <div className="relative sm:flex-1">
               <CardHead no="01" tier="BASIC" name="2주 기술사업 빌드" diff="없던 기술사업을 2주 안에" tone="light" />
-              <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[1.5rem]">
+              <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
                 아이디어는 서비스로,<br />회사는 <span className="text-[#C8612E]">벤처기업으로</span>
               </h2>
-              {/* 폰에서는 뺀다 — 02 카드가 첫 화면에 보이게 */}
-              <p className="mt-3 hidden text-[1.02rem] leading-relaxed text-[#343B44] sm:block">
-                지금 하는 사업에서 기술사업 아이디어를 찾고, <b className="font-bold text-[#171B20]">바로 써 볼 수 있는 첫 버전(MVP)</b>과
-                벤처기업확인 신청까지 한 번에 끝내요.
-              </p>
               {/* 가격 — '원래 500만원인데 지금 300만원' 이 한눈에 읽히게: 정상가를 크게 두고 붉은 선으로 지운 뒤,
                   아래 줄에 런칭 파트너 가격과 할인 금액을 붙인다(상세 페이지 첫 화면과 같은 숫자) */}
               <div className="mt-3.5 rounded-2xl bg-[#171B20]/[0.035] px-4 py-3 ring-1 ring-inset ring-[#171B20]/10 sm:mt-5">
@@ -161,24 +158,24 @@ export default function BusinessServicesPage() {
               </div>
             </div>
 
-            <span className="relative mt-4 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-[#171B20] px-5 text-[1.05rem] font-black text-white transition-colors group-hover:bg-[#343B44] sm:mt-auto sm:min-h-[52px]">
+            <span className="relative mt-4 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-[#171B20] px-5 text-[1.05rem] font-black text-white transition-colors group-hover:bg-[#343B44] sm:min-h-[52px]">
               2주 기술사업 패키지 보기 <span aria-hidden className="text-[#E8B89A] transition-transform group-hover:translate-x-1">→</span>
             </span>
           </Link>
 
-          {/* 02 ADVANCED — 풀 AX 구축 : 대표 상품. 어두운 카드 + 샴페인 골드로 '더 큰 상품'이 한눈에 읽히게 */}
+          {/* 02 ADVANCED — Full AX 구축 : 대표 상품. 어두운 카드 + 샴페인 골드로 '더 큰 상품'이 한눈에 읽히게 */}
           <Link
             to={AX_START_PATH}
             data-track="ax"
-            aria-label="02 ADVANCED 풀 AX 구축 — AX 도입으로 정책자금·지원사업·투자에서 경쟁력 있는 회사로. 대표 상품, 500만원부터. AX 도입 알아보기"
+            aria-label="02 ADVANCED Full AX 구축 — AX 도입으로 정책자금·지원사업·투자에서 경쟁력 있는 회사로. 대표 상품, 500만원부터. AX 도입 알아보기"
             className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#D8A871]/50 bg-gradient-to-br from-[#12161B] via-[#1B2027] to-[#2C3138] p-4 pt-5 text-white shadow-xl shadow-[#171B20]/30 ring-1 ring-inset ring-[#E6C396]/15 transition duration-200 hover:-translate-y-1 hover:border-[#E6C396]/85 hover:shadow-2xl hover:shadow-[#171B20]/40 [animation-delay:300ms] sm:p-7"
           >
             <span aria-hidden className="pointer-events-none absolute -left-16 -top-20 h-56 w-56 rounded-full bg-[#D8A871]/25 opacity-80 blur-3xl transition-opacity group-hover:opacity-100" />
 
-            <div className="relative">
-              <CardHead no="02" tier="ADVANCED" name="풀 AX 구축" diff="지금 회사를 한 단계 위로" badge="대표 상품" tone="dark" />
+            <div className="relative sm:flex-1">
+              <CardHead no="02" tier="ADVANCED" name="Full AX 구축" diff="지금 회사를 한 단계 위로" badge="대표 상품" tone="dark" />
               {/* AX 상세 첫 화면 제목과 같은 말 — 폰에서는 가운뎃점 뒤(<wbr />)에서만 끊는다 */}
-              <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[1.5rem]">
+              <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
                 AX 도입으로
                 <br />
                 <span className="whitespace-nowrap">정책자금·</span>
@@ -189,10 +186,6 @@ export default function BusinessServicesPage() {
                 <br />
                 <span className="text-[#E6C396]">경쟁력 있는 회사로</span>
               </h2>
-              <p className="mt-3 text-[0.96rem] leading-relaxed text-slate-300 sm:text-[1.02rem]">
-                AI와 데이터로 일하는 회사로 바꿔, 낭비되는 시간과 비용은 줄이고{' '}
-                <b className="font-bold text-white">매출은 더 끌어올려요.</b>
-              </p>
               {/* 가격 — 범위(MVP · 플랫폼 · 풀 패키지)에 따라 달라서 '부터'로만 적는다 */}
               <p className="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                 <span className="text-[1.5rem] font-black leading-none tracking-tight text-white sm:text-[1.75rem]">500만원</span>
@@ -201,7 +194,7 @@ export default function BusinessServicesPage() {
               </p>
             </div>
 
-            <span className="shine-cta relative mt-4 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E6C396] to-[#C99257] px-5 text-[1.05rem] font-black text-[#15110C] transition-[filter] group-hover:brightness-110 sm:mt-auto sm:min-h-[52px]">
+            <span className="shine-cta relative mt-4 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E6C396] to-[#C99257] px-5 text-[1.05rem] font-black text-[#15110C] transition-[filter] group-hover:brightness-110 sm:min-h-[52px]">
               AX 도입 알아보기 <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
             </span>
           </Link>
