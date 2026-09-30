@@ -11,6 +11,7 @@
 // 카드는 아주 단순하게(대표님 방향 2026-09): 큰 상품 이름 → 한 줄 → 핵심 문장 → 가격 → 버튼. 설명 문단·키워드·단계 칩은 두지 않는다
 // (자세한 설명은 상세 페이지에서). 두 카드는 같은 구성으로 대칭을 맞춘다. 02 문장은 AX 상세 첫 화면 제목과 같은 말(경쟁력 있는 회사로).
 // 상품 이름은 '2주 기술사업 빌드' · 'Full AX 구축' — '프로그램'을 붙이면 큰 글씨에서 폰 두 줄로 떨어져서 붙이지 않는다.
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import BrandLogo from '../components/BrandLogo'
 import HeaderAccount from '../components/account/HeaderAccount'
@@ -42,9 +43,29 @@ const SME_POINTS = [
   },
 ] as const
 
-/** 카드 머리 — 큰 번호 + 등급(BASIC / ADVANCED) + 상태 배지(있을 때만) / 큰 상품 이름 / 무엇이 다른지 한 줄.
- *  배지를 absolute 로 띄우면 360px 에서 상품명 위로 겹쳐서, 번호와 같은 줄에 흐름대로 둔다. */
-function CardHead({ no, tier, name, diff, badge, tone }: { no: string; tier: 'BASIC' | 'ADVANCED'; name: string; diff: string; badge?: string; tone: 'dark' | 'light' }) {
+/** 카드 머리 — 큰 번호 + 등급(BASIC / ADVANCED) + 상태 배지(있을 때만) / 큰 상품 이름 / 무엇이 다른지 한 줄 + 핵심 문장(children).
+ *  배지를 absolute 로 띄우면 360px 에서 상품명 위로 겹쳐서, 번호와 같은 줄에 흐름대로 둔다.
+ *  한 줄·핵심 문장 오른쪽 빈 곳에 작은 그림(visual)을 둔다 — 글자와 부딪히지 않게 같은 줄(flex)에 나란히 놓는다.
+ *  두 카드가 나란히 서서 좁아지는 태블릿(640~1023px)과 아주 작은 폰(<360px)에서는 그림을 숨긴다. */
+function CardHead({
+  no,
+  tier,
+  name,
+  diff,
+  badge,
+  tone,
+  visual,
+  children,
+}: {
+  no: string
+  tier: 'BASIC' | 'ADVANCED'
+  name: string
+  diff: string
+  badge?: string
+  tone: 'dark' | 'light'
+  visual?: ReactNode
+  children?: ReactNode
+}) {
   const dark = tone === 'dark'
   return (
     <>
@@ -78,8 +99,74 @@ function CardHead({ no, tier, name, diff, badge, tone }: { no: string; tier: 'BA
       {/* 상품 이름이 카드에서 가장 먼저 읽히게 — 아래 문장(h2)보다 크게(예전 1.62/2.05rem 의 1.3배).
           폰·태블릿(두 칸)에서도 한 줄에 들어가게 화면 폭에 맞춰 줄이고, 넓은 화면에서 2.66rem 까지 */}
       <p data-card-name className={`mt-3.5 whitespace-nowrap text-[clamp(1.7rem,8.6vw,2.1rem)] font-black leading-[1.12] tracking-tight sm:mt-4 sm:text-[clamp(1.6rem,3.6vw,2.66rem)] ${dark ? 'text-white' : 'text-[#171B20]'}`}>{name}</p>
-      <p className={`mt-1.5 break-keep text-[0.95rem] font-bold leading-snug sm:text-[1.02rem] ${dark ? 'text-[#E6C396]' : 'text-[#B35A2A]'}`}>{diff}</p>
+      <div className="mt-1.5 flex items-start gap-2.5 lg:gap-4">
+        <div className="min-w-0 flex-1">
+          <p className={`break-keep text-[0.95rem] font-bold leading-snug sm:text-[1.02rem] ${dark ? 'text-[#E6C396]' : 'text-[#B35A2A]'}`}>{diff}</p>
+          {children}
+        </div>
+        {visual && <div className="mt-0.5 shrink-0 max-[359px]:hidden sm:hidden lg:block">{visual}</div>}
+      </div>
     </>
+  )
+}
+
+// 그림 크기 — 폰은 화면 폭의 25%(84~112px), PC 는 12%(120~168px).
+// 폰에서는 01 그림이 옆 글자(한 줄 + 두 줄 문장)보다 높아지지 않게 해, 02 카드 머리가 첫 화면에 걸리게 둔다
+const VIS = '[--vw:clamp(84px,25vw,112px)] lg:[--vw:clamp(120px,12vw,168px)] w-[var(--vw)]'
+
+/** 01 — 영상 첫 장면처럼 벤처기업확인서 위에 MVP 폰 화면을 겹친다.
+ *  확인서는 기업을 알아볼 수 있는 정보(기업명·사업자등록번호·대표자·주소·발급번호·날짜)를 모두 가린 이미지, 폰은 미래AI랩 자체 데모(PawBeauty). */
+function VentureVisual() {
+  return (
+    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.88)] ${VIS}`}>
+      <img
+        src="/assets/business-services/cards/venture-cert.webp"
+        alt="벤처기업확인서 예시(기업 정보 가림)"
+        width={300}
+        height={395}
+        loading="lazy"
+        decoding="async"
+        className="absolute left-0 top-[2%] w-[64%] -rotate-[4deg] rounded-[3px] bg-white shadow-[0_8px_20px_rgba(23,27,32,0.18)] ring-1 ring-black/5"
+      />
+      <span className="absolute bottom-0 right-0 w-[38%] overflow-hidden rounded-[9px] border-[3px] border-[#171B20] bg-[#171B20] shadow-[0_10px_24px_rgba(23,27,32,0.3)] lg:rounded-[14px] lg:border-4">
+        <img
+          src="/assets/business-services/cards/venture-mvp-phone.webp"
+          alt="MVP 예시 화면(미래AI랩 자체 데모)"
+          width={200}
+          height={379}
+          loading="lazy"
+          decoding="async"
+          className="block w-full"
+        />
+      </span>
+    </span>
+  )
+}
+
+/** 02 — AX 대시보드(미래AI랩 자체 데모 · 루미에르 헤어살롱) 창 위에 'AI 브리핑' 표시를 띄워, AI 가 먼저 챙길 일을 알려 준다는 걸 보여 준다 */
+function AxVisual() {
+  return (
+    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.88)] ${VIS}`}>
+      <span className="absolute inset-x-0 top-[3%] block overflow-hidden rounded-[7px] bg-[#0B0E12] shadow-[0_12px_28px_rgba(0,0,0,0.45)] ring-1 ring-[#E6C396]/35 lg:rounded-[10px]">
+        <span aria-hidden className="flex items-center gap-[3px] bg-[#2C3138] px-[6%] py-[3.5%] lg:gap-1">
+          <span className="h-[4px] w-[4px] rounded-full bg-[#FF6B5B] lg:h-[6px] lg:w-[6px]" />
+          <span className="h-[4px] w-[4px] rounded-full bg-[#F5C451] lg:h-[6px] lg:w-[6px]" />
+          <span className="h-[4px] w-[4px] rounded-full bg-[#56C271] lg:h-[6px] lg:w-[6px]" />
+        </span>
+        <img
+          src="/assets/business-services/cards/ax-dashboard.webp"
+          alt="AX 대시보드 예시 화면(미래AI랩 자체 데모)"
+          width={720}
+          height={450}
+          loading="lazy"
+          decoding="async"
+          className="block w-full"
+        />
+      </span>
+      <span className="absolute bottom-0 left-[6%] inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-gradient-to-r from-[#E6C396] to-[#C99257] px-2 py-[3px] text-[10px] font-black leading-none text-[#15110C] shadow-[0_6px_14px_rgba(0,0,0,0.4)] lg:px-3 lg:py-1.5 lg:text-[12px]">
+        <span aria-hidden>✦</span>AI 브리핑
+      </span>
+    </span>
   )
 }
 
@@ -131,10 +218,11 @@ export default function BusinessServicesPage() {
             <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#E8B89A]/40 blur-3xl" />
 
             <div className="relative sm:flex-1">
-              <CardHead no="01" tier="BASIC" name="2주 기술사업 빌드" diff="없던 기술사업을 2주 안에" tone="light" />
-              <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
-                아이디어는 서비스로,<br />회사는 <span className="text-[#C8612E]">벤처기업으로</span>
-              </h2>
+              <CardHead no="01" tier="BASIC" name="2주 기술사업 빌드" diff="없던 기술사업을 2주 안에" tone="light" visual={<VentureVisual />}>
+                <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
+                  아이디어는 서비스로,<br />회사는 <span className="text-[#C8612E]">벤처기업으로</span>
+                </h2>
+              </CardHead>
               {/* 가격 — '원래 500만원인데 지금 300만원' 이 한눈에 읽히게: 정상가를 크게 두고 붉은 선으로 지운 뒤,
                   아래 줄에 런칭 파트너 가격과 할인 금액을 붙인다(상세 페이지 첫 화면과 같은 숫자) */}
               <div className="mt-3.5 rounded-2xl bg-[#171B20]/[0.035] px-4 py-3 ring-1 ring-inset ring-[#171B20]/10 sm:mt-5">
@@ -173,19 +261,20 @@ export default function BusinessServicesPage() {
             <span aria-hidden className="pointer-events-none absolute -left-16 -top-20 h-56 w-56 rounded-full bg-[#D8A871]/25 opacity-80 blur-3xl transition-opacity group-hover:opacity-100" />
 
             <div className="relative sm:flex-1">
-              <CardHead no="02" tier="ADVANCED" name="Full AX 구축" diff="지금 회사를 한 단계 위로" badge="대표 상품" tone="dark" />
-              {/* AX 상세 첫 화면 제목과 같은 말 — 폰에서는 가운뎃점 뒤(<wbr />)에서만 끊는다 */}
-              <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
-                AX 도입으로
-                <br />
-                <span className="whitespace-nowrap">정책자금·</span>
-                <wbr />
-                <span className="whitespace-nowrap">지원사업·</span>
-                <wbr />
-                <span className="whitespace-nowrap">투자에서</span>
-                <br />
-                <span className="text-[#E6C396]">경쟁력 있는 회사로</span>
-              </h2>
+              <CardHead no="02" tier="ADVANCED" name="Full AX 구축" diff="지금 회사를 한 단계 위로" badge="대표 상품" tone="dark" visual={<AxVisual />}>
+                {/* AX 상세 첫 화면 제목과 같은 말 — 폰에서는 가운뎃점 뒤(<wbr />)에서만 끊는다 */}
+                <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
+                  AX 도입으로
+                  <br />
+                  <span className="whitespace-nowrap">정책자금·</span>
+                  <wbr />
+                  <span className="whitespace-nowrap">지원사업·</span>
+                  <wbr />
+                  <span className="whitespace-nowrap">투자에서</span>
+                  <br />
+                  <span className="text-[#E6C396]">경쟁력 있는 회사로</span>
+                </h2>
+              </CardHead>
               {/* 가격 — 범위(MVP · 플랫폼 · 풀 패키지)에 따라 달라서 '부터'로만 적는다 */}
               <p className="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                 <span className="text-[1.5rem] font-black leading-none tracking-tight text-white sm:text-[1.75rem]">500만원</span>
