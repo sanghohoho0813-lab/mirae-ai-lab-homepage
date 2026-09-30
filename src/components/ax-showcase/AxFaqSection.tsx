@@ -24,6 +24,9 @@ export type FaqTable = {
   title: string
   head: readonly string[]
   rows: readonly (readonly string[])[]
+  /** 표 아래 계산식 — 묶음마다 설명 한 줄 + 식 여러 줄 */
+  calc?: readonly { label: string; lines: readonly string[] }[]
+  /** 맨 아래 안내(예: '단순 계산이니 참고만') — '**…**' 로 첫 문장을 굵게 */
   note?: string
 }
 
@@ -36,8 +39,6 @@ export type FaqItem = {
   points?: readonly { t: string; d: string }[]
   /** 강조 목록 앞에 붙는 한 문장 */
   lead?: string
-  /** 강조 목록 뒤 어두운 상자 한 줄 (예: 비용과 혜택 비교) */
-  callout?: string
   /** 강조 목록 뒤에 붙는 문단 (빈 줄로 문단을 나눈다) */
   tail?: string
 }
@@ -66,7 +67,6 @@ export const AX_FAQ: readonly FaqItem[] = [
     q: 'AX 풀 패키지에도 벤처기업확인이 포함되나요?',
     a: '**네, 포함입니다.** AX 풀 패키지를 진행하시면 **벤처기업확인 신청까지 추가 비용 없이** 함께 준비해요. 법으로 제한된 업종이 아니라면 확인을 받으실 때까지 끝까지 함께해요.\n\n벤처기업확인 하나만 받아도, 요건을 갖춘 회사는 이 정도 혜택을 받을 수 있어요.',
     ...VENTURE_BENEFITS,
-    callout: '벤처기업확인 하나로도 이만큼 차이가 생길 수 있어서, **AX 풀 패키지에는 기본으로 넣었어요.**',
   },
   {
     q: 'AX나 MVP, 플랫폼을 만들면 정책자금이나 투자에 선정이 보장되나요?',
@@ -160,7 +160,7 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                         <thead>
                           <tr className="bg-[#FAF3EC]">
                             {tb.head.map((h, hi) => (
-                              <th key={h} scope="col" className={`whitespace-nowrap px-2.5 py-2 text-[0.82rem] font-bold text-[#6B7680] sm:px-4 sm:text-[0.9rem] ${hi === 0 ? 'text-left' : 'text-right'}`}>
+                              <th key={h} scope="col" className={`whitespace-nowrap px-1.5 py-2 text-[0.82rem] min-[380px]:px-2.5 font-bold text-[#6B7680] sm:px-4 sm:text-[0.9rem] ${hi === 0 ? 'text-left' : 'text-right'}`}>
                                 {h}
                               </th>
                             ))}
@@ -171,11 +171,11 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                             <tr key={row[0]} className="border-t border-[#F0E4D8]">
                               {row.map((cell, ci) =>
                                 ci === 0 ? (
-                                  <th key={ci} scope="row" className="whitespace-nowrap px-2.5 py-2.5 text-left font-bold text-[#343B44] sm:px-4">
+                                  <th key={ci} scope="row" className="whitespace-nowrap px-1.5 py-2.5 text-left min-[380px]:px-2.5 font-bold text-[#343B44] sm:px-4">
                                     {cell}
                                   </th>
                                 ) : (
-                                  <td key={ci} className="whitespace-nowrap px-2.5 py-2.5 text-right text-[#343B44] sm:px-4">
+                                  <td key={ci} className="whitespace-nowrap px-1.5 py-2.5 text-right min-[380px]:px-2.5 text-[#343B44] sm:px-4">
                                     {rich(cell, 'font-black text-[#B4532A]')}
                                   </td>
                                 ),
@@ -185,7 +185,28 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                         </tbody>
                       </table>
                     </div>
-                    {tb.note && <p className="break-keep border-t border-[#F0E4D8] bg-[#FFFCF9] px-3.5 py-2 text-[0.82rem] leading-[1.6] text-[#8A939C] sm:px-4 sm:text-[0.88rem]">{tb.note}</p>}
+                    {tb.calc && (
+                      <div className="border-t border-[#F0E4D8] bg-[#FFFCF9] px-3.5 py-3 sm:px-4">
+                        <p className="text-[0.8rem] font-black tracking-tight text-[#A36A4B] sm:text-[0.86rem]">계산식</p>
+                        {tb.calc.map((g) => (
+                          <div key={g.label} className="mt-2">
+                            <p className="break-keep text-[0.84rem] font-bold leading-[1.6] text-[#343B44] sm:text-[0.9rem]">{g.label}</p>
+                            <ul className="mt-1 space-y-1">
+                              {g.lines.map((ln) => (
+                                <li key={ln} className="break-keep text-[0.84rem] leading-[1.6] text-[#5B646D] sm:text-[0.9rem]">
+                                  {rich(ln)}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {tb.note && (
+                      <p className="break-keep border-t border-[#F0E4D8] bg-[#FAF3EC] px-3.5 py-2.5 text-[0.84rem] leading-[1.65] text-[#6B7680] sm:px-4 sm:text-[0.9rem]">
+                        {rich(tb.note, 'font-black text-[#B4532A]')}
+                      </p>
+                    )}
                   </div>
                 ))}
                 {f.lead && <p className="mt-3 break-keep text-[1.06rem] font-bold leading-[1.75] text-[#171B20] sm:text-[1.14rem]">{f.lead}</p>}
@@ -198,11 +219,6 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                       </li>
                     ))}
                   </ul>
-                )}
-                {f.callout && (
-                  <p className="mt-4 break-keep rounded-xl bg-[#171B20] px-4 py-3.5 text-[1.02rem] leading-[1.75] text-white/90 sm:px-5 sm:text-[1.1rem]">
-                    {rich(f.callout, 'font-black text-[#E8B89A]')}
-                  </p>
                 )}
                 {f.tail &&
                   f.tail.split('\n\n').map((para, pi) => (
