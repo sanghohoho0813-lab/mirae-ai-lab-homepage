@@ -24,8 +24,8 @@ export type FaqTable = {
   title: string
   head: readonly string[]
   rows: readonly (readonly string[])[]
-  /** 표 아래 계산식 — 묶음마다 설명 한 줄 + 식 여러 줄 */
-  calc?: readonly { label: string; lines: readonly string[] }[]
+  /** 표 아래 짧은 근거 — 제목(예: 계산 기준 · 계산식) + 몇 줄 */
+  basis?: { title: string; lines: readonly string[] }
   /** 맨 아래 안내(예: '단순 계산이니 참고만') — '**…**' 로 첫 문장을 굵게 */
   note?: string
 }
@@ -35,6 +35,8 @@ export type FaqItem = {
   a: string
   /** 답 바로 아래 숫자 표 */
   tables?: readonly FaqTable[]
+  /** 표 바로 아래 어두운 상자 한 줄 (표 내용을 한 문장으로 마무리) */
+  highlight?: string
   /** 답 아래 짧은 강조 목록 (예: 신속 · 능동 · 퀄리티) */
   points?: readonly { t: string; d: string }[]
   /** 강조 목록 앞에 붙는 한 문장 */
@@ -176,7 +178,7 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                                   </th>
                                 ) : (
                                   <td key={ci} className="whitespace-nowrap px-1.5 py-2.5 text-right min-[380px]:px-2.5 text-[#343B44] sm:px-4">
-                                    {rich(cell, 'font-black text-[#B4532A]')}
+                                    {rich(cell, 'text-[1.1em] font-black text-[#B4532A]')}
                                   </td>
                                 ),
                               )}
@@ -185,21 +187,16 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                         </tbody>
                       </table>
                     </div>
-                    {tb.calc && (
+                    {tb.basis && (
                       <div className="border-t border-[#F0E4D8] bg-[#FFFCF9] px-3.5 py-3 sm:px-4">
-                        <p className="text-[0.8rem] font-black tracking-tight text-[#A36A4B] sm:text-[0.86rem]">계산식</p>
-                        {tb.calc.map((g) => (
-                          <div key={g.label} className="mt-2">
-                            <p className="break-keep text-[0.84rem] font-bold leading-[1.6] text-[#343B44] sm:text-[0.9rem]">{g.label}</p>
-                            <ul className="mt-1 space-y-1">
-                              {g.lines.map((ln) => (
-                                <li key={ln} className="break-keep text-[0.84rem] leading-[1.6] text-[#5B646D] sm:text-[0.9rem]">
-                                  {rich(ln)}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
+                        <p className="text-[0.8rem] font-black tracking-tight text-[#A36A4B] sm:text-[0.86rem]">{tb.basis.title}</p>
+                        <ul className="mt-1 space-y-0.5">
+                          {tb.basis.lines.map((ln) => (
+                            <li key={ln} className="break-keep text-[0.84rem] leading-[1.6] text-[#5B646D] sm:text-[0.9rem]">
+                              {rich(ln)}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     )}
                     {tb.note && (
@@ -209,6 +206,11 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                     )}
                   </div>
                 ))}
+                {f.highlight && (
+                  <p className="mt-4 break-keep rounded-xl bg-[#171B20] px-4 py-3.5 text-[1.04rem] font-bold leading-[1.7] text-white/90 sm:px-5 sm:text-[1.12rem]">
+                    {rich(f.highlight, 'font-black text-[#E8B89A]')}
+                  </p>
+                )}
                 {f.lead && <p className="mt-3 break-keep text-[1.06rem] font-bold leading-[1.75] text-[#171B20] sm:text-[1.14rem]">{f.lead}</p>}
                 {f.points && (
                   <ul className="mt-3 grid gap-2">
