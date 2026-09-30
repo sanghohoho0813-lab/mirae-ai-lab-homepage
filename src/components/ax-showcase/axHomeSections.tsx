@@ -46,7 +46,7 @@ export function AxHeroV2() {
           <span className={NW}>만들어 드려요.</span>
         </h1>
         {/* 두 문단 — 문단마다 흰 글자(무엇) 하나와 브랜드색(남는 결과) 하나만 집어, 읽는 눈이 어디에 멈출지 분명하게 한다.
-            1문단: 왜 지금(심사위원·투자자는 이미 시도하고 실제로 보여 주는 회사 · 시대 흐름에 맞게 성장하는 혁신기업을 더 선호한다) · 2문단: 무엇을 해 주나(시간·비용은 줄이고 매출은 올린다) */}
+            1문단: 왜 지금(심사위원·투자자는 이미 시도하고 실제로 보여 주는 회사 · 시대 흐름에 맞게 성장하는 혁신기업을 더 선호한다) · 2문단: 무엇을 해 주나(시간·비용은 줄이고 매출은 더 끌어올릴 수 있게 만든다) */}
         <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-[359px]:mt-5 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-8 sm:text-[1.44rem]">
           <span className={NW}><b className="font-bold text-[#FAFAF8]">누구나 AI로</b> 그럴듯한</span> <span className={NW}>계획서를 쓰는 요즘,</span>
           <br className="hidden sm:block" /> <span className={NW}>심사위원과 투자자는</span>{' '}
@@ -59,7 +59,8 @@ export function AxHeroV2() {
         <p style={{ animationDelay: '0.46s' }} className="hero-anim mt-5 max-[359px]:mt-4 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-6 sm:text-[1.44rem]">
           <span className={NW}><b className="font-bold text-[#FAFAF8]">AI와 데이터로</b></span> <span className={NW}>일하는 회사로 바꿔,</span>
           <br className="hidden sm:block" /> <span className={NW}>낭비되는 시간과 비용은</span> <span className={NW}>줄이고</span>{' '}
-          <span className={NW}><b className="font-bold text-[#E8B89A]">매출은 더 끌어올려요</b>.</span>
+          <span className={NW}><b className="font-bold text-[#E8B89A]">매출은 더 끌어올릴 수 있게</b></span>{' '}
+          <span className={NW}>만들어 드려요.</span>
         </p>
       </div>
     </section>

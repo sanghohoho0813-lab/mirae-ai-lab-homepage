@@ -6,7 +6,6 @@
 import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
 import { VENTURE_FEE_SHORT } from '../../data/ventureFee'
 
-const STEPS = ['기술사업 아이디어', '작동하는 MVP', '벤처기업확인 신청'] as const
 
 export default function VentureMvpHero() {
   // PC 오른쪽 — 실제로 눌러 볼 수 있는 자체 데모 한 장(광고처럼 '화면'이 먼저 보이게)
@@ -19,7 +18,7 @@ export default function VentureMvpHero() {
 
       <div className="relative mx-auto max-w-6xl px-5 pb-12 pt-9 sm:px-6 sm:pb-16 sm:pt-14 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12">
         <div>
-          {/* 윗줄 배지·버튼 두 개·체크 목록·작은 안내문은 뺐다(대표님 방향: 심플하게) — 상담은 폰 하단 바와 아래 영상 구간에서 */}
+          {/* 윗줄 배지·3단계 표시·버튼 두 개·체크 목록·작은 안내문은 뺐다(대표님 방향: 심플하게) — 상담은 머리글·폰 하단 바에서 */}
           <h1 className="break-keep text-[1.95rem] font-black leading-[1.24] tracking-tight min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[2.9rem] xl:text-[3.05rem]">
             {/* 줄은 뜻 단위로 끊는다. 폰·PC(오른쪽에 화면이 있어 폭이 좁다)는 다섯 줄,
                 가운데 폭(태블릿)은 첫 두 줄을 합쳐 네 줄:
@@ -42,23 +41,6 @@ export default function VentureMvpHero() {
             9년 차 경영컨설턴트가 지금 하는 사업에서 기술사업 아이디어를 찾고, 실제로 써 볼 수 있는 첫 버전(MVP)과{' '}
             <b className="font-bold text-white">벤처기업확인 신청까지 2주 안에</b> 끝냅니다.
           </p>
-
-          {/* 세 단계 — 한눈에 무엇이 남는지 */}
-          <ol className="mt-6 flex flex-wrap items-center gap-1.5" aria-label="진행 순서">
-            {STEPS.map((s, i) => (
-              <li key={s} className="flex items-center gap-1.5">
-                {i > 0 && (
-                  <span aria-hidden className="text-[0.85rem] text-slate-500">
-                    →
-                  </span>
-                )}
-                <span className="rounded-full bg-white/[0.07] px-3 py-1.5 text-[0.88rem] font-bold text-slate-100 ring-1 ring-inset ring-white/15">
-                  <span className="mr-1 text-[#E8B89A]">{i + 1}</span>
-                  {s}
-                </span>
-              </li>
-            ))}
-          </ol>
 
           {/* 가격 — 서비스 선택 01 카드와 같은 숫자 */}
           {/* 정상가를 작게 흐리게 두면 '원래 300만원' 처럼 읽혀서, 정상가를 크게 두고 붉은 선으로 지운 뒤 할인 금액을 붙인다 */}
