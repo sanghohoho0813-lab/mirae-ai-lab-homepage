@@ -86,7 +86,7 @@ export default function VentureMvpFilm({
             <br /> <span className="text-[#C8612E]">모든 설명</span>을 드려요
           </h2>
           <p className="mx-auto mt-3 max-w-md break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem] md:mx-0">
-            <b className="font-black text-[#171B20]">{FILM_LENGTH}</b> · 자막 포함. 벤처인증 혜택부터 실제로 작동하는 MVP, 2주 일정과 비용까지 이 영상에 다 담았어요.
+            <b className="font-black text-[#171B20]">{FILM_LENGTH}</b> · 자막 포함. 벤처인증 혜택부터 실제로 작동하는 MVP, 2주 일정과 비용까지 이 영상에 다 담았어요. 벤처기업확인 심사 수수료(확인기관에 내는 비용)는 별도예요.
           </p>
           <ul className="mt-5 hidden gap-2 md:grid">
             {POINTS.map((t) => (

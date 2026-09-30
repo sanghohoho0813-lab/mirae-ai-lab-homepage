@@ -156,6 +156,7 @@ export default function BusinessServicesPage() {
                   <span className="text-[1.6rem] font-black leading-none tracking-tight text-[#171B20] sm:text-[1.8rem]">300만원</span>
                   <span className="rounded-full bg-[#D2462E] px-2.5 py-1 text-[0.8rem] font-black leading-none text-white">200만원 할인</span>
                 </p>
+                <p className="mt-1.5 break-keep text-[0.74rem] leading-snug text-[#646E78]">벤처기업확인 심사 수수료는 별도예요.</p>
               </div>
             </div>
 

@@ -4,6 +4,7 @@
 // 답이 길어 보이지 않게 핵심 키워드·문장만 '**굵게**' 로 표시한다(검은 굵은 글씨, 답 하나에 한두 곳만).
 import type { ReactNode } from 'react'
 import { VENTURE_BENEFITS } from '../../data/ventureBenefits'
+import { VENTURE_FEE_FAQ } from '../../data/ventureFee'
 
 /** '**…**' 부분만 굵은 글씨로 (기본은 검은색, 어두운 상자 안에서는 색을 바꿔 쓴다) */
 function rich(text: string, boldCls = 'font-bold text-[#171B20]'): ReactNode[] {
@@ -24,6 +25,8 @@ export type FaqTable = {
   title: string
   head: readonly string[]
   rows: readonly (readonly string[])[]
+  /** 머리글은 '이름|작은 설명' 으로 두 줄이 된다. 이 열들(0부터)은 '줄어드는 세금' 열이라 색을 깐다. */
+  hl?: readonly number[]
   /** 표 아래 짧은 근거 — 제목(예: 계산 기준 · 계산식) + 몇 줄 */
   basis?: { title: string; lines: readonly string[] }
   /** 맨 아래 안내(예: '단순 계산이니 참고만') — '**…**' 로 첫 문장을 굵게 */
@@ -67,7 +70,7 @@ export const AX_FAQ: readonly FaqItem[] = [
   // 벤처기업확인은 어떤 상품이든 기본 포함(AX 영상 2와 같은 원칙) — 혜택 숫자는 2주 기술사업 빌드 FAQ 와 같은 것을 쓴다
   {
     q: 'AX 풀 패키지에도 벤처기업확인이 포함되나요?',
-    a: '**네, 포함입니다.** AX 풀 패키지를 진행하시면 **벤처기업확인 신청까지 추가 비용 없이** 함께 준비해요. 법으로 제한된 업종이 아니라면 확인을 받으실 때까지 끝까지 함께해요.\n\n벤처기업확인 하나만 받아도, 요건을 갖춘 회사는 이 정도 혜택을 받을 수 있어요.',
+    a: `**네, 포함입니다.** AX 풀 패키지를 진행하시면 **벤처기업확인 신청 준비까지 컨설팅에 포함**해 함께해요. 법으로 제한된 업종이 아니라면 확인을 받으실 때까지 끝까지 함께해요.\n\n다만 ${VENTURE_FEE_FAQ}\n\n벤처기업확인 하나만 받아도, 요건을 갖춘 회사는 이 정도 혜택을 받을 수 있어요.`,
     ...VENTURE_BENEFITS,
   },
   {
@@ -161,11 +164,20 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                       <table className="w-full border-collapse text-[0.92rem] tabular-nums sm:text-[1.02rem]">
                         <thead>
                           <tr className="bg-[#FAF3EC]">
-                            {tb.head.map((h, hi) => (
-                              <th key={h} scope="col" className={`whitespace-nowrap px-1.5 py-2 text-[0.82rem] min-[380px]:px-2.5 font-bold text-[#6B7680] sm:px-4 sm:text-[0.9rem] ${hi === 0 ? 'text-left' : 'text-right'}`}>
-                                {h}
-                              </th>
-                            ))}
+                            {tb.head.map((h, hi) => {
+                              const [label, sub] = h.split('|')
+                              const tint = !!tb.hl?.includes(hi)
+                              return (
+                                <th
+                                  key={h}
+                                  scope="col"
+                                  className={`px-1.5 py-2 align-bottom min-[380px]:px-2.5 sm:px-4 ${hi === 0 ? 'text-left' : 'text-right'} ${tint ? 'bg-[#F9DFC6]' : ''}`}
+                                >
+                                  <span className={`block text-[0.82rem] font-bold leading-tight sm:text-[0.9rem] ${tint ? (sub ? 'text-[#171B20]' : 'text-[#B4532A]') : 'text-[#6B7680]'}`}>{label}</span>
+                                  {sub && <span className="mt-0.5 block break-keep text-[0.78rem] font-black leading-tight text-[#B4532A] sm:text-[0.86rem]">{sub}</span>}
+                                </th>
+                              )
+                            })}
                           </tr>
                         </thead>
                         <tbody>
@@ -177,7 +189,7 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
                                     {cell}
                                   </th>
                                 ) : (
-                                  <td key={ci} className="whitespace-nowrap px-1.5 py-2.5 text-right min-[380px]:px-2.5 text-[#343B44] sm:px-4">
+                                  <td key={ci} className={`whitespace-nowrap px-1.5 py-2.5 text-right min-[380px]:px-2.5 text-[#343B44] sm:px-4 ${tb.hl?.includes(ci) ? 'bg-[#FFF1E2]' : ''}`}>
                                     {rich(cell, 'text-[1.1em] font-black text-[#B4532A]')}
                                   </td>
                                 ),

@@ -4,6 +4,7 @@
 // ⚠️ '벤처인증까지'처럼 인증을 약속하는 표현은 쓰지 않는다 → '벤처기업확인 신청까지'.
 // ⚠️ 가격·선착순은 서비스 선택 페이지 01 카드와 같은 숫자여야 한다(정상가 500만원 → 런칭 파트너 300만원 · 선착순 5개사).
 import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
+import { VENTURE_FEE_SHORT } from '../../data/ventureFee'
 
 const STEPS = ['기술사업 아이디어', '작동하는 MVP', '벤처기업확인 신청'] as const
 const CHECKS = ['아이디어가 없어도 OK — 지금 사업에서 찾아 드려요', '경영컨설턴트 1:1 설계', '벤처기업확인 신청까지'] as const
@@ -75,6 +76,8 @@ export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () =
               <span className="text-[2.6rem] font-black leading-none tracking-tight text-[#E8894F] sm:text-[3rem]">300만원</span>
               <span className="rounded-full bg-[#FF6B4A] px-3 py-1.5 text-[0.9rem] font-black leading-none text-white">200만원 할인</span>
             </p>
+            {/* 벤처기업확인은 신청 '준비'까지가 이 금액 — 확인기관에 내는 심사 수수료는 별도라는 걸 가격 바로 아래에 */}
+            <p data-mvp-fee-note className="mt-2.5 break-keep text-[0.8rem] leading-snug text-slate-400">{VENTURE_FEE_SHORT}</p>
           </div>
 
           {/* 상담(주) · 영상(보조) — 폰은 위아래, 태블릿·PC 는 나란히 두어 첫 화면에 둘 다 보이게 한다.
@@ -116,7 +119,7 @@ export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () =
           </ul>
 
           <p className="mt-4 max-w-xl break-keep text-[0.8rem] leading-relaxed text-slate-500">
-            2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요. 벤처기업확인 여부는 확인기관 심사로 정해집니다.
+            2주는 자료 준비와 결정이 원활할 때의 목표 일정이에요. 벤처기업확인 여부는 확인기관 심사로 정해지고, 심사 수수료는 확인기관에 별도로 내야 해요.
           </p>
         </div>
 

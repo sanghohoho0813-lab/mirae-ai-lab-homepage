@@ -1,5 +1,6 @@
 // 대표자용 서비스몰 상품 데이터 — 서비스몰 홈과 상세페이지가 공유하는 단일 소스.
 import type { BusinessVisualType } from '../components/BusinessServiceVisual'
+import { VENTURE_FEE_NOTICE } from './ventureFee'
 
 export type BadgeTone = 'primary' | 'blue' | 'slate'
 
@@ -238,13 +239,14 @@ export const businessPackages: BusinessPackage[] = [
     faqs: [
       { q: '벤처인증 취득을 보장하나요?', a: '네, 요건을 갖춘 기업은 취득까지 책임지고 진행합니다. 진행 전 기술성·성장성 가능성을 먼저 진단해, 어려운 경우는 솔직히 말씀드립니다.' },
       { q: '특허출원이 포함되나요?', a: '네. 50만원 상당 특허출원을 연계해 함께 준비합니다.' },
+      { q: '확인기관에 내는 수수료도 포함인가요?', a: `아니요. ${VENTURE_FEE_NOTICE} 유형에 따라 다르며, 정확한 금액은 상담에서 안내드립니다.` },
       { q: '기술기업이 아니어도 되나요?', a: '업종에 맞는 기술성·성장성 관점을 함께 찾아 정리합니다.' },
     ],
     visualType: 'venture',
     imageSrc: '/assets/business-services/venture-innovation.webp',
     featured: true,
     notice:
-      '벤처기업확인 취득을 보장하지 않습니다. 기업의 기술성·성장성 평가와 기관 심사 기준에 따라 결과는 달라질 수 있습니다.',
+      `벤처기업확인 취득을 보장하지 않습니다. 기업의 기술성·성장성 평가와 기관 심사 기준에 따라 결과는 달라질 수 있습니다. ${VENTURE_FEE_NOTICE}`,
   },
   {
     id: 'venture-investment',
@@ -277,7 +279,7 @@ export const businessPackages: BusinessPackage[] = [
     visualType: 'venture',
     imageSrc: '/assets/business-services/venture-investment.webp',
     notice:
-      '벤처투자에 따른 소득공제·절세 효과는 개인의 소득 구조와 세법, 투자 조건에 따라 달라질 수 있으며 특정 결과를 보장하지 않습니다. 벤처기업확인 취득 역시 기관 심사 사항입니다.',
+      `벤처투자에 따른 소득공제·절세 효과는 개인의 소득 구조와 세법, 투자 조건에 따라 달라질 수 있으며 특정 결과를 보장하지 않습니다. 벤처기업확인 취득 역시 기관 심사 사항이며, ${VENTURE_FEE_NOTICE}`,
   },
   {
     id: 'responsive-homepage',

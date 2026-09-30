@@ -341,7 +341,7 @@ export default function AxFitReportView({ report, submitted, consultationConsent
         )}
 
         <p className="mt-5 break-keep border-t border-white/10 pt-4 text-[0.84rem] leading-relaxed text-slate-400 print:border-slate-200 print:text-slate-500">
-          {report.paymentNote} 어떤 상품이든 벤처기업확인 신청까지 함께 준비해요.
+          {report.paymentNote} 어떤 상품이든 벤처기업확인 신청까지 함께 준비해요. 확인기관에 내는 심사 수수료는 별도예요.
         </p>
       </section>
 
