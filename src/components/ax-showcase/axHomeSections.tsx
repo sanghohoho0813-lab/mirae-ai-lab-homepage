@@ -12,9 +12,9 @@ const NW = 'whitespace-nowrap'
 /** SECTION 1 — Hero. 배지 · 한 문장 · 두 문단. 직접 만든 화면 22개(AxSamplesBand)는 소개 영상 2편 다음에 있다.
  *  키워드 칩과 버튼은 두지 않는다.
  *  대표님 방향(2026-09): 중소기업 대표가 수천만원을 쓰는 이유는 '업무 효율'보다 '성장과 생존'이다.
- *  → 정책자금·정부지원사업·투자에서 경쟁력 있는 회사, 투자·인수합병(M&A) 자리에서 가치를 인정받는 회사를 앞에 두고,
- *    업무가 편해지는 건 맨 끝 한 줄(덤)으로 내린다.
- *  승인·선정·가치평가를 약속하는 표현은 절대 쓰지 않는다('경쟁력 있는 회사로' · '인정받도록 준비' 까지만). */
+ *  → 제목은 '정책자금·지원사업·투자에서 경쟁력 있는 회사로', 1문단은 왜(심사위원·투자자는 온라인으로 더 크게 성장할 회사를 찾는다),
+ *    2문단은 AX 가 실제로 하는 일(시간·비용은 줄이고 매출은 올린다). 서비스 선택 02 카드도 같은 말을 쓴다.
+ *  승인·선정을 약속하는 표현은 절대 쓰지 않는다('경쟁력 있는 회사로' 까지만). */
 export function AxHeroV2() {
   return (
     <section className="relative overflow-hidden bg-[#050B11]">
@@ -29,15 +29,9 @@ export function AxHeroV2() {
           320px 같은 작은 화면에서는 문단이 두 개라 여백부터 줄여 한 화면에 담는다. */}
       {/* 폰에서는 하단 고정 바(약 64px)가 처음부터 떠 있으므로 아래 여백을 그만큼 더 둔다 (pb-24 / 작은 화면 pb-20) */}
       <div className={`relative flex min-h-[calc(100svh-53px)] sm:min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-24 pt-12 max-[359px]:pb-20 max-[359px]:pt-7 [@media(max-height:700px)]:pb-20 [@media(max-height:700px)]:pt-7 sm:px-6 sm:pb-12 sm:pt-14`}>
-        {/* 폰에서는 두 줄로 떨어지므로 알약 대신 둥근 네모로 둔다(PC 는 한 줄 알약) */}
-        <span className="hero-anim inline-flex items-center gap-2 break-keep rounded-2xl border border-[#D47A4A]/35 bg-[#343B44]/70 px-3.5 py-2 text-[0.99rem] font-bold leading-snug text-[#E8B89A] backdrop-blur min-[400px]:text-[1.078rem] sm:rounded-full sm:px-4 sm:text-[1.155rem]">
-          <span>
-            경영컨설턴트가 설계하는 <span className="whitespace-nowrap">50인 미만 중소기업 맞춤 AX</span>
-          </span>
-        </span>
-
+        {/* 윗배지(경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤 AX)는 뺐다 — 서비스 선택 화면과 헤더에서 이미 본다 */}
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
-        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim mt-8 max-[359px]:mt-6 max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] max-[359px]:text-[2.0rem] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
+        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] max-[359px]:text-[2.0rem] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
           {/* PC 는 두 줄. 폰은 말 덩어리대로 나뉜다 — 가운뎃점은 앞 낱말에 붙여 두고(줄 맨 앞에 '·' 가 오지 않게),
               점 뒤(<wbr />)에서만 끊는다 */}
           <span className={NW}>정책자금·</span>
@@ -52,18 +46,17 @@ export function AxHeroV2() {
           <span className={NW}>만들어 드려요.</span>
         </h1>
         {/* 두 문단 — 문단마다 흰 글자(무엇) 하나와 브랜드색(남는 결과) 하나만 집어, 읽는 눈이 어디에 멈출지 분명하게 한다.
-            1문단: 왜 지금(심사·투자는 '실제로 돌아가는 회사'를 본다) · 2문단: 무엇을 해 주나(회사 가치) → 업무 효율은 덤 */}
+            1문단: 왜 지금(심사위원·투자자는 온라인으로 더 크게 성장할 회사를 찾는다) · 2문단: 무엇을 해 주나(시간·비용은 줄이고 매출은 올린다) */}
         <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-[359px]:mt-5 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-8 sm:text-[1.44rem]">
           <span className={NW}><b className="font-bold text-[#FAFAF8]">누구나 AI로</b> 그럴듯한</span> <span className={NW}>계획서를 쓰는 요즘,</span>
           <br className="hidden sm:block" /> <span className={NW}>심사위원과 투자자는</span>{' '}
-          <span className={NW}><b className="font-bold text-[#E8B89A]">실제로 돌아가는 회사</b>를</span> <span className={NW}>먼저 봐요.</span>
+          <span className={NW}><b className="font-bold text-[#E8B89A]">온라인으로 더 크게</b></span>{' '}
+          <span className={NW}><b className="font-bold text-[#E8B89A]">성장할 수 있는 회사</b>를</span> <span className={NW}>찾아요.</span>
         </p>
         <p style={{ animationDelay: '0.46s' }} className="hero-anim mt-5 max-[359px]:mt-4 max-w-3xl break-keep text-[1.26rem] font-medium leading-[1.85] max-[359px]:text-[1.12rem] max-[359px]:leading-[1.72] text-[#E7EAEE] sm:mt-6 sm:text-[1.44rem]">
-          <span className={NW}><b className="font-bold text-[#FAFAF8]">AI와 데이터로</b></span> <span className={NW}>일하는 회사로 바꿔,</span>{' '}
-          <span className={NW}>투자와 인수·합병(M&amp;A)</span> <span className={NW}>자리에서도</span>
-          <br className="hidden sm:block" /> <span className={NW}><b className="font-bold text-[#E8B89A]">회사 가치를 제대로</b></span>{' '}
-          <span className={NW}><b className="font-bold text-[#E8B89A]">인정받도록</b> 준비해요.</span>{' '}
-          <span className={`${NW} text-[#AEB6BF]`}>업무가 편해지는 건</span> <span className={`${NW} text-[#AEB6BF]`}>덤이에요.</span>
+          <span className={NW}><b className="font-bold text-[#FAFAF8]">AI와 데이터로</b></span> <span className={NW}>일하는 회사로 바꿔,</span>
+          <br className="hidden sm:block" /> <span className={NW}>낭비되는 시간과 비용은</span> <span className={NW}>줄이고</span>{' '}
+          <span className={NW}><b className="font-bold text-[#E8B89A]">매출은 더 끌어올려요</b>.</span>
         </p>
       </div>
     </section>
