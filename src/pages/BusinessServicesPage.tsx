@@ -110,15 +110,33 @@ function CardHead({
   )
 }
 
-// 그림 크기 — 폰은 화면 폭의 25%(84~112px), PC 는 12%(120~168px).
-// 폰에서는 01 그림이 옆 글자(한 줄 + 두 줄 문장)보다 높아지지 않게 해, 02 카드 머리가 첫 화면에 걸리게 둔다
-const VIS = '[--vw:clamp(84px,25vw,112px)] lg:[--vw:clamp(120px,12vw,168px)] w-[var(--vw)]'
+// 그림 크기 — 폰은 화면 폭의 30%(96~132px), PC 는 12.5%(140~184px).
+// 폰에서는 01 그림이 옆 글자(한 줄 + 두 줄 문장)보다 높아지지 않게 해(높이 = 폭 × 0.8), 02 카드 머리가 첫 화면에 걸리게 둔다
+const VIS = '[--vw:clamp(96px,30vw,132px)] lg:[--vw:clamp(140px,12.5vw,184px)] w-[var(--vw)]'
 
-/** 01 — 영상 첫 장면처럼 벤처기업확인서 위에 MVP 폰 화면을 겹친다.
- *  확인서는 기업을 알아볼 수 있는 정보(기업명·사업자등록번호·대표자·주소·발급번호·날짜)를 모두 가린 이미지, 폰은 미래AI랩 자체 데모(PawBeauty). */
+/** 01 — 벤처기업확인서 + 같은 MVP 를 띄운 PC 모니터(뒤)와 스마트폰(앞): '앱 하나'가 아니라 PC·폰 어디서나 열리는 웹앱이라는 것.
+ *  확인서는 기업을 알아볼 수 있는 정보(기업명·사업자등록번호·대표자·주소·발급번호·날짜)를 모두 가린 이미지,
+ *  화면은 미래AI랩 자체 데모(PawBeauty) — PC·폰이 같은 서비스다. */
 function VentureVisual() {
   return (
-    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.88)] ${VIS}`}>
+    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.8)] ${VIS}`}>
+      {/* PC 모니터(뒤) — 화면 + 목 + 받침 */}
+      <span data-visual-pc className="absolute right-0 top-0 flex w-[70%] flex-col items-center">
+        <span className="block w-full rounded-[5px] bg-[#171B20] p-[3%] shadow-[0_8px_18px_rgba(23,27,32,0.22)] lg:rounded-[7px]">
+          <img
+            src="/assets/business-services/cards/venture-mvp-pc.webp"
+            alt="PC 로 연 MVP 예시 화면(미래AI랩 자체 데모)"
+            width={480}
+            height={300}
+            loading="lazy"
+            decoding="async"
+            className="block w-full rounded-[2px]"
+          />
+        </span>
+        <span aria-hidden className="block h-[calc(var(--vw)*0.06)] w-[14%] bg-gradient-to-b from-[#343B44] to-[#646E78]" />
+        <span aria-hidden className="block h-[calc(var(--vw)*0.025)] w-[38%] rounded-full bg-[#646E78]" />
+      </span>
+      {/* 벤처기업확인서(가운데) */}
       <img
         src="/assets/business-services/cards/venture-cert.webp"
         alt="벤처기업확인서 예시(기업 정보 가림)"
@@ -126,46 +144,113 @@ function VentureVisual() {
         height={395}
         loading="lazy"
         decoding="async"
-        className="absolute left-0 top-[2%] w-[64%] -rotate-[4deg] rounded-[3px] bg-white shadow-[0_8px_20px_rgba(23,27,32,0.18)] ring-1 ring-black/5"
+        className="absolute bottom-[3%] left-0 w-[42%] -rotate-[5deg] rounded-[2px] bg-white shadow-[0_8px_18px_rgba(23,27,32,0.2)] ring-1 ring-black/5"
       />
-      <span className="absolute bottom-0 right-0 w-[38%] overflow-hidden rounded-[9px] border-[3px] border-[#171B20] bg-[#171B20] shadow-[0_10px_24px_rgba(23,27,32,0.3)] lg:rounded-[14px] lg:border-4">
-        <img
-          src="/assets/business-services/cards/venture-mvp-phone.webp"
-          alt="MVP 예시 화면(미래AI랩 자체 데모)"
-          width={200}
-          height={379}
-          loading="lazy"
-          decoding="async"
-          className="block w-full"
-        />
+      {/* 스마트폰(앞) — 검은 테두리 · 둥근 모서리 · 다이내믹 아일랜드 · 옆 버튼 */}
+      <span data-visual-phone className="absolute bottom-0 right-[4%] block w-[30%] rounded-[20%/9.5%] bg-[#0B0E12] p-[6%] shadow-[0_12px_24px_rgba(23,27,32,0.38)] ring-1 ring-white/10">
+        <span aria-hidden className="absolute -right-[4%] top-[22%] block h-[13%] w-[4%] rounded-r-[2px] bg-[#0B0E12]" />
+        <span aria-hidden className="absolute -left-[4%] top-[18%] block h-[8%] w-[4%] rounded-l-[2px] bg-[#0B0E12]" />
+        <span className="relative block overflow-hidden rounded-[15%/7%]">
+          <img
+            src="/assets/business-services/cards/venture-mvp-phone.webp"
+            alt="스마트폰으로 연 같은 MVP 화면"
+            width={220}
+            height={477}
+            loading="lazy"
+            decoding="async"
+            className="block w-full"
+          />
+          <span aria-hidden className="absolute left-1/2 top-[2.2%] block h-[3.2%] w-[34%] -translate-x-1/2 rounded-full bg-black" />
+        </span>
       </span>
     </span>
   )
 }
 
-/** 02 — AX 대시보드(미래AI랩 자체 데모 · 루미에르 헤어살롱) 창 위에 'AI 브리핑' 표시를 띄워, AI 가 먼저 챙길 일을 알려 준다는 걸 보여 준다 */
+/** 02 — 가운데 회사 건물을 AI 궤도 고리와 연결점들이 감싸고 있는 그림: 'AI 를 적극 도입한 회사'.
+ *  고리는 아주 천천히 돈다(움직임 줄이기 설정이면 멈춤). 금색은 02 카드 톤과 같다. */
 function AxVisual() {
+  const C = { x: 100, y: 98 }
+  const node = (r: number, deg: number) => ({ x: C.x + r * Math.cos((deg * Math.PI) / 180), y: C.y + r * Math.sin((deg * Math.PI) / 180) })
+  // 맨 위(270°)는 'AI' 표시 자리라 점을 두지 않는다(움직임을 멈춘 화면에서도 겹치지 않게)
+  const outer = [22, 128, 206].map((d) => node(84, d))
+  const inner = [62, 196, 302].map((d) => node(62, d))
+  const arc = (r: number, a0: number, a1: number) => {
+    const p0 = node(r, a0), p1 = node(r, a1)
+    return `M ${p0.x.toFixed(1)} ${p0.y.toFixed(1)} A ${r} ${r} 0 0 1 ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`
+  }
+  const spin = { transformOrigin: `${C.x}px ${C.y}px` }
   return (
-    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.88)] ${VIS}`}>
-      <span className="absolute inset-x-0 top-[3%] block overflow-hidden rounded-[7px] bg-[#0B0E12] shadow-[0_12px_28px_rgba(0,0,0,0.45)] ring-1 ring-[#E6C396]/35 lg:rounded-[10px]">
-        <span aria-hidden className="flex items-center gap-[3px] bg-[#2C3138] px-[6%] py-[3.5%] lg:gap-1">
-          <span className="h-[4px] w-[4px] rounded-full bg-[#FF6B5B] lg:h-[6px] lg:w-[6px]" />
-          <span className="h-[4px] w-[4px] rounded-full bg-[#F5C451] lg:h-[6px] lg:w-[6px]" />
-          <span className="h-[4px] w-[4px] rounded-full bg-[#56C271] lg:h-[6px] lg:w-[6px]" />
-        </span>
-        <img
-          src="/assets/business-services/cards/ax-dashboard.webp"
-          alt="AX 대시보드 예시 화면(미래AI랩 자체 데모)"
-          width={720}
-          height={450}
-          loading="lazy"
-          decoding="async"
-          className="block w-full"
-        />
-      </span>
-      <span className="absolute bottom-0 left-[6%] inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-gradient-to-r from-[#E6C396] to-[#C99257] px-2 py-[3px] text-[10px] font-black leading-none text-[#15110C] shadow-[0_6px_14px_rgba(0,0,0,0.4)] lg:px-3 lg:py-1.5 lg:text-[12px]">
-        <span aria-hidden>✦</span>AI 브리핑
-      </span>
+    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.94)] ${VIS}`}>
+      <svg viewBox="0 0 200 188" role="img" aria-label="AI 가 회사를 감싸고 있는 그림 — AX 도입" className="block h-full w-full overflow-visible">
+        <defs>
+          <radialGradient id="axGlow" cx="50%" cy="52%" r="50%">
+            <stop offset="0" stopColor="#E6C396" stopOpacity="0.42" />
+            <stop offset="0.55" stopColor="#C99257" stopOpacity="0.12" />
+            <stop offset="1" stopColor="#C99257" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="axGold" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#F6E2C0" />
+            <stop offset="1" stopColor="#C99257" />
+          </linearGradient>
+          <linearGradient id="axTower" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#FAFAF8" />
+            <stop offset="1" stopColor="#C9CED5" />
+          </linearGradient>
+        </defs>
+        <circle cx={C.x} cy={C.y} r="92" fill="url(#axGlow)" />
+
+        {/* 바깥 고리 — 점선, 천천히 시계 방향 */}
+        <g style={spin} className="motion-safe:animate-[spin_70s_linear_infinite]">
+          <circle cx={C.x} cy={C.y} r="84" fill="none" stroke="url(#axGold)" strokeOpacity="0.5" strokeWidth="1.2" strokeDasharray="1.5 5" strokeLinecap="round" />
+          {outer.map((n, i) => (
+            <g key={i}>
+              <circle cx={n.x} cy={n.y} r="7" fill="#E6C396" fillOpacity="0.18" />
+              <circle cx={n.x} cy={n.y} r="3.4" fill="url(#axGold)" />
+            </g>
+          ))}
+        </g>
+
+        {/* 안쪽 고리 — 실선 + 빛나는 호, 연결선이 건물로 이어진다. 반대 방향 */}
+        <g style={spin} className="motion-safe:animate-[spin_46s_linear_infinite_reverse]">
+          <circle cx={C.x} cy={C.y} r="62" fill="none" stroke="#E6C396" strokeOpacity="0.4" strokeWidth="1.1" />
+          <path d={arc(62, -150, -40)} fill="none" stroke="url(#axGold)" strokeWidth="3" strokeLinecap="round" />
+          <path d={arc(62, 30, 90)} fill="none" stroke="url(#axGold)" strokeWidth="2" strokeLinecap="round" strokeOpacity="0.7" />
+          {inner.map((n, i) => (
+            <g key={i}>
+              <line x1={n.x} y1={n.y} x2={C.x + (n.x - C.x) * 0.5} y2={C.y + (n.y - C.y) * 0.5} stroke="#E6C396" strokeOpacity="0.45" strokeWidth="0.9" strokeDasharray="2 2.5" />
+              <circle cx={n.x} cy={n.y} r="2.8" fill="#FAFAF8" />
+            </g>
+          ))}
+        </g>
+
+        {/* 회사 건물 — 가운데 타워 + 양옆 낮은 건물, 창은 금색 불빛 */}
+        <g>
+          <rect x="70" y="100" width="17" height="30" rx="2" fill="#AEB6BF" />
+          <rect x="113" y="106" width="17" height="24" rx="2" fill="#AEB6BF" />
+          <rect x="84" y="66" width="32" height="64" rx="3" fill="url(#axTower)" />
+          <rect x="96" y="58" width="8" height="9" rx="1.5" fill="url(#axTower)" />
+          {[0, 1, 2, 3, 4].map((r) =>
+            [0, 1, 2].map((c) => (
+              <rect key={`${r}-${c}`} x={89 + c * 8.5} y={73 + r * 10} width="5" height="5.5" rx="0.8" fill={(r + c) % 3 === 0 ? '#F6E2C0' : '#C99257'} fillOpacity={(r + c) % 3 === 0 ? 1 : 0.8} />
+            )),
+          )}
+          {[0, 1].map((r) => <rect key={`l${r}`} x="74" y={106 + r * 9} width="9" height="4" rx="0.8" fill="#C99257" fillOpacity="0.75" />)}
+          {[0, 1].map((r) => <rect key={`r${r}`} x="117" y={111 + r * 8} width="9" height="4" rx="0.8" fill="#C99257" fillOpacity="0.75" />)}
+          <rect x="62" y="130" width="76" height="2.5" rx="1.25" fill="#E6C396" fillOpacity="0.6" />
+        </g>
+
+        {/* 'AI' 표시 — 고리 맨 위 */}
+        <g>
+          <rect x="82" y="3" width="36" height="18" rx="9" fill="url(#axGold)" />
+          <text x="100" y="15.6" textAnchor="middle" fontSize="11" fontWeight="900" fill="#15110C" fontFamily="inherit">
+            AI
+          </text>
+        </g>
+        {/* 반짝임 */}
+        <path d="M168 40 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#F6E2C0" />
+        <path d="M30 150 l1.5 3.8 3.8 1.5 -3.8 1.5 -1.5 3.8 -1.5 -3.8 -3.8 -1.5 3.8 -1.5z" fill="#F6E2C0" fillOpacity="0.8" />
+      </svg>
     </span>
   )
 }
