@@ -21,6 +21,7 @@ import VentureMvpHero from '../components/venture/VentureMvpHero'
 import VentureMvpExamples, { VENTURE_MVP_EXAMPLES_ID } from '../components/venture/VentureMvpExamples'
 import VentureMvpFilm, { type VentureMvpFilmHandle } from '../components/venture/VentureMvpFilm'
 import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
+import DetailMobileBar from '../components/business/DetailMobileBar'
 import FaqSection from '../components/ax-showcase/AxFaqSection'
 import { VENTURE_MVP_FAQ } from '../data/ventureMvpFaq'
 import { VENTURE_MVP_DIR, VENTURE_MVP_HOTSPOTS, VENTURE_MVP_IMAGES, type VentureMvpHotspot } from '../data/ventureMvpImages'
@@ -75,6 +76,8 @@ export default function VentureMvpPage() {
     io.observe(el)
     return () => io.disconnect()
   }, [])
+
+  const barVisible = pastTop && !atEnd
 
   return (
     <div className="flex min-h-dvh flex-col bg-[#FAFAF8] pb-[4.5rem] text-[#171B20] antialiased [word-break:keep-all] sm:pb-0">
@@ -195,37 +198,35 @@ export default function VentureMvpPage() {
       </main>
 
       <LegalFooter tone="dark" />
-      <KakaoFloat />
+      {/* 폰에서 하단 바가 떠 있으면 카톡은 바 안에 들어가 있다 */}
+      <KakaoFloat mobileHidden={barVisible} />
 
       {/* 샘플 창 — PC 는 카톡 버튼 옆 알약, 모바일은 아래 고정 바 오른쪽 버튼이 연다(AX 페이지와 같은 방식).
           '아이디어 MVP' 는 이 페이지의 예시로, '산업별 AX' 는 AX 상세 안내로 보낸다 */}
       <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} pillLabel="샘플 22개 보기" />
 
-      {/* 모바일 하단 고정 바 — AX 페이지와 같은 두 칸: 상담 60% · 샘플 22개 보기 40% */}
-      {pastTop && !atEnd && (
-        <div
-          data-mvp-sticky
-          data-bottom-bar
-          className="fixed inset-x-0 bottom-0 z-40 flex items-stretch gap-2 border-t border-[#E7EAEE] bg-[#FAFAF8]/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_16px_rgba(23,27,32,0.08)] backdrop-blur-md sm:hidden"
-        >
-          {/* basis 0 + min-w-0 이 있어야 글자 길이가 아니라 비율이 폭을 정한다 */}
-          <button
-            type="button"
-            onClick={() => setConsultOpen(true)}
-            className="flex min-h-12 min-w-0 flex-[6_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#D47A4A] px-2 text-[0.92rem] font-bold text-[#171B20] shadow-sm transition-colors hover:bg-[#E8B89A] min-[400px]:text-[1rem]"
-          >
-            상담 신청하기 <span aria-hidden>→</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setSampleNavOpen(true)}
-            data-mvp-sticky-samples
-            className="flex min-h-12 min-w-0 flex-[4_1_0%] items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-[#171B20] px-2 text-[0.92rem] font-bold text-white shadow-sm transition-colors hover:bg-[#343B44] min-[400px]:text-[1rem]"
-          >
-            <span aria-hidden className="hidden text-[#E8B89A] min-[370px]:inline">▦</span>
-            <span>샘플 22개 보기</span>
-          </button>
-        </div>
+      {/* 모바일 하단 고정 바 — AX 페이지와 같은 모양: 상담 신청 · 샘플 22개 보기 · 카톡 · 뒤로·앞으로 */}
+      {barVisible && (
+        <DetailMobileBar
+          dataAttrs={{ 'data-mvp-sticky': '' }}
+          primary={{
+            onClick: () => setConsultOpen(true),
+            label: (
+              <>
+                상담 신청하기 <span aria-hidden>→</span>
+              </>
+            ),
+          }}
+          secondary={{
+            onClick: () => setSampleNavOpen(true),
+            label: (
+              <span data-mvp-sticky-samples>
+                <span className="min-[360px]:hidden">샘플 보기</span>
+                <span className="hidden min-[360px]:inline">샘플 22개 보기</span>
+              </span>
+            ),
+          }}
+        />
       )}
 
       {/* 사이트 공통 상담카드를 그대로 재사용 — 신청 서비스만 이미 선택된 상태로 넘긴다 */}

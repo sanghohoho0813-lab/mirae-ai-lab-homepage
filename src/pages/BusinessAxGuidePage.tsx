@@ -161,7 +161,7 @@ export default function BusinessAxGuidePage() {
       </div>
 
       <LegalFooter />
-      <KakaoFloat />
+      <KakaoFloat mobileHidden={!atEnd} />
 
       {!isPreviewEmbedded && <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} />}
 

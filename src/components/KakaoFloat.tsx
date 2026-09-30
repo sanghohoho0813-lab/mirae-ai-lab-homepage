@@ -3,16 +3,20 @@
 // 모바일 하단 고정 CTA(약 64px)와 브라우저 safe-area 위에 위치해 겹치지 않게 한다.
 // 모바일 첫 화면에서는 히어로의 메인 CTA를 가리지 않도록, 조금 스크롤한 뒤에만 나타난다.
 // 뒤로·앞으로 알약(HistoryNav)이 떠 있으면 그 바로 위로 살짝 올라간다 — 높이는 HistoryNav 가 --mirae-kakao-bottom 으로 알려 준다.
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { consultLinks } from '../config/businessInfo'
 
-export default function KakaoFloat() {
+export default function KakaoFloat({ mobileHidden = false }: { mobileHidden?: boolean }) {
   const [shown, setShown] = useState(false)
+  // 폰 하단 바가 카톡 버튼을 품고 있는 동안에는 폰에서 띄우지 않는다
+  const hiddenRef = useRef(mobileHidden)
+  hiddenRef.current = mobileHidden
 
   useEffect(() => {
     const sync = () => {
       // PC(sm 이상)에서는 항상 노출
       if (window.innerWidth >= 640) return setShown(true)
+      if (hiddenRef.current) return setShown(false)
       // 모바일에서는 히어로 CTA를 지난 뒤 노출하고, 최종 CTA 구간에서는 다시 숨긴다
       const nearEnd = window.scrollY + window.innerHeight > document.body.scrollHeight - 900
       setShown(window.scrollY > 260 && !nearEnd)
@@ -24,7 +28,7 @@ export default function KakaoFloat() {
       window.removeEventListener('scroll', sync)
       window.removeEventListener('resize', sync)
     }
-  }, [])
+  }, [mobileHidden])
 
   return (
     <a

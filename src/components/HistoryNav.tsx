@@ -118,13 +118,12 @@ const HIDDEN = [/^\/business-diagnosis\/?$/, /^\/checkout\//, /^\/payment\//, /^
 // 사이트의 버튼 크기(폰 34px · PC 32px) + 알약 테두리 — 카톡 버튼을 얼마나 올릴지 계산할 때 쓴다
 const PILL_H = { mobile: 38, wide: 36 }
 
-export default function HistoryNav() {
-  const { pathname } = useLocation()
-  const [, rerender] = useReducer((x: number) => x + 1, 0)
-  // 화면 맨 아래에 깔린 고정 바(data-bottom-bar) 높이 — 있으면 그 바로 위에 붙는다
-  const [barH, setBarH] = useState(0)
-  const [wide, setWide] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 640)
+// 상세 페이지의 폰 하단 바처럼 버튼을 바 안에 품는 곳(HistoryNavInline)이 떠 있으면, 폰에서는 떠 있는 알약을 숨긴다
+let inlineCount = 0
 
+/** 뒤로·앞으로 가능 여부 — 이동할 때마다 다시 그린다 */
+function useNavState() {
+  const [, rerender] = useReducer((x: number) => x + 1, 0)
   useEffect(() => {
     installHistoryNav()
     listeners.add(rerender)
@@ -133,6 +132,56 @@ export default function HistoryNav() {
       listeners.delete(rerender)
     }
   }, [])
+  const pos = typeof window !== 'undefined' ? (posOf(window.history.state) ?? 0) : 0
+  return { canBack: pos > 0, canForward: pos < max }
+}
+
+const ICON_BACK = (
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M12.5 4.5 7 10l5.5 5.5" />
+  </svg>
+)
+const ICON_FWD = (
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M7.5 4.5 13 10l-5.5 5.5" />
+  </svg>
+)
+
+/**
+ * 폰 하단 바 안에 끼워 넣는 뒤로·앞으로 — 바의 다른 버튼과 같은 높이의 어두운 칸.
+ * 이게 떠 있는 동안(폰) 화면에 떠 있는 알약은 숨는다.
+ */
+export function HistoryNavInline() {
+  const { canBack, canForward } = useNavState()
+  useEffect(() => {
+    inlineCount += 1
+    listeners.forEach((l) => l())
+    return () => {
+      inlineCount -= 1
+      listeners.forEach((l) => l())
+    }
+  }, [])
+  const btn =
+    'grid h-full w-7 place-items-center transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#E6C396] disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent min-[380px]:w-8'
+  return (
+    <nav aria-label="페이지 이동" data-history-nav-inline className="flex shrink-0 items-stretch overflow-hidden rounded-xl bg-[#171B20] text-white shadow-sm">
+      <button type="button" className={btn} onClick={() => window.history.back()} disabled={!canBack} aria-label="뒤로 가기" title="뒤로 가기">
+        {ICON_BACK}
+      </button>
+      <span aria-hidden className="my-3 w-px bg-white/15" />
+      <button type="button" className={btn} onClick={() => window.history.forward()} disabled={!canForward} aria-label="앞으로 가기" title="앞으로 가기">
+        {ICON_FWD}
+      </button>
+    </nav>
+  )
+}
+
+export default function HistoryNav() {
+  const { pathname } = useLocation()
+  const { canBack, canForward } = useNavState()
+  // 화면 맨 아래에 깔린 고정 바(data-bottom-bar) 높이 — 있으면 그 바로 위에 붙는다
+  const [barH, setBarH] = useState(0)
+  const [wide, setWide] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 640)
 
   // 고정 바는 스크롤 위치에 따라 나타나고 사라져서, 스크롤·화면 크기·DOM 변화 때마다 다시 잰다(한 프레임에 한 번)
   useEffect(() => {
@@ -165,11 +214,10 @@ export default function HistoryNav() {
 
   const inFrame = typeof window !== 'undefined' && window.self !== window.top
   const hiddenRoute = HIDDEN.some((re) => re.test(pathname))
-  const pos = typeof window !== 'undefined' ? (posOf(window.history.state) ?? 0) : 0
-  const canBack = pos > 0
-  const canForward = pos < max
+  // 폰에서 하단 바가 버튼을 품고 있으면 떠 있는 알약은 숨긴다
+  const hostedInBar = inlineCount > 0 && !wide
   // 처음 들어와 갈 곳이 없으면 아예 숨긴다 — 두 번째 화면부터 나타난다
-  const visible = !inFrame && !hiddenRoute && (canBack || canForward)
+  const visible = !inFrame && !hiddenRoute && !hostedInBar && (canBack || canForward)
 
   // 오른쪽 아래 — 아래 고정 바가 있으면 바로 위(8px), 없으면 폰 16px · PC 24px
   const pillH = wide ? PILL_H.wide : PILL_H.mobile
@@ -203,15 +251,11 @@ export default function HistoryNav() {
       className="animate-fade-in fixed right-3 z-30 flex items-center rounded-full bg-[#0B0E12]/70 p-0.5 text-white shadow-[0_8px_22px_-10px_rgba(0,0,0,0.5)] ring-1 ring-white/15 backdrop-blur-md transition-[bottom] duration-200 sm:right-6 print:hidden"
     >
       <button type="button" className={btn} onClick={() => window.history.back()} disabled={!canBack} aria-label="뒤로 가기" title="뒤로 가기">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M12.5 4.5 7 10l5.5 5.5" />
-        </svg>
+        {ICON_BACK}
       </button>
       <span aria-hidden className="h-3.5 w-px bg-white/15" />
       <button type="button" className={btn} onClick={() => window.history.forward()} disabled={!canForward} aria-label="앞으로 가기" title="앞으로 가기">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M7.5 4.5 13 10l-5.5 5.5" />
-        </svg>
+        {ICON_FWD}
       </button>
     </nav>
   )

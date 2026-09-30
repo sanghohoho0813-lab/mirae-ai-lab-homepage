@@ -173,7 +173,8 @@ export default function AxStartPage() {
       )}
 
       <LegalFooter tone="dark" />
-      <KakaoFloat />
+      {/* 폰에서 하단 바가 떠 있으면 카톡은 바 안에 들어가 있다 */}
+      <KakaoFloat mobileHidden={!atEnd} />
 
       {/* 스크롤 중 어디서나 AX Preview 로 — 평소엔 비켜서 있는 작은 손잡이 */}
       {!isPreviewEmbedded && <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} />}
