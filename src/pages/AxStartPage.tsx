@@ -35,7 +35,7 @@ import { canonicalUrl } from '../lib/site'
 
 const PAGE_TITLE = '미래AI랩 | 경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤형 AX'
 const PAGE_DESC =
-  '사업과 실제 업무를 먼저 분석하고, ERP·엑셀·카톡 사이에 남아 있는 회사 고유의 업무를 AI와 전용 시스템으로 연결합니다. 운영효율·매출성장·기업자산화를 만드는 50인 미만 중소기업 맞춤형 AX 설계·구축.'
+  '정책자금·정부지원사업·투자에서 경쟁력 있는 회사로 만들어 드려요. 경영컨설턴트가 사업과 업무를 먼저 분석하고, AI와 데이터로 일하는 회사로 바꿔 심사와 투자 자리에서 실제로 돌아가는 화면으로 보여 드려요. 50인 미만 중소기업 맞춤형 AX 설계·구축.'
 
 // 이 트랙에서 진단으로 갈 때는 ?interest=ax 를 붙여 유입을 구분한다
 const AX_DIAG_HREF = withInterest('/business-diagnosis', 'ax')
