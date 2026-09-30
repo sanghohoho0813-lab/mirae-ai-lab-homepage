@@ -256,7 +256,7 @@ export default function BusinessServicesPage() {
             <div className="relative sm:flex-1">
               <CardHead no="01" tier="BASIC" name="2주 기술사업 빌드" diff="없던 기술사업을 2주 안에" tone="light" visual={<VentureVisual />}>
                 <h2 className="mt-2.5 text-[1.2rem] font-black leading-[1.28] tracking-tight sm:mt-4 sm:leading-[1.3] sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
-                  {/* 폰에서는 '아이디어는 작동하는 / 웹앱 서비스로, / 회사는 벤처기업으로' — 말 덩어리대로만 끊는다 */}
+                  {/* 상세 페이지 첫 화면과 같은 말(아이디어는 작동하는 웹앱 서비스로) — 폰: 아이디어는 작동하는 / 웹앱 서비스로, / 회사는 벤처기업으로 */}
                   <span className="whitespace-nowrap">아이디어는</span> <span className="whitespace-nowrap">작동하는</span>{' '}
                   <span className="whitespace-nowrap">웹앱 서비스로,</span>
                   <br />

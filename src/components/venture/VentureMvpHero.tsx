@@ -1,5 +1,5 @@
 // 기술사업·MVP 첫 화면 — 예전 01번 통이미지를 글자로 바꿨다(문구를 바로 고칠 수 있고, 폰에서 글자가 더 선명하다).
-// 메시지: 아이디어는 작동하는 서비스로 만들어드리고, 회사는 벤처기업으로 만들어드려요.
+// 메시지: 아이디어는 작동하는 웹앱 서비스로 만들어드리고, 회사는 벤처기업으로 만들어드려요.
 //   결과물은 '서비스(앱)'가 아니라 '회사의 성장(벤처기업)'이라는 컨설팅 관점 — 개발 외주사처럼 보이지 않게 한다.
 // ⚠️ '벤처인증까지'처럼 인증을 약속하는 표현은 쓰지 않는다 → '벤처기업확인 신청까지'.
 // ⚠️ 가격·선착순은 서비스 선택 페이지 01 카드와 같은 숫자여야 한다(정상가 500만원 → 런칭 파트너 300만원 · 선착순 5개사).
@@ -28,9 +28,13 @@ export default function VentureMvpHero({ onConsult, onWatch }: { onConsult: () =
           <h1 className="mt-5 break-keep text-[1.95rem] font-black leading-[1.24] tracking-tight min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[2.9rem] xl:text-[3.05rem]">
             {/* 줄은 뜻 단위로 끊는다. 폰·PC(오른쪽에 화면이 있어 폭이 좁다)는 다섯 줄,
                 가운데 폭(태블릿)은 첫 두 줄을 합쳐 네 줄:
-                '아이디어는 / 작동하는 서비스로 / 만들어드리고, / 회사는 벤처기업으로 / 만들어드려요.' */}
+                '아이디어는 / 작동하는 웹앱 서비스로 / 만들어드리고, / 회사는 벤처기업으로 / 만들어드려요.'
+                아주 좁은 폰에서는 '작동하는 웹앱 / 서비스로' 로만 나뉘게 두 덩어리로 묶는다 */}
             아이디어는
-            <br className="sm:hidden lg:inline" /> <span className="text-[#E8B89A]">작동하는 서비스로</span>
+            <br className="sm:hidden lg:inline" />{' '}
+            <span className="text-[#E8B89A]">
+              <span className="whitespace-nowrap">작동하는 웹앱</span> <span className="whitespace-nowrap">서비스로</span>
+            </span>
             <br />
             만들어드리고,
             <br />
