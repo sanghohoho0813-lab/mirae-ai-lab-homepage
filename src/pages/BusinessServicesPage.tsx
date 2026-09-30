@@ -43,10 +43,11 @@ const SME_POINTS = [
   },
 ] as const
 
-/** 카드 머리 — 큰 번호 + 등급(BASIC / ADVANCED) + 상태 배지(있을 때만) / 큰 상품 이름 / 무엇이 다른지 한 줄 + 핵심 문장(children).
+/** 카드 머리 — 큰 번호 + 등급(BASIC / ADVANCED) + 상태 배지(있을 때만) / 큰 상품 이름(+ 뜻풀이) / 무엇이 다른지 한 줄 + 핵심 문장(children).
  *  배지를 absolute 로 띄우면 360px 에서 상품명 위로 겹쳐서, 번호와 같은 줄에 흐름대로 둔다.
- *  한 줄·핵심 문장 오른쪽 빈 곳에 작은 그림(visual)을 둔다 — 글자와 부딪히지 않게 같은 줄(flex)에 나란히 놓는다.
- *  두 카드가 나란히 서서 좁아지는 태블릿(640~1023px)과 아주 작은 폰(<360px)에서는 그림을 숨긴다. */
+ *  한 줄·핵심 문장 오른쪽 빈 곳에 그림(visual)을 둔다 — 글자와 부딪히지 않게 같은 줄(flex)에 나란히 놓는다.
+ *  두 카드가 나란히 서서 좁아지는 폴더블 펼친 화면·태블릿(640~1023px)에서는 그림을 글 아래 가운데로 내리고,
+ *  아주 작은 폰(<360px)에서만 숨긴다. */
 function CardHead({
   no,
   tier,
@@ -55,6 +56,7 @@ function CardHead({
   badge,
   tone,
   visual,
+  note,
   children,
 }: {
   no: string
@@ -64,6 +66,8 @@ function CardHead({
   badge?: string
   tone: 'dark' | 'light'
   visual?: ReactNode
+  /** 상품 이름 옆 아주 작은 뜻풀이(예: AX = …). 넓으면 이름 옆, 좁으면 이름 아래 한 줄 */
+  note?: ReactNode
   children?: ReactNode
 }) {
   const dark = tone === 'dark'
@@ -98,159 +102,106 @@ function CardHead({
       </div>
       {/* 상품 이름이 카드에서 가장 먼저 읽히게 — 아래 문장(h2)보다 크게(예전 1.62/2.05rem 의 1.3배).
           폰·태블릿(두 칸)에서도 한 줄에 들어가게 화면 폭에 맞춰 줄이고, 넓은 화면에서 2.66rem 까지 */}
-      <p data-card-name className={`mt-3.5 whitespace-nowrap text-[clamp(1.7rem,8.6vw,2.1rem)] font-black leading-[1.12] tracking-tight sm:mt-4 sm:text-[clamp(1.6rem,3.6vw,2.66rem)] ${dark ? 'text-white' : 'text-[#171B20]'}`}>{name}</p>
-      <div className="mt-1.5 flex items-start gap-2.5 lg:gap-4">
+      <div className="mt-3.5 flex flex-wrap items-end gap-x-3 gap-y-1 sm:mt-4">
+        <p data-card-name className={`whitespace-nowrap text-[clamp(1.7rem,8.6vw,2.1rem)] font-black leading-[1.12] tracking-tight sm:text-[clamp(1.6rem,3.6vw,2.66rem)] ${dark ? 'text-white' : 'text-[#171B20]'}`}>{name}</p>
+        {note && (
+          <p
+            data-card-note
+            className={`break-keep pb-[0.3em] text-[0.76rem] font-medium leading-snug lg:max-w-[13rem] lg:border-l lg:pl-3 lg:text-[0.82rem] ${
+              dark ? 'text-slate-400 lg:border-[#E6C396]/35' : 'text-[#646E78] lg:border-[#D47A4A]/35'
+            }`}
+          >
+            {note}
+          </p>
+        )}
+      </div>
+      {/* 폰·PC: 글 | 그림 나란히. 두 카드가 나란히 서서 좁아지는 폴더블 펼친 화면·태블릿(640~1023px): 그림을 글 아래 가운데로 */}
+      <div className="mt-1.5 flex items-start gap-2.5 sm:flex-col sm:items-stretch sm:gap-0 lg:flex-row lg:items-start lg:gap-4">
         <div className="min-w-0 flex-1">
           <p className={`break-keep text-[0.95rem] font-bold leading-snug sm:text-[1.02rem] ${dark ? 'text-[#E6C396]' : 'text-[#B35A2A]'}`}>{diff}</p>
           {children}
         </div>
-        {visual && <div className="mt-0.5 shrink-0 max-[359px]:hidden sm:hidden lg:block">{visual}</div>}
+        {visual && <div className="mt-0.5 shrink-0 max-[359px]:hidden sm:mt-4 sm:self-center lg:mt-0.5 lg:self-auto">{visual}</div>}
       </div>
     </>
   )
 }
 
-// 그림 크기 — 폰은 화면 폭의 30%(96~132px), PC 는 12.5%(140~184px).
-// 폰에서는 01 그림이 옆 글자(한 줄 + 두 줄 문장)보다 높아지지 않게 해(높이 = 폭 × 0.8), 02 카드 머리가 첫 화면에 걸리게 둔다
-const VIS = '[--vw:clamp(96px,30vw,132px)] lg:[--vw:clamp(140px,12.5vw,184px)] w-[var(--vw)]'
+// 그림 크기 — 폰: 글 칸이 늘 172px 남도록(100vw − 246px, 100~150px). 폴더블 펼친 화면·태블릿(글 아래): 28vw. PC: 카드마다 따로.
+const VIS_PHONE = '[--vw:clamp(100px,calc(100vw-246px),150px)] sm:[--vw:clamp(170px,28vw,230px)] w-[var(--vw)]'
 
-/** 01 — 벤처기업확인서 + 같은 MVP 를 띄운 PC 모니터(뒤)와 스마트폰(앞): '앱 하나'가 아니라 PC·폰 어디서나 열리는 웹앱이라는 것.
- *  확인서는 기업을 알아볼 수 있는 정보(기업명·사업자등록번호·대표자·주소·발급번호·날짜)를 모두 가린 이미지,
- *  화면은 미래AI랩 자체 데모(PawBeauty) — PC·폰이 같은 서비스다. */
+/** 그림 뒤 궤도 — 천천히 흐르는 점선 고리 + 한 바퀴 도는 빛나는 호 + 반짝임(움직임 줄이기면 멈춤).
+ *  wide: 가로로 긴 그림(01)용 타원, round: 정사각 그림(02)용 원 */
+function Orbit({ tone, shape }: { tone: 'light' | 'dark'; shape: 'wide' | 'round' }) {
+  const c = tone === 'light' ? { line: '#D47A4A', glow: '#E8B89A', star: '#D47A4A' } : { line: '#E6C396', glow: '#E6C396', star: '#F6E2C0' }
+  const wide = shape === 'wide'
+  const vb = wide ? { w: 240, h: 180 } : { w: 200, h: 200 }
+  const cx = vb.w / 2, cy = vb.h / 2
+  const [ro, rio] = wide ? [[114, 82], [100, 68]] : [[94, 94], [76, 76]]
+  const gid = `orbitGlow-${tone}-${shape}`
+  return (
+    <svg
+      aria-hidden
+      viewBox={`0 0 ${vb.w} ${vb.h}`}
+      className="pointer-events-none absolute left-1/2 top-1/2 h-[112%] w-[112%] -translate-x-1/2 -translate-y-1/2 overflow-visible"
+    >
+      <defs>
+        <radialGradient id={gid} cx="50%" cy="50%" r="50%">
+          <stop offset="0" stopColor={c.glow} stopOpacity={tone === 'light' ? 0.5 : 0.38} />
+          <stop offset="0.6" stopColor={c.glow} stopOpacity="0.1" />
+          <stop offset="1" stopColor={c.glow} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx={cx} cy={cy} rx={ro[0] * 0.98} ry={ro[1] * 0.98} fill={`url(#${gid})`} />
+      {/* 바깥 점선 — 점이 고리를 따라 천천히 흐른다 */}
+      <ellipse className="card-dots" cx={cx} cy={cy} rx={ro[0]} ry={ro[1]} fill="none" stroke={c.line} strokeOpacity="0.5" strokeWidth="1.3" strokeLinecap="round" pathLength={200} strokeDasharray="0.6 3.4" />
+      {/* 안쪽 고리 + 빛나는 호 두 개(서로 반대로 돈다) */}
+      <ellipse cx={cx} cy={cy} rx={rio[0]} ry={rio[1]} fill="none" stroke={c.line} strokeOpacity="0.22" strokeWidth="1" />
+      <ellipse className="card-comet" cx={cx} cy={cy} rx={rio[0]} ry={rio[1]} fill="none" stroke={c.line} strokeOpacity="0.9" strokeWidth="2.4" strokeLinecap="round" pathLength={100} strokeDasharray="12 88" />
+      <ellipse className="card-comet-slow" cx={cx} cy={cy} rx={ro[0]} ry={ro[1]} fill="none" stroke={c.line} strokeOpacity="0.55" strokeWidth="1.8" strokeLinecap="round" pathLength={100} strokeDasharray="6 94" />
+      {/* 반짝임 */}
+      <path className="card-twinkle" d={`M${vb.w * 0.9} ${vb.h * 0.16} l2.2 5.4 5.4 2.2 -5.4 2.2 -2.2 5.4 -2.2 -5.4 -5.4 -2.2 5.4 -2.2z`} fill={c.star} />
+      <path className="card-twinkle [animation-delay:1.6s]" d={`M${vb.w * 0.08} ${vb.h * 0.8} l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z`} fill={c.star} />
+    </svg>
+  )
+}
+
+/** 01 — 벤처기업확인서 + 같은 MVP 를 띄운 스마트폰·PC 모니터: 앱 하나가 아니라 PC·폰 어디서나 열리는 웹앱.
+ *  대표님이 준비한 그림(배경 투명). 화면은 미래AI랩 자체 데모(PawBeauty)다. */
 function VentureVisual() {
   return (
-    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.8)] ${VIS}`}>
-      {/* PC 모니터(뒤) — 화면 + 목 + 받침 */}
-      <span data-visual-pc className="absolute right-0 top-0 flex w-[70%] flex-col items-center">
-        <span className="block w-full rounded-[5px] bg-[#171B20] p-[3%] shadow-[0_8px_18px_rgba(23,27,32,0.22)] lg:rounded-[7px]">
-          <img
-            src="/assets/business-services/cards/venture-mvp-pc.webp"
-            alt="PC 로 연 MVP 예시 화면(미래AI랩 자체 데모)"
-            width={480}
-            height={300}
-            loading="lazy"
-            decoding="async"
-            className="block w-full rounded-[2px]"
-          />
-        </span>
-        <span aria-hidden className="block h-[calc(var(--vw)*0.06)] w-[14%] bg-gradient-to-b from-[#343B44] to-[#646E78]" />
-        <span aria-hidden className="block h-[calc(var(--vw)*0.025)] w-[38%] rounded-full bg-[#646E78]" />
-      </span>
-      {/* 벤처기업확인서(가운데) */}
-      <img
-        src="/assets/business-services/cards/venture-cert.webp"
-        alt="벤처기업확인서 예시(기업 정보 가림)"
-        width={300}
-        height={395}
-        loading="lazy"
-        decoding="async"
-        className="absolute bottom-[3%] left-0 w-[42%] -rotate-[5deg] rounded-[2px] bg-white shadow-[0_8px_18px_rgba(23,27,32,0.2)] ring-1 ring-black/5"
-      />
-      {/* 스마트폰(앞) — 검은 테두리 · 둥근 모서리 · 다이내믹 아일랜드 · 옆 버튼 */}
-      <span data-visual-phone className="absolute bottom-0 right-[4%] block w-[30%] rounded-[20%/9.5%] bg-[#0B0E12] p-[6%] shadow-[0_12px_24px_rgba(23,27,32,0.38)] ring-1 ring-white/10">
-        <span aria-hidden className="absolute -right-[4%] top-[22%] block h-[13%] w-[4%] rounded-r-[2px] bg-[#0B0E12]" />
-        <span aria-hidden className="absolute -left-[4%] top-[18%] block h-[8%] w-[4%] rounded-l-[2px] bg-[#0B0E12]" />
-        <span className="relative block overflow-hidden rounded-[15%/7%]">
-          <img
-            src="/assets/business-services/cards/venture-mvp-phone.webp"
-            alt="스마트폰으로 연 같은 MVP 화면"
-            width={220}
-            height={477}
-            loading="lazy"
-            decoding="async"
-            className="block w-full"
-          />
-          <span aria-hidden className="absolute left-1/2 top-[2.2%] block h-[3.2%] w-[34%] -translate-x-1/2 rounded-full bg-black" />
-        </span>
+    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.7)] ${VIS_PHONE} lg:[--vw:clamp(160px,15vw,210px)]`}>
+      <Orbit tone="light" shape="wide" />
+      <span className="absolute inset-0 flex items-center justify-center">
+        <img
+          src="/assets/business-services/cards/venture-visual.webp"
+          alt="벤처기업확인서 예시와, 같은 MVP 를 띄운 스마트폰·PC 화면(미래AI랩 자체 데모)"
+          width={600}
+          height={389}
+          decoding="async"
+          className="card-float block w-full drop-shadow-[0_10px_14px_rgba(23,27,32,0.16)]"
+        />
       </span>
     </span>
   )
 }
 
-/** 02 — 가운데 회사 건물을 AI 궤도 고리와 연결점들이 감싸고 있는 그림: 'AI 를 적극 도입한 회사'.
- *  고리는 아주 천천히 돈다(움직임 줄이기 설정이면 멈춤). 금색은 02 카드 톤과 같다. */
+/** 02 — AX 깃발을 단 회사 건물과 성장 화살표, 정책자금·정부지원사업·투자연계: AX 로 경쟁력 있는 회사.
+ *  대표님이 준비한 그림(배경 투명). 뒤에서 금색 궤도가 천천히 돈다. */
 function AxVisual() {
-  const C = { x: 100, y: 98 }
-  const node = (r: number, deg: number) => ({ x: C.x + r * Math.cos((deg * Math.PI) / 180), y: C.y + r * Math.sin((deg * Math.PI) / 180) })
-  // 맨 위(270°)는 'AI' 표시 자리라 점을 두지 않는다(움직임을 멈춘 화면에서도 겹치지 않게)
-  const outer = [22, 128, 206].map((d) => node(84, d))
-  const inner = [62, 196, 302].map((d) => node(62, d))
-  const arc = (r: number, a0: number, a1: number) => {
-    const p0 = node(r, a0), p1 = node(r, a1)
-    return `M ${p0.x.toFixed(1)} ${p0.y.toFixed(1)} A ${r} ${r} 0 0 1 ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`
-  }
-  const spin = { transformOrigin: `${C.x}px ${C.y}px` }
   return (
-    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.94)] ${VIS}`}>
-      <svg viewBox="0 0 200 188" role="img" aria-label="AI 가 회사를 감싸고 있는 그림 — AX 도입" className="block h-full w-full overflow-visible">
-        <defs>
-          <radialGradient id="axGlow" cx="50%" cy="52%" r="50%">
-            <stop offset="0" stopColor="#E6C396" stopOpacity="0.42" />
-            <stop offset="0.55" stopColor="#C99257" stopOpacity="0.12" />
-            <stop offset="1" stopColor="#C99257" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="axGold" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#F6E2C0" />
-            <stop offset="1" stopColor="#C99257" />
-          </linearGradient>
-          <linearGradient id="axTower" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#FAFAF8" />
-            <stop offset="1" stopColor="#C9CED5" />
-          </linearGradient>
-        </defs>
-        <circle cx={C.x} cy={C.y} r="92" fill="url(#axGlow)" />
-
-        {/* 바깥 고리 — 점선, 천천히 시계 방향 */}
-        <g style={spin} className="motion-safe:animate-[spin_70s_linear_infinite]">
-          <circle cx={C.x} cy={C.y} r="84" fill="none" stroke="url(#axGold)" strokeOpacity="0.5" strokeWidth="1.2" strokeDasharray="1.5 5" strokeLinecap="round" />
-          {outer.map((n, i) => (
-            <g key={i}>
-              <circle cx={n.x} cy={n.y} r="7" fill="#E6C396" fillOpacity="0.18" />
-              <circle cx={n.x} cy={n.y} r="3.4" fill="url(#axGold)" />
-            </g>
-          ))}
-        </g>
-
-        {/* 안쪽 고리 — 실선 + 빛나는 호, 연결선이 건물로 이어진다. 반대 방향 */}
-        <g style={spin} className="motion-safe:animate-[spin_46s_linear_infinite_reverse]">
-          <circle cx={C.x} cy={C.y} r="62" fill="none" stroke="#E6C396" strokeOpacity="0.4" strokeWidth="1.1" />
-          <path d={arc(62, -150, -40)} fill="none" stroke="url(#axGold)" strokeWidth="3" strokeLinecap="round" />
-          <path d={arc(62, 30, 90)} fill="none" stroke="url(#axGold)" strokeWidth="2" strokeLinecap="round" strokeOpacity="0.7" />
-          {inner.map((n, i) => (
-            <g key={i}>
-              <line x1={n.x} y1={n.y} x2={C.x + (n.x - C.x) * 0.5} y2={C.y + (n.y - C.y) * 0.5} stroke="#E6C396" strokeOpacity="0.45" strokeWidth="0.9" strokeDasharray="2 2.5" />
-              <circle cx={n.x} cy={n.y} r="2.8" fill="#FAFAF8" />
-            </g>
-          ))}
-        </g>
-
-        {/* 회사 건물 — 가운데 타워 + 양옆 낮은 건물, 창은 금색 불빛 */}
-        <g>
-          <rect x="70" y="100" width="17" height="30" rx="2" fill="#AEB6BF" />
-          <rect x="113" y="106" width="17" height="24" rx="2" fill="#AEB6BF" />
-          <rect x="84" y="66" width="32" height="64" rx="3" fill="url(#axTower)" />
-          <rect x="96" y="58" width="8" height="9" rx="1.5" fill="url(#axTower)" />
-          {[0, 1, 2, 3, 4].map((r) =>
-            [0, 1, 2].map((c) => (
-              <rect key={`${r}-${c}`} x={89 + c * 8.5} y={73 + r * 10} width="5" height="5.5" rx="0.8" fill={(r + c) % 3 === 0 ? '#F6E2C0' : '#C99257'} fillOpacity={(r + c) % 3 === 0 ? 1 : 0.8} />
-            )),
-          )}
-          {[0, 1].map((r) => <rect key={`l${r}`} x="74" y={106 + r * 9} width="9" height="4" rx="0.8" fill="#C99257" fillOpacity="0.75" />)}
-          {[0, 1].map((r) => <rect key={`r${r}`} x="117" y={111 + r * 8} width="9" height="4" rx="0.8" fill="#C99257" fillOpacity="0.75" />)}
-          <rect x="62" y="130" width="76" height="2.5" rx="1.25" fill="#E6C396" fillOpacity="0.6" />
-        </g>
-
-        {/* 'AI' 표시 — 고리 맨 위 */}
-        <g>
-          <rect x="82" y="3" width="36" height="18" rx="9" fill="url(#axGold)" />
-          <text x="100" y="15.6" textAnchor="middle" fontSize="11" fontWeight="900" fill="#15110C" fontFamily="inherit">
-            AI
-          </text>
-        </g>
-        {/* 반짝임 */}
-        <path d="M168 40 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#F6E2C0" />
-        <path d="M30 150 l1.5 3.8 3.8 1.5 -3.8 1.5 -1.5 3.8 -1.5 -3.8 -3.8 -1.5 3.8 -1.5z" fill="#F6E2C0" fillOpacity="0.8" />
-      </svg>
+    <span data-card-visual className={`relative block h-[calc(var(--vw)*0.96)] ${VIS_PHONE} lg:[--vw:clamp(140px,12.5vw,184px)]`}>
+      <Orbit tone="dark" shape="round" />
+      <span className="absolute inset-0 flex items-center justify-center">
+        <img
+          src="/assets/business-services/cards/ax-visual.webp"
+          alt="AX 깃발을 단 회사 건물과 성장 화살표 — 정책자금·정부지원사업·투자연계"
+          width={560}
+          height={533}
+          decoding="async"
+          className="card-float block w-[96%] drop-shadow-[0_12px_22px_rgba(0,0,0,0.45)] [animation-delay:-3s]"
+        />
+      </span>
     </span>
   )
 }
@@ -346,7 +297,20 @@ export default function BusinessServicesPage() {
             <span aria-hidden className="pointer-events-none absolute -left-16 -top-20 h-56 w-56 rounded-full bg-[#D8A871]/25 opacity-80 blur-3xl transition-opacity group-hover:opacity-100" />
 
             <div className="relative sm:flex-1">
-              <CardHead no="02" tier="ADVANCED" name="Full AX 구축" diff="지금 회사를 한 단계 위로" badge="대표 상품" tone="dark" visual={<AxVisual />}>
+              <CardHead
+                no="02"
+                tier="ADVANCED"
+                name="Full AX 구축"
+                diff="지금 회사를 한 단계 위로"
+                badge="대표 상품"
+                tone="dark"
+                visual={<AxVisual />}
+                note={
+                  <>
+                    <b className="font-black text-[#E6C396]">AX</b> = 회사가 일하는 방식을 AI 도입으로 바꾸는 것
+                  </>
+                }
+              >
                 {/* AX 상세 첫 화면 제목과 같은 말 — 폰에서는 가운뎃점 뒤(<wbr />)에서만 끊는다 */}
                 <h2 className="mt-3 text-[1.2rem] font-black leading-[1.3] tracking-tight sm:mt-4 sm:text-[clamp(1.15rem,2.2vw,1.5rem)]">
                   AX 도입으로

@@ -263,3 +263,26 @@
     animation: none;
   }
 }
+
+/* ── 서비스 선택 카드 그림 — 아주 미세한 움직임(떠 있기 · 궤도 점 흐름 · 빛나는 호 · 반짝임) ──
+   움직임 줄이기 설정이면 모두 멈춘다. 궤도 선은 pathLength 로 길이를 맞춰 한 가지 키프레임으로 돈다. */
+@keyframes card-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3.5%); }
+}
+@keyframes card-dots { to { stroke-dashoffset: -40; } } /* pathLength 200 · 점 간격 4 → 10칸씩 흐른다 */
+@keyframes card-comet { to { stroke-dashoffset: -100; } } /* pathLength 100 → 한 바퀴 */
+@keyframes card-twinkle {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+@keyframes card-spin { to { transform: rotate(360deg); } }
+.card-float { animation: card-float 6.5s ease-in-out infinite; }
+.card-dots { animation: card-dots 14s linear infinite; }
+.card-comet { animation: card-comet 11s linear infinite; }
+.card-comet-slow { animation: card-comet 17s linear infinite reverse; }
+.card-twinkle { animation: card-twinkle 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.card-spin { animation: card-spin 70s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .card-float, .card-dots, .card-comet, .card-comet-slow, .card-twinkle, .card-spin { animation: none; }
+}
