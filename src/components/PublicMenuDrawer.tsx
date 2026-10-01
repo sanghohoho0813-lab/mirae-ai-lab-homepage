@@ -1,6 +1,8 @@
 // 공개 페이지 공용 햄버거 메뉴 — 대표자용/컨설턴트용 variant 분리.
 // 공통 shell(overlay·ESC·focus·body scroll lock·safe-area)만 재사용하고, 메뉴·CTA는 variant 로 나눕니다.
-// 목차형 구조: 상단 계정 → 대표 CTA → 넘버링·색상 구분 그룹(01~04) → 하단 고정 CTA.
+// 목차형 구조: 상단 계정 → 대표 CTA → 넘버링·색상 구분 그룹(01~05) → 하단 고정 CTA.
+// 상품 그룹(2주 기술사업 빌드 · Full AX 구축)의 항목은 그 페이지의 구간을 위에서 아래 순서 그대로 따른다 —
+// 페이지 구간 순서나 id 를 바꾸면 여기도 같이 고친다(점검: scratchpad t-menu.mjs).
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -10,15 +12,16 @@ import { useAuth } from '../lib/auth'
 import { accountEmail, displayName, memberTypeLabel, resolveAvatarUrl } from '../lib/accountDisplay'
 import { loginPathWithNext } from '../lib/authRouting'
 import { scrollToSection } from '../lib/businessPageScroll'
-import { AX_GUIDE_PATH, AX_START_PATH, SAMPLES_PATH, SHOW_AX_GUIDE } from '../lib/businessRoutes'
+import { AX_GUIDE_PATH, AX_START_PATH, BUSINESS_CHOOSER_PATH, SAMPLES_PATH, SHOW_AX_GUIDE, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { SAMPLE_TOTAL } from '../data/portfolioSamples'
 import Avatar from './account/Avatar'
 import BrandLogo from './BrandLogo'
 import ConsultModal from './ConsultModal'
+import { VENTURE_MVP_EXAMPLES_ID } from './venture/VentureMvpExamples'
 
 export type PublicMenuVariant = 'business' | 'consultant'
 
-type MenuAccent = 'blue' | 'cyan' | 'violet' | 'slate'
+type MenuAccent = 'blue' | 'cyan' | 'violet' | 'amber' | 'slate'
 
 type MenuItem = {
   label: string
@@ -51,6 +54,7 @@ const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; active
   blue: { no: 'text-blue-600', dot: 'bg-blue-500', line: 'bg-blue-200', activeBg: 'bg-blue-100', activeText: 'text-blue-800', badge: 'bg-blue-600', groupBg: 'bg-blue-50' },
   cyan: { no: 'text-cyan-600', dot: 'bg-cyan-500', line: 'bg-cyan-200', activeBg: 'bg-cyan-100', activeText: 'text-cyan-800', badge: 'bg-cyan-600', groupBg: 'bg-cyan-50' },
   violet: { no: 'text-violet-600', dot: 'bg-violet-500', line: 'bg-violet-200', activeBg: 'bg-violet-100', activeText: 'text-violet-800', badge: 'bg-violet-600', groupBg: 'bg-violet-50' },
+  amber: { no: 'text-[#B35A2A]', dot: 'bg-[#D47A4A]', line: 'bg-[#F0D2BE]', activeBg: 'bg-[#F9DFC6]', activeText: 'text-[#7A3A17]', badge: 'bg-[#B35A2A]', groupBg: 'bg-[#FBF1E8]' },
   slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-200', activeBg: 'bg-slate-200', activeText: 'text-slate-900', badge: 'bg-slate-600', groupBg: 'bg-slate-100' },
 }
 
@@ -71,17 +75,29 @@ const BUSINESS_MENU: MenuConfig = {
       accent: 'blue',
       // 이름·한 줄 설명은 선택 페이지 카드와 같게
       items: [
-        { no: '1', label: '2주 기술사업 빌드', desc: '아이디어는 작동하는 웹앱 서비스로, 회사는 벤처기업으로', to: '/business-services/venture-mvp', match: (p) => p.startsWith('/business-services/venture-mvp') },
-        { no: '2', label: 'Full AX 구축', desc: '정책자금·지원사업·투자에서 경쟁력 있는 회사로', to: '/business-services/ax-start', match: (p) => p.startsWith('/business-services/ax-start') },
-        { no: '3', label: '두 서비스 비교하기', desc: '어느 쪽이 맞는지 한 화면에서', to: '/business-services', match: (p) => p === '/business-services' },
+        { no: '1', label: '2주 기술사업 빌드', desc: '아이디어는 작동하는 웹앱 서비스로, 회사는 벤처기업으로', to: VENTURE_MVP_PATH, match: (p) => p.startsWith(VENTURE_MVP_PATH) },
+        { no: '2', label: 'Full AX 구축', desc: '정책자금·지원사업·투자에서 경쟁력 있는 회사로', to: AX_START_PATH, match: (p) => p.startsWith(AX_START_PATH) },
+        { no: '3', label: '두 서비스 비교하기', desc: '어느 쪽이 맞는지 한 화면에서', to: BUSINESS_CHOOSER_PATH, match: (p) => p === BUSINESS_CHOOSER_PATH },
         { no: '4', label: `직접 만든 샘플 ${SAMPLE_TOTAL}개`, desc: '산업별 AX · 아이디어 MVP를 한 화면에서', to: SAMPLES_PATH, match: (p) => p.startsWith(SAMPLES_PATH) },
       ],
     },
     {
       no: '02',
-      heading: 'AX 살펴보기',
+      heading: '2주 기술사업 빌드',
+      accent: 'amber',
+      // 페이지 순서: 히어로 → 소개 영상(#film) → 예를 들면(#mvp-refs) → 자주 묻는 질문(#faq) → 마지막 상담
+      items: [
+        { no: '1', label: '소개 영상', desc: '무엇을, 어떻게 해 드리는지 영상으로', to: `${VENTURE_MVP_PATH}#film` },
+        { no: '2', label: '이런 회사가, 이런 기술사업을', desc: '실제로 작동하는 MVP 직접 눌러 보기', to: `${VENTURE_MVP_PATH}#${VENTURE_MVP_EXAMPLES_ID}` },
+        { no: '3', label: '자주 묻는 질문', desc: '비용 · 기간 · 벤처기업확인 혜택', to: `${VENTURE_MVP_PATH}#faq` },
+      ],
+    },
+    {
+      no: '03',
+      heading: 'Full AX 구축',
       accent: 'cyan',
-      // AX 상세 안내(스토리 04~12)를 숨긴 동안에는 AX 페이지의 소개 영상 2편 · 직접 만든 화면 22개로 보낸다
+      // 페이지 순서: 히어로 → 소개 영상 1·2(#film-1 · #film-2) → 직접 만든 화면(#samples) → 자주 묻는 질문(#faq) → 마무리
+      // AX 상세 안내(스토리 04~12)를 숨긴 동안에는 AX 페이지 구간으로 보낸다
       items: SHOW_AX_GUIDE
         ? [
             { no: '1', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_GUIDE_PATH}#portfolio` },
@@ -89,18 +105,20 @@ const BUSINESS_MENU: MenuConfig = {
             { no: '3', label: 'AX가 뭐예요?', desc: '디지털화와 뭐가 다른지', to: `${AX_GUIDE_PATH}#ax-definition` },
             { no: '4', label: '성과를 성장으로', desc: 'AX 성과를 다음 단계로 잇는 방법', to: `${AX_GUIDE_PATH}#growth` },
             { no: '5', label: '왜 미래AI랩이에요?', desc: '따로따로가 아니라 한 흐름으로', to: `${AX_GUIDE_PATH}#why-mirae` },
+            { no: '6', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_GUIDE_PATH}#faq` },
             // 프로그램 상세페이지 전면 개정 중 — 이동을 막고 한 줄로만 알린다 (프로그램 안내·수행체계·성장 로드맵)
-            { no: '6', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
+            { no: '7', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
           ]
         : [
             { no: '1', label: 'AX가 뭐예요?', desc: '영상 1 · AX가 뭐고, 왜 필요한가', to: `${AX_START_PATH}#film-1` },
             { no: '2', label: '진행 방식과 비용', desc: '영상 2 · 어떻게 진행하고, 얼마가 드나', to: `${AX_START_PATH}#film-2` },
             { no: '3', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_START_PATH}#samples` },
-            { no: '4', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
+            { no: '4', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_START_PATH}#faq` },
+            { no: '5', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
           ],
     },
     {
-      no: '03',
+      no: '04',
       heading: '내 서비스',
       accent: 'blue',
       items: [
@@ -110,12 +128,11 @@ const BUSINESS_MENU: MenuConfig = {
       ],
     },
     {
-      no: '04',
+      no: '05',
       heading: '고객지원',
       accent: 'slate',
+      // 자주 묻는 질문은 상품마다 달라서 02 · 03 각 상품 목차 안에 둔다
       items: [
-        // 정책자금 상세(개정 중) 대신 AX 페이지의 FAQ 로
-        { label: '자주 묻는 질문', to: `${SHOW_AX_GUIDE ? AX_GUIDE_PATH : AX_START_PATH}#faq` },
         { label: '이용약관', to: '/terms', match: (p) => p === '/terms' },
         { label: '개인정보처리방침', to: '/privacy', match: (p) => p === '/privacy' },
         { label: '환불·취소 정책', to: '/refund-policy', match: (p) => p === '/refund-policy' },
@@ -146,6 +163,7 @@ const CONSULTANT_MENU: MenuConfig = {
         { label: '운영 방식', desc: '고객이 올리면 내 할 일로, 처리하면 고객 화면으로', to: '/consultants#how' },
         { label: '7개 모듈', desc: '지금 쓰는 도구와 완성되면 들어갈 기능', to: '/consultants#modules' },
         { label: '출시 일정', desc: '2026년 10월부터 차례로 · 정식 출시 후 월 구독', to: '/consultants#launch' },
+        { label: '실무 전자책', desc: '정책자금 · 무상지원금 · 고용지원금', to: '/consultants#resources' },
       ],
     },
     {
@@ -328,6 +346,9 @@ export default function PublicMenuDrawer({
     navigate(target, { replace: hasEntry })
   }
 
+  // 메뉴 안 로고 — 다른 항목과 같은 방식으로 이동한다(전에는 메뉴만 닫히고 제자리였다:
+  //  닫기(뒤로가기)와 링크 이동이 겹쳐서 이동이 취소됐다)
+  const logoTo = variant === 'business' ? BUSINESS_CHOOSER_PATH : '/consultants'
   const path = location.pathname
   const leadActive = config.lead.match ? config.lead.match(path) : false
 
@@ -362,8 +383,8 @@ export default function PublicMenuDrawer({
             {/* 상단 헤더 (고정) */}
             <div className="flex shrink-0 items-start justify-between border-b border-slate-100 px-5 py-4">
               <BrandLogo
-                to={variant === 'business' ? '/business-services' : '/consultants'}
-                onClick={requestClose}
+                to={logoTo}
+                onClick={(e) => goItem(e, logoTo)}
                 tagline={config.topSub}
                 imgClassName="h-9 max-w-[168px] sm:h-10 sm:max-w-[190px]"
               />
@@ -386,6 +407,7 @@ export default function PublicMenuDrawer({
                 to={config.lead.to}
                 onClick={(e) => goItem(e, config.lead.to)}
                 aria-current={leadActive ? 'page' : undefined}
+                data-menu-lead
                 className="mb-4 flex min-h-[52px] items-center gap-3 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-3.5 text-white shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
               >
                 <span className="min-w-0 flex-1">
@@ -399,7 +421,7 @@ export default function PublicMenuDrawer({
               {config.groups.map((group) => {
                 const acc = ACCENT[group.accent]
                 return (
-                  <div key={group.no} className={`mt-4 rounded-2xl p-2.5 first:mt-0 ${acc.groupBg}`}>
+                  <div key={group.no} data-menu-group={group.no} className={`mt-4 rounded-2xl p-2.5 first:mt-0 ${acc.groupBg}`}>
                     <div className="mb-2 flex items-center gap-2.5 px-2">
                       <span className={`text-[1.2rem] font-black tracking-widest ${acc.no}`}>{group.no}</span>
                       <span className="text-[1.65rem] font-black leading-tight tracking-tight text-slate-900">{group.heading}</span>
@@ -417,6 +439,7 @@ export default function PublicMenuDrawer({
                                 type="button"
                                 disabled
                                 aria-disabled="true"
+                                data-menu-item={m.label}
                                 className="flex min-h-11 w-full cursor-not-allowed items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left text-slate-400"
                               >
                                 <span className="flex min-w-0 items-start gap-2">
@@ -438,6 +461,7 @@ export default function PublicMenuDrawer({
                               <button
                                 type="button"
                                 onClick={() => { requestClose(); setConsultOpen(true) }}
+                                data-menu-item={m.label}
                                 className="flex min-h-11 w-full items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
                               >
                                 <span className="flex min-w-0 items-start gap-2">
@@ -474,6 +498,7 @@ export default function PublicMenuDrawer({
                               to={m.to}
                               onClick={(e) => goItem(e, m.to)}
                               aria-current={active ? 'page' : undefined}
+                              data-menu-item={m.label}
                               className={`flex min-h-11 items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 ${
                                 active ? `${acc.activeBg} ${acc.activeText}` : 'text-slate-700 hover:bg-white/70 hover:text-slate-900'
                               }`}
@@ -544,6 +569,7 @@ export default function PublicMenuDrawer({
               <Link
                 to={config.cta.to}
                 onClick={(e) => goItem(e, config.cta.to)}
+                data-menu-cta
                 className={`flex min-h-[52px] items-center justify-center gap-1.5 rounded-xl px-5 py-3.5 text-base font-bold shadow-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
                   variant === 'business' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-700'
                 }`}

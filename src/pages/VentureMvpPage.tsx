@@ -29,6 +29,7 @@ import { BUSINESS_CHOOSER_PATH, SAMPLES_PATH, VENTURE_MVP_PATH } from '../lib/bu
 import { SAMPLE_TOTAL } from '../data/portfolioSamples'
 import { rememberInterest } from '../lib/interestTrack'
 import { usePageMeta } from '../lib/pageMeta'
+import { useHashScroll } from '../lib/businessPageScroll'
 
 const PAGE_TITLE = '기술사업 · MVP · 벤처기업확인 | 미래AI랩'
 const PAGE_DESC =
@@ -56,6 +57,9 @@ export default function VentureMvpPage() {
   const [consultOpen, setConsultOpen] = useState(false)
   const ctaRef = useRef<HTMLDivElement>(null)
   const filmRef = useRef<VentureMvpFilmHandle>(null)
+
+  // 메뉴·다른 페이지에서 구간 주소(#film · #mvp-refs · #faq)로 들어오면 그 구간으로
+  useHashScroll()
 
   useEffect(() => {
     rememberInterest('venture-mvp')
