@@ -9,6 +9,7 @@ import BusinessStickyCta from '../components/business/BusinessStickyCta'
 import { AxHeroV2, AxSamplesBand } from '../components/ax-showcase/axHomeSections'
 import AxFilms from '../components/ax-showcase/AxFilms'
 import AxFaqSection from '../components/ax-showcase/AxFaqSection'
+import AxRealProjectsFilm from '../components/ax-showcase/AxRealProjectsFilm'
 import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
 import { AX_GUIDE_PATH, AX_START_PATH, BUSINESS_NAV, SAMPLES_PATH, samplesHref } from '../lib/businessRoutes'
@@ -116,7 +117,10 @@ export default function AxStartPage() {
       {/* 4. FAQ — 구매 판단에 중요한 5개만 먼저, 나머지는 '질문 더 보기' */}
       <AxFaqSection featured={5} />
 
-      {/* 5. 마무리 — 버튼 두 개만 */}
+      {/* 5. 실제 프로젝트 영상 — 지금 만들고 있는 회사 두 곳(업종만 공개) */}
+      <AxRealProjectsFilm diagnosisHref={AX_DIAG_HREF} />
+
+      {/* 6. 마무리 — 버튼 두 개만 */}
       <div ref={bridgeRef}>
         <section id="cta" className="border-t border-[#343B44] bg-[#171B20]">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">

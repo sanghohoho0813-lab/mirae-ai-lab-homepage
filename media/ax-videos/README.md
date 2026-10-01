@@ -8,6 +8,24 @@
 | `video-2/` | 영상 2 · 어떻게 진행하고, 얼마가 드나 — **v3** | 약 4분 11초(말 4분 8초 + 끝 화면 3초) | 1.08배 |
 | `consultant/` | 컨설턴트 운영 OS 소개(MIRAE AI LAB OS) — 자막 전용 | 약 2분 36초(자막 153초 + 끝 화면 3초) | 읽는 속도 초당 7.5자 |
 
+## 대표님 녹음 2편 — 실제 프로젝트(`real-projects/`) · 컨설턴트 운영 OS(`consultant-v2/`)
+
+| 폴더 | 제목 | 길이 | 들어가는 곳 |
+|---|---|---|---|
+| `real-projects/` | 실제 AX 프로젝트 · 두 회사 이야기(의료폐기물 수거·운반 / 쑥뜸원 웰니스) | 2분 19초 | AX 페이지 끝(`#real-projects-film`) |
+| `consultant-v2/` | 컨설턴트 운영 OS · 미래AI랩 OS(11월 오픈 예정 · 출시 알림 신청) | 4분 9초 | `/consultants` 히어로(상세 페이지 대신) |
+
+영상 1·2와 같은 고급 모드 · 9:16 · 1.08배. 순서는 같다: `spoken.txt`(대본) → `align.py` → `SPEED=1.08 python3 tighten.py . <ffmpeg>` → `ASR=asr-fast.json python3 align.py . spoken.txt keys.json` → `node build.mjs` → 렌더 → `assets/voice-fast.wav` 합치기.
+
+- **실제 화면은 짧게, 몇 번만.** `real-projects/assets/real/` 는 캡처할 때 업체명·병원명·사람 이름·금액·연락처·주소를 ○○ 로 바꾸고 로고·사진을 흐리게 한 것만 있다(원본 캡처·로그인 정보는 저장소에 넣지 않는다). 나머지는 각 시스템의 색감만 살려 다시 그린 '예시 화면'.
+- **매출·정산·영업 화면은 쓰지 않는다.** 컨설턴트 영상의 OS 화면은 색감(짙은 청록 + 밝은 회색)만 살린 예시 화면 · 가상 데이터이고, 실제 OS 화면은 흐리게 한 장(`consultant-v2/assets/real/os-today-pc.jpg`, 파일 자체를 흐리게 저장)만 쓴다. 수수료·이익률은 ••• 로만.
+- 회사 이름은 밝히지 않고 업종만. 공식 근거와 우리 결과를 섞지 않는다.
+
+```bash
+cd real-projects && node build.mjs && npx --yes hyperframes@0.8.79 render --fps 30 --quality high -o renders/video.mp4
+cd consultant-v2 && node build.mjs && npx --yes hyperframes@0.8.79 render --fps 30 --quality high -o renders/video.mp4
+```
+
 ## 컨설턴트 운영 OS 소개 영상(`consultant/`)
 
 목소리 없이 자막 중심으로 만든 컨설턴트용 영상. 영상 1·2와 같은 고급 모드·9:16·한 화면 4~5초(33장면)·중요한 말 뒤 1.5초 멈춤.

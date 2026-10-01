@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Medium.subset.woff2') format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-SemiBold.subset.woff2') format('woff2'); font-weight: 600; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Bold.subset.woff2') format('woff2'); font-weight: 700; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-ExtraBold.subset.woff2') format('woff2'); font-weight: 800; font-display: block; }
+@font-face { font-family: 'Pretendard'; src: url('assets/fonts/Pretendard-Black.subset.woff2') format('woff2'); font-weight: 900; font-display: block; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #171B20; }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #171B20; color: #fff; font-family: 'Pretendard', sans-serif; word-break: keep-all; }
+em { font-style: normal; } .peach { color: #E8B89A; } .orange { color: #F0894A; } .green { color: #7FD8A4; } .red { color: #FF6B6E; } .blue { color: #7EB2FF; }
+.clip { position: absolute; inset: 0; }
+.shot { overflow: hidden; }
+.cam { position: absolute; inset: 0; transform-origin: 50% 45%; }
+.bgA { background: radial-gradient(circle at 85% 8%, rgba(212,122,74,.38), rgba(212,122,74,0) 45%), #171B20; }
+.bgB { background: radial-gradient(circle at 10% 90%, rgba(80,130,220,.30), rgba(80,130,220,0) 50%), #10161F; }
+.bgC { background: radial-gradient(circle at 50% 0%, rgba(240,137,74,.30), rgba(240,137,74,0) 55%), #221914; }
+.bgD { background: radial-gradient(circle at 20% 15%, rgba(127,216,164,.22), rgba(127,216,164,0) 50%), #121A17; }
+.bgL { background: radial-gradient(circle at 80% 10%, rgba(240,137,74,.25), rgba(240,137,74,0) 50%), #F4ECE4; color: #171B20; }
+.bgL .peach { color: #C8612E; } .bgL .muted { color: #5A636D; }
+.muted { color: #9AA3AD; }
+.ic { display: inline-flex; width: 44px; height: 44px; color: currentColor; flex: none; } .ic svg { width: 100%; height: 100%; }
+.ic.lg { width: 80px; height: 80px; } .ic.xl { width: 150px; height: 150px; }
+.wm { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 6px; } .w { display: inline-block; }
+.kt { position: absolute; left: 64px; right: 64px; font-weight: 900; letter-spacing: -0.035em; line-height: 1.14; }
+.kt.xl { font-size: 128px; } .kt.l { font-size: 104px; } .kt.m { font-size: 84px; } .kt.s { font-size: 64px; } .kt.c { text-align: center; }
+.eyebrow { position: absolute; left: 64px; font-size: 34px; font-weight: 900; letter-spacing: .08em; color: #F0894A; }
+.pill { display: inline-flex; align-items: center; gap: 12px; padding: 16px 32px; border-radius: 999px; font-weight: 900; }
+.card { border-radius: 30px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); }
+.bgL .card { background: #fff; box-shadow: 0 16px 40px rgba(23,27,32,.12), inset 0 0 0 1px rgba(23,27,32,.06); }
+.abs { position: absolute; }
+.fimg { position: absolute; left: 0; top: 0; display: block; }
+.touch { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; background: rgba(255,255,255,.55); box-shadow: 0 0 0 4px rgba(212,122,74,.95); opacity: 0; z-index: 5; }
+.phone { position: absolute; padding: 10px; border-radius: 44px; background: #0E1114; box-shadow: 0 40px 90px rgba(0,0,0,.55), 0 0 0 2px rgba(255,255,255,.16); }
+.phone .screen { position: relative; overflow: hidden; border-radius: 34px; background: #fff; aspect-ratio: 390 / 844; }
+.fine { position: absolute; left: 70px; right: 70px; font-size: 24px; font-weight: 600; line-height: 1.45; color: #8A939C; } .fine.c { text-align: center; } .bgL .fine { color: #6B7680; }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; z-index: 35; pointer-events: none; }
+.freeze { z-index: 34; }
+.fzv { position: absolute; inset: 0; backdrop-filter: grayscale(.9) brightness(.45) blur(3px); background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 40%, rgba(0,0,0,.6) 100%); }
+.fzb { position: absolute; right: 64px; top: 220px; padding: 10px 18px; border-radius: 12px; background: rgba(0,0,0,.6); color: #fff; font-size: 30px; font-weight: 900; letter-spacing: -2px; }
+.fzl { position: absolute; left: 50px; right: 50px; top: 760px; text-align: center; }
+.fzl b { display: inline-block; padding: 26px 50px; border-radius: 28px; background: #F0894A; color: #171B20; font-size: 76px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; box-shadow: 0 30px 80px rgba(240,137,74,.45); }
+.fzl small { display: block; margin-top: 22px; font-size: 40px; font-weight: 800; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,.8); }
+.brand { position: absolute; top: 96px; left: 56px; right: 56px; height: 60px; display: flex; align-items: center; justify-content: space-between; z-index: 30; }
+.brand .logo { height: 60px; padding: 9px 16px; background: #fff; border-radius: 14px; display: flex; align-items: center; box-shadow: 0 6px 20px rgba(0,0,0,.25); } .brand .logo img { height: 42px; }
+.brand .tag2 { padding: 10px 18px; border-radius: 999px; background: rgba(16,20,25,.78); font-size: 25px; font-weight: 800; color: #E8B89A; }
+.sub { display: flex; align-items: flex-end; justify-content: center; padding: 0 60px 400px; z-index: 40; }
+.sub span { max-width: 960px; padding: 18px 34px; border-radius: 22px; background: rgba(8,10,13,.9); color: #fff; font-size: 50px; font-weight: 800; line-height: 1.32; text-align: center; }
+.foot { position: absolute; left: 70px; right: 70px; top: 1664px; text-align: center; font-size: 26px; font-weight: 700; color: #7C8591; z-index: 30; }
+#prog { position: absolute; left: 70px; right: 70px; top: 1726px; height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); overflow: hidden; z-index: 30; }
+#prog i { display: block; width: 100%; height: 100%; background: #D47A4A; transform-origin: 0 50%; }
+
+
+.cx { position: absolute; left: 0; right: 0; display: flex; justify-content: center; }
+.chip { display: inline-flex; align-items: center; gap: 10px; padding: 12px 28px; border-radius: 999px; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 2px rgba(255,255,255,.18); font-size: 34px; font-weight: 800; color: #E8B89A; white-space: nowrap; }
+.chip.big { font-size: 46px; padding: 16px 36px; }
+.chip.hot { background: #F0894A; color: #171B20; box-shadow: 0 16px 40px rgba(240,137,74,.4); }
+.chip.ok { background: #2FA66A; color: #fff; box-shadow: none; }
+.chip.gray { background: rgba(255,255,255,.1); color: #C9D0D8; }
+.bgL .chip { background: #fff; color: #C8612E; box-shadow: 0 8px 24px rgba(23,27,32,.1); }
+.bgL .chip.hot { background: #F0894A; color: #171B20; }
+.abs0 { position: absolute; }
+.ksub { position: absolute; left: 70px; right: 70px; text-align: center; font-size: 44px; font-weight: 700; line-height: 1.35; color: #C9D0D8; }
+.bgL .ksub { color: #4A535C; }
+.kt .hl { font-style: normal; color: #F0894A; } .bgL .kt .hl { color: #C8612E; }
+.kt { text-shadow: 0 6px 30px rgba(0,0,0,.25); } .bgL .kt { text-shadow: none; }
+.bigic { display: inline-flex; width: 230px; height: 230px; padding: 44px; border-radius: 60px; background: rgba(240,137,74,.16); color: #F0894A; box-shadow: inset 0 0 0 3px rgba(240,137,74,.4); }
+.bigic .ic { width: 100%; height: 100%; }
+.bigic.red { background: rgba(255,107,110,.14); color: #FF6B6E; box-shadow: inset 0 0 0 3px rgba(255,107,110,.4); }
+.bigic.green { background: rgba(127,216,164,.14); color: #7FD8A4; box-shadow: inset 0 0 0 3px rgba(127,216,164,.4); }
+.bigic.blue { background: rgba(126,178,255,.14); color: #7EB2FF; box-shadow: inset 0 0 0 3px rgba(126,178,255,.4); }
+.bgL .bigic { background: #fff; box-shadow: 0 20px 50px rgba(23,27,32,.12); color: #C8612E; }
+.tiles { position: absolute; left: 90px; right: 90px; display: flex; gap: 26px; }
+.tiles.col { flex-direction: column; } .tiles.row { justify-content: center; } .tiles.row .tile { flex-direction: column; width: 280px; height: 300px; justify-content: center; text-align: center; }
+.tile { position: relative; display: flex; align-items: center; gap: 30px; padding: 34px 44px; border-radius: 34px; font-size: 58px; font-weight: 900; letter-spacing: -0.03em; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.tile.c0 { background: #F0894A; color: #171B20; } .tile.c1 { background: #2E6BD6; color: #fff; } .tile.c2 { background: #2FA66A; color: #fff; } .tile.c3 { background: #fff; color: #171B20; }
+.tile.dark { background: #232A33; color: #fff; box-shadow: inset 0 0 0 2px rgba(255,255,255,.14); } .tile.red { background: #D8474B; color: #fff; }
+.tile .ic.lg { width: 90px; height: 90px; }
+.tile .tx, .tile .tok { position: absolute; right: 30px; top: 50%; margin-top: -50px; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.tile .tx { background: #D8474B; color: #fff; } .tile .tok { background: #fff; color: #2FA66A; }
+.tile .tx .ic, .tile .tok .ic { width: 60px; height: 60px; }
+.tiles.row .tile .tx, .tiles.row .tile .tok { top: -30px; right: -20px; margin: 0; }
+.stamp { padding: 30px 60px; border: 12px solid currentColor; border-radius: 30px; font-size: 128px; font-weight: 900; letter-spacing: -0.02em; transform: rotate(-6deg); background: rgba(0,0,0,.25); }
+.stamp.red { color: #FF6B6E; } .stamp.green { color: #7FD8A4; } .stamp.orange { color: #F0894A; }
+.bgL .stamp { background: rgba(255,255,255,.7); } .bgL .stamp.green { color: #2FA66A; } .bgL .stamp.red { color: #D8474B; }
+.cnt { position: absolute; left: 0; right: 0; display: flex; align-items: baseline; justify-content: center; gap: 14px; font-weight: 900; letter-spacing: -0.04em; }
+.cnt b { font-size: 250px; line-height: 1; color: #F0894A; font-variant-numeric: tabular-nums; }
+.cnt .suf, .cnt .pre { font-size: 96px; color: #fff; } .bgL .cnt .suf, .bgL .cnt .pre { color: #171B20; } .bgL .cnt b { color: #C8612E; }
+.cnt.mid b { font-size: 190px; } .cnt.mid .suf { font-size: 80px; }
+.brw { position: absolute; left: 50px; width: 980px; border-radius: 26px; overflow: hidden; background: #0E1114; box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 2px rgba(255,255,255,.12); }
+.brw .bar { height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 20px; background: #1E242C; }
+.brw .bar i { width: 14px; height: 14px; border-radius: 50%; background: #3A434E; } .brw .bar i:first-child { background: #F26B5B; } .brw .bar i:nth-child(2) { background: #F2C14E; } .brw .bar i:nth-child(3) { background: #5BC27A; }
+.brw .bar span { margin-left: 16px; font-size: 22px; font-weight: 600; color: #8A939C; }
+.brw .vp { position: relative; width: 980px; height: 612px; overflow: hidden; background: #fff; }
+.brw .vp img { position: absolute; left: 0; top: 0; width: 980px; transform-origin: 30% 20%; }
+.btag { position: absolute; right: 18px; bottom: 18px; padding: 8px 16px; border-radius: 10px; background: rgba(0,0,0,.72); color: #fff; font-size: 22px; font-weight: 800; }
+.wall { position: absolute; left: 50%; transform: translateX(-50%); display: grid; gap: 12px; }
+.wall img { width: 100%; height: 100%; object-fit: cover; object-position: top left; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.wallc { padding: 30px 56px; border-radius: 36px; background: #F0894A; color: #171B20; font-size: 96px; font-weight: 900; letter-spacing: -0.03em; box-shadow: 0 30px 80px rgba(0,0,0,.5); text-align: center; line-height: 1.1; }
+.wallc small { display: block; font-size: 38px; font-weight: 800; margin-top: 8px; }
+.bgRoom { background: radial-gradient(ellipse at 50% 0%, rgba(126,178,255,.22), rgba(126,178,255,0) 60%), #0F141B; }
+.stage { position: absolute; left: 0; right: 0; top: 0; height: 670px; background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0)); }
+.judges { position: absolute; left: 100px; right: 100px; top: 300px; display: flex; justify-content: space-between; }
+.judge { position: relative; width: 230px; height: 260px; display: flex; flex-direction: column; align-items: center; }
+.judge .head { width: 110px; height: 110px; border-radius: 50%; background: #3B4654; }
+.judge .body { width: 210px; height: 120px; margin-top: 10px; border-radius: 100px 100px 20px 20px; background: #2C3541; }
+.judge .nm { position: absolute; bottom: -8px; padding: 6px 18px; border-radius: 8px; background: #E8E2DA; color: #171B20; font-size: 24px; font-weight: 800; }
+.judge .react { position: absolute; top: -30px; right: 10px; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; font-weight: 900; padding: 16px; }
+.judge .react.ok { background: #2FA66A; color: #fff; } .judge .react.q { background: #F2C14E; color: #171B20; } .judge .react.meh { background: #6B7280; color: #fff; }
+.desk { position: absolute; left: 60px; right: 60px; top: 570px; height: 34px; border-radius: 10px; background: #5A4636; box-shadow: 0 20px 40px rgba(0,0,0,.4); }
+.bub { position: relative; max-width: 920px; padding: 34px 50px; border-radius: 40px; font-size: 64px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.2; text-align: center; }
+.bub span { display: inline-block; }
+.bub.jb { background: #fff; color: #171B20; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.bub.jb::before { content: ''; position: absolute; left: 50%; top: -30px; margin-left: -24px; border: 24px solid transparent; border-bottom: 30px solid #fff; border-top: 0; }
+.bub.mb { background: #2E6BD6; color: #fff; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.bub.mb::after { content: ''; position: absolute; left: 50%; bottom: -30px; margin-left: -24px; border: 24px solid transparent; border-top: 30px solid #2E6BD6; border-bottom: 0; }
+.bub .strike { position: absolute; left: 30px; right: 30px; top: 50%; height: 12px; margin-top: -6px; border-radius: 6px; background: #FF6B6E; transform-origin: 0 50%; }
+.phone.held { box-shadow: 0 40px 90px rgba(0,0,0,.6), 0 0 0 3px #F0894A; }
+.docs { position: absolute; left: 90px; right: 90px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 22px; }
+.doc { position: relative; height: 200px; border-radius: 14px; background: #fff; box-shadow: 0 10px 24px rgba(23,27,32,.12); padding: 26px 18px; display: flex; flex-direction: column; gap: 14px; }
+.doc i { display: block; height: 10px; border-radius: 5px; background: #E3DDD5; } .doc i:nth-child(2) { width: 80%; } .doc i:nth-child(4) { width: 60%; }
+.doc em { position: absolute; right: 10px; bottom: 10px; padding: 3px 8px; border-radius: 6px; background: #EDE7FF; color: #6B4FD8; font-size: 18px; font-weight: 900; }
+.doc.ours { background: #FFF1E7; box-shadow: 0 0 0 5px #F0894A, 0 16px 40px rgba(240,137,74,.35); z-index: 2; }
+.doc.ours b { position: absolute; left: -20px; right: -20px; top: -46px; text-align: center; font-size: 24px; font-weight: 900; color: #C8612E; white-space: nowrap; }
+.chart { position: absolute; left: 80px; width: 920px; height: 600px; overflow: visible; }
+.chart .ax { fill: none; stroke: rgba(255,255,255,.25); stroke-width: 4; } .bgL .chart .ax { stroke: rgba(23,27,32,.2); }
+.chart .pl { fill: none; stroke-width: 14; stroke-linecap: round; stroke-dasharray: 1400; }
+.chart .pl.gray { stroke: #5B6571; stroke-width: 10; } .chart .pl.hot { stroke: #F0894A; }
+.ctag { position: absolute; padding: 10px 22px; border-radius: 14px; background: #fff; color: #171B20; font-size: 34px; font-weight: 900; white-space: nowrap; }
+.ctag.hot2 { background: #F0894A; }
+.bars { position: absolute; left: 110px; right: 110px; height: 760px; display: flex; align-items: flex-end; justify-content: space-between; }
+.bar2 { width: 170px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.bar2 i { display: block; width: 100%; border-radius: 18px 18px 6px 6px; background: #4B5563; }
+.bar2.hot i { background: #F0894A; }
+.bar2 span { font-size: 32px; font-weight: 800; color: #C9D0D8; white-space: nowrap; } .bar2.hot span { color: #F0894A; }
+.cut { position: absolute; left: -30px; right: -30px; height: 0; border-top: 6px dashed #7FD8A4; }
+.cut span { position: absolute; right: 0; top: -58px; font-size: 30px; font-weight: 900; color: #7FD8A4; }
+.gapmark { position: absolute; width: 150px; border: 5px solid #FF6B6E; border-radius: 10px; background: rgba(255,107,110,.25); }
+.gapmark b { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); padding: 10px 22px; border-radius: 14px; background: #FF6B6E; color: #fff; font-size: 44px; font-weight: 900; white-space: nowrap; }
+.rain { position: absolute; inset: 0; }
+.rchip { position: absolute; top: 0; padding: 22px 36px; border-radius: 22px; font-size: 44px; font-weight: 900; white-space: nowrap; box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+.rchip.r0 { background: #fff; color: #171B20; } .rchip.r1 { background: #6B4FD8; color: #fff; } .rchip.r2 { background: #2E6BD6; color: #fff; } .rchip.r3 { background: #F0894A; color: #171B20; }
+.lane { position: absolute; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, rgba(255,255,255,.25) 0 40px, transparent 40px 80px); }
+.runner { position: absolute; left: 0; width: 100px; height: 100px; color: #9AA3AD; }
+.runner .ic { width: 100px; height: 100px; }
+.runner .spd { position: absolute; right: 100%; top: 40%; width: 180px; height: 6px; background: linear-gradient(90deg, rgba(154,163,173,0), rgba(154,163,173,.8)); border-radius: 3px; }
+.runner.ours { color: #F0894A; width: 240px; height: auto; display: flex; flex-direction: column; align-items: center; }
+.runner.ours .ic { width: 130px; height: 130px; } .runner.ours b { font-size: 34px; font-weight: 900; white-space: nowrap; }
+.sitem { position: absolute; display: flex; align-items: center; gap: 16px; padding: 22px 30px; border-radius: 26px; background: #fff; color: #171B20; font-size: 44px; font-weight: 900; box-shadow: 0 20px 50px rgba(0,0,0,.35); white-space: nowrap; }
+.sitem.dark { background: #232A33; color: #fff; box-shadow: inset 0 0 0 2px rgba(255,255,255,.16); } .sitem.hot { background: #F0894A; }
+.sitem .ic.lg { width: 70px; height: 70px; }
+.core { position: absolute; width: 300px; height: 300px; border-radius: 70px; background: #F0894A; color: #171B20; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 0 0 16px rgba(240,137,74,.2), 0 30px 90px rgba(240,137,74,.5); }
+.core .ic.xl { width: 150px; height: 150px; } .core b { font-size: 42px; font-weight: 900; }
+.node { position: absolute; width: 360px; height: 330px; border-radius: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: #232A33; color: #fff; box-shadow: inset 0 0 0 3px rgba(255,255,255,.14), 0 30px 70px rgba(0,0,0,.35); }
+.node.hot { background: #F0894A; color: #171B20; box-shadow: 0 30px 70px rgba(240,137,74,.35); } .node.blue { background: #2E6BD6; }
+.node b { font-size: 50px; font-weight: 900; } .node .ic.xl { width: 130px; height: 130px; }
+.bgL .node { background: #fff; color: #171B20; box-shadow: 0 20px 50px rgba(23,27,32,.12); } .bgL .node.hot { background: #F0894A; }
+.wire { position: absolute; left: 0; width: 1080px; height: 200px; overflow: visible; }
+.wire path { fill: none; stroke: #F0894A; stroke-width: 10; stroke-dasharray: 400; stroke-linecap: round; }
+.pkt { position: absolute; left: 0; opacity: 0; width: 22px; height: 22px; margin-top: -11px; border-radius: 50%; background: #FFD8BE; box-shadow: 0 0 20px #F0894A; }
+.midic { display: inline-flex; width: 120px; height: 120px; padding: 22px; border-radius: 50%; background: #fff; color: #C8612E; box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+.midic .ic.lg { width: 76px; height: 76px; }
+.mcard { position: absolute; left: 120px; right: 120px; height: 190px; border-radius: 36px; display: flex; align-items: center; gap: 30px; padding: 0 50px; font-size: 58px; font-weight: 900; letter-spacing: -0.03em; }
+.mcard.a { background: #232A33; color: #C9D0D8; box-shadow: inset 0 0 0 2px rgba(255,255,255,.14); }
+.mcard.b { background: #F0894A; color: #171B20; box-shadow: 0 30px 80px rgba(240,137,74,.35); }
+.mcard .ic.lg { width: 96px; height: 96px; }
+.marrow { display: inline-flex; width: 90px; height: 90px; color: #F0894A; transform: rotate(0deg); }
+.marrow .ic { width: 90px; height: 90px; }
+.people { position: absolute; left: 60px; right: 60px; display: flex; justify-content: space-around; }
+.person { position: relative; width: 290px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.pav { width: 230px; height: 230px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #2C3541; color: #E8B89A; box-shadow: inset 0 0 0 3px rgba(255,255,255,.12); }
+.pav .ic.lg { width: 120px; height: 120px; }
+.bgL .pav { background: #fff; color: #C8612E; box-shadow: 0 16px 40px rgba(23,27,32,.12); }
+.person b { font-size: 44px; font-weight: 900; white-space: nowrap; }
+.prx { position: absolute; top: -40px; right: 10px; width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 56px; padding: 18px; }
+.prx.heart { background: #FF6B8A; color: #fff; } .prx.ok { background: #2FA66A; color: #fff; } .prx.star { background: #F2C14E; color: #171B20; } .prx.q { background: #F2C14E; color: #171B20; font-weight: 900; }
+.prx .ic { width: 100%; height: 100%; }
+.pz { position: absolute; width: 440px; height: 280px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; font-size: 60px; font-weight: 900; }
+.pz.a { left: 60px; background: #2E6BD6; color: #fff; border-radius: 40px 0 0 40px; } .pz.b { right: 60px; background: #F0894A; color: #171B20; border-radius: 0 40px 40px 0; }
+.pz .ic.lg { width: 100px; height: 100px; }
+.bld { position: relative; width: 560px; height: 620px; color: #E8B89A; }
+.bld > .ic { width: 560px; height: 620px; }
+.bin { position: absolute; width: 110px; height: 110px; padding: 20px; border-radius: 26px; background: #fff; color: #C8612E; }
+.bin .ic { width: 70px; height: 70px; }
+.crack { position: absolute; left: 30%; top: 5%; width: 40%; height: 90%; overflow: visible; }
+.crack path { fill: none; stroke: #FF6B6E; stroke-width: 3; stroke-dasharray: 200; }
+.crowd { position: absolute; left: 60px; right: 60px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 18px 10px; color: #5B6571; }
+.crowd span { display: flex; justify-content: center; } .crowd .ic { width: 100px; height: 100px; } .crowd .me { color: #F0894A; }
+.steps { position: absolute; left: 70px; right: 70px; display: flex; flex-direction: column; gap: 22px; }
+.stp { display: flex; align-items: center; gap: 30px; padding: 30px 40px; border-radius: 34px; background: #fff; color: #9AA3AD; box-shadow: 0 10px 30px rgba(23,27,32,.08); }
+.stp .num { flex: none; width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #EFE9E2; font-size: 48px; font-weight: 900; color: #9AA3AD; padding: 20px; }
+.stp .num .ic { width: 50px; height: 50px; }
+.stp div { flex: 1; } .stp b { display: block; font-size: 52px; font-weight: 900; letter-spacing: -0.03em; } .stp small { display: block; margin-top: 4px; font-size: 32px; font-weight: 700; }
+.stp > .ic.lg { width: 80px; height: 80px; opacity: .5; }
+.stp.done { color: #6B7680; } .stp.done .num { background: #2FA66A; color: #fff; }
+.stp.on { background: #171B20; color: #fff; transform-origin: 50% 50%; box-shadow: 0 30px 70px rgba(23,27,32,.3); padding: 44px 40px; }
+.stp.on .num { background: #F0894A; color: #171B20; } .stp.on b { font-size: 64px; } .stp.on small { color: #E8B89A; } .stp.on > .ic.lg { opacity: 1; color: #F0894A; }
+.nstack { position: absolute; left: 80px; right: 80px; display: flex; flex-direction: column; gap: 20px; }
+.ntf { display: flex; align-items: center; gap: 24px; padding: 28px 30px; border-radius: 30px; background: rgba(255,255,255,.95); color: #171B20; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+.nic { flex: none; width: 90px; height: 90px; border-radius: 24px; padding: 18px; background: #F0894A; color: #171B20; display: flex; }
+.nic.blue { background: #2E6BD6; color: #fff; } .nic.green { background: #2FA66A; color: #fff; } .nic .ic { width: 54px; height: 54px; }
+.ntf div { flex: 1; } .ntf b { display: block; font-size: 40px; font-weight: 900; letter-spacing: -0.02em; } .ntf small { display: block; font-size: 28px; font-weight: 700; color: #6B7680; margin-top: 4px; }
+.ntf em { font-style: normal; align-self: flex-start; font-size: 24px; font-weight: 700; color: #8A939C; }
+.checks { position: absolute; left: 110px; right: 110px; display: flex; flex-direction: column; gap: 26px; }
+.chk { display: flex; align-items: center; gap: 30px; padding: 26px 34px; border-radius: 28px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 2px rgba(255,255,255,.14); }
+.bgL .chk { background: #fff; box-shadow: 0 10px 30px rgba(23,27,32,.08); }
+.chk .box { flex: none; width: 84px; height: 84px; border-radius: 22px; background: rgba(255,255,255,.14); color: #fff; padding: 16px; display: flex; }
+.bgL .chk .box { background: #EFE9E2; }
+.chk .box .ic { width: 52px; height: 52px; } .chk b { font-size: 50px; font-weight: 900; letter-spacing: -0.02em; }
+.prices { position: absolute; left: 70px; right: 70px; display: flex; flex-direction: column; gap: 24px; }
+.pcard { padding: 34px 44px; border-radius: 36px; background: #fff; color: #171B20; box-shadow: 0 16px 40px rgba(23,27,32,.1); }
+.pcard.on { background: #171B20; color: #fff; box-shadow: 0 30px 70px rgba(23,27,32,.35), 0 0 0 5px #F0894A; }
+.pcard.dim { opacity: .45; }
+.ptop { display: flex; align-items: center; gap: 20px; } .pnum { width: 60px; height: 60px; border-radius: 50%; background: #F0894A; color: #171B20; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; }
+.ptop b { font-size: 46px; font-weight: 900; letter-spacing: -0.02em; } .ptop em { font-style: normal; margin-left: auto; padding: 8px 18px; border-radius: 999px; background: #FFF1E7; color: #C8612E; font-size: 26px; font-weight: 800; }
+.pcard.on .ptop em { background: #F0894A; color: #171B20; }
+.pval { margin-top: 10px; display: flex; align-items: baseline; gap: 12px; } .pval b { font-size: 110px; font-weight: 900; letter-spacing: -0.04em; color: #C8612E; font-variant-numeric: tabular-nums; } .pcard.on .pval b { color: #F0894A; }
+.pval span { font-size: 40px; font-weight: 800; }
+.chap { z-index: 31; } .chap span { position: absolute; left: 56px; top: 176px; padding: 10px 22px; border-radius: 12px; background: #F0894A; color: #171B20; font-size: 28px; font-weight: 900; }
+.bgOld { background: radial-gradient(circle at 50% 30%, #5A4A38, #211A14); }
+.bgOld .bigic { background: rgba(232,184,154,.14); color: #E8B89A; box-shadow: inset 0 0 0 3px rgba(232,184,154,.35); }
+.dots { position: absolute; left: 140px; right: 140px; top: 820px; display: grid; grid-template-columns: repeat(25, 1fr); gap: 10px; }
+.dots i { display: block; width: 22px; height: 22px; border-radius: 50%; background: #F0894A; opacity: .85; }
+.ksub .red { color: #FF6B6E; font-weight: 900; }
+.note { position: absolute; left: 60px; right: 60px; text-align: center; font-size: 30px; font-weight: 800; color: #fff; } .note span { display: inline-block; padding: 12px 24px; border-radius: 14px; background: rgba(8,10,13,.82); }
+
+.bgT { background: #F0894A; }
+.ttbg { position: absolute; left: 0; right: 0; top: 480px; height: 700px; background: #FFF4EC; transform: skewY(-4deg); }
+.ttbg.soft { top: 420px; height: 760px; background: rgba(255,255,255,.06); }
+.ttno { padding: 12px 34px; border-radius: 999px; background: #171B20; color: #F0894A; font-size: 48px; font-weight: 900; letter-spacing: .02em; }
+.ttbar { display: block; width: 240px; height: 14px; border-radius: 7px; background: #171B20; }
+.ghost { position: relative; width: 420px; height: 800px; border-radius: 60px; border: 8px dashed rgba(255,255,255,.45); display: flex; align-items: center; justify-content: center; }
+.bgL .ghost { border-color: rgba(23,27,32,.35); }
+.gq { font-size: 260px; font-weight: 900; color: #F0894A; }
+.lens { position: absolute; width: 190px; height: 190px; padding: 30px; border-radius: 50%; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 8px #fff; color: #fff; }
+.lens .ic { width: 100%; height: 100%; }
+.bgBlue { background: #0E2A4A; }
+.bpgrid { position: absolute; inset: 0; background-image: linear-gradient(rgba(126,178,255,.14) 2px, transparent 2px), linear-gradient(90deg, rgba(126,178,255,.14) 2px, transparent 2px); background-size: 60px 60px; }
+.bpsvg { position: absolute; left: 240px; width: 600px; height: 700px; overflow: visible; }
+.bpsvg path { fill: none; stroke: #BFD8FF; stroke-width: 6; stroke-dasharray: 3000; }
+.wfsvg { position: absolute; left: 90px; width: 900px; height: 900px; overflow: visible; }
+.wfsvg rect, .wfsvg path { fill: none; stroke: #BFD8FF; stroke-width: 5; stroke-dasharray: 2400; }
+.frows { position: absolute; left: 70px; right: 70px; display: flex; flex-direction: column; gap: 30px; }
+.frow { display: flex; align-items: center; gap: 18px; padding: 26px 30px; border-radius: 30px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); }
+.frow b { width: 230px; font-size: 42px; font-weight: 900; color: #E8B89A; white-space: nowrap; }
+.fstep { width: 130px; height: 130px; border-radius: 34px; display: flex; align-items: center; justify-content: center; background: #2C3541; color: #9AA3AD; }
+.fstep .ic.lg { width: 76px; height: 76px; }
+.farr { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); }
+.sky { position: absolute; left: 80px; right: 80px; bottom: 560px; height: 900px; display: flex; align-items: flex-end; justify-content: space-between; }
+.sky span { width: 160px; display: grid; grid-template-columns: repeat(3, 1fr); align-content: start; gap: 18px; padding: 30px 22px; border-radius: 16px 16px 0 0; background: linear-gradient(180deg, #3B4654, #232A33); }
+.sky i { height: 36px; border-radius: 6px; background: rgba(255,214,150,.5); }
+.bigx { display: inline-flex; width: 380px; height: 380px; padding: 60px; border-radius: 50%; background: #D8474B; color: #fff; box-shadow: 0 30px 90px rgba(216,71,75,.5); }
+.bigx .ic { width: 100%; height: 100%; }
+.axbig { font-size: 360px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: #F0894A; text-shadow: 0 30px 90px rgba(240,137,74,.45); }
+.axrow { position: absolute; left: 40px; right: 40px; display: flex; align-items: center; justify-content: center; gap: 14px; }
+.axrow .sitem { position: static; flex-direction: column; padding: 22px 22px; font-size: 38px; }
+.axrow em { font-style: normal; font-size: 60px; font-weight: 900; color: #F0894A; }
+.official { position: absolute; left: 70px; right: 70px; padding: 40px 40px 30px; border-radius: 30px; background: #F4F7FB; color: #171B20; box-shadow: 0 30px 80px rgba(0,0,0,.4); }
+.otag { position: absolute; left: 36px; top: -26px; padding: 10px 22px; border-radius: 12px; background: #2E6BD6; color: #fff; font-size: 30px; font-weight: 900; }
+.orow { padding: 16px 0; border-bottom: 2px solid #E1E7EF; } .orow:last-child { border: 0; }
+.orow b { font-size: 40px; font-weight: 900; color: #1F4FA8; } .orow p { font-size: 40px; font-weight: 800; margin-top: 4px; } .orow small { display: block; font-size: 26px; font-weight: 700; color: #6B7680; margin-top: 4px; }
+.tplab { display: flex; gap: 240px; }
+.tpw { position: absolute; left: 440px; width: 200px; height: 60px; overflow: visible; }
+.tpw path { fill: none; stroke: #F0894A; stroke-width: 8; stroke-dasharray: 300; stroke-linecap: round; }
+.sys { position: absolute; left: 80px; right: 80px; padding: 34px; border-radius: 40px; background: #fff; color: #171B20; box-shadow: 0 30px 80px rgba(23,27,32,.18); }
+.shead { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; margin-bottom: 14px; border-bottom: 2px solid #EFE9E2; }
+.shead .ic { width: 60px; height: 60px; color: #C8612E; } .shead b { font-size: 44px; font-weight: 900; } .shead em { margin-left: auto; font-style: normal; padding: 6px 16px; border-radius: 10px; background: #EFE9E2; color: #6B7680; font-size: 24px; font-weight: 800; }
+.srow { display: flex; justify-content: space-between; align-items: center; padding: 24px 10px; border-bottom: 2px solid #F4EFE9; font-size: 40px; }
+.srow span { color: #6B7680; font-weight: 700; } .srow b { font-weight: 900; }
+.sbtn { margin-top: 26px; padding: 30px; border-radius: 24px; background: #F0894A; color: #171B20; text-align: center; font-size: 44px; font-weight: 900; }
+.sys .touch { margin-left: -30px; }
+.dcard { display: flex; align-items: center; gap: 26px; margin-top: 20px; padding: 30px; border-radius: 28px; background: #FFF4EC; }
+.dcard.c1 { background: #EEF4FF; } .dcard.c2 { background: #EAF7F0; }
+.dcard .ic.lg { width: 90px; height: 90px; color: #C8612E; } .dcard.c1 .ic.lg { color: #2E6BD6; } .dcard.c2 .ic.lg { color: #2FA66A; }
+.dcard small { display: block; font-size: 30px; font-weight: 800; color: #6B7680; } .dcard b { display: block; font-size: 50px; font-weight: 900; letter-spacing: -0.02em; }
+.door { position: absolute; left: 700px; top: 380px; width: 300px; height: 460px; padding: 40px; border-radius: 30px; background: #232A33; color: #9AA3AD; }
+.door .ic { width: 100%; height: 100%; }
+.walker { position: absolute; left: 200px; top: 420px; width: 300px; display: flex; flex-direction: column; align-items: center; gap: 10px; color: #E8B89A; }
+.walker .ic { width: 280px; height: 280px; } .walker b { font-size: 40px; font-weight: 900; white-space: nowrap; }
+.dbars { position: absolute; left: 150px; right: 150px; top: 460px; height: 600px; display: flex; align-items: flex-end; gap: 22px; }
+.dbars i { flex: 1; border-radius: 14px 14px 4px 4px; background: linear-gradient(180deg, #F0894A, rgba(240,137,74,.35)); }
+.timer { position: relative; width: 400px; height: 400px; }
+.timer svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer .trk { fill: none; stroke: rgba(255,255,255,.12); stroke-width: 8; } .timer .arc { fill: none; stroke: #F0894A; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 277; }
+.timer b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 190px; font-weight: 900; color: #fff; } .timer b small { font-size: 70px; margin-left: 6px; }
+.ctab { display: flex; align-items: center; gap: 22px; padding: 40px 50px; border-radius: 34px; background: #F0894A; color: #171B20; font-size: 54px; font-weight: 900; letter-spacing: -0.03em; box-shadow: 0 30px 80px rgba(240,137,74,.45); white-space: nowrap; }
+.ctab .ic.lg { width: 76px; height: 76px; }
+.ecard { position: absolute; left: 80px; right: 80px; padding: 50px 50px 46px; border-radius: 44px; background: #fff; color: #171B20; box-shadow: 0 40px 100px rgba(0,0,0,.45); }
+.ecard .no { display: inline-block; padding: 8px 22px; border-radius: 999px; background: #171B20; color: #F0894A; font-size: 34px; font-weight: 900; }
+.ecard h3 { margin-top: 20px; font-size: 84px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.15; }
+.ecard ul { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 14px; list-style: none; }
+.ecard li { padding: 12px 24px; border-radius: 999px; background: #FFF1E7; color: #C8612E; font-size: 34px; font-weight: 800; }
+.earrow { display: inline-flex; width: 110px; height: 110px; padding: 20px; border-radius: 50%; background: #F0894A; color: #171B20; }
+.earrow .ic { width: 100%; height: 100%; }
+
+
+/* ── 고급 모드 덮어쓰기 ── */
+#root { background: #0B0E13; }
+.bgA { background: radial-gradient(1200px 900px at 85% -10%, rgba(216,168,113,.15), rgba(216,168,113,0) 60%), radial-gradient(900px 700px at -10% 110%, rgba(90,120,170,.12), rgba(90,120,170,0) 60%), #0B0E13; }
+.bgB { background: radial-gradient(1100px 800px at 10% 0%, rgba(120,150,205,.14), rgba(120,150,205,0) 60%), radial-gradient(800px 600px at 100% 100%, rgba(216,168,113,.08), rgba(216,168,113,0) 60%), #0A0E15; }
+.bgC { background: radial-gradient(1000px 800px at 50% -5%, rgba(216,168,113,.20), rgba(216,168,113,0) 65%), #110E0B; }
+.bgD { background: radial-gradient(1000px 800px at 90% 100%, rgba(216,168,113,.12), rgba(216,168,113,0) 60%), radial-gradient(900px 700px at 0% 0%, rgba(110,150,140,.10), rgba(110,150,140,0) 60%), #0C1011; }
+.bgL { background: radial-gradient(1100px 800px at 85% 0%, rgba(216,168,113,.20), rgba(216,168,113,0) 60%), #F2EDE6; color: #15181D; }
+.bgRoom { background: radial-gradient(900px 620px at 50% 0%, rgba(216,168,113,.13), rgba(216,168,113,0) 62%), #0B0E13; }
+.bgBlue { background: radial-gradient(1000px 800px at 50% 0%, rgba(216,168,113,.10), rgba(216,168,113,0) 60%), #0A121C; }
+.bgOld { background: radial-gradient(900px 700px at 50% 20%, rgba(216,168,113,.16), rgba(216,168,113,0) 60%), #14100C; }
+.bgT { background: radial-gradient(900px 700px at 50% 45%, rgba(216,168,113,.14), rgba(216,168,113,0) 65%), #0B0E13; }
+.shot::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,.38) 100%); }
+.bgL.shot::after { background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 60%, rgba(60,40,20,.10) 100%); }
+.bpgrid { background-image: linear-gradient(rgba(216,168,113,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(216,168,113,.07) 1px, transparent 1px); background-size: 72px 72px; }
+.kt { font-weight: 800; letter-spacing: -0.045em; line-height: 1.18; text-shadow: none; color: #F4F1EC; }
+.bgL .kt { color: #15181D; }
+.kt.xl { font-size: 116px; } .kt.l { font-size: 94px; } .kt.m { font-size: 76px; } .kt.s { font-size: 58px; }
+.kt .hl { color: #D8A871; } .bgL .kt .hl { color: #A5703C; }
+.hd { position: absolute; left: 0; right: 0; }
+.hds { position: absolute; left: 80px; right: 80px; top: 0; transform: translateY(var(--hsy, 210px)); text-align: center; font-size: 36px; font-weight: 500; color: #A9B0B8; letter-spacing: -0.01em; }
+.bgL .hds { color: #5E6670; }
+.ksub { font-size: 38px; font-weight: 500; color: #A9B0B8; }
+.chip { background: rgba(11,14,19,.35); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.5); color: #E6C396; font-size: 28px; font-weight: 600; letter-spacing: .03em; padding: 10px 26px; }
+.chip.big { font-size: 34px; padding: 13px 32px; }
+.chip.hot { background: #D8A871; color: #15110C; box-shadow: none; }
+.chip.gray { color: #A9B0B8; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.18); }
+.bgL .chip { background: rgba(255,255,255,.5); box-shadow: inset 0 0 0 1.5px rgba(165,112,60,.45); color: #A5703C; } .bgL .chip.hot { background: #C99257; color: #15110C; }
+.eyeb { display: inline-flex; align-items: center; gap: 22px; font-size: 26px; font-weight: 600; letter-spacing: .14em; color: #E6C396; white-space: nowrap; }
+.eyeb i { display: block; width: 60px; height: 1.5px; background: #D8A871; opacity: .7; }
+.bgL .eyeb { color: #A5703C; } .bgL .eyeb i { background: #A5703C; }
+.licon, .bigic { display: inline-flex; width: 168px; height: 168px; padding: 46px; border-radius: 50%; background: rgba(216,168,113,.06); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.45); color: #D8A871; }
+.licon .ic, .bigic .ic { width: 100%; height: 100%; }
+.bigic.red, .licon.red { color: #E39A88; box-shadow: inset 0 0 0 1.5px rgba(227,154,136,.45); background: rgba(227,154,136,.06); }
+.bigic.green, .licon.green { color: #A8D5B8; box-shadow: inset 0 0 0 1.5px rgba(168,213,184,.45); background: rgba(168,213,184,.06); }
+.bgL .licon, .bgL .bigic { background: rgba(255,255,255,.6); box-shadow: inset 0 0 0 1.5px rgba(165,112,60,.4); color: #A5703C; }
+.gcards { position: absolute; left: 90px; right: 90px; display: flex; flex-direction: column; gap: 22px; }
+.gcards.row { flex-direction: row; justify-content: center; gap: 20px; }
+.gcard { position: relative; display: flex; align-items: center; gap: 28px; padding: 32px 38px; border-radius: 28px; background: rgba(255,255,255,.045); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1), 0 24px 60px rgba(0,0,0,.25); color: #F4F1EC; }
+.gcards.row .gcard { flex-direction: column; width: 280px; padding: 40px 20px 34px; text-align: center; gap: 18px; }
+.gcard.hl { background: rgba(216,168,113,.1); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.6), 0 24px 60px rgba(0,0,0,.3); }
+.gcard .ic.lg { width: 70px; height: 70px; color: #D8A871; flex: none; }
+.gtx { flex: 1; min-width: 0; } .gtx b { display: block; font-size: 48px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; } .gtx small { display: block; margin-top: 6px; font-size: 28px; font-weight: 500; color: #9BA3AD; }
+.gcards.row .gtx b { font-size: 42px; white-space: normal; }
+.gbar { position: relative; display: block; margin-top: 18px; height: 10px; border-radius: 5px; background: rgba(255,255,255,.08); }
+.gbar i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; border-radius: 5px; background: linear-gradient(90deg, rgba(216,168,113,.5), #D8A871); transform-origin: 0 50%; }
+.gbar em { position: absolute; right: -2px; top: -10px; width: 4px; height: 30px; border-radius: 2px; background: #F4F1EC; }
+.gck { flex: none; width: 72px; height: 72px; padding: 18px; border-radius: 50%; background: #D8A871; color: #15110C; display: flex; }
+.gck .ic { width: 100%; height: 100%; }
+.gcards.row .gck { position: absolute; top: -22px; right: -14px; }
+.bgL .gcard { background: rgba(255,255,255,.7); box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.06), 0 20px 50px rgba(60,40,20,.08); color: #15181D; }
+.bgL .gcard .ic.lg { color: #A5703C; } .bgL .gtx small { color: #6B737D; }
+.seal { position: relative; padding: 26px 56px; font-size: 92px; font-weight: 800; letter-spacing: -0.03em; color: #F4F1EC; text-align: center; white-space: nowrap; }
+.seal i { display: block; height: 1.5px; background: linear-gradient(90deg, rgba(216,168,113,0), #D8A871, rgba(216,168,113,0)); }
+.seal b { display: block; padding: 22px 0; font-weight: 800; }
+.seal.gold b { color: #D8A871; } .bgL .seal { color: #15181D; }
+.pdots { position: absolute; left: 170px; right: 170px; display: grid; gap: 12px; }
+.pdots i { display: block; width: 16px; height: 16px; border-radius: 50%; background: #D8A871; opacity: .7; }
+.ptline { position: absolute; left: 160px; right: 160px; height: 1.5px; background: linear-gradient(90deg, rgba(216,168,113,0), #D8A871, rgba(216,168,113,0)); }
+.pteb { font-size: 30px; font-weight: 600; letter-spacing: .3em; color: #E6C396; }
+.tile { background: rgba(255,255,255,.05); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); font-size: 48px; font-weight: 700; }
+.tile.c0, .tile.c1, .tile.c2, .tile.c3, .tile.dark, .tile.red { background: rgba(255,255,255,.05); color: #F4F1EC; }
+.tile .ic.lg { color: #D8A871; } .tile .tok { background: #D8A871; color: #15110C; } .tile .tx { background: #B85C50; }
+.cnt b { color: #D8A871; font-weight: 800; font-size: 230px; } .cnt .suf, .cnt .pre { font-weight: 600; font-size: 84px; color: #F4F1EC; }
+.bgL .cnt b { color: #A5703C; } .bgL .cnt .suf { color: #15181D; }
+.cnt.mid b { font-size: 170px; } .cnt.mid .suf { font-size: 70px; }
+.phone { padding: 8px; border-radius: 42px; background: #06080B; box-shadow: 0 50px 110px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.16); }
+.phone .screen { border-radius: 34px; }
+.phone.held { box-shadow: 0 40px 90px rgba(0,0,0,.6), 0 0 0 2px #D8A871; }
+.touch { background: rgba(255,255,255,.35); box-shadow: 0 0 0 3px #D8A871; }
+.brw { border-radius: 18px; box-shadow: 0 50px 110px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.1); }
+.brw .bar { background: #13171D; } .btag { background: rgba(11,14,19,.72); color: #E6C396; box-shadow: inset 0 0 0 1px rgba(216,168,113,.5); font-weight: 600; }
+.judge .head { background: #2A323D; } .judge .body { background: #1E242C; }
+.judge .nm { background: rgba(11,14,19,.6); color: #A9B0B8; font-weight: 600; font-size: 22px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+.judge .react.ok { background: #D8A871; color: #15110C; } .judge .react.q { background: #F2EDE6; } .judge .react.meh { background: #3A424D; }
+.desk { height: 3px; background: linear-gradient(90deg, rgba(216,168,113,0), #D8A871, rgba(216,168,113,0)); box-shadow: none; }
+.stage { background: none; }
+.bub { font-size: 58px; font-weight: 800; }
+.bub.jb { background: #F2EDE6; color: #15181D; box-shadow: 0 30px 80px rgba(0,0,0,.45); } .bub.jb::before { border-bottom-color: #F2EDE6; }
+.bub.mb { background: #1B2129; color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12), 0 30px 80px rgba(0,0,0,.45); } .bub.mb::after { border-top-color: #1B2129; }
+.bub .strike { background: #D98C7C; height: 8px; }
+.doc { background: #F7F3EE; } .doc i { background: #E7E0D6; }
+.doc.ours { background: #FFF8EF; box-shadow: 0 0 0 4px #D8A871, 0 16px 40px rgba(216,168,113,.3); } .doc.ours b { color: #A5703C; }
+.doc em { background: #ECE6DC; color: #7A6A55; }
+.chart .ax { stroke: rgba(255,255,255,.18); stroke-width: 2; } .bgL .chart .ax { stroke: rgba(21,24,29,.18); }
+.chart .pl.hot { stroke: #D8A871; stroke-width: 10; filter: drop-shadow(0 0 14px rgba(216,168,113,.45)); } .chart .pl.gray { stroke: #3A424D; stroke-width: 7; }
+.ctag { background: rgba(11,14,19,.55); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.3); font-weight: 700; font-size: 32px; }
+.ctag.hot2 { background: #D8A871; color: #15110C; box-shadow: none; }
+.bar2 i { background: #2E353F; } .bar2.hot i { background: linear-gradient(180deg, #D8A871, rgba(216,168,113,.55)); } .bar2 span { font-weight: 600; } .bar2.hot span { color: #D8A871; }
+.cut { border-top: 3px dashed rgba(244,241,236,.6); } .cut span { color: #F4F1EC; font-weight: 600; }
+.gapmark { border: 3px solid #D98C7C; background: rgba(217,140,124,.18); } .gapmark b { background: #D98C7C; color: #15110C; }
+.rchip { background: rgba(255,255,255,.06); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14); font-weight: 700; font-size: 40px; backdrop-filter: blur(6px); }
+.rchip.r0, .rchip.r1, .rchip.r2, .rchip.r3 { background: rgba(20,24,30,.78); color: #F4F1EC; }
+.rchip.r1, .rchip.r3 { color: #E6C396; box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.45); }
+.bigx { width: 300px; height: 300px; padding: 70px; background: rgba(217,140,124,.12); color: #E39A88; box-shadow: inset 0 0 0 2px #D98C7C, 0 30px 90px rgba(0,0,0,.4); }
+.gck.x { background: #3A424D; color: #F4F1EC; }
+.runner { color: #4A525D; } .runner.ours { color: #D8A871; } .runner .spd { background: linear-gradient(90deg, rgba(154,163,173,0), rgba(154,163,173,.5)); }
+.lane { background: repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 40px, transparent 40px 80px); height: 2px; }
+.sitem { background: rgba(255,255,255,.06); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14), 0 20px 50px rgba(0,0,0,.3); font-weight: 700; font-size: 40px; }
+.sitem.dark { background: rgba(255,255,255,.04); color: #C9CFD6; } .sitem.hot { background: rgba(216,168,113,.12); box-shadow: inset 0 0 0 1.5px #D8A871; }
+.sitem .ic.lg { color: #D8A871; }
+.bgL .sitem { background: #fff; color: #15181D; box-shadow: 0 16px 40px rgba(60,40,20,.1); }
+.core { background: #D8A871; color: #15110C; box-shadow: 0 0 0 14px rgba(216,168,113,.12), 0 30px 90px rgba(216,168,113,.25); border-radius: 50%; }
+.node { background: rgba(255,255,255,.05); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12), 0 30px 70px rgba(0,0,0,.3); border-radius: 36px; }
+.node .ic.xl { color: #D8A871; width: 110px; height: 110px; } .node b { font-size: 44px; font-weight: 700; }
+.node.hot { background: rgba(216,168,113,.12); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px #D8A871, 0 30px 70px rgba(0,0,0,.35); } .node.hot .ic.xl { color: #E6C396; }
+.bgL .node { background: rgba(255,255,255,.75); color: #15181D; } .bgL .node .ic.xl { color: #A5703C; } .bgL .node.hot { background: rgba(216,168,113,.18); box-shadow: inset 0 0 0 1.5px #C99257; color: #15181D; }
+.wire path { stroke: #D8A871; stroke-width: 4; } .pkt { width: 16px; height: 16px; margin-top: -8px; background: #E6C396; box-shadow: 0 0 16px #D8A871; }
+.midic { background: #F2EDE6; color: #A5703C; }
+.mcard { font-size: 52px; font-weight: 700; border-radius: 30px; }
+.mcard.a { background: rgba(255,255,255,.045); color: #C9CFD6; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1); }
+.mcard.b { background: rgba(216,168,113,.12); color: #F4F1EC; box-shadow: inset 0 0 0 1.5px #D8A871, 0 30px 80px rgba(0,0,0,.35); }
+.mcard .ic.lg { color: #D8A871; } .marrow { color: #D8A871; }
+.pav { background: rgba(255,255,255,.05); color: #D8A871; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.14); width: 210px; height: 210px; }
+.person b { font-weight: 700; font-size: 40px; }
+.bgL .pav { background: rgba(255,255,255,.75); color: #A5703C; }
+.prx.heart, .prx.star, .prx.ok { background: #D8A871; color: #15110C; } .prx { width: 80px; height: 80px; font-size: 44px; padding: 16px; }
+.pz { font-size: 54px; font-weight: 700; } .pz.a { background: #18202B; color: #F4F1EC; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); } .pz.b { background: #D8A871; color: #15110C; }
+.pz.a .ic.lg { color: #D8A871; }
+.bld { color: rgba(216,168,113,.85); } .bin { background: #F2EDE6; color: #A5703C; }
+.crack path { stroke: #D98C7C; }
+.crowd { color: #2C333C; } .crowd .me { color: #D8A871; }
+.ntf { background: rgba(242,237,230,.96); } .nic { background: #D8A871; color: #15110C; } .nic.blue { background: #1B2129; color: #E6C396; } .nic.green { background: #1B2129; color: #A8D5B8; }
+.sys { border-radius: 34px; } .sbtn { background: #D8A871; color: #15110C; } .shead .ic { color: #A5703C; }
+.dcard { background: #FBF6EF; } .dcard.c1 { background: #F4F1EC; } .dcard.c2 { background: #F7F3EA; }
+.dcard .ic.lg, .dcard.c1 .ic.lg, .dcard.c2 .ic.lg { color: #A5703C; }
+.wallc { background: rgba(11,14,19,.82); color: #F4F1EC; font-size: 90px; box-shadow: inset 0 0 0 1.5px #D8A871, 0 30px 80px rgba(0,0,0,.5); backdrop-filter: blur(6px); }
+.wallc small { color: #E6C396; font-weight: 600; }
+.wall img { border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+.official { background: #F4F1EC; } .otag { background: #1B2129; color: #E6C396; }
+.axbig { color: #D8A871; text-shadow: 0 30px 90px rgba(216,168,113,.3); font-size: 320px; }
+.axrow em { color: #D8A871; }
+.ghost { border: 3px dashed rgba(216,168,113,.45); } .gq { color: #D8A871; font-weight: 800; }
+.lens { box-shadow: inset 0 0 0 5px #F4F1EC; }
+.bpsvg path, .wfsvg rect, .wfsvg path { stroke: #E6C396; stroke-width: 3; }
+.frow { background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1); } .frow b { color: #E6C396; font-weight: 700; }
+.fstep { background: #1B2129; color: #6E7780; } .farr { background: rgba(255,255,255,.15); height: 2px; }
+.dbars i { background: linear-gradient(180deg, #D8A871, rgba(216,168,113,.2)); }
+.timer .arc { stroke: #D8A871; } .timer .trk { stroke: rgba(255,255,255,.1); }
+.ctab { background: #D8A871; color: #15110C; box-shadow: 0 30px 80px rgba(216,168,113,.3); font-weight: 800; }
+.ttbg.soft { background: rgba(255,255,255,.03); }
+.ecard { background: #F2EDE6; } .ecard .no { background: #15181D; color: #E6C396; } .ecard li { background: #EDE3D6; color: #8A5C2E; }
+.earrow { background: #D8A871; color: #15110C; }
+.door { background: rgba(255,255,255,.05); color: #6E7780; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); }
+.walker { color: #E6C396; }
+.fzv { backdrop-filter: grayscale(1) brightness(.33) blur(5px); background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 40%, rgba(0,0,0,.5) 100%); }
+.fzb { top: 230px; right: 60px; background: none; box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.6); color: #E6C396; font-size: 22px; padding: 10px 14px; border-radius: 50%; }
+.fzl { top: 790px; }
+.fzl i { display: block; width: 560px; height: 1.5px; margin: 0 auto; background: linear-gradient(90deg, rgba(216,168,113,0), #D8A871, rgba(216,168,113,0)); }
+.fzl b { display: block; padding: 26px 20px; background: none; color: #F4F1EC; font-size: 70px; font-weight: 800; box-shadow: none; letter-spacing: -0.035em; }
+.fzl small { margin: 0 0 26px; color: #E6C396; font-size: 34px; font-weight: 600; text-shadow: none; }
+.sub span { background: rgba(9,11,15,.74); backdrop-filter: blur(8px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); font-size: 48px; font-weight: 700; padding: 16px 32px; border-radius: 18px; letter-spacing: -0.01em; }
+.brand .tag2 { background: rgba(11,14,19,.55); color: #E6C396; box-shadow: inset 0 0 0 1px rgba(216,168,113,.35); font-weight: 600; }
+#prog { height: 4px; background: rgba(255,255,255,.1); } #prog i { background: #D8A871; }
+.foot { color: #6F7780; font-weight: 600; }
+.chap span { background: rgba(11,14,19,.55); color: #E6C396; box-shadow: inset 0 0 0 1px rgba(216,168,113,.45); font-weight: 600; letter-spacing: .03em; font-size: 26px; }
+.note span { background: rgba(9,11,15,.74); box-shadow: inset 0 0 0 1px rgba(216,168,113,.35); color: #E6C396; font-weight: 600; }
+.fine { color: #7D8590; font-weight: 500; }
+.stp { background: rgba(255,255,255,.72); color: #8A9099; box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.06), 0 14px 36px rgba(60,40,20,.07); }
+.stp .num { background: #EDE6DC; color: #8A9099; } .stp.done { color: #5E6670; } .stp.done .num { background: #C99257; color: #fff; }
+.stp.on { background: #15181D; color: #F4F1EC; box-shadow: 0 30px 70px rgba(21,24,29,.3); } .stp.on .num { background: #D8A871; color: #15110C; } .stp.on small { color: #E6C396; } .stp.on > .ic.lg { color: #D8A871; }
+.stp b { font-weight: 800; } .stp small { font-weight: 500; }
+.pcard { background: rgba(255,255,255,.75); box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.06), 0 16px 40px rgba(60,40,20,.08); }
+.pnum { background: #D8A871; color: #15110C; } .ptop em { background: #EDE3D6; color: #8A5C2E; }
+.pcard.on { background: #15181D; color: #F4F1EC; box-shadow: 0 30px 70px rgba(21,24,29,.3), 0 0 0 2px #D8A871; } .pcard.on .ptop em { background: rgba(216,168,113,.2); color: #E6C396; }
+.pval b { color: #A5703C; font-weight: 800; } .pcard.on .pval b { color: #D8A871; } .pval span { font-weight: 600; }
+.days i { background: #D8A871; } .days i:nth-child(n+8) { background: rgba(216,168,113,.3); }
+.cb i { background: #2E353F; } .cb.hot i { background: linear-gradient(180deg, #D8A871, rgba(216,168,113,.45)); box-shadow: 0 20px 60px rgba(216,168,113,.25); } .cb span { color: #A9B0B8; font-weight: 700; } .cb.hot span { color: #D8A871; }
+.stage4 { display: flex; gap: 12px; } .stage4 i { display: block; width: 90px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.14); } .stage4 i.on { background: #D8A871; }
+.bgL .stage4 i { background: rgba(21,24,29,.12); } .bgL .stage4 i.on { background: #C99257; }
+.stairs { position: absolute; left: 120px; right: 120px; height: 620px; display: flex; align-items: flex-end; gap: 26px; }
+.stairs div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.stairs i { display: block; border-radius: 18px 18px 6px 6px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.12); }
+.stairs b { display: block; margin-top: 18px; text-align: center; font-size: 36px; font-weight: 700; color: #C9CFD6; white-space: nowrap; }
+.stairs div.on i { background: rgba(216,168,113,.14); box-shadow: inset 0 0 0 1.5px #D8A871; } .stairs div.on b { color: #D8A871; }
+.climber { position: absolute; width: 56px; height: 56px; border-radius: 50%; background: #D8A871; box-shadow: 0 0 0 10px rgba(216,168,113,.18), 0 0 40px rgba(216,168,113,.6); }
+
+/* OS 예시 화면 — 실제 OS 색감(짙은 청록 + 밝은 회색 + 청록 포인트)만 살렸다 */
+.os { position: absolute; left: 90px; right: 90px; border-radius: 34px; overflow: hidden; background: #F5F7F8; color: #17202A; box-shadow: 0 50px 110px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.12); }
+.os .oh { display: flex; align-items: center; gap: 16px; padding: 26px 34px; background: #0F3D44; color: #fff; }
+.os .oh small { font-size: 20px; font-weight: 700; letter-spacing: .14em; color: #8FC9C9; }
+.os .oh b { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
+.os .oh em { margin-left: auto; padding: 6px 14px; border-radius: 10px; background: rgba(255,255,255,.12); font-size: 20px; font-weight: 700; color: #CDE6E6; }
+.os .ob { display: flex; flex-direction: column; gap: 16px; padding: 26px 28px 30px; }
+.os .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.os .tl { padding: 20px 24px; border-radius: 20px; background: #fff; box-shadow: inset 0 0 0 1.5px #E3E9EC; }
+.os .tl small { display: block; font-size: 24px; font-weight: 600; color: #6B7680; }
+.os .tl b { display: block; margin-top: 6px; font-size: 42px; font-weight: 800; letter-spacing: -0.02em; color: #0E5E63; }
+.os .ln { display: flex; align-items: center; gap: 18px; padding: 20px 24px; border-radius: 20px; background: #fff; box-shadow: inset 0 0 0 1.5px #E3E9EC; font-size: 32px; font-weight: 700; }
+.os .ln .ic { width: 44px; height: 44px; color: #0E7C80; }
+.os .ln small { margin-left: auto; font-size: 24px; font-weight: 700; color: #6B7680; white-space: nowrap; }
+.os .ln.hot { background: #E6F3F3; box-shadow: inset 0 0 0 2px #0E7C80; }
+.os .ln .cp { margin-left: auto; padding: 8px 18px; border-radius: 12px; background: #0E7C80; color: #fff; font-size: 24px; font-weight: 800; }
+.os .tag { display: inline-flex; padding: 6px 14px; border-radius: 10px; background: #FFF4E5; color: #A5651C; font-size: 22px; font-weight: 800; }
+.os .drop { padding: 26px; border-radius: 22px; border: 3px dashed #9CCFCF; background: #EEF7F7; text-align: center; font-size: 30px; font-weight: 700; color: #0E7C80; }
+.flyfile { position: absolute; display: inline-flex; align-items: center; gap: 12px; padding: 16px 24px; border-radius: 18px; background: #F2EDE6; color: #15181D; font-size: 30px; font-weight: 800; box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+.flyfile .ic { width: 40px; height: 40px; color: #A5703C; }
+.copied { position: absolute; padding: 12px 22px; border-radius: 14px; background: #0F3D44; color: #fff; font-size: 26px; font-weight: 800; box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+/* 진행 보드 */
+.board { position: absolute; left: 60px; right: 60px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.board .col { display: flex; flex-direction: column; gap: 12px; padding: 16px 12px 20px; border-radius: 22px; background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.08); min-height: 520px; }
+.board .col > b { text-align: center; font-size: 28px; font-weight: 700; color: #A9B0B8; padding-bottom: 6px; }
+.board .cd { padding: 16px 14px; border-radius: 16px; background: #F5F7F8; color: #17202A; font-size: 26px; font-weight: 800; box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+.board .cd small { display: block; margin-top: 4px; font-size: 20px; font-weight: 600; color: #6B7680; }
+.board .cd.on { box-shadow: 0 0 0 3px #D8A871, 0 12px 30px rgba(0,0,0,.3); }
+/* 커스텀 폰(OS 예시) */
+.mph { position: absolute; padding: 8px; border-radius: 42px; background: #06080B; box-shadow: 0 50px 110px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.16); }
+.mph .scr { position: relative; width: 380px; height: 822px; border-radius: 34px; overflow: hidden; background: #F5F7F8; color: #17202A; }
+.mph .top { padding: 54px 24px 20px; background: #0F3D44; color: #fff; } .mph .top small { display: block; font-size: 16px; letter-spacing: .14em; color: #8FC9C9; font-weight: 700; } .mph .top b { font-size: 30px; font-weight: 800; }
+.mph .rows { display: flex; flex-direction: column; gap: 12px; padding: 18px 16px; }
+.mph .r { display: flex; align-items: center; gap: 10px; padding: 16px 16px; border-radius: 16px; background: #fff; box-shadow: inset 0 0 0 1.5px #E3E9EC; font-size: 22px; font-weight: 700; }
+.mph .r small { display: block; font-size: 17px; font-weight: 600; color: #6B7680; } .mph .r i.cp { margin-left: auto; font-style: normal; padding: 6px 12px; border-radius: 10px; background: #0E7C80; color: #fff; font-size: 17px; font-weight: 800; }
+.mph .r.hot { background: #E6F3F3; box-shadow: inset 0 0 0 2px #0E7C80; }
+.mph .push { position: absolute; left: 12px; right: 12px; top: 14px; display: flex; gap: 12px; align-items: center; padding: 16px; border-radius: 22px; background: rgba(242,237,230,.97); color: #15181D; box-shadow: 0 16px 40px rgba(0,0,0,.35); font-size: 20px; font-weight: 700; z-index: 3; }
+.mph .push .ic { width: 40px; height: 40px; padding: 8px; border-radius: 12px; background: #D8A871; color: #15110C; } .mph .push b { display: block; font-size: 22px; font-weight: 800; }
+/* 문장 사슬 */
+.chain2 { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px 12px; max-width: 920px; }
+.chain2 span { padding: 18px 28px; border-radius: 22px; font-size: 38px; font-weight: 700; color: #EDE3D4; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1.5px rgba(216,168,113,.35); white-space: nowrap; }
+.chain2 i { font-style: normal; font-size: 38px; color: #D8A871; }
+.fm { position: absolute; left: 110px; right: 110px; padding: 36px 36px 40px; border-radius: 36px; background: #F2EDE6; color: #15181D; box-shadow: 0 50px 110px rgba(0,0,0,.5); }
+.fm h4 { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; } .fm p { margin-top: 6px; font-size: 26px; font-weight: 600; color: #7A6A55; }
+.fm .fi { margin-top: 18px; padding: 22px 26px; border-radius: 18px; background: #fff; box-shadow: inset 0 0 0 1.5px rgba(21,24,29,.08); font-size: 32px; font-weight: 700; color: #9AA1A9; }
+.fm .fi b { color: #15181D; font-weight: 800; margin-right: 18px; }
+.fm .fb { margin-top: 26px; padding: 26px; border-radius: 20px; background: #15181D; color: #E6C396; text-align: center; font-size: 34px; font-weight: 800; }
+#bw45 .vp img { filter: blur(9px) saturate(.85); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="249.24" data-width="1080" data-height="1920">
+  <section class="clip shot bgA" id="sh0" data-start="0" data-duration="4.29" data-track-index="1"><div class="cam" id="sh0-cam"><div class="cx" style="top:330px"><span class="eyeb" id="eb0"><i></i>매달 돌아오는 질문<i></i></span></div><div class="hd" id="hd1-0" style="top:440px"><div class="kt l c"><span class="wm"><span class="w">이번</span></span> <span class="wm"><span class="w">달</span></span> <span class="wm"><span class="w">계약,</span></span><br><span class="wm"><span class="w">다음</span></span> <span class="wm"><span class="w">달</span></span> <span class="wm"><span class="w">계약</span></span></div></div><div class="hd" id="hd2-0" style="top:800px"><div class="kt l c"><span class="wm"><span class="w"><em class="hl">걱정</em></span></span> <span class="wm"><span class="w">없으신가요?</span></span></div></div></div></section>
+<section class="clip shot bgB" id="sh1" data-start="3.74" data-duration="9.64" data-track-index="2"><div class="cam" id="sh1-cam"><div class="hd" id="hd4-0" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">매달</span></span> <span class="wm"><span class="w"><em class="hl">계약</em>은</span></span> <span class="wm"><span class="w">해야</span></span> <span class="wm"><span class="w">하고</span></span></div></div><div class="hd" id="hd4-1" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">신규</span></span> <span class="wm"><span class="w"><em class="hl">DB</em>는</span></span> <span class="wm"><span class="w">계속</span></span> <span class="wm"><span class="w">구해야</span></span></div></div><div class="gcards col" style="top:520px"><div class="gcard " id="gc3-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 21V5l8-2.5V21M12 8.5l8 2.5V21M2 21h20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 8h2M7 11.5h2M7 15h2M15 13h2M15 16.5h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>회사에서 받는 DB</b></div></div><div class="gcard " id="gc3-1"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 9.5v5M18 9.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>직접 구매하는 DB</b></div></div></div><div class="hd" id="hd5-0" style="top:880px"><div class="kt m c"><span class="wm"><span class="w">계약으로</span></span> <span class="wm"><span class="w">이어지는</span></span> <span class="wm"><span class="w">건</span></span><br><span class="wm"><span class="w"><em class="hl">또</em></span></span> <span class="wm"><span class="w"><em class="hl">별개</em></span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh2" data-start="12.83" data-duration="3.44" data-track-index="1"><div class="cam" id="sh2-cam"><div class="node " id="lk7-a" style="left:90px;top:560px"><i class="ic xl"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i><b>상담</b></div><div class="node hot" id="lk7-b" style="left:630px;top:560px"><i class="ic xl"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>계약</b></div>
+      <svg class="wire" viewBox="0 0 1080 200" style="top:620px"><path id="lk7-w" d="M 420 100 C 500 20, 580 180, 660 100"/></svg>
+      <span class="pkt" id="lk7-p0" style="top:710px"></span><span class="pkt" id="lk7-p1" style="top:710px"></span><span class="pkt" id="lk7-p2" style="top:710px"></span>
+      <div class="cx" style="top:600px"><span class="midic" id="lk7-mid"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 9.3a2.6 2.6 0 1 1 3.6 2.4c-.8.4-1.1.9-1.1 1.8M12 16.8v.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i></span></div>
+      <div class="hd" id="hd6-0" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">상담이</span></span> <span class="wm"><span class="w">들어와도</span></span></div></div><div class="hd" id="hd6-1" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">계약까지는</span></span> <span class="wm"><span class="w"><em class="hl">쉽지</em></span></span> <span class="wm"><span class="w"><em class="hl">않다</em></span></span></div></div></div></section>
+<section class="clip shot bgD" id="sh3" data-start="15.72" data-duration="5.95" data-track-index="2"><div class="cam" id="sh3-cam"><div class="hd" id="hd9-0" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">늘</span></span> <span class="wm"><span class="w"><em class="hl">새</em></span></span> <span class="wm"><span class="w"><em class="hl">고객</em>을</span></span> <span class="wm"><span class="w">찾아다니느라</span></span></div></div><div class="gcards col" style="top:520px"><div class="gcard " id="gc8-0"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></i><div class="gtx"><b>새 고객 찾기</b><small>늘 바쁘고</small><span class="gbar"><i id="gc8-0-bar"></i><em></em></span></div></div><div class="gcard " id="gc8-1"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i><div class="gtx"><b>이미 계약한 고객</b><small>제대로 못 챙기는 일도</small><span class="gbar"><i id="gc8-1-bar"></i><em></em></span></div><span class="gck x" id="gc8-1-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></i></span></div></div></div></section>
+<section class="clip shot bgC" id="sh4" data-start="21.12" data-duration="6.04" data-track-index="1"><div class="cam" id="sh4-cam"><div class="cx" style="top:330px"><span class="eyeb" id="eb11"><i></i>오늘 영상에서는<i></i></span></div><div class="gcards row two" style="top:460px"><div class="gcard " id="gc10-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>추가 계약</b></div></div><div class="gcard " id="gc10-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i><div class="gtx"><b>소개</b></div></div></div><div class="hd" id="hd12-0" style="top:900px"><div class="kt s c"><span class="wm"><span class="w">이어</span></span> <span class="wm"><span class="w">가는</span></span> <span class="wm"><span class="w">데</span></span> <span class="wm"><span class="w"><em class="hl">도움이</em></span></span> <span class="wm"><span class="w"><em class="hl">될</em></span></span> <span class="wm"><span class="w">이야기</span></span></div></div></div></section>
+<section class="clip shot bgT" id="sh5" data-start="26.61" data-duration="2.2" data-track-index="2"><div class="cam" id="sh5-cam"><div class="ptline" id="pt13-a" style="top:640px"></div>
+      <div class="cx" style="top:690px"><span class="pteb" id="pt13-e">컨설턴트님께</span></div>
+      <div class="kt xl c" id="pt13-t" style="top:790px"><span class="wm"><span class="w">추가</span></span> <span class="wm"><span class="w">계약과</span></span><br><span class="wm"><span class="w"><em class="hl">소개</em>가</span></span> <span class="wm"><span class="w">이어지는</span></span> <span class="wm"><span class="w">관리</span></span></div>
+      <div class="ptline" id="pt13-b" style="top:1120px"></div></div></section>
+<section class="clip shot bgA" id="sh6" data-start="28.26" data-duration="6.29" data-track-index="1"><div class="cam" id="sh6-cam"><div class="cnt mid" id="nb15" style="top:360px"><b id="nb15-n">0</b><span class="suf">년 차</span></div><div class="hd" id="hd16-0" style="top:680px"><div class="kt m c"><span class="wm"><span class="w">경영컨설턴트</span></span></div></div><div class="hd" id="hd16-1" style="top:680px"><div class="kt m c"><span class="wm"><span class="w">영업을</span></span> <span class="wm"><span class="w"><em class="hl">아주</em></span></span> <span class="wm"><span class="w"><em class="hl">잘하는</em></span></span><br><span class="wm"><span class="w">사람은</span></span> <span class="wm"><span class="w">아니에요</span></span></div></div></div></section>
+<section class="clip shot bgB" id="sh7" data-start="34" data-duration="4.02" data-track-index="2"><div class="cam" id="sh7-cam"><div class="pdots" id="dt17" style="top:360px;grid-template-columns:repeat(10,1fr)"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="hd" id="hd18-0" style="top:880px"><div class="kt m c"><span class="wm"><span class="w">잘하시는</span></span> <span class="wm"><span class="w">분들을</span></span><br><span class="wm"><span class="w"><em class="hl">정말</em></span></span> <span class="wm"><span class="w"><em class="hl">많이</em></span></span> <span class="wm"><span class="w">봐</span></span> <span class="wm"><span class="w">왔어요</span></span></div></div></div></section>
+<section class="clip shot bgC" id="sh8" data-start="37.47" data-duration="11.08" data-track-index="1"><div class="cam" id="sh8-cam"><div class="cx" style="top:330px"><span class="eyeb" id="eb20"><i></i>잘하시는 분들은<i></i></span></div><div class="gcards col" style="top:440px"><div class="gcard hl" id="gc19-0"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i><div class="gtx"><b>이미 계약한 고객을 챙긴다</b></div></div><div class="gcard " id="gc19-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>추가 계약</b></div><span class="gck" id="gc19-1-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div><div class="gcard " id="gc19-2"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i><div class="gtx"><b>소개</b></div><span class="gck" id="gc19-2-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div><div class="hd" id="hd21-0" style="top:980px"><div class="kt s c"><span class="wm"><span class="w">여기까지는</span></span> <span class="wm"><span class="w"><em class="hl">다들</em></span></span> <span class="wm"><span class="w"><em class="hl">아시죠</em></span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh9" data-start="48" data-duration="7" data-track-index="2"><div class="cam" id="sh9-cam"><div class="cx" style="top:360px"><span class="licon " id="li23"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 9.3a2.6 2.6 0 1 1 3.6 2.4c-.8.4-1.1.9-1.1 1.8M12 16.8v.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i></span></div><div class="hd" id="hd24-0" style="top:640px"><div class="kt l c"><span class="wm"><span class="w">관리가</span></span> <span class="wm"><span class="w">말처럼</span></span><br><span class="wm"><span class="w"><em class="hl">쉽지</em></span></span> <span class="wm"><span class="w"><em class="hl">않죠</em></span></span></div></div><div class="hd" id="hd24-1" style="top:640px"><div class="kt l c"><span class="wm"><span class="w">대부분</span></span> <span class="wm"><span class="w"><em class="hl">주먹구구</em></span></span></div></div><div class="hd" id="hd24-2" style="top:640px"><div class="kt l c"><span class="wm"><span class="w">감과</span></span> <span class="wm"><span class="w">기억에</span></span><br><span class="wm"><span class="w"><em class="hl">의존</em></span></span></div></div></div></section>
+<section class="clip shot bgOld" id="sh10" data-start="54.45" data-duration="9.07" data-track-index="1"><div class="cam" id="sh10-cam"><div class="sitem " id="sc27-0" style="left:100px;top:420px;transform:rotate(-4deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i><b>카톡</b></div><div class="sitem " id="sc27-1" style="left:640px;top:440px;transform:rotate(3deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>메일</b></div><div class="sitem " id="sc27-2" style="left:360px;top:600px;transform:rotate(-2deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.3 1.6A3.3 3.3 0 0 0 7 18z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></i><b>사진첩</b></div><div class="sitem " id="sc27-3" style="left:90px;top:800px;transform:rotate(3deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z" fill="#FFF3B0"/><path d="M8 9h8M8 13h8M8 17h5" stroke="#9A8A3A" stroke-width="1.6" stroke-linecap="round"/></svg></i><b>메모장</b></div><div class="sitem " id="sc27-4" style="left:640px;top:820px;transform:rotate(-3deg)"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>캘린더</b></div>
+      <div class="cx" style="top:280px"><span class="eyeb" id="eb25"><i></i>서류 · 일정이 흩어진 곳<i></i></span></div><div class="hd" id="hd26-0" style="top:1010px"><div class="kt m c"><span class="wm"><span class="w">해</span></span> <span class="wm"><span class="w">드릴</span></span> <span class="wm"><span class="w">일은</span></span><br><span class="wm"><span class="w"><em class="hl">머릿속에만</em></span></span></div></div></div></section>
+<section class="clip shot bgB" id="sh11" data-start="62.97" data-duration="7.99" data-track-index="2"><div class="cam" id="sh11-cam"><div class="hd" id="hd29-0" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">관계도</span></span> <span class="wm"><span class="w">중요하지만</span></span></div></div><div class="hd" id="hd29-1" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">결국</span></span> <span class="wm"><span class="w"><em class="hl">가장</em></span></span> <span class="wm"><span class="w"><em class="hl">잘하는</em></span></span> <span class="wm"><span class="w"><em class="hl">분들</em>은</span></span></div></div><div class="gcards col" style="top:480px"><div class="gcard " id="gc28-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i><div class="gtx"><b>자주 찾아가고 식사도</b><small>관계를 챙기는 방법</small></div></div><div class="gcard hl" id="gc28-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>철저하고 체계적인 관리</b><small>가장 잘하는 분들의 공통점</small></div><span class="gck" id="gc28-1-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div></div></section>
+<section class="clip shot bgOld" id="sh12" data-start="70.41" data-duration="8.19" data-track-index="1"><div class="cam" id="sh12-cam"><div class="cx" style="top:300px"><span class="eyeb" id="eb31"><i></i>신청을 대행할 때도<i></i></span></div><div class="cx" style="top:420px"><div class="chain2"><span id="ch30-0">고객 폴더 찾고</span><i id="ch30-a1">→</i><span id="ch30-1">서류 열어 번호 확인</span><i id="ch30-a2">→</i><span id="ch30-2">신청 사이트 ↔ 파일</span></div></div><div class="cx" style="top:700px"><span class="licon " id="li32"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i></span></div><div class="hd" id="hd33-0" style="top:920px"><div class="kt l c"><span class="wm"><span class="w">시간이</span></span> <span class="wm"><span class="w"><em class="hl">훌쩍</em></span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh13" data-start="78.05" data-duration="9.38" data-track-index="2"><div class="cam" id="sh13-cam"><div class="nstack" style="top:520px"><div class="ntf" id="nt35-0"><span class="nic "><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i></span><div><b>“그거 지난번에 드렸는데요?”</b><small>이미 받은 서류를 또 요청</small></div><em>고객</em></div><div class="ntf" id="nt35-1"><span class="nic "><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i></span><div><b>“저희 잘 진행되고 있나요?”</b><small>고객이 먼저 묻는다</small></div><em>고객</em></div></div><div class="hd" id="hd34-0" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">그러다</span></span> <span class="wm"><span class="w">보면</span></span></div></div><div class="hd" id="hd34-1" style="top:300px"><div class="kt s c"><span class="wm"><span class="w">고객이</span></span> <span class="wm"><span class="w"><em class="hl">먼저</em></span></span> <span class="wm"><span class="w">묻는다</span></span></div></div></div></section>
+<section class="clip shot bgD" id="sh14" data-start="86.88" data-duration="5.08" data-track-index="1"><div class="cam" id="sh14-cam"><div class="hd" id="hd38-0" style="top:300px"><div class="kt m c"><span class="wm"><span class="w">이런</span></span> <span class="wm"><span class="w"><em class="hl">틈</em>이</span></span> <span class="wm"><span class="w">쌓이면</span></span></div></div><div id="fd36"><div class="gcards row two" style="top:520px"><div class="gcard " id="gc37-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>추가 계약</b></div></div><div class="gcard " id="gc37-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i><div class="gtx"><b>소개</b></div></div></div></div><div class="hd" id="hd39-0" style="top:960px"><div class="kt m c"><span class="wm"><span class="w"><em class="hl">멀어지기</em></span></span> <span class="wm"><span class="w">쉽죠</span></span></div></div></div></section>
+<section class="clip shot bgC" id="sh15" data-start="91.41" data-duration="5.51" data-track-index="2"><div class="cam" id="sh15-cam"><div class="hd" id="hd41-0" style="top:330px"><div class="kt l c"><span class="wm"><span class="w">그래서</span></span> <span class="wm"><span class="w"><em class="hl">직접</em></span></span><br><span class="wm"><span class="w">만들고</span></span> <span class="wm"><span class="w">있습니다</span></span></div></div><div class="cx" style="top:760px"><span class="eyeb" id="eb42"><i></i>컨설턴트 운영 OS<i></i></span></div><div class="cx" style="top:830px"><div class="seal gold" id="sl43"><i></i><b>미래AI랩 OS</b><i></i></div></div></div></section>
+<section class="clip shot bgB" id="sh16" data-start="96.37" data-duration="2.63" data-track-index="1"><div class="cam" id="sh16-cam">
+      <div class="brw" id="bw45" style="top:460px"><div class="bar"><i></i><i></i><i></i><span>MIRAE AI LAB OS</span></div><div class="vp"><img id="bw45-img" src="assets/real/os-today-pc.jpg" alt=""></div><span class="btag">실제 사용 중 · 화면은 흐리게</span></div>
+      <div class="hd" id="hd44-0" style="top:280px"><div class="kt s c"><span class="wm"><span class="w">저희도</span></span> <span class="wm"><span class="w">실무에서</span></span> <span class="wm"><span class="w"><em class="hl">직접</em></span></span> <span class="wm"><span class="w">써요</span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh17" data-start="98.45" data-duration="10.23" data-track-index="2"><div class="cam" id="sh17-cam"><div class="hd" id="hd47-0" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">고객사를</span></span> <span class="wm"><span class="w">열면</span></span> <span class="wm"><span class="w"><em class="hl">한</em></span></span> <span class="wm"><span class="w"><em class="hl">화면</em>에</span></span></div></div>
+    <div class="os" id="cs46" style="top:380px"><div class="oh"><div><small>MIRAE AI LAB OS</small><br><b>예시 고객사 A</b></div><em>예시 화면 · 가상 데이터</em></div><div class="ob">
+      <div class="grid" id="cs46-g1"><div class="tl"><small>업종 · 설립</small><b>제조 · 7년 차</b></div><div class="tl"><small>매출 · 영업이익</small><b>24억 · 2.1억</b></div></div>
+      <div class="grid" id="cs46-g2"><div class="tl"><small>부채비율</small><b>142%</b></div><div class="tl"><small>기업 신용등급</small><b>BB+</b></div></div>
+      <div class="ln" id="cs46-a"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>진행 중 · 정책자금 서류<small>3/5 단계</small></div>
+      <div class="ln" id="cs46-b"><i class="ic "><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>다음 약속<small>10.15 (목) 14:00</small></div>
+      <div class="ln hot" id="cs46-c"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>지금 챙길 것 · 재무제표 갱신<small>D-3</small></div></div></div></div></section>
+<section class="clip shot bgB" id="sh18" data-start="108.13" data-duration="6.32" data-track-index="1"><div class="cam" id="sh18-cam"><div class="hd" id="hd49-0" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">서류는</span></span> <span class="wm"><span class="w"><em class="hl">올리기만</em></span></span></div></div><div class="hd" id="hd49-1" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">필요한</span></span> <span class="wm"><span class="w">정보는</span></span> <span class="wm"><span class="w"><em class="hl">복사</em></span></span> <span class="wm"><span class="w"><em class="hl">·</em></span></span> <span class="wm"><span class="w"><em class="hl">붙여넣기</em></span></span></div></div>
+    <span class="flyfile" id="up48-f0" style="left:150px;top:410px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>사업자등록증</span><span class="flyfile" id="up48-f1" style="left:560px;top:380px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>재무제표 3년</span><span class="flyfile" id="up48-f2" style="left:340px;top:330px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>4대보험 명부</span>
+    <div class="os" id="up48" style="top:520px"><div class="oh"><div><small>MIRAE AI LAB OS</small><br><b>서류함 · 예시 고객사 A</b></div><em>예시 화면 · 가상 데이터</em></div><div class="ob">
+      <div class="drop" id="up48-dz">여기에 올리면 알아서 정리돼요</div>
+      <div class="ln" id="up48-r0"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>사업자등록증<span class="cp" id="up48-cp">복사</span></div><div class="ln" id="up48-r1"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>재무제표 3년<small>정리됨</small></div><div class="ln" id="up48-r2"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>4대보험 명부<small>정리됨</small></div></div></div>
+    <div class="cx" style="top:1150px"><span class="copied" id="up48-ok" style="position:relative">사업자번호 복사됨 ✓ · 신청 사이트에 붙여넣기</span></div></div></section>
+<section class="clip shot bgD" id="sh19" data-start="113.9" data-duration="5.73" data-track-index="2"><div class="cam" id="sh19-cam"><div class="hd" id="hd51-0" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">폴더를</span></span> <span class="wm"><span class="w">뒤질</span></span> <span class="wm"><span class="w"><em class="hl">필요</em></span></span> <span class="wm"><span class="w"><em class="hl">없이</em></span></span></div></div><div class="hd" id="hd51-1" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">급한</span></span> <span class="wm"><span class="w">요청도</span></span> <span class="wm"><span class="w"><em class="hl">폰으로</em></span></span> <span class="wm"><span class="w"><em class="hl">바로</em></span></span></div></div>
+    <div class="mph" id="mp50" style="left:342px;top:340px"><div class="scr">
+      <div class="push" id="mp50-p"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i><div><b>고객 · 급한 요청</b>사업자번호랑 설립일 좀 알려 주세요</div></div>
+      <div class="top"><small>MIRAE AI LAB OS</small><b>예시 고객사 A</b></div>
+      <div class="rows"><div class="r hot" id="mp50-r0"><div><small>사업자등록번호</small>000-00-00000</div><i class="cp">복사</i></div>
+        <div class="r" id="mp50-r1"><div><small>설립일</small>2019.03.04</div><i class="cp">복사</i></div>
+        <div class="r"><div><small>대표 · 업종</small>○○○ · 제조</div></div><div class="r"><div><small>최근 서류</small>재무제표 3년 · 정리됨</div></div></div></div></div>
+    <p class="fine c" id="mp50-f" style="top:1250px">예시 화면 · 가상 데이터</p></div></section>
+<section class="clip shot bgB" id="sh20" data-start="119.08" data-duration="7.87" data-track-index="1"><div class="cam" id="sh20-cam"><div class="hd" id="hd53-0" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">모든</span></span> <span class="wm"><span class="w">계약</span></span> <span class="wm"><span class="w">건이</span></span> <span class="wm"><span class="w"><em class="hl">한눈에</em></span></span></div></div>
+    <div class="board" id="bd52" style="top:370px"><div class="col"><b>상담</b><div class="cd" id="bd52-0">A사<small>첫 미팅</small></div></div><div class="col"><b>서류</b><div class="cd" id="bd52-1">B사<small>재무제표 대기</small></div><div class="cd" id="bd52-2">C사<small>확인 중</small></div></div><div class="col"><b>신청</b><div class="cd" id="bd52-3">D사<small>접수 완료</small></div></div><div class="col"><b>결과</b><div class="cd" id="bd52-4">E사<small>결과 안내</small></div></div></div>
+    <div class="nstack" style="top:930px"><div class="ntf" id="bd52-n"><span class="nic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i></span><div><b>내일 B사 서류 마감</b><small>설정해 둔 알림 · 미리 챙기기</small></div><em>알림</em></div></div>
+    <p class="fine c" id="bd52-f" style="top:1300px">예시 화면 · 가상 데이터</p></div></section>
+<section class="clip shot bgC" id="sh21" data-start="126.4" data-duration="6" data-track-index="2"><div class="cam" id="sh21-cam"><div class="nstack" style="top:560px"><div class="ntf" id="nt55-0"><span class="nic blue"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="#F2C94C"/><circle cx="9" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="12.5" cy="10.5" r="1.2" fill="#3A3000"/><circle cx="16" cy="10.5" r="1.2" fill="#3A3000"/></svg></i></span><div><b>“A사 서류, 오늘 접수했습니다.”</b><small>컨설턴트가 먼저 알림</small></div><em>나</em></div></div><div class="hd" id="hd54-0" style="top:300px"><div class="kt m c"><span class="wm"><span class="w">고객이</span></span> <span class="wm"><span class="w">묻기</span></span> <span class="wm"><span class="w"><em class="hl">전에</em></span></span></div></div><div class="hd" id="hd54-1" style="top:300px"><div class="kt m c"><span class="wm"><span class="w">컨설턴트가</span></span> <span class="wm"><span class="w"><em class="hl">먼저</em></span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh22" data-start="131.85" data-duration="4.4" data-track-index="1"><div class="cam" id="sh22-cam"><div class="cx" style="top:330px"><span class="eyeb" id="eb57"><i></i>계약 건마다<i></i></span></div><div class="gcards row" style="top:460px"><div class="gcard " id="gc56-0"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 9.5v5M18 9.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>받은 수수료</b><small>••• 만 원</small></div></div><div class="gcard " id="gc56-1"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>날짜</b><small>••. ••</small></div></div><div class="gcard " id="gc56-2"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>이익률</b><small>•• %</small></div></div></div><p class="fine c" id="f73" style="top:1000px">금액은 가렸어요 · 내 계약 건만 보여요</p></div></section>
+<section class="clip shot bgB" id="sh23" data-start="135.7" data-duration="7.44" data-track-index="2"><div class="cam" id="sh23-cam"><div class="gcards col" style="top:420px"><div class="gcard " id="gc58-0"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 9.3a2.6 2.6 0 1 1 3.6 2.4c-.8.4-1.1.9-1.1 1.8M12 16.8v.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i><div class="gtx"><b>감과 기억에 의존</b></div><span class="gck x" id="gc58-0-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></i></span></div><div class="gcard hl" id="gc58-1"><i class="ic lg"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i><div class="gtx"><b>기록이 남는 관리</b></div><span class="gck" id="gc58-1-ck"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div><div class="hd" id="hd59-0" style="top:860px"><div class="kt s c"><span class="wm"><span class="w">보여</span></span> <span class="wm"><span class="w">드려도</span></span> <span class="wm"><span class="w">되는</span></span> <span class="wm"><span class="w">화면은</span></span><br><span class="wm"><span class="w"><em class="hl">새</em></span></span> <span class="wm"><span class="w"><em class="hl">고객</em></span></span> <span class="wm"><span class="w"><em class="hl">앞에서</em></span></span> <span class="wm"><span class="w">그대로</span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh24" data-start="142.59" data-duration="5.98" data-track-index="1"><div class="cam" id="sh24-cam"><div class="gcards col" style="top:360px"><div class="gcard " id="gc61-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>정책자금</b></div></div><div class="gcard " id="gc61-1"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="6" cy="8" r="2.6" fill="currentColor"/><circle cx="12" cy="6.5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="2.6" fill="currentColor"/><path d="M1.5 19c0-3 2-5 4.5-5s4.5 2 4.5 5zM7 19.5c0-3.5 2.2-6 5-6s5 2.5 5 6zM13.5 19c0-3 2-5 4.5-5s4.5 2 4.5 5z" fill="currentColor" opacity=".85"/></svg></i><div class="gtx"><b>고용지원금</b></div></div><div class="gcard " id="gc61-2"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 9.5v5M18 9.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>절세</b></div></div><div class="gcard " id="gc61-3"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>기업 인증</b></div></div></div><div class="hd" id="hd62-0" style="top:1010px"><div class="kt s c"><span class="wm"><span class="w">모듈이</span></span> <span class="wm"><span class="w"><em class="hl">하나씩</em></span></span> <span class="wm"><span class="w">붙는</span></span> <span class="wm"><span class="w">중</span></span></div></div></div></section>
+<section class="clip shot bgL" id="sh25" data-start="148.02" data-duration="7.24" data-track-index="2"><div class="cam" id="sh25-cam"><div class="cx" style="top:290px"><span class="chip " id="sp63-eb">따로 크게 배우지 않아도</span></div><div class="steps" style="top:380px"><div class="stp " id="sp63-0"><span class="num">1</span><div><b>고객사 정보 넣기</b><small>한 번만</small></div><i class="ic lg"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i></div><div class="stp " id="sp63-1"><span class="num">2</span><div><b>AI가 다음 단계 안내</b><small>따라가기만</small></div><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 2.5v2.5M15 2.5v2.5M9 19v2.5M15 19v2.5M2.5 9h2.5M2.5 15h2.5M19 9h2.5M19 15h2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="12" y="15" text-anchor="middle" font-size="7" font-weight="900" fill="currentColor">AI</text></svg></i></div><div class="stp " id="sp63-2"><span class="num">3</span><div><b>서류 · 신청 준비</b><small>체크리스트로</small></div><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></div></div></div></section>
+<section class="clip shot bgC" id="sh26" data-start="154.71" data-duration="3.09" data-track-index="1"><div class="cam" id="sh26-cam"><div class="cx" style="top:400px"><span class="eyeb" id="eb64"><i></i>그래서<i></i></span></div><div class="cx" style="top:480px"><div class="seal gold" id="sl65"><i></i><b>나만의 무기</b><i></i></div></div><div class="hd" id="hd66-0" style="top:860px"><div class="kt m c"><span class="wm"><span class="w">훨씬</span></span> <span class="wm"><span class="w"><em class="hl">빨리</em></span></span> <span class="wm"><span class="w">늘린다</span></span></div></div></div></section>
+<section class="clip shot bgD" id="sh27" data-start="157.25" data-duration="10.07" data-track-index="2"><div class="cam" id="sh27-cam"><div class="hd" id="hd68-0" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">고객사</span></span> <span class="wm"><span class="w">정보만</span></span> <span class="wm"><span class="w">넣어</span></span> <span class="wm"><span class="w">두면</span></span></div></div><div class="hd" id="hd68-1" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">약속</span></span> <span class="wm"><span class="w">안</span></span> <span class="wm"><span class="w">한</span></span> <span class="wm"><span class="w">일도</span></span> <span class="wm"><span class="w"><em class="hl">먼저</em></span></span></div></div>
+    <div class="os" id="ai67" style="top:380px"><div class="oh"><div><small>MIRAE AI LAB OS · AI 추천</small><br><b>해 드릴 수 있는 일</b></div><em>예시 화면 · 가상 데이터</em></div><div class="ob">
+      <div class="ln" id="ai67-0"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="6" cy="8" r="2.6" fill="currentColor"/><circle cx="12" cy="6.5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="2.6" fill="currentColor"/><path d="M1.5 19c0-3 2-5 4.5-5s4.5 2 4.5 5zM7 19.5c0-3.5 2.2-6 5-6s5 2.5 5 6zM13.5 19c0-3 2-5 4.5-5s4.5 2 4.5 5z" fill="currentColor" opacity=".85"/></svg></i>고용지원금 대상 검토<small>확인 필요</small></div>
+      <div class="ln" id="ai67-1"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 4h-4a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h4z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i>기업부설연구소 설립 검토<small>확인 필요</small></div>
+      <div class="ln hot" id="ai67-2"><i class="ic "><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 9.5v5M18 9.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>절세 항목 점검<small>바로 가능</small></div></div></div>
+    <div class="cx" style="top:930px"><span class="chip hot big" id="ai67-r"><i class="ic "><svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i>소개로 이어진다</span></div></div></section>
+<section class="clip shot bgB" id="sh28" data-start="166.77" data-duration="7.91" data-track-index="1"><div class="cam" id="sh28-cam">
+      <div class="mcard a" id="mp70-a" style="top:420px"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 21V4h9v17" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 12h7M18 9l3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>외부에 맡기던 인증</b></div>
+      <div class="cx" style="top:625px"><span class="marrow" id="mp70-ar"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3.5v16M5 12.5l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div>
+      <div class="mcard b" id="mp70-b" style="top:750px"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>직접 · 간편하게</b></div>
+      <p class="fine c" id="mp70-f" style="top:1150px">계속 업데이트 중인 기능이에요</p><div class="hd" id="hd69-0" style="top:260px"><div class="kt s c"><span class="wm"><span class="w">이</span></span> <span class="wm"><span class="w">모든</span></span> <span class="wm"><span class="w">게</span></span> <span class="wm"><span class="w"><em class="hl">한</em></span></span> <span class="wm"><span class="w"><em class="hl">화면</em></span></span> <span class="wm"><span class="w">안에서</span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh29" data-start="174.13" data-duration="7.43" data-track-index="2"><div class="cam" id="sh29-cam"><div class="hd" id="hd72-0" style="top:290px"><div class="kt m c"><span class="wm"><span class="w">교육도</span></span> <span class="wm"><span class="w"><em class="hl">매우</em></span></span> <span class="wm"><span class="w"><em class="hl">중요</em>하죠</span></span></div></div><div class="gcards col" style="top:520px"><div class="gcard " id="gc71-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>녹취록 · 교육 자료</b></div></div><div class="gcard " id="gc71-1"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 2.5v2.5M15 2.5v2.5M9 19v2.5M15 19v2.5M2.5 9h2.5M2.5 15h2.5M19 9h2.5M19 15h2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="12" y="15" text-anchor="middle" font-size="7" font-weight="900" fill="currentColor">AI</text></svg></i><div class="gtx"><b>AI가 요약</b></div></div><div class="gcard hl" id="gc71-2"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 4h-4a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h4z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i><div class="gtx"><b>나만의 지식 창고</b></div></div></div></div></section>
+<section class="clip shot bgC" id="sh30" data-start="181.01" data-duration="5.81" data-track-index="1"><div class="cam" id="sh30-cam"><div class="cx" style="top:330px"><span class="eyeb" id="eb74"><i></i>첫 미팅 준비<i></i></span></div><div class="gcards row two" style="top:460px"><div class="gcard " id="gc73-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>재무 정보 분석기</b></div></div><div class="gcard " id="gc73-1"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></i><div class="gtx"><b>미팅 전략</b></div></div></div><div class="hd" id="hd75-0" style="top:900px"><div class="kt s c"><span class="wm"><span class="w">미팅</span></span> <span class="wm"><span class="w">전</span></span> <span class="wm"><span class="w"><em class="hl">한</em></span></span> <span class="wm"><span class="w"><em class="hl">번에</em></span></span> <span class="wm"><span class="w">준비</span></span></div></div></div></section>
+<section class="clip shot bgB" id="sh31" data-start="186.27" data-duration="7.64" data-track-index="2"><div class="cam" id="sh31-cam"><div class="people" style="top:460px"><div class="person" id="pp77-0"><span class="pav"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i></span><b>동료 컨설턴트</b><span class="prx ok" id="pp77-x0"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div><div class="person" id="pp77-1"><span class="pav"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/></svg></i></span><b>고성과자분들</b><span class="prx ok" id="pp77-x1"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div>
+      <div class="hd" id="hd76-0" style="top:960px"><div class="kt s c"><span class="wm"><span class="w">실무에</span></span> <span class="wm"><span class="w">쓰며</span></span> <span class="wm"><span class="w"><em class="hl">다듬는</em></span></span> <span class="wm"><span class="w"><em class="hl">중</em></span></span></div></div></div></section>
+<section class="clip shot bgL" id="sh32" data-start="193.36" data-duration="3.1" data-track-index="1"><div class="cam" id="sh32-cam"><div class="cx" style="top:560px"><span class="eyeb" id="eb78"><i></i>솔직하게<i></i></span></div><div class="hd" id="hd79-0" style="top:640px"><div class="kt l c"><span class="wm"><span class="w">없다고</span></span> <span class="wm"><span class="w">계약이</span></span><br><span class="wm"><span class="w"><em class="hl">안</em></span></span> <span class="wm"><span class="w"><em class="hl">되는</em></span></span> <span class="wm"><span class="w"><em class="hl">건</em></span></span> <span class="wm"><span class="w">아니죠</span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh33" data-start="195.91" data-duration="7.42" data-track-index="2"><div class="cam" id="sh33-cam"><div class="cx" style="top:300px"><span class="eyeb" id="eb81"><i></i>있으면<i></i></span></div><div class="gcards col" style="top:400px"><div class="gcard " id="gc80-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/></svg></i><div class="gtx"><b>보여 드리기 쉽고</b></div></div><div class="gcard " id="gc80-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i><div class="gtx"><b>관리가 좋아지고</b></div></div><div class="gcard " id="gc80-2"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i><div class="gtx"><b>낭비 시간은 줄고</b></div></div><div class="gcard hl" id="gc80-3"><i class="ic lg"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i><div class="gtx"><b>고객에게 더 집중</b></div></div></div></div></section>
+<section class="clip shot bgB" id="sh34" data-start="202.78" data-duration="5.05" data-track-index="1"><div class="cam" id="sh34-cam"><div class="cx" style="top:360px"><span class="licon " id="li83"><i class="ic "><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i></span></div><div class="hd" id="hd84-0" style="top:640px"><div class="kt l c"><span class="wm"><span class="w">DB</span></span> <span class="wm"><span class="w">고민도</span></span><br><span class="wm"><span class="w"><em class="hl">잘</em></span></span> <span class="wm"><span class="w"><em class="hl">알고</em></span></span> <span class="wm"><span class="w">있어요</span></span></div></div><div class="hd" id="hd84-1" style="top:640px"><div class="kt l c"><span class="wm"><span class="w">신규</span></span> <span class="wm"><span class="w">DB</span></span> <span class="wm"><span class="w">확보도</span></span><br><span class="wm"><span class="w"><em class="hl">중요</em>하죠</span></span></div></div></div></section>
+<section class="clip shot bgA" id="sh35" data-start="207.28" data-duration="10.86" data-track-index="2"><div class="cam" id="sh35-cam"><div class="cx" style="top:300px"><span class="eyeb" id="eb86"><i></i>지금 집중하는 것<i></i></span></div><div class="gcards col" style="top:400px"><div class="gcard " id="gc85-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/></svg></i><div class="gtx"><b>다른 컨설턴트와의 차별점</b></div></div><div class="gcard " id="gc85-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>신규 계약</b></div></div><div class="gcard " id="gc85-2"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>추가 계약</b></div></div><div class="gcard hl" id="gc85-3"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i><div class="gtx"><b>소개</b></div></div></div><div class="hd" id="hd87-0" style="top:1080px"><div class="kt s c"><span class="wm"><span class="w">계속</span></span> <span class="wm"><span class="w"><em class="hl">업데이트</em></span></span> <span class="wm"><span class="w">중</span></span></div></div></div></section>
+<section class="clip shot bgC" id="sh36" data-start="217.59" data-duration="6.17" data-track-index="1"><div class="cam" id="sh36-cam"><div class="cx" style="top:330px"><span class="eyeb" id="eb88"><i></i>추후 계획<i></i></span></div><div class="cx" style="top:420px"><span class="licon " id="li89"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 2.5c3.5 2.2 5.5 6 5.5 10.5l-2.5 3h-6l-2.5-3C6.5 8.5 8.5 4.7 12 2.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2" fill="currentColor"/><path d="M9.5 19l2.5 2.5 2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div><div class="hd" id="hd90-0" style="top:680px"><div class="kt l c"><span class="wm"><span class="w">신규</span></span> <span class="wm"><span class="w">DB</span></span> <span class="wm"><span class="w">만들기도</span></span><br><span class="wm"><span class="w"><em class="hl">이</em></span></span> <span class="wm"><span class="w"><em class="hl">한</em></span></span> <span class="wm"><span class="w"><em class="hl">화면</em>에서</span></span></div></div><p class="fine c" id="f114" style="top:1080px">계획 중인 기능이에요 · 일정은 바뀔 수 있어요</p></div></section>
+<section class="clip shot bgC" id="sh37" data-start="223.21" data-duration="8.49" data-track-index="2"><div class="cam" id="sh37-cam"><div class="cx" style="top:330px"><span class="eyeb" id="eb93"><i></i>컨설턴트 운영 OS<i></i></span></div><div class="cx" style="top:400px"><div class="seal gold" id="sl94"><i></i><b>11월 오픈 예정</b><i></i></div></div><div class="gcards col" style="top:820px"><div class="gcard " id="gc92-0"><i class="ic lg"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 9.5v5M18 9.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>절세 모듈</b><small>세무사 등 전문가 검증 후 오픈</small></div></div></div><p class="fine c" id="f121" style="top:1080px">오픈 일정은 준비 상황에 따라 조금 달라질 수 있어요</p></div></section>
+<section class="clip shot bgA" id="sh38" data-start="231.15" data-duration="9.82" data-track-index="1"><div class="cam" id="sh38-cam"><div class="cx" style="top:330px"><span class="eyeb" id="eb96"><i></i>지금 신청하시면<i></i></span></div><div class="gcards col" style="top:440px"><div class="gcard " id="gc95-0"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><div class="gtx"><b>오픈 소식 가장 먼저</b></div></div><div class="gcard hl" id="gc95-1"><i class="ic lg"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/></svg></i><div class="gtx"><b>초기에 함께하시는 분께</b><small>무료로 써 보실 기회 · 할인 혜택 안내</small></div></div></div></div></section>
+<section class="clip shot bgC" id="sh39" data-start="240.42" data-duration="6.07" data-track-index="2"><div class="cam" id="sh39-cam"><div class="hd" id="hd98-0" style="top:230px"><div class="kt s c"><span class="wm"><span class="w">가장</span></span> <span class="wm"><span class="w">빠르게</span></span> <span class="wm"><span class="w"><em class="hl">소식</em></span></span> <span class="wm"><span class="w"><em class="hl">받기</em></span></span></div></div>
+    <div class="fm" id="fm97" style="top:370px"><h4>출시 알림 신청</h4><p>출시되면 가장 먼저 알려 드릴게요</p>
+      <div class="fi" id="fm97-0"><b>이름</b>홍길동</div><div class="fi" id="fm97-1"><b>소속</b>○○ 컨설팅</div><div class="fi" id="fm97-2"><b>이메일</b>name@mail.com</div><div class="fi" id="fm97-3"><b>연락처</b>010-0000-0000</div><div class="fb" id="fm97-b">알림 신청하기 ↓</div></div></div></section>
+<section class="clip shot bgC" id="sh40" data-start="245.94" data-duration="3.3" data-track-index="1"><div class="cam" id="sh40-cam"><div class="ttbg soft"></div><div class="cx" style="top:330px"><span class="chip hot big" id="ec99-e">컨설턴트님께</span></div>
+      <div class="ecard" id="ec99-c" style="top:480px"><span class="no">11월 오픈 예정</span><h3>미래AI랩 OS<br>출시 알림 신청</h3><ul><li>이름 · 소속 · 이메일 · 연락처</li><li>아래에서 바로 신청</li></ul></div>
+      <div class="cx" style="top:1060px"><span class="earrow" id="ec99-a"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3.5v16M5 12.5l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span></div></div></section>
+
+  
+  <div class="clip chap" id="cp14" data-start="28.26" data-duration="2.6" data-track-index="7"><span>잘하시는 분들의 공통점</span></div>
+<div class="clip freeze" id="fz0" data-start="46.67" data-duration="1.22" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz0-l"><i></i><b>이미 계약한 고객을 챙긴다</b><small>그러면 추가 계약 · 소개</small><i></i></div></div>
+<div class="clip chap" id="cp22" data-start="48" data-duration="2.6" data-track-index="7"><span>관리가 어려운 이유</span></div>
+<div class="clip freeze" id="fz1" data-start="90.04" data-duration="1.21" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz1-l"><i></i><b>작은 틈이 쌓이면</b><small>추가 계약도, 소개도 멀어진다</small><i></i></div></div>
+<div class="clip chap" id="cp40" data-start="91.41" data-duration="2.6" data-track-index="7"><span>미래AI랩 OS</span></div>
+<div class="clip freeze" id="fz2" data-start="141.26" data-duration="1.21" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz2-l"><i></i><b>감이 아닌 기록으로</b><small>고객이 묻기 전에 먼저</small><i></i></div></div>
+<div class="clip chap" id="cp60" data-start="142.59" data-duration="2.6" data-track-index="7"><span>모듈 · AI</span></div>
+<div class="clip freeze" id="fz3" data-start="185.18" data-duration="1.05" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz3-l"><i></i><b>교육 · 첫 미팅 준비까지</b><small>나만의 지식 창고</small><i></i></div></div>
+<div class="clip chap" id="cp82" data-start="202.78" data-duration="2.6" data-track-index="7"><span>DB 고민</span></div>
+<div class="clip freeze" id="fz4" data-start="221.83" data-duration="1.23" data-track-index="6"><div class="fzv"></div><span class="fzb">❚❚</span><div class="fzl" id="fz4-l"><i></i><b>신규 DB도 한 화면에서</b><small>추후 계획</small><i></i></div></div>
+<div class="clip chap" id="cp91" data-start="223.21" data-duration="2.6" data-track-index="7"><span>오픈 안내</span></div>
+
+  <div class="brand"><span class="logo"><img src="assets/logo.png" alt="미래에이아이랩"></span><span class="tag2">컨설턴트님께 · 11월 오픈 예정</span></div>
+  <p class="foot">miraeailab.com · 컨설턴트 운영 OS · 미래AI랩 OS</p><div id="prog"><i></i></div>
+  <div id="flash"></div>
+  <div class="clip sub" id="sub0" data-start="0.48" data-duration="0.53" data-track-index="9"><span>컨설턴트님,</span></div><div class="clip sub" id="sub1" data-start="1.03" data-duration="1.59" data-track-index="9"><span>이번 달 계약, 다음 달 계약</span></div><div class="clip sub" id="sub2" data-start="2.64" data-duration="1.08" data-track-index="9"><span>걱정 없으신가요?</span></div><div class="clip sub" id="sub3" data-start="3.74" data-duration="1.71" data-track-index="9"><span>매달 계약은 해야 하는데,</span></div><div class="clip sub" id="sub4" data-start="5.47" data-duration="1.88" data-track-index="9"><span>신규 DB는 계속 구해야 하죠.</span></div><div class="clip sub" id="sub5" data-start="7.37" data-duration="2.74" data-track-index="9"><span>회사에서 받는 DB도,<br>직접 구매하는 DB도 있지만,</span></div><div class="clip sub" id="sub6" data-start="10.13" data-duration="1.39" data-track-index="9"><span>그게 계약으로 이어지는 건</span></div><div class="clip sub" id="sub7" data-start="11.54" data-duration="1.27" data-track-index="9"><span>또 별개의 일이고요.</span></div><div class="clip sub" id="sub8" data-start="12.83" data-duration="0.6" data-track-index="9"><span>상담이 들어와도</span></div><div class="clip sub" id="sub9" data-start="13.45" data-duration="2.25" data-track-index="9"><span>계약까지 끌고<br>가는 게 쉽지가 않습니다.</span></div><div class="clip sub" id="sub10" data-start="15.72" data-duration="2.17" data-track-index="9"><span>그러다 보니 늘 새로운<br>고객을 찾아다니느라</span></div><div class="clip sub" id="sub11" data-start="17.91" data-duration="1" data-track-index="9"><span>이미 계약한 고객은</span></div><div class="clip sub" id="sub12" data-start="18.93" data-duration="2.17" data-track-index="9"><span>제대로 챙기지 못하는 일도 생기죠.</span></div><div class="clip sub" id="sub13" data-start="21.12" data-duration="1" data-track-index="9"><span>오늘 영상에서는</span></div><div class="clip sub" id="sub14" data-start="22.14" data-duration="1.76" data-track-index="9"><span>추가 계약과 소개를 이어가는 데</span></div><div class="clip sub" id="sub15" data-start="23.92" data-duration="2.94" data-track-index="9"><span>도움이 될 만한 내용을<br>한번 안내드리려고 합니다.</span></div><div class="clip sub" id="sub16" data-start="28.26" data-duration="2.35" data-track-index="9"><span>저는 9년 차 경영컨설턴트입니다.</span></div><div class="clip sub" id="sub17" data-start="30.63" data-duration="0.96" data-track-index="9"><span>솔직히 말씀드리면,</span></div><div class="clip sub" id="sub18" data-start="31.61" data-duration="2.29" data-track-index="9"><span>저는 영업을 아주 잘하는<br>사람은 아니에요.</span></div><div class="clip sub" id="sub19" data-start="34" data-duration="2.11" data-track-index="9"><span>대신 이 업계에서 잘하시는 분들을</span></div><div class="clip sub" id="sub20" data-start="36.13" data-duration="1.32" data-track-index="9"><span>정말 많이 봐 왔습니다.</span></div><div class="clip sub" id="sub21" data-start="37.47" data-duration="1.95" data-track-index="9"><span>그분들은 새 고객을 찾는 만큼</span></div><div class="clip sub" id="sub22" data-start="39.44" data-duration="2.76" data-track-index="9"><span>이미 계약한 고객을<br>정말 잘 챙기십니다.</span></div><div class="clip sub" id="sub23" data-start="42.22" data-duration="1.43" data-track-index="9"><span>그러면 추가 계약이 나오고</span></div><div class="clip sub" id="sub24" data-start="43.67" data-duration="0.97" data-track-index="9"><span>소개가 나오죠.</span></div><div class="clip sub" id="sub25" data-start="44.66" data-duration="2.27" data-track-index="9"><span>여기까지는 다들 잘 알고 계실 겁니다.</span></div><div class="clip sub" id="sub26" data-start="48" data-duration="2.3" data-track-index="9"><span>그런데 관리가 말처럼 쉽지 않죠?</span></div><div class="clip sub" id="sub27" data-start="50.46" data-duration="1.81" data-track-index="9"><span>솔직히 대부분 주먹구구식이고</span></div><div class="clip sub" id="sub28" data-start="52.29" data-duration="2.14" data-track-index="9"><span>감과 기억에 의존하실 겁니다.</span></div><div class="clip sub" id="sub29" data-start="54.45" data-duration="2.18" data-track-index="9"><span>서류는 카톡, 메일, 사진첩에,</span></div><div class="clip sub" id="sub30" data-start="56.65" data-duration="2.55" data-track-index="9"><span>일정은 메모장과<br>캘린더에 흩어져 있고,</span></div><div class="clip sub" id="sub31" data-start="59.22" data-duration="2.51" data-track-index="9"><span>해드리기로 한 일과 더<br>해드릴 수 있는 일도</span></div><div class="clip sub" id="sub32" data-start="61.75" data-duration="1.2" data-track-index="9"><span>머릿속에만 있죠.</span></div><div class="clip sub" id="sub33" data-start="62.97" data-duration="1.69" data-track-index="9"><span>자주 얼굴을 비추고 식사도 하면서</span></div><div class="clip sub" id="sub34" data-start="64.68" data-duration="1.77" data-track-index="9"><span>관계를 챙기는 분들도 계시지만,</span></div><div class="clip sub" id="sub35" data-start="66.47" data-duration="1.37" data-track-index="9"><span>결국 가장 잘하는 분들은</span></div><div class="clip sub" id="sub36" data-start="67.86" data-duration="2.53" data-track-index="9"><span>철저하고 체계적으로 관리를 하십니다.</span></div><div class="clip sub" id="sub37" data-start="70.41" data-duration="1.16" data-track-index="9"><span>신청을 대행할 때도</span></div><div class="clip sub" id="sub38" data-start="71.59" data-duration="1.42" data-track-index="9"><span>고객 폴더를 찾고</span></div><div class="clip sub" id="sub39" data-start="73.03" data-duration="1.88" data-track-index="9"><span>서류를 열어 번호를 확인하고,</span></div><div class="clip sub" id="sub40" data-start="74.93" data-duration="1.6" data-track-index="9"><span>신청 사이트와 파일을 오가다 보면</span></div><div class="clip sub" id="sub41" data-start="76.55" data-duration="1.48" data-track-index="9"><span>시간이 훌쩍 가고요.</span></div><div class="clip sub" id="sub42" data-start="78.05" data-duration="1.97" data-track-index="9"><span>그러다 이미 받은 서류를 또 요청해서,</span></div><div class="clip sub" id="sub43" data-start="80.04" data-duration="1.62" data-track-index="9"><span>"그거 지난번에 드렸는데요?"</span></div><div class="clip sub" id="sub44" data-start="81.68" data-duration="1.25" data-track-index="9"><span>라는 말을 듣거나,</span></div><div class="clip sub" id="sub45" data-start="82.95" data-duration="0.75" data-track-index="9"><span>고객이 먼저</span></div><div class="clip sub" id="sub46" data-start="83.72" data-duration="1.83" data-track-index="9"><span>"지금 저희 잘 진행되고 있나요?"</span></div><div class="clip sub" id="sub47" data-start="85.57" data-duration="1.29" data-track-index="9"><span>하고 물어보기도 합니다.</span></div><div class="clip sub" id="sub48" data-start="86.88" data-duration="0.89" data-track-index="9"><span>이런 틈이 쌓이면</span></div><div class="clip sub" id="sub49" data-start="87.79" data-duration="2.47" data-track-index="9"><span>추가 계약도, 소개도 멀어지기 쉽죠.</span></div><div class="clip sub" id="sub50" data-start="91.41" data-duration="1.73" data-track-index="9"><span>그래서 직접 만들고 있습니다.</span></div><div class="clip sub" id="sub51" data-start="93.16" data-duration="1.51" data-track-index="9"><span>컨설턴트 운영 OS,</span></div><div class="clip sub" id="sub52" data-start="94.69" data-duration="1.66" data-track-index="9"><span>미래AI랩 OS입니다.</span></div><div class="clip sub" id="sub53" data-start="96.37" data-duration="1.88" data-track-index="9"><span>저희도 실무에서 직접 쓰고 있고요.</span></div><div class="clip sub" id="sub54" data-start="98.45" data-duration="2.61" data-track-index="9"><span>고객사를 열면 한 화면에 다 있어요.</span></div><div class="clip sub" id="sub55" data-start="101.08" data-duration="2.02" data-track-index="9"><span>회사의 기본 정보, 매출과 이익,</span></div><div class="clip sub" id="sub56" data-start="103.12" data-duration="1.63" data-track-index="9"><span>부채비율, 기업 신용등급,</span></div><div class="clip sub" id="sub57" data-start="104.77" data-duration="1.71" data-track-index="9"><span>진행 중인 업무, 다음 약속,</span></div><div class="clip sub" id="sub58" data-start="106.5" data-duration="1.61" data-track-index="9"><span>지금 챙겨야 할 것까지요.</span></div><div class="clip sub" id="sub59" data-start="108.13" data-duration="1.82" data-track-index="9"><span>서류는 업로드하기만 하면</span></div><div class="clip sub" id="sub60" data-start="109.97" data-duration="1.15" data-track-index="9"><span>알아서 정리가 되고,</span></div><div class="clip sub" id="sub61" data-start="111.14" data-duration="2.74" data-track-index="9"><span>필요한 정보는 복사해서<br>붙여 넣으시면 됩니다.</span></div><div class="clip sub" id="sub62" data-start="113.9" data-duration="2" data-track-index="9"><span>신청할 때 폴더를 뒤질 필요가 없고,</span></div><div class="clip sub" id="sub63" data-start="115.92" data-duration="1" data-track-index="9"><span>급한 요청이 와도</span></div><div class="clip sub" id="sub64" data-start="116.94" data-duration="2.12" data-track-index="9"><span>폰으로 바로 꺼내서 답할 수 있어요.</span></div><div class="clip sub" id="sub65" data-start="119.08" data-duration="1.1" data-track-index="9"><span>내 모든 계약 건이</span></div><div class="clip sub" id="sub66" data-start="120.2" data-duration="2.37" data-track-index="9"><span>어느 단계까지 진행됐는지도<br>한눈에 보이고,</span></div><div class="clip sub" id="sub67" data-start="122.59" data-duration="1.89" data-track-index="9"><span>설정해 둔 알림이 먼저 알려주니까</span></div><div class="clip sub" id="sub68" data-start="124.5" data-duration="1.88" data-track-index="9"><span>놓칠 일이 훨씬 줄어듭니다.</span></div><div class="clip sub" id="sub69" data-start="126.4" data-duration="2.42" data-track-index="9"><span>그래서 고객이 묻기<br>전에 컨설턴트가 먼저,</span></div><div class="clip sub" id="sub70" data-start="128.84" data-duration="1.59" data-track-index="9"><span>"이거 이렇게 진행했습니다."</span></div><div class="clip sub" id="sub71" data-start="130.45" data-duration="1.38" data-track-index="9"><span>하고 말씀드릴 수가 있죠.</span></div><div class="clip sub" id="sub72" data-start="131.85" data-duration="2.02" data-track-index="9"><span>계약 건마다 받은 수수료와 날짜,</span></div><div class="clip sub" id="sub73" data-start="133.89" data-duration="1.79" data-track-index="9"><span>이익률까지 같이 보이고요.</span></div><div class="clip sub" id="sub74" data-start="135.7" data-duration="2.17" data-track-index="9"><span>감과 기억에만 의존하는<br>관리와는 다르고,</span></div><div class="clip sub" id="sub75" data-start="137.89" data-duration="1.27" data-track-index="9"><span>보여드려도 되는 화면은</span></div><div class="clip sub" id="sub76" data-start="139.18" data-duration="2.34" data-track-index="9"><span>새 고객 앞에서 그대로<br>보여드릴 수도 있습니다.</span></div><div class="clip sub" id="sub77" data-start="142.59" data-duration="4.1" data-track-index="9"><span>여기에 정책자금, 고용지원금,<br>절세, 기업 인증 같은 모듈이</span></div><div class="clip sub" id="sub78" data-start="146.71" data-duration="1.29" data-track-index="9"><span>하나씩 붙고 있습니다.</span></div><div class="clip sub" id="sub79" data-start="148.02" data-duration="2.45" data-track-index="9"><span>따로 시간과 비용을 크게<br>들여 배우지 않아도,</span></div><div class="clip sub" id="sub80" data-start="150.49" data-duration="1.78" data-track-index="9"><span>단계를 따라가며 진행할 수 있도록</span></div><div class="clip sub" id="sub81" data-start="152.29" data-duration="2.19" data-track-index="9"><span>AI를 계속 고도화하고 있어요.</span></div><div class="clip sub" id="sub82" data-start="154.71" data-duration="0.71" data-track-index="9"><span>그래서 나만의 무기를</span></div><div class="clip sub" id="sub83" data-start="155.44" data-duration="1.79" data-track-index="9"><span>훨씬 빨리 늘릴 수 있습니다.</span></div><div class="clip sub" id="sub84" data-start="157.25" data-duration="1.53" data-track-index="9"><span>고객사 정보만 넣어 두면,</span></div><div class="clip sub" id="sub85" data-start="158.8" data-duration="2.93" data-track-index="9"><span>해드릴 수 있는 일을<br>AI가 먼저 추천해 주고,</span></div><div class="clip sub" id="sub86" data-start="161.75" data-duration="1.52" data-track-index="9"><span>처음에 약속하지 않았던 일도</span></div><div class="clip sub" id="sub87" data-start="163.29" data-duration="2.13" data-track-index="9"><span>쉽게 해드릴 수 있으면 바로 해드리면서</span></div><div class="clip sub" id="sub88" data-start="165.44" data-duration="1.31" data-track-index="9"><span>소개까지 받을 수가 있죠.</span></div><div class="clip sub" id="sub89" data-start="166.77" data-duration="2.23" data-track-index="9"><span>이 모든 게 한 화면 안에서 되고,</span></div><div class="clip sub" id="sub90" data-start="169.02" data-duration="1.4" data-track-index="9"><span>보통 외부에 맡기는 인증도</span></div><div class="clip sub" id="sub91" data-start="170.44" data-duration="1.67" data-track-index="9"><span>직접 간편하게 하실 수 있도록</span></div><div class="clip sub" id="sub92" data-start="172.13" data-duration="1.98" data-track-index="9"><span>계속 업데이트를 하고 있습니다.</span></div><div class="clip sub" id="sub93" data-start="174.13" data-duration="1.42" data-track-index="9"><span>교육도 매우 중요하죠.</span></div><div class="clip sub" id="sub94" data-start="175.59" data-duration="1.96" data-track-index="9"><span>녹취록이나 교육 자료를 올려 두면,</span></div><div class="clip sub" id="sub95" data-start="177.57" data-duration="1.25" data-track-index="9"><span>AI가 요약해서</span></div><div class="clip sub" id="sub96" data-start="178.84" data-duration="2.15" data-track-index="9"><span>나만의 지식 창고가<br>되도록 만들고 있고,</span></div><div class="clip sub" id="sub97" data-start="181.01" data-duration="1.08" data-track-index="9"><span>첫 미팅 준비에는</span></div><div class="clip sub" id="sub98" data-start="182.11" data-duration="1.42" data-track-index="9"><span>기업 재무 정보 분석기에</span></div><div class="clip sub" id="sub99" data-start="183.55" data-duration="1.87" data-track-index="9"><span>미팅 전략까지 담아 뒀어요.</span></div><div class="clip sub" id="sub100" data-start="186.27" data-duration="2.58" data-track-index="9"><span>이미 만든 기능은 지금 동료들,</span></div><div class="clip sub" id="sub101" data-start="188.87" data-duration="2.43" data-track-index="9"><span>그리고 영업을 잘하시는<br>고성과자분들과 함께</span></div><div class="clip sub" id="sub102" data-start="191.32" data-duration="2.02" data-track-index="9"><span>실무에 쓰면서 다듬고 있습니다.</span></div><div class="clip sub" id="sub103" data-start="193.36" data-duration="0.88" data-track-index="9"><span>물론 이게 없다고</span></div><div class="clip sub" id="sub104" data-start="194.26" data-duration="1.63" data-track-index="9"><span>계약이 안 되는 건 아니죠.</span></div><div class="clip sub" id="sub105" data-start="195.91" data-duration="2.58" data-track-index="9"><span>다만 있으면 고객에게<br>보여드리기 쉽고,</span></div><div class="clip sub" id="sub106" data-start="198.51" data-duration="1.1" data-track-index="9"><span>관리가 좋아지고,</span></div><div class="clip sub" id="sub107" data-start="199.63" data-duration="1.17" data-track-index="9"><span>낭비되는 시간이 줄어서</span></div><div class="clip sub" id="sub108" data-start="200.82" data-duration="1.94" data-track-index="9"><span>고객에게 더 집중할 수 있습니다.</span></div><div class="clip sub" id="sub109" data-start="202.78" data-duration="2.21" data-track-index="9"><span>DB에 대한 고민도 잘 알고 있습니다.</span></div><div class="clip sub" id="sub110" data-start="205.01" data-duration="2.25" data-track-index="9"><span>신규 고객 DB 확보도 굉장히 중요하죠.</span></div><div class="clip sub" id="sub111" data-start="207.28" data-duration="2.87" data-track-index="9"><span>다만 지금은 기존<br>컨설턴트와 다른 차별점을</span></div><div class="clip sub" id="sub112" data-start="210.17" data-duration="1.37" data-track-index="9"><span>고객에게 보여드리고,</span></div><div class="clip sub" id="sub113" data-start="211.56" data-duration="2.29" data-track-index="9"><span>신규 계약과 추가 계약,<br>소개로 이어지게 하는 데</span></div><div class="clip sub" id="sub114" data-start="213.87" data-duration="1.92" data-track-index="9"><span>초점을 맞춰 개발하고 있고,</span></div><div class="clip sub" id="sub115" data-start="215.81" data-duration="1.76" data-track-index="9"><span>계속 업데이트해 나가고 있습니다.</span></div><div class="clip sub" id="sub116" data-start="217.59" data-duration="2.08" data-track-index="9"><span>추후에는 신규 DB를 만드는 일도</span></div><div class="clip sub" id="sub117" data-start="219.69" data-duration="1.36" data-track-index="9"><span>이 한 화면 안에서 할 수 있도록</span></div><div class="clip sub" id="sub118" data-start="221.07" data-duration="1.02" data-track-index="9"><span>계획 중이에요.</span></div><div class="clip sub" id="sub119" data-start="223.21" data-duration="1.71" data-track-index="9"><span>저희 컨설턴트 운영 OS는</span></div><div class="clip sub" id="sub120" data-start="224.94" data-duration="2.33" data-track-index="9"><span>오픈은 11월 중으로 계획하고 있고,</span></div><div class="clip sub" id="sub121" data-start="227.29" data-duration="2.92" data-track-index="9"><span>절세 모듈은 세무사 같은<br>전문가 검증을 거쳐서</span></div><div class="clip sub" id="sub122" data-start="230.23" data-duration="0.9" data-track-index="9"><span>열 예정입니다.</span></div><div class="clip sub" id="sub123" data-start="231.15" data-duration="1.29" data-track-index="9"><span>지금 신청해 주시면</span></div><div class="clip sub" id="sub124" data-start="232.46" data-duration="2.1" data-track-index="9"><span>오픈 소식을 가장 먼저 알려드리고,</span></div><div class="clip sub" id="sub125" data-start="234.58" data-duration="1.76" data-track-index="9"><span>초기에 함께해 주시는 분들께는</span></div><div class="clip sub" id="sub126" data-start="236.36" data-duration="2.48" data-track-index="9"><span>무료로 써 보실 수 있는<br>기회와 할인 혜택도</span></div><div class="clip sub" id="sub127" data-start="238.86" data-duration="1.54" data-track-index="9"><span>같이 안내드릴 예정이에요.</span></div><div class="clip sub" id="sub128" data-start="240.42" data-duration="2.05" data-track-index="9"><span>가장 빠르게 소식을 받아보실 분들은</span></div><div class="clip sub" id="sub129" data-start="242.49" data-duration="3.55" data-track-index="9"><span>아래에 이름, 소속, 이메일,<br>연락처만 남겨 주세요.</span></div>
+</div>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  tl.from('#eb0', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 0.1);
+  tl.fromTo('#eb0 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 0.2);
+  tl.from('#hd1-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 1.03);
+  tl.from('#hd2-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 2.64);
+  tl.from('#gc3-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 7.49);
+  tl.from('#gc3-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 8.91);
+  tl.from('#hd4-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 3.84);
+  tl.to('#hd4-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 5.17);
+  tl.from('#hd4-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 5.47);
+  tl.from('#hd5-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 10.13);
+  tl.from('#hd6-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 12.93);
+  tl.to('#hd6-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 13.51);
+  tl.from('#hd6-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 13.81);
+  tl.from('#lk7-a', { x: -300, opacity: 0, duration: 0.45, ease: 'expo.out' }, 12.88);
+  tl.from('#lk7-b', { x: 300, opacity: 0, duration: 0.45, ease: 'expo.out' }, 13.03);
+  tl.fromTo('#lk7-w', { strokeDashoffset: 400 }, { strokeDashoffset: 0, duration: 0.5, ease: 'power2.out', immediateRender: true }, 13.45);
+  tl.fromTo('#lk7-p0', { x: 430, opacity: 0 }, { x: 640, opacity: 1, duration: 0.7, ease: 'none', repeat: 3, immediateRender: false }, 13.85);
+  tl.fromTo('#lk7-p1', { x: 430, opacity: 0 }, { x: 640, opacity: 1, duration: 0.7, ease: 'none', repeat: 3, immediateRender: false }, 14.08);
+  tl.fromTo('#lk7-p2', { x: 430, opacity: 0 }, { x: 640, opacity: 1, duration: 0.7, ease: 'none', repeat: 3, immediateRender: false }, 14.31);
+  tl.from('#lk7-mid', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 13.75);
+  tl.from('#gc8-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 16.02);
+  tl.fromTo('#gc8-0-bar', { scaleX: 0 }, { scaleX: 0.92, duration: 1.4, ease: 'power2.out', immediateRender: true }, 16.22);
+  tl.from('#gc8-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 17.91);
+  tl.fromTo('#gc8-1-bar', { scaleX: 0 }, { scaleX: 0.18, duration: 1.4, ease: 'power2.out', immediateRender: true }, 18.11);
+  tl.from('#gc8-1-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 19.32);
+  tl.from('#hd9-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 15.82);
+  tl.from('#gc10-0', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 22.1);
+  tl.from('#gc10-1', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 22.97);
+  tl.from('#eb11', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 21.17);
+  tl.fromTo('#eb11 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 21.27);
+  tl.from('#hd12-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 23.92);
+  tl.fromTo('#pt13-a, #pt13-b', { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: 'power3.inOut', immediateRender: true }, 26.66);
+  tl.from('#pt13-e', { opacity: 0, y: 12, duration: 1, ease: 'expo.out' }, 26.81);
+  tl.from('#pt13-t .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.1 }, 26.91);
+  tl.from('#cp14 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 28.26);
+  tl.to('#cp14 span', { opacity: 0, duration: 0.3 }, 30.56);
+  tl.from('#nb15', { y: 30, opacity: 0, duration: 0.8, ease: 'expo.out' }, 28.27);
+  (function(){ const o = { v: 0 }; const el = document.querySelector('#nb15-n'); tl.to(o, { v: 9, duration: 0.7, ease: 'power2.out', onUpdate: () => { const v = o.v; el.textContent = Math.round(v).toLocaleString('ko-KR'); } }, 28.32); })();
+  tl.from('#hd16-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 28.66);
+  tl.to('#hd16-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 31.31);
+  tl.from('#hd16-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 31.61);
+  tl.from('#dt17 i', { opacity: 0, scale: 0.3, duration: 0.3, stagger: { each: 0.012 } }, 34.2);
+  tl.from('#hd18-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 34.4);
+  tl.from('#gc19-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 39.44);
+  tl.from('#gc19-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 42.22);
+  tl.from('#gc19-1-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 42.62);
+  tl.from('#gc19-2', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 43.67);
+  tl.from('#gc19-2-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 43.97);
+  tl.from('#eb20', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 37.52);
+  tl.fromTo('#eb20 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 37.62);
+  tl.from('#hd21-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 44.66);
+  tl.from('#fz0 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 46.67);
+  tl.from('#fz0-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 46.75);
+  tl.fromTo('#fz0-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 46.79);
+  tl.to('#fz0', { opacity: 0, duration: 0.2 }, 47.69);
+  tl.from('#cp22 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 48);
+  tl.to('#cp22 span', { opacity: 0, duration: 0.3 }, 50.3);
+  tl.from('#li23', { scale: 0.85, opacity: 0, duration: 0.8, ease: 'expo.out' }, 48.05);
+  tl.from('#hd24-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 48.1);
+  tl.to('#hd24-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 50.16);
+  tl.from('#hd24-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 50.46);
+  tl.to('#hd24-1', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 51.99);
+  tl.from('#hd24-2 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 52.29);
+  tl.from('#eb25', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 54.5);
+  tl.fromTo('#eb25 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 54.6);
+  tl.from('#hd26-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 59.22);
+  tl.from('#sc27-0', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 54.88);
+  tl.from('#sc27-1', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 55.58);
+  tl.from('#sc27-2', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 56.11);
+  tl.from('#sc27-3', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 57.24);
+  tl.from('#sc27-4', { scale: 0.86, opacity: 0, duration: 0.7, ease: 'expo.out' }, 57.84);
+  tl.from('#gc28-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 63.17);
+  tl.from('#gc28-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 67.86);
+  tl.from('#gc28-1-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 68.46);
+  tl.from('#hd29-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 63.07);
+  tl.to('#hd29-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 66.17);
+  tl.from('#hd29-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 66.47);
+  tl.from('#ch30-0', { opacity: 0, y: 16, duration: 0.7, ease: 'expo.out' }, 71.59);
+  tl.from('#ch30-1', { opacity: 0, y: 16, duration: 0.7, ease: 'expo.out' }, 73.03);
+  tl.from('#ch30-2', { opacity: 0, y: 16, duration: 0.7, ease: 'expo.out' }, 74.93);
+  tl.from('#eb31', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 70.46);
+  tl.fromTo('#eb31 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 70.56);
+  tl.from('#li32', { scale: 0.85, opacity: 0, duration: 0.8, ease: 'expo.out' }, 76.35);
+  tl.from('#hd33-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 76.55);
+  tl.from('#ch30-a1', { opacity: 0, duration: 0.5, ease: 'power1.out' }, 72.93);
+  tl.from('#ch30-a2', { opacity: 0, duration: 0.5, ease: 'power1.out' }, 74.83);
+  tl.from('#hd34-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 78.15);
+  tl.to('#hd34-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 82.65);
+  tl.from('#hd34-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 82.95);
+  tl.from('#nt35-0', { y: -160, opacity: 0, scale: 0.9, duration: 0.4, ease: 'expo.out' }, 80.04);
+  tl.from('#nt35-1', { y: -160, opacity: 0, scale: 0.9, duration: 0.4, ease: 'expo.out' }, 83.72);
+  tl.from('#gc37-0', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 87.03);
+  tl.from('#gc37-1', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 87.18);
+  tl.from('#hd38-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 86.98);
+  tl.from('#hd39-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 88.99);
+  tl.to('#fd36', { opacity: 0.25, scale: 0.9, y: 40, duration: 1.2, ease: 'power2.inOut' }, 89.19);
+  tl.from('#fz1 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 90.04);
+  tl.from('#fz1-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 90.12);
+  tl.fromTo('#fz1-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 90.16);
+  tl.to('#fz1', { opacity: 0, duration: 0.2 }, 91.05);
+  tl.from('#cp40 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 91.41);
+  tl.to('#cp40 span', { opacity: 0, duration: 0.3 }, 93.71);
+  tl.from('#hd41-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 91.51);
+  tl.from('#eb42', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 93.16);
+  tl.fromTo('#eb42 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 93.26);
+  tl.from('#sl43', { opacity: 0, scale: 1.05, duration: 0.9, ease: 'expo.out' }, 94.67);
+  tl.fromTo('#sl43 i', { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'power3.inOut', immediateRender: true }, 94.77);
+  tl.from('#hd44-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 96.47);
+  tl.from('#bw45', { y: 260, rotationX: 28, transformPerspective: 1400, opacity: 0, duration: 0.5, ease: 'power3.out' }, 96.39);
+  tl.fromTo('#bw45-img', { scale: 1.02, x: 0, y: 0 }, { scale: 1.08, x: -20, y: -10, duration: 2.6, ease: 'sine.inOut' }, 96.37);
+  tl.from('#hd47-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 98.55);
+  tl.from('#cs46', { y: 80, opacity: 0, duration: 0.9, ease: 'expo.out' }, 98.5);
+  tl.from('#cs46-g1', { x: -40, opacity: 0, duration: 0.7, ease: 'expo.out' }, 101.24);
+  tl.from('#cs46-g2', { x: -40, opacity: 0, duration: 0.7, ease: 'expo.out' }, 103.12);
+  tl.from('#cs46-a', { x: -40, opacity: 0, duration: 0.7, ease: 'expo.out' }, 104.89);
+  tl.from('#cs46-b', { x: -40, opacity: 0, duration: 0.7, ease: 'expo.out' }, 105.88);
+  tl.from('#cs46-c', { x: -40, opacity: 0, duration: 0.7, ease: 'expo.out' }, 106.5);
+  tl.from('#hd49-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 108.23);
+  tl.to('#hd49-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 110.84);
+  tl.from('#hd49-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 111.14);
+  tl.from('#up48', { y: 80, opacity: 0, duration: 0.9, ease: 'expo.out' }, 108.18);
+  tl.from('#up48-f0', { y: -60, opacity: 0, duration: 0.5, ease: 'expo.out' }, 108.33);
+  tl.to('#up48-f0', { y: 300, scale: 0.6, opacity: 0, duration: 0.6, ease: 'power2.in' }, 109.77);
+  tl.from('#up48-r0', { x: -40, opacity: 0, duration: 0.6, ease: 'expo.out' }, 110.17);
+  tl.from('#up48-f1', { y: -60, opacity: 0, duration: 0.5, ease: 'expo.out' }, 108.68);
+  tl.to('#up48-f1', { y: 300, scale: 0.6, opacity: 0, duration: 0.6, ease: 'power2.in' }, 109.89);
+  tl.from('#up48-r1', { x: -40, opacity: 0, duration: 0.6, ease: 'expo.out' }, 110.32);
+  tl.from('#up48-f2', { y: -60, opacity: 0, duration: 0.5, ease: 'expo.out' }, 109.03);
+  tl.to('#up48-f2', { y: 300, scale: 0.6, opacity: 0, duration: 0.6, ease: 'power2.in' }, 110.01);
+  tl.from('#up48-r2', { x: -40, opacity: 0, duration: 0.6, ease: 'expo.out' }, 110.47);
+  tl.to('#up48-cp', { scale: 1.12, backgroundColor: '#D8A871', color: '#15110C', duration: 0.2, yoyo: true, repeat: 1 }, 112.13);
+  tl.from('#up48-ok', { y: 20, opacity: 0, duration: 0.6, ease: 'expo.out' }, 112.43);
+  tl.from('#hd51-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 114);
+  tl.to('#hd51-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 115.62);
+  tl.from('#hd51-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 115.92);
+  tl.from('#mp50', { y: 120, opacity: 0, duration: 0.9, ease: 'expo.out' }, 113.95);
+  tl.from('#mp50-p', { y: -80, opacity: 0, duration: 0.7, ease: 'expo.out' }, 115.92);
+  tl.to('#mp50-r0, #mp50-r1', { scale: 1.03, duration: 0.25, yoyo: true, repeat: 1, stagger: 0.25 }, 117.72);
+  tl.from('#mp50-f', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 114.5);
+  tl.from('#hd53-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 119.18);
+  tl.from('[id^="bd52-"].cd', { y: 30, opacity: 0, duration: 0.6, ease: 'expo.out', stagger: 0.12 }, 119.38);
+  tl.set('#bd52-1', { attr: { class: 'cd on' } }, 122.59);
+  tl.from('#bd52-n', { y: -60, opacity: 0, scale: 0.95, duration: 0.7, ease: 'expo.out' }, 122.69);
+  tl.from('#bd52-f', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 119.68);
+  tl.from('#hd54-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 126.5);
+  tl.to('#hd54-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 130.15);
+  tl.from('#hd54-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 130.45);
+  tl.from('#nt55-0', { y: -160, opacity: 0, scale: 0.9, duration: 0.4, ease: 'expo.out' }, 128.84);
+  tl.from('#gc56-0', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 132.05);
+  tl.from('#gc56-1', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 133.38);
+  tl.from('#gc56-2', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 133.89);
+  tl.from('#eb57', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 131.9);
+  tl.fromTo('#eb57 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 132);
+  tl.from('#f73', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 132.65);
+  tl.from('#gc58-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 135.9);
+  tl.from('#gc58-0-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 136.6);
+  tl.from('#gc58-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 136.4);
+  tl.from('#gc58-1-ck', { scale: 0.5, opacity: 0, duration: 0.5, ease: 'expo.out' }, 137);
+  tl.from('#hd59-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 137.89);
+  tl.from('#fz2 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 141.26);
+  tl.from('#fz2-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 141.34);
+  tl.fromTo('#fz2-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 141.38);
+  tl.to('#fz2', { opacity: 0, duration: 0.2 }, 142.27);
+  tl.from('#cp60 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 142.59);
+  tl.to('#cp60 span', { opacity: 0, duration: 0.3 }, 144.89);
+  tl.from('#gc61-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 143.01);
+  tl.from('#gc61-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 143.96);
+  tl.from('#gc61-2', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 144.88);
+  tl.from('#gc61-3', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 145.63);
+  tl.from('#hd62-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 146.71);
+  tl.from('#sp63-eb', { y: -30, opacity: 0, duration: 0.3, ease: 'power3.out' }, 148.07);
+  tl.from('[id^="sp63-"].stp', { x: -500, opacity: 0, duration: 0.4, ease: 'power3.out', stagger: 0.08 }, 148.07);
+  tl.set('#sp63-0', { attr: { class: 'stp on' } }, 148.82);
+  tl.fromTo('#sp63-0', { scale: 0.88 }, { scale: 1, duration: 0.35, ease: 'expo.out', immediateRender: false }, 148.82);
+  tl.set('#sp63-0', { attr: { class: 'stp done' } }, 150.9);
+  tl.set('#sp63-1', { attr: { class: 'stp on' } }, 150.9);
+  tl.fromTo('#sp63-1', { scale: 0.88 }, { scale: 1, duration: 0.35, ease: 'expo.out', immediateRender: false }, 150.9);
+  tl.set('#sp63-1', { attr: { class: 'stp done' } }, 152.39);
+  tl.set('#sp63-2', { attr: { class: 'stp on' } }, 152.39);
+  tl.fromTo('#sp63-2', { scale: 0.88 }, { scale: 1, duration: 0.35, ease: 'expo.out', immediateRender: false }, 152.39);
+  tl.from('#eb64', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 154.76);
+  tl.fromTo('#eb64 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 154.86);
+  tl.from('#sl65', { opacity: 0, scale: 1.05, duration: 0.9, ease: 'expo.out' }, 154.91);
+  tl.fromTo('#sl65 i', { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'power3.inOut', immediateRender: true }, 155.01);
+  tl.from('#hd66-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 155.44);
+  tl.from('#hd68-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 157.35);
+  tl.to('#hd68-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 161.45);
+  tl.from('#hd68-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 161.75);
+  tl.from('#ai67', { y: 80, opacity: 0, duration: 0.9, ease: 'expo.out' }, 157.3);
+  tl.from('#ai67-0', { x: -40, opacity: 0, duration: 0.7, ease: 'expo.out' }, 159);
+  tl.from('#ai67-1', { x: -40, opacity: 0, duration: 0.7, ease: 'expo.out' }, 159.35);
+  tl.from('#ai67-2', { x: -40, opacity: 0, duration: 0.7, ease: 'expo.out' }, 159.7);
+  tl.to('#ai67-2', { scale: 1.03, duration: 0.4, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 163.29);
+  tl.from('#ai67-r', { y: 30, opacity: 0, duration: 0.7, ease: 'expo.out' }, 165.44);
+  tl.from('#hd69-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 166.87);
+  tl.from('#mp70-a', { x: -700, opacity: 0, duration: 0.4, ease: 'power3.out' }, 169.02);
+  tl.from('#mp70-ar', { y: -60, opacity: 0, duration: 0.3, ease: 'power3.out' }, 170.24);
+  tl.from('#mp70-b', { scale: 0.4, opacity: 0, duration: 0.45, ease: 'expo.out' }, 170.44);
+  tl.from('#mp70-f', { opacity: 0, duration: 0.3, ease: 'power3.out' }, 167.07);
+  tl.from('#gc71-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 175.69);
+  tl.from('#gc71-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 177.57);
+  tl.from('#gc71-2', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 179.18);
+  tl.from('#hd72-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 174.23);
+  tl.from('#gc73-0', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 182.11);
+  tl.from('#gc73-1', { y: 50, opacity: 0, duration: 0.8, ease: 'expo.out' }, 183.55);
+  tl.from('#eb74', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 181.06);
+  tl.fromTo('#eb74 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 181.16);
+  tl.from('#hd75-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 183.85);
+  tl.from('#fz3 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 185.18);
+  tl.from('#fz3-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 185.26);
+  tl.fromTo('#fz3-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 185.3);
+  tl.to('#fz3', { opacity: 0, duration: 0.2 }, 186.03);
+  tl.from('#hd76-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 191.32);
+  tl.from('#pp77-0', { y: 200, opacity: 0, duration: 0.4, ease: 'expo.out' }, 186.57);
+  tl.from('#pp77-1', { y: 200, opacity: 0, duration: 0.4, ease: 'expo.out' }, 189.07);
+  tl.from('[id^="pp77-x"]', { scale: 0, y: 40, opacity: 0, duration: 0.35, ease: 'expo.out', stagger: 0.14 }, 191.32);
+  tl.from('#eb78', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 193.41);
+  tl.fromTo('#eb78 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 193.51);
+  tl.from('#hd79-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 193.46);
+  tl.from('#gc80-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 196.21);
+  tl.from('#gc80-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 198.51);
+  tl.from('#gc80-2', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 199.63);
+  tl.from('#gc80-3', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 200.82);
+  tl.from('#eb81', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 195.96);
+  tl.fromTo('#eb81 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 196.06);
+  tl.from('#cp82 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 202.78);
+  tl.to('#cp82 span', { opacity: 0, duration: 0.3 }, 205.08);
+  tl.from('#li83', { scale: 0.85, opacity: 0, duration: 0.8, ease: 'expo.out' }, 202.83);
+  tl.from('#hd84-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 202.88);
+  tl.to('#hd84-0', { opacity: 0, y: -24, duration: 0.35, ease: 'power2.in' }, 204.71);
+  tl.from('#hd84-1 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 205.01);
+  tl.from('#gc85-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 207.68);
+  tl.from('#gc85-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 211.67);
+  tl.from('#gc85-2', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 212.3);
+  tl.from('#gc85-3', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 212.86);
+  tl.from('#eb86', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 207.33);
+  tl.fromTo('#eb86 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 207.43);
+  tl.from('#hd87-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 215.81);
+  tl.from('#eb88', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 217.64);
+  tl.fromTo('#eb88 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 217.74);
+  tl.from('#li89', { scale: 0.85, opacity: 0, duration: 0.8, ease: 'expo.out' }, 217.69);
+  tl.from('#hd90-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 217.79);
+  tl.from('#f114', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 218.39);
+  tl.from('#fz4 .fzv', { opacity: 0, duration: 0.3, ease: 'power1.out' }, 221.83);
+  tl.from('#fz4-l', { y: 24, opacity: 0, duration: 0.5, ease: 'expo.out' }, 221.91);
+  tl.fromTo('#fz4-l i', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.inOut', immediateRender: true }, 221.95);
+  tl.to('#fz4', { opacity: 0, duration: 0.2 }, 222.86);
+  tl.from('#cp91 span', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 223.21);
+  tl.to('#cp91 span', { opacity: 0, duration: 0.3 }, 225.51);
+  tl.from('#gc92-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 227.29);
+  tl.from('#eb93', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 223.26);
+  tl.fromTo('#eb93 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 223.36);
+  tl.from('#sl94', { opacity: 0, scale: 1.05, duration: 0.9, ease: 'expo.out' }, 225.41);
+  tl.fromTo('#sl94 i', { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'power3.inOut', immediateRender: true }, 225.51);
+  tl.from('#f121', { opacity: 0, duration: 0.6, ease: 'power1.out' }, 226.11);
+  tl.from('#gc95-0', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 232.46);
+  tl.from('#gc95-1', { x: -60, opacity: 0, duration: 0.8, ease: 'expo.out' }, 234.58);
+  tl.from('#eb96', { opacity: 0, y: 12, duration: 0.9, ease: 'expo.out' }, 231.2);
+  tl.fromTo('#eb96 i', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power3.inOut', immediateRender: true }, 231.3);
+  tl.from('#hd98-0 .w', { yPercent: 110, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 240.52);
+  tl.from('#fm97', { y: 80, opacity: 0, duration: 0.9, ease: 'expo.out' }, 240.47);
+  tl.fromTo('#fm97-0', { boxShadow: 'inset 0 0 0 1.5px rgba(21,24,29,.08)' }, { boxShadow: 'inset 0 0 0 3px #D8A871', duration: 0.3, yoyo: true, repeat: 1, immediateRender: false }, 243.38);
+  tl.fromTo('#fm97-1', { boxShadow: 'inset 0 0 0 1.5px rgba(21,24,29,.08)' }, { boxShadow: 'inset 0 0 0 3px #D8A871', duration: 0.3, yoyo: true, repeat: 1, immediateRender: false }, 243.84);
+  tl.fromTo('#fm97-2', { boxShadow: 'inset 0 0 0 1.5px rgba(21,24,29,.08)' }, { boxShadow: 'inset 0 0 0 3px #D8A871', duration: 0.3, yoyo: true, repeat: 1, immediateRender: false }, 244.34);
+  tl.fromTo('#fm97-3', { boxShadow: 'inset 0 0 0 1.5px rgba(21,24,29,.08)' }, { boxShadow: 'inset 0 0 0 3px #D8A871', duration: 0.3, yoyo: true, repeat: 1, immediateRender: false }, 244.86);
+  tl.to('#fm97-b', { scale: 1.04, duration: 0.4, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 244.89);
+  tl.from('#ec99-e', { y: -40, opacity: 0, duration: 0.35, ease: 'power3.out' }, 246.04);
+  tl.from('#ec99-c', { y: 200, opacity: 0, duration: 0.5, ease: 'expo.out' }, 246.19);
+  tl.from('#ec99-a', { opacity: 0, duration: 0.3, ease: 'power3.out' }, 246.54);
+  tl.to('#ec99-a', { y: 24, duration: 0.45, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 246.84);
+  tl.fromTo('#sh0-cam', { scale: 1 }, { scale: 1.035, duration: 4.29, ease: 'none' }, 0);
+  tl.from('#sh1', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 3.74);
+  tl.fromTo('#sh1-cam', { scale: 1.035 }, { scale: 1, duration: 9.64, ease: 'none' }, 3.74);
+  tl.from('#sh2', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 12.83);
+  tl.fromTo('#sh2-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 3.44, ease: 'none' }, 12.83);
+  tl.from('#sh3', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 15.72);
+  tl.fromTo('#sh3-cam', { scale: 1 }, { scale: 1.035, duration: 5.95, ease: 'none' }, 15.72);
+  tl.from('#sh4', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 21.12);
+  tl.fromTo('#sh4-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 6.04, ease: 'none' }, 21.12);
+  tl.from('#sh5', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 26.61);
+  tl.fromTo('#sh5-cam', { scale: 1 }, { scale: 1.035, duration: 2.2, ease: 'none' }, 26.61);
+  tl.from('#sh6', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 28.26);
+  tl.fromTo('#sh6-cam', { scale: 1 }, { scale: 1.035, duration: 6.29, ease: 'none' }, 28.26);
+  tl.from('#sh7', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 34);
+  tl.fromTo('#sh7-cam', { scale: 1.035 }, { scale: 1, duration: 4.02, ease: 'none' }, 34);
+  tl.from('#sh8', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 37.47);
+  tl.fromTo('#sh8-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 11.08, ease: 'none' }, 37.47);
+  tl.from('#sh9', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 48);
+  tl.fromTo('#sh9-cam', { scale: 1 }, { scale: 1.035, duration: 7, ease: 'none' }, 48);
+  tl.from('#sh10', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 54.45);
+  tl.fromTo('#sh10-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 9.07, ease: 'none' }, 54.45);
+  tl.from('#sh11', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 62.97);
+  tl.fromTo('#sh11-cam', { scale: 1.035 }, { scale: 1, duration: 7.99, ease: 'none' }, 62.97);
+  tl.from('#sh12', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 70.41);
+  tl.fromTo('#sh12-cam', { scale: 1 }, { scale: 1.035, duration: 8.19, ease: 'none' }, 70.41);
+  tl.from('#sh13', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 78.05);
+  tl.fromTo('#sh13-cam', { scale: 1.035 }, { scale: 1, duration: 9.38, ease: 'none' }, 78.05);
+  tl.from('#sh14', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 86.88);
+  tl.fromTo('#sh14-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 5.08, ease: 'none' }, 86.88);
+  tl.fromTo('#sh15', { opacity: 0, filter: 'blur(14px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out', immediateRender: false }, 91.41);
+  tl.fromTo('#sh15-cam', { scale: 1 }, { scale: 1.035, duration: 5.51, ease: 'none' }, 91.41);
+  tl.from('#sh16', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 96.37);
+  tl.fromTo('#sh16-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 2.63, ease: 'none' }, 96.37);
+  tl.from('#sh17', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 98.45);
+  tl.fromTo('#sh17-cam', { scale: 1.035 }, { scale: 1, duration: 10.23, ease: 'none' }, 98.45);
+  tl.from('#sh18', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 108.13);
+  tl.fromTo('#sh18-cam', { scale: 1 }, { scale: 1.035, duration: 6.32, ease: 'none' }, 108.13);
+  tl.from('#sh19', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 113.9);
+  tl.fromTo('#sh19-cam', { scale: 1.035 }, { scale: 1, duration: 5.73, ease: 'none' }, 113.9);
+  tl.from('#sh20', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 119.08);
+  tl.fromTo('#sh20-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 7.87, ease: 'none' }, 119.08);
+  tl.from('#sh21', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 126.4);
+  tl.fromTo('#sh21-cam', { scale: 1 }, { scale: 1.035, duration: 6, ease: 'none' }, 126.4);
+  tl.from('#sh22', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 131.85);
+  tl.fromTo('#sh22-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 4.4, ease: 'none' }, 131.85);
+  tl.from('#sh23', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 135.7);
+  tl.fromTo('#sh23-cam', { scale: 1.035 }, { scale: 1, duration: 7.44, ease: 'none' }, 135.7);
+  tl.from('#sh24', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 142.59);
+  tl.fromTo('#sh24-cam', { scale: 1 }, { scale: 1.035, duration: 5.98, ease: 'none' }, 142.59);
+  tl.from('#sh25', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 148.02);
+  tl.fromTo('#sh25-cam', { scale: 1.035 }, { scale: 1, duration: 7.24, ease: 'none' }, 148.02);
+  tl.fromTo('#sh26', { opacity: 0, filter: 'blur(14px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out', immediateRender: false }, 154.71);
+  tl.fromTo('#sh26-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 3.09, ease: 'none' }, 154.71);
+  tl.from('#sh27', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 157.25);
+  tl.fromTo('#sh27-cam', { scale: 1 }, { scale: 1.035, duration: 10.07, ease: 'none' }, 157.25);
+  tl.from('#sh28', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 166.77);
+  tl.fromTo('#sh28-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 7.91, ease: 'none' }, 166.77);
+  tl.from('#sh29', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 174.13);
+  tl.fromTo('#sh29-cam', { scale: 1.035 }, { scale: 1, duration: 7.43, ease: 'none' }, 174.13);
+  tl.from('#sh30', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 181.01);
+  tl.fromTo('#sh30-cam', { scale: 1 }, { scale: 1.035, duration: 5.81, ease: 'none' }, 181.01);
+  tl.from('#sh31', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 186.27);
+  tl.fromTo('#sh31-cam', { scale: 1.035 }, { scale: 1, duration: 7.64, ease: 'none' }, 186.27);
+  tl.fromTo('#sh32', { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'power3.inOut', immediateRender: false }, 193.36);
+  tl.fromTo('#sh32-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 3.1, ease: 'none' }, 193.36);
+  tl.from('#sh33', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 195.91);
+  tl.fromTo('#sh33-cam', { scale: 1 }, { scale: 1.035, duration: 7.42, ease: 'none' }, 195.91);
+  tl.from('#sh34', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 202.78);
+  tl.fromTo('#sh34-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 5.05, ease: 'none' }, 202.78);
+  tl.from('#sh35', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 207.28);
+  tl.fromTo('#sh35-cam', { scale: 1.035 }, { scale: 1, duration: 10.86, ease: 'none' }, 207.28);
+  tl.from('#sh36', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 217.59);
+  tl.fromTo('#sh36-cam', { scale: 1 }, { scale: 1.035, duration: 6.17, ease: 'none' }, 217.59);
+  tl.from('#sh37', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 223.21);
+  tl.fromTo('#sh37-cam', { scale: 1.035 }, { scale: 1, duration: 8.49, ease: 'none' }, 223.21);
+  tl.from('#sh38', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 231.15);
+  tl.fromTo('#sh38-cam', { x: 12, scale: 1.021 }, { x: -12, scale: 1.021, duration: 9.82, ease: 'none' }, 231.15);
+  tl.from('#sh39', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 240.42);
+  tl.fromTo('#sh39-cam', { scale: 1 }, { scale: 1.035, duration: 6.07, ease: 'none' }, 240.42);
+  tl.from('#sh40', { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, 245.94);
+  tl.fromTo('#sh40-cam', { x: -12, scale: 1.021 }, { x: 12, scale: 1.021, duration: 3.3, ease: 'none' }, 245.94);
+  tl.from('#sub0 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 0.48);
+  tl.from('#sub1 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 1.03);
+  tl.from('#sub2 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 2.64);
+  tl.from('#sub3 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 3.74);
+  tl.from('#sub4 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 5.47);
+  tl.from('#sub5 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 7.37);
+  tl.from('#sub6 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 10.13);
+  tl.from('#sub7 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 11.54);
+  tl.from('#sub8 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 12.83);
+  tl.from('#sub9 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 13.45);
+  tl.from('#sub10 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 15.72);
+  tl.from('#sub11 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 17.91);
+  tl.from('#sub12 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 18.93);
+  tl.from('#sub13 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 21.12);
+  tl.from('#sub14 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 22.14);
+  tl.from('#sub15 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 23.92);
+  tl.from('#sub16 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 28.26);
+  tl.from('#sub17 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 30.63);
+  tl.from('#sub18 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 31.61);
+  tl.from('#sub19 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 34);
+  tl.from('#sub20 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 36.13);
+  tl.from('#sub21 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 37.47);
+  tl.from('#sub22 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 39.44);
+  tl.from('#sub23 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 42.22);
+  tl.from('#sub24 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 43.67);
+  tl.from('#sub25 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 44.66);
+  tl.from('#sub26 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 48);
+  tl.from('#sub27 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 50.46);
+  tl.from('#sub28 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 52.29);
+  tl.from('#sub29 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 54.45);
+  tl.from('#sub30 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 56.65);
+  tl.from('#sub31 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 59.22);
+  tl.from('#sub32 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 61.75);
+  tl.from('#sub33 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 62.97);
+  tl.from('#sub34 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 64.68);
+  tl.from('#sub35 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 66.47);
+  tl.from('#sub36 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 67.86);
+  tl.from('#sub37 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 70.41);
+  tl.from('#sub38 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 71.59);
+  tl.from('#sub39 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 73.03);
+  tl.from('#sub40 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 74.93);
+  tl.from('#sub41 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 76.55);
+  tl.from('#sub42 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 78.05);
+  tl.from('#sub43 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 80.04);
+  tl.from('#sub44 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 81.68);
+  tl.from('#sub45 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 82.95);
+  tl.from('#sub46 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 83.72);
+  tl.from('#sub47 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 85.57);
+  tl.from('#sub48 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 86.88);
+  tl.from('#sub49 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 87.79);
+  tl.from('#sub50 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 91.41);
+  tl.from('#sub51 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 93.16);
+  tl.from('#sub52 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 94.69);
+  tl.from('#sub53 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 96.37);
+  tl.from('#sub54 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 98.45);
+  tl.from('#sub55 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 101.08);
+  tl.from('#sub56 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 103.12);
+  tl.from('#sub57 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 104.77);
+  tl.from('#sub58 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 106.5);
+  tl.from('#sub59 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 108.13);
+  tl.from('#sub60 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 109.97);
+  tl.from('#sub61 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 111.14);
+  tl.from('#sub62 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 113.9);
+  tl.from('#sub63 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 115.92);
+  tl.from('#sub64 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 116.94);
+  tl.from('#sub65 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 119.08);
+  tl.from('#sub66 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 120.2);
+  tl.from('#sub67 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 122.59);
+  tl.from('#sub68 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 124.5);
+  tl.from('#sub69 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 126.4);
+  tl.from('#sub70 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 128.84);
+  tl.from('#sub71 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 130.45);
+  tl.from('#sub72 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 131.85);
+  tl.from('#sub73 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 133.89);
+  tl.from('#sub74 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 135.7);
+  tl.from('#sub75 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 137.89);
+  tl.from('#sub76 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 139.18);
+  tl.from('#sub77 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 142.59);
+  tl.from('#sub78 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 146.71);
+  tl.from('#sub79 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 148.02);
+  tl.from('#sub80 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 150.49);
+  tl.from('#sub81 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 152.29);
+  tl.from('#sub82 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 154.71);
+  tl.from('#sub83 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 155.44);
+  tl.from('#sub84 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 157.25);
+  tl.from('#sub85 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 158.8);
+  tl.from('#sub86 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 161.75);
+  tl.from('#sub87 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 163.29);
+  tl.from('#sub88 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 165.44);
+  tl.from('#sub89 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 166.77);
+  tl.from('#sub90 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 169.02);
+  tl.from('#sub91 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 170.44);
+  tl.from('#sub92 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 172.13);
+  tl.from('#sub93 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 174.13);
+  tl.from('#sub94 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 175.59);
+  tl.from('#sub95 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 177.57);
+  tl.from('#sub96 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 178.84);
+  tl.from('#sub97 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 181.01);
+  tl.from('#sub98 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 182.11);
+  tl.from('#sub99 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 183.55);
+  tl.from('#sub100 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 186.27);
+  tl.from('#sub101 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 188.87);
+  tl.from('#sub102 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 191.32);
+  tl.from('#sub103 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 193.36);
+  tl.from('#sub104 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 194.26);
+  tl.from('#sub105 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 195.91);
+  tl.from('#sub106 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 198.51);
+  tl.from('#sub107 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 199.63);
+  tl.from('#sub108 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 200.82);
+  tl.from('#sub109 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 202.78);
+  tl.from('#sub110 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 205.01);
+  tl.from('#sub111 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 207.28);
+  tl.from('#sub112 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 210.17);
+  tl.from('#sub113 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 211.56);
+  tl.from('#sub114 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 213.87);
+  tl.from('#sub115 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 215.81);
+  tl.from('#sub116 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 217.59);
+  tl.from('#sub117 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 219.69);
+  tl.from('#sub118 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 221.07);
+  tl.from('#sub119 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 223.21);
+  tl.from('#sub120 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 224.94);
+  tl.from('#sub121 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 227.29);
+  tl.from('#sub122 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 230.23);
+  tl.from('#sub123 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 231.15);
+  tl.from('#sub124 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 232.46);
+  tl.from('#sub125 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 234.58);
+  tl.from('#sub126 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 236.36);
+  tl.from('#sub127 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 238.86);
+  tl.from('#sub128 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 240.42);
+  tl.from('#sub129 span', { y: 6, opacity: 0, duration: 0.2, ease: 'power1.out' }, 242.49);
+  tl.fromTo('#prog i', { scaleX: 0 }, { scaleX: 1, duration: 249.24, ease: 'none' }, 0);
+
+  window.__timelines["main"] = tl;
+  tl.seek(0);
+</script>
+</body>
+</html>

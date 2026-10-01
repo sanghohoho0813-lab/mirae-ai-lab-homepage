@@ -96,7 +96,7 @@ const BUSINESS_MENU: MenuConfig = {
       no: '03',
       heading: 'Full AX 구축',
       accent: 'cyan',
-      // 페이지 순서: 히어로 → 소개 영상 1·2(#film-1 · #film-2) → 직접 만든 화면(#samples) → 자주 묻는 질문(#faq) → 마무리
+      // 페이지 순서: 히어로 → 소개 영상 1·2(#film-1 · #film-2) → 직접 만든 화면(#samples) → 자주 묻는 질문(#faq) → 실제 프로젝트 영상(#real-projects-film) → 마무리
       // (예전 'AX 프로그램 · 수행체계 · 로드맵'(개정 중) 항목은 뺐다 — 두 상품에 집중, 상세 안내는 영상으로 대신한다)
       // AX 상세 안내(스토리 04~12)를 숨긴 동안에는 AX 페이지 구간으로 보낸다
       items: SHOW_AX_GUIDE
@@ -113,6 +113,7 @@ const BUSINESS_MENU: MenuConfig = {
             { no: '2', label: '진행 방식과 비용', desc: '영상 2 · 어떻게 진행하고, 얼마가 드나', to: `${AX_START_PATH}#film-2` },
             { no: '3', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_START_PATH}#samples` },
             { no: '4', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_START_PATH}#faq` },
+            { no: '5', label: '실제 프로젝트 영상', desc: '지금 만들고 있는 회사 두 곳(업종만 공개)', to: `${AX_START_PATH}#real-projects-film` },
           ],
     },
     {
@@ -147,20 +148,19 @@ const CONSULTANT_MENU: MenuConfig = {
   topTitle: '미래 AI 랩',
   topSub: 'MIRAE AI LAB OS · 컨설턴트 운영 OS',
   lead: {
-    label: '오픈 소식 받기',
-    desc: '2026년 10월부터 모듈을 하나씩 엽니다. 열 때마다 먼저 연락드릴게요.',
-    to: '/consultants#inquiry',
+    label: '출시 알림 신청',
+    desc: '11월 중 오픈 예정이에요. 출시되면 가장 먼저 알려 드릴게요.',
+    to: '/consultants#signup',
   },
   groups: [
     {
       no: '01',
       heading: '컨설턴트 OS',
       accent: 'violet',
+      // 상세 구간은 영상으로 대신했다(/consultants 의 SHOW_DETAIL) — 영상 → 출시 알림 신청 → 전자책
       items: [
-        { label: '대시보드 미리보기', desc: '아침에 열면 할 일이 정리돼 있어요', to: '/consultants#dashboard' },
-        { label: '운영 방식', desc: '고객이 올리면 내 할 일로, 처리하면 고객 화면으로', to: '/consultants#how' },
-        { label: '7개 모듈', desc: '지금 쓰는 도구와 완성되면 들어갈 기능', to: '/consultants#modules' },
-        { label: '출시 일정', desc: '2026년 10월부터 차례로 · 정식 출시 후 월 구독', to: '/consultants#launch' },
+        { label: '소개 영상', desc: '컨설턴트 운영 OS를 영상 한 편으로', to: '/consultants#film' },
+        { label: '출시 알림 신청', desc: '이름 · 소속 · 이메일 · 연락처만', to: '/consultants#signup' },
         { label: '실무 전자책', desc: '정책자금 · 무상지원금 · 고용지원금', to: '/consultants#resources' },
       ],
     },

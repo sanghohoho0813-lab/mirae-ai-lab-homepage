@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import BrandLogo from './components/BrandLogo'
 import InquiryForm from './components/InquiryForm'
@@ -7,19 +7,42 @@ import LegalFooter from './components/LegalFooter'
 import { useHashScroll } from './lib/businessPageScroll'
 import OsDashboardPreview, { OsLaunchSteps } from './components/consultant/OsDashboardPreview'
 import OsModules from './components/consultant/OsModules'
+import OsLaunchSignup, { OS_SIGNUP_ID } from './components/consultant/OsLaunchSignup'
+import StoryFilm, { STORY_END_PRIMARY, STORY_END_REPLAY, type StoryFilmHandle } from './components/video/StoryFilm'
+import { scrollToSection } from './lib/businessPageScroll'
 
 // 컨설턴트용 소개 (/consultants) — MIRAE AI LAB OS.
 // 3차 개편: 기획의도(왜 만들었나 · 무엇을 바꾸나 · 무엇이 남나)에서 고객(컨설턴트)에게 필요한 것만 뽑았다.
 //  ⚠️ 무료 체험 안내는 두지 않는다(지금은 막아 둠). 가격·완성도 % 도 적지 않는다.
 //  ⚠️ '얼마나 빨라졌는지' 같은 성과 숫자는 기준선을 재는 중이라 말하지 않는다.
+// 4차(2026-10): 상세 페이지는 영상으로 대신한다(대표님 목소리 · 4분 9초) — 히어로 → 영상 → 출시 알림 신청(이름·소속·이메일·연락처)
+//  → 자주 묻는 질문 · 믿고 맡기는 이유 · 전자책 · 문의. 예전 상세 구간(매일 여는 화면 · 대시보드 · 운영 방식 · 모듈 · 출시 일정)은
+//  SHOW_DETAIL 로 숨겨 두었다(지우지 않음). 오픈은 11월 중 계획 — 영상에서 말한 대로 초기 함께하는 분께 무료 체험 기회·할인 혜택 '안내 예정'까지만 적는다.
+const SHOW_DETAIL = false
 
-const navItems = [
-  { label: '대시보드', href: '#dashboard' },
-  { label: '모듈', href: '#modules' },
-  { label: '출시 일정', href: '#launch' },
-  { label: '전자책', href: '#resources' },
-  { label: '문의', href: '#inquiry' },
-]
+// 컨설턴트 운영 OS 소개 영상(9:16) — 원본·녹음·자막은 media/ax-videos/consultant-v2/
+const OS_FILM = {
+  mp4: '/consultant-os/os-film.mp4',
+  webm: '/consultant-os/os-film.webm',
+  poster: '/consultant-os/os-film-poster.webp',
+  length: '4분 9초',
+}
+
+const navItems = SHOW_DETAIL
+  ? [
+      { label: '대시보드', href: '#dashboard' },
+      { label: '모듈', href: '#modules' },
+      { label: '출시 일정', href: '#launch' },
+      { label: '전자책', href: '#resources' },
+      { label: '문의', href: '#inquiry' },
+    ]
+  : [
+      { label: '소개 영상', href: '#film' },
+      { label: '출시 알림 신청', href: `#${OS_SIGNUP_ID}` },
+      { label: '자주 묻는 질문', href: '#faq' },
+      { label: '전자책', href: '#resources' },
+      { label: '문의', href: '#inquiry' },
+    ]
 
 const svg = (d: ReactNode) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -158,7 +181,7 @@ const trustAwards = [
 const faqs = [
   {
     q: '지금 바로 쓸 수 있나요?',
-    a: '아직은요. 2026년 10월에 컨설턴트 운영·기업성장 모듈부터 열고, 세금 계산기·창업감면 판정기·크레탑 분석기가 들어가는 절세·재무 모듈은 10월 이후, 나머지는 11월 이후에 차례로 엽니다. 문의를 남겨 주시면 열 때마다 먼저 연락드릴게요.',
+    a: '아직은요. 11월 중 오픈을 계획하고 있어요. 절세 모듈은 세무사 같은 전문가 검증을 거쳐 열 예정이에요. 출시 알림을 신청해 주시면 오픈 소식을 가장 먼저 알려 드릴게요.',
   },
   {
     q: '요금은 어떻게 되나요?',
@@ -181,63 +204,6 @@ const gridBackground = {
   WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%)',
   maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 100%)',
 } as const
-
-// 히어로 오른쪽(PC 전용) — '고객사 화면' 예시. 히어로 문장(서류는 한 번 · 고객사 정보 한눈에 · 다음에 제안할 거리)을 그림으로 보여 준다.
-// ⚠️ 가상 데이터(B사, 번호는 가림). 대시보드 예시와 같은 원칙으로 '예시 화면'을 붙이고 화면 읽기에서는 숨긴다.
-function HeroClientCard() {
-  const row = 'rounded-lg bg-white/[0.06] px-3 py-2'
-  return (
-    <div aria-hidden className="hidden lg:block">
-      <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-5 shadow-2xl shadow-black/40 backdrop-blur">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[0.8rem] font-bold tracking-wide text-slate-400">MIRAE AI LAB OS · 고객사</p>
-          <span className="rounded-md bg-violet-500/20 px-1.5 py-0.5 text-[0.7rem] font-black text-violet-200">예시 화면</span>
-        </div>
-        <p className="mt-1.5 text-xl font-black text-white">
-          B사 <span className="text-sm font-semibold text-slate-400">제조 · 직원 12명</span>
-        </p>
-        <dl className="mt-4 grid grid-cols-2 gap-2 text-[0.85rem]">
-          <div className={row}>
-            <dt className="text-slate-400">사업자등록번호</dt>
-            <dd className="mt-0.5 font-bold text-white">123-45-•••••</dd>
-          </div>
-          <div className={row}>
-            <dt className="text-slate-400">대표 연락처</dt>
-            <dd className="mt-0.5 font-bold text-white">010-••••-1234</dd>
-          </div>
-        </dl>
-        <div className={`mt-2 ${row} py-2.5`}>
-          <div className="flex justify-between text-[0.85rem]">
-            <span className="text-slate-400">받은 서류</span>
-            <span className="font-bold text-emerald-300">7 / 7 완료</span>
-          </div>
-          <div className="mt-2 h-1.5 rounded-full bg-white/10">
-            <div className="h-full w-full rounded-full bg-emerald-400" />
-          </div>
-          <p className="mt-2 text-[0.78rem] text-slate-400">사업자등록증 · 재무제표 · 4대보험 명부 …</p>
-        </div>
-        <div className={`mt-2 flex items-center justify-between ${row} text-[0.85rem]`}>
-          <span className="text-slate-400">2차 기성 수금</span>
-          <span className="font-bold text-amber-300">D-3</span>
-        </div>
-        <div className="mt-4 rounded-xl border border-sky-400/30 bg-sky-400/10 p-3.5">
-          <p className="text-[0.78rem] font-black text-sky-300">✦ 올려 둔 서류로 찾은 다음 제안</p>
-          <ul className="mt-2 space-y-1.5 text-[0.88rem] text-white">
-            <li className="flex justify-between gap-3">
-              <span className="font-semibold">고용지원금</span>
-              <span className="text-slate-300">신청 요건 검토</span>
-            </li>
-            <li className="flex justify-between gap-3">
-              <span className="font-semibold">기업부설연구소</span>
-              <span className="text-slate-300">인력 조건 확인</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <p className="mt-2 text-center text-[0.75rem] text-slate-500">예시 화면 · 가상 데이터</p>
-    </div>
-  )
-}
 
 // 믿고 맡기는 이유 — 만든 사람의 이력. 전자책 바로 위에 둔다.
 function TrustPanel() {
@@ -324,6 +290,7 @@ function App() {
   }, [])
   // /consultants#modules 처럼 구간 주소로 들어오면 그 구간으로 (메뉴·다른 페이지에서 올 때)
   useHashScroll()
+  const film = useRef<StoryFilmHandle>(null)
 
   return (
     <div className="min-h-screen bg-white text-slate-900 antialiased [word-break:keep-all]">
@@ -361,7 +328,7 @@ function App() {
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-sky-400" />
-                MIRAE AI LAB OS · 10월부터 하나씩 오픈
+                MIRAE AI LAB OS · 11월 오픈 예정
               </span>
 
               <h1 className="mt-6 text-[1.9rem] font-extrabold leading-[1.18] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]">
@@ -380,17 +347,22 @@ function App() {
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="#inquiry"
-                  className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-bold text-slate-900 shadow-xl shadow-black/25 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
+                <button
+                  type="button"
+                  onClick={() => film.current?.playWithSound()}
+                  data-os-film-cta
+                  className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-white px-8 py-4 text-lg font-bold text-slate-900 shadow-xl shadow-black/25 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
                 >
-                  오픈 소식 받기
-                </a>
+                  <span aria-hidden className="grid h-7 w-7 place-items-center rounded-full bg-sky-400 pl-0.5 text-[0.8rem] text-slate-950">
+                    ▶
+                  </span>
+                  영상 소리 켜고 보기
+                </button>
                 <a
-                  href="#dashboard"
+                  href={`#${OS_SIGNUP_ID}`}
                   className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white/10"
                 >
-                  대시보드 미리보기
+                  출시 알림 신청
                 </a>
               </div>
 
@@ -413,175 +385,208 @@ function App() {
               </p>
             </div>
 
-            <HeroClientCard />
-
-          </div>
-        </div>
-      </section>
-
-      {/* 2. 매일 여는 화면 — 컨설턴트 운영 모듈이 없애 주는 시간 + 다음 계약으로 이어지는 핵심 */}
-      <section id="value" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
-        <SectionHead
-          eyebrow="매일 여는 화면"
-          title="찾고, 묻고, 다시 받는 시간이 사라져요"
-          desc="컨설턴트 운영 모듈은 아침마다 가장 먼저 여는 화면이에요. 고객사가 서너 곳만 돼도 서류 찾고 정보 묻다 하루가 가죠. 그 시간을 없애려고 만들었어요."
-        />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 sm:gap-5" data-os-everyday>
-          {everyday.map((v) => (
-            <article key={v.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              <div className="flex items-center gap-3">
-                <div className={`grid h-11 w-11 place-items-center rounded-xl ring-1 ring-inset [&_svg]:h-5 [&_svg]:w-5 ${TONE[v.tone].box}`}>{v.icon}</div>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-bold tracking-wide ${TONE[v.tone].chip}`}>{v.tag}</span>
-              </div>
-              <h3 className="mt-4 break-keep text-xl font-bold text-slate-900">{v.title}</h3>
-              <p className="mt-2 break-keep text-[1.02rem] leading-relaxed text-slate-600">
-                <Em text={v.desc} em={v.em} cls={TONE[v.tone].em} />
-              </p>
-            </article>
-          ))}
-
-          {/* 핵심 — 올려 둔 서류가 다음 컨설팅 모듈로 이어져 자동으로 분석된다 → 다음 제안 거리 */}
-          <article data-os-next className="rounded-2xl bg-gradient-to-br from-blue-600 to-sky-600 p-5 text-white shadow-lg shadow-blue-600/20 sm:col-span-2 sm:p-7">
-            <div className="flex items-center gap-3">
-              <div className="grid h-11 w-11 place-items-center rounded-xl bg-white/15 text-white [&_svg]:h-5 [&_svg]:w-5">
-                {svg(
+            {/* 상세 페이지 대신 영상 한 편 — 화면에 보이면 소리 없이 미리보기, 누르면 소리 켜고 처음부터 */}
+            <div id="film" className="mt-10 scroll-mt-24 lg:mt-0">
+              <StoryFilm
+                ref={film}
+                dataAttr="os"
+                {...OS_FILM}
+                label="컨설턴트 운영 OS 소개 영상"
+                accent="sky"
+                tone="dark"
+                caption="영상 속 OS 화면은 색감만 살려 다시 그린 예시 화면 · 가상 데이터예요. 실제 화면은 흐리게 한 번만 나와요."
+                end={(replay) => (
                   <>
-                    <path d="M4 12h11M11 6l6 6-6 6" />
-                    <path d="M19.5 3.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z" />
-                  </>,
+                    <p className="break-keep text-[1.2rem] font-black leading-snug">
+                      출시되면
+                      <br /> 가장 먼저 알려 드릴게요
+                    </p>
+                    <button type="button" onClick={() => scrollToSection(OS_SIGNUP_ID, 'smooth')} className={STORY_END_PRIMARY}>
+                      출시 알림 신청하기 <span aria-hidden>↓</span>
+                    </button>
+                    <button type="button" onClick={replay} className={STORY_END_REPLAY}>
+                      처음부터 다시 보기
+                    </button>
+                  </>
                 )}
-              </div>
-              <span className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold tracking-wide">다음 계약</span>
+              />
             </div>
-            <h3 className="mt-4 break-keep text-[1.35rem] font-bold leading-snug sm:text-2xl">올려 둔 서류가, 다음에 제안할 거리를 찾아 줘요</h3>
-            <p className="mt-2 max-w-3xl break-keep text-[1.04rem] leading-relaxed text-blue-50">
-              서류를 올려 두기만 하면 정책자금, 고용지원금, 연구소, 세금 같은 다음 컨설팅 모듈로 그대로 이어져 자동으로 분석해요. 이 회사에 다음으로 뭘 제안하면 좋을지가 보여요.
-            </p>
-          </article>
-        </div>
 
-        {/* 써 보면 달라지는 것 — 시간 · 다음 계약 · 처음 맡는 분야 · 첫 미팅 */}
-        <div data-os-renewal className="mt-10 rounded-3xl bg-slate-900 p-6 text-white shadow-sm sm:p-9">
-          <p className="text-sm font-black tracking-wide text-emerald-300">써 보면 달라지는 것</p>
-          <h3 className="mt-2 break-keep text-[1.6rem] font-bold leading-snug sm:text-3xl">
-            시간은 아끼고,<br className="sm:hidden" /> 계약과 소개는 가까워져요
-          </h3>
-          <ul className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
-            {outcomes.map((o, i) => (
-              <li key={o.t} className="border-l-2 border-emerald-400/70 pl-4">
-                <p className="flex items-baseline gap-2.5 break-keep text-lg font-bold">
-                  <span className="shrink-0 text-[0.95rem] font-black tabular-nums text-emerald-300">{String(i + 1).padStart(2, '0')}</span>
-                  {o.t}
-                </p>
-                <p className="mt-1 break-keep text-[1rem] leading-relaxed text-slate-300">
-                  <Em text={o.d} em={o.em} cls="text-emerald-300" />
-                </p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-7 break-keep border-t border-white/10 pt-5 text-[1.05rem] font-semibold leading-relaxed text-white sm:text-lg">
-            꼼꼼하게 관리받은 고객은 다시 찾고, 주변에도 소개해요. <span className="text-emerald-300">일이 일을 부르는 컨설턴트</span>가 되는 거예요.
-          </p>
+          </div>
         </div>
       </section>
 
-      {/* 3. 대시보드 미리보기 — 아침에 열면 할 일이 이유와 함께 (예시·가상 데이터) */}
-      <section id="dashboard" className="scroll-mt-20 border-t border-slate-200 bg-gradient-to-b from-white to-slate-50">
-        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+      {/* 2. 출시 알림 신청 — 이름 · 소속 · 이메일 · 연락처 */}
+      <OsLaunchSignup />
+
+      {/* ── 잠시 숨김: 예전 상세 구간(영상으로 대신) — 다시 보이려면 SHOW_DETAIL = true ── */}
+      {SHOW_DETAIL && (
+        <>
+        {/* 2. 매일 여는 화면 — 컨설턴트 운영 모듈이 없애 주는 시간 + 다음 계약으로 이어지는 핵심 */}
+        <section id="value" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
           <SectionHead
-            eyebrow="대시보드 미리보기"
-            title="아침에 열면, 오늘 할 일이 정리돼 있어요"
-            desc="먼저 할 일 세 가지가 왜 먼저인지와 함께 떠요. 업체를 누르면 할 일, 막힌 서류, 못 받은 돈이 한 화면에 모여 있어요."
+            eyebrow="매일 여는 화면"
+            title="찾고, 묻고, 다시 받는 시간이 사라져요"
+            desc="컨설턴트 운영 모듈은 아침마다 가장 먼저 여는 화면이에요. 고객사가 서너 곳만 돼도 서류 찾고 정보 묻다 하루가 가죠. 그 시간을 없애려고 만들었어요."
           />
-          <div className="mt-8 sm:mt-10">
-            <OsDashboardPreview />
-          </div>
-        </div>
-      </section>
-
-      {/* 4. 운영 방식 — 고객과 내부가 한 바퀴 + 원칙 + 기록이 남기는 것 */}
-      <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
-        <SectionHead
-          eyebrow="고객 화면과 연결"
-          title="고객 화면과 내 화면이 하나로 이어져요"
-          desc="고객은 My MIRAE에서 서류를 올리고 진행 상황을 직접 봐요. ‘어디까지 됐어요?’ 하는 카톡이 줄어요."
-        />
-        <div className="mt-10 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-            <ol data-os-loop>
-              {loop.map((l, i) => (
-                <li key={l.text} className="relative flex gap-3.5 pb-5 last:pb-0">
-                  {i < loop.length - 1 && <span aria-hidden className="absolute left-[1.05rem] top-9 h-[calc(100%-2.25rem)] w-px bg-slate-200" />}
-                  <span className="grid h-[2.1rem] w-[2.1rem] shrink-0 place-items-center rounded-full bg-slate-900 text-[0.85rem] font-black text-white">{i + 1}</span>
-                  <div className="min-w-0 pt-0.5">
-                    <span className={`text-xs font-black tracking-wide ${l.who === '고객' ? 'text-violet-600' : l.who === '자동' ? 'text-sky-600' : 'text-slate-500'}`}>{l.who}</span>
-                    <p className="break-keep text-[1.02rem] font-semibold leading-snug text-slate-800">{l.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-            <p className="mt-5 rounded-xl bg-slate-50 px-4 py-3 text-[0.92rem] leading-relaxed text-slate-600 ring-1 ring-inset ring-slate-200">
-              ↺ 다시 1번으로. 화면보다 이 흐름이 핵심이에요.
-            </p>
-          </div>
-
-          <div className="grid content-start gap-4">
-            {principles.map((p) => (
-              <article key={p.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                <h3 className="break-keep text-lg font-bold text-slate-900">{p.title}</h3>
-                <p className="mt-1.5 break-keep text-[0.98rem] leading-relaxed text-slate-600">{p.desc}</p>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 sm:gap-5" data-os-everyday>
+            {everyday.map((v) => (
+              <article key={v.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <div className="flex items-center gap-3">
+                  <div className={`grid h-11 w-11 place-items-center rounded-xl ring-1 ring-inset [&_svg]:h-5 [&_svg]:w-5 ${TONE[v.tone].box}`}>{v.icon}</div>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-bold tracking-wide ${TONE[v.tone].chip}`}>{v.tag}</span>
+                </div>
+                <h3 className="mt-4 break-keep text-xl font-bold text-slate-900">{v.title}</h3>
+                <p className="mt-2 break-keep text-[1.02rem] leading-relaxed text-slate-600">
+                  <Em text={v.desc} em={v.em} cls={TONE[v.tone].em} />
+                </p>
               </article>
             ))}
-          </div>
-        </div>
-      </section>
 
-      {/* 5. 7개 모듈 — 지금 쓰는 도구를 모듈로 묶어 확장 */}
-      <section id="modules" className="scroll-mt-20 border-y border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+            {/* 핵심 — 올려 둔 서류가 다음 컨설팅 모듈로 이어져 자동으로 분석된다 → 다음 제안 거리 */}
+            <article data-os-next className="rounded-2xl bg-gradient-to-br from-blue-600 to-sky-600 p-5 text-white shadow-lg shadow-blue-600/20 sm:col-span-2 sm:p-7">
+              <div className="flex items-center gap-3">
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-white/15 text-white [&_svg]:h-5 [&_svg]:w-5">
+                  {svg(
+                    <>
+                      <path d="M4 12h11M11 6l6 6-6 6" />
+                      <path d="M19.5 3.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z" />
+                    </>,
+                  )}
+                </div>
+                <span className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold tracking-wide">다음 계약</span>
+              </div>
+              <h3 className="mt-4 break-keep text-[1.35rem] font-bold leading-snug sm:text-2xl">올려 둔 서류가, 다음에 제안할 거리를 찾아 줘요</h3>
+              <p className="mt-2 max-w-3xl break-keep text-[1.04rem] leading-relaxed text-blue-50">
+                서류를 올려 두기만 하면 정책자금, 고용지원금, 연구소, 세금 같은 다음 컨설팅 모듈로 그대로 이어져 자동으로 분석해요. 이 회사에 다음으로 뭘 제안하면 좋을지가 보여요.
+              </p>
+            </article>
+          </div>
+
+          {/* 써 보면 달라지는 것 — 시간 · 다음 계약 · 처음 맡는 분야 · 첫 미팅 */}
+          <div data-os-renewal className="mt-10 rounded-3xl bg-slate-900 p-6 text-white shadow-sm sm:p-9">
+            <p className="text-sm font-black tracking-wide text-emerald-300">써 보면 달라지는 것</p>
+            <h3 className="mt-2 break-keep text-[1.6rem] font-bold leading-snug sm:text-3xl">
+              시간은 아끼고,<br className="sm:hidden" /> 계약과 소개는 가까워져요
+            </h3>
+            <ul className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+              {outcomes.map((o, i) => (
+                <li key={o.t} className="border-l-2 border-emerald-400/70 pl-4">
+                  <p className="flex items-baseline gap-2.5 break-keep text-lg font-bold">
+                    <span className="shrink-0 text-[0.95rem] font-black tabular-nums text-emerald-300">{String(i + 1).padStart(2, '0')}</span>
+                    {o.t}
+                  </p>
+                  <p className="mt-1 break-keep text-[1rem] leading-relaxed text-slate-300">
+                    <Em text={o.d} em={o.em} cls="text-emerald-300" />
+                  </p>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-7 break-keep border-t border-white/10 pt-5 text-[1.05rem] font-semibold leading-relaxed text-white sm:text-lg">
+              꼼꼼하게 관리받은 고객은 다시 찾고, 주변에도 소개해요. <span className="text-emerald-300">일이 일을 부르는 컨설턴트</span>가 되는 거예요.
+            </p>
+          </div>
+        </section>
+
+        {/* 3. 대시보드 미리보기 — 아침에 열면 할 일이 이유와 함께 (예시·가상 데이터) */}
+        <section id="dashboard" className="scroll-mt-20 border-t border-slate-200 bg-gradient-to-b from-white to-slate-50">
+          <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+            <SectionHead
+              eyebrow="대시보드 미리보기"
+              title="아침에 열면, 오늘 할 일이 정리돼 있어요"
+              desc="먼저 할 일 세 가지가 왜 먼저인지와 함께 떠요. 업체를 누르면 할 일, 막힌 서류, 못 받은 돈이 한 화면에 모여 있어요."
+            />
+            <div className="mt-8 sm:mt-10">
+              <OsDashboardPreview />
+            </div>
+          </div>
+        </section>
+
+        {/* 4. 운영 방식 — 고객과 내부가 한 바퀴 + 원칙 + 기록이 남기는 것 */}
+        <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
           <SectionHead
-            eyebrow="7개 모듈"
-            title={<>지금 쓰는 도구를<br className="sm:hidden" /> 7개 모듈로 키워 가요</>}
-            desc="기본은 컨설턴트 운영 모듈이고, 필요한 모듈을 더해 한 화면에서 써요. 운영 모듈에 올린 서류는 다른 모듈로 그대로 이어져요."
+            eyebrow="고객 화면과 연결"
+            title="고객 화면과 내 화면이 하나로 이어져요"
+            desc="고객은 My MIRAE에서 서류를 올리고 진행 상황을 직접 봐요. ‘어디까지 됐어요?’ 하는 카톡이 줄어요."
           />
-          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" aria-hidden />
-            지금도 매일 쓰면서 다듬고 있어요
-          </p>
-          <div className="mt-8 sm:mt-10">
-            <OsModules />
+          <div className="mt-10 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+              <ol data-os-loop>
+                {loop.map((l, i) => (
+                  <li key={l.text} className="relative flex gap-3.5 pb-5 last:pb-0">
+                    {i < loop.length - 1 && <span aria-hidden className="absolute left-[1.05rem] top-9 h-[calc(100%-2.25rem)] w-px bg-slate-200" />}
+                    <span className="grid h-[2.1rem] w-[2.1rem] shrink-0 place-items-center rounded-full bg-slate-900 text-[0.85rem] font-black text-white">{i + 1}</span>
+                    <div className="min-w-0 pt-0.5">
+                      <span className={`text-xs font-black tracking-wide ${l.who === '고객' ? 'text-violet-600' : l.who === '자동' ? 'text-sky-600' : 'text-slate-500'}`}>{l.who}</span>
+                      <p className="break-keep text-[1.02rem] font-semibold leading-snug text-slate-800">{l.text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-5 rounded-xl bg-slate-50 px-4 py-3 text-[0.92rem] leading-relaxed text-slate-600 ring-1 ring-inset ring-slate-200">
+                ↺ 다시 1번으로. 화면보다 이 흐름이 핵심이에요.
+              </p>
+            </div>
+
+            <div className="grid content-start gap-4">
+              {principles.map((p) => (
+                <article key={p.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                  <h3 className="break-keep text-lg font-bold text-slate-900">{p.title}</h3>
+                  <p className="mt-1.5 break-keep text-[0.98rem] leading-relaxed text-slate-600">{p.desc}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* 6. 출시 일정 — 무료 체험 없음, 정식 출시 후 월 구독 예정 */}
-      <section id="launch" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
-        <SectionHead
-          eyebrow="언제 쓸 수 있나요?"
-          title={<>2026년 10월부터<br className="sm:hidden" /> 하나씩 열어요</>}
-          desc={
-            <>
-              개발은 거의 끝났고, 지금은 직접 써 보면서 다듬고 있어요. 정식 출시 후에는{' '}
-              <b className="font-bold text-slate-900">월 구독</b>으로 제공할 예정이에요.
-            </>
-          }
-        />
-        <div className="mt-8 sm:mt-10">
-          <OsLaunchSteps />
-        </div>
+        {/* 5. 7개 모듈 — 지금 쓰는 도구를 모듈로 묶어 확장 */}
+        <section id="modules" className="scroll-mt-20 border-y border-slate-200 bg-slate-50">
+          <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+            <SectionHead
+              eyebrow="7개 모듈"
+              title={<>지금 쓰는 도구를<br className="sm:hidden" /> 7개 모듈로 키워 가요</>}
+              desc="기본은 컨설턴트 운영 모듈이고, 필요한 모듈을 더해 한 화면에서 써요. 운영 모듈에 올린 서류는 다른 모듈로 그대로 이어져요."
+            />
+            <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" aria-hidden />
+              지금도 매일 쓰면서 다듬고 있어요
+            </p>
+            <div className="mt-8 sm:mt-10">
+              <OsModules />
+            </div>
+          </div>
+        </section>
 
-        <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="break-keep text-[0.98rem] leading-relaxed text-slate-600">
-            빨라진 정도는 아직 숫자로 말씀드리지 않아요. 제대로 비교할 <span className="font-semibold text-slate-800">기준을 지금 재고 있어서요.</span>
-          </p>
-          <a
-            href="#inquiry"
-            className="inline-flex shrink-0 items-center justify-center rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700"
-          >
-            오픈 소식 받기
-          </a>
-        </div>
-      </section>
+        {/* 6. 출시 일정 — 무료 체험 없음, 정식 출시 후 월 구독 예정 */}
+        <section id="launch" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16 sm:py-20">
+          <SectionHead
+            eyebrow="언제 쓸 수 있나요?"
+            title={<>2026년 10월부터<br className="sm:hidden" /> 하나씩 열어요</>}
+            desc={
+              <>
+                개발은 거의 끝났고, 지금은 직접 써 보면서 다듬고 있어요. 정식 출시 후에는{' '}
+                <b className="font-bold text-slate-900">월 구독</b>으로 제공할 예정이에요.
+              </>
+            }
+          />
+          <div className="mt-8 sm:mt-10">
+            <OsLaunchSteps />
+          </div>
+
+          <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="break-keep text-[0.98rem] leading-relaxed text-slate-600">
+              빨라진 정도는 아직 숫자로 말씀드리지 않아요. 제대로 비교할 <span className="font-semibold text-slate-800">기준을 지금 재고 있어서요.</span>
+            </p>
+            <a
+              href="#inquiry"
+              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-slate-900 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-slate-700"
+            >
+              오픈 소식 받기
+            </a>
+          </div>
+        </section>
+        </>
+      )}
 
       {/* 5. FAQ + 전자책 + 문의 */}
       <section id="faq" className="scroll-mt-20 border-t border-slate-200 bg-slate-50">

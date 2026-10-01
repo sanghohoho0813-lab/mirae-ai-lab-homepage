@@ -391,7 +391,7 @@ function ProductsTab({ userId, configured }: { userId: string; configured: boole
     return (
       <Card className="text-center">
         <p className="text-base font-bold text-slate-700">아직 이용 중인 상품이 없어요.</p>
-        <p className="mt-1 text-sm text-slate-500">운영 OS 모듈은 2026년 10월부터 차례로 엽니다.</p>
+        <p className="mt-1 text-sm text-slate-500">컨설턴트 운영 OS는 11월 중 오픈 예정이에요.</p>
         <Link to="/my-tools" className="mt-4 inline-flex items-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-700">내 도구함으로 →</Link>
       </Card>
     )
