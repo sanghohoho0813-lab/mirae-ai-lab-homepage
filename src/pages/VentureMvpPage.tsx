@@ -161,8 +161,8 @@ export default function VentureMvpPage() {
           </div>
         )}
 
-        {/* 자주 묻는 질문 — 맨 마지막 CTA 바로 앞 */}
-        <FaqSection items={VENTURE_MVP_FAQ} />
+        {/* 자주 묻는 질문 — 맨 마지막 CTA 바로 앞. 구매 판단에 중요한 5개만 먼저, 나머지는 '질문 더 보기'(AX 페이지와 같은 방식) */}
+        <FaqSection items={VENTURE_MVP_FAQ} featured={5} />
 
         {/* 마지막 CTA — FAQ 가 끝나자마자 이어지도록 위쪽 경계선·여백을 두지 않는다 */}
         <div ref={ctaRef}>
