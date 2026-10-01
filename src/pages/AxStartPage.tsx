@@ -11,8 +11,10 @@ import AxFilms from '../components/ax-showcase/AxFilms'
 import AxFaqSection from '../components/ax-showcase/AxFaqSection'
 import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
-import { AX_GUIDE_PATH, AX_START_PATH, BUSINESS_NAV } from '../lib/businessRoutes'
+import { AX_GUIDE_PATH, AX_START_PATH, BUSINESS_NAV, SAMPLES_PATH, samplesHref } from '../lib/businessRoutes'
+import { SAMPLE_TOTAL } from '../data/portfolioSamples'
 import { useHashScroll, useReturnScroll } from '../lib/businessPageScroll'
+import { saveBusinessReturn } from '../lib/businessServicesReturn'
 import { loadHistory } from '../lib/businessDiagnosisStorage'
 import { rememberInterest, withInterest } from '../lib/interestTrack'
 import { canonicalUrl } from '../lib/site'
@@ -49,7 +51,6 @@ export default function AxStartPage() {
   const location = useLocation()
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice | null>(null)
   // 하단 고정 바의 '실제 AX 보기' 가 같은 패널을 열 수 있도록 상태를 여기서 관리한다
-  const [sampleNavOpen, setSampleNavOpen] = useState(false)
   const isPreviewEmbedded = new URLSearchParams(location.search).has('preview')
 
   // 브라우저 타이틀 / SEO — 자금조달이 아니라 "중소기업 맞춤형 AX" 가 메인으로 읽히게 한다
@@ -129,9 +130,10 @@ export default function AxStartPage() {
               <Link to={AX_DIAG_HREF} className="shine-cta flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-[#D47A4A] px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-black text-[#171B20] shadow-lg shadow-[#D47A4A]/20 transition-transform hover:-translate-y-0.5 hover:bg-[#E8B89A] sm:w-auto">
                 3분 AX Fit 진단 받기
               </Link>
-              <a href="#samples" className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
+              {/* 샘플은 이 페이지 위에도 있지만, 2주 기술사업 빌드와 같이 '샘플 모아보기' 페이지(AX 탭)로 보낸다 */}
+              <Link to={samplesHref('ax')} onClick={() => saveBusinessReturn('samples')} data-ax-cta-samples className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
                 AX 화면 직접 보기
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -176,12 +178,12 @@ export default function AxStartPage() {
       {/* 폰에서 하단 바가 떠 있으면 카톡은 바 안에 들어가 있다 */}
       <KakaoFloat mobileHidden={!atEnd} />
 
-      {/* 스크롤 중 어디서나 AX Preview 로 — 평소엔 비켜서 있는 작은 손잡이 */}
-      {!isPreviewEmbedded && <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} />}
+      {/* 샘플 — PC 는 카톡 버튼 옆 알약, 폰은 아래 고정 바. 2주 기술사업 빌드와 같이 '샘플 모아보기' 페이지로 간다 */}
+      {!isPreviewEmbedded && <SampleQuickNav pillTo={SAMPLES_PATH} pillLabel={`샘플 ${SAMPLE_TOTAL}개 보기`} />}
 
       {/* 히어로에는 버튼이 없어(문장만) 폰 첫 화면에 행동할 곳이 없었다 — 상세 안내처럼 처음부터 하단 바를 띄운다.
           히어로 아래 여백(pb-24)이 바 높이만큼 확보돼 문장이 가려지지 않는다. */}
-      <BusinessStickyCta visible={!atEnd} onOpenSampleNav={() => setSampleNavOpen(true)} diagnosisHref={AX_DIAG_HREF} />
+      <BusinessStickyCta visible={!atEnd} samplesTo={SAMPLES_PATH} onSamplesClick={() => saveBusinessReturn('samples')} diagnosisHref={AX_DIAG_HREF} />
 
       {/* 이 페이지에는 상담 폼을 여는 곳이 없다(마무리는 버튼 두 개만). 상담은 카톡 버튼과 진단 결과에서 연다. */}
       {previewDevice && !isPreviewEmbedded && (

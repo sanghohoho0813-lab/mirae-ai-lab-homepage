@@ -6,6 +6,7 @@
 import { Link } from 'react-router-dom'
 import { AX_PLATFORM_SAMPLES, PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
 import { samplesHref } from '../../lib/businessRoutes'
+import { saveBusinessReturn } from '../../lib/businessServicesReturn'
 
 /** 샘플 창(SampleQuickNav)의 '아이디어 MVP Preview' 묶음 id 와 같다 — 이 페이지에선 여기로 스크롤한다 */
 export const VENTURE_MVP_EXAMPLES_ID = 'mvp-refs'
@@ -97,6 +98,7 @@ export default function VentureMvpExamples() {
         {/* 나머지(업종별 AX)는 '샘플 모아보기' 페이지의 AX 탭으로 — 마지막 카드(AI 코디 점검) 바로 다음에 잇는다 */}
         <Link
           to={samplesHref('ax')}
+          onClick={() => saveBusinessReturn('samples')}
           data-mvp-more-ax
           className="group mt-4 flex min-h-14 items-center justify-between gap-3 rounded-2xl bg-[#171B20] px-5 py-3 text-white shadow-sm transition-colors hover:bg-[#343B44]"
         >

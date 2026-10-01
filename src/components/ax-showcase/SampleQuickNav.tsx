@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AX_PREVIEW_NOTE } from './axFinalHome'
 import { AX_GUIDE_PATH, AX_START_PATH, SHOW_AX_GUIDE } from '../../lib/businessRoutes'
+import { saveBusinessReturn } from '../../lib/businessServicesReturn'
 
 const HEADER_OFFSET = 68
 // PC 알약 — 카톡 버튼 왼쪽에 나란히(창을 여는 버튼 · 샘플 모아보기 링크가 같은 모양)
@@ -158,8 +159,9 @@ export default function SampleQuickNav({
   }
 
   if (pillTo) {
+    // 모아보기에서 돌아오면 보던 위치로(useReturnScroll) — 누르는 순간의 위치를 기억해 둔다
     return (
-      <Link to={pillTo} aria-label={pillLabel} className={PILL_CLASS}>
+      <Link to={pillTo} onClick={() => saveBusinessReturn('samples')} aria-label={pillLabel} className={PILL_CLASS}>
         <span aria-hidden className="text-[1.05rem] leading-none text-[#E8B89A]">▦</span>
         <span className="whitespace-nowrap text-[1.05rem] font-black leading-none sm:text-[1.06rem]">{pillLabel}</span>
       </Link>

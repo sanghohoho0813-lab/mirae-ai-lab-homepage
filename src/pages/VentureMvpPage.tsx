@@ -29,7 +29,8 @@ import { BUSINESS_CHOOSER_PATH, SAMPLES_PATH, VENTURE_MVP_PATH } from '../lib/bu
 import { SAMPLE_TOTAL } from '../data/portfolioSamples'
 import { rememberInterest } from '../lib/interestTrack'
 import { usePageMeta } from '../lib/pageMeta'
-import { useHashScroll } from '../lib/businessPageScroll'
+import { useHashScroll, useReturnScroll } from '../lib/businessPageScroll'
+import { saveBusinessReturn } from '../lib/businessServicesReturn'
 
 const PAGE_TITLE = '기술사업 · MVP · 벤처기업확인 | 미래AI랩'
 const PAGE_DESC =
@@ -60,6 +61,8 @@ export default function VentureMvpPage() {
 
   // 메뉴·다른 페이지에서 구간 주소(#film · #mvp-refs · #faq)로 들어오면 그 구간으로
   useHashScroll()
+  // 샘플 모아보기를 보고 돌아오면 보던 위치로(샘플 버튼을 누를 때 위치를 기억해 둔다)
+  useReturnScroll()
 
   useEffect(() => {
     rememberInterest('venture-mvp')
@@ -184,6 +187,7 @@ export default function VentureMvpPage() {
               <p className="mt-6">
                 <Link
                   to={SAMPLES_HREF}
+                  onClick={() => saveBusinessReturn('samples')}
                   className="inline-flex min-h-11 items-center gap-1.5 px-2 text-[0.95rem] font-semibold text-slate-400 underline decoration-slate-600 underline-offset-4 transition-colors hover:text-white hover:decoration-slate-300"
                 >
                   샘플 {SAMPLE_TOTAL}개 모아보기 <span aria-hidden>→</span>
@@ -215,6 +219,7 @@ export default function VentureMvpPage() {
           }}
           secondary={{
             to: SAMPLES_HREF,
+            onClick: () => saveBusinessReturn('samples'),
             label: (
               <span data-mvp-sticky-samples>
                 <span className="min-[360px]:hidden">샘플 보기</span>

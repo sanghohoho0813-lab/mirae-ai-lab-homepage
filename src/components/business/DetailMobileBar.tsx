@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom'
 import { consultLinks } from '../../config/businessInfo'
 import { HistoryNavInline } from '../HistoryNav'
 
-type Action = { label: ReactNode; ariaLabel?: string } & ({ to: string; onClick?: never } | { onClick: () => void; to?: never })
+// 링크(to)는 누를 때 할 일(onClick, 예: 돌아올 위치 기억)을 함께 받을 수 있다
+type Action = { label: ReactNode; ariaLabel?: string } & ({ to: string; onClick?: () => void } | { onClick: () => void; to?: never })
 
 const BTN =
   'flex min-h-12 min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl px-1.5 text-[0.82rem] font-bold shadow-sm transition-colors min-[380px]:px-2 min-[380px]:text-[0.9rem] min-[420px]:text-[0.96rem]'
@@ -26,7 +27,7 @@ export default function DetailMobileBar({
 }) {
   const render = (a: Action, cls: string) =>
     a.to ? (
-      <Link to={a.to} aria-label={a.ariaLabel} className={cls}>
+      <Link to={a.to} onClick={a.onClick} aria-label={a.ariaLabel} className={cls}>
         {a.label}
       </Link>
     ) : (
