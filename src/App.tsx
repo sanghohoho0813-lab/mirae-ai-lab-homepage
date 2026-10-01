@@ -21,6 +21,8 @@ import { scrollToSection } from './lib/businessPageScroll'
 const SHOW_DETAIL = false
 
 // 컨설턴트 운영 OS 소개 영상(9:16) — 원본·녹음·자막은 media/ax-videos/consultant-v2/
+// ⏸ 잠시 재생하지 않는다(대표님 요청) — 영상 자리에 '준비 중'만 보인다. 다시 열려면 OS_FILM_READY = true
+const OS_FILM_READY = false
 const OS_FILM = {
   mp4: '/consultant-os/os-film.mp4',
   webm: '/consultant-os/os-film.webm',
@@ -347,20 +349,27 @@ function App() {
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={() => film.current?.playWithSound()}
-                  data-os-film-cta
-                  className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-white px-8 py-4 text-lg font-bold text-slate-900 shadow-xl shadow-black/25 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
-                >
-                  <span aria-hidden className="grid h-7 w-7 place-items-center rounded-full bg-sky-400 pl-0.5 text-[0.8rem] text-slate-950">
-                    ▶
-                  </span>
-                  영상 소리 켜고 보기
-                </button>
+                {OS_FILM_READY ? (
+                  <button
+                    type="button"
+                    onClick={() => film.current?.playWithSound()}
+                    data-os-film-cta
+                    className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-white px-8 py-4 text-lg font-bold text-slate-900 shadow-xl shadow-black/25 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
+                  >
+                    <span aria-hidden className="grid h-7 w-7 place-items-center rounded-full bg-sky-400 pl-0.5 text-[0.8rem] text-slate-950">
+                      ▶
+                    </span>
+                    영상 소리 켜고 보기
+                  </button>
+                ) : null}
                 <a
                   href={`#${OS_SIGNUP_ID}`}
-                  className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white/10"
+                  data-os-signup-cta
+                  className={
+                    OS_FILM_READY
+                      ? 'inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white/10'
+                      : 'inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-lg font-bold text-slate-900 shadow-xl shadow-black/25 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0'
+                  }
                 >
                   출시 알림 신청
                 </a>
@@ -385,31 +394,46 @@ function App() {
               </p>
             </div>
 
-            {/* 상세 페이지 대신 영상 한 편 — 화면에 보이면 소리 없이 미리보기, 누르면 소리 켜고 처음부터 */}
+            {/* 상세 페이지 대신 영상 한 편(지금은 준비 중) — 열면 화면에 보일 때 소리 없이 미리보기, 누르면 소리 켜고 처음부터 */}
             <div id="film" className="mt-10 scroll-mt-24 lg:mt-0">
-              <StoryFilm
-                ref={film}
-                dataAttr="os"
-                {...OS_FILM}
-                label="컨설턴트 운영 OS 소개 영상"
-                accent="sky"
-                tone="dark"
-                caption="영상 속 OS 화면은 색감만 살려 다시 그린 예시 화면 · 가상 데이터예요. 실제 화면은 흐리게 한 번만 나와요."
-                end={(replay) => (
-                  <>
-                    <p className="break-keep text-[1.2rem] font-black leading-snug">
-                      출시되면
-                      <br /> 가장 먼저 알려 드릴게요
-                    </p>
-                    <button type="button" onClick={() => scrollToSection(OS_SIGNUP_ID, 'smooth')} className={STORY_END_PRIMARY}>
-                      출시 알림 신청하기 <span aria-hidden>↓</span>
-                    </button>
-                    <button type="button" onClick={replay} className={STORY_END_REPLAY}>
-                      처음부터 다시 보기
-                    </button>
-                  </>
-                )}
-              />
+              {OS_FILM_READY ? (
+                <StoryFilm
+                  ref={film}
+                  dataAttr="os"
+                  {...OS_FILM}
+                  label="컨설턴트 운영 OS 소개 영상"
+                  accent="sky"
+                  tone="dark"
+                  caption="영상 속 OS 화면은 색감만 살려 다시 그린 예시 화면 · 가상 데이터예요. 실제 화면은 흐리게 한 번만 나와요."
+                  end={(replay) => (
+                    <>
+                      <p className="break-keep text-[1.2rem] font-black leading-snug">
+                        출시되면
+                        <br /> 가장 먼저 알려 드릴게요
+                      </p>
+                      <button type="button" onClick={() => scrollToSection(OS_SIGNUP_ID, 'smooth')} className={STORY_END_PRIMARY}>
+                        출시 알림 신청하기 <span aria-hidden>↓</span>
+                      </button>
+                      <button type="button" onClick={replay} className={STORY_END_REPLAY}>
+                        처음부터 다시 보기
+                      </button>
+                    </>
+                  )}
+                />
+              ) : (
+                // 영상 자리 — '준비 중'만. 영상 파일은 받지 않는다
+                <div
+                  data-os-film-soon
+                  className="mx-auto w-full max-w-[400px] rounded-[1.4rem] p-1.5 shadow-[0_30px_70px_-20px_rgba(56,189,248,0.35)] ring-2 ring-sky-400/40"
+                >
+                  <div className="grid aspect-[4/3] place-items-center rounded-[1.1rem] bg-gradient-to-b from-slate-900 to-[#0B1220] px-6 text-center lg:aspect-[9/16]">
+                    <div>
+                      <p className="text-[0.9rem] font-bold tracking-wide text-slate-400">MIRAE AI LAB OS 소개 영상</p>
+                      <p className="mt-3 text-[1.9rem] font-black tracking-tight text-white sm:text-[2.2rem]">준비 중</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>

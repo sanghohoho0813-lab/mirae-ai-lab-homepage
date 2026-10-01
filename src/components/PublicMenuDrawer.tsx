@@ -159,7 +159,7 @@ const CONSULTANT_MENU: MenuConfig = {
       accent: 'violet',
       // 상세 구간은 영상으로 대신했다(/consultants 의 SHOW_DETAIL) — 영상 → 출시 알림 신청 → 전자책
       items: [
-        { label: '소개 영상', desc: '컨설턴트 운영 OS를 영상 한 편으로', to: '/consultants#film' },
+        { label: '소개 영상', desc: '준비 중이에요', to: '/consultants#film' },
         { label: '출시 알림 신청', desc: '이름 · 소속 · 이메일 · 연락처만', to: '/consultants#signup' },
         { label: '실무 전자책', desc: '정책자금 · 무상지원금 · 고용지원금', to: '/consultants#resources' },
       ],
