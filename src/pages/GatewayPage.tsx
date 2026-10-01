@@ -178,7 +178,9 @@ export default function GatewayPage() {
               {/* 모서리 빛 */}
               <span aria-hidden className={`pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full blur-3xl ${TONE[c.tone].glow}`} />
               <span className={`relative text-[0.72rem] font-bold tracking-[0.2em] sm:text-[0.8rem] ${TONE[c.tone].kicker}`}>{c.kicker}</span>
-              <span className="relative mt-2 flex flex-1 items-end justify-between gap-4 sm:mt-5">
+              {/* 두 카드가 대칭으로 보이게 — 제목은 두 카드 모두 같은 높이(위)에서 시작하고, 화살표는 아래에 맞춘다.
+                  (전에는 글 덩어리를 아래로 붙여서, 대표님 카드 설명이 한 줄 늘자 컨설턴트 제목이 아래로 밀렸다) */}
+              <span className="relative mt-2 flex flex-1 items-start justify-between gap-4 sm:mt-5">
                 <span className="min-w-0">
                   <span className={`block text-[1.3rem] font-bold leading-[1.32] tracking-[-0.025em] min-[380px]:text-[1.4rem] sm:text-[1.95rem] sm:leading-[1.25] ${TONE[c.tone].title}`}>
                     {c.lines.map((line) => (
@@ -190,7 +192,7 @@ export default function GatewayPage() {
                 {/* 화살표 — 꽉 찬 원 */}
                 <span
                   aria-hidden
-                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-full transition-all duration-300 group-hover:translate-x-1 sm:h-14 sm:w-14 ${TONE[c.tone].arrow}`}
+                  className={`grid h-10 w-10 shrink-0 self-end place-items-center rounded-full transition-all duration-300 group-hover:translate-x-1 sm:h-14 sm:w-14 ${TONE[c.tone].arrow}`}
                 >
                   <svg viewBox="0 0 20 20" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 10h11M11 5.5 15.5 10 11 14.5" />
