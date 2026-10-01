@@ -29,15 +29,18 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="미래AI랩 — 50인 미만 중소기업을 위한 AX · 기술사업" />
     <meta name="twitter:card" content="summary_large_image" />
-    <!-- 기술사업·MVP 상세는 첫 화면이 그림 한 장이다. 화면 코드(JS)를 다 받은 뒤에 요청하면 늦으므로
-         HTML 을 읽는 즉시 그 그림부터 받기 시작한다. 주소가 다르면 아무것도 하지 않는다. -->
+    <!-- 기술사업·MVP 상세 — PC 첫 화면 오른쪽 그림(벤처기업확인서 + 폰·PC)을 HTML 을 읽는 즉시 받기 시작한다.
+         폰에서는 그 그림을 숨기므로 받지 않는다(media). 주소가 다르면 아무것도 하지 않는다. -->
     <script>
       if (location.pathname.replace(/\/+$/, '') === '/business-services/venture-mvp') {
         var l = document.createElement('link')
         l.rel = 'preload'
         l.as = 'image'
         l.type = 'image/webp'
-        l.href = '/business/venture-mvp/01.webp'
+        l.media = '(min-width: 1024px)'
+        l.setAttribute('imagesrcset', '/business/venture-mvp/hero-visual-1000.webp 1000w, /business/venture-mvp/hero-visual.webp 1513w')
+        l.setAttribute('imagesizes', '540px')
+        l.href = '/business/venture-mvp/hero-visual.webp'
         l.setAttribute('fetchpriority', 'high')
         document.head.appendChild(l)
       }

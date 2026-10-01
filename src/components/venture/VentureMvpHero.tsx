@@ -3,14 +3,11 @@
 //   결과물은 '서비스(앱)'가 아니라 '회사의 성장(벤처기업)'이라는 컨설팅 관점 — 개발 외주사처럼 보이지 않게 한다.
 // ⚠️ '벤처인증까지'처럼 인증을 약속하는 표현은 쓰지 않는다 → '벤처기업확인 신청까지'.
 // ⚠️ 가격·선착순은 서비스 선택 페이지 01 카드와 같은 숫자여야 한다(정상가 500만원 → 런칭 파트너 300만원 · 선착순 5개사).
-import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
 import { VENTURE_FEE_SHORT } from '../../data/ventureFee'
+import Orbit from '../business/VisualOrbit'
 
 
 export default function VentureMvpHero() {
-  // PC 오른쪽 — 실제로 눌러 볼 수 있는 자체 데모 한 장(광고처럼 '화면'이 먼저 보이게)
-  const demo = PORTFOLIO_SAMPLES.find((s) => s.slug === 'pawbeauty')
-
   return (
     <section data-mvp-hero className="relative overflow-hidden bg-[#171B20] text-white">
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-32 h-[26rem] w-[26rem] rounded-full bg-[#D47A4A]/25 blur-3xl" />
@@ -64,40 +61,31 @@ export default function VentureMvpHero() {
           </div>
         </div>
 
-        {/* PC 오른쪽 — 실제로 눌러 볼 수 있는 자체 데모 화면 한 장 */}
-        {demo && (
-          <figure style={{ animationDelay: '0.3s' }} className="hero-anim mt-10 hidden lg:mt-0 lg:block">
-            {/* 화면을 눌러도 데모가 열린다. 키보드는 아래 '직접 눌러 보기' 링크 하나로 충분해 여기선 탭 순서에서 뺀다 */}
-            <a
-              href={demo.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              tabIndex={-1}
-              aria-hidden
-              data-mvp-hero-demo
-              className="block overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl shadow-black/50 transition-transform duration-200 hover:-translate-y-1 motion-reduce:hover:translate-y-0"
-            >
-              <div aria-hidden className="flex items-center gap-1.5 border-b border-slate-200 bg-slate-100 px-3 py-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-rose-300" />
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
-                <span className="ml-2 truncate rounded bg-white px-2 py-0.5 text-[0.72rem] text-slate-400">{demo.name}</span>
-              </div>
-              <img src={demo.imgSm} alt={demo.alt} width={720} height={450} className="block h-auto w-full" />
-            </a>
-            <figcaption className="mt-3 text-center text-[0.85rem] text-slate-400">
-              미래AI랩이 직접 만든 MVP 예시 · {demo.name}{' '}
-              <a
-                href={demo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ml-1 font-bold text-[#E8B89A] underline decoration-[#E8B89A]/40 underline-offset-4 hover:text-white"
-              >
-                직접 눌러 보기 ↗
-              </a>
-            </figcaption>
-          </figure>
-        )}
+        {/* PC 오른쪽 — 서비스 선택 01 카드와 같은 그림(벤처기업확인서 + 같은 MVP 를 띄운 폰·PC)을 고화질로.
+            누르는 곳이 아니다(대표님 요청). 뒤에서 카드와 같은 금색 궤도가 천천히 돌고, 그림은 살짝 떠 있다.
+            폰에서는 숨긴다(lazy 라 폰은 그림을 받지도 않는다). 원본: 대표님 그림 1536×1024 → 투명 배경 1513×981 */}
+        <figure data-mvp-hero-visual style={{ animationDelay: '0.3s' }} className="hero-anim mt-10 hidden lg:mt-0 lg:block">
+          <div className="relative aspect-[10/7] w-full">
+            <Orbit tone="dark" shape="wide" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                src="/business/venture-mvp/hero-visual.webp"
+                srcSet="/business/venture-mvp/hero-visual-1000.webp 1000w, /business/venture-mvp/hero-visual.webp 1513w"
+                sizes="(min-width: 1024px) 540px, 1px"
+                width={1513}
+                height={981}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+                alt="벤처기업확인서 예시와, 같은 MVP 를 띄운 스마트폰·PC 화면(미래AI랩 자체 데모)"
+                className="card-float block w-full select-none drop-shadow-[0_24px_40px_rgba(0,0,0,0.55)]"
+              />
+            </div>
+          </div>
+          <figcaption className="mt-2 text-center text-[0.85rem] text-slate-400">
+            확인서와 화면은 예시예요 · 화면은 미래AI랩이 직접 만든 MVP 데모예요
+          </figcaption>
+        </figure>
       </div>
     </section>
   )
