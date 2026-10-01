@@ -28,6 +28,7 @@ import { AX_START_PATH, SHOW_AX_GUIDE, axStartHashFor } from './lib/businessRout
 // 이제 들어온 화면의 코드만 받는다. 배포 직후 파일 이름이 바뀌어 못 받으면 lazyPage 가 한 번 새로고침한다.
 const App = lazyPage(() => import('./App.tsx'))
 const LoginPage = lazyPage(() => import('./pages/LoginPage'))
+const SamplesPage = lazyPage(() => import('./pages/SamplesPage'))
 const SignupPage = lazyPage(() => import('./pages/SignupPage'))
 const MyToolsPage = lazyPage(() => import('./pages/MyToolsPage'))
 const ToolPassPage = lazyPage(() => import('./pages/ToolPassPage'))
@@ -125,6 +126,8 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/business-services" element={<BusinessServicesPage />} />
               <Route path="/business-services/ax-start" element={<AxStartPage />} />
               <Route path="/business-services/venture-mvp" element={<VentureMvpPage />} />
+              {/* 직접 만든 샘플 모아보기(산업별 AX + 아이디어 MVP) — 상품 페이지와 따로 둔 중립 페이지 */}
+              <Route path="/business-services/samples" element={<SamplesPage />} />
               {/* 스토리 04~12 + Preview·MVP·실제 프로젝트·FAQ — 잠시 숨김(SHOW_AX_GUIDE). 숨긴 동안에는 AX 페이지로 보낸다 */}
               <Route path="/business-services/ax" element={SHOW_AX_GUIDE ? <BusinessAxGuidePage /> : <AxGuideHidden />} />
               <Route path="/ax-industries/:slug" element={<AxIndustryDetailPage />} />

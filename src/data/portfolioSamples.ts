@@ -326,3 +326,6 @@ export const PORTFOLIO_SECTION = {
   lead: '업종이 달라도, 아이디어가 무엇이든 실제 동작하는 화면으로 만들어 드립니다.',
   note: '미래AI랩이 직접 기획하고 만든 MVP 10종입니다. 고객사 실적이 아닌 자체 데모이고, 누르면 새 창으로 열립니다.',
 } as const
+
+/** 직접 만든 샘플 총개수(산업별 AX + 아이디어 MVP) — '샘플 22개 보기' 같은 숫자는 모두 여기서 가져온다 */
+export const SAMPLE_TOTAL = AX_PLATFORM_SAMPLES.length + PORTFOLIO_SAMPLES.length

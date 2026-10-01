@@ -16,7 +16,7 @@ const NW = 'whitespace-nowrap'
  *    2문단은 AX 가 실제로 하는 일(시간·비용은 줄이고 매출은 올린다). 서비스 선택 02 카드도 같은 말을 쓴다.
  *  승인·선정을 약속하는 표현은 절대 쓰지 않는다('경쟁력 있는 회사로' 까지만). */
 // 첫 화면 상자 세 칸 — 글 대신 큰 화살표로 '무엇이 달라지는지' 한눈에(시간·비용 ↓ · 매출 ↑ · 혁신기업)
-const ARROW = 'h-7 w-7 sm:h-8 sm:w-8'
+const ARROW = 'h-[1.925rem] w-[1.925rem] sm:h-[2.2rem] sm:w-[2.2rem]'
 const AX_HERO_GAINS = [
   {
     label: '시간·비용',
@@ -80,23 +80,23 @@ export function AxHeroV2() {
         {/* 글자가 많으면 눈에 안 들어와서(대표님 피드백), 2주 기술사업 빌드 첫 화면처럼 '짧은 한 문단 + 상자 하나' 로 둔다.
             문단: 왜(심사위원·투자자는 이미 시도하고 실제로 보여 주는 혁신기업을 더 선호한다).
             상자: 무엇을 해 주나(AI와 데이터로 일하는 회사로 → 시간·비용 ↓ · 매출 ↑ · 혁신기업으로) — 글 대신 큰 화살표로 한눈에 */}
-        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-3xl break-keep text-[1.22rem] font-medium leading-[1.7] text-[#E7EAEE] max-[359px]:mt-5 max-[359px]:text-[1.08rem] sm:mt-8 sm:text-[1.4rem]">
+        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-3xl break-keep text-[1.22rem] font-medium leading-[1.7] text-[#E7EAEE] [@media(max-width:639px)_and_(max-height:700px)]:mt-5 max-[359px]:mt-5 max-[359px]:text-[1.08rem] sm:mt-8 sm:text-[1.4rem]">
           <span className={NW}>심사위원과 투자자는</span>{' '}
           <span className={NW}><b className="font-bold text-[#E8B89A]">이미 시도하고</b></span>{' '}
           <span className={NW}><b className="font-bold text-[#E8B89A]">실제로 보여 주는</b></span>{' '}
           <span className={NW}><b className="font-bold text-[#FAFAF8]">혁신기업</b>을</span> <span className={NW}>더 선호해요.</span>
         </p>
-        <div data-ax-hero-card style={{ animationDelay: '0.46s' }} className="hero-anim mt-7 w-full max-w-xl rounded-2xl border border-white/10 bg-white/[0.04] p-4 max-[359px]:mt-5 sm:mt-8 sm:p-5">
-          <p className="break-keep text-[1rem] font-medium leading-snug text-slate-300 sm:text-[1.08rem]">
+        <div data-ax-hero-card style={{ animationDelay: '0.46s' }} className="hero-anim mt-7 w-full max-w-xl rounded-2xl border border-white/10 bg-white/[0.04] p-4 [@media(max-width:639px)_and_(max-height:700px)]:mt-5 [@media(max-width:639px)_and_(max-height:700px)]:py-3.5 max-[359px]:mt-5 sm:mt-8 sm:p-5">
+          <p className="break-keep text-[1.1rem] font-medium leading-snug text-slate-300 sm:text-[1.19rem]">
             <span className={NW}>대표님의 회사를</span> <span className={NW}><b className="font-bold text-[#FAFAF8]">AI와 데이터로</b></span>{' '}
             <span className={NW}>일하는 회사로</span>
           </p>
           <ul className="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:gap-3">
             {AX_HERO_GAINS.map((g) => (
-              <li key={g.label} className="flex flex-col items-center rounded-xl bg-white/[0.05] px-1.5 py-3 text-center ring-1 ring-inset ring-white/10 sm:py-4">
-                <span className="whitespace-nowrap text-[clamp(0.86rem,3.9vw,1.02rem)] font-black text-[#FAFAF8] sm:text-[1.08rem]">{g.label}</span>
-                <span aria-hidden className="my-1.5 text-[#E8B89A]">{g.icon}</span>
-                <span className="whitespace-nowrap text-[clamp(0.76rem,3.4vw,0.88rem)] font-semibold text-slate-400 sm:text-[0.92rem]">{g.note}</span>
+              <li key={g.label} className="flex flex-col items-center rounded-xl bg-white/[0.05] px-1.5 py-3 text-center ring-1 ring-inset ring-white/10 [@media(max-width:639px)_and_(max-height:700px)]:py-2.5 sm:py-4">
+                <span className="whitespace-nowrap text-[clamp(0.95rem,4.3vw,1.12rem)] font-black text-[#FAFAF8] sm:text-[1.19rem]">{g.label}</span>
+                <span aria-hidden className="my-1.5 text-[#E8B89A] [@media(max-width:639px)_and_(max-height:700px)]:my-1">{g.icon}</span>
+                <span className="whitespace-nowrap text-[clamp(0.84rem,3.75vw,0.97rem)] font-semibold text-slate-400 sm:text-[1.01rem]">{g.note}</span>
               </li>
             ))}
           </ul>

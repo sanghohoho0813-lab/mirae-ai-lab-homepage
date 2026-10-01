@@ -34,3 +34,10 @@ export const BUSINESS_NAV = SHOW_AX_GUIDE
       { href: `${AX_START_PATH}#samples`, label: 'AX Preview' },
       { href: `${AX_START_PATH}#faq`, label: '자주 묻는 질문' },
     ] as const)
+
+/** 직접 만든 샘플 모아보기 — 어느 상품 페이지에도 속하지 않는 중립 페이지(산업별 AX + 아이디어 MVP).
+ *  2주 기술사업 빌드 페이지의 '샘플 보기'가 AX 상품 페이지로 넘어가지 않게 이리로 보낸다. */
+export const SAMPLES_PATH = '/business-services/samples'
+export type SampleTab = 'all' | 'ax' | 'mvp'
+/** 탭을 골라 연다 — 예: samplesHref('ax') → /business-services/samples?tab=ax */
+export const samplesHref = (tab?: Exclude<SampleTab, 'all'>) => (tab ? `${SAMPLES_PATH}?tab=${tab}` : SAMPLES_PATH)

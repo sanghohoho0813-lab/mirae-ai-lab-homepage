@@ -5,11 +5,14 @@
 //  - 누르면 두 묶음이 펼쳐지고, 각 묶음이 "어떤 화면인지" 한 줄로 보인다.
 //  - 개수(20개)를 핵심 메시지처럼 강조하지 않는다. 산업별 AX Preview 는 Concept Prototype 임을 함께 알린다.
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AX_PREVIEW_NOTE } from './axFinalHome'
 import { AX_GUIDE_PATH, AX_START_PATH, SHOW_AX_GUIDE } from '../../lib/businessRoutes'
 
 const HEADER_OFFSET = 68
+// PC 알약 — 카톡 버튼 왼쪽에 나란히(창을 여는 버튼 · 샘플 모아보기 링크가 같은 모양)
+const PILL_CLASS =
+  'fixed bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] right-[4.75rem] z-40 hidden items-center sm:inline-flex gap-1.5 rounded-full bg-[#171B20]/92 px-3.5 py-3 text-white shadow-lg shadow-slate-900/25 ring-1 ring-white/15 backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-[#171B20] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A] sm:bottom-6 sm:right-[10.25rem] sm:px-4'
 
 type Group = {
   id: string
@@ -44,12 +47,15 @@ export default function SampleQuickNav({
   open: openProp,
   onOpenChange,
   pillLabel = 'AX Preview',
+  pillTo,
 }: {
   /** 하단 고정 바 버튼처럼 바깥에서 열 때 사용 (미지정이면 스스로 관리) */
   open?: boolean
   onOpenChange?: (open: boolean) => void
   /** PC 알약 글자 — 기술사업·MVP 페이지는 '샘플 22개 보기' */
   pillLabel?: string
+  /** 있으면 창을 열지 않고 이 주소(샘플 모아보기 페이지)로 가는 알약만 보여 준다 */
+  pillTo?: string
 } = {}) {
   const [ownOpen, setOwnOpen] = useState(false)
   const open = openProp ?? ownOpen
@@ -151,6 +157,15 @@ export default function SampleQuickNav({
     })
   }
 
+  if (pillTo) {
+    return (
+      <Link to={pillTo} aria-label={pillLabel} className={PILL_CLASS}>
+        <span aria-hidden className="text-[1.05rem] leading-none text-[#E8B89A]">▦</span>
+        <span className="whitespace-nowrap text-[1.05rem] font-black leading-none sm:text-[1.06rem]">{pillLabel}</span>
+      </Link>
+    )
+  }
+
   return (
     <>
       {/* 닫힌 상태 — 카톡 버튼 왼쪽, 같은 높이에 나란히 (PC 전용) */}
@@ -160,7 +175,7 @@ export default function SampleQuickNav({
           onClick={() => setOpen(true)}
           aria-expanded={false}
           aria-label={`${pillLabel} 열기`}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] right-[4.75rem] z-40 hidden items-center sm:inline-flex gap-1.5 rounded-full bg-[#171B20]/92 px-3.5 py-3 text-white shadow-lg shadow-slate-900/25 ring-1 ring-white/15 backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-[#171B20] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D47A4A] sm:bottom-6 sm:right-[10.25rem] sm:px-4"
+          className={PILL_CLASS}
         >
           <span aria-hidden className="text-[1.05rem] leading-none text-[#E8B89A]">▦</span>
           <span className="whitespace-nowrap text-[1.05rem] font-black leading-none sm:text-[1.06rem]">{pillLabel}</span>

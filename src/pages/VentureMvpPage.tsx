@@ -25,7 +25,8 @@ import DetailMobileBar from '../components/business/DetailMobileBar'
 import FaqSection from '../components/ax-showcase/AxFaqSection'
 import { VENTURE_MVP_FAQ } from '../data/ventureMvpFaq'
 import { VENTURE_MVP_DIR, VENTURE_MVP_HOTSPOTS, VENTURE_MVP_IMAGES, type VentureMvpHotspot } from '../data/ventureMvpImages'
-import { AX_SAMPLES_HREF, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
+import { BUSINESS_CHOOSER_PATH, SAMPLES_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
+import { SAMPLE_TOTAL } from '../data/portfolioSamples'
 import { rememberInterest } from '../lib/interestTrack'
 import { usePageMeta } from '../lib/pageMeta'
 
@@ -37,8 +38,8 @@ const PAGE_DESC =
 const CONSULT_SOURCE = '기술사업·MVP 상세페이지 (venture-mvp)'
 /** 상담카드에 이미 선택된 상태로 표시할 메인 신청 서비스 — 추가 관심 항목과 섞이지 않는다 */
 const PRESET_SERVICE = '기술사업 · MVP · 벤처기업확인 패키지'
-// 22개 샘플(업종별 AX 12 + 아이디어 MVP 10)은 AX 페이지의 '직접 만든 화면 22개'에 모여 있다 — 같은 곳으로 보낸다
-const SAMPLES_HREF = AX_SAMPLES_HREF
+// 샘플(업종별 AX + 아이디어 MVP)은 상품 페이지가 아닌 '샘플 모아보기' 페이지로 보낸다 — AX 상품 페이지로 넘어가지 않게
+const SAMPLES_HREF = SAMPLES_PATH
 // 09 "벤처기업확인 혜택 보기" — 벤처인증 패키지(혁신성장형) 상세에 제도 혜택이 정리돼 있다
 const VENTURE_BENEFIT_HREF = '/business-services/venture-innovation'
 const HOTSPOT_CLS =
@@ -53,7 +54,6 @@ export default function VentureMvpPage() {
   usePageMeta(PAGE_TITLE, PAGE_DESC, VENTURE_MVP_PATH)
   const [atEnd, setAtEnd] = useState(false)
   const [consultOpen, setConsultOpen] = useState(false)
-  const [sampleNavOpen, setSampleNavOpen] = useState(false)
   const ctaRef = useRef<HTMLDivElement>(null)
   const filmRef = useRef<VentureMvpFilmHandle>(null)
 
@@ -182,7 +182,7 @@ export default function VentureMvpPage() {
                   to={SAMPLES_HREF}
                   className="inline-flex min-h-11 items-center gap-1.5 px-2 text-[0.95rem] font-semibold text-slate-400 underline decoration-slate-600 underline-offset-4 transition-colors hover:text-white hover:decoration-slate-300"
                 >
-                  22개 샘플 더 보기 <span aria-hidden>→</span>
+                  샘플 {SAMPLE_TOTAL}개 모아보기 <span aria-hidden>→</span>
                 </Link>
               </p>
             </div>
@@ -194,11 +194,10 @@ export default function VentureMvpPage() {
       {/* 폰에서 하단 바가 떠 있으면 카톡은 바 안에 들어가 있다 */}
       <KakaoFloat mobileHidden={barVisible} />
 
-      {/* 샘플 창 — PC 는 카톡 버튼 옆 알약, 모바일은 아래 고정 바 오른쪽 버튼이 연다(AX 페이지와 같은 방식).
-          '아이디어 MVP' 는 이 페이지의 예시로, '산업별 AX' 는 AX 상세 안내로 보낸다 */}
-      <SampleQuickNav open={sampleNavOpen} onOpenChange={setSampleNavOpen} pillLabel="샘플 22개 보기" />
+      {/* 샘플 — PC 는 카톡 버튼 옆 알약, 모바일은 아래 고정 바 오른쪽 버튼. 둘 다 '샘플 모아보기' 페이지로 간다 */}
+      <SampleQuickNav pillTo={SAMPLES_HREF} pillLabel={`샘플 ${SAMPLE_TOTAL}개 보기`} />
 
-      {/* 모바일 하단 고정 바 — AX 페이지와 같은 모양: 상담 신청 · 샘플 22개 보기 · 카톡 · 뒤로·앞으로 */}
+      {/* 모바일 하단 고정 바 — AX 페이지와 같은 모양: 상담 신청 · 샘플 보기 · 카톡 · 뒤로·앞으로 */}
       {barVisible && (
         <DetailMobileBar
           dataAttrs={{ 'data-mvp-sticky': '' }}
@@ -211,11 +210,11 @@ export default function VentureMvpPage() {
             ),
           }}
           secondary={{
-            onClick: () => setSampleNavOpen(true),
+            to: SAMPLES_HREF,
             label: (
               <span data-mvp-sticky-samples>
                 <span className="min-[360px]:hidden">샘플 보기</span>
-                <span className="hidden min-[360px]:inline">샘플 22개 보기</span>
+                <span className="hidden min-[360px]:inline">샘플 {SAMPLE_TOTAL}개 보기</span>
               </span>
             ),
           }}

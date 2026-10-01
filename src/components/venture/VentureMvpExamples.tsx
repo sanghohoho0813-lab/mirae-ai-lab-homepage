@@ -4,8 +4,8 @@
 //  - 폰·태블릿은 가로 한 줄 카드(썸네일 + 글) 목록, PC 는 다섯 칸 × 두 줄.
 // ⚠️ 고객사 사례가 아니다 — 아래에 '자체 데모'라고 분명히 적는다. 없는 성과·숫자는 붙이지 않는다.
 import { Link } from 'react-router-dom'
-import { PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
-import { AX_SAMPLES_HREF } from '../../lib/businessRoutes'
+import { AX_PLATFORM_SAMPLES, PORTFOLIO_SAMPLES } from '../../data/portfolioSamples'
+import { samplesHref } from '../../lib/businessRoutes'
 
 /** 샘플 창(SampleQuickNav)의 '아이디어 MVP Preview' 묶음 id 와 같다 — 이 페이지에선 여기로 스크롤한다 */
 export const VENTURE_MVP_EXAMPLES_ID = 'mvp-refs'
@@ -94,14 +94,14 @@ export default function VentureMvpExamples() {
           ))}
         </ul>
 
-        {/* 22개 중 나머지 12개(업종별 AX)는 AX 페이지에 있다 — 마지막 카드(AI 코디 점검) 바로 다음에 잇는다 */}
+        {/* 나머지(업종별 AX)는 '샘플 모아보기' 페이지의 AX 탭으로 — 마지막 카드(AI 코디 점검) 바로 다음에 잇는다 */}
         <Link
-          to={AX_SAMPLES_HREF}
+          to={samplesHref('ax')}
           data-mvp-more-ax
           className="group mt-4 flex min-h-14 items-center justify-between gap-3 rounded-2xl bg-[#171B20] px-5 py-3 text-white shadow-sm transition-colors hover:bg-[#343B44]"
         >
           <span className="break-keep text-[1rem] font-bold leading-snug sm:text-[1.05rem]">
-            업종별 <b className="font-black text-[#E8B89A]">AX 샘플 12개</b> 더 보기
+            업종별 <b className="font-black text-[#E8B89A]">AX 샘플 {AX_PLATFORM_SAMPLES.length}개</b> 더 보기
             <span className="ml-1.5 hidden text-[0.9rem] font-semibold text-slate-400 sm:inline">— 음식점·학원·헤어숍 등 운영 화면</span>
           </span>
           <span aria-hidden className="shrink-0 text-[1.2rem] font-black text-[#E8B89A] transition-transform group-hover:translate-x-0.5">
