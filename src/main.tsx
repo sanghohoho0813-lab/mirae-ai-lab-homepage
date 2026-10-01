@@ -18,6 +18,7 @@ import GuestOnly from './components/auth/GuestOnly'
 import ScrollToTop from './components/ScrollToTop'
 import CanonicalLink from './components/CanonicalLink'
 import HistoryNav, { installHistoryNav } from './components/HistoryNav'
+import BottomBarTint from './components/BottomBarTint'
 import AppErrorBoundary from './components/AppErrorBoundary'
 import RouteFallback from './components/RouteFallback'
 import { lazyPage, reloadOnce } from './lib/chunkRecovery'
@@ -86,6 +87,7 @@ createRoot(document.getElementById('root')!).render(
           <ScrollToTop />
           <CanonicalLink />
           <HistoryNav />
+          <BottomBarTint />
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<GatewayPage />} />

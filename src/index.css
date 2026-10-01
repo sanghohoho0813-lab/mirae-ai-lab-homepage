@@ -208,6 +208,7 @@
   [data-live-status] {
     display: none !important;
   }
+  html,
   body {
     background: #fff !important;
   }

@@ -8,6 +8,15 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 휴대폰 맨 아래 시스템 바 띠 색 — 화면이 그려지기 전에도 어두운 첫 화면 아래에 흰 띠가 번쩍이지 않게 미리 맞춘다.
+         그린 뒤에는 BottomBarTint 가 화면 맨 아래 내용 색을 따라간다 -->
+    <script>
+      try {
+        var p = location.pathname
+        var c = p === '/' ? '#0B0E12' : p === '/consultants' || p.indexOf('/ax-industries/') === 0 ? '#020618' : ''
+        if (c) document.documentElement.style.backgroundColor = c
+      } catch (e) {}
+    </script>
     <!-- Google Search Console 소유권 확인 -->
     <meta name="google-site-verification" content="btggGlr9ZK98b7m2qYQ0oK00gw0RtENu-0-cAaER_zE" />
     <title>미래AI랩 | 경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤형 AX</title>
