@@ -113,8 +113,8 @@ export default function AxStartPage() {
       {/* 3. 직접 만든 화면 22개(업종별 AX와 고객 플랫폼 12 + 아이디어 MVP 10) */}
       <AxSamplesBand />
 
-      {/* 4. FAQ */}
-      <AxFaqSection />
+      {/* 4. FAQ — 구매 판단에 중요한 5개만 먼저, 나머지는 '질문 더 보기' */}
+      <AxFaqSection featured={5} />
 
       {/* 5. 마무리 — 버튼 두 개만 */}
       <div ref={bridgeRef}>
@@ -132,9 +132,13 @@ export default function AxStartPage() {
               </Link>
               {/* 샘플은 이 페이지 위에도 있지만, 2주 기술사업 빌드와 같이 '샘플 모아보기' 페이지(AX 탭)로 보낸다 */}
               <Link to={samplesHref('ax')} onClick={() => saveBusinessReturn('samples')} data-ax-cta-samples className="flex w-full max-w-xs items-center justify-center rounded-xl border border-[#D47A4A]/35 bg-[#343B44]/45 px-7 py-4 text-[1.26rem] sm:text-[1.15rem] font-bold text-white transition-colors hover:bg-[#343B44] sm:w-auto">
-                AX 화면 직접 보기
+                비슷한 업종 화면 보기
               </Link>
             </div>
+            {/* 상담 직전 부담 덜기 — 진단 흐름 그대로의 사실만(결과 먼저 화면에, 연락처는 상담을 원할 때만 받는다) */}
+            <p data-ax-cta-ease className="mx-auto mt-5 max-w-md break-keep text-[0.92rem] leading-relaxed text-slate-400 sm:text-[0.98rem]">
+              로그인 없이 바로 시작해요. 결과는 화면에서 먼저 보여 드리고, 연락처는 상담을 원하실 때만 받아요.
+            </p>
           </div>
         </section>
       </div>

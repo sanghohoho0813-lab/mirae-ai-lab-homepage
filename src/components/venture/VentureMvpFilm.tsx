@@ -10,6 +10,7 @@
 //  - 영상 원본(HyperFrames)·녹음·자막 파일은 media/venture-mvp-reel/ 에 있다. 게시본은 대표님이 한 번 더 다듬은 최종본.
 // ⚠️ 영상 속 화면은 자체 데모다 — 아래 안내 문구를 지우지 않는다.
 import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'react'
+import PlaybackSpeed from '../video/PlaybackSpeed'
 
 const FILM_MP4 = '/business/venture-mvp/mvp-reel.mp4'
 const FILM_WEBM = '/business/venture-mvp/mvp-reel.webm'
@@ -190,7 +191,9 @@ export default function VentureMvpFilm({
               </div>
             )}
           </div>
-          <figcaption className="mt-3 break-keep text-center text-[0.82rem] leading-relaxed text-[#6B7680]">
+          {/* 재생 속도 1배 · 1.25배 · 1.5배 */}
+          <PlaybackSpeed videoRef={videoRef} label="2주 기술사업 빌드 소개 영상" />
+          <figcaption className="mt-2 break-keep text-center text-[0.82rem] leading-relaxed text-[#6B7680]">
             영상 속 화면은 미래AI랩이 직접 만든 자체 데모예요. 고객사 사례가 아니에요.
           </figcaption>
         </figure>

@@ -2,7 +2,7 @@
 // 이미지가 아니라 실제 텍스트라 검색·복사·읽기 도구가 읽을 수 있고, 내용이 바뀌면 여기만 고치면 된다.
 // 같은 모양의 FAQ 를 2주 기술사업 빌드 페이지도 쓴다(items 로 질문 목록만 바꿔 끼운다).
 // 답이 길어 보이지 않게 핵심 키워드·문장만 '**굵게**' 로 표시한다(검은 굵은 글씨, 답 하나에 한두 곳만).
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { VENTURE_BENEFITS } from '../../data/ventureBenefits'
 import { VENTURE_FEE_FAQ } from '../../data/ventureFee'
 
@@ -48,7 +48,7 @@ export type FaqItem = {
   tail?: string
 }
 
-// 두 상품 FAQ 공통 — 위쪽(두 번째)에 둔다. 개발사를 깎아내리기보다 '보통 이렇다'로 차이를 설명한다.
+// 두 상품 FAQ 공통 — 위쪽에 둔다(AX 는 첫 번째, 2주 기술사업 빌드는 두 번째). 개발사를 깎아내리기보다 '보통 이렇다'로 차이를 설명한다.
 export const DIFF_FAQ: FaqItem = {
   q: '개발사나 컨설팅 회사와는 무엇이 다른가요?',
   a: '개발사는 보통 **요청받은 것을 만드는 데 집중**해요. 기획·디자인·개발로 사람과 역할이 나뉘어 있어, 말씀하신 내용이 반영되기까지 소통이 길어지고 그만큼 시간과 비용도 늘어요.\n\n컨설팅 회사는 사업계획과 서류에는 강하지만 **직접 만들지는 않는 경우가 많아요.** 기본적인 개발은 하더라도, 프로그램을 기획하고 구조를 짜서 고객이 보기 편하고 쓰기 편한 화면까지 완성하기는 쉽지 않아요.',
@@ -62,11 +62,16 @@ export const DIFF_FAQ: FaqItem = {
 }
 
 export const AX_FAQ: readonly FaqItem[] = [
-  {
-    q: 'AX가 정확히 뭔가요?',
-    a: '**AI와 데이터로 회사가 일하는 방식을 바꾸는 일**이에요. 고객 요청이 들어오면 담당자 할 일로 바로 잡히고, 급하거나 위험한 건 AI가 먼저 알려 줘요. 직원이 처리한 결과는 다시 데이터로 쌓여요.',
-  },
+  // ── 먼저 보이는 5개 — 구매 판단에 가장 중요한 질문(차이 · 시작 비용 · 기존 시스템 · 벤처기업확인 · 보장 여부) ──
   DIFF_FAQ,
+  {
+    q: '처음부터 큰돈을 들여 전부 만들어야 하나요?',
+    a: '아니요. **효과가 가장 큰 핵심 업무부터 시작해요.** 범위는 AX만인지, 플랫폼·포털까지인지, MVP인지와 회사 상황에 따라 달라요. 개발 단계별로 선정산하는 방식도 있고, 현금이 빠듯하면 착수금 일부만 컨설팅 비용으로 받고 **개발비는 자금 조달 뒤 정산하는 방식**도 있어요. 자세한 건 상담에서 안내해 드려요.',
+  },
+  {
+    q: '기존 ERP를 없애야 하나요?',
+    a: '**아니요, 그대로 쓰시면 돼요.** ERP·POS·CRM은 일어난 일을 기록하고 관리하는 도구고, AX는 그 위에 얹는 한 층이에요. 데이터를 이어 AI가 우선순위를 추천하고 직원이 실행하니, 대표님이 그때그때 가장 좋은 결정을 내리기 쉬워지죠. 단, API 연결이 어려우면 매번 손으로 입력하거나 엑셀을 뽑아 넣어야 할 수 있어요. **이건 꼭 상담에서 확인해 주세요.**',
+  },
   // 벤처기업확인은 어떤 상품이든 기본 포함(AX 영상 2와 같은 원칙) — 혜택 숫자는 2주 기술사업 빌드 FAQ 와 같은 것을 쓴다
   {
     q: 'AX 풀 패키지에도 벤처기업확인이 포함되나요?',
@@ -77,9 +82,10 @@ export const AX_FAQ: readonly FaqItem[] = [
     q: 'AX나 MVP, 플랫폼을 만들면 정책자금이나 투자에 선정이 보장되나요?',
     a: 'AX, MVP, 플랫폼, 특허 어느 것도 정책자금·정부지원사업·투자 **선정을 보장하지 않습니다.** 심사에서는 재무, 신용, 시장성, 기술성, 사업성을 함께 봅니다. 그래도 새 분야로 커 나갈 회사라는 걸 눈으로 보여 줄 수 있어, **심사에서 받는 인상은 완전히 달라집니다.** 큰 가점 요소라고 보셔도 됩니다.',
   },
+  // ── 이 아래는 '질문 더 보기'를 누르면 보인다 ──
   {
-    q: '기존 ERP를 없애야 하나요?',
-    a: '**아니요, 그대로 쓰시면 돼요.** ERP·POS·CRM은 일어난 일을 기록하고 관리하는 도구고, AX는 그 위에 얹는 한 층이에요. 데이터를 이어 AI가 우선순위를 추천하고 직원이 실행하니, 대표님이 그때그때 가장 좋은 결정을 내리기 쉬워지죠. 단, API 연결이 어려우면 매번 손으로 입력하거나 엑셀을 뽑아 넣어야 할 수 있어요. **이건 꼭 상담에서 확인해 주세요.**',
+    q: 'AX가 정확히 뭔가요?',
+    a: '**AI와 데이터로 회사가 일하는 방식을 바꾸는 일**이에요. 고객 요청이 들어오면 담당자 할 일로 바로 잡히고, 급하거나 위험한 건 AI가 먼저 알려 줘요. 직원이 처리한 결과는 다시 데이터로 쌓여요.',
   },
   {
     q: '그룹웨어나 인사·급여 같은 내부 시스템도 만들어주시나요?',
@@ -106,10 +112,6 @@ export const AX_FAQ: readonly FaqItem[] = [
     a: '무조건 필요하다고는 말씀 안 드려요. 그래도 **회사 밖에 보여 줄 일이 있다면 규모와 상관없이 꼭 필요하다**고 봐요. 다음 단계로 가려는 회사라면 특히 추천드려요.',
   },
   {
-    q: '처음부터 큰돈을 들여 전부 만들어야 하나요?',
-    a: '아니요. **효과가 가장 큰 핵심 업무부터 시작해요.** 범위는 AX만인지, 플랫폼·포털까지인지, MVP인지와 회사 상황에 따라 달라요. 개발 단계별로 선정산하는 방식도 있고, 현금이 빠듯하면 착수금 일부만 컨설팅 비용으로 받고 **개발비는 자금 조달 뒤 정산하는 방식**도 있어요. 자세한 건 상담에서 안내해 드려요.',
-  },
-  {
     q: '정부지원이나 정책자금 때문에 상담받아도 되나요?',
     a: '물론이에요. 그렇다고 자금이 필요하다는 이유만으로 AX·플랫폼부터 권하지는 않아요. 플랫폼 형태의 웹앱이나 MVP만으로 될 때도 있어서, 상황을 보고 같이 정해요. 다만 요즘 정책자금·정부지원사업은 선정이 까다롭고 정책 우선순위까지 보니, **최소한 MVP만큼은 꼭 준비해서 도전하시길** 적극 권해요. 일반 정책자금 컨설팅 회사와 다른 점이 여기예요.',
   },
@@ -127,7 +129,17 @@ export const AX_FAQ: readonly FaqItem[] = [
   },
 ]
 
-export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqItem[] }) {
+export default function AxFaqSection({
+  items = AX_FAQ,
+  featured,
+}: {
+  items?: readonly FaqItem[]
+  /** 처음에 보여 줄 질문 수 — 나머지는 '질문 N개 더 보기'로 접어 둔다. 없으면 전부 보여 준다 */
+  featured?: number
+}) {
+  const shown = featured ? Math.min(featured, items.length) : items.length
+  const more = items.length - shown
+  const [open, setOpen] = useState(false)
   return (
     <section id="faq" className="scroll-mt-16 border-t border-[#E7EAEE] bg-[#FAFAF8]">
       <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-20">
@@ -140,111 +152,142 @@ export default function AxFaqSection({ items = AX_FAQ }: { items?: readonly FaqI
         </p>
 
         <div className="mt-9 space-y-3 sm:mt-11">
-          {items.map((f, i) => (
-            <details key={f.q} className="group rounded-2xl border border-[#E7EAEE] bg-white shadow-[0_6px_20px_rgba(23,27,32,0.04)] open:border-[#D47A4A]/45">
-              <summary className="flex min-h-[60px] cursor-pointer list-none items-start gap-3 px-5 py-4 text-[1.12rem] font-black leading-snug text-[#171B20] transition-colors hover:bg-[#FAFAF8] sm:items-center sm:text-[1.22rem] [&::-webkit-details-marker]:hidden">
-                <span aria-hidden className="mt-0.5 shrink-0 text-[0.95rem] font-black tracking-tight text-[#D47A4A] sm:mt-0">Q{String(i + 1).padStart(2, '0')}</span>
-                <span className="min-w-0 flex-1 break-keep">{f.q}</span>
-                <span aria-hidden className="shrink-0 text-[#A36A4B] transition-transform group-open:rotate-180">⌄</span>
-              </summary>
-              <div className="border-t border-[#E7EAEE] px-5 py-4 sm:px-6 sm:py-5">
-                {/* 빈 줄(\n\n)로 문단을 나눈다 */}
-                {f.a.split('\n\n').map((para, pi) => (
-                  <p key={pi} className={`break-keep text-[1.06rem] leading-[1.8] text-[#343B44] sm:text-[1.14rem] ${pi > 0 ? 'mt-2.5' : ''}`}>
-                    {rich(para)}
-                  </p>
-                ))}
-                {f.tables?.map((tb) => (
-                  <div key={tb.title} className="mt-4 overflow-hidden rounded-xl ring-1 ring-inset ring-[#EBCBAA]/80">
-                    <p className="flex items-start gap-2.5 bg-[#171B20] px-3.5 py-2.5 sm:px-4">
-                      {tb.n && <span className="mt-0.5 shrink-0 rounded-md bg-[#E8B89A] px-2 py-0.5 text-[0.86rem] font-black text-[#171B20]">{tb.n}</span>}
-                      <span className="break-keep text-[1rem] font-black leading-[1.55] text-white sm:text-[1.06rem]">{tb.title}</span>
-                    </p>
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse text-[0.92rem] tabular-nums sm:text-[1.02rem]">
-                        <thead>
-                          <tr className="bg-[#FAF3EC]">
-                            {tb.head.map((h, hi) => {
-                              const [label, sub] = h.split('|')
-                              const tint = !!tb.hl?.includes(hi)
-                              return (
-                                <th
-                                  key={h}
-                                  scope="col"
-                                  className={`px-1.5 py-2 align-bottom min-[380px]:px-2.5 sm:px-4 ${hi === 0 ? 'text-left' : 'text-right'} ${tint ? 'bg-[#F9DFC6]' : ''}`}
-                                >
-                                  <span className={`block text-[0.82rem] font-bold leading-tight sm:text-[0.9rem] ${tint ? (sub ? 'text-[#171B20]' : 'text-[#B4532A]') : 'text-[#6B7680]'}`}>{label}</span>
-                                  {sub && <span className="mt-0.5 block break-keep text-[0.78rem] font-black leading-tight text-[#B4532A] sm:text-[0.86rem]">{sub}</span>}
-                                </th>
-                              )
-                            })}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tb.rows.map((row) => (
-                            <tr key={row[0]} className="border-t border-[#F0E4D8]">
-                              {row.map((cell, ci) =>
-                                ci === 0 ? (
-                                  <th key={ci} scope="row" className="whitespace-nowrap px-1.5 py-2.5 text-left min-[380px]:px-2.5 font-bold text-[#343B44] sm:px-4">
-                                    {cell}
-                                  </th>
-                                ) : (
-                                  <td key={ci} className={`whitespace-nowrap px-1.5 py-2.5 text-right min-[380px]:px-2.5 text-[#343B44] sm:px-4 ${tb.hl?.includes(ci) ? 'bg-[#FFF1E2]' : ''}`}>
-                                    {rich(cell, 'text-[1.1em] font-black text-[#B4532A]')}
-                                  </td>
-                                ),
-                              )}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    {tb.basis && (
-                      <div className="border-t border-[#F0E4D8] bg-[#FFFCF9] px-3.5 py-3 sm:px-4">
-                        <p className="text-[0.8rem] font-black tracking-tight text-[#A36A4B] sm:text-[0.86rem]">{tb.basis.title}</p>
-                        <ul className="mt-1 space-y-0.5">
-                          {tb.basis.lines.map((ln) => (
-                            <li key={ln} className="break-keep text-[0.84rem] leading-[1.6] text-[#5B646D] sm:text-[0.9rem]">
-                              {rich(ln)}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {tb.note && (
-                      <p className="break-keep border-t border-[#F0E4D8] bg-[#FAF3EC] px-3.5 py-2.5 text-[0.84rem] leading-[1.65] text-[#6B7680] sm:px-4 sm:text-[0.9rem]">
-                        {rich(tb.note, 'font-black text-[#B4532A]')}
-                      </p>
-                    )}
-                  </div>
-                ))}
-                {f.highlight && (
-                  <p className="mt-4 break-keep rounded-xl bg-[#171B20] px-4 py-3.5 text-[1.04rem] font-bold leading-[1.7] text-white/90 sm:px-5 sm:text-[1.12rem]">
-                    {rich(f.highlight, 'font-black text-[#E8B89A]')}
-                  </p>
-                )}
-                {f.lead && <p className="mt-3 break-keep text-[1.06rem] font-bold leading-[1.75] text-[#171B20] sm:text-[1.14rem]">{f.lead}</p>}
-                {f.points && (
-                  <ul className="mt-3 grid gap-2">
-                    {f.points.map((pt) => (
-                      <li key={pt.t} className="flex items-start gap-3 rounded-xl bg-[#FAF3EC] px-4 py-3 ring-1 ring-inset ring-[#EBCBAA]/70">
-                        <span className="mt-0.5 shrink-0 rounded-md bg-[#171B20] px-2 py-0.5 text-[0.86rem] font-black text-[#E8B89A]">{pt.t}</span>
-                        <span className="break-keep text-[1rem] leading-[1.7] text-[#343B44] sm:text-[1.06rem]">{rich(pt.d)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {f.tail &&
-                  f.tail.split('\n\n').map((para, pi) => (
-                    <p key={`t${pi}`} className="mt-3 break-keep text-[1.06rem] leading-[1.8] text-[#343B44] sm:text-[1.14rem]">
-                      {rich(para)}
-                    </p>
-                  ))}
-              </div>
-            </details>
+          {items.slice(0, shown).map((f, i) => (
+            <FaqEntry key={f.q} f={f} i={i} />
           ))}
         </div>
+
+        {/* 나머지 질문 — 처음엔 접어 두고(페이지가 길어지지 않게), 누르면 펼친다. 검색·읽기 도구가 읽도록 화면에는 그대로 둔다 */}
+        {more > 0 && (
+          <>
+            <div id="faq-more" hidden={!open} className="mt-3 space-y-3">
+              {items.slice(shown).map((f, i) => (
+                <FaqEntry key={f.q} f={f} i={shown + i} />
+              ))}
+            </div>
+            <div className="mt-5 text-center">
+              <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                aria-controls="faq-more"
+                data-faq-more
+                className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-[#D9DDE2] bg-white px-5 text-[1rem] font-bold text-[#343B44] shadow-sm transition-colors hover:border-[#D47A4A]/60 hover:text-[#171B20] sm:text-[1.05rem]"
+              >
+                {open ? '질문 접기' : `질문 ${more}개 더 보기`}
+                <span aria-hidden className={`text-[#A36A4B] transition-transform ${open ? 'rotate-180' : ''}`}>⌄</span>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </section>
+  )
+}
+
+/** 질문 한 칸 — 번호는 전체 목록 기준(Q01~) */
+function FaqEntry({ f, i }: { f: FaqItem; i: number }) {
+  return (
+    <details className="group rounded-2xl border border-[#E7EAEE] bg-white shadow-[0_6px_20px_rgba(23,27,32,0.04)] open:border-[#D47A4A]/45">
+      <summary className="flex min-h-[60px] cursor-pointer list-none items-start gap-3 px-5 py-4 text-[1.12rem] font-black leading-snug text-[#171B20] transition-colors hover:bg-[#FAFAF8] sm:items-center sm:text-[1.22rem] [&::-webkit-details-marker]:hidden">
+        <span aria-hidden className="mt-0.5 shrink-0 text-[0.95rem] font-black tracking-tight text-[#D47A4A] sm:mt-0">Q{String(i + 1).padStart(2, '0')}</span>
+        <span className="min-w-0 flex-1 break-keep">{f.q}</span>
+        <span aria-hidden className="shrink-0 text-[#A36A4B] transition-transform group-open:rotate-180">⌄</span>
+      </summary>
+      <div className="border-t border-[#E7EAEE] px-5 py-4 sm:px-6 sm:py-5">
+        {/* 빈 줄(\n\n)로 문단을 나눈다 */}
+        {f.a.split('\n\n').map((para, pi) => (
+          <p key={pi} className={`break-keep text-[1.06rem] leading-[1.8] text-[#343B44] sm:text-[1.14rem] ${pi > 0 ? 'mt-2.5' : ''}`}>
+            {rich(para)}
+          </p>
+        ))}
+        {f.tables?.map((tb) => (
+          <div key={tb.title} className="mt-4 overflow-hidden rounded-xl ring-1 ring-inset ring-[#EBCBAA]/80">
+            <p className="flex items-start gap-2.5 bg-[#171B20] px-3.5 py-2.5 sm:px-4">
+              {tb.n && <span className="mt-0.5 shrink-0 rounded-md bg-[#E8B89A] px-2 py-0.5 text-[0.86rem] font-black text-[#171B20]">{tb.n}</span>}
+              <span className="break-keep text-[1rem] font-black leading-[1.55] text-white sm:text-[1.06rem]">{tb.title}</span>
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-[0.92rem] tabular-nums sm:text-[1.02rem]">
+                <thead>
+                  <tr className="bg-[#FAF3EC]">
+                    {tb.head.map((h, hi) => {
+                      const [label, sub] = h.split('|')
+                      const tint = !!tb.hl?.includes(hi)
+                      return (
+                        <th
+                          key={h}
+                          scope="col"
+                          className={`px-1.5 py-2 align-bottom min-[380px]:px-2.5 sm:px-4 ${hi === 0 ? 'text-left' : 'text-right'} ${tint ? 'bg-[#F9DFC6]' : ''}`}
+                        >
+                          <span className={`block text-[0.82rem] font-bold leading-tight sm:text-[0.9rem] ${tint ? (sub ? 'text-[#171B20]' : 'text-[#B4532A]') : 'text-[#6B7680]'}`}>{label}</span>
+                          {sub && <span className="mt-0.5 block break-keep text-[0.78rem] font-black leading-tight text-[#B4532A] sm:text-[0.86rem]">{sub}</span>}
+                        </th>
+                      )
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {tb.rows.map((row) => (
+                    <tr key={row[0]} className="border-t border-[#F0E4D8]">
+                      {row.map((cell, ci) =>
+                        ci === 0 ? (
+                          <th key={ci} scope="row" className="whitespace-nowrap px-1.5 py-2.5 text-left min-[380px]:px-2.5 font-bold text-[#343B44] sm:px-4">
+                            {cell}
+                          </th>
+                        ) : (
+                          <td key={ci} className={`whitespace-nowrap px-1.5 py-2.5 text-right min-[380px]:px-2.5 text-[#343B44] sm:px-4 ${tb.hl?.includes(ci) ? 'bg-[#FFF1E2]' : ''}`}>
+                            {rich(cell, 'text-[1.1em] font-black text-[#B4532A]')}
+                          </td>
+                        ),
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {tb.basis && (
+              <div className="border-t border-[#F0E4D8] bg-[#FFFCF9] px-3.5 py-3 sm:px-4">
+                <p className="text-[0.8rem] font-black tracking-tight text-[#A36A4B] sm:text-[0.86rem]">{tb.basis.title}</p>
+                <ul className="mt-1 space-y-0.5">
+                  {tb.basis.lines.map((ln) => (
+                    <li key={ln} className="break-keep text-[0.84rem] leading-[1.6] text-[#5B646D] sm:text-[0.9rem]">
+                      {rich(ln)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {tb.note && (
+              <p className="break-keep border-t border-[#F0E4D8] bg-[#FAF3EC] px-3.5 py-2.5 text-[0.84rem] leading-[1.65] text-[#6B7680] sm:px-4 sm:text-[0.9rem]">
+                {rich(tb.note, 'font-black text-[#B4532A]')}
+              </p>
+            )}
+          </div>
+        ))}
+        {f.highlight && (
+          <p className="mt-4 break-keep rounded-xl bg-[#171B20] px-4 py-3.5 text-[1.04rem] font-bold leading-[1.7] text-white/90 sm:px-5 sm:text-[1.12rem]">
+            {rich(f.highlight, 'font-black text-[#E8B89A]')}
+          </p>
+        )}
+        {f.lead && <p className="mt-3 break-keep text-[1.06rem] font-bold leading-[1.75] text-[#171B20] sm:text-[1.14rem]">{f.lead}</p>}
+        {f.points && (
+          <ul className="mt-3 grid gap-2">
+            {f.points.map((pt) => (
+              <li key={pt.t} className="flex items-start gap-3 rounded-xl bg-[#FAF3EC] px-4 py-3 ring-1 ring-inset ring-[#EBCBAA]/70">
+                <span className="mt-0.5 shrink-0 rounded-md bg-[#171B20] px-2 py-0.5 text-[0.86rem] font-black text-[#E8B89A]">{pt.t}</span>
+                <span className="break-keep text-[1rem] leading-[1.7] text-[#343B44] sm:text-[1.06rem]">{rich(pt.d)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {f.tail &&
+          f.tail.split('\n\n').map((para, pi) => (
+            <p key={`t${pi}`} className="mt-3 break-keep text-[1.06rem] leading-[1.8] text-[#343B44] sm:text-[1.14rem]">
+              {rich(para)}
+            </p>
+          ))}
+      </div>
+    </details>
   )
 }

@@ -10,6 +10,8 @@
 // ⚠️ 영상 속 화면은 자체 데모(샘플)다 — 아래 안내 문구를 지우지 않는다.
 import { useEffect, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
+import { scrollToSection } from '../../lib/businessPageScroll'
+import PlaybackSpeed from '../video/PlaybackSpeed'
 
 type Film = {
   no: 1 | 2
@@ -17,6 +19,8 @@ type Film = {
   webm: string
   poster: string
   length: string
+  /** 이런 분께 — 두 편을 다 볼 필요 없이 고를 수 있게 영상의 역할을 한 줄로 */
+  who: string
   title: string
   lead: string
   points: readonly string[]
@@ -29,6 +33,7 @@ const FILMS: readonly [Film, Film] = [
     webm: '/business/ax/ax-film-1.webm',
     poster: '/business/ax/ax-film-1-poster.webp',
     length: '4분 29초',
+    who: 'AX가 아직 생소하다면',
     title: 'AX가 뭐고, 왜 필요한가',
     lead: '정책자금·투자·지원사업 심사에서 왜 ‘보여 줄 화면’이 중요해졌는지, AX가 회사 안과 밖을 어떻게 잇는지 담았어요.',
     points: ['심사에서 결국 보는 것 — 계획보다 실제 화면', '최근 3년 사례 250건 가까이에서 반복된 흐름', '회사 안 운영과 고객 플랫폼을 잇는 AX'],
@@ -39,6 +44,7 @@ const FILMS: readonly [Film, Film] = [
     webm: '/business/ax/ax-film-2.webm',
     poster: '/business/ax/ax-film-2-poster.webp',
     length: '4분 15초',
+    who: '도입 방식과 비용이 궁금하다면',
     title: '어떻게 진행하고, 얼마가 드나',
     lead: '진단부터 2주 안에 기본 틀을 만드는 진행 4단계, 비용과 정산 방식, 정책자금·지원사업 신청까지 담았어요.',
     points: ['진단 → 2주 안에 MVP·기본 틀 → 데이터 쌓기 → 인증·재무', 'MVP 500만 · 플랫폼형 1,500만 · 풀 패키지 3,000만 원부터', '착수금으로 시작 · 개발비 후불 가능 · 유지보수 1년 무상'],
@@ -70,8 +76,37 @@ export default function AxFilms({ samplesAnchor, diagnosisHref }: { samplesAncho
           <br /> <span className="text-[#C8612E]">모든 설명</span>을 드려요
         </h2>
         <p className="mx-auto mt-3 max-w-xl break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem]">
-          순서대로 보시면 돼요. <b className="font-black text-[#171B20]">1편</b>은 AX가 무엇이고 왜 필요한지, <b className="font-black text-[#171B20]">2편</b>은 어떻게 진행되고 얼마가 드는지예요. 두 편 모두 자막이 있어요.
+          <b className="font-black text-[#171B20]">필요한 영상만 골라 보셔도 돼요.</b> 두 편 모두 자막이 있어요.
         </p>
+
+        {/* 골라 보기 — 두 편을 다 볼 필요 없이 지금 궁금한 것부터. 설명보다 화면이 먼저인 분은 바로 화면으로 */}
+        <ul data-ax-film-picker className="mx-auto mt-6 grid max-w-4xl gap-2.5 text-left sm:mt-7 sm:grid-cols-3 sm:gap-3">
+          {[
+            { id: 'film-1', mark: '1', who: FILMS[0].who, what: `영상 1 · ${FILMS[0].length}` },
+            { id: 'film-2', mark: '2', who: FILMS[1].who, what: `영상 2 · ${FILMS[1].length}` },
+            { id: samplesAnchor, mark: '▦', who: '설명보다 화면이 먼저라면', what: '직접 만든 화면 · 실제 프로젝트' },
+          ].map((c) => (
+            <li key={c.id} className="flex">
+              <button
+                type="button"
+                onClick={() => scrollToSection(c.id, 'smooth')}
+                data-ax-film-pick={c.id}
+                className="group flex min-h-[3.75rem] w-full items-center gap-3 rounded-2xl bg-white/80 px-4 py-3 text-left shadow-sm ring-1 ring-[#D47A4A]/30 transition hover:-translate-y-0.5 hover:ring-[#D47A4A]/70 motion-reduce:hover:translate-y-0"
+              >
+                <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#171B20] text-[0.9rem] font-black text-white">
+                  {c.mark}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block break-keep text-[1.02rem] font-black leading-snug text-[#171B20] sm:text-[1.04rem]">{c.who}</span>
+                  <span className="mt-0.5 block text-[0.86rem] font-bold text-[#C8612E]">{c.what}</span>
+                </span>
+                <span aria-hidden className="shrink-0 text-[1.1rem] font-black text-[#C8612E] transition-transform group-hover:translate-y-0.5">
+                  ↓
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <FilmBlock
@@ -199,8 +234,9 @@ function FilmBlock({
       <div className={`text-center md:text-left ${flip ? 'md:order-2' : ''}`}>
         <p className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-1.5 text-[0.98rem] font-black text-[#C8612E] ring-1 ring-[#D47A4A]/40">
           <span className="grid h-6 w-6 place-items-center rounded-full bg-[#171B20] text-[0.82rem] text-white">{film.no}</span>
-          영상 {film.no}
-          <span className="font-bold text-[#6B7680]">· {film.length}</span>
+          <span className="sr-only">영상 {film.no} ·</span>
+          {film.who}
+          <span className="hidden font-bold text-[#6B7680] sm:inline">· {film.length}</span>
         </p>
         <h3 className="mt-3.5 break-keep text-[1.7rem] font-black leading-[1.25] tracking-tight sm:text-[2.1rem]">{film.title}</h3>
         <p className="mx-auto mt-3 max-w-md break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem] md:mx-0">{film.lead}</p>
@@ -287,7 +323,9 @@ function FilmBlock({
             </div>
           )}
         </div>
-        <figcaption className="mt-3 break-keep text-center text-[0.82rem] leading-relaxed text-[#6B7680]">
+        {/* 재생 속도 1배 · 1.25배 · 1.5배 */}
+        <PlaybackSpeed videoRef={videoRef} label={label} />
+        <figcaption className="mt-2 break-keep text-center text-[0.82rem] leading-relaxed text-[#6B7680]">
           영상 속 화면은 미래AI랩이 직접 만든 자체 데모예요. 고객사 사례가 아니에요.
         </figcaption>
       </figure>

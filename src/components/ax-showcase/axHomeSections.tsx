@@ -1,6 +1,10 @@
 // 섹션 모음 — Hero·월 5개사는 홈에서, 세 가지 가치·5단계 방법론은 정책자금 상세페이지에서 사용한다.
 // 한 섹션에서는 하나의 주장만 전달하고, 주장 바로 아래 증명(화면·산출물·근거)을 배치한다.
+import { Link } from 'react-router-dom'
 import AxSampleStrip from './AxSampleStrip'
+import { DEEP_PROJECTS } from '../../data/realProjectsDeep'
+import { samplesHref } from '../../lib/businessRoutes'
+import { saveBusinessReturn } from '../../lib/businessServicesReturn'
 import { AX_CORE_VALUES, AX_METHOD_STEPS, AX_SELECTION_DECLINE, AX_SELECTION_PRIORITY } from '../../data/axPackages'
 
 const band = 'px-5 py-16 sm:px-6 sm:py-24'
@@ -106,7 +110,9 @@ export function AxHeroV2() {
   )
 }
 
-/** 직접 만든 화면 22개 — 소개 영상 2편 바로 다음. 히어로와 같은 먹색 바탕에 두 줄로 흐른다(눌러서 실제 화면 열기). */
+/** 직접 만든 화면 22개 — 소개 영상 2편 바로 다음. 히어로와 같은 먹색 바탕에 두 줄로 흐른다(눌러서 실제 화면 열기).
+ *  바로 아래 '실제 기업 프로젝트'(업종만 표기)를 짧게 붙여, 설명보다 '실제로 만들고 있다'는 증거가 먼저 보이게 한다.
+ *  ⚠️ 직접 만든 예시 화면과 실제 기업 프로젝트는 섞지 않는다 — 제목·안내로 구분하고, 회사명·실제 화면은 공개하지 않는다. */
 export function AxSamplesBand() {
   return (
     <section id="samples" className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
@@ -119,6 +125,41 @@ export function AxSamplesBand() {
         </h2>
         <div className="-mx-5 mt-7 sm:-mx-6 sm:mt-9">
           <AxSampleStrip />
+        </div>
+        {/* 흐르는 줄에서 우리 업종을 찾기 어려우면 — 22개를 한 화면에서(샘플 모아보기 AX 탭) */}
+        <Link
+          to={samplesHref('ax')}
+          onClick={() => saveBusinessReturn('samples')}
+          data-ax-samples-all
+          className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-xl border border-[#D47A4A]/40 bg-white/[0.04] px-5 text-[1rem] font-bold text-white transition-colors hover:bg-white/10 sm:text-[1.05rem]"
+        >
+          22개 한눈에 보고 우리 업종 찾기 <span aria-hidden className="text-[#E8B89A]">→</span>
+        </Link>
+
+        {/* 실제 기업 프로젝트 — 데이터는 realProjectsDeep(업종·요약·진행 단계)만 쓴다. 폰은 옆으로 넘겨 보고, PC 는 3칸 */}
+        <div data-ax-real-projects className="mt-12 border-t border-white/10 pt-10 sm:mt-14 sm:pt-12">
+          <p className="text-[1.02rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.1rem]">REAL PROJECTS</p>
+          <h3 className="mt-2 break-keep text-[1.5rem] font-black leading-[1.35] text-[#FAFAF8] sm:text-[1.9rem]">
+            그리고 지금, <br className="sm:hidden" />
+            <span className="text-[#E8B89A]">실제 기업에서도 만들고 있어요</span>
+          </h3>
+          <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
+            실제 기업의 업무를 분석하고, 현장에서 쓸 수 있는 AX 시스템을 직접 구축하고 있어요.
+          </p>
+          <ul className="-mx-5 mt-6 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:scroll-px-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
+            {DEEP_PROJECTS.map((p) => (
+              <li key={p.slug} data-ax-real-project className="w-[78%] max-w-[300px] shrink-0 snap-start rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:w-auto sm:max-w-none">
+                <span className="inline-flex rounded-full bg-[#D47A4A]/15 px-2.5 py-1 text-[0.78rem] font-bold text-[#E8B89A] ring-1 ring-inset ring-[#D47A4A]/30">
+                  {p.stage}
+                </span>
+                <p className="mt-2.5 break-keep text-[1.06rem] font-black leading-snug text-white sm:text-[1.1rem]">{p.industry}</p>
+                <p className="mt-1 break-keep text-[0.94rem] leading-snug text-slate-400 sm:text-[0.98rem]">{p.summary}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 break-keep text-[0.82rem] leading-relaxed text-slate-500 sm:text-[0.9rem]">
+            회사 이름 대신 업종만 적었어요. 업체명과 실제 화면, 내부 자료는 공개하지 않아요.
+          </p>
         </div>
       </div>
     </section>
