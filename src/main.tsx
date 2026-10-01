@@ -49,7 +49,6 @@ const BusinessAxGuidePage = lazyPage(() => import('./pages/BusinessAxGuidePage')
 const AxIndustryDetailPage = lazyPage(() => import('./pages/AxIndustryDetailPage'))
 const BusinessServiceDetailPage = lazyPage(() => import('./pages/BusinessServiceDetailPage'))
 const BusinessCatalogPage = lazyPage(() => import('./pages/BusinessCatalogPage'))
-const FundingConsultingDetailPage = lazyPage(() => import('./pages/business-details/FundingConsultingDetailPage'))
 const GatewayPage = lazyPage(() => import('./pages/GatewayPage'))
 const AuthCallbackPage = lazyPage(() => import('./pages/auth/AuthCallbackPage'))
 const OnboardingPage = lazyPage(() => import('./pages/auth/OnboardingPage'))
@@ -135,7 +134,9 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/business-diagnosis" element={<BusinessDiagnosisPage />} />
               <Route path="/business-diagnosis/results" element={<BusinessDiagnosisResultsPage />} />
               <Route path="/business-diagnosis/results/:resultId" element={<BusinessDiagnosisResultsPage />} />
-              <Route path="/business-services/funding-consulting" element={<FundingConsultingDetailPage />} />
+              {/* 예전 'AX 사업화·자금조달 프로그램' 상세(옛 가격·문구) — 두 상품에 집중하는 동안 숨기고 Full AX 구축으로 보낸다.
+                  페이지 파일(pages/business-details/FundingConsultingDetailPage)은 남겨 두었다 */}
+              <Route path="/business-services/funding-consulting" element={<Navigate to={AX_START_PATH} replace />} />
               <Route path="/business-services/all" element={<BusinessCatalogPage />} />
               <Route path="/business-services/:slug" element={<BusinessServiceDetailPage />} />
               <Route path="/terms" element={<TermsPage />} />

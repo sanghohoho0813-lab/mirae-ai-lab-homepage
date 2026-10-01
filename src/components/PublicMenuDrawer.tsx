@@ -97,6 +97,7 @@ const BUSINESS_MENU: MenuConfig = {
       heading: 'Full AX 구축',
       accent: 'cyan',
       // 페이지 순서: 히어로 → 소개 영상 1·2(#film-1 · #film-2) → 직접 만든 화면(#samples) → 자주 묻는 질문(#faq) → 마무리
+      // (예전 'AX 프로그램 · 수행체계 · 로드맵'(개정 중) 항목은 뺐다 — 두 상품에 집중, 상세 안내는 영상으로 대신한다)
       // AX 상세 안내(스토리 04~12)를 숨긴 동안에는 AX 페이지 구간으로 보낸다
       items: SHOW_AX_GUIDE
         ? [
@@ -106,15 +107,12 @@ const BUSINESS_MENU: MenuConfig = {
             { no: '4', label: '성과를 성장으로', desc: 'AX 성과를 다음 단계로 잇는 방법', to: `${AX_GUIDE_PATH}#growth` },
             { no: '5', label: '왜 미래AI랩이에요?', desc: '따로따로가 아니라 한 흐름으로', to: `${AX_GUIDE_PATH}#why-mirae` },
             { no: '6', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_GUIDE_PATH}#faq` },
-            // 프로그램 상세페이지 전면 개정 중 — 이동을 막고 한 줄로만 알린다 (프로그램 안내·수행체계·성장 로드맵)
-            { no: '7', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
           ]
         : [
             { no: '1', label: 'AX가 뭐예요?', desc: '영상 1 · AX가 뭐고, 왜 필요한가', to: `${AX_START_PATH}#film-1` },
             { no: '2', label: '진행 방식과 비용', desc: '영상 2 · 어떻게 진행하고, 얼마가 드나', to: `${AX_START_PATH}#film-2` },
             { no: '3', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_START_PATH}#samples` },
             { no: '4', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_START_PATH}#faq` },
-            { no: '5', label: 'AX 프로그램 · 수행체계 · 로드맵', desc: '진행 방식과 결과물 (개정 중)', to: '/business-services/funding-consulting', updating: true },
           ],
     },
     {
