@@ -57,7 +57,7 @@ for (const W of [390, 1280]) {
     ok('2편 표시: 소상공인 사례', /소상공인 사례/.test(await text(p, '#real-project-2')))
     for (const n of [1, 2]) {
       const st = await text(p, `#real-project-${n} [data-real-status]`)
-      ok(`${n}편 진행 상태: 거의 완성 · 마무리 단계 · 정책자금·정부지원사업 참여 준비 중`, /거의 완성 · 마무리 단계/.test(st) && /정책자금·정부지원사업 참여 준비 중/.test(st), st)
+      ok(`${n}편 진행 상태: 완성 · 유지보수 단계 · 정책자금·지원사업 따로 신청 중`, /완성 · 실무에서 쓰며 안정화하는 유지보수 단계/.test(st) && /정책자금·지원사업은 따로 계속 신청 중/.test(st), st)
     }
     ok('위 설명 문단 없음', !/그중 두 곳은 영상으로|대략 어떻게 흘러가는지/.test(body))
     ok('업종만 공개 안내', /업종만/.test(body))

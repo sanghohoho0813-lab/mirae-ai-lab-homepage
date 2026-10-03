@@ -20,8 +20,8 @@ export const FEATURED_PROJECT_SLUGS = ['medwaste', 'wellness'] as const
 
 const CAPTION = '업종만 소개해요. 실제 화면은 이름을 가리고 짧게만, 나머지는 예시 데이터로 다시 그린 화면이에요.'
 const stageOf = (slug: string) => DEEP_PROJECTS.find((p) => p.slug === slug)?.stage
-// 승인·선정을 약속하지 않는다 — '참여 준비 중'까지만
-const FUNDING_STATUS = '정책자금·정부지원사업 참여 준비 중'
+// 승인·선정을 약속하지 않는다 — '신청 중'까지만
+const FUNDING_STATUS = '정책자금·지원사업은 따로 계속 신청 중'
 
 const EPISODES = [
   {
@@ -87,7 +87,7 @@ function Episode({
           <span aria-hidden className="mr-1.5">{ep.emoji}</span>
           {ep.title}
         </h4>
-        {/* 진행 상태 — 두 곳 모두 같은 말로(대표님 확인: 실제로 마무리 단계) */}
+        {/* 진행 상태 — 두 곳 모두 같은 말로(대표님 확인: 완성 후 실무에서 쓰며 안정화하는 유지보수 단계 · 정책자금·지원사업은 따로 신청 중) */}
         <p data-real-status className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5 md:justify-start">
           {stage && <span className="rounded-lg bg-white/[0.08] px-2.5 py-1 text-[0.86rem] font-bold text-white ring-1 ring-inset ring-white/15">{stage}</span>}
           <span className="rounded-lg bg-white/[0.08] px-2.5 py-1 text-[0.86rem] font-bold text-slate-200 ring-1 ring-inset ring-white/15">{FUNDING_STATUS}</span>
