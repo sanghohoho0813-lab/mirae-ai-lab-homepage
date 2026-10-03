@@ -8,7 +8,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "tsc -b --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "npm --prefix e2e test",
+    "test:e2e:quick": "npm --prefix e2e run test:quick"
   },
   "dependencies": {
     "@portone/browser-sdk": "^0.1.9",
