@@ -15,7 +15,7 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
   // 폰에서는 위에서부터 읽히게(가운데 정렬은 위쪽이 비어 보인다), PC 는 세로 가운데
   return (
     <div className="mx-auto flex min-h-[calc(100dvh-57px)] max-w-[720px] flex-col justify-start px-5 py-8 sm:justify-center sm:py-14">
-      <p className="animate-rise-in text-sm font-black uppercase tracking-widest text-[#B37744]">{AX_FIT_INFO.name}</p>
+      <p className="animate-rise-in text-sm font-black uppercase tracking-widest text-[#94602F]">{AX_FIT_INFO.name}</p>
       <h1 className="animate-rise-in mt-3 text-[1.6rem] font-black leading-[1.3] tracking-tight text-slate-900 [animation-delay:60ms] sm:text-[2.2rem]">
         우리 회사는<br className="sm:hidden" /> 어디서부터 시작하면 될까요?
       </h1>
@@ -32,7 +32,7 @@ export default function DiagnosisStart({ hasSaved, onStart, onResume }: Props) {
             className="animate-rise-in flex flex-col rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm sm:rounded-2xl sm:p-5"
             style={{ animationDelay: `${140 + i * 70}ms` }}
           >
-            <span className="text-[0.72rem] font-black tracking-[0.12em] text-[#B37744] sm:text-[0.78rem]">STEP {i + 1}</span>
+            <span className="text-[0.72rem] font-black tracking-[0.12em] text-[#94602F] sm:text-[0.78rem]">STEP {i + 1}</span>
             <span className="mt-1 break-keep text-[1.02rem] font-black leading-tight text-slate-900 sm:text-[1.2rem]">{c.label}</span>
             <span className="mt-0.5 break-keep text-[0.8rem] font-semibold leading-snug text-slate-500 sm:text-[0.9rem]">{c.short}</span>
             <span className="mt-auto pt-2 text-[0.8rem] font-black tabular-nums text-[#9A5F2F] sm:text-[0.92rem]">{c.price}</span>

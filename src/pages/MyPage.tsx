@@ -270,7 +270,7 @@ function SecurityTab({
       <Card>
         <h2 className="text-base font-black text-slate-900">연결된 로그인 방식</h2>
         <div className="mt-3 flex flex-wrap gap-2">
-          {providers.length === 0 && <span className="text-sm text-slate-400">연결된 로그인 방식이 없습니다.</span>}
+          {providers.length === 0 && <span className="text-sm text-slate-500">연결된 로그인 방식이 없습니다.</span>}
           {providers.map((p) => (
             <span key={p} className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-sm font-bold text-slate-700">
               <span aria-hidden>{p === 'kakao' ? '💬' : p === 'google' ? '🔵' : '✉️'}</span>
@@ -408,7 +408,7 @@ function ProductsTab({ userId, configured }: { userId: string; configured: boole
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-black ${view.active ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>{view.statusLabel}</span>
-                  {tool.category && <span className="text-xs font-semibold text-slate-400">{tool.category}</span>}
+                  {tool.category && <span className="text-xs font-semibold text-slate-500">{tool.category}</span>}
                 </div>
                 <h3 className="mt-1.5 text-base font-black text-slate-900">{tool.title}</h3>
                 <div className="mt-1 space-y-0.5 text-xs text-slate-500">
@@ -470,7 +470,7 @@ function OrdersTab({ hasUser }: { hasUser: boolean }) {
             <div className="flex flex-wrap items-center gap-2">
               <StatusBadge status={status} />
               {server?.environment === 'test' && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-black text-amber-700">테스트</span>}
-              <span className="ml-auto text-xs font-semibold text-slate-400">{new Date(local.createdAt).toLocaleDateString('ko-KR')}</span>
+              <span className="ml-auto text-xs font-semibold text-slate-500">{new Date(local.createdAt).toLocaleDateString('ko-KR')}</span>
             </div>
             <p className="mt-2 text-base font-black leading-snug text-slate-900">{server?.productName ?? local.productName}</p>
             {(server?.optionName ?? local.optionName) && <p className="mt-0.5 text-sm text-slate-500">{server?.optionName ?? local.optionName}</p>}
@@ -525,7 +525,7 @@ function RolesTab({
           {hasCeo && <span className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-black text-blue-700">중소기업 대표</span>}
           {hasConsultant && <span className="rounded-full bg-slate-900 px-3 py-1.5 text-sm font-black text-sky-300">컨설턴트</span>}
           {isAdmin && <span className="rounded-full bg-rose-50 px-3 py-1.5 text-sm font-black text-rose-700">관리자</span>}
-          {!hasCeo && !hasConsultant && !isAdmin && <span className="text-sm text-slate-400">부여된 역할이 없습니다.</span>}
+          {!hasCeo && !hasConsultant && !isAdmin && <span className="text-sm text-slate-500">부여된 역할이 없습니다.</span>}
         </div>
         {hasCeo && hasConsultant && (
           <div className="mt-4 border-t border-slate-100 pt-4">

@@ -218,7 +218,7 @@ function TrustPanel() {
             <div key={s.label} className="border-l-2 border-amber-400/60 pl-3.5">
               <dd className="text-[1.7rem] font-black leading-none tracking-tight text-white sm:text-[2.1rem]">{s.value}</dd>
               <dt className="mt-1.5 break-keep text-[0.88rem] font-medium leading-snug text-slate-300 sm:text-[0.92rem]">{s.label}</dt>
-              {s.sub && <p className="mt-0.5 text-[0.78rem] font-semibold leading-snug text-amber-300/90">{s.sub}</p>}
+              {s.sub && <dd className="mt-0.5 text-[0.78rem] font-semibold leading-snug text-amber-300/90">{s.sub}</dd>}
             </div>
           ))}
         </dl>
@@ -698,7 +698,7 @@ function App() {
       <LegalFooter
         topSlot={
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-            <p className="max-w-md text-base leading-relaxed text-slate-500">
+            <p className="max-w-md text-base leading-relaxed text-[#5E6670]">
               MIRAE AI LAB OS — 여러 고객사의 일을 한 화면에서 챙기는 컨설턴트 운영 OS예요.
             </p>
             <nav className="-my-2.5 flex flex-wrap gap-x-6 text-base font-medium text-slate-600">

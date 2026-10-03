@@ -43,7 +43,7 @@ export default function AgreementsField({
           aria-label="약관 전체 동의"
         />
         <span className="text-base font-bold text-slate-900">전체 동의</span>
-        <span className="text-xs text-slate-400">(선택 동의 포함)</span>
+        <span className="text-xs text-slate-500">(선택 동의 포함)</span>
       </label>
 
       <div className="space-y-1 px-4 py-3">
@@ -57,11 +57,11 @@ export default function AgreementsField({
                 className="mt-0.5 h-4.5 w-4.5 rounded border-slate-300 accent-blue-600"
               />
               <span className="min-w-0 text-[0.95rem] leading-snug text-slate-700">
-                <span className={`mr-1.5 text-xs font-black ${c.required ? 'text-blue-600' : 'text-slate-400'}`}>
+                <span className={`mr-1.5 text-xs font-black ${c.required ? 'text-blue-600' : 'text-slate-500'}`}>
                   {c.required ? '[필수]' : '[선택]'}
                 </span>
                 {c.label}
-                {c.detail && <span className="mt-0.5 block text-xs leading-relaxed text-slate-400">{c.detail}</span>}
+                {c.detail && <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">{c.detail}</span>}
               </span>
             </label>
             {c.link && (
@@ -69,7 +69,7 @@ export default function AgreementsField({
                 to={c.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1.5 shrink-0 text-xs font-semibold text-slate-400 underline underline-offset-2 hover:text-slate-700"
+                className="mt-1.5 shrink-0 text-xs font-semibold text-slate-500 underline underline-offset-2 hover:text-slate-700"
               >
                 보기
               </Link>

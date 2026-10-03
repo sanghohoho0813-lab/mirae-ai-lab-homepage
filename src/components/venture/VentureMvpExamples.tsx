@@ -33,7 +33,7 @@ export default function VentureMvpExamples() {
   return (
     <section id={VENTURE_MVP_EXAMPLES_ID} data-mvp-examples className="scroll-mt-16 border-b border-[#E7EAEE] bg-[#FAFAF8]">
       <div className="mx-auto max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-        <p className="text-[1rem] font-black text-[#B35A2A]">예를 들면</p>
+        <p className="text-[1rem] font-black text-[#A84F26]">예를 들면</p>
         <h2 className="mt-2 break-keep text-[1.75rem] font-black leading-tight tracking-tight text-[#171B20] sm:text-[2.2rem]">
           이런 회사가,
           <br className="sm:hidden" /> 이런 기술사업을
@@ -45,12 +45,12 @@ export default function VentureMvpExamples() {
         <div className="mt-7 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
           <p className="flex items-center gap-2 text-[0.9rem] font-bold">
             <span className="text-[#646E78]">지금 하는 사업</span>
-            <span aria-hidden className="text-[#D47A4A]">
+            <span aria-hidden className="text-[#B4532A]">
               →
             </span>
-            <span className="text-[#B35A2A]">새 기술사업</span>
+            <span className="text-[#A84F26]">새 기술사업</span>
           </p>
-          <p className="break-keep text-[0.85rem] font-semibold text-[#8A939C]">누르면 실제로 작동하는 데모가 새 창으로 열려요 ↗</p>
+          <p className="break-keep text-[0.85rem] font-semibold text-[#646E78]">누르면 실제로 작동하는 데모가 새 창으로 열려요 ↗</p>
         </div>
 
         <ul data-mvp-examples-list className="mt-3 grid gap-2.5 md:grid-cols-2 md:gap-3 lg:grid-cols-5 lg:gap-4">
@@ -78,16 +78,16 @@ export default function VentureMvpExamples() {
                 <div className="min-w-0 flex-1 lg:flex lg:flex-col lg:p-4">
                   <p className="break-keep text-[0.88rem] font-semibold leading-snug text-[#646E78]">{from}</p>
                   <p className="mt-1 break-keep text-[1.02rem] font-black leading-snug text-[#171B20]">
-                    <span aria-hidden className="text-[#D47A4A]">
+                    <span aria-hidden className="text-[#B4532A]">
                       →{' '}
                     </span>
                     {to}
                   </p>
-                  <p className="mt-3 hidden text-[0.82rem] font-bold text-[#B35A2A] lg:mt-auto lg:block lg:pt-3">
+                  <p className="mt-3 hidden text-[0.82rem] font-bold text-[#A84F26] lg:mt-auto lg:block lg:pt-3">
                     {demo.name} 열어 보기 <span aria-hidden>↗</span>
                   </p>
                 </div>
-                <span aria-hidden className="shrink-0 text-[1.1rem] font-bold text-[#B35A2A] lg:hidden">
+                <span aria-hidden className="shrink-0 text-[1.1rem] font-bold text-[#A84F26] lg:hidden">
                   ↗
                 </span>
               </a>
@@ -111,7 +111,7 @@ export default function VentureMvpExamples() {
           </span>
         </Link>
 
-        <p className="mt-4 break-keep text-[0.85rem] leading-relaxed text-[#8A939C]">
+        <p className="mt-4 break-keep text-[0.85rem] leading-relaxed text-[#646E78]">
           위 화면은 미래AI랩이 직접 만든 자체 데모예요. 고객사 사례가 아니고, 실제로는 대표님 회사 사업에 맞춰 새로 설계해요.
         </p>
       </div>

@@ -84,12 +84,12 @@ export default function LegalPageLayout({
         {/* 목차 */}
         {sections && sections.length > 0 && (
           <nav aria-label="목차" className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6 print:break-inside-avoid">
-            <p className="text-sm font-black uppercase tracking-widest text-slate-400">목차</p>
+            <p className="text-sm font-black uppercase tracking-widest text-slate-500">목차</p>
             <ol className="mt-3 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
               {sections.map((s, i) => (
                 <li key={s.id}>
                   <a href={`#${s.id}`} className="inline-flex min-h-9 items-center text-[0.95rem] leading-snug text-slate-700 underline-offset-2 hover:text-blue-700 hover:underline">
-                    {numbered && <span className="font-semibold text-slate-400">{i + 1}. </span>}
+                    {numbered && <span className="font-semibold text-slate-500">{i + 1}. </span>}
                     {s.heading}
                   </a>
                 </li>
@@ -104,7 +104,7 @@ export default function LegalPageLayout({
             {sections.map((s, i) => (
               <section key={s.id} id={s.id} className="scroll-mt-20 print:break-inside-avoid">
                 <h2 className="text-[1.15rem] font-bold tracking-tight text-slate-900 sm:text-[1.3rem]">
-                  {numbered && <span className="text-slate-400">{i + 1}. </span>}
+                  {numbered && <span className="text-slate-500">{i + 1}. </span>}
                   {s.heading}
                 </h2>
                 <div className="mt-3 text-[0.98rem] leading-[1.75] text-slate-700 [&_a]:text-blue-700 [&_a]:underline [&_a]:underline-offset-2">
@@ -171,7 +171,7 @@ export function LegalList({ items, ordered = false }: { items: React.ReactNode[]
 /** 본문 공용 — 표 (개인정보 처리위탁·수집항목 등) */
 export function LegalTable({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
   return (
-    <div className="mt-3 overflow-x-auto">
+    <div tabIndex={0} role="region" aria-label="표 (옆으로 넘겨 보기)" className="mt-3 overflow-x-auto">
       <table className="w-full min-w-[420px] border-collapse text-[0.92rem]">
         <thead>
           <tr className="bg-slate-100 text-left">

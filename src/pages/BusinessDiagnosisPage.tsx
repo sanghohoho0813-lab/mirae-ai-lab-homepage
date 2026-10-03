@@ -411,7 +411,7 @@ export default function BusinessDiagnosisPage() {
         {screen === 'question' && current && (
           <>
             {qIdx === 0 && (
-              <p className="animate-rise-in mx-auto mt-6 w-full max-w-[720px] px-5 text-sm font-bold text-[#B37744]">{AX_FIT_INFO.copy}</p>
+              <p className="animate-rise-in mx-auto mt-6 w-full max-w-[720px] px-5 text-sm font-bold text-[#94602F]">{AX_FIT_INFO.copy}</p>
             )}
             <DiagnosisQuestion
               question={current}

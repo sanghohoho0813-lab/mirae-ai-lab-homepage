@@ -39,7 +39,7 @@ export default function PlaybackSpeed({
 
   return (
     <div role="group" aria-label={`${label} 재생 속도`} data-playback-speed className="mt-3 flex items-center justify-center gap-1.5">
-      <span className={`mr-1 text-[0.86rem] font-bold ${dark ? 'text-slate-400' : 'text-[#6B7680]'}`}>재생 속도</span>
+      <span className={`mr-1 text-[0.86rem] font-bold ${dark ? 'text-slate-400' : 'text-[#4A535D]'}`}>재생 속도</span>
       {PLAYBACK_SPEEDS.map((r) => {
         const on = rate === r
         return (

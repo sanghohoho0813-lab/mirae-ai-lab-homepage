@@ -84,7 +84,7 @@ export default function VentureMvpFilm({
           </p>
           <h2 className="mt-4 break-keep text-[2rem] font-black leading-[1.18] tracking-tight sm:text-[2.6rem]">
             영상 하나로
-            <br /> <span className="text-[#C8612E]">모든 설명</span>을 드려요
+            <br /> <span className="text-[#B4532A]">모든 설명</span>을 드려요
           </h2>
           <p className="mx-auto mt-3 max-w-md break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem] md:mx-0">
             <b className="font-black text-[#171B20]">{FILM_LENGTH}</b> · 자막 포함. 벤처인증 혜택부터 실제로 작동하는 MVP, 2주 일정과 비용까지 이 영상에 다 담았어요. 벤처기업확인 심사 수수료(확인기관에 내는 비용)는 별도예요.
@@ -92,7 +92,7 @@ export default function VentureMvpFilm({
           <ul className="mt-5 hidden gap-2 md:grid">
             {POINTS.map((t) => (
               <li key={t} className="flex items-start gap-2 break-keep text-[1.02rem] font-semibold text-[#343B44]">
-                <span aria-hidden className="font-black text-[#D47A4A]">
+                <span aria-hidden className="font-black text-[#B4532A]">
                   ✓
                 </span>
                 {t}
@@ -193,7 +193,7 @@ export default function VentureMvpFilm({
           </div>
           {/* 재생 속도 1배 · 1.25배 · 1.5배 */}
           <PlaybackSpeed videoRef={videoRef} label="2주 기술사업 빌드 소개 영상" />
-          <figcaption className="mt-2 break-keep text-center text-[0.82rem] leading-relaxed text-[#6B7680]">
+          <figcaption className="mt-2 break-keep text-center text-[0.82rem] leading-relaxed text-[#5E6670]">
             영상 속 화면은 미래AI랩이 직접 만든 자체 데모예요. 고객사 사례가 아니에요.
           </figcaption>
         </figure>

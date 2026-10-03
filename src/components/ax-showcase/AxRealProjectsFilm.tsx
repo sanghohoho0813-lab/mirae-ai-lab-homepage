@@ -21,7 +21,7 @@ export default function AxRealProjectsFilm({ diagnosisHref }: { diagnosisHref: s
       <div aria-hidden className="pointer-events-none absolute -left-28 top-16 h-[22rem] w-[22rem] rounded-full bg-[#D47A4A]/15 blur-3xl" />
       <div className="relative mx-auto max-w-6xl px-5 py-12 sm:px-6 sm:py-16 md:grid md:grid-cols-[1fr_minmax(0,400px)] md:items-center md:gap-12 lg:gap-16">
         <div className="text-center md:text-left">
-          <p className="text-[1.02rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.1rem]">REAL PROJECTS</p>
+          <p className="text-[1.02rem] font-black tracking-tight text-[#D9824F] sm:text-[1.1rem]">REAL PROJECTS</p>
           <h2 className="mt-3 break-keep text-[1.75rem] font-black leading-[1.25] tracking-tight sm:text-[2.2rem]">
             지금 실제로 만들고 있는
             <br /> <span className="text-[#E8B89A]">회사 두 곳</span>을 보여 드려요

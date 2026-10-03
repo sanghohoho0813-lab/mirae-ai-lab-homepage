@@ -42,12 +42,14 @@ const mvpItems: StripItem[] = PORTFOLIO_SAMPLES.map((s) => ({
   alt: s.alt,
 }))
 
-function Card({ item }: { item: StripItem }) {
+// copy: 끊김 없이 잇기 위해 한 벌 더 깐 카드 — 눌러서 열 수는 있지만 Tab 으로는 건너뛴다(같은 링크가 두 번 잡히지 않게)
+function Card({ item, copy = false }: { item: StripItem; copy?: boolean }) {
   return (
     <a
       href={item.href}
       target="_blank"
       rel="noopener noreferrer"
+      tabIndex={copy ? -1 : undefined}
       className="group block w-[9.5rem] shrink-0 sm:w-[12.5rem]"
     >
       <div className="overflow-hidden rounded-xl border border-white/12 bg-[#0B1016] shadow-lg shadow-black/40 transition-colors group-hover:border-[#D47A4A]/70">
@@ -63,7 +65,7 @@ function Card({ item }: { item: StripItem }) {
       </div>
       <p className="mt-1.5 truncate text-[0.84rem] sm:text-[0.94rem]">
         <span className="font-bold text-[#E7EAEE]">{item.industry}</span>
-        <span className="text-slate-500"> · {item.name}</span>
+        <span className="text-slate-400"> · {item.name}</span>
       </p>
     </a>
   )
@@ -133,7 +135,7 @@ function Row({ items, dir, label, count }: { items: StripItem[]; dir: 1 | -1; la
           {/* 끊김 없이 잇기 위해 같은 목록을 한 벌 더 깐다. 두 번째 벌은 읽어줄 필요가 없다 */}
           <div aria-hidden className="flex gap-3 sm:gap-4">
             {items.map((it) => (
-              <Card key={`dup-${it.key}`} item={it} />
+              <Card key={`dup-${it.key}`} item={it} copy />
             ))}
           </div>
         </div>
@@ -157,7 +159,7 @@ export default function AxSampleStrip() {
     <div className="space-y-4 sm:space-y-5">
       <Row label="업종별 AX와 고객 플랫폼" count={axItems.length} items={axItems} dir={1} />
       <Row label="아이디어 MVP(먼저 써 보는 시험판)" count={mvpItems.length} items={mvpItems} dir={-1} />
-      <p className="px-5 text-[0.82rem] leading-relaxed text-slate-500 sm:px-6 sm:text-[0.9rem]">
+      <p className="px-5 text-[0.82rem] leading-relaxed text-slate-400 sm:px-6 sm:text-[0.9rem]">
         누르면 실제 화면이 열려요. 모두 미래AI랩이 직접 만든 자체 레퍼런스이고, 화면 속 숫자는 시연용 가상 데이터예요.
       </p>
     </div>

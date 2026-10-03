@@ -73,7 +73,7 @@ export default function AxFilms({ samplesAnchor, diagnosisHref }: { samplesAncho
         </p>
         <h2 className="mt-4 break-keep text-[2rem] font-black leading-[1.18] tracking-tight sm:text-[2.6rem]">
           영상 두 편으로
-          <br /> <span className="text-[#C8612E]">모든 설명</span>을 드려요
+          <br /> <span className="text-[#B4532A]">모든 설명</span>을 드려요
         </h2>
         <p className="mx-auto mt-3 max-w-xl break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem]">
           <b className="font-black text-[#171B20]">필요한 영상만 골라 보셔도 돼요.</b> 두 편 모두 자막이 있어요.
@@ -98,9 +98,9 @@ export default function AxFilms({ samplesAnchor, diagnosisHref }: { samplesAncho
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block break-keep text-[1.02rem] font-black leading-snug text-[#171B20] sm:text-[1.04rem]">{c.who}</span>
-                  <span className="mt-0.5 block text-[0.86rem] font-bold text-[#C8612E]">{c.what}</span>
+                  <span className="mt-0.5 block text-[0.86rem] font-bold text-[#B4532A]">{c.what}</span>
                 </span>
-                <span aria-hidden className="shrink-0 text-[1.1rem] font-black text-[#C8612E] transition-transform group-hover:translate-y-0.5">
+                <span aria-hidden className="shrink-0 text-[1.1rem] font-black text-[#B4532A] transition-transform group-hover:translate-y-0.5">
                   ↓
                 </span>
               </button>
@@ -232,18 +232,18 @@ function FilmBlock({
       className={`relative mx-auto max-w-6xl scroll-mt-16 px-5 py-11 sm:px-6 sm:py-16 md:grid md:items-center md:gap-12 lg:gap-16 ${flip ? 'md:grid-cols-[minmax(0,400px)_1fr]' : 'md:grid-cols-[1fr_minmax(0,400px)]'}`}
     >
       <div className={`text-center md:text-left ${flip ? 'md:order-2' : ''}`}>
-        <p className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-1.5 text-[0.98rem] font-black text-[#C8612E] ring-1 ring-[#D47A4A]/40">
+        <p className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-1.5 text-[0.98rem] font-black text-[#B4532A] ring-1 ring-[#D47A4A]/40">
           <span className="grid h-6 w-6 place-items-center rounded-full bg-[#171B20] text-[0.82rem] text-white">{film.no}</span>
           <span className="sr-only">영상 {film.no} ·</span>
           {film.who}
-          <span className="hidden font-bold text-[#6B7680] sm:inline">· {film.length}</span>
+          <span className="hidden font-bold text-[#5E6670] sm:inline">· {film.length}</span>
         </p>
         <h3 className="mt-3.5 break-keep text-[1.7rem] font-black leading-[1.25] tracking-tight sm:text-[2.1rem]">{film.title}</h3>
         <p className="mx-auto mt-3 max-w-md break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem] md:mx-0">{film.lead}</p>
         <ul className="mt-5 hidden gap-2 md:grid">
           {film.points.map((t) => (
             <li key={t} className="flex items-start gap-2 break-keep text-[1.02rem] font-semibold text-[#343B44]">
-              <span aria-hidden className="font-black text-[#D47A4A]">
+              <span aria-hidden className="font-black text-[#B4532A]">
                 ✓
               </span>
               {t}
@@ -325,7 +325,7 @@ function FilmBlock({
         </div>
         {/* 재생 속도 1배 · 1.25배 · 1.5배 */}
         <PlaybackSpeed videoRef={videoRef} label={label} />
-        <figcaption className="mt-2 break-keep text-center text-[0.82rem] leading-relaxed text-[#6B7680]">
+        <figcaption className="mt-2 break-keep text-center text-[0.82rem] leading-relaxed text-[#5E6670]">
           영상 속 화면은 미래AI랩이 직접 만든 자체 데모예요. 고객사 사례가 아니에요.
         </figcaption>
       </figure>

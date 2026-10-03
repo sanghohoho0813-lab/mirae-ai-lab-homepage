@@ -54,7 +54,7 @@ const ACCENT: Record<MenuAccent, { no: string; dot: string; line: string; active
   blue: { no: 'text-blue-600', dot: 'bg-blue-500', line: 'bg-blue-200', activeBg: 'bg-blue-100', activeText: 'text-blue-800', badge: 'bg-blue-600', groupBg: 'bg-blue-50' },
   cyan: { no: 'text-cyan-600', dot: 'bg-cyan-500', line: 'bg-cyan-200', activeBg: 'bg-cyan-100', activeText: 'text-cyan-800', badge: 'bg-cyan-600', groupBg: 'bg-cyan-50' },
   violet: { no: 'text-violet-600', dot: 'bg-violet-500', line: 'bg-violet-200', activeBg: 'bg-violet-100', activeText: 'text-violet-800', badge: 'bg-violet-600', groupBg: 'bg-violet-50' },
-  amber: { no: 'text-[#B35A2A]', dot: 'bg-[#D47A4A]', line: 'bg-[#F0D2BE]', activeBg: 'bg-[#F9DFC6]', activeText: 'text-[#7A3A17]', badge: 'bg-[#B35A2A]', groupBg: 'bg-[#FBF1E8]' },
+  amber: { no: 'text-[#A84F26]', dot: 'bg-[#D47A4A]', line: 'bg-[#F0D2BE]', activeBg: 'bg-[#F9DFC6]', activeText: 'text-[#7A3A17]', badge: 'bg-[#B35A2A]', groupBg: 'bg-[#FBF1E8]' },
   slate: { no: 'text-slate-500', dot: 'bg-slate-400', line: 'bg-slate-200', activeBg: 'bg-slate-200', activeText: 'text-slate-900', badge: 'bg-slate-600', groupBg: 'bg-slate-100' },
 }
 

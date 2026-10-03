@@ -118,7 +118,7 @@ export function AxSamplesBand() {
     <section id="samples" className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16`}>
-        <p className="text-[1.02rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.1rem]">AX PREVIEW</p>
+        <p className="text-[1.02rem] font-black tracking-tight text-[#D9824F] sm:text-[1.1rem]">AX PREVIEW</p>
         <h2 className="mt-2 break-keep text-[1.75rem] font-black leading-[1.3] text-[#FAFAF8] sm:text-[2.3rem]">
           직접 만든 화면 22개,
           <br /> <span className="text-[#E8B89A]">눌러서 확인해 보세요</span>
@@ -138,7 +138,7 @@ export function AxSamplesBand() {
 
         {/* 실제 기업 프로젝트 — 데이터는 realProjectsDeep(업종·요약·진행 단계)만 쓴다. 폰은 옆으로 넘겨 보고, PC 는 3칸 */}
         <div data-ax-real-projects className="mt-12 border-t border-white/10 pt-10 sm:mt-14 sm:pt-12">
-          <p className="text-[1.02rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.1rem]">REAL PROJECTS</p>
+          <p className="text-[1.02rem] font-black tracking-tight text-[#D9824F] sm:text-[1.1rem]">REAL PROJECTS</p>
           <h3 className="mt-2 break-keep text-[1.5rem] font-black leading-[1.35] text-[#FAFAF8] sm:text-[1.9rem]">
             그리고 지금, <br className="sm:hidden" />
             <span className="text-[#E8B89A]">실제 기업에서도 만들고 있어요</span>
@@ -146,7 +146,8 @@ export function AxSamplesBand() {
           <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
             실제 기업의 업무를 분석하고, 현장에서 쓸 수 있는 AX 시스템을 직접 구축하고 있어요.
           </p>
-          <ul className="-mx-5 mt-6 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:scroll-px-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
+          {/* 폰에서는 옆으로 넘기는 목록 — 키보드로도 넘길 수 있게 초점을 받는다 */}
+          <ul tabIndex={0} aria-label="실제 프로젝트 목록 (옆으로 넘겨 보기)" className="-mx-5 mt-6 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:scroll-px-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
             {DEEP_PROJECTS.map((p) => (
               <li key={p.slug} data-ax-real-project className="w-[78%] max-w-[300px] shrink-0 snap-start rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:w-auto sm:max-w-none">
                 <span className="inline-flex rounded-full bg-[#D47A4A]/15 px-2.5 py-1 text-[0.78rem] font-bold text-[#E8B89A] ring-1 ring-inset ring-[#D47A4A]/30">
@@ -157,7 +158,7 @@ export function AxSamplesBand() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 break-keep text-[0.82rem] leading-relaxed text-slate-500 sm:text-[0.9rem]">
+          <p className="mt-3 break-keep text-[0.82rem] leading-relaxed text-slate-400 sm:text-[0.9rem]">
             회사 이름 대신 업종만 적었어요. 업체명과 실제 화면, 내부 자료는 공개하지 않아요.
           </p>
         </div>

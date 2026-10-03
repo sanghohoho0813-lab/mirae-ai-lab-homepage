@@ -54,7 +54,7 @@ export default function VentureMvpHero() {
             <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
               <span className="text-[1.1rem] font-black text-white">런칭 파트너 특가</span>
               <span className="text-[2.6rem] font-black leading-none tracking-tight text-[#E8894F] sm:text-[3rem]">300만원</span>
-              <span className="rounded-full bg-[#FF6B4A] px-3 py-1.5 text-[0.9rem] font-black leading-none text-white">200만원 할인</span>
+              <span className="rounded-full bg-[#D2462A] px-3 py-1.5 text-[0.9rem] font-black leading-none text-white">200만원 할인</span>
             </p>
             {/* 벤처기업확인은 신청 '준비'까지가 이 금액 — 확인기관에 내는 심사 수수료는 별도라는 걸 가격 바로 아래에 */}
             <p data-mvp-fee-note className="mt-2.5 break-keep text-[0.8rem] leading-snug text-slate-400">{VENTURE_FEE_SHORT}</p>

@@ -28,7 +28,7 @@ const PAGE_DESC = `미래AI랩이 직접 기획하고 만든 샘플 화면 ${SAM
 const NEW_TAB = { target: '_blank', rel: 'noopener noreferrer' } as const
 const BTN = 'inline-flex min-h-10 w-full items-center justify-center gap-1 whitespace-nowrap rounded-lg px-2 text-[0.88rem] font-black transition-colors sm:text-[0.92rem]'
 const BTN_MAIN = `${BTN} bg-[#171B20] text-white hover:bg-[#343B44]`
-const BTN_SUB = `${BTN} border border-[#D9DDE2] bg-white text-[#171B20] hover:border-[#D47A4A]/60 hover:text-[#B35A2A]`
+const BTN_SUB = `${BTN} border border-[#D9DDE2] bg-white text-[#171B20] hover:border-[#D47A4A]/60 hover:text-[#A84F26]`
 
 /** 카드 한 장 — 그림을 눌러도 대표 화면이 열린다(버튼과 같은 주소라 화면 읽기에서는 숨긴다) */
 function SampleCard({
@@ -65,8 +65,8 @@ function SampleCard({
           />
         </a>
         <div className="flex flex-1 flex-col p-3 sm:p-4">
-          <p className="break-keep text-[1.02rem] font-black leading-snug text-[#B35A2A] sm:text-[1.1rem]">{title}</p>
-          <p className="mt-0.5 break-keep text-[0.8rem] font-bold tracking-wide text-[#8A939C] sm:text-[0.84rem]">{sub}</p>
+          <p className="break-keep text-[1.02rem] font-black leading-snug text-[#A84F26] sm:text-[1.1rem]">{title}</p>
+          <p className="mt-0.5 break-keep text-[0.8rem] font-bold tracking-wide text-[#646E78] sm:text-[0.84rem]">{sub}</p>
           <p className="mt-1.5 line-clamp-3 break-keep text-[0.88rem] leading-snug text-[#4B5560] sm:text-[0.94rem]">{line}</p>
           <div className="mt-auto flex flex-col gap-1.5 pt-3">{children}</div>
         </div>
@@ -183,14 +183,14 @@ export default function SamplesPage() {
 
       <main className="flex-1">
         <section className="mx-auto max-w-6xl px-5 pb-16 pt-9 sm:px-6 sm:pb-20 sm:pt-14">
-          <p className="hero-anim text-[1rem] font-black tracking-tight text-[#B35A2A] sm:text-[1.05rem]">SAMPLES</p>
+          <p className="hero-anim text-[1rem] font-black tracking-tight text-[#A84F26] sm:text-[1.05rem]">SAMPLES</p>
           <h1 style={{ animationDelay: '0.1s' }} className="hero-anim mt-2 break-keep text-[2rem] font-black leading-[1.25] tracking-[-0.02em] sm:text-[2.6rem]">
-            직접 만든 화면 <span className="text-[#D47A4A]">{SAMPLE_TOTAL}개</span>
+            직접 만든 화면 <span className="text-[#B4532A]">{SAMPLE_TOTAL}개</span>
           </h1>
           <p style={{ animationDelay: '0.2s' }} className="hero-anim mt-3 max-w-2xl break-keep text-[1.05rem] leading-relaxed text-[#4B5560] sm:text-[1.15rem]">
             누르면 실제로 작동하는 화면이 <span className="whitespace-nowrap">새 창으로 열려요.</span>
           </p>
-          <p style={{ animationDelay: '0.26s' }} className="hero-anim mt-1.5 max-w-2xl break-keep text-[0.9rem] leading-relaxed text-[#8A939C] sm:text-[0.95rem]" data-samples-note>
+          <p style={{ animationDelay: '0.26s' }} className="hero-anim mt-1.5 max-w-2xl break-keep text-[0.9rem] leading-relaxed text-[#646E78] sm:text-[0.95rem]" data-samples-note>
             고객사 실적이 아니라 미래AI랩이 직접 기획하고 만든 예시 화면(Concept Prototype)이에요.
           </p>
 
@@ -213,7 +213,7 @@ export default function SamplesPage() {
                   >
                     <span className="min-[420px]:hidden">{t.short}</span>
                     <span className="hidden min-[420px]:inline">{t.label}</span>
-                    <span className={`text-[0.82rem] font-black sm:text-[0.88rem] ${on ? 'text-[#E8B89A]' : 'text-[#B35A2A]'}`}>{t.count}</span>
+                    <span className={`text-[0.82rem] font-black sm:text-[0.88rem] ${on ? 'text-[#E8B89A]' : 'text-[#A84F26]'}`}>{t.count}</span>
                   </button>
                 )
               })}
@@ -224,7 +224,7 @@ export default function SamplesPage() {
             <section key={g.key} data-samples-group={g.key} aria-labelledby={`samples-${g.key}`} className="mt-8 sm:mt-10">
               <h2 id={`samples-${g.key}`} className="flex items-baseline gap-2 break-keep text-[1.35rem] font-black tracking-tight sm:text-[1.6rem]">
                 {g.title}
-                <span className="text-[1rem] font-black text-[#D47A4A] sm:text-[1.1rem]">{g.count}개</span>
+                <span className="text-[1rem] font-black text-[#B4532A] sm:text-[1.1rem]">{g.count}개</span>
               </h2>
               <p className="mt-1.5 max-w-3xl break-keep text-[0.95rem] leading-relaxed text-[#646E78] sm:text-[1rem]">{g.desc}</p>
               <ul className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">{g.cards}</ul>

@@ -90,7 +90,7 @@ function FocusCard({ items, note }: { items: Report['focus']; note?: string }) {
   if (!items || items.length === 0) return null
   return (
     <section className="mt-8 print:break-inside-avoid">
-      <p className={`${eyebrow} text-[#B37744]`}>대표님 상황에 맞춰</p>
+      <p className={`${eyebrow} text-[#94602F]`}>대표님 상황에 맞춰</p>
       <h2 className={h2Cls}>상담에서 같이 준비할 것</h2>
       <ul className="mt-4 grid gap-2 sm:grid-cols-2">
         {items.map((f) => (
@@ -177,13 +177,13 @@ function ProblemsCard({ items, painCount, painTotal }: { items: AxFitProblem[]; 
 function ActionPlan({ report }: { report: Report }) {
   return (
     <section className="mt-9 print:break-inside-avoid">
-      <p className={`${eyebrow} text-[#B37744]`}>그럼, 무엇부터 할까요?</p>
+      <p className={`${eyebrow} text-[#94602F]`}>그럼, 무엇부터 할까요?</p>
       <h2 className={h2Cls}>{report.direction.title}</h2>
 
       <ul className="mt-4 space-y-2">
         {report.direction.points.map((t) => (
           <li key={t} className="flex items-start gap-2.5 rounded-xl bg-[#F6ECE1]/70 px-4 py-3">
-            <CheckIcon className="text-[#B37744]" />
+            <CheckIcon className="text-[#94602F]" />
             <p className="break-keep text-[1rem] font-semibold leading-relaxed text-slate-800">{t}</p>
           </li>
         ))}

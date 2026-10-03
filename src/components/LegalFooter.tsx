@@ -34,7 +34,7 @@ export default function LegalFooter({
   ]
   if (b.mailOrderSalesNumber) infoRows.push(`통신판매업 신고 ${b.mailOrderSalesNumber}`)
 
-  const head = `text-[0.78rem] font-bold tracking-[0.18em] ${dark ? 'text-[#D8A871]' : 'text-[#A5703C]'}`
+  const head = `text-[0.78rem] font-bold tracking-[0.18em] ${dark ? 'text-[#D8A871]' : 'text-[#8B5A2B]'}`
   const link = `inline-flex min-h-10 items-center text-[0.98rem] font-medium transition-colors sm:min-h-9 sm:text-[0.94rem] ${
     dark ? 'text-slate-300 hover:text-white' : 'text-[#343B44] hover:text-[#0E1116]'
   }`
@@ -110,7 +110,7 @@ export default function LegalFooter({
         </div>
 
         {/* 사업자 정보 */}
-        <div className={`mt-12 border-t pt-6 text-[0.9rem] leading-relaxed sm:text-[0.86rem] ${dark ? 'border-white/10 text-slate-500' : 'border-[#E7E1D8] text-[#7C858F]'}`}>
+        <div className={`mt-12 border-t pt-6 text-[0.9rem] leading-relaxed sm:text-[0.86rem] ${dark ? 'border-white/10 text-slate-400' : 'border-[#E7E1D8] text-[#5E6670]'}`}>
           {/* 폰은 한 줄에 하나씩(줄 머리에 '|' 가 붙지 않게), PC 는 두 줄로 묶는다 */}
           {[infoRows, [`주소 ${b.address}`, `업태 ${b.businessCategory} · 종목 ${b.businessItem}`]].map((group, gi) => (
             <p key={gi} className="flex flex-col gap-y-0.5 sm:mt-0.5 sm:flex-row sm:flex-wrap sm:gap-x-3">

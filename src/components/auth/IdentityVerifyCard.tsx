@@ -79,7 +79,7 @@ export default function IdentityVerifyCard({
             <dd className="font-bold tabular-nums text-slate-900">{maskPhone(verified.phone)}</dd>
           </div>
         </dl>
-        <p className="mt-2 text-xs leading-relaxed text-slate-400">인증기관에서 확인된 정보입니다. 변경은 다시 인증하기로만 가능합니다.</p>
+        <p className="mt-2 text-xs leading-relaxed text-slate-500">인증기관에서 확인된 정보입니다. 변경은 다시 인증하기로만 가능합니다.</p>
       </div>
     )
   }
@@ -109,7 +109,7 @@ export default function IdentityVerifyCard({
         </button>
       )}
       {!notConfigured && (
-        <p className="mt-2 text-xs leading-relaxed text-slate-400">
+        <p className="mt-2 text-xs leading-relaxed text-slate-500">
           통신사 PASS 본인확인으로 이름·휴대폰 번호가 자동 입력됩니다.
         </p>
       )}

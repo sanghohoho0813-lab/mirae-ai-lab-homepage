@@ -45,7 +45,7 @@ export default function PasswordInput({
           type="button"
           onClick={() => setVisible((v) => !v)}
           aria-label={visible ? '비밀번호 숨기기' : '비밀번호 표시'}
-          className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+          className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
         >
           {visible ? (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -61,8 +61,8 @@ export default function PasswordInput({
       </div>
       {showRules && value.length > 0 && (
         <div className="mt-1.5 flex gap-3 text-xs font-medium" aria-live="polite">
-          <span className={lenOk ? 'text-emerald-600' : 'text-slate-400'}>{lenOk ? '✓' : '·'} 8자 이상</span>
-          <span className={mixOk ? 'text-emerald-600' : 'text-slate-400'}>{mixOk ? '✓' : '·'} 영문·숫자 조합</span>
+          <span className={lenOk ? 'text-emerald-600' : 'text-slate-500'}>{lenOk ? '✓' : '·'} 8자 이상</span>
+          <span className={mixOk ? 'text-emerald-600' : 'text-slate-500'}>{mixOk ? '✓' : '·'} 영문·숫자 조합</span>
         </div>
       )}
     </div>

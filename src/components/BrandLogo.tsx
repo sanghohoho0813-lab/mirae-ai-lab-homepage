@@ -2,9 +2,10 @@ import type { MouseEventHandler } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const LOGO_SRC = '/brand/mirae-ai-lab-logo-transparent.png'
+// 화면에는 최대 230px 폭으로만 보이므로 480px WebP(약 20KB)를 쓴다 — 원본 PNG(828px · 85~106KB)는 메일·외부용으로 남겨 둔다
+const LOGO_SRC = '/brand/mirae-ai-lab-logo-transparent-480.webp'
 /** 어두운 배경용 — 원본 로고에서 글자(무채색)만 아이보리로 바꾼 버전. M 마크 색은 그대로 */
-const LOGO_SRC_LIGHT = '/brand/mirae-ai-lab-logo-light.png'
+const LOGO_SRC_LIGHT = '/brand/mirae-ai-lab-logo-light-480.webp'
 const DEFAULT_TAGLINE = 'MIRAE AI LAB · Business AX Company'
 // 폰에서는 헤더 폭이 모자라 긴 태그라인이 'Business A…' 로 잘린다. 로고 그림에 이미 MIRAE AI LAB 이 있으니
 // 폰(sm 미만)에서는 뒷부분만 온전히 보여 준다.
@@ -43,8 +44,8 @@ export default function BrandLogo({
         <img
           src={tone === 'dark' ? LOGO_SRC_LIGHT : LOGO_SRC}
           alt="미래에이아이랩"
-          width={828}
-          height={250}
+          width={480}
+          height={145}
           decoding="async"
           onError={() => setLogoFailed(true)}
           className={`${logoFailed ? 'hidden' : 'block'} h-10 w-auto max-w-[190px] object-contain sm:h-12 sm:max-w-[230px] ${imgClassName}`}
@@ -61,7 +62,7 @@ export default function BrandLogo({
         )}
       </span>
       {showTagline && (
-        <span className={`mt-0.5 block max-w-full truncate text-[0.65rem] font-black tracking-[0.16em] sm:text-[0.7rem] ${tone === 'dark' ? 'text-slate-400' : 'text-slate-500'} ${taglineClassName}`}>
+        <span className={`mt-0.5 block max-w-full truncate text-[0.65rem] font-black tracking-[0.16em] sm:text-[0.7rem] ${tone === 'dark' ? 'text-slate-400' : 'text-slate-600'} ${taglineClassName}`}>
           {taglineShort ? (
             <>
               <span className="sm:hidden">{taglineShort}</span>

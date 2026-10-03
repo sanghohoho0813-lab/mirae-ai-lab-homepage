@@ -51,7 +51,7 @@ export default function LoginPage() {
       <div className="mx-auto w-full max-w-[500px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <SocialAuthButtons mode="login" next={next} />
 
-        <div className="my-6 flex items-center gap-3 text-xs text-slate-400">
+        <div className="my-6 flex items-center gap-3 text-xs text-slate-500">
           <span className="h-px flex-1 bg-slate-200" />
           또는 이메일로 로그인
           <span className="h-px flex-1 bg-slate-200" />

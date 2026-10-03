@@ -80,7 +80,7 @@ function ResultsList() {
                     <span className="text-sm font-bold text-slate-500">
                       추천 시작 {r.snapshot.gradeLabel} · <span className="tabular-nums text-slate-900">{r.snapshot.priceFrom}</span>
                     </span>
-                    <span className="text-sm font-semibold text-[#B37744]">결과 다시 보기 →</span>
+                    <span className="text-sm font-semibold text-[#94602F]">결과 다시 보기 →</span>
                   </div>
                 </Link>
                 <button

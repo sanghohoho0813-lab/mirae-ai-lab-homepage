@@ -33,7 +33,7 @@ const TONE: Record<Tone, { card: string; glow: string; kicker: string; title: st
   ivory: {
     card: 'bg-[#F2EDE6] text-[#0B0E12] shadow-[0_30px_80px_-30px_rgba(216,168,113,0.45)] ring-1 ring-[#E6C396]/60 hover:shadow-[0_40px_90px_-30px_rgba(216,168,113,0.6)]',
     glow: 'bg-[#E6C396]/45',
-    kicker: 'text-[#A5703C]',
+    kicker: 'text-[#8B5A2B]',
     title: 'text-[#0B0E12]',
     desc: 'text-[#4A535D]',
     arrow: 'bg-[#0B0E12] text-[#E6C396]',

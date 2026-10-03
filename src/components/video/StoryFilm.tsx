@@ -157,7 +157,7 @@ export default function StoryFilm({
       </div>
       <PlaybackSpeed videoRef={videoRef} label={label} tone={tone} />
       {caption && (
-        <figcaption className={`mx-auto mt-2 max-w-[400px] break-keep text-center text-[0.82rem] leading-relaxed ${tone === 'dark' ? 'text-slate-400' : 'text-[#6B7680]'}`}>{caption}</figcaption>
+        <figcaption className={`mx-auto mt-2 max-w-[400px] break-keep text-center text-[0.82rem] leading-relaxed ${tone === 'dark' ? 'text-slate-400' : 'text-[#5E6670]'}`}>{caption}</figcaption>
       )}
     </figure>
   )

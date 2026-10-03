@@ -31,7 +31,7 @@ export default function BusinessStickyCta({
         // 칸이 좁아 두 줄로 — 위는 작게, 아래 '서비스 찾기' 를 굵게
         label: (
           <span className="flex flex-col items-center leading-tight">
-            <span className="text-[0.66rem] font-semibold opacity-80 min-[380px]:text-[0.7rem]">우리 회사에 맞는</span>
+            <span className="text-[0.66rem] font-semibold min-[380px]:text-[0.7rem]">우리 회사에 맞는</span>
             <span>서비스 찾기</span>
           </span>
         ),

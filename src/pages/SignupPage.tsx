@@ -172,7 +172,7 @@ export default function SignupPage() {
 
         {EMAIL_SIGNUP_ENABLED ? (
           <>
-        <div className="my-6 flex items-center gap-3 text-xs text-slate-400">
+        <div className="my-6 flex items-center gap-3 text-xs text-slate-500">
           <span className="h-px flex-1 bg-slate-200" />
           또는 이메일로 회원가입
           <span className="h-px flex-1 bg-slate-200" />

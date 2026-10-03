@@ -25,7 +25,7 @@ export default function DiagnosisProgress({ questionNumber, total, percent, onBa
             </svg>
           </button>
           <div className="min-w-0 flex-1 text-center">
-            <p className="text-xs font-black uppercase tracking-wide text-[#B37744]">AX FIT</p>
+            <p className="text-xs font-black uppercase tracking-wide text-[#94602F]">AX FIT</p>
             <p className="truncate text-sm font-bold text-slate-900">{AX_FIT_INFO.name}</p>
           </div>
           <p className="shrink-0 whitespace-nowrap text-right text-[12px] font-semibold text-slate-500 sm:text-sm">

@@ -61,10 +61,10 @@ export default function PageShell({
               </Link>
             ))}
           </nav>
-          <p className="mt-4 text-sm text-slate-400">
+          <p className="mt-4 text-sm text-slate-500">
             {businessInfo.companyName} · 대표 {businessInfo.representative} · 사업자등록번호 {businessInfo.businessNumber}
           </p>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-500">
             © {new Date().getFullYear()} {businessInfo.serviceName} · 미래경영지원센터
           </p>
         </div>

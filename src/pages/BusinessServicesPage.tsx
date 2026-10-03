@@ -119,7 +119,7 @@ function CardHead({
       {/* 폰·PC: 글 | 그림 나란히. 두 카드가 나란히 서서 좁아지는 폴더블 펼친 화면·태블릿(640~1023px): 그림을 글 아래 가운데로 */}
       <div className="mt-1.5 flex items-start gap-2.5 sm:flex-col sm:items-stretch sm:gap-0 lg:flex-row lg:items-start lg:gap-4">
         <div className="min-w-0 flex-1">
-          <p className={`break-keep text-[0.95rem] font-bold leading-snug sm:text-[1.02rem] ${dark ? 'text-[#E6C396]' : 'text-[#B35A2A]'}`}>{diff}</p>
+          <p className={`break-keep text-[0.95rem] font-bold leading-snug sm:text-[1.02rem] ${dark ? 'text-[#E6C396]' : 'text-[#A84F26]'}`}>{diff}</p>
           {children}
         </div>
         {visual && <div className="mt-0.5 shrink-0 max-[359px]:hidden sm:mt-4 sm:self-center lg:mt-0.5 lg:self-auto">{visual}</div>}
@@ -195,7 +195,7 @@ export default function BusinessServicesPage() {
             <span aria-hidden className="h-px w-6 shrink-0 bg-[#C99257]/70 sm:w-10" />
             {/* 한 덩어리로 묶는다 — 나누면 gap-2 가 '중소기업'과 '을' 사이에 끼어든다 */}
             <span className="break-keep">
-              <span className="text-[#A5703C]">50인 미만 중소기업</span>을 위한 <span className="whitespace-nowrap">AX · 기술사업</span>
+              <span className="text-[#8B5A2B]">50인 미만 중소기업</span>을 위한 <span className="whitespace-nowrap">AX · 기술사업</span>
             </span>
             <span aria-hidden className="h-px w-6 shrink-0 bg-[#C99257]/70 sm:w-10" />
           </p>
@@ -225,7 +225,7 @@ export default function BusinessServicesPage() {
                   <span className="whitespace-nowrap">아이디어는</span> <span className="whitespace-nowrap">작동하는</span>{' '}
                   <span className="whitespace-nowrap">웹앱 서비스로,</span>
                   <br />
-                  회사는 <span className="text-[#C8612E]">벤처기업으로</span>
+                  회사는 <span className="text-[#B4532A]">벤처기업으로</span>
                 </h2>
               </CardHead>
               {/* 가격 — '원래 500만원인데 지금 300만원' 이 한눈에 읽히게: 정상가를 크게 두고 붉은 선으로 지운 뒤,
@@ -236,7 +236,7 @@ export default function BusinessServicesPage() {
                   <del className="text-[1.2rem] font-black tabular-nums text-[#646E78] decoration-[#D2462E] decoration-[2.5px] sm:text-[1.3rem]">500만원</del>
                 </p>
                 <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className="text-[0.88rem] font-black text-[#B35A2A]">런칭 파트너 특가</span>
+                  <span className="text-[0.88rem] font-black text-[#A84F26]">런칭 파트너 특가</span>
                   <span className="text-[1.6rem] font-black leading-none tracking-tight text-[#171B20] sm:text-[1.8rem]">300만원</span>
                   <span className="rounded-full bg-[#D2462E] px-2.5 py-1 text-[0.8rem] font-black leading-none text-white">200만원 할인</span>
                 </p>
@@ -318,7 +318,7 @@ export default function BusinessServicesPage() {
             <span className="min-w-0 break-keep text-[0.98rem] font-black leading-snug text-[#171B20] sm:text-[1.06rem]">
               AX, 대기업만 하는 거 아닌가요?
             </span>
-            <span className="inline-flex shrink-0 items-center gap-1 text-[0.88rem] font-bold text-[#B35A2A]">
+            <span className="inline-flex shrink-0 items-center gap-1 text-[0.88rem] font-bold text-[#A84F26]">
               <span className="group-open:hidden">펼쳐보기</span>
               <span className="hidden group-open:inline">접기</span>
               <svg viewBox="0 0 20 20" className="h-4 w-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

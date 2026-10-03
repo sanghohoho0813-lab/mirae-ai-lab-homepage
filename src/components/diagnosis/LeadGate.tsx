@@ -72,7 +72,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
 
   return (
     <div className="animate-rise-in mx-auto mt-8 w-full max-w-[640px] rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5 sm:p-8">
-      <p className="text-sm font-black uppercase tracking-widest text-[#B37744]">AX Fit 상담 신청</p>
+      <p className="text-sm font-black uppercase tracking-widest text-[#94602F]">AX Fit 상담 신청</p>
       <h2 className="mt-2 text-xl font-black leading-[1.3] tracking-tight text-slate-900 sm:text-2xl">
         진단 결과를 보고,<br className="sm:hidden" /> 어디부터 손댈지 같이 정해 드려요
       </h2>
@@ -179,7 +179,7 @@ export default function LeadGate({ submitting, errorMessage, interests, onIntere
             <span className="min-w-0">
               <span className="text-sm font-bold text-slate-800">{PRIVACY_CONSENT.required.label}</span>
               <span className="mt-0.5 block text-xs leading-snug text-slate-500">{PRIVACY_CONSENT.required.summary}</span>
-              <button type="button" onClick={() => setPrivacyOpen((o) => !o)} className="mt-0.5 inline-flex min-h-9 items-center text-xs font-semibold text-[#B37744] underline underline-offset-2">
+              <button type="button" onClick={() => setPrivacyOpen((o) => !o)} className="mt-0.5 inline-flex min-h-9 items-center text-xs font-semibold text-[#94602F] underline underline-offset-2">
                 {privacyOpen ? '내용 접기' : '자세히 보기'}
               </button>
               {privacyOpen && (

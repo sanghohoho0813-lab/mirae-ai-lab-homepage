@@ -143,11 +143,11 @@ export default function AxFaqSection({
   return (
     <section id="faq" className="scroll-mt-16 border-t border-[#E7EAEE] bg-[#FAFAF8]">
       <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-20">
-        <p className="text-center text-[1.1rem] font-black tracking-tight text-[#D47A4A] sm:text-[1.2rem]">FAQ</p>
+        <p className="text-center text-[1.1rem] font-black tracking-tight text-[#B4532A] sm:text-[1.2rem]">FAQ</p>
         <h2 className="mt-3 break-keep text-center text-[1.87rem] font-black leading-[1.3] tracking-[-0.015em] text-[#171B20] sm:text-[2.4rem]">
           자주 묻는 질문
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl break-keep text-center text-[1.08rem] leading-[1.7] text-[#6B7680] sm:text-[1.18rem]">
+        <p className="mx-auto mt-4 max-w-2xl break-keep text-center text-[1.08rem] leading-[1.7] text-[#5E6670] sm:text-[1.18rem]">
           상담 전에 많이 받는 질문을 모았어요. 여기 없는 건 상담에서 바로 답해 드려요.
         </p>
 
@@ -190,7 +190,7 @@ function FaqEntry({ f, i }: { f: FaqItem; i: number }) {
   return (
     <details className="group rounded-2xl border border-[#E7EAEE] bg-white shadow-[0_6px_20px_rgba(23,27,32,0.04)] open:border-[#D47A4A]/45">
       <summary className="flex min-h-[60px] cursor-pointer list-none items-start gap-3 px-5 py-4 text-[1.12rem] font-black leading-snug text-[#171B20] transition-colors hover:bg-[#FAFAF8] sm:items-center sm:text-[1.22rem] [&::-webkit-details-marker]:hidden">
-        <span aria-hidden className="mt-0.5 shrink-0 text-[0.95rem] font-black tracking-tight text-[#D47A4A] sm:mt-0">Q{String(i + 1).padStart(2, '0')}</span>
+        <span aria-hidden className="mt-0.5 shrink-0 text-[0.95rem] font-black tracking-tight text-[#B4532A] sm:mt-0">Q{String(i + 1).padStart(2, '0')}</span>
         <span className="min-w-0 flex-1 break-keep">{f.q}</span>
         <span aria-hidden className="shrink-0 text-[#A36A4B] transition-transform group-open:rotate-180">⌄</span>
       </summary>
@@ -220,7 +220,7 @@ function FaqEntry({ f, i }: { f: FaqItem; i: number }) {
                           scope="col"
                           className={`px-1.5 py-2 align-bottom min-[380px]:px-2.5 sm:px-4 ${hi === 0 ? 'text-left' : 'text-right'} ${tint ? 'bg-[#F9DFC6]' : ''}`}
                         >
-                          <span className={`block text-[0.82rem] font-bold leading-tight sm:text-[0.9rem] ${tint ? (sub ? 'text-[#171B20]' : 'text-[#B4532A]') : 'text-[#6B7680]'}`}>{label}</span>
+                          <span className={`block text-[0.82rem] font-bold leading-tight sm:text-[0.9rem] ${tint ? (sub ? 'text-[#171B20]' : 'text-[#B4532A]') : 'text-[#5E6670]'}`}>{label}</span>
                           {sub && <span className="mt-0.5 block break-keep text-[0.78rem] font-black leading-tight text-[#B4532A] sm:text-[0.86rem]">{sub}</span>}
                         </th>
                       )
@@ -259,7 +259,7 @@ function FaqEntry({ f, i }: { f: FaqItem; i: number }) {
               </div>
             )}
             {tb.note && (
-              <p className="break-keep border-t border-[#F0E4D8] bg-[#FAF3EC] px-3.5 py-2.5 text-[0.84rem] leading-[1.65] text-[#6B7680] sm:px-4 sm:text-[0.9rem]">
+              <p className="break-keep border-t border-[#F0E4D8] bg-[#FAF3EC] px-3.5 py-2.5 text-[0.84rem] leading-[1.65] text-[#5E6670] sm:px-4 sm:text-[0.9rem]">
                 {rich(tb.note, 'font-black text-[#B4532A]')}
               </p>
             )}
