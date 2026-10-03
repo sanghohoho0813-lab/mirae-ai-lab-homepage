@@ -49,34 +49,42 @@ for (const W of [390, 1280]) {
     await go(p, AX)
     const sec = p.locator('#real-projects-film')
     ok('구간 있음 · FAQ 다음 · 마무리 앞', (await sec.count()) === 1 && (await p.evaluate(() => { const y = (id) => document.getElementById(id)?.getBoundingClientRect().top; return y('faq') < y('real-projects-film') && y('real-projects-film') < y('cta') })))
-    const v = sec.locator('video')
-    const srcsNow = () => v.locator('source').evaluateAll((s) => s.map((x) => x.getAttribute('src')))
-    const EP = { ep1: 'ax-real-ep1', ep2: 'ax-real-ep2', summary: 'ax-real-projects' }
-    ok('편 고르기 3개(1편 · 2편 · 요약본)', (await sec.locator('[data-real-ep]').count()) === 3)
-    ok('처음엔 1편', (await sec.locator('[data-real-ep="ep1"]').getAttribute('aria-pressed')) === 'true')
-    for (const id of ['ep2', 'summary', 'ep1']) {
-      await sec.locator(`[data-real-ep="${id}"]`).click(); await p.waitForTimeout(200)
-      const srcs = await srcsNow()
-      ok(`${id} 영상 주소 mp4 · webm`, JSON.stringify(srcs) === JSON.stringify([`/business/ax/${EP[id]}.mp4`, `/business/ax/${EP[id]}.webm`]), srcs.join(','))
-      for (const u of [...srcs, await v.getAttribute('poster')]) { const n = await size(p, u); ok(`파일 있음 ${u}`, n > 10000, String(n)) }
+    // 두 편 연달아 — 1편(중소기업에 가까운 사례) → 2편(소상공인에 가까운 사례), 편마다 옆에 안내
+    ok('두 편 연달아(1편 → 2편)', (await sec.locator('[data-real-episode]').count()) === 2 && (await p.evaluate(() => document.getElementById('real-project-1').getBoundingClientRect().top < document.getElementById('real-project-2').getBoundingClientRect().top)))
+    const body = await text(p, '#real-projects-film')
+    ok('1편 안내: 중소기업에 가까운 사례', /중소기업에 가까운 사례/.test(await text(p, '#real-project-1')))
+    ok('2편 안내: 소상공인에 가까운 사례', /소상공인에 가까운 사례/.test(await text(p, '#real-project-2')))
+    ok('흐름 예상 안내', /대략 어떻게 흘러가는지/.test(body))
+    ok('업종만 공개 안내', /업종만/.test(body))
+    ok('요약본(예전 영상)은 없음', !(await p.locator('#real-projects-film source[src*="ax-real-projects"]').count()))
+    const f1 = sec.locator('[data-story-film="ax-real-1"]'), f2 = sec.locator('[data-story-film="ax-real-2"]')
+    const v1 = f1.locator('video'), v2 = f2.locator('video')
+    for (const [n, f, v] of [[1, f1, v1], [2, f2, v2]]) {
+      const srcs = await v.locator('source').evaluateAll((s) => s.map((x) => x.getAttribute('src')))
+      ok(`${n}편 영상 주소 mp4 · webm`, JSON.stringify(srcs) === JSON.stringify([`/business/ax/ax-real-ep${n}.mp4`, `/business/ax/ax-real-ep${n}.webm`]), srcs.join(','))
+      for (const u of [...srcs, await v.getAttribute('poster')]) { const k = await size(p, u); ok(`파일 있음 ${u}`, k > 10000, String(k)) }
+      ok(`${n}편 미리 받지 않음(preload none)`, (await v.getAttribute('preload')) === 'none')
+      ok(`${n}편 재생 속도 1 · 1.25 · 1.5배 버튼`, (await f.locator('[data-speed]').evaluateAll((b) => b.map((x) => x.getAttribute('data-speed')).join(','))) === '1,1.25,1.5')
     }
-    ok('업종만 공개 안내', /업종만/.test(await text(p, '#real-projects-film')))
-    ok('미리 받지 않음(preload none)', (await v.getAttribute('preload')) === 'none')
     await sec.scrollIntoViewIfNeeded(); await p.waitForTimeout(300)
     await p.screenshot({ path: `${S}/axreal-${W}.png` })
-    await sec.locator('[data-story-sound]').click(); await p.waitForTimeout(700)
-    ok('누르면 소리 켜고 재생(조절 막대 표시)', await v.evaluate((x) => !x.muted && x.controls))
-    await sec.locator('[data-speed="1.25"]').click()
-    ok('재생 속도 1.25배', (await v.evaluate((x) => x.playbackRate)) === 1.25)
-    // 1편 끝 → '2편 이어 보기' → 2편이 소리 켜고 바로 재생
-    await v.evaluate((x) => new Promise((r) => { const go = () => { x.currentTime = Math.max(0, x.duration - 0.4); x.play().catch(() => {}); r() }; x.readyState >= 1 ? go() : x.addEventListener('loadedmetadata', go, { once: true }) }))
-    await sec.locator('[data-real-next]').waitFor({ timeout: 8000 }).catch(() => {})
-    ok('1편 끝 화면에 2편 이어 보기', (await sec.locator('[data-real-next]').count()) === 1)
-    if (await sec.locator('[data-real-next]').count()) {
-      await sec.locator('[data-real-next]').click(); await p.waitForTimeout(900)
-      const srcs = await srcsNow()
-      ok('2편으로 바뀜', srcs[0] === '/business/ax/ax-real-ep2.mp4' && (await sec.locator('[data-real-ep="ep2"]').getAttribute('aria-pressed')) === 'true', srcs.join(','))
-      ok('2편 소리 켜고 재생', await v.evaluate((x) => !x.muted && !x.paused && x.controls))
+    await p.locator('#real-project-1').screenshot({ path: `${S}/axreal-ep1-${W}.png` })
+    await p.locator('#real-project-2').screenshot({ path: `${S}/axreal-ep2-${W}.png` })
+    await f1.locator('[data-story-sound]').click(); await p.waitForTimeout(700)
+    ok('1편 누르면 소리 켜고 재생(조절 막대 표시)', await v1.evaluate((x) => !x.muted && x.controls))
+    await f1.locator('[data-speed="1.25"]').click()
+    ok('1편 재생 속도 1.25배', (await v1.evaluate((x) => x.playbackRate)) === 1.25)
+    await f2.locator('[data-speed="1.5"]').click()
+    ok('2편 재생 속도 1.5배(1편과 따로)', (await v2.evaluate((x) => x.playbackRate)) === 1.5 && (await v1.evaluate((x) => x.playbackRate)) === 1.25)
+    // 1편 끝 → '2편 이어 보기' → 2편이 소리 켜고 바로 재생, 1편은 멈춤
+    await v1.evaluate((x) => new Promise((r) => { const go = () => { x.currentTime = Math.max(0, x.duration - 0.4); x.play().catch(() => {}); r() }; x.readyState >= 1 ? go() : x.addEventListener('loadedmetadata', go, { once: true }) }))
+    await f1.locator('[data-real-next]').waitFor({ timeout: 8000 }).catch(() => {})
+    ok('1편 끝 화면에 2편 이어 보기', (await f1.locator('[data-real-next]').count()) === 1)
+    if (await f1.locator('[data-real-next]').count()) {
+      await f1.locator('[data-real-next]').click(); await p.waitForTimeout(1200)
+      ok('2편 소리 켜고 재생', await v2.evaluate((x) => !x.muted && !x.paused && x.controls))
+      ok('1편은 멈춤', await v1.evaluate((x) => x.paused))
+      ok('2편이 화면에 보임', await p.evaluate(() => { const r = document.querySelector('[data-story-film="ax-real-2"] video').getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }))
     }
     ok('가로 넘침 없음', (await overflow(p)) <= 0)
     ok('오류 없음', errs.length === 0, errs.join('|'))

@@ -12,7 +12,7 @@
 
 | 폴더 | 제목 | 길이 | 들어가는 곳 |
 |---|---|---|---|
-| `real-projects/` | 실제 AX 프로젝트 · 두 회사 이야기(의료폐기물 수거·운반 / 쑥뜸원 웰니스) | 2분 19초 | AX 페이지 끝(`#real-projects-film`) '요약본' |
+| `real-projects/` | 실제 AX 프로젝트 · 두 회사 이야기(의료폐기물 수거·운반 / 쑥뜸원 웰니스) | 2분 19초 | (예전 요약본 — AX 페이지에서는 1편·2편으로 바꿈. public 파일은 남겨 둠) |
 | `consultant-v2/` | 컨설턴트 운영 OS · 미래AI랩 OS(11월 오픈 예정 · 출시 알림 신청) | 4분 9초 | `/consultants` 히어로(상세 페이지 대신) |
 
 영상 1·2와 같은 고급 모드 · 9:16 · 1.08배. 순서는 같다: `spoken.txt`(대본) → `align.py` → `SPEED=1.08 python3 tighten.py . <ffmpeg>` → `ASR=asr-fast.json python3 align.py . spoken.txt keys.json` → `node build.mjs` → 렌더 → `assets/voice-fast.wav` 합치기.
