@@ -12,7 +12,7 @@
 
 | 폴더 | 제목 | 길이 | 들어가는 곳 |
 |---|---|---|---|
-| `real-projects/` | 실제 AX 프로젝트 · 두 회사 이야기(의료폐기물 수거·운반 / 쑥뜸원 웰니스) | 2분 19초 | AX 페이지 끝(`#real-projects-film`) |
+| `real-projects/` | 실제 AX 프로젝트 · 두 회사 이야기(의료폐기물 수거·운반 / 쑥뜸원 웰니스) | 2분 19초 | AX 페이지 끝(`#real-projects-film`) '요약본' |
 | `consultant-v2/` | 컨설턴트 운영 OS · 미래AI랩 OS(11월 오픈 예정 · 출시 알림 신청) | 4분 9초 | `/consultants` 히어로(상세 페이지 대신) |
 
 영상 1·2와 같은 고급 모드 · 9:16 · 1.08배. 순서는 같다: `spoken.txt`(대본) → `align.py` → `SPEED=1.08 python3 tighten.py . <ffmpeg>` → `ASR=asr-fast.json python3 align.py . spoken.txt keys.json` → `node build.mjs` → 렌더 → `assets/voice-fast.wav` 합치기.
@@ -24,6 +24,31 @@
 ```bash
 cd real-projects && node build.mjs && npx --yes hyperframes@0.8.79 render --fps 30 --quality high -o renders/video.mp4
 cd consultant-v2 && node build.mjs && npx --yes hyperframes@0.8.79 render --fps 30 --quality high -o renders/video.mp4
+```
+
+## 실제 프로젝트 1편 · 2편(`real-ep1/` · `real-ep2/`) — 먹색 + 구리색 릴스 스타일
+
+| 폴더 | 제목 | 길이 | 들어가는 곳 |
+|---|---|---|---|
+| `real-ep1/` | 실제 프로젝트 1편 · 의료폐기물 수거·운반 | 2분 31초(말 2분 26초 + 끝 화면 5초) | AX 페이지 끝(`#real-projects-film`) 1편 |
+| `real-ep2/` | 실제 프로젝트 2편 · 쑥뜸원(웰니스) | 2분 51초(말 2분 46초 + 끝 화면 5초) | 같은 구간 2편 |
+
+녹음 파일 2개(1.1배)로 만든 두 편. 위 영상들과 달리 HyperFrames 대신 **`lib/reels.mjs` · `lib/reels-base.html` · `lib/reels-render.mjs`** 로 만든다.
+
+- **스타일**: 먹색(#0f1216) 바탕 + 구리색(#d47a4a · 강조 글자 #e8b89a) 한 가지 · Pretendard · 한 화면에 메시지 하나 · 들어올 때만 천천히(튀는 효과 없음).
+- **장면 파일**: `comp.html` 은 시간 t 를 넣으면 화면이 정해지는 `render(t)` 하나로 움직인다(CSS 애니메이션 없음). `comp.html?guide=1` 로 열면 안전 영역 선, `?t=초` 로 그 순간.
+- **안전 영역**: 위 220px · 아래 400px · 오른쪽 120px 비움. 자막은 y 1330~1510 가운데 아래 맞춤, 최대 2줄 · 한 줄 16자 안팎 · 강조 한 단어(대본의 `**단어**`).
+- **음량**: -14 LUFS(두 번 재서 맞춤) · 끝 1초 줄이기 · AAC 48kHz 스테레오.
+- **내용 원칙**: 숫자는 녹음에서 말한 것만(거래처 50여 곳 · 한 달 105톤쯤). 앞으로 할 일은 화면에 '계획'으로 표시. 실제 화면은 `real-projects/assets/real/` 의 가린 캡처만 짧게, 앱 모양 화면은 예시 데이터로 다시 그리고 '예시 데이터' 표기.
+
+```bash
+cd real-ep1
+python3 asr.py . && cp asr.json asr-orig.json && python3 align.py . spoken.txt && cp timing.json timing-orig.json
+SPEED=1.10 python3 tighten.py . <ffmpeg>             # 쉼 줄이기 + 1.1배 → assets/voice-fast.wav
+ASR=asr-fast.json python3 align.py . spoken.txt      # 자막 조각 · 글자별 시간(timing.json)
+node build.mjs                                       # → comp.html · subs.json · subtitles.srt · reel.json
+GUIDE=1 node ../lib/reels-render.mjs . snap 3,12.4,18.6   # 시험 프레임 이어 붙인 한 장(snapshots/sheet.jpg)
+FF=<ffmpeg> WORKERS=3 node ../lib/reels-render.mjs . render   # → renders/final.mp4 (약 3~5분)
 ```
 
 ## 컨설턴트 운영 OS 소개 영상(`consultant/`)

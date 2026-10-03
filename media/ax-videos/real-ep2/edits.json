@@ -1,0 +1,15 @@
+{
+ "gapBefore": [
+  {"block": 1, "line": 2, "sec": 0.6, "why": "2편 제목 뒤 숨"},
+  {"block": 2, "line": 1, "sec": 0.7, "why": "기록 이야기"},
+  {"block": 3, "line": 1, "sec": 0.9, "why": "기록 다음 질문"},
+  {"block": 3, "line": 2, "sec": 0.6, "why": "질문 뒤 숨"},
+  {"block": 4, "line": 1, "sec": 0.7, "why": "고객 전용 플랫폼"},
+  {"block": 5, "line": 1, "sec": 0.8, "why": "앞으로의 계획"},
+  {"block": 6, "line": 1, "sec": 0.8, "why": "다음 사업"},
+  {"block": 7, "line": 1, "sec": 0.7, "why": "다른 업종"},
+  {"block": 8, "line": 1, "sec": 1.0, "why": "두 회사 정리"},
+  {"block": 9, "line": 1, "sec": 0.9, "why": "대표님 질문"},
+  {"block": 9, "line": 3, "sec": 0.7, "why": "마무리"}
+ ]
+}

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>실제 프로젝트 2편 · 쑥뜸원(웰니스)</title>
+<!-- 릴스(9:16) 장면 파일 틀 — reels.mjs 가 장면 · 자막 · 길이 자리를 채운다. ?guide=1 → 안전 영역 선, ?t=초 → 그 순간 화면 -->
+<style>
+  @font-face { font-family: 'Pretendard'; font-weight: 500; src: url(assets/fonts/Pretendard-Medium.subset.woff2) format('woff2'); }
+  @font-face { font-family: 'Pretendard'; font-weight: 600; src: url(assets/fonts/Pretendard-SemiBold.subset.woff2) format('woff2'); }
+  @font-face { font-family: 'Pretendard'; font-weight: 700; src: url(assets/fonts/Pretendard-Bold.subset.woff2) format('woff2'); }
+  @font-face { font-family: 'Pretendard'; font-weight: 800; src: url(assets/fonts/Pretendard-ExtraBold.subset.woff2) format('woff2'); }
+  @font-face { font-family: 'Pretendard'; font-weight: 900; src: url(assets/fonts/Pretendard-Black.subset.woff2) format('woff2'); }
+  :root { --bg:#0f1216; --shell:#171b20; --shell2:#22272e; --acc:#d47a4a; --acc2:#b75b2a; --hi:#e8b89a;
+          --ink:#f4f1ec; --ink2:rgba(244,241,236,.72); --ink3:rgba(244,241,236,.46); --line:rgba(255,255,255,.09); }
+  * { box-sizing:border-box; margin:0; padding:0; animation:none !important; transition:none !important; }
+  html,body { width:1080px; height:1920px; overflow:hidden; background:var(--bg); color:var(--ink);
+              font-family:'Pretendard',sans-serif; -webkit-font-smoothing:antialiased; word-break:keep-all; }
+  #stage { position:relative; width:1080px; height:1920px; overflow:hidden; }
+  .bg { position:absolute; inset:-10%; background:
+      radial-gradient(70% 40% at 85% 8%, rgba(212,122,74,.24), transparent 60%),
+      radial-gradient(60% 35% at 10% 92%, rgba(232,184,154,.10), transparent 60%),
+      linear-gradient(170deg, #12161b 0%, #171b20 45%, #0d1014 100%); }
+  .grid { position:absolute; inset:0; opacity:.5;
+      background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size:90px 90px; -webkit-mask-image:radial-gradient(80% 55% at 50% 40%, #000 30%, transparent 85%); mask-image:radial-gradient(80% 55% at 50% 40%, #000 30%, transparent 85%); }
+  .scene { position:absolute; inset:0; opacity:0; visibility:hidden; }
+  .abs { position:absolute; }
+  .col { display:flex; flex-direction:column; align-items:flex-start; }
+  .col.center { align-items:center; text-align:center; }
+  .center-x { left:72px; right:72px; text-align:center; }
+  .eyebrow { font-size:26px; font-weight:700; letter-spacing:.3em; color:var(--hi); text-transform:uppercase; }
+  .h1 { font-size:88px; font-weight:800; letter-spacing:-.025em; line-height:1.12; }
+  .h2 { font-size:64px; font-weight:800; letter-spacing:-.02em; line-height:1.2; }
+  .h3 { font-size:46px; font-weight:700; letter-spacing:-.01em; line-height:1.3; }
+  .p  { font-size:36px; font-weight:500; color:var(--ink2); line-height:1.5; }
+  .acc { color:var(--hi); }
+  .glass { background:linear-gradient(160deg, rgba(255,255,255,.075), rgba(255,255,255,.025)); border:1px solid rgba(255,255,255,.12);
+           border-radius:28px; box-shadow:0 40px 80px -30px rgba(0,0,0,.7); }
+  .note { position:absolute; left:72px; right:120px; top:1270px; font-size:22px; font-weight:500; color:var(--ink3); }
+  .ic { display:inline-flex; width:40px; height:40px; flex:none; color:var(--hi); } .ic svg { width:100%; height:100%; }
+
+  /* 강조로 바뀌는 상자: data-hl 시각부터 --hl 0 → 1 */
+  .hlbox { position:relative; }
+  .hlbox::before { content:''; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none; opacity:var(--hl,0);
+                   background:linear-gradient(160deg, rgba(212,122,74,.30), rgba(212,122,74,.10)); border:1.5px solid rgba(232,184,154,.62); }
+  .hlbox > * { position:relative; }
+
+  /* 칩 */
+  .chip { display:inline-flex; align-items:center; gap:14px; padding:18px 30px; border-radius:999px; font-size:32px; font-weight:700; white-space:nowrap;
+          background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); box-shadow:0 20px 40px -20px rgba(0,0,0,.6); }
+  .chip .ic { width:34px; height:34px; }
+  .chip.abs { position:absolute; }
+  /* 번호 태그 */
+  .ntag { display:flex; align-items:center; gap:22px; padding:20px 30px 20px 20px; border-radius:24px; font-size:38px; font-weight:700; line-height:1.3;
+          background:rgba(15,18,22,.6); border:1px solid rgba(232,184,154,.45); }
+  .ntag .n { flex:none; display:grid; place-items:center; width:52px; height:52px; border-radius:50%; background:var(--acc); color:#171b20; font-size:28px; font-weight:800; }
+  .ntag small, .ck small, .tl small { display:block; margin-top:4px; font-size:28px; font-weight:500; color:var(--ink2); }
+  /* 체크 목록 */
+  .ck { display:flex; align-items:center; gap:24px; font-size:40px; font-weight:700; line-height:1.3; }
+  .ck .cc { flex:none; display:grid; place-items:center; width:58px; height:58px; border-radius:50%; background:var(--acc); color:#171b20; }
+  .ck .cc svg { width:34px; height:34px; }
+  /* 카드 안쪽 */
+  .ci { display:flex; align-items:center; gap:26px; padding:28px 32px; }
+  .ci .cic { flex:none; display:grid; place-items:center; width:84px; height:84px; border-radius:24px; background:rgba(212,122,74,.14); border:1px solid rgba(232,184,154,.3); }
+  .ci .cic .ic { width:46px; height:46px; }
+  .ci b { display:block; font-size:40px; font-weight:800; letter-spacing:-.01em; line-height:1.25; }
+  .ci small { display:block; margin-top:6px; font-size:29px; font-weight:500; color:var(--ink2); line-height:1.4; }
+  .flowbox .ci { height:100%; padding:0 30px; }
+  .flowbox .ci .cic { width:68px; height:68px; border-radius:20px; } .flowbox .ci .cic .ic { width:38px; height:38px; }
+  .flowbox .ci b { font-size:38px; }
+  .flowbox .ci small { font-size:26px; margin-top:2px; }
+  svg.vline path, svg.tline path, svg.draw path { fill:none; stroke:var(--acc); stroke-width:4; stroke-linecap:round; stroke-dasharray:1 1; }
+  svg.vline { overflow:visible; }
+  svg.tline path.base { stroke:rgba(255,255,255,.12); stroke-dasharray:none; }
+  /* 타임라인 */
+  .tl { position:absolute; display:flex; align-items:flex-start; gap:34px; font-weight:700; line-height:1.3; }
+  .tl .dot { flex:none; margin-top:6px; width:56px; height:56px; border-radius:50%; background:#171b20; border:4px solid var(--acc); box-shadow:0 0 0 8px rgba(212,122,74,.14); }
+  /* 휴대폰 · 브라우저 */
+  .phone { position:absolute; padding:14px; border-radius:54px; background:#050607; box-shadow:0 0 0 2px rgba(255,255,255,.14), 0 50px 100px -30px rgba(0,0,0,.85); }
+  .phone .scr { position:relative; overflow:hidden; border-radius:40px; background:#fff; }
+  .phone .scr img { position:absolute; left:0; top:0; display:block; transform-origin:50% 0; }
+  .phone .notch { position:absolute; left:50%; top:24px; width:120px; height:30px; margin-left:-60px; border-radius:20px; background:#050607; }
+  .phone.cut { -webkit-mask-image:linear-gradient(#000 82%, transparent 100%); mask-image:linear-gradient(#000 82%, transparent 100%); }
+  .browser { position:absolute; overflow:hidden; border-radius:22px; background:#0b0d10; border:1px solid rgba(255,255,255,.12); box-shadow:0 50px 100px -30px rgba(0,0,0,.85); }
+  .browser .bbar { display:flex; align-items:center; gap:10px; height:52px; padding:0 20px; background:#1a1e24; }
+  .browser .bbar i { width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,.22); }
+  .browser .bbar span { margin-left:16px; flex:1; height:32px; line-height:32px; padding:0 16px; border-radius:10px; background:rgba(255,255,255,.07); color:var(--ink3); font-size:20px; font-weight:600; }
+  .browser .bview { position:relative; overflow:hidden; background:#fff; }
+  .browser .bview img { position:absolute; left:0; top:0; display:block; transform-origin:0 0; }
+  .touch { position:absolute; width:90px; height:90px; margin:-45px 0 0 -45px; border-radius:50%; border:5px solid var(--acc); background:rgba(212,122,74,.25); opacity:0; }
+  /* 취소선 */
+  .strike-wrap .st { position:relative; display:inline-block; }
+  .strike-wrap .sl { position:absolute; left:-6px; right:-6px; top:54%; height:6px; border-radius:3px; background:var(--acc); transform-origin:0 50%; transform:scaleX(0); }
+  /* 순환도 */
+  svg.loop ellipse.base { fill:none; stroke:rgba(255,255,255,.10); stroke-width:3; }
+  svg.loop path { fill:none; stroke:var(--acc); stroke-width:5; stroke-linecap:round; stroke-dasharray:1 1; }
+  .lnode { position:absolute; width:0; height:0; transform-origin:0 0; }
+  .lnb { position:absolute; left:0; top:0; transform:translate(-50%,-50%); display:flex; align-items:center; gap:14px; padding:16px 26px 16px 16px; border-radius:999px;
+         background:#1b2026; border:1px solid rgba(255,255,255,.16); font-size:31px; font-weight:700; white-space:nowrap; box-shadow:0 20px 40px -18px rgba(0,0,0,.7); }
+  .lnb.hlbox > * { position:relative; }
+  .lnb .lic { display:grid; place-items:center; width:54px; height:54px; border-radius:50%; background:rgba(212,122,74,.18); }
+  .lnb .lic .ic { width:30px; height:30px; }
+  .ldot { position:absolute; left:0; top:0; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%; background:var(--hi); box-shadow:0 0 0 10px rgba(212,122,74,.22), 0 0 34px rgba(232,184,154,.8); opacity:0; }
+  .lcenter { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:16px; }
+  /* 막대 */
+  .bar { position:relative; display:inline-block; width:240px; height:14px; border-radius:7px; background:rgba(0,0,0,.08); overflow:hidden; vertical-align:middle; }
+  .bar i { position:absolute; inset:0; border-radius:7px; background:var(--acc); transform-origin:0 50%; transform:scaleX(0); }
+  /* 앱 화면을 닮은 예시 카드 */
+  .mock { position:absolute; overflow:hidden; border-radius:34px; background:#fff; color:#15181d; box-shadow:0 0 0 1px rgba(255,255,255,.12), 0 50px 110px -30px rgba(0,0,0,.85); }
+  .mock .mh { display:flex; align-items:center; gap:16px; padding:28px 34px; color:#fff; font-size:34px; font-weight:800; letter-spacing:-.02em; }
+  .mock .mh .ic { width:40px; height:40px; }
+  .mock .mh em { margin-left:auto; padding:6px 14px; border-radius:10px; background:rgba(255,255,255,.16); font-style:normal; font-size:20px; font-weight:700; }
+  .mock.ops .mh { background:#0a1020; } .mock.ops .mh .ic { color:#5b9bf0; }
+  .mock.well .mh { background:#0f4e4b; } .mock.well .mh .ic { color:#e3c99a; }
+  .mock .mb { display:flex; flex-direction:column; gap:16px; padding:28px 30px 32px; }
+  .mock .row { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:22px 26px; border-radius:20px; background:#f2f4f8; font-size:32px; font-weight:700; }
+  .mock .row small { font-size:25px; font-weight:600; color:#6b7380; }
+  .mock .row .ic { width:44px; height:44px; color:#2e7be6; }
+  .mock.well .row { background:#f4eee3; } .mock.well .row b { color:#0f4e4b; } .mock.well .row .ic { color:#0f4e4b; }
+  .mock.well .bar { background:#e2d8c6; } .mock.well .bar i { background:#0f4e4b; }
+  .mock .btn { display:inline-flex; align-items:center; gap:10px; padding:14px 24px; border-radius:14px; background:#2e7be6; color:#fff; font-size:26px; font-weight:800; }
+  .mock.well .btn { background:#0f4e4b; }
+  .mock .pill { display:inline-block; padding:6px 14px; border-radius:10px; background:#e8f0fd; color:#1f5fc2; font-size:22px; font-weight:800; }
+  .mock.well .pill { background:#e6efe9; color:#0f4e4b; }
+  /* 작은 카드 · 지도 */
+  .mini { display:flex; flex-direction:column; align-items:center; gap:14px; padding:28px 16px; text-align:center; }
+  .mini .ic { width:52px; height:52px; } .mini b { font-size:32px; font-weight:800; line-height:1.25; }
+  .routemap { overflow:hidden; background-image:linear-gradient(rgba(255,255,255,.05) 2px, transparent 2px), linear-gradient(90deg, rgba(255,255,255,.05) 2px, transparent 2px), linear-gradient(160deg, rgba(255,255,255,.075), rgba(255,255,255,.025)); background-size:110px 110px, 110px 110px, auto; }
+  .routemap svg.draw path { stroke-width:6; }
+  .pin { display:grid; place-items:center; width:60px; height:60px; border-radius:50%; background:#1b2026; border:1.5px solid rgba(232,184,154,.5); }
+  .pin .ic { width:30px; height:30px; }
+  .depot { display:grid; place-items:center; width:64px; height:64px; border-radius:18px; background:var(--acc); }
+  .depot .ic { width:36px; height:36px; color:#171b20; }
+  .custone { display:flex; flex-direction:column; align-items:center; gap:18px; text-align:center; }
+  .custone .cic { display:grid; place-items:center; background:rgba(212,122,74,.14); border:1px solid rgba(232,184,154,.3); }
+  .custone .cic .ic { width:80px; height:80px; } .custone b { font-size:34px; font-weight:800; line-height:1.3; }
+  .kvs { display:flex; flex-direction:column; gap:12px; padding:0 32px 28px 142px; }
+  .kv { display:flex; align-items:center; gap:14px; font-size:34px; font-weight:700; }
+  .kv .ic { width:34px; height:34px; }
+  /* 끝 화면 */
+  .logo-box { position:absolute; display:grid; place-items:center; width:500px; height:170px; border-radius:34px; background:#fff; box-shadow:0 30px 70px -20px rgba(0,0,0,.7); }
+  .logo-box img { width:430px; height:auto; }
+  .cta { display:inline-flex; align-items:center; justify-content:center; min-width:560px; padding:26px 40px; border-radius:22px; background:var(--acc); color:#171b20; font-size:36px; font-weight:800; }
+  .cta.sub { background:rgba(255,255,255,.06); color:var(--ink); border:1px solid rgba(255,255,255,.16); font-weight:700; }
+  /* 큰 숫자(편 번호) */
+  .bignum { font-size:300px; font-weight:900; line-height:1; letter-spacing:-.04em; color:transparent; -webkit-text-stroke:3px rgba(232,184,154,.55); }
+  .tagline { display:inline-flex; align-items:center; gap:12px; padding:12px 24px; border-radius:999px; background:rgba(212,122,74,.16); border:1px solid rgba(232,184,154,.45); color:var(--hi); font-size:28px; font-weight:800; }
+  .tagline .ic { width:30px; height:30px; }
+
+  /* 자막 */
+  #sub { position:absolute; left:132px; right:132px; top:1330px; height:180px; display:flex; align-items:flex-end; justify-content:center; opacity:0; }
+  #sub span { max-width:816px; padding:16px 30px; border-radius:20px; background:rgba(15,18,22,.80); border:1px solid rgba(255,255,255,.10);
+              font-size:46px; font-weight:700; letter-spacing:-.01em; line-height:1.42; text-align:center; white-space:pre-line; }
+  #sub b { color:var(--hi); font-weight:800; }
+  /* 안전 영역 확인선 (?guide=1) */
+  .guide { position:absolute; pointer-events:none; outline:2px dashed rgba(255,80,80,.8); display:none; z-index:99; }
+  body.show-guide .guide { display:block; }
+</style></head>
+<body><div id="stage">
+  <div class="bg" id="bg"></div><div class="grid"></div>
+<div class="scene " data-in="0" data-out="3.81" data-a="scene">
+  <div class="abs bignum" data-in="0.05" data-a="fade" style="left:60px;top:300px">02</div>
+  <div class="abs col" style="left:72px;right:120px;top:640px;gap:22px"><div class="eyebrow" data-in="0.2" data-a="up">PROJECT 02</div><div class="h1" data-in="0.35" data-a="up">쑥뜸원<br><span class="acc">웰니스 매장</span></div></div>
+  <div class="abs p" data-in="1.3" data-a="up" style="left:72px;top:920px">단골 고객이 이용권으로 다니는 곳</div></div>
+<div class="scene " data-in="3.36" data-out="12.94" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="3.36" data-a="up">WHAT IT IS</div><div class="h2" data-in="3.51" data-a="up">이용권으로<br><span class="acc">정기적으로</span> 다니는 곳</div></div>
+  <div class="glass hlbox " data-in="3.76" data-a="card" style="position:absolute;left:72px;top:580px;width:888px"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>쑥을 태워 몸을 따뜻하게</b><small>관리해 주는 곳</small></div></div></div>
+  <div class="abs eyebrow" data-in="6.26" data-a="up" style="left:76px;top:800px">이런 매장처럼</div>
+  <div class="chip hlbox abs" data-in="6.38" data-a="up" style="left:72px;top:850px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11M11 11V4a1.5 1.5 0 0 1 3 0v7M14 11V5.5a1.5 1.5 0 0 1 3 0V14c0 4-2.5 7-6.5 7-2.5 0-4-1-5.5-3l-2.4-3.6a1.5 1.5 0 0 1 2.4-1.8L8 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>마사지숍</span></div>
+  <div class="chip hlbox abs" data-in="7.58" data-a="up" style="left:340px;top:850px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.5-7.5-10A4.3 4.3 0 0 1 12 7.2 4.3 4.3 0 0 1 19.5 10c0 5.5-7.5 10-7.5 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>피부관리실</span></div>
+  <div class="chip hlbox abs" data-in="8.48" data-a="up" data-hl="8.88" style="left:72px;top:970px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 7.5h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM14.5 7.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span><span class="acc">이용권</span></span></div>
+  <div class="chip hlbox abs" data-in="9.79" data-a="up" data-hl="10.19" style="left:330px;top:970px"><i class="ic "><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><span><span class="acc">정기 방문</span></span></div></div>
+<div class="scene " data-in="12.49" data-out="23.92" data-a="scene">
+  <div class="h3 strike-wrap" data-in="12.59" data-a="up" style="position:absolute;left:72px;top:250px"><span class="st">고객 정보 입력 · 기록<span class="sl" data-strike="16.49"></span></span></div>
+  <div class="abs p" data-in="15.18" data-a="up" style="left:72px;top:320px">어떤 프로그램이든 할 수 있어요</div>
+  <div class="abs col" style="left:72px;right:120px;top:420px;gap:22px"><div class="h2" data-in="17.3" data-a="up">여기서는<br><span class="acc">하나로</span> 연결합니다</div></div>
+  <div class="glass hlbox " data-in="22.34" data-a="fade" data-hl="22.64" style="position:absolute;left:72px;top:660px;width:888px;height:480px"></div>
+  <div class="abs custone" data-in="23.24" data-a="scale" style="left:700px;top:760px"><span class="cic" style="width:150px;height:150px;border-radius:50%"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z" fill="currentColor"/></svg></i></span><b>고객 한 분의<br>기록</b></div>
+  <div class="chip hlbox abs" data-in="17.89" data-a="up" data-mv="22.34,23.44,-450,10" style="left:560px;top:690px"><i class="ic "><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><span>방문 기록</span></div><div class="chip hlbox abs" data-in="18.93" data-a="up" data-mv="22.34,23.44,-28,6" style="left:140px;top:800px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 7.5h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM14.5 7.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>이용권</span></div><div class="chip hlbox abs" data-in="19.76" data-a="up" data-mv="22.34,23.44,-488,32" style="left:600px;top:880px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>상담 내용</span></div><div class="chip hlbox abs" data-in="20.43" data-a="up" data-mv="22.34,23.44,-268,8" style="left:380px;top:1010px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.5-7.5-10A4.3 4.3 0 0 1 12 7.2 4.3 4.3 0 0 1 19.5 10c0 5.5-7.5 10-7.5 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>선호 부위 · 반응</span></div></div>
+<div class="scene " data-in="23.47" data-out="27.95" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="23.47" data-a="up">TAP TO RECORD</div><div class="h2" data-in="23.62" data-a="up"><span class="acc">몇 번만</span> 누르면 기록</div></div>
+  <div class="phone cut" data-in="23.57" data-a="card" style="left:72px;top:400px;width:440px;height:850px"><div class="scr" style="height:822px"><img src="../real-projects/assets/real/well-record-m.jpg" style="width:412px"  alt=""><img class="swap" src="../real-projects/assets/real/well-record2-m.jpg" style="width:412px" data-in="25.9" data-a="none"  alt=""><span class="touch" data-touch="26.35" style="left:74px;top:230px"></span><span class="touch" data-touch="26.75" style="left:264px;top:230px"></span><span class="touch" data-touch="27.15" style="left:169px;top:230px"></span></div><span class="notch"></span></div>
+  <div class="abs col" style="left:548px;width:412px;top:520px;gap:46px"><div class="ck " data-in="26.35" data-a="left"><span class="cc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">관리 부위</span></div><div class="ck " data-in="26.75" data-a="left"><span class="cc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">고객 반응</span></div><div class="ck " data-in="27.15" data-a="left"><span class="cc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">이용권 · 방문</span></div></div>
+  <div class="note" data-in="24.07" data-a="fade">실제 화면 · 고객 이름은 가렸습니다</div></div>
+<div class="scene " data-in="27.5" data-out="33.68" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="27.5" data-a="up">NEXT VISIT</div><div class="h2" data-in="27.65" data-a="up">다음 방문 때<br><span class="acc">바로</span> 보입니다</div></div>
+  <div class="mock well" data-in="27.8" data-a="card" style="left:120px;top:590px;width:840px"><div class="mh"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z" fill="currentColor"/></svg></i><span>김○○ 님 · 고객 카드</span><em>예시 화면</em></div><div class="mb">
+    <div class="row" data-in="28.86" data-a="left"><small>지난번 관리 부위</small><b>목·어깨 · 허리</b></div>
+    <div class="row" data-in="31.52" data-a="left"><small>좋아하신 점</small><b>따뜻한 온도</b></div>
+    <div class="row" data-in="32.18" data-a="left"><small>이용권</small><span style="display:flex;align-items:center;gap:16px"><span class="bar " style=""><i data-fill="32.38,33.38,0.4"></i></span><b>4 / 10회</b></span></div></div></div>
+  <div class="note" data-in="28.1" data-a="fade">화면 속 고객·상품은 예시 데이터입니다</div></div>
+<div class="scene " data-in="33.23" data-out="37.44" data-a="scene"><div class="abs col" style="left:72px;right:120px;top:600px;gap:22px"><div class="eyebrow" data-in="33.33" data-a="up">AFTER RECORDS</div><div class="h1" data-in="33.48" data-a="up">기록 <span class="acc">다음</span>엔<br>뭘 할 수 있을까요?</div></div></div>
+<div class="scene " data-in="36.99" data-out="45.01" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="36.99" data-a="up">TODAY</div><div class="h2" data-in="37.14" data-a="up">오늘 챙길 고객 <span class="acc">우선순위</span></div></div>
+  <div class="phone cut" data-in="37.09" data-a="card" style="left:72px;top:400px;width:440px;height:850px"><div class="scr" style="height:822px"><img src="../real-projects/assets/real/well-retention-m.jpg" style="width:412px" data-kb="36.99,44.64,1,0,0,1.06,-12,-24" alt=""></div><span class="notch"></span></div>
+  <div class="abs col" style="left:548px;width:412px;top:520px;gap:22px"><div class="chip hlbox " data-in="37.54" data-a="left"><span>방문 주기</span></div><div class="chip hlbox " data-in="38.92" data-a="left"><span>이용권 상태</span></div><div class="chip hlbox " data-in="39.93" data-a="left"><span>상담 이후 행동</span></div></div>
+  <svg class="abs draw" style="left:574px;top:810px;width:6px;height:110px" viewBox="0 0 6 110" preserveAspectRatio="none"><path d="M3 0V110" pathLength="1" data-draw="41.77,42.370000000000005"/></svg>
+  <div class="abs tagline" data-in="43.23" data-a="up" style="left:548px;top:940px"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></i>오늘의 우선순위</div>
+  <div class="note" data-in="37.59" data-a="fade">실제 화면 · 고객 이름은 가렸습니다</div></div>
+<div class="scene " data-in="44.56" data-out="55" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="44.56" data-a="up">NO MORE SEARCHING</div><div class="h2" data-in="44.71" data-a="up">직원이 <span class="acc">일일이</span><br>찾지 않아도</div></div>
+  <div class="abs col" style="left:72px;right:120px;top:560px;gap:24px"><div class="glass hlbox " data-in="44.86" data-a="left"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 7.5h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM14.5 7.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>이용권이 거의 끝난 고객</b></div></div></div><div class="glass hlbox " data-in="46.89" data-a="left"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i></span><div><b>다시 올 때가 된 고객</b></div></div></div><div class="glass hlbox " data-in="48.39" data-a="left"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>상담 후 아직 방문 전인 고객</b></div></div></div></div>
+  <div class="h3 strike-wrap" data-in="51.53" data-a="up" style="position:absolute;left:72px;top:1120px;color:var(--ink2)"><span class="st">장부에서 하나씩 찾기<span class="sl" data-strike="52.71"></span></span></div></div>
+<div class="scene " data-in="54.55" data-out="63.03" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="54.55" data-a="up">CUSTOMER PLATFORM</div><div class="h2" data-in="54.7" data-a="up">고객에게는 <span class="acc">전용 플랫폼</span></div></div>
+  <div class="phone cut" data-in="54.65" data-a="card" style="left:72px;top:400px;width:420px;height:850px"><div class="scr" style="height:822px"><img src="../real-projects/assets/real/well-welcome-m.jpg" style="width:392px" data-kb="54.55,62.71,1,0,0,1.06,-10,-28" alt=""></div><span class="notch"></span></div>
+  <div class="abs col" style="left:524px;width:436px;top:520px;gap:46px"><div class="ck " data-in="56.18" data-a="left"><span class="cc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">이용 내역 확인</span></div><div class="ck " data-in="57.11" data-a="left"><span class="cc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">남은 이용권</span></div><div class="ck " data-in="58.45" data-a="left"><span class="cc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">방문 요청</span></div><div class="ck " data-in="59.66" data-a="left"><span class="cc"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">새 상품·서비스</span></div></div>
+  <div class="note" data-in="55.15" data-a="fade">실제 화면 · 고객 이름은 가렸습니다</div></div>
+<div class="scene " data-in="62.58" data-out="67.99" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="62.58" data-a="up">NEXT · PLAN</div><div class="h2" data-in="62.73" data-a="up">데이터가 쌓이면<br><span class="acc">한 단계</span> 더</div></div>
+  <div class="glass hlbox flowbox" data-in="63.08" data-a="up" data-dim="65.83" style="left:72px;top:580px;width:888px;height:128px;position:absolute"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i></span><div><b>기록</b><small>몇 번의 터치로</small></div></div></div><svg class="abs vline" style="left:132px;top:714px;width:4px;height:52px" viewBox="0 0 4 52" preserveAspectRatio="none"><path d="M2 0V52" pathLength="1" data-draw="63.13,63.58"/></svg><div class="glass hlbox flowbox" data-in="63.58" data-a="up" data-dim="65.83" style="left:72px;top:772px;width:888px;height:128px;position:absolute"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></i></span><div><b>오늘의 우선순위</b><small>지금 보여 드리는 것</small></div></div></div><svg class="abs vline" style="left:132px;top:906px;width:4px;height:52px" viewBox="0 0 4 52" preserveAspectRatio="none"><path d="M2 0V52" pathLength="1" data-draw="65.38,65.83"/></svg><div class="glass hlbox flowbox" data-in="65.83" data-a="up" data-hl="66.23" style="left:72px;top:964px;width:888px;height:128px;position:absolute"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>AI 분석</b><small>다음 단계 · 계획</small></div></div></div></div>
+<div class="scene " data-in="67.54" data-out="79.41" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="67.54" data-a="up">AI · PLAN</div><div class="h2" data-in="67.69" data-a="up">먼저 챙길 고객과<br><span class="acc">매출 기회</span></div></div>
+  <div class="abs col" style="left:72px;right:120px;top:540px;gap:22px"><div class="glass hlbox " data-in="67.84" data-a="left"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 21V4h9v17" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 12h7M18 9l3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>이탈 가능성이 높은 고객</b></div></div></div><div class="glass hlbox " data-in="70.09" data-a="left"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h12l-3-3M20 13v2a3 3 0 0 1-3 3H5l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>재방문으로 잘 이어지는 프로그램</b></div></div></div></div>
+  <svg class="abs draw" style="left:513px;top:860px;width:6px;height:60px" viewBox="0 0 6 60" preserveAspectRatio="none"><path d="M3 0V60" pathLength="1" data-draw="72.78,73.28"/></svg>
+  <div class="glass hlbox " data-in="74.07" data-a="card" data-hl="75.59" style="position:absolute;left:72px;top:940px;width:888px"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></i></span><div><b>대표님이 먼저 챙길 고객</b><small>+ 매출 기회를 알려 드리기</small></div></div></div>
+  <div class="abs tagline" data-in="76.74" data-a="up" style="left:72px;top:1170px"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>고도화 계획</div></div>
+<div class="scene " data-in="78.96" data-out="86.39" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="78.96" data-a="up">OUTCOME</div><div class="h2" data-in="79.11" data-a="up">줄어드는 것,<br><span class="acc">늘어나는 것</span></div></div>
+  <div class="glass hlbox " data-in="79.26" data-a="card" data-dim="80.99" style="position:absolute;left:72px;top:580px;width:888px"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 6l7 7 4-4 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 11v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i></span><div><b>놓치던 고객</b><small>줄고</small></div></div></div>
+  <div class="glass hlbox " data-in="80.99" data-a="card" data-hl="83.01" style="position:absolute;left:72px;top:780px;width:888px"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 18l7-7 4 4 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13V8h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i></span><div><b>재방문 · 이용권 재등록 · 추가 구매</b><small>늘어나고</small></div></div></div>
+  <div class="abs tagline" data-in="84.37" data-a="up" style="left:72px;top:1000px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>성과로 이어집니다</div></div>
+<div class="scene " data-in="85.94" data-out="97.12" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="85.94" data-a="up">NEXT BUSINESS</div><div class="h2" data-in="86.09" data-a="up">매장 밖에서도<br><span class="acc">다시 살 수 있게</span></div></div>
+  <div class="mock well" data-in="89.45" data-a="card" style="left:120px;top:590px;width:840px"><div class="mh"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 10v10h16V10M3 4h18l-1 6H4zM9.5 20v-5h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>고객 전용 플랫폼 · 상품</span><em>예시 화면</em></div><div class="mb">
+    <div class="row" data-in="91.53" data-a="left"><span style="display:flex;align-items:center;gap:16px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M10 2.5h4v3h-4zM9 5.5h6l1 3v12.5H8V8.5zM8 12h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>쑥 화장품</span><span class="btn">다시 구매</span></div>
+    <div class="row" data-in="92.26" data-a="left"><span style="display:flex;align-items:center;gap:16px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5zM3.5 7.5L12 12l8.5-4.5M12 12v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>생활 상품</span><span class="btn">다시 구매</span></div>
+    <div class="row" data-in="93.26" data-a="left"><small>매장 밖에서도</small><b>집으로 받기</b></div></div></div>
+  <div class="abs tagline" data-in="95.59" data-a="up" style="left:120px;top:1080px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i>연결할 계획</div>
+  <div class="note" data-in="89.95" data-a="fade">화면 속 고객·상품은 예시 데이터입니다</div></div>
+<div class="scene " data-in="96.67" data-out="105.21" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="96.67" data-a="up">STANDARDIZE</div><div class="h2" data-in="96.82" data-a="up">본점 노하우를<br><span class="acc">표준화</span>해서 그대로</div></div>
+  <div class="glass hlbox " data-in="99.05" data-a="card" style="position:absolute;left:72px;top:560px;width:888px"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 10v10h16V10M3 4h18l-1 6H4zM9.5 20v-5h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>본점 · 운영 노하우</b></div></div></div>
+  <div class="glass hlbox " data-in="100.44" data-a="card" data-hl="100.94" style="position:absolute;left:72px;top:760px;width:888px"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5-9 4.5-9-4.5zM3 12l9 4.5 9-4.5M3 16.5l9 4.5 9-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>데이터 · 시스템으로 표준화</b></div></div></div>
+  <svg class="abs draw" style="left:72px;top:900px;width:888px;height:100px" viewBox="0 0 888 100"><path d="M444 0V40H216V100M444 40H672V100" pathLength="1" data-draw="102.32,103.11999999999999"/></svg>
+  <div class="glass hlbox " data-in="97.07" data-a="card" style="position:absolute;left:72px;top:1000px;width:432px"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 3.5v17M6 9.5c0 3 3 4 6 4h6M18 13.5l-3-3M18 13.5l-3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>2호점</b></div></div>
+  <div class="glass hlbox " data-in="97.83" data-a="card" style="position:absolute;left:528px;top:1000px;width:432px"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 3.5v17M6 9.5c0 3 3 4 6 4h6M18 13.5l-3-3M18 13.5l-3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>가맹점</b></div></div></div>
+<div class="scene " data-in="104.76" data-out="114.31" data-a="scene">
+  <div class="abs eyebrow" data-in="104.81" data-a="up" style="left:72px;top:420px">NOT JUST A PROGRAM</div>
+  <div class="h3 strike-wrap" data-in="104.96" data-a="up" style="position:absolute;left:72px;top:490px"><span class="st">매장 하나 편하게 운영하는 프로그램<span class="sl" data-strike="107.56"></span></span></div>
+  <div class="abs col" style="left:72px;right:120px;top:620px;gap:22px"><div class="h1" data-in="108.07" data-a="up">사업 자체가<br><span class="acc">커질 수 있는</span> 기반</div></div>
+  <div class="abs p" data-in="108.67" data-a="up" style="left:72px;top:880px">고객과 계속 이어지면서</div></div>
+<div class="scene " data-in="113.86" data-out="124.65" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="113.86" data-a="up">SAME MODEL</div><div class="h2" data-in="114.01" data-a="up">이용권 매장이라면<br><span class="acc">똑같이</span> 적용</div></div>
+  <div class="glass hlbox " data-in="114.16" data-a="card" data-dim="115.5" style="position:absolute;left:72px;top:570px;width:432px"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>쑥뜸원</b></div></div>
+  <div class="glass hlbox " data-in="115.62" data-a="card" data-hl="121.55" style="position:absolute;left:528px;top:570px;width:432px"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.5-7.5-10A4.3 4.3 0 0 1 12 7.2 4.3 4.3 0 0 1 19.5 10c0 5.5-7.5 10-7.5 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>피부관리실</b></div></div>
+  <div class="glass hlbox " data-in="116.83" data-a="card" data-hl="121.65" style="position:absolute;left:72px;top:790px;width:432px"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11M11 11V4a1.5 1.5 0 0 1 3 0v7M14 11V5.5a1.5 1.5 0 0 1 3 0V14c0 4-2.5 7-6.5 7-2.5 0-4-1-5.5-3l-2.4-3.6a1.5 1.5 0 0 1 2.4-1.8L8 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><b>마사지숍</b></div></div>
+  <div class="glass hlbox " data-in="117.63" data-a="card" data-hl="121.75" style="position:absolute;left:528px;top:790px;width:432px"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i><b>필라테스</b></div></div>
+  <div class="chip hlbox abs" data-in="118.68" data-a="up" style="left:72px;top:1040px"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 7.5h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM14.5 7.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>이용권을 끊고 다시 오는 매장</span></div></div>
+<div class="scene " data-in="124.2" data-out="136.55" data-a="scene"><svg class="abs loop" style="left:0;top:0;width:1080px;height:1920px" viewBox="0 0 1080 1920"><ellipse class="base" cx="540" cy="780" rx="290" ry="420"/><path d="M540 360 A290 420 0 1 1 539.99 360" pathLength="1" data-draw="127.13,135.05"/></svg><div class="lnode" data-in="127.33" data-a="scale" style="left:540px;top:360px"><div class="lnb hlbox"><span class="lic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 20l1-4.5L15.5 5a2 2 0 0 1 3 3L8 18.5zM13.5 7l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><b>한 번 입력</b></div></div><div class="lnode" data-in="129.15" data-a="scale" style="left:791.15px;top:570px"><div class="lnb hlbox"><span class="lic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 6h6v4H4zM14 14h6v4h-6zM7 10v4a2 2 0 0 0 2 2h5M17 14v-4a2 2 0 0 0-2-2h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><b>다음 업무로</b></div></div><div class="lnode" data-in="130.59" data-a="scale" style="left:791.15px;top:990px"><div class="lnb hlbox"><span class="lic"><i class="ic "><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i></span><b>데이터 쌓임</b></div></div><div class="lnode" data-in="131.57" data-a="scale" style="left:540px;top:1200px"><div class="lnb hlbox"><span class="lic"><i class="ic "><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 2.5v2.5M15 2.5v2.5M9 19v2.5M15 19v2.5M2.5 9h2.5M2.5 15h2.5M19 9h2.5M19 15h2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="12" y="15" text-anchor="middle" font-size="7" font-weight="900" fill="currentColor">AI</text></svg></i></span><b>분석</b></div></div><div class="lnode" data-in="132.21" data-a="scale" style="left:288.85px;top:990px"><div class="lnb hlbox"><span class="lic"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></i></span><b>다음 할 일</b></div></div><div class="lnode" data-in="134.75" data-a="scale" data-hl="135.15" style="left:288.85px;top:570px"><div class="lnb hlbox"><span class="lic"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i></span><b>자동 처리</b></div></div><span class="ldot" data-orbit="135.05,136.6,540,780,290,420,-90,270"></span><div class="abs lcenter" style="left:280px;top:620px;width:520px;height:320px"><div class="eyebrow" data-in="124.3" data-a="up">CLOSED LOOP</div><div class="h3" data-in="124.45" data-a="up">업종은 달라도<br><span class="acc">원리는 같습니다</span></div></div></div>
+<div class="scene " data-in="136.1" data-out="147.3" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="136.1" data-a="up">TWO COMPANIES</div><div class="h2" data-in="136.25" data-a="up">두 회사,<br><span class="acc">같은 원리</span></div></div>
+  <div class="glass hlbox " data-in="136.4" data-a="card" data-dim="141.48" style="position:absolute;left:72px;top:560px;width:888px"><div class="ci" style="padding-bottom:10px"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3v3h-7zM6.5 18.5a1.8 1.8 0 1 0 0-.01M17 18.5a1.8 1.8 0 1 0 0-.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>의료폐기물 수거·운반</b></div></div><div class="kvs"><div class="kv" data-in="137.32" data-a="left"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 6l7 7 4-4 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 11v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i><span>시간과 비용은 줄이고</span></div><div class="kv" data-in="139.04" data-a="left"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 18l7-7 4 4 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13V8h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i><span>처리 능력 · 새로운 매출은 키우고</span></div></div></div>
+  <div class="glass hlbox " data-in="141.48" data-a="card" data-hl="143.91" style="position:absolute;left:72px;top:880px;width:888px"><div class="ci" style="padding-bottom:10px"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>쑥뜸원(웰니스)</b></div></div><div class="kvs"><div class="kv" data-in="142.48" data-a="left"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 6l7 7 4-4 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 11v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i><span>이탈은 줄이고</span></div><div class="kv" data-in="143.61" data-a="left"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 18l7-7 4 4 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13V8h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i><span>재방문 · 재구매는 늘리고</span></div></div></div></div>
+<div class="scene " data-in="146.85" data-out="149.75" data-a="scene"><div class="abs col" style="left:72px;right:120px;top:600px;gap:22px"><div class="eyebrow" data-in="146.95" data-a="up">FOR YOU</div><div class="h1" data-in="147.1" data-a="up">대표님한테는<br>뭐가 <span class="acc">달라질까요?</span></div></div></div>
+<div class="scene " data-in="149.3" data-out="156.16" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:22px"><div class="eyebrow" data-in="149.3" data-a="up">DECISION</div><div class="h2" data-in="149.45" data-a="up">우선순위와 <span class="acc">근거</span>만 보고</div></div>
+  <div class="h3 strike-wrap" data-in="149.5" data-a="up" style="position:absolute;left:72px;top:420px;color:var(--ink2)"><span class="st">데이터를 직접 뒤지기<span class="sl" data-strike="151.12"></span></span></div>
+  <div class="browser" data-in="151.64" data-a="card" style="left:72px;top:560px;width:888px;height:640px"><div class="bbar"><i></i><i></i><i></i><span>오늘 이것만 해보세요</span></div><div class="bview" style="height:588px"><img src="../real-projects/assets/real/well-coach-pc.jpg" style="width:888px" data-kb="151.64000000000001,156.01,1.3,-230,-110,1.45,-300,-170" alt=""></div></div>
+  <div class="note" data-in="151.84" data-a="fade">실제 화면 · 고객 이름은 가렸습니다</div></div>
+<div class="scene " data-in="155.71" data-out="158.67" data-a="scene"><div class="abs col" style="left:72px;right:120px;top:600px;gap:22px"><div class="eyebrow" data-in="155.81" data-a="up">YOUR COMPANY</div><div class="h1" data-in="155.96" data-a="up">대표님 회사도<br><span class="acc">바뀔 수 있어요</span></div></div></div>
+<div class="scene " data-in="158.22" data-out="171.63" data-a="scene">
+  <div class="logo-box" data-in="158.27" data-a="scale" style="left:290px;top:400px"><img src="assets/logo.png" alt="미래AI랩"></div>
+  <div class="abs p center-x" data-in="159.54" data-a="up" style="top:640px">AI를 넣는 데서 끝내지 않고</div>
+  <div class="abs h2 center-x" data-in="161.62" data-a="up" style="top:720px">회사가 더 잘 돌아가고<br><span class="acc">성장하도록</span></div>
+  <div class="abs col center" style="left:140px;right:140px;top:980px;gap:20px"><div class="cta" data-in="165.93" data-a="up">우리 회사는? 3분 AX Fit 진단</div><div class="cta sub" data-in="166.13" data-a="up">miraeailab.com</div></div></div>
+  <div id="sub"><span></span></div>
+  <div class="guide" style="left:0;right:0;top:0;height:220px"></div>
+  <div class="guide" style="left:72px;width:888px;top:220px;height:1080px"></div>
+  <div class="guide" style="left:132px;right:132px;top:1330px;height:180px"></div>
+  <div class="guide" style="left:0;right:0;top:1520px;bottom:0"></div>
+  <div class="guide" style="left:960px;right:0;top:220px;height:1300px"></div>
+</div>
+<script>
+  const SUBS = [[0.6,3.41,"두 번째는 **쑥뜸원**입니다."],[3.46,5.16,"쑥을 태워 몸을 따뜻하게"],[5.21,6.21,"관리해 주는 곳인데,"],[6.26,8.43,"마사지숍이나 피부관리실처럼"],[8.48,9.74,"**이용권**을 끊고"],[9.79,11.07,"정기적으로 다니는 매장이라고"],[11.12,12.44,"생각하시면 쉬워요."],[12.64,15.13,"고객 정보를 입력하고 기록하는 건"],[15.18,16.99,"**어떤 프로그램이든** 할 수 있어요."],[17.3,20.38,"여기서는 방문 기록과\n이용권, 상담 내용,"],[20.43,22.39,"고객이 선호한 관리\n부위와 반응까지"],[22.44,23.52,"**하나로** 연결합니다."],[23.57,25.56,"휴대폰이나 태블릿에서"],[25.61,27.55,"**몇 번만** 누르면 기록되고,"],[27.6,28.81,"다음에 고객이 오시면"],[28.86,31.11,"지난번에 어떤 관리를 받았고"],[31.16,33.09,"무엇을 좋아하셨는지\n**바로** 보입니다."],[33.68,35.04,"그럼 **기록 다음**엔"],[35.09,36.57,"뭘 할 수 있을까요?"],[37.09,39.88,"지금은 방문 주기와 이용권 상태,"],[39.93,41.72,"상담 이후의 행동을 바탕으로"],[41.77,43.38,"오늘 다시 챙겨야 할 고객의"],[43.43,44.61,"**우선순위**를 먼저 보여줘요."],[44.66,46.84,"이용권이 거의 끝난 고객,"],[46.89,48.34,"다시 올 때가 된 고객,"],[48.39,51.48,"상담은 했는데 아직 방문으로\n이어지지 않은 고객을"],[51.53,52.54,"직원이 장부에서"],[52.59,54.6,"**일일이** 찾지 않아도 됩니다."],[54.65,56.13,"고객도 **전용 플랫폼**에서"],[56.18,58.4,"이용 내역과 남은\n이용권을 확인하고,"],[58.45,59.61,"방문을 요청하고,"],[59.66,61.21,"새로운 상품이나 서비스도"],[61.26,62.68,"다시 만나보실 수 있어요."],[62.73,65.78,"앞으로 방문 데이터가\n충분히 쌓이면"],[65.83,67.39,"**한 단계** 더 나아갑니다."],[67.64,70.04,"어떤 고객이 **이탈**할\n가능성이 높은지,"],[70.09,72.73,"어떤 프로그램이 **재방문**으로\n더 잘 이어지는지까지"],[72.78,74.02,"AI가 분석해서"],[74.07,75.54,"대표님이 먼저 챙겨야 할"],[75.59,76.69,"고객과 **매출 기회**를"],[76.74,78.78,"알려드리도록 고도화할 계획이에요."],[79.06,80.94,"그러면 놓치던 고객은 **줄고**,"],[80.99,82.96,"재방문과 이용권 재등록,"],[83.01,84.32,"추가 구매는 **늘어나는** 게"],[84.37,85.66,"성과로 이어집니다."],[86.09,87.62,"여기도 **다음 사업**까지"],[87.67,89.4,"같이 설계하고 있어요."],[89.45,91.1,"지금의 고객 전용 플랫폼으로"],[91.15,93.21,"쑥 화장품이나 생활 상품처럼"],[93.26,94.21,"매장 밖에서도"],[94.26,95.54,"**다시 살 수 있는** 상품까지"],[95.59,96.72,"연결할 계획입니다."],[96.77,99,"2호점이나 가맹점이 생겨도"],[99.05,100.39,"본점의 운영 노하우를"],[100.44,102.47,"데이터와 시스템으로 **표준화**해서"],[102.52,103.47,"그대로 적용할 수 있게"],[103.52,104.81,"만들어 가고 있고요."],[104.86,106.74,"매장 하나를 편하게 운영하는"],[106.79,108.02,"프로그램이 **아니라**,"],[108.07,110.14,"고객과 계속 이어지면서"],[110.19,111.55,"사업 자체가 **커질 수 있는**"],[111.6,113.31,"기반을 만드는 겁니다."],[113.96,115.45,"꼭 쑥뜸원이 아니어도"],[115.5,117.58,"피부관리실이나 마사지숍,"],[117.63,118.63,"필라테스처럼"],[118.68,121.5,"이용권을 끊고 다시\n오시는 매장이라면"],[121.55,123.39,"**똑같이** 적용할 수 있습니다."],[124.45,125.96,"업종은 전혀 다르지만"],[126.01,127.28,"**원리는 같습니다.**"],[127.33,128.98,"한 번 입력한 데이터가"],[129.03,130.54,"다음 업무로 **이어지고**,"],[130.59,132.16,"쌓인 데이터를 분석해서"],[132.21,133.7,"다음에 할 일을 **알려 주고**,"],[133.75,135.97,"필요한 부분은 **자동으로** 처리해요."],[136.2,137.27,"그래서 한 회사는"],[137.32,138.99,"시간과 비용을 줄이면서"],[139.04,141.43,"처리 능력과 새로운\n매출을 키우고,"],[141.48,143.56,"다른 회사는 이탈을 줄이면서"],[143.61,146.26,"재방문과 재구매를\n늘리고 있습니다."],[147.3,149.35,"그럼 대표님한테는\n뭐가 **달라질까요?**"],[149.4,151.79,"데이터를 직접 뒤지실 필요 없이"],[151.84,153.84,"정리된 **우선순위와 근거**만 보고"],[153.89,155.51,"결정하시면 됩니다."],[156.01,158.17,"대표님 회사도 이렇게\n**바뀔 수 있어요.**"],[158.32,159.49,"**미래AI랩**은"],[159.54,161.57,"AI를 넣는 데서 끝내지 않고,"],[161.62,163.81,"회사가 실제로 더 잘 돌아가고"],[163.86,165.63,"성장하도록 만들어 드립니다."]];
+  window.DUR = 170.63;
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('guide')) document.body.classList.add('show-guide');
+
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const eo = (x) => 1 - Math.pow(1 - x, 3);
+  const eio = (x) => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+  const lerp = (a, b, x) => a + (b - a) * x;
+  const vis = (t, tin, tout, d = .6) => Math.min(eo(clamp((t - tin) / d)), 1 - eio(clamp((t - (tout - d * .8)) / (d * .8))));
+  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const DUR_IN = { up: .7, left: .7, scale: .8, card: .8, fade: .6, scene: .55, none: .35 };
+  const num = (v) => v == null ? null : +v;
+
+  const items = [...document.querySelectorAll('[data-in]')].map((el) => {
+    const isScene = el.classList.contains('scene');
+    const sc = isScene ? null : el.closest('.scene');
+    const a = el.dataset.a || 'fade';
+    return { el, isScene, sc, a, tin: +el.dataset.in, tout: el.dataset.out != null ? +el.dataset.out : (sc ? +sc.dataset.out : 1e9),
+             dim: num(el.dataset.dim), hl: num(el.dataset.hl), d: DUR_IN[a] ?? .7, mv: el.dataset.mv ? el.dataset.mv.split(',').map(Number) : null };
+  });
+  const scenes = items.filter((x) => x.isScene);
+  const kbs = [...document.querySelectorAll('[data-kb]')].map((el) => ({ el, sc: el.closest('.scene'), v: el.dataset.kb.split(',').map(Number) }));
+  const draws = [...document.querySelectorAll('[data-draw]')].map((el) => ({ el, sc: el.closest('.scene'), v: el.dataset.draw.split(',').map(Number) }));
+  const strikes = [...document.querySelectorAll('[data-strike]')].map((el) => ({ el, sc: el.closest('.scene'), t: +el.dataset.strike }));
+  const orbits = [...document.querySelectorAll('[data-orbit]')].map((el) => ({ el, sc: el.closest('.scene'), v: el.dataset.orbit.split(',').map(Number) }));
+  const fills = [...document.querySelectorAll('[data-fill]')].map((el) => ({ el, sc: el.closest('.scene'), v: el.dataset.fill.split(',').map(Number) }));
+  const touches = [...document.querySelectorAll('[data-touch]')].map((el) => ({ el, sc: el.closest('.scene'), t: +el.dataset.touch }));
+  const shown = (sc) => !sc || sc.style.visibility !== 'hidden';
+
+  const subEl = document.querySelector('#sub span');
+  let subIdx = -2;
+
+  function render(t) {
+    document.getElementById('bg').style.transform = `translate(${Math.sin(t / 9) * 30}px, ${Math.cos(t / 11) * 20}px) scale(1.04)`;
+    // 장면부터: 안 보이는 장면은 통째로 숨겨 그리지 않는다
+    for (const s of scenes) {
+      const o = vis(t, s.tin, s.tout, .55);
+      s.el.style.opacity = o;
+      s.el.style.visibility = o > 0.001 ? 'visible' : 'hidden';
+    }
+    for (const x of items) {
+      if (x.isScene || !shown(x.sc)) continue;
+      const { el, tin, tout, a, d } = x;
+      let o = vis(t, tin, tout, d);
+      if (x.dim != null) o *= lerp(1, .62, eo(clamp((t - x.dim) / .5)));
+      el.style.opacity = o;
+      const p = eo(clamp((t - tin) / (d + .1)));
+      if (a === 'up') el.style.transform = `translateY(${(1 - p) * 34}px)`;
+      else if (a === 'left') el.style.transform = `translateX(${(1 - p) * -60}px)`;
+      else if (a === 'scale') el.style.transform = `scale(${lerp(.94, 1, p)})`;
+      else if (a === 'card') el.style.transform = `translateY(${(1 - p) * 60}px) scale(${lerp(.92, 1, p)})`;
+      // 옮기기: data-mv="t0,t1,dx,dy" — t0~t1 동안 (dx,dy) 만큼 천천히 이동
+      if (x.mv) { const [m0, m1, dx, dy] = x.mv; const q = eio(clamp((t - m0) / (m1 - m0))); el.style.transform = (a === 'up' || a === 'left' || a === 'scale' || a === 'card' ? el.style.transform + ' ' : '') + `translate(${dx * q}px, ${dy * q}px)`; }
+      if (x.hl != null) el.style.setProperty('--hl', eo(clamp((t - x.hl) / .5)));
+    }
+    // 화면 천천히 확대: data-kb="시작,끝,배율0,x0,y0,배율1,x1,y1"
+    for (const k of kbs) {
+      if (!shown(k.sc)) continue;
+      const [a, b, s0, x0, y0, s1, x1, y1] = k.v;
+      const q = eio(clamp((t - a) / (b - a)));
+      k.el.style.transform = `translate(${lerp(x0, x1, q)}px, ${lerp(y0, y1, q)}px) scale(${lerp(s0, s1, q)})`;
+    }
+    // 선 그리기: data-draw="시작,끝" (pathLength=1)
+    for (const k of draws) { if (shown(k.sc)) k.el.style.strokeDashoffset = 1 - eio(clamp((t - k.v[0]) / Math.max(.01, k.v[1] - k.v[0]))); }
+    // 취소선: 0.8초
+    for (const k of strikes) { if (shown(k.sc)) k.el.style.transform = `scaleX(${eio(clamp((t - k.t) / .8))})`; }
+    // 따라 도는 점: data-orbit="t0,t1,cx,cy,rx,ry,각도0,각도1"
+    for (const k of orbits) {
+      if (!shown(k.sc)) continue;
+      const [a, b, cx, cy, rx, ry, g0, g1] = k.v;
+      const q = clamp((t - a) / (b - a));
+      const g = (lerp(g0, g1, q)) * Math.PI / 180;
+      k.el.style.transform = `translate(${cx + rx * Math.cos(g)}px, ${cy + ry * Math.sin(g)}px)`;
+      k.el.style.opacity = t < a ? 0 : Math.min(clamp((t - a) / .4), 1);
+    }
+    // 막대 채우기: data-fill="t0,t1,값"
+    for (const k of fills) { if (shown(k.sc)) k.el.style.transform = `scaleX(${lerp(0, k.v[2], eo(clamp((t - k.v[0]) / (k.v[1] - k.v[0]))))})`; }
+    // 누르는 곳 물결: 0.6초
+    for (const k of touches) {
+      if (!shown(k.sc)) continue;
+      const q = (t - k.t) / .6;
+      k.el.style.opacity = q < 0 || q > 1 ? 0 : (1 - q) * .95;
+      k.el.style.transform = `scale(${lerp(.4, 1.5, eo(clamp(q)))})`;
+    }
+    // 자막
+    const i = SUBS.findIndex(([a, b]) => t >= a - .12 && t < b + .12);
+    if (i !== subIdx) { subIdx = i; if (i >= 0) subEl.innerHTML = esc(SUBS[i][2]).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
+    const box = subEl.parentElement;
+    if (i < 0) box.style.opacity = 0;
+    else { const [a, b] = SUBS[i]; box.style.opacity = Math.min(clamp((t - a + .12) / .12), clamp((b + .12 - t) / .12)); }
+  }
+  window.render = render;
+  window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((im) => im.decode().catch(() => {}))]);
+  render(+(qs.get('t') || 0));
+</script>
+</body></html>

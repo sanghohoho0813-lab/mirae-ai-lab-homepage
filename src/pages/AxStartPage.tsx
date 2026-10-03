@@ -117,7 +117,7 @@ export default function AxStartPage() {
       {/* 4. FAQ — 구매 판단에 중요한 5개만 먼저, 나머지는 '질문 더 보기' */}
       <AxFaqSection featured={5} />
 
-      {/* 5. 실제 프로젝트 영상 — 지금 만들고 있는 회사 두 곳(업종만 공개) */}
+      {/* 5. 실제 프로젝트 영상 — 1편 의료폐기물 · 2편 쑥뜸원 · 요약본(업종만 공개) */}
       <AxRealProjectsFilm diagnosisHref={AX_DIAG_HREF} />
 
       {/* 6. 마무리 — 버튼 두 개만 */}

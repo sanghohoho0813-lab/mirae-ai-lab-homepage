@@ -50,9 +50,16 @@ for (const W of [390, 1280]) {
     const sec = p.locator('#real-projects-film')
     ok('구간 있음 · FAQ 다음 · 마무리 앞', (await sec.count()) === 1 && (await p.evaluate(() => { const y = (id) => document.getElementById(id)?.getBoundingClientRect().top; return y('faq') < y('real-projects-film') && y('real-projects-film') < y('cta') })))
     const v = sec.locator('video')
-    const srcs = await v.locator('source').evaluateAll((s) => s.map((x) => x.getAttribute('src')))
-    ok('영상 주소 mp4 · webm', JSON.stringify(srcs) === JSON.stringify(['/business/ax/ax-real-projects.mp4', '/business/ax/ax-real-projects.webm']), srcs.join(','))
-    for (const u of [...srcs, await v.getAttribute('poster')]) { const n = await size(p, u); ok(`파일 있음 ${u}`, n > 10000, String(n)) }
+    const srcsNow = () => v.locator('source').evaluateAll((s) => s.map((x) => x.getAttribute('src')))
+    const EP = { ep1: 'ax-real-ep1', ep2: 'ax-real-ep2', summary: 'ax-real-projects' }
+    ok('편 고르기 3개(1편 · 2편 · 요약본)', (await sec.locator('[data-real-ep]').count()) === 3)
+    ok('처음엔 1편', (await sec.locator('[data-real-ep="ep1"]').getAttribute('aria-pressed')) === 'true')
+    for (const id of ['ep2', 'summary', 'ep1']) {
+      await sec.locator(`[data-real-ep="${id}"]`).click(); await p.waitForTimeout(200)
+      const srcs = await srcsNow()
+      ok(`${id} 영상 주소 mp4 · webm`, JSON.stringify(srcs) === JSON.stringify([`/business/ax/${EP[id]}.mp4`, `/business/ax/${EP[id]}.webm`]), srcs.join(','))
+      for (const u of [...srcs, await v.getAttribute('poster')]) { const n = await size(p, u); ok(`파일 있음 ${u}`, n > 10000, String(n)) }
+    }
     ok('업종만 공개 안내', /업종만/.test(await text(p, '#real-projects-film')))
     ok('미리 받지 않음(preload none)', (await v.getAttribute('preload')) === 'none')
     await sec.scrollIntoViewIfNeeded(); await p.waitForTimeout(300)
@@ -61,6 +68,16 @@ for (const W of [390, 1280]) {
     ok('누르면 소리 켜고 재생(조절 막대 표시)', await v.evaluate((x) => !x.muted && x.controls))
     await sec.locator('[data-speed="1.25"]').click()
     ok('재생 속도 1.25배', (await v.evaluate((x) => x.playbackRate)) === 1.25)
+    // 1편 끝 → '2편 이어 보기' → 2편이 소리 켜고 바로 재생
+    await v.evaluate((x) => new Promise((r) => { const go = () => { x.currentTime = Math.max(0, x.duration - 0.4); x.play().catch(() => {}); r() }; x.readyState >= 1 ? go() : x.addEventListener('loadedmetadata', go, { once: true }) }))
+    await sec.locator('[data-real-next]').waitFor({ timeout: 8000 }).catch(() => {})
+    ok('1편 끝 화면에 2편 이어 보기', (await sec.locator('[data-real-next]').count()) === 1)
+    if (await sec.locator('[data-real-next]').count()) {
+      await sec.locator('[data-real-next]').click(); await p.waitForTimeout(900)
+      const srcs = await srcsNow()
+      ok('2편으로 바뀜', srcs[0] === '/business/ax/ax-real-ep2.mp4' && (await sec.locator('[data-real-ep="ep2"]').getAttribute('aria-pressed')) === 'true', srcs.join(','))
+      ok('2편 소리 켜고 재생', await v.evaluate((x) => !x.muted && !x.paused && x.controls))
+    }
     ok('가로 넘침 없음', (await overflow(p)) <= 0)
     ok('오류 없음', errs.length === 0, errs.join('|'))
     await ctx.close()

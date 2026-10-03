@@ -113,7 +113,7 @@ const BUSINESS_MENU: MenuConfig = {
             { no: '2', label: '진행 방식과 비용', desc: '영상 2 · 어떻게 진행하고, 얼마가 드나', to: `${AX_START_PATH}#film-2` },
             { no: '3', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_START_PATH}#samples` },
             { no: '4', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_START_PATH}#faq` },
-            { no: '5', label: '실제 프로젝트 영상', desc: '지금 만들고 있는 회사 두 곳(업종만 공개)', to: `${AX_START_PATH}#real-projects-film` },
+            { no: '5', label: '실제 프로젝트 영상', desc: '1편 의료폐기물 · 2편 쑥뜸원(업종만 공개)', to: `${AX_START_PATH}#real-projects-film` },
           ],
     },
     {

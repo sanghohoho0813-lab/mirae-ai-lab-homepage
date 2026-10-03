@@ -1,0 +1,12 @@
+{
+ "gapBefore": [
+  {"block": 2, "line": 1, "sec": 1.1, "why": "1편 제목 장면"},
+  {"block": 3, "line": 1, "sec": 0.7, "why": "예전 방식으로 넘어가기"},
+  {"block": 4, "line": 1, "sec": 0.8, "why": "지금 방식으로 넘어가기"},
+  {"block": 5, "line": 1, "sec": 0.9, "why": "AI 질문 장면"},
+  {"block": 5, "line": 2, "sec": 0.6, "why": "질문 뒤 숨"},
+  {"block": 6, "line": 1, "sec": 0.8, "why": "목표 정리"},
+  {"block": 7, "line": 1, "sec": 0.8, "why": "다음 사업"},
+  {"block": 8, "line": 1, "sec": 0.8, "why": "마무리"}
+ ]
+}
