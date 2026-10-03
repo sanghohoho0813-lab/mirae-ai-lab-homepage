@@ -4,7 +4,7 @@ const VMP = '/business-services/venture-mvp', AX = '/business-services/ax-start'
 const BIZ = [
   ['01', '서비스 선택', [['2주 기술사업 빌드', VMP], ['Full AX 구축', AX], ['두 서비스 비교하기', CH], ['직접 만든 샘플 22개', SMP]]],
   ['02', '2주 기술사업 빌드', [['소개 영상', VMP + '#film'], ['이런 회사가, 이런 기술사업을', VMP + '#mvp-refs'], ['자주 묻는 질문', VMP + '#faq']]],
-  ['03', 'Full AX 구축', [['AX가 뭐예요?', AX + '#film-1'], ['진행 방식과 비용', AX + '#film-2'], ['실제 AX 구축 화면', AX + '#samples'], ['자주 묻는 질문', AX + '#faq'], ['실제 프로젝트 영상', AX + '#real-projects-film']]],
+  ['03', 'Full AX 구축', [['AX가 뭐예요?', AX + '#film-1'], ['진행 방식과 비용', AX + '#film-2'], ['실제 AX 구축 화면', AX + '#samples'], ['실제 프로젝트 영상', AX + '#real-projects-film'], ['자주 묻는 질문', AX + '#faq']]],
   ['04', '내 서비스', [['마이페이지', '/mypage'], ['주문·진행현황', '/my-orders'], ['상담 신청', '#consult']]],
   ['05', '고객지원', [['이용약관', '/terms'], ['개인정보처리방침', '/privacy'], ['환불·취소 정책', '/refund-policy'], ['사업자정보', '/business-info']]],
 ]
@@ -157,7 +157,7 @@ for (const W of [390, 1280]) {
   h(`목차 순서 = 페이지 순서 · ${W}px`)
   {
     const { ctx, p } = await newPage(b, W, 900)
-    for (const [no, path, ids] of [['02', VMP, ['film', 'mvp-refs', 'faq']], ['03', AX, ['film-1', 'film-2', 'samples', 'faq', 'real-projects-film']]]) {
+    for (const [no, path, ids] of [['02', VMP, ['film', 'mvp-refs', 'faq']], ['03', AX, ['film-1', 'film-2', 'samples', 'real-projects-film', 'faq']]]) {
       await go(p, path)
       const tops = await p.evaluate((ids) => ids.map((id) => { const e = document.getElementById(id); return e ? Math.round(e.getBoundingClientRect().top + scrollY) : null }), ids)
       ok(`${no} ${path}: 구간 ${ids.join(' → ')} 이 위에서 아래 순서`, tops.every((t, i) => t !== null && (i === 0 || t > tops[i - 1])), tops.join(' < '))

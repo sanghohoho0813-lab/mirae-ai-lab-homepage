@@ -9,7 +9,7 @@ import BusinessStickyCta from '../components/business/BusinessStickyCta'
 import { AxHeroV2, AxSamplesBand } from '../components/ax-showcase/axHomeSections'
 import AxFilms from '../components/ax-showcase/AxFilms'
 import AxFaqSection from '../components/ax-showcase/AxFaqSection'
-import AxRealProjectsFilm from '../components/ax-showcase/AxRealProjectsFilm'
+import AxRealProjectsFilm, { FEATURED_PROJECT_SLUGS } from '../components/ax-showcase/AxRealProjectsFilm'
 import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
 import { axStoryV3Section as S } from '../data/axHomeStoryV3'
 import { AX_GUIDE_PATH, AX_START_PATH, BUSINESS_NAV, SAMPLES_PATH, samplesHref } from '../lib/businessRoutes'
@@ -24,7 +24,7 @@ import { canonicalUrl } from '../lib/site'
 // /business-services 는 이제 AX 도입 / 기술사업·MVP 를 고르는 2-Track 선택 페이지이고,
 // 거기서 "AX 도입 알아보기" 를 고르면 여기로 온다.
 //
-// 지금 구성(기술사업·MVP 페이지처럼 간결하게): 히어로 → 소개 영상 2편 → 직접 만든 화면 22개 → FAQ → 마무리.
+// 지금 구성(기술사업·MVP 페이지처럼 간결하게): 히어로 → 소개 영상 2편 → 직접 만든 화면 22개(+ 실제 프로젝트 6곳 · 그중 2곳 영상) → FAQ → 마무리.
 // 스토리 01~03 · 이어보기('AX 상세 안내 보기')와 AX 상세 안내(스토리 04~12)는 지우지 않고 잠시 숨겼다
 // (SHOW_STORY 아래 · businessRoutes 의 SHOW_AX_GUIDE). 아래 설명은 숨기기 전 구성에 대한 것이다.
 //
@@ -111,16 +111,14 @@ export default function AxStartPage() {
       {/* 2. 소개 영상 2편 — 1편 AX가 뭐고 왜 필요한가 / 2편 어떻게 진행하고 얼마가 드나 */}
       <AxFilms samplesAnchor="samples" diagnosisHref={AX_DIAG_HREF} />
 
-      {/* 3. 직접 만든 화면 22개(업종별 AX와 고객 플랫폼 12 + 아이디어 MVP 10) */}
-      <AxSamplesBand />
+      {/* 3. 직접 만든 화면 22개(업종별 AX와 고객 플랫폼 12 + 아이디어 MVP 10)
+             + 실제 기업 프로젝트 6곳 — 그중 의료폐기물(1편, 중소기업에 가까운 사례) · 웰니스 케어(2편, 소상공인에 가까운 사례)는 영상과 함께 크게 */}
+      <AxSamplesBand featured={{ node: <AxRealProjectsFilm diagnosisHref={AX_DIAG_HREF} />, slugs: FEATURED_PROJECT_SLUGS }} />
 
       {/* 4. FAQ — 구매 판단에 중요한 5개만 먼저, 나머지는 '질문 더 보기' */}
       <AxFaqSection featured={5} />
 
-      {/* 5. 실제 프로젝트 영상 — 1편 의료폐기물(중소기업에 가까운 사례) → 2편 쑥뜸원(소상공인에 가까운 사례) 연달아(업종만 공개) */}
-      <AxRealProjectsFilm diagnosisHref={AX_DIAG_HREF} />
-
-      {/* 6. 마무리 — 버튼 두 개만 */}
+      {/* 5. 마무리 — 버튼 두 개만 */}
       <div ref={bridgeRef}>
         <section id="cta" className="border-t border-[#343B44] bg-[#171B20]">
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">

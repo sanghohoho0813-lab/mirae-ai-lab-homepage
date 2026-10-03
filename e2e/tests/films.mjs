@@ -43,12 +43,13 @@ for (const W of [390, 1280]) {
     await ctx.close()
   }
 
-  h(`AX 페이지 끝 실제 프로젝트 영상 · ${W}px`)
+  h(`AX 페이지 실제 프로젝트 영상(22개 화면 아래 · 목록 맨 앞) · ${W}px`)
   {
     const { ctx, p, errs } = await newPage(b, W, W < 768 ? 844 : 900)
     await go(p, AX)
     const sec = p.locator('#real-projects-film')
-    ok('구간 있음 · FAQ 다음 · 마무리 앞', (await sec.count()) === 1 && (await p.evaluate(() => { const y = (id) => document.getElementById(id)?.getBoundingClientRect().top; return y('faq') < y('real-projects-film') && y('real-projects-film') < y('cta') })))
+    ok('22개 화면 구간 안 · 실제 프로젝트 목록 맨 앞 · FAQ 위', (await sec.count()) === 1 && (await p.evaluate(() => { const y = (s) => document.querySelector(s)?.getBoundingClientRect().top; return !!document.querySelector('#samples #real-projects-film [data-ax-real-film]') && y('[data-ax-samples-all]') < y('#real-projects-film') && y('[data-ax-real-film]') < y('[data-ax-real-rest]') && y('#real-projects-film') < y('#faq') })))
+    ok('나머지 4곳은 작은 카드(의료폐기물·웰니스 빼고)', await p.evaluate(() => { const t = [...document.querySelectorAll('[data-ax-real-project]')].map((x) => x.textContent); return t.length === 4 && !t.some((x) => /의료폐기물|Wellness/.test(x)) }))
     // 두 편 연달아 — 1편(중소기업에 가까운 사례) → 2편(소상공인에 가까운 사례), 편마다 옆에 안내
     ok('두 편 연달아(1편 → 2편)', (await sec.locator('[data-real-episode]').count()) === 2 && (await p.evaluate(() => document.getElementById('real-project-1').getBoundingClientRect().top < document.getElementById('real-project-2').getBoundingClientRect().top)))
     const body = await text(p, '#real-projects-film')

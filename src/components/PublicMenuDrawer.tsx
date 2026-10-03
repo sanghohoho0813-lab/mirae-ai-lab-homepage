@@ -96,7 +96,7 @@ const BUSINESS_MENU: MenuConfig = {
       no: '03',
       heading: 'Full AX 구축',
       accent: 'cyan',
-      // 페이지 순서: 히어로 → 소개 영상 1·2(#film-1 · #film-2) → 직접 만든 화면(#samples) → 자주 묻는 질문(#faq) → 실제 프로젝트 영상(#real-projects-film) → 마무리
+      // 페이지 순서: 히어로 → 소개 영상 1·2(#film-1 · #film-2) → 직접 만든 화면(#samples) → 실제 프로젝트 영상(#real-projects-film, 22개 화면 바로 아래) → 자주 묻는 질문(#faq) → 마무리
       // (예전 'AX 프로그램 · 수행체계 · 로드맵'(개정 중) 항목은 뺐다 — 두 상품에 집중, 상세 안내는 영상으로 대신한다)
       // AX 상세 안내(스토리 04~12)를 숨긴 동안에는 AX 페이지 구간으로 보낸다
       items: SHOW_AX_GUIDE
@@ -112,8 +112,8 @@ const BUSINESS_MENU: MenuConfig = {
             { no: '1', label: 'AX가 뭐예요?', desc: '영상 1 · AX가 뭐고, 왜 필요한가', to: `${AX_START_PATH}#film-1` },
             { no: '2', label: '진행 방식과 비용', desc: '영상 2 · 어떻게 진행하고, 얼마가 드나', to: `${AX_START_PATH}#film-2` },
             { no: '3', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_START_PATH}#samples` },
-            { no: '4', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_START_PATH}#faq` },
-            { no: '5', label: '실제 프로젝트 영상', desc: '1편 의료폐기물 · 2편 쑥뜸원(업종만 공개)', to: `${AX_START_PATH}#real-projects-film` },
+            { no: '4', label: '실제 프로젝트 영상', desc: '1편 의료폐기물 · 2편 웰니스 케어(업종만 공개)', to: `${AX_START_PATH}#real-projects-film` },
+            { no: '5', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_START_PATH}#faq` },
           ],
     },
     {
