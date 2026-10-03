@@ -43,27 +43,28 @@ for (const W of [390, 1280]) {
     await ctx.close()
   }
 
-  h(`AX 페이지 실제 프로젝트 영상(22개 화면 아래 · 목록 맨 앞) · ${W}px`)
+  h(`AX 페이지 순서 · 실제 프로젝트 영상(영상 1 → 22개 화면 → 실제 프로젝트 → 영상 2 · 비용 → FAQ) · ${W}px`)
   {
     const { ctx, p, errs } = await newPage(b, W, W < 768 ? 844 : 900)
     await go(p, AX)
     const sec = p.locator('#real-projects-film')
-    ok('22개 화면 구간 안 · 실제 프로젝트 목록 맨 앞 · FAQ 위', (await sec.count()) === 1 && (await p.evaluate(() => { const y = (s) => document.querySelector(s)?.getBoundingClientRect().top; return !!document.querySelector('#samples #real-projects-film [data-ax-real-film]') && y('[data-ax-samples-all]') < y('#real-projects-film') && y('[data-ax-real-film]') < y('[data-ax-real-rest]') && y('#real-projects-film') < y('#faq') })))
-    ok('나머지 4곳은 작은 카드(의료폐기물·웰니스 빼고)', await p.evaluate(() => { const t = [...document.querySelectorAll('[data-ax-real-project]')].map((x) => x.textContent); return t.length === 4 && !t.some((x) => /의료폐기물|Wellness/.test(x)) }))
-    // 두 편 연달아 — 1편(중소기업에 가까운 사례) → 2편(소상공인에 가까운 사례), 편마다 옆에 안내
+    const order = ['film-1', 'samples', 'real-projects-film', 'film-2', 'faq', 'cta']
+    const tops = await p.evaluate((ids) => ids.map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? null), order)
+    ok(`구간 순서 ${order.join(' → ')}`, tops.every((t, i) => t !== null && (i === 0 || t > tops[i - 1])), tops.map(Math.round).join(' < '))
+    ok('22개 화면 구간에는 실제 프로젝트 없음', (await p.locator('#samples [data-ax-real-project], #samples [data-real-episode]').count()) === 0)
+    ok('실제 프로젝트는 살구색 바탕(영상 1·2와 같은 색)', await p.evaluate(() => ['films', 'real-projects-film'].map((id) => getComputedStyle(document.getElementById(id)).backgroundColor).every((c, _, a) => c === a[0])))
     ok('두 편 연달아(1편 → 2편)', (await sec.locator('[data-real-episode]').count()) === 2 && (await p.evaluate(() => document.getElementById('real-project-1').getBoundingClientRect().top < document.getElementById('real-project-2').getBoundingClientRect().top)))
+    ok('나머지 4곳은 작은 카드(의료폐기물·웰니스 빼고)', await p.evaluate(() => { const t = [...document.querySelectorAll('#real-projects-film [data-ax-real-project]')].map((x) => x.textContent); return t.length === 4 && !t.some((x) => /의료폐기물|Wellness/.test(x)) }))
     const body = await text(p, '#real-projects-film')
     ok('1편 표시: 일반 중소기업 사례', /일반 중소기업 사례/.test(await text(p, '#real-project-1')))
     ok('2편 표시: 소상공인 사례', /소상공인 사례/.test(await text(p, '#real-project-2')))
     for (const n of [1, 2]) {
-      const st = await text(p, `#real-project-${n} [data-real-status]`)
+      const st = await text(p, `#real-project-${n} [data-film-status]`)
       ok(`${n}편 진행 상태: 완성 · 유지보수 단계 · 정책자금·지원사업 따로 신청 중`, /완성 · 실무에서 쓰며 안정화하는 유지보수 단계/.test(st) && /정책자금·지원사업은 따로 계속 신청 중/.test(st), st)
     }
-    ok('위 설명 문단 없음', !/그중 두 곳은 영상으로|대략 어떻게 흘러가는지/.test(body))
     ok('업종만 공개 안내', /업종만/.test(body))
-    ok('요약본(예전 영상)은 없음', !(await p.locator('#real-projects-film source[src*="ax-real-projects"]').count()))
-    const f1 = sec.locator('[data-story-film="ax-real-1"]'), f2 = sec.locator('[data-story-film="ax-real-2"]')
-    const v1 = f1.locator('video'), v2 = f2.locator('video')
+    const f1 = p.locator('#real-project-1'), f2 = p.locator('#real-project-2'), fc = p.locator('#film-2')
+    const v1 = f1.locator('video'), v2 = f2.locator('video'), vc = fc.locator('video')
     for (const [n, f, v] of [[1, f1, v1], [2, f2, v2]]) {
       const srcs = await v.locator('source').evaluateAll((s) => s.map((x) => x.getAttribute('src')))
       ok(`${n}편 영상 주소 mp4 · webm`, JSON.stringify(srcs) === JSON.stringify([`/business/ax/ax-real-ep${n}.mp4`, `/business/ax/ax-real-ep${n}.webm`]), srcs.join(','))
@@ -73,23 +74,32 @@ for (const W of [390, 1280]) {
     }
     await sec.scrollIntoViewIfNeeded(); await p.waitForTimeout(300)
     await p.screenshot({ path: `${S}/axreal-${W}.png` })
-    await p.locator('#real-project-1').screenshot({ path: `${S}/axreal-ep1-${W}.png` })
-    await p.locator('#real-project-2').screenshot({ path: `${S}/axreal-ep2-${W}.png` })
-    await f1.locator('[data-story-sound]').click(); await p.waitForTimeout(700)
+    await f1.screenshot({ path: `${S}/axreal-ep1-${W}.png` })
+    await f1.locator('[data-ax-sound]').click(); await p.waitForTimeout(700)
     ok('1편 누르면 소리 켜고 재생(조절 막대 표시)', await v1.evaluate((x) => !x.muted && x.controls))
     await f1.locator('[data-speed="1.25"]').click()
     ok('1편 재생 속도 1.25배', (await v1.evaluate((x) => x.playbackRate)) === 1.25)
     await f2.locator('[data-speed="1.5"]').click()
     ok('2편 재생 속도 1.5배(1편과 따로)', (await v2.evaluate((x) => x.playbackRate)) === 1.5 && (await v1.evaluate((x) => x.playbackRate)) === 1.25)
+    const toEnd = (v) => v.evaluate((x) => new Promise((r) => { const go = () => { x.currentTime = Math.max(0, x.duration - 0.4); x.play().catch(() => {}); r() }; x.readyState >= 1 ? go() : x.addEventListener('loadedmetadata', go, { once: true }) }))
     // 1편 끝 → '2편 이어 보기' → 2편이 소리 켜고 바로 재생, 1편은 멈춤
-    await v1.evaluate((x) => new Promise((r) => { const go = () => { x.currentTime = Math.max(0, x.duration - 0.4); x.play().catch(() => {}); r() }; x.readyState >= 1 ? go() : x.addEventListener('loadedmetadata', go, { once: true }) }))
+    await toEnd(v1)
     await f1.locator('[data-real-next]').waitFor({ timeout: 8000 }).catch(() => {})
     ok('1편 끝 화면에 2편 이어 보기', (await f1.locator('[data-real-next]').count()) === 1)
     if (await f1.locator('[data-real-next]').count()) {
       await f1.locator('[data-real-next]').click(); await p.waitForTimeout(1200)
       ok('2편 소리 켜고 재생', await v2.evaluate((x) => !x.muted && !x.paused && x.controls))
       ok('1편은 멈춤', await v1.evaluate((x) => x.paused))
-      ok('2편이 화면에 보임', await p.evaluate(() => { const r = document.querySelector('[data-story-film="ax-real-2"] video').getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }))
+    }
+    // 2편 끝 → '진행 방식·비용(영상 2) 보기' → 영상 2가 소리 켜고 재생, 2편은 멈춤
+    await toEnd(v2)
+    await f2.locator('[data-real-cost]').waitFor({ timeout: 8000 }).catch(() => {})
+    ok('2편 끝 화면에 영상 2(비용) 보기', (await f2.locator('[data-real-cost]').count()) === 1)
+    if (await f2.locator('[data-real-cost]').count()) {
+      await f2.locator('[data-real-cost]').click(); await p.waitForTimeout(1200)
+      ok('영상 2 소리 켜고 재생', await vc.evaluate((x) => !x.muted && !x.paused && x.controls))
+      ok('2편은 멈춤', await v2.evaluate((x) => x.paused))
+      ok('영상 2가 화면에 보임', await vc.evaluate((x) => { const r = x.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }))
     }
     ok('가로 넘침 없음', (await overflow(p)) <= 0)
     ok('오류 없음', errs.length === 0, errs.join('|'))

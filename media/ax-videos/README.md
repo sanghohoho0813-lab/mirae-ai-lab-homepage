@@ -30,7 +30,7 @@ cd consultant-v2 && node build.mjs && npx --yes hyperframes@0.8.79 render --fps 
 
 | 폴더 | 제목 | 길이 | 들어가는 곳 |
 |---|---|---|---|
-| `real-ep1/` | 실제 프로젝트 1편 · 의료폐기물 수거·운반 | 2분 31초(말 2분 26초 + 끝 화면 5초) | AX 페이지 22개 화면 아래 실제 프로젝트 목록 맨 앞(`#real-projects-film`) 1편 |
+| `real-ep1/` | 실제 프로젝트 1편 · 의료폐기물 수거·운반 | 2분 31초(말 2분 26초 + 끝 화면 5초) | AX 페이지 '실제 프로젝트' 구간(`#real-projects-film`, 22개 화면 다음 · 영상 2 앞) 1편 |
 | `real-ep2/` | 실제 프로젝트 2편 · 쑥뜸원(웰니스) | 2분 51초(말 2분 46초 + 끝 화면 5초) | 같은 구간 2편 |
 
 녹음 파일 2개(1.1배)로 만든 두 편. 위 영상들과 달리 HyperFrames 대신 **`lib/reels.mjs` · `lib/reels-base.html` · `lib/reels-render.mjs`** 로 만든다.
