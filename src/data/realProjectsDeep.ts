@@ -40,7 +40,7 @@ export const DEEP_PROJECTS: DeepProject[] = [
     slug: 'medwaste',
     industry: '의료폐기물 수거·운반 기업',
     summary: '내부 AX + 병원이 직접 쓰는 고객 플랫폼',
-    stage: '개발·고도화 진행',
+    stage: '거의 완성 · 마무리 단계',
     funding: true,
     expandLabel: '어디까지 개발하는지 보기',
     intro: [
@@ -198,7 +198,7 @@ export const DEEP_PROJECTS: DeepProject[] = [
     slug: 'wellness',
     industry: 'Wellness Care 기업',
     summary: '내부 AX + 고객 포털 MY WELLNESS',
-    stage: '시범 운영(Pilot) 준비 중',
+    stage: '거의 완성 · 마무리 단계',
     funding: true,
     expandLabel: '어디까지 개발됐는지 보기',
     intro: [

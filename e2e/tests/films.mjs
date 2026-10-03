@@ -53,9 +53,13 @@ for (const W of [390, 1280]) {
     // 두 편 연달아 — 1편(중소기업에 가까운 사례) → 2편(소상공인에 가까운 사례), 편마다 옆에 안내
     ok('두 편 연달아(1편 → 2편)', (await sec.locator('[data-real-episode]').count()) === 2 && (await p.evaluate(() => document.getElementById('real-project-1').getBoundingClientRect().top < document.getElementById('real-project-2').getBoundingClientRect().top)))
     const body = await text(p, '#real-projects-film')
-    ok('1편 안내: 중소기업에 가까운 사례', /중소기업에 가까운 사례/.test(await text(p, '#real-project-1')))
-    ok('2편 안내: 소상공인에 가까운 사례', /소상공인에 가까운 사례/.test(await text(p, '#real-project-2')))
-    ok('흐름 예상 안내', /대략 어떻게 흘러가는지/.test(body))
+    ok('1편 표시: 일반 중소기업 사례', /일반 중소기업 사례/.test(await text(p, '#real-project-1')))
+    ok('2편 표시: 소상공인 사례', /소상공인 사례/.test(await text(p, '#real-project-2')))
+    for (const n of [1, 2]) {
+      const st = await text(p, `#real-project-${n} [data-real-status]`)
+      ok(`${n}편 진행 상태: 거의 완성 · 마무리 단계 · 정책자금·정부지원사업 참여 준비 중`, /거의 완성 · 마무리 단계/.test(st) && /정책자금·정부지원사업 참여 준비 중/.test(st), st)
+    }
+    ok('위 설명 문단 없음', !/그중 두 곳은 영상으로|대략 어떻게 흘러가는지/.test(body))
     ok('업종만 공개 안내', /업종만/.test(body))
     ok('요약본(예전 영상)은 없음', !(await p.locator('#real-projects-film source[src*="ax-real-projects"]').count()))
     const f1 = sec.locator('[data-story-film="ax-real-1"]'), f2 = sec.locator('[data-story-film="ax-real-2"]')

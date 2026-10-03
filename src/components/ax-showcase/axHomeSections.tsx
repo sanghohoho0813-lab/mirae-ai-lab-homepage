@@ -147,14 +147,12 @@ export function AxSamplesBand({ featured }: { featured?: { node: ReactNode; slug
             그리고 지금, <br className="sm:hidden" />
             <span className="text-[#E8B89A]">실제 기업에서도 만들고 있어요</span>
           </h3>
-          <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
-            실제 기업의 업무를 분석하고, 현장에서 쓸 수 있는 AX 시스템을 직접 구축하고 있어요.
-            {featured && (
-              <>
-                {' '}그중 두 곳은 영상으로 보여 드려요. <b className="font-bold text-white">1편은 중소기업에, 2편은 소상공인에 가까운 사례</b>예요. 우리 회사와 비슷한 편을 보시면 AX가 대략 어떻게 흘러가는지 예상하실 수 있어요.
-              </>
-            )}
-          </p>
+          {/* 영상 두 편을 크게 둘 때는 설명 문단 없이 바로 영상으로(글이 눈에 잘 안 들어온다는 대표님 피드백) */}
+          {!featured && (
+            <p className="mt-3 max-w-2xl break-keep text-[1rem] leading-relaxed text-slate-300 sm:text-[1.08rem]">
+              실제 기업의 업무를 분석하고, 현장에서 쓸 수 있는 AX 시스템을 직접 구축하고 있어요.
+            </p>
+          )}
           {featured && (
             <>
               <div className="mt-7 sm:mt-8">{featured.node}</div>
