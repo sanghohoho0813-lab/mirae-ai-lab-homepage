@@ -139,7 +139,21 @@ async function readTicket(secret: string, ticket: unknown): Promise<{ u: string;
   }
 }
 
+// 공개 응답에는 내부 오류 원문(detail)을 싣지 않는다 — 서버 기록(Vercel 로그)에만 남긴다(2026-10 보안 점검)
+function hideErrorDetail(res: any, tag: string) {
+  const json = res.json.bind(res)
+  res.json = (body: any) => {
+    if (body && typeof body === 'object' && 'detail' in body) {
+      const { detail, ...rest } = body
+      console.error(`[${tag}] ${rest.debugCode ?? 'error'}:`, detail)
+      return json(rest)
+    }
+    return json(body)
+  }
+}
+
 export default async function handler(req: any, res: any) {
+  hideErrorDetail(res, 'trial')
   try {
     // 도구 앱(다른 도메인)이 티켓 검증을 호출하므로 CORS 를 연다.
     // 자격 증명은 쿠키가 아니라 본문의 티켓이므로 '*' 로 열어도 세션이 새지 않는다.

@@ -155,8 +155,22 @@ function normalizeContext(raw: unknown): Array<[string, string]> {
   return out
 }
 
+// 공개 응답에는 내부 오류 원문(detail)을 싣지 않는다 — 서버 기록(Vercel 로그)에만 남긴다(2026-10 보안 점검)
+function hideErrorDetail(res: any, tag: string) {
+  const json = res.json.bind(res)
+  res.json = (body: any) => {
+    if (body && typeof body === 'object' && 'detail' in body) {
+      const { detail, ...rest } = body
+      console.error(`[${tag}] ${rest.debugCode ?? 'error'}:`, detail)
+      return json(rest)
+    }
+    return json(body)
+  }
+}
+
 // req/res 는 Vercel Node 런타임 객체. 외부 타입 import 를 피하기 위해 any 사용.
 export default async function handler(req: any, res: any) {
+  hideErrorDetail(res, 'consult')
   try {
     if (req.method === 'GET') {
       return res.status(200).json({ ok: true, message: 'consult api alive' })
@@ -211,7 +225,7 @@ export default async function handler(req: any, res: any) {
       console.error('[consult] RESEND_API_KEY is not configured')
       return res.status(500).json({
         ok: false,
-        message: '메일 전송 설정이 완료되지 않았습니다. (서버 환경변수 RESEND_API_KEY 누락)',
+        message: '메일 전송 설정이 완료되지 않았습니다. 잠시 후 다시 시도해주세요.',
         debugCode: 'no_env',
       })
     }
@@ -222,11 +236,13 @@ export default async function handler(req: any, res: any) {
       dateStyle: 'long',
       timeStyle: 'short',
     })
-    const siteUrl =
-      (body.page as string | undefined) ||
-      (req.headers?.referer as string | undefined) ||
-      (req.headers?.origin as string | undefined) ||
-      (req.headers?.host ? `https://${req.headers.host}` : SITE_NAME)
+    // page 는 문자열일 때만 쓰고 400자로 자른다(숫자 등이 오면 메일 만들다 멈추고, 이미 저장된 상담이 중복 재전송됐다)
+    const siteUrl = String(
+      (typeof body.page === 'string' && body.page.trim()) ||
+        (req.headers?.referer as string | undefined) ||
+        (req.headers?.origin as string | undefined) ||
+        (req.headers?.host ? `https://${req.headers.host}` : SITE_NAME),
+    ).slice(0, 400)
 
     // Supabase 저장 (비치명적 — 미설정/실패 시 이메일 발송만 진행)
     const leadId = await saveConsultLead({
@@ -323,6 +339,10 @@ export default async function handler(req: any, res: any) {
         .json({ ok: false, message: '메일 모듈 로드에 실패했습니다.', debugCode: 'resend_import', detail: detailOf(e) })
     }
 
+    // 답장 주소 — 연락처 칸에서 이메일 하나만 뽑는다(예: '010-… / a@b.com'). 형식이 맞지 않으면 답장 주소 없이 보낸다
+    const replyMatch = contact.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/)
+    const replyTo = replyMatch && replyMatch[0].length <= 120 ? replyMatch[0] : null
+
     // 6) 발송
     const subjectTag = source ? `상담·${source}` : '상담'
     const { data, error } = await resend.emails.send({
@@ -331,7 +351,7 @@ export default async function handler(req: any, res: any) {
       subject: `[${SITE_NAME} ${subjectTag}] ${name}${company ? ` · ${company}` : ''}`,
       html,
       text,
-      ...(contact.includes('@') ? { replyTo: contact } : {}),
+      ...(replyTo ? { replyTo } : {}),
     })
 
     if (error) {

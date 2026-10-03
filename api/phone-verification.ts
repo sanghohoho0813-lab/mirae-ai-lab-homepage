@@ -26,7 +26,21 @@ function isValidMobile(p: string): boolean {
   return /^01[016789][0-9]{7,8}$/.test(p)
 }
 
+// 공개 응답에는 내부 오류 원문(detail)을 싣지 않는다 — 서버 기록(Vercel 로그)에만 남긴다(2026-10 보안 점검)
+function hideErrorDetail(res: any, tag: string) {
+  const json = res.json.bind(res)
+  res.json = (body: any) => {
+    if (body && typeof body === 'object' && 'detail' in body) {
+      const { detail, ...rest } = body
+      console.error(`[${tag}] ${rest.debugCode ?? 'error'}:`, detail)
+      return json(rest)
+    }
+    return json(body)
+  }
+}
+
 export default async function handler(req: any, res: any) {
+  hideErrorDetail(res, 'phone-verification')
   try {
     // 0) health 체크
     if (req.method === 'GET') {
@@ -43,6 +57,14 @@ export default async function handler(req: any, res: any) {
     }
 
     if (req.method !== 'POST') return res.status(405).json({ ok: false, message: 'method not allowed' })
+
+    // ⚠️ SMS 발송이 아직 붙지 않았다 — 그동안은 인증번호를 응답에 실어 보내는 '테스트 모드'였고,
+    //    그러면 아무나 남의 번호로 '휴대폰 인증 완료'를 만들 수 있었다(사이트 화면은 이 기능을 쓰지 않음).
+    //    SMS 연동 전까지는 닫아 둔다. 개발용으로만 열려면 PHONE_VERIFICATION_DEV=true (운영 금지).
+    const smsReady = Boolean(process.env.SMS_PROVIDER && process.env.SMS_API_KEY) && process.env.PHONE_VERIFICATION_SMS_IMPLEMENTED === 'true'
+    if (!smsReady && process.env.PHONE_VERIFICATION_DEV !== 'true') {
+      return res.status(503).json({ ok: false, message: '휴대폰 인증은 준비 중입니다. 본인인증(PASS)을 이용해 주세요.', debugCode: 'phone_verification_disabled' })
+    }
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body ?? {})
     const action = String(body.action ?? '')

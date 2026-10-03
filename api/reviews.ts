@@ -36,7 +36,21 @@ function toPublic(r: any) {
   }
 }
 
+// 공개 응답에는 내부 오류 원문(detail)을 싣지 않는다 — 서버 기록(Vercel 로그)에만 남긴다(2026-10 보안 점검)
+function hideErrorDetail(res: any, tag: string) {
+  const json = res.json.bind(res)
+  res.json = (body: any) => {
+    if (body && typeof body === 'object' && 'detail' in body) {
+      const { detail, ...rest } = body
+      console.error(`[${tag}] ${rest.debugCode ?? 'error'}:`, detail)
+      return json(rest)
+    }
+    return json(body)
+  }
+}
+
 export default async function handler(req: any, res: any) {
+  hideErrorDetail(res, 'reviews')
   try {
     const admin = await getSupabaseAdmin()
     if (!admin) return res.status(500).json({ ok: false, message: '서버 환경변수가 설정되지 않았습니다.', debugCode: 'no_env' })
@@ -46,7 +60,7 @@ export default async function handler(req: any, res: any) {
 
     // ── 공개: 승인된 리뷰 목록 ──
     if (method === 'GET' && String(q.action ?? '') !== 'admin-list') {
-      const slug = str(q.slug)
+      const slug = str(q.slug).slice(0, 80)
       if (!slug) return res.status(400).json({ ok: false, message: '상품 정보가 없습니다.', debugCode: 'no_slug' })
       const { data } = await admin
         .from('product_reviews')
@@ -64,7 +78,7 @@ export default async function handler(req: any, res: any) {
     // ── 공개: 리뷰 접수 (pending) ──
     if (method === 'POST' && str((req.body ?? {}).action) === 'submit') {
       const b = req.body ?? {}
-      const slug = str(b.slug)
+      const slug = str(b.slug).slice(0, 80)
       const authorName = str(b.authorName).slice(0, 40)
       const company = str(b.company).slice(0, 60)
       const content = str(b.content)
@@ -99,7 +113,7 @@ export default async function handler(req: any, res: any) {
     if (method === 'GET' && String(q.action ?? '') === 'admin-list') {
       const auth = await verifyAdmin(admin, req.headers?.authorization ?? req.headers?.Authorization)
       if (!auth.ok) return res.status(auth.status).json({ ok: false, message: auth.message, debugCode: auth.debugCode })
-      const slug = str(q.slug)
+      const slug = str(q.slug).slice(0, 80)
       let sel = admin
         .from('product_reviews')
         .select('id, product_slug, author_name, company, rating, content, contact_email, contact_phone, status, ebook_sent, admin_memo, created_at, updated_at')

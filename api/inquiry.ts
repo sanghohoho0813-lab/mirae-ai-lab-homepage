@@ -16,12 +16,41 @@ const DEFAULT_TO = 'sanghohoho0813@gmail.com'
 const DEFAULT_FROM = 'AI Business Lab <onboarding@resend.dev>'
 
 type InquiryBody = {
-  name?: string
-  contact?: string
-  role?: string
-  toolType?: string
-  repetitiveTask?: string
-  message?: string
+  name?: unknown
+  contact?: unknown
+  role?: unknown
+  toolType?: unknown
+  repetitiveTask?: unknown
+  message?: unknown
+  /** 스팸 차단용 함정 칸 — 화면에서 숨겨져 사람은 비워 두고, 자동 입력 봇만 채운다 */
+  website?: unknown
+}
+
+// 글자 수 상한 — 메일함이 거대한 본문으로 넘치지 않게
+const LIMITS = { name: 80, contact: 120, role: 120, toolType: 200, repetitiveTask: 500, message: 4000 } as const
+
+/** 문자열이 아닌 값(숫자·객체 등)은 빈 값으로, 길이는 상한까지 */
+function field(v: unknown, max: number): string {
+  return typeof v === 'string' ? v.trim().slice(0, max) : ''
+}
+
+/** 연락처 칸에서 이메일 주소 하나만 뽑는다(답장 주소용). 형식이 맞지 않으면 null */
+function replyAddress(contact: string): string | null {
+  const m = contact.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/)
+  return m && m[0].length <= 120 ? m[0] : null
+}
+
+// 공개 응답에는 내부 오류 원문(detail)을 싣지 않는다 — 서버 기록(Vercel 로그)에만 남긴다
+function hideErrorDetail(res: any) {
+  const json = res.json.bind(res)
+  res.json = (body: any) => {
+    if (body && typeof body === 'object' && 'detail' in body) {
+      const { detail, ...rest } = body
+      console.error(`[inquiry] ${rest.debugCode ?? 'error'}:`, detail)
+      return json(rest)
+    }
+    return json(body)
+  }
 }
 
 function detailOf(e: unknown): string {
@@ -40,6 +69,7 @@ function escapeHtml(value: string): string {
 
 // req/res 는 Vercel Node 런타임 객체. 외부 타입 import 를 피하기 위해 any 사용.
 export default async function handler(req: any, res: any) {
+  hideErrorDetail(res)
   try {
     // 0) health 체크 — GET 이면 무조건 alive
     if (req.method === 'GET') {
@@ -60,12 +90,18 @@ export default async function handler(req: any, res: any) {
         .json({ ok: false, message: '요청 본문(JSON)을 해석할 수 없습니다.', debugCode: 'bad_body', detail: detailOf(e) })
     }
 
-    const name = (body.name ?? '').trim()
-    const contact = (body.contact ?? '').trim()
-    const role = (body.role ?? '').trim()
-    const toolType = (body.toolType ?? '').trim()
-    const repetitiveTask = (body.repetitiveTask ?? '').trim()
-    const message = (body.message ?? '').trim()
+    if (!body || typeof body !== 'object') body = {}
+    // 함정 칸이 채워졌으면 봇 — 메일은 보내지 않고 성공처럼 답한다(봇이 다시 시도하지 않게)
+    if (field(body.website, 200)) {
+      return res.status(200).json({ ok: true, message: '문의가 접수됐어요. 확인하고 연락드릴게요.' })
+    }
+
+    const name = field(body.name, LIMITS.name)
+    const contact = field(body.contact, LIMITS.contact)
+    const role = field(body.role, LIMITS.role)
+    const toolType = field(body.toolType, LIMITS.toolType)
+    const repetitiveTask = field(body.repetitiveTask, LIMITS.repetitiveTask)
+    const message = field(body.message, LIMITS.message)
 
     // 필수: 이름, 연락처, 반복 업무, 문의 내용
     if (!name || !contact || !repetitiveTask || !message) {
@@ -76,6 +112,8 @@ export default async function handler(req: any, res: any) {
       })
     }
 
+    const replyTo = replyAddress(contact)
+
     // 2) env (키는 응답/로그에 절대 노출하지 않음)
     const apiKey = process.env.RESEND_API_KEY
     const to = process.env.INQUIRY_TO_EMAIL || DEFAULT_TO
@@ -84,7 +122,7 @@ export default async function handler(req: any, res: any) {
       console.error('[inquiry] RESEND_API_KEY is not configured')
       return res.status(500).json({
         ok: false,
-        message: '메일 전송 설정이 완료되지 않았습니다. (서버 환경변수 RESEND_API_KEY 누락)',
+        message: '메일 전송 설정이 완료되지 않았습니다. 잠시 후 다시 시도해주세요.',
         debugCode: 'no_env',
       })
     }
@@ -138,7 +176,7 @@ export default async function handler(req: any, res: any) {
         <div style="padding:16px 24px;background:#f8fafc;color:#64748b;font-size:12px;line-height:1.6">
           이 메일은 미래 AI 랩 문의 폼에서 자동 발송되었습니다.<br/>
           ${
-            contact.includes('@')
+            replyTo
               ? '회신(Reply) 시 문의자 이메일로 바로 답장됩니다.'
               : '위 연락처로 직접 연락하실 수 있습니다.'
           }
@@ -164,7 +202,7 @@ export default async function handler(req: any, res: any) {
       subject: `[${SITE_NAME} 문의] ${name}`,
       html,
       text,
-      ...(contact.includes('@') ? { replyTo: contact } : {}),
+      ...(replyTo ? { replyTo } : {}),
     })
 
     if (error) {

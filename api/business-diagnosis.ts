@@ -175,7 +175,8 @@ async function sendDiagnosisEmail(p: {
   const from = process.env.INQUIRY_FROM_EMAIL || 'AI Business Lab <onboarding@resend.dev>'
   const receivedAt = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', dateStyle: 'long', timeStyle: 'short' })
   const s = p.summary || {}
-  const str = (k: string) => (typeof s[k] === 'string' ? (s[k] as string) : '')
+  // 메일 제목·본문에 들어가는 결과 문구는 길이를 자른다(제출 값이 거대하면 메일이 넘쳤다)
+  const str = (k: string) => (typeof s[k] === 'string' ? (s[k] as string).slice(0, 120) : '')
   const num = (k: string) => (typeof s[k] === 'number' ? String(s[k]) : '')
   const axGrade = str('gradeLabel') || str('grade')
   // v6 부터는 추천 상품(시작 → 목표)을 보여 준다. 점수는 구버전 결과에만 붙인다
@@ -454,7 +455,21 @@ export function scoreLead(answers: Record<string, unknown>, interests: string[],
   return { total, grade, flags, breakdown: { urgency: a, budget: b, fit: c, intent: d, readiness: e, bonus: f, penalty } }
 }
 
+// 공개 응답에는 내부 오류 원문(detail)을 싣지 않는다 — 서버 기록(Vercel 로그)에만 남긴다(2026-10 보안 점검)
+function hideErrorDetail(res: any, tag: string) {
+  const json = res.json.bind(res)
+  res.json = (body: any) => {
+    if (body && typeof body === 'object' && 'detail' in body) {
+      const { detail, ...rest } = body
+      console.error(`[${tag}] ${rest.debugCode ?? 'error'}:`, detail)
+      return json(rest)
+    }
+    return json(body)
+  }
+}
+
 export default async function handler(req: any, res: any) {
+  hideErrorDetail(res, 'business-diagnosis')
   try {
     if (req.method === 'GET') return res.status(200).json({ ok: true, message: 'business-diagnosis api alive' })
     if (req.method !== 'POST') {
@@ -592,8 +607,9 @@ export default async function handler(req: any, res: any) {
         return res.status(400).json({ ok: false, message: '요청을 처리할 수 없습니다.', debugCode: 'rejected' })
       }
       // 지나치게 빠른 제출 방지
-      const elapsed = Number(form.formElapsedMs) || 0
-      if (elapsed > 0 && elapsed < 2500) {
+      // 화면은 항상 걸린 시간(formElapsedMs)을 보낸다 — 값이 없거나 너무 짧으면 자동 제출로 본다
+      const elapsed = Number(form.formElapsedMs)
+      if (!Number.isFinite(elapsed) || elapsed < 2500) {
         return res.status(400).json({ ok: false, message: '입력 내용을 확인한 뒤 다시 제출해주세요.', debugCode: 'too_fast' })
       }
 
@@ -743,9 +759,12 @@ export default async function handler(req: any, res: any) {
             completedStage: sm.completedStage !== undefined ? clampStage(sm.completedStage) : undefined,
             stoppedAfterStage: sm.stoppedAfterStage === true,
             depth: sm.diagnosisDepth !== undefined ? strip(sm.diagnosisDepth, 20) : undefined,
-            summary: body.resultSummary && typeof body.resultSummary === 'object' ? body.resultSummary : {},
+            summary: (() => {
+              const v = jsonCap(body.resultSummary, 8000)
+              return v && typeof v === 'object' ? v : {}
+            })(),
             interests,
-            recProducts: body.recommendedProducts,
+            recProducts: jsonCap(body.recommendedProducts, 4000),
             answers,
             answersDisplay,
             companyProfile: Object.keys(companyProfile).length ? companyProfile : undefined,

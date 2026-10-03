@@ -4,6 +4,7 @@
 import { useState, type FormEvent } from 'react'
 import { consultLinks } from '../../config/businessInfo'
 import { postJson } from '../../lib/apiFetch'
+import HoneypotField from '../HoneypotField'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -32,6 +33,7 @@ export default function OsLaunchSignup() {
         toolType: '컨설턴트 운영 OS · 출시 알림 신청',
         repetitiveTask: '출시 알림 신청',
         message: `컨설턴트 운영 OS(미래AI랩 OS) 출시 알림 신청\n이름: ${f.name}\n소속: ${f.org}\n이메일: ${f.email}\n연락처: ${f.phone}`,
+        website: f.website ?? '',
       })
       setStatus('success')
       form.reset()
@@ -45,7 +47,7 @@ export default function OsLaunchSignup() {
     <section id={OS_SIGNUP_ID} data-os-signup className="scroll-mt-20 border-t border-slate-200 bg-slate-50">
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 sm:py-20 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-12">
         <div>
-          <p className="text-base font-bold uppercase tracking-widest text-sky-600">출시 알림 신청</p>
+          <p className="text-base font-bold uppercase tracking-widest text-sky-700">출시 알림 신청</p>
           <h2 className="mt-3 break-keep text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             출시되면
             <br /> 가장 먼저 알려 드릴게요
@@ -65,7 +67,8 @@ export default function OsLaunchSignup() {
           </ul>
         </div>
 
-        <form onSubmit={submit} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <form onSubmit={submit} className="relative rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <HoneypotField />
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label htmlFor="os-name" className={label}>

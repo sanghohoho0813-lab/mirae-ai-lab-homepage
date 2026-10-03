@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { businessInfo, consultLinks } from '../config/businessInfo'
 import { postJson } from '../lib/apiFetch'
+import HoneypotField from './HoneypotField'
 
 const CONTACT_EMAIL = businessInfo.contactEmail
 
@@ -55,7 +56,8 @@ function InquiryForm() {
   const submitting = status === 'submitting'
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-10">
+    <form onSubmit={handleSubmit} className="relative rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-10">
+      <HoneypotField />
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className={labelClass}>

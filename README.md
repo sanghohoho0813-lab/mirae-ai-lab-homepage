@@ -43,6 +43,8 @@ npm run preview
 | `npm run build` | 타입 체크 후 프로덕션 빌드를 생성합니다. |
 | `npm run lint` | TypeScript 타입 검사를 수행합니다. |
 | `npm run preview` | 빌드된 결과물을 로컬에서 미리봅니다. |
+| `npm run test:e2e` | 회귀 테스트 전부(페이지 오류·메뉴·영상·접근성·서버 입력 검사). 처음 한 번 `cd e2e && npm install` — 자세한 내용은 `e2e/README.md` |
+| `npm run test:e2e:quick` | 빠른 회귀 테스트(약 5분) |
 
 ## 프로젝트 구조
 
@@ -121,6 +123,9 @@ ai-business-lab/
 ### 6) 권한 변경은 서버에서
 - 체험 시작/연장, 관리자 권한 변경은 클라이언트가 DB를 직접 수정하지 않고
   서버리스 API(`/api/trial/*`, `/api/admin/access`)가 `service_role`로 검증 후 처리합니다.
+- ⚠️ **`supabase/profiles-column-guard.sql` 을 꼭 실행해 두세요.** `profiles` 수정 정책은 '본인 행'만 확인하므로,
+  이 보호 규칙이 없으면 로그인한 사용자가 공개 키로 자기 `role`(관리자)·인증 여부 칸을 바꿀 수 있습니다.
+  보호 규칙은 브라우저에서 오는 수정은 이름·로그인 기록 칸만 허용하고, 서버(`service_role`)·관리자·SQL 편집기는 그대로 둡니다.
 
 ## 문의 폼 메일 발송 설정 방법
 
