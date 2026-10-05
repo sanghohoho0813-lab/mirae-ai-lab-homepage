@@ -51,6 +51,9 @@ for (const W of [390, 1280]) {
     const order = ['film-1', 'samples', 'real-projects-film', 'film-2', 'faq', 'cta']
     const tops = await p.evaluate((ids) => ids.map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? null), order)
     ok(`구간 순서 ${order.join(' → ')}`, tops.every((t, i) => t !== null && (i === 0 || t > tops[i - 1])), tops.map(Math.round).join(' < '))
+    const picks = await p.$$eval('[data-ax-film-pick]', (bs) => bs.map((x) => { const r = x.getBoundingClientRect(); return { id: x.dataset.axFilmPick, no: x.querySelector('span').textContent.trim(), top: Math.round(r.top), left: Math.round(r.left) } }))
+    ok('골라 보기 번호 1~4 = 페이지 순서(영상 1 → 22개 화면 → 실제 프로젝트 → 영상 2)', picks.map((x) => x.no).join('') === '1234' && picks.map((x) => x.id).join() === 'film-1,samples,real-projects-film,film-2', JSON.stringify(picks.map((x) => x.no + x.id)))
+    ok('골라 보기는 읽는 순서대로 놓임(왼쪽→오른쪽, 위→아래)', picks.every((x, i) => i === 0 || x.top > picks[i - 1].top || (x.top === picks[i - 1].top && x.left > picks[i - 1].left)))
     ok('22개 화면 구간에는 실제 프로젝트 없음', (await p.locator('#samples [data-ax-real-project], #samples [data-real-episode]').count()) === 0)
     ok('실제 프로젝트는 살구색 바탕(영상 1·2와 같은 색)', await p.evaluate(() => ['films', 'real-projects-film'].map((id) => getComputedStyle(document.getElementById(id)).backgroundColor).every((c, _, a) => c === a[0])))
     ok('두 편 연달아(1편 → 2편)', (await sec.locator('[data-real-episode]').count()) === 2 && (await p.evaluate(() => document.getElementById('real-project-1').getBoundingClientRect().top < document.getElementById('real-project-2').getBoundingClientRect().top)))

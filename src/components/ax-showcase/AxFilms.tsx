@@ -100,13 +100,14 @@ export function AxFilmIntro({ samplesAnchor, realAnchor }: { samplesAnchor: stri
           <b className="font-black text-[#171B20]">필요한 것만 골라 보셔도 돼요.</b> 모든 영상에 자막이 있어요.
         </p>
 
-        {/* 골라 보기 — 페이지 순서대로: 영상 1 → 직접 만든 화면 → 실제 사례 → 영상 2(비용) */}
+        {/* 골라 보기 — 페이지 순서대로 1~4(메뉴 번호와 같다): 영상 1 → 직접 만든 화면 → 실제 사례 → 영상 2(비용)
+            넓은 화면에서는 두 칸씩 왼쪽→오른쪽으로 읽히게(1 2 / 3 4) */}
         <ul data-ax-film-picker className="mx-auto mt-6 grid max-w-4xl gap-2.5 text-left sm:mt-7 sm:grid-cols-2 sm:gap-3">
           {[
             { id: 'film-1', mark: '1', who: FILMS[0].who, what: `영상 1 · ${FILMS[0].length}` },
-            { id: samplesAnchor, mark: '▦', who: '설명보다 화면이 먼저라면', what: '직접 만든 화면 22개' },
-            { id: realAnchor, mark: '▶', who: '실제 기업 사례가 궁금하다면', what: '실제 프로젝트 1편 · 2편' },
-            { id: 'film-2', mark: '2', who: FILMS[1].who, what: `영상 2 · ${FILMS[1].length}` },
+            { id: samplesAnchor, mark: '2', who: '설명보다 화면이 먼저라면', what: '직접 만든 화면 22개' },
+            { id: realAnchor, mark: '3', who: '실제 기업 사례가 궁금하다면', what: '실제 프로젝트 1편 · 2편' },
+            { id: 'film-2', mark: '4', who: FILMS[1].who, what: `영상 2 · ${FILMS[1].length}` },
           ].map((c) => (
             <li key={c.id} className="flex">
               <button
