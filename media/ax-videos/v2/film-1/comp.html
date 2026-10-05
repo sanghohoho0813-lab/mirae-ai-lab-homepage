@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>영상 1 · AX가 뭐고, 왜 필요한가</title>
+<!-- 영상 스타일 v2 장면 파일 틀 — reels2.mjs 가 장면 · 자막 · 길이 자리를 채운다. ?guide=1 → 안전 영역 선, ?t=초 → 그 순간 화면 -->
+<style>
+  @font-face { font-family: 'Pretendard'; font-weight: 500; src: url(assets/fonts/Pretendard-Medium.subset.woff2) format('woff2'); }
+  @font-face { font-family: 'Pretendard'; font-weight: 600; src: url(assets/fonts/Pretendard-SemiBold.subset.woff2) format('woff2'); }
+  @font-face { font-family: 'Pretendard'; font-weight: 700; src: url(assets/fonts/Pretendard-Bold.subset.woff2) format('woff2'); }
+  @font-face { font-family: 'Pretendard'; font-weight: 800; src: url(assets/fonts/Pretendard-ExtraBold.subset.woff2) format('woff2'); }
+  @font-face { font-family: 'Pretendard'; font-weight: 900; src: url(assets/fonts/Pretendard-Black.subset.woff2) format('woff2'); }
+  :root { --bg:#0f1216; --shell:#171b20; --shell2:#22272e; --acc:#d47a4a; --acc2:#b75b2a; --hi:#e8b89a;
+          --ink:#f4f1ec; --ink2:rgba(244,241,236,.72); --ink3:rgba(244,241,236,.46); --line:rgba(255,255,255,.09);
+          /* 도형 색 — 글자는 흰색/차콜 · 구리 · 살구만, 상자·도형만 여러 색 */
+          --teal:#2f978d; --blue:#4f78c9; --amber:#d08a1e; --green:#3fa36d; --rose:#c25a7d; --violet:#7a68c9; --copper:#cc6c3a; }
+  * { box-sizing:border-box; margin:0; padding:0; animation:none !important; transition:none !important; }
+  html,body { width:1080px; height:1920px; overflow:hidden; background:var(--bg); color:var(--ink);
+              font-family:'Pretendard',sans-serif; -webkit-font-smoothing:antialiased; word-break:keep-all; }
+  #stage { position:relative; width:1080px; height:1920px; overflow:hidden; }
+  .bg { position:absolute; inset:-10%; background:
+      radial-gradient(70% 40% at 85% 8%, rgba(212,122,74,.24), transparent 60%),
+      radial-gradient(60% 35% at 10% 92%, rgba(232,184,154,.10), transparent 60%),
+      linear-gradient(170deg, #12161b 0%, #171b20 45%, #0d1014 100%); }
+  .grid { position:absolute; inset:0; opacity:.5;
+      background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size:90px 90px; -webkit-mask-image:radial-gradient(80% 55% at 50% 40%, #000 30%, transparent 85%); mask-image:radial-gradient(80% 55% at 50% 40%, #000 30%, transparent 85%); }
+  .scene { position:absolute; inset:0; opacity:0; visibility:hidden; color:var(--ink); }
+  .abs { position:absolute; }
+  .col { display:flex; flex-direction:column; align-items:flex-start; }
+  .eyebrow { font-size:26px; font-weight:700; letter-spacing:.3em; color:var(--hi); text-transform:uppercase; }
+  .h1 { font-size:88px; font-weight:800; letter-spacing:-.025em; line-height:1.12; }
+  .h1.long { font-size:80px; }
+  .h2 { font-size:64px; font-weight:800; letter-spacing:-.02em; line-height:1.2; }
+  .h3 { font-size:46px; font-weight:700; letter-spacing:-.01em; line-height:1.3; }
+  .p  { font-size:36px; font-weight:500; color:var(--ink2); line-height:1.5; }
+  .acc { color:var(--hi); }
+  .dimtxt { color:var(--ink3); }
+  .center-x { left:72px; right:72px; text-align:center; }
+  .glass { background:linear-gradient(160deg, rgba(255,255,255,.075), rgba(255,255,255,.025)); border:1px solid rgba(255,255,255,.12);
+           border-radius:28px; box-shadow:0 40px 80px -30px rgba(0,0,0,.7); }
+  .hiedge { border-color:rgba(232,184,154,.5); }
+  .note { position:absolute; left:72px; top:1262px; font-size:22px; font-weight:500; color:var(--ink3); line-height:1.45; max-width:888px; }
+  .ic { display:inline-flex; width:40px; height:40px; flex:none; color:var(--c, var(--hi)); } .ic svg { width:100%; height:100%; }
+
+  /* 칩 · 노드 · 허브 */
+  .chip { display:inline-flex; align-items:center; padding:14px 26px; border-radius:999px; background:rgba(255,255,255,.06);
+          border:1px solid rgba(255,255,255,.14); font-size:32px; font-weight:700; white-space:nowrap; }
+  .chip.big { font-size:36px; padding:18px 30px; }
+  .chip.dot::before { content:''; display:inline-block; flex:none; width:14px; height:14px; border-radius:50%; background:var(--c, var(--acc)); margin-right:14px; }
+  .node { padding:20px 14px; border-radius:22px; text-align:center; font-size:32px; font-weight:700; line-height:1.25;
+          background:linear-gradient(160deg, #262b32, #1b1f25); border:1px solid rgba(255,255,255,.14); border-top:5px solid var(--c, rgba(255,255,255,.14));
+          box-shadow:0 30px 60px -30px rgba(0,0,0,.7); }
+  .node .ic { display:block; margin:0 auto 10px; width:46px; height:46px; }
+  .node small { display:block; margin-top:6px; font-size:24px; font-weight:600; color:var(--ink2); }
+  .node.hi { border-color:rgba(232,184,154,.6); border-top-color:var(--c, var(--acc)); color:var(--hi); }
+  .hub { width:190px; height:190px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #e08a5b, var(--acc) 55%, var(--acc2));
+         display:flex; align-items:center; justify-content:center; text-align:center; font-size:34px; font-weight:800; color:#fff8f2;
+         box-shadow:0 0 0 10px rgba(212,122,74,.14), 0 30px 60px -20px rgba(0,0,0,.7); line-height:1.2; }
+  .hub.small { width:150px; height:150px; font-size:28px; }
+
+  /* 번호 태그 · 체크 · 목록 줄 · 말풍선 */
+  .numtag { display:flex; align-items:center; gap:20px; padding:18px 28px 18px 18px; border-radius:22px;
+            background:rgba(15,18,22,.55); border:1px solid rgba(232,184,154,.45); font-size:40px; font-weight:700; line-height:1.25; }
+  .numtag .num, .check .mark { flex:none; width:58px; height:58px; border-radius:50%; background:var(--c, var(--acc)); color:#fff;
+            display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; }
+  .numtag small, .check small { display:block; margin-top:4px; font-size:28px; font-weight:500; color:var(--ink2); }
+  .check { display:flex; align-items:center; gap:22px; font-size:40px; font-weight:700; line-height:1.25; }
+  .row { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:22px 30px 22px 38px; border-radius:22px;
+         background:linear-gradient(160deg, rgba(255,255,255,.075), rgba(255,255,255,.025)); border:1px solid rgba(255,255,255,.12);
+         box-shadow:inset 8px 0 0 var(--c, transparent); }
+  .row .rl { font-size:38px; font-weight:700; } .row .rr { font-size:32px; font-weight:600; color:var(--ink2); white-space:nowrap; }
+  .bubble { padding:20px 30px; border-radius:28px 28px 28px 8px; font-size:36px; font-weight:700; line-height:1.35;
+            background:rgba(255,255,255,.08); border:1.5px solid var(--c, rgba(232,184,154,.35)); max-width:780px; }
+  .bubble.r { border-radius:28px 28px 8px 28px; }
+
+  /* 카드(아이콘 + 제목 + 설명) · 단계 카드 */
+  .ci { display:flex; align-items:center; gap:26px; padding:28px 32px; }
+  .ci .cic { flex:none; display:grid; place-items:center; width:84px; height:84px; border-radius:24px; background:color-mix(in srgb, var(--c, var(--acc)) 16%, transparent);
+             border:1.5px solid color-mix(in srgb, var(--c, var(--acc)) 45%, transparent); }
+  .ci .cic .ic { width:46px; height:46px; color:var(--c, var(--hi)); }
+  .ci b { display:block; font-size:40px; font-weight:800; letter-spacing:-.01em; line-height:1.25; }
+  .ci small { display:block; margin-top:6px; font-size:29px; font-weight:500; color:var(--ink2); line-height:1.4; }
+  .stagebar { position:absolute; left:0; top:0; bottom:0; width:10px; border-radius:28px 0 0 28px; background:var(--c); }
+  .mini { display:flex; flex-direction:column; align-items:center; gap:14px; padding:28px 16px; text-align:center; }
+  .mini .ic { width:52px; height:52px; } .mini b { font-size:32px; font-weight:800; line-height:1.25; }
+  .mini small { font-size:24px; font-weight:600; color:var(--ink2); }
+
+  /* 막대 · 상태 · 취소선 · 큰 숫자 */
+  .ylabel { font-size:36px; font-weight:700; color:var(--ink2); }
+  .yval { font-size:44px; font-weight:800; }
+  .ytag { font-size:24px; font-weight:600; color:var(--ink3); }
+  .tagline { display:inline-flex; align-items:center; gap:12px; font-size:28px; font-weight:700; color:var(--hi); letter-spacing:.02em; }
+  .tagline .ic { width:30px; height:30px; color:var(--hi); }
+  .track { height:22px; border-radius:11px; background:rgba(255,255,255,.07); }
+  .fill { height:100%; width:0; border-radius:11px; background:var(--c, linear-gradient(90deg, var(--acc2), var(--acc))); }
+  .status { display:inline-flex; align-items:center; gap:16px; padding:16px 28px; border-radius:999px; font-size:36px; font-weight:700;
+            background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); }
+  .status i { width:16px; height:16px; border-radius:50%; background:#6fd39a; box-shadow:0 0 14px rgba(111,211,154,.8); }
+  .strike-wrap .st { position:relative; display:inline-block; }
+  .strike-wrap .sl { position:absolute; left:-6px; right:-6px; top:52%; height:5px; border-radius:3px; background:var(--acc); transform-origin:0 50%; transform:scaleX(0); }
+  .kpi { font-size:200px; font-weight:900; letter-spacing:-.04em; line-height:1; color:var(--hi); }
+  .kpi small { font-size:72px; font-weight:800; letter-spacing:-.02em; margin-left:10px; color:var(--ink); }
+  /* 강조로 바뀌는 상자: data-hl 시각부터 --hl 0 → 1 */
+  .hlbox:not(.abs) { position:relative; }
+  .hlbox::before { content:''; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none; opacity:var(--hl,0);
+                   border:2px solid rgba(232,184,154,.62); background:linear-gradient(160deg, rgba(212,122,74,.22), rgba(212,122,74,.06)); }
+  .light .hlbox::before { border-color:rgba(194,94,44,.55); background:linear-gradient(160deg, rgba(204,108,58,.14), rgba(204,108,58,.04)); }
+  .hlbox > *:not(.stagebar) { position:relative; }
+
+  /* 로고 · 도는 점 · 선 */
+  .logo-box { position:absolute; display:grid; place-items:center; width:500px; height:170px; border-radius:34px; background:#fff;
+              border:1px solid rgba(23,27,32,.09); box-shadow:0 40px 80px -30px rgba(0,0,0,.6); }
+  .logo-box img { width:430px; height:auto; }
+  .orbit { position:absolute; width:20px; height:20px; margin:-10px 0 0 -10px; border-radius:50%; background:var(--hi); box-shadow:0 0 18px 4px rgba(232,184,154,.7); }
+  svg.draw path, svg.draw line, svg.draw ellipse, svg.draw circle { fill:none; stroke:var(--acc); stroke-width:4; stroke-linecap:round; }
+  svg.draw .base { stroke:rgba(232,184,154,.28); stroke-width:2; }
+
+  /* 끝 장면 버튼 모양(영상 안에서는 글자만) */
+  .ctab { display:inline-flex; align-items:center; justify-content:center; min-width:560px; padding:26px 40px; border-radius:22px; background:var(--acc); color:#fff8f2; font-size:36px; font-weight:800; }
+  .ctab.sub { background:#fff; color:#171b20; border:1px solid rgba(23,27,32,.12); font-weight:700; }
+  /* 기기 틀 */
+  .phone { position:absolute; border:14px solid #07090b; border-radius:54px; background:#000; overflow:hidden;
+           box-shadow:0 50px 90px -30px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.1); }
+  .phone .screen { position:relative; overflow:hidden; border-radius:40px; background:#fff; }
+  .phone .notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:34%; height:28px; background:#07090b; border-radius:0 0 18px 18px; z-index:2; }
+  img.kb { position:absolute; left:0; top:0; max-width:none; transform-origin:0 0; display:block; }
+  .browser { position:absolute; border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.14); background:#f5f7fa;
+             box-shadow:0 50px 90px -30px rgba(0,0,0,.85); }
+  .browser .bar { height:38px; background:#1b1f25; display:flex; align-items:center; gap:8px; padding:0 16px; }
+  .browser .bar i { width:11px; height:11px; border-radius:50%; background:rgba(255,255,255,.22); }
+  .browser .bar span { margin-left:16px; padding:4px 14px; border-radius:8px; background:rgba(255,255,255,.08); font-size:15px; font-weight:700; letter-spacing:.12em; color:rgba(244,241,236,.46); }
+  .browser .view { position:relative; overflow:hidden; }
+  .touch { position:absolute; width:90px; height:90px; margin:-45px 0 0 -45px; border-radius:50%; border:5px solid var(--acc); background:rgba(212,122,74,.25); opacity:0; z-index:3; }
+
+  /* 장식 — 옅게, 가장자리에 */
+  .deco { position:absolute; border-radius:50%; pointer-events:none; }
+  .deco.ring { border:6px solid var(--c); opacity:.35; }
+  .deco.disc { background:var(--c); opacity:.16; }
+  .deco.sq { border-radius:28px; background:var(--c); opacity:.14; transform:rotate(12deg); }
+
+  /* 앱 화면을 닮은 예시 카드(밝은 앱 바탕) */
+  .mock { position:absolute; overflow:hidden; border-radius:34px; background:#fff; color:#15181d; box-shadow:0 0 0 1px rgba(23,27,32,.08), 0 50px 110px -30px rgba(0,0,0,.6); }
+  .mock .mh { display:flex; align-items:center; gap:16px; padding:28px 34px; color:#fff; font-size:34px; font-weight:800; letter-spacing:-.02em; }
+  .mock .mh .ic { width:40px; height:40px; }
+  .mock .mh em { margin-left:auto; padding:6px 14px; border-radius:10px; background:rgba(255,255,255,.16); font-style:normal; font-size:20px; font-weight:700; }
+  .mock.ops .mh { background:#0a1020; } .mock.ops .mh .ic { color:#5b9bf0; }
+  .mock.well .mh { background:#0f4e4b; } .mock.well .mh .ic { color:#e3c99a; }
+  .mock .mb { display:flex; flex-direction:column; gap:16px; padding:28px 30px 32px; }
+  .mock .mrow { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:22px 26px; border-radius:20px; background:#f2f4f8; font-size:32px; font-weight:700; }
+  .mock .mrow small { font-size:25px; font-weight:600; color:#6b7380; }
+  .mock .mrow .ic { width:44px; height:44px; color:#2e7be6; }
+  .mock.well .mrow { background:#f4eee3; } .mock.well .mrow b { color:#0f4e4b; } .mock.well .mrow .ic { color:#0f4e4b; }
+  .mock .btn { display:inline-flex; align-items:center; gap:10px; padding:14px 24px; border-radius:14px; background:#2e7be6; color:#fff; font-size:26px; font-weight:800; }
+  .mock.well .btn { background:#0f4e4b; }
+  .mbar { position:relative; display:inline-block; width:240px; height:14px; border-radius:7px; background:#e2d8c6; overflow:hidden; vertical-align:middle; }
+  .mbar i { position:absolute; inset:0; border-radius:7px; background:#0f4e4b; transform-origin:0 50%; transform:scaleX(0); }
+
+  /* ── 밝은 장면 — 따뜻한 미색 바탕 · 차콜 글씨 · 진한 주황 강조 ── */
+  .lbg { position:absolute; inset:0; background:
+      radial-gradient(60% 34% at 90% 6%, rgba(212,122,74,.20), transparent 62%),
+      radial-gradient(55% 30% at 6% 96%, rgba(47,151,141,.14), transparent 60%),
+      linear-gradient(170deg, #fcf9f4 0%, #f5f0e8 55%, #ede6dc 100%); }
+  .lbg::after { content:''; position:absolute; inset:0; opacity:.6;
+      background-image:linear-gradient(rgba(23,27,32,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(23,27,32,.05) 1px, transparent 1px);
+      background-size:90px 90px; -webkit-mask-image:radial-gradient(80% 55% at 50% 40%, #000 30%, transparent 85%); mask-image:radial-gradient(80% 55% at 50% 40%, #000 30%, transparent 85%); }
+  .light { --ink:#171b20; --ink2:rgba(23,27,32,.74); --ink3:rgba(23,27,32,.52); --hi:#c25e2c; color:var(--ink); }
+  .light .glass, .light .row, .light .bubble { background:#fff; border-color:rgba(23,27,32,.09); box-shadow:0 30px 60px -32px rgba(70,45,20,.30); }
+  .light .row { box-shadow:inset 8px 0 0 var(--c, transparent), 0 30px 60px -32px rgba(70,45,20,.30); }
+  .light .bubble { border-color:var(--c, rgba(23,27,32,.12)); }
+  .light .hiedge { border-color:rgba(194,94,44,.55); }
+  .light .node { background:#fff; border-color:rgba(23,27,32,.08); border-top-color:var(--c, rgba(23,27,32,.08)); color:var(--ink); box-shadow:0 24px 50px -28px rgba(70,45,20,.35); }
+  .light .numtag { background:#fff; border-color:rgba(23,27,32,.10); box-shadow:0 24px 50px -30px rgba(70,45,20,.30); }
+  .light .chip { background:#fff; border-color:rgba(23,27,32,.12); }
+  .light .status { background:#fff; border-color:rgba(23,27,32,.12); }
+  .light .track { background:rgba(23,27,32,.08); }
+  .light .browser { border-color:rgba(23,27,32,.12); box-shadow:0 40px 80px -30px rgba(70,45,20,.45); }
+  .light .phone { box-shadow:0 40px 80px -30px rgba(70,45,20,.5), 0 0 0 1px rgba(23,27,32,.1); }
+  .light .logo-box { box-shadow:0 30px 60px -30px rgba(70,45,20,.4); }
+  .light .mock { box-shadow:0 0 0 1px rgba(23,27,32,.08), 0 40px 80px -30px rgba(70,45,20,.45); }
+  .light .orbit { box-shadow:0 0 14px 3px rgba(194,94,44,.45); }
+  .light svg.draw .base { stroke:rgba(23,27,32,.14); }
+
+  /* 자막 — 밝은 장면에서도 같은 어두운 상자 */
+  #sub { position:absolute; left:132px; right:132px; top:1330px; height:180px; display:flex; align-items:flex-end; justify-content:center; opacity:0; z-index:20; }
+  #sub span { max-width:816px; padding:16px 30px; border-radius:20px; background:rgba(15,18,22,.80); border:1px solid rgba(255,255,255,.10); color:#f4f1ec;
+              font-size:46px; font-weight:700; letter-spacing:-.01em; line-height:1.42; text-align:center; white-space:pre-line; }
+  #sub b { color:#e8b89a; font-weight:800; }
+  /* 안전 영역 확인선 (?guide=1) */
+  .guide { position:absolute; pointer-events:none; outline:2px dashed rgba(255,80,80,.8); display:none; z-index:99; }
+  body.show-guide .guide { display:block; }
+</style></head>
+<body><div id="stage">
+  <div class="bg" id="bg"></div><div class="grid"></div>
+<div class="scene" data-in="0" data-out="6.68" data-a="scene">
+  <div class="deco ring" data-in="0.3" data-a="scale" style="left:840px;top:1120px;width:260px;height:260px;--c:var(--copper);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:280px;gap:20px"><div class="eyebrow" data-in="0.1" data-a="up">FUNDING · INVESTMENT · GRANTS</div><div class="h2" data-in="0.25" data-a="up">매번 <span class="acc">한 끗</span> 차이로<br>놓치고 계신가요?</div></div>
+  <div class="ylabel abs" data-in="0.84" data-a="fade" style="left:72px;top:580px">정책자금</div><div class="track abs" style="left:72px;top:640px;width:840px" data-in="0.84" data-a="fade"><div class="fill" style="--c:var(--teal)" data-grow="0.84,2.2399999999999998,792"></div></div><div class="ylabel abs" data-in="2.67" data-a="fade" style="left:72px;top:730px">투자</div><div class="track abs" style="left:72px;top:790px;width:840px" data-in="2.67" data-a="fade"><div class="fill" style="--c:var(--blue)" data-grow="2.67,4.07,786"></div></div><div class="ylabel abs" data-in="3.42" data-a="fade" style="left:72px;top:880px">정부지원사업</div><div class="track abs" style="left:72px;top:940px;width:840px" data-in="3.42" data-a="fade"><div class="fill" style="--c:var(--amber)" data-grow="3.42,4.82,798"></div></div>
+  <svg class="abs draw" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible" data-in="0" data-a="fade"><path d="M884 560 V1060" pathLength="1" data-draw="4.24,4.84" style="stroke-width:4px;stroke:var(--rose)"/></svg>
+  <div class="abs ytag" data-in="4.64" data-a="fade" style="left:760px;top:1075px">선정 기준선</div></div>
+<div class="scene light" data-in="6.43" data-out="18.84" data-a="scene"><div class="lbg"></div>
+  <div class="deco sq" data-in="6.73" data-a="scale" style="left:880px;top:200px;width:200px;height:200px;--c:var(--violet);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="6.43" data-a="up">COMPETITION</div><div class="h2" data-in="6.58" data-a="up">쉽지 않죠?<br>경쟁이 <span class="acc">굉장히</span> 치열해요</div></div>
+  <div class="chip dot abs hlbox" data-in="11.09" data-a="up" data-dim="14.17" style="left:72px;top:590px;--c:var(--teal);">생성형 AI</div><div class="chip dot abs hlbox" data-in="11.34" data-a="up" data-dim="14.17" style="left:368px;top:590px;--c:var(--blue);">AI 에이전트</div><div class="chip dot abs hlbox" data-in="11.59" data-a="up" data-dim="14.17" style="left:664px;top:590px;--c:var(--violet);">업무 자동화</div><div class="chip dot abs hlbox" data-in="11.84" data-a="up" data-dim="14.17" style="left:72px;top:700px;--c:var(--amber);">AI 검색</div><div class="chip dot abs hlbox" data-in="12.09" data-a="up" data-dim="14.17" style="left:368px;top:700px;--c:var(--rose);">음성 AI</div><div class="chip dot abs hlbox" data-in="12.34" data-a="up" data-dim="14.17" style="left:664px;top:700px;--c:var(--green);">AI 코딩</div>
+  <div class="glass abs hlbox hiedge" data-in="14.17" data-a="card" style="left:72px;top:860px;width:888px;--c:var(--rose);"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19zM12 10v4.5M12 17.5v.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i></span><div><b>AI 시대에 우리만 <span class="acc">제자리</span>?</b><small>뒤처질까 불안하기도 하고요</small></div></div></div></div>
+<div class="scene" data-in="18.59" data-out="28.06" data-a="scene">
+  <div class="deco disc" data-in="18.89" data-a="scale" style="left:-80px;top:1120px;width:240px;height:240px;--c:var(--green);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="18.59" data-a="up">STILL</div><div class="h2" data-in="18.74" data-a="up">그럼에도 잘되는 회사는<br><span class="acc">분명히</span> 있어요</div></div>
+  <div class="check abs" data-in="19.8" data-a="left" style="left:72px;top:580px;--c:var(--teal);"><span class="mark">✓</span><span>정책자금</span></div>
+  <div class="check abs" data-in="20.05" data-a="left" style="left:72px;top:690px;--c:var(--blue);"><span class="mark">✓</span><span>투자</span></div>
+  <div class="check abs" data-in="20.3" data-a="left" style="left:72px;top:800px;--c:var(--amber);"><span class="mark">✓</span><span>정부지원사업</span></div>
+  <div class="chip dot abs hlbox" data-in="23.34" data-a="up" style="left:72px;top:940px;--c:var(--blue);">투자자</div>
+  <div class="chip dot abs hlbox" data-in="23.78" data-a="up" style="left:280px;top:940px;--c:var(--violet);">심사위원</div>
+  <div class="abs h3" data-in="24.86" data-a="up" style="left:72px;top:1060px"><span class="acc">매력적인</span> 회사로 — 끝까지 봐 주세요</div></div>
+<div class="scene light" data-in="27.81" data-out="38.34" data-a="scene"><div class="lbg"></div>
+  <div class="deco ring" data-in="28.11" data-a="scale" style="left:860px;top:160px;width:240px;height:240px;--c:var(--amber);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="27.91" data-a="up">WHY IS IT HARDER</div><div class="h2" data-in="28.06" data-a="up">왜 점점<br><span class="acc">어려워질까요?</span></div></div>
+  <div class="row abs hlbox" data-in="29.59" data-a="left" data-dim="32.99" style="left:72px;top:580px;width:888px;--c:var(--teal);"><span class="rl">예전</span><span class="rr">계획서만 잘 써도 통과</span></div>
+  <div class="row abs hlbox" data-in="32.99" data-a="left" style="left:72px;top:710px;width:888px;--c:var(--rose);"><span class="rl">지금</span><span class="rr">계획서만으로는 경쟁력 없음</span></div>
+  <div class="abs h2" data-in="35.91" data-a="up" style="left:72px;top:880px">계획서는 결국<br><span class="acc">계획일 뿐</span>이니까요</div></div>
+<div class="scene" data-in="38.09" data-out="46.06" data-a="scene">
+  <div class="deco ring" data-in="38.39" data-a="scale" style="left:-100px;top:1120px;width:260px;height:260px;--c:var(--violet);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="38.09" data-a="up">AT THE REVIEW</div><div class="h2" data-in="38.24" data-a="up">브리핑이 끝나면<br><span class="acc">꼭</span> 묻습니다</div></div>
+  <div class="node abs hlbox" data-in="38.49" data-a="scale" style="left:72px;top:570px;width:220px;--c:var(--violet);"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z" fill="currentColor"/></svg></i>심사위원</div>
+  <div class="bubble abs" data-in="41.29" data-a="up" style="left:320px;top:580px;--c:var(--violet);">“그래서, <span class="acc">다음은</span><br>어떻게 되나요?”</div>
+  <div class="node abs hlbox" data-in="43.03" data-a="scale" style="left:740px;top:820px;width:220px;--c:var(--amber);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 21V5l8-2.5V21M12 8.5l8 2.5V21M2 21h20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 8h2M7 11.5h2M7 15h2M15 13h2M15 16.5h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>우리 회사</div>
+  <div class="bubble abs r" data-in="43.56" data-a="up" style="left:260px;top:830px;--c:var(--amber);">“자금이 들어오면<br>하겠습니다…”</div></div>
+<div class="scene light" data-in="45.81" data-out="55.56" data-a="scene"><div class="lbg"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="45.81" data-a="up">ALL LOOK ALIKE</div><div class="h2" data-in="45.96" data-a="up">누구나 AI로 쓴<br><span class="acc">비슷비슷한</span> 계획서</div></div>
+  <div class="glass abs hlbox" data-in="45.91" data-a="card" style="left:72px;top:560px;width:200px;--c:var(--blue);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>사업계획서</b></div></div><div class="glass abs hlbox" data-in="46.03" data-a="card" style="left:296px;top:560px;width:200px;--c:var(--blue);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>사업계획서</b></div></div><div class="glass abs hlbox" data-in="46.15" data-a="card" style="left:520px;top:560px;width:200px;--c:var(--blue);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>사업계획서</b></div></div><div class="glass abs hlbox" data-in="46.27" data-a="card" style="left:744px;top:560px;width:200px;--c:var(--blue);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>사업계획서</b></div></div><div class="glass abs hlbox" data-in="46.39" data-a="card" data-dim="50.96" style="left:72px;top:770px;width:200px;--c:var(--copper);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>우리 회사</b></div></div><div class="glass abs hlbox" data-in="46.51" data-a="card" style="left:296px;top:770px;width:200px;--c:var(--blue);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>사업계획서</b></div></div><div class="glass abs hlbox" data-in="46.63" data-a="card" style="left:520px;top:770px;width:200px;--c:var(--blue);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>사업계획서</b></div></div><div class="glass abs hlbox" data-in="46.75" data-a="card" style="left:744px;top:770px;width:200px;--c:var(--blue);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>사업계획서</b></div></div>
+  <div class="h3 strike-wrap abs dimtxt" data-in="52.21" data-a="up" style="left:72px;top:1010px;"><span class="st">계획이 부족한 게 아니라<span class="sl" data-strike="53.06"></span></span></div>
+  <div class="abs h2" data-in="53.81" data-a="up" style="left:72px;top:1090px">보여 줄 게 <span class="acc">없는</span> 거죠</div></div>
+<div class="scene" data-in="55.31" data-out="59.4" data-a="scene">
+  <div class="deco disc" data-in="55.61" data-a="scale" style="left:880px;top:1120px;width:220px;height:220px;--c:var(--teal);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="55.31" data-a="up">SHOW, NOT PLAN</div><div class="h2" data-in="55.46" data-a="up">이제는 <span class="acc">실제로</span><br>보여 줘야 해요</div></div>
+  <div class="glass abs hlbox" data-in="55.61" data-a="card" data-dim="56.98" style="left:72px;top:640px;width:300px;--c:var(--rose);"><div class="mini"><i class="ic "><svg viewBox="0 0 24 24"><path d="M6 2.5h8l4 4V21.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 14.5h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i><b>계획</b><small>말과 문서</small></div></div>
+  <svg class="abs draw" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible" data-in="55.31" data-a="fade"><path d="M392 780L530 780" pathLength="1" data-draw="56.46,57.06" style="stroke-width:4px"/></svg>
+  <div class="phone" data-in="56.76" data-a="card" style="left:548px;top:470px;width:370px"><div class="screen" style="width:342px;height:740px"><img class="kb" src="assets/flows/lvcu-00.jpg" style="width:342px"  alt=""><img class="kb" src="assets/flows/lvcu-01.jpg" style="width:342px" data-in="56.98" data-a="none"  alt=""><img class="kb" src="assets/flows/lvcu-02.jpg" style="width:342px" data-in="58.38" data-a="none"  alt=""><span class="touch" data-touch="56.53" style="left:87px;top:452px"></span><span class="touch" data-touch="57.93" style="left:83px;top:401px"></span></div><div class="notch"></div></div>
+  <div class="note" data-in="56.98" data-a="fade">영상 속 화면은 미래AI랩이 직접 만든 샘플(예시 데이터)입니다</div></div>
+<div class="scene light" data-in="59.15" data-out="68" data-a="scene"><div class="lbg"></div>
+  <div class="deco sq" data-in="59.45" data-a="scale" style="left:880px;top:220px;width:200px;height:200px;--c:var(--green);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="59.15" data-a="up">ONE QUESTION</div><div class="h2" data-in="59.3" data-a="up">심사하는 쪽이<br>결국 보는 건 <span class="acc">하나</span></div></div>
+  <div class="glass abs hlbox hiedge" data-in="62.05" data-a="card" style="left:72px;top:580px;width:888px;--c:var(--copper);"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 18l7-7 4 4 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13V8h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i></span><div><b>다음 단계로 <span class="acc">커질 수 있는가</span></b><small>이 회사의 다음 그림</small></div></div></div>
+  <div class="node abs hlbox" data-in="64.57" data-a="scale" style="left:72px;top:830px;width:260px;--c:var(--blue);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>빌려준 돈</div>
+  <div class="node abs hlbox" data-in="65.48" data-a="scale" style="left:386px;top:830px;width:260px;--c:var(--amber);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>투자한 돈</div>
+  <div class="node abs hlbox" data-in="65.98" data-a="scale" style="left:700px;top:830px;width:260px;--c:var(--green);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h12l-3-3M20 13v2a3 3 0 0 1-3 3H5l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>돌아온다</div>
+  <svg class="abs draw" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible" data-in="64.57" data-a="fade"><path d="M332 920L386 920" pathLength="1" data-draw="65.48,65.88" style="stroke-width:4px"/><path d="M646 920L700 920" pathLength="1" data-draw="65.78,66.18" style="stroke-width:4px"/></svg></div>
+<div class="scene" data-in="67.75" data-out="78.96" data-a="scene">
+  <div class="deco ring" data-in="68.05" data-a="scale" style="left:860px;top:1100px;width:240px;height:240px;--c:var(--rose);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="67.75" data-a="up">INSIDE THE COMPANY</div><div class="h2" data-in="67.9" data-a="up">보여 줄 재료는<br>이미 <span class="acc">회사 안에</span></div></div>
+  <div class="chip dot abs hlbox" data-in="72.22" data-a="up" data-mv="77.33,78.73,-40,-30" style="left:72px;top:580px;--c:var(--teal);">고객</div><div class="chip dot abs hlbox" data-in="72.62" data-a="up" data-mv="77.33,78.73,60,-20" style="left:372px;top:580px;--c:var(--green);">매출</div><div class="chip dot abs hlbox" data-in="73.28" data-a="up" data-mv="77.33,78.73,-60,40" style="left:72px;top:680px;--c:var(--amber);">재고</div><div class="chip dot abs hlbox" data-in="73.94" data-a="up" data-mv="77.33,78.73,80,30" style="left:372px;top:680px;--c:var(--blue);">직원의 기록</div>
+  <div class="chip dot abs hlbox" data-in="75" data-a="up" data-mv="77.33,78.73,-20,40" style="left:72px;top:820px;--c:var(--rose);">엑셀</div><div class="chip dot abs hlbox" data-in="75.5" data-a="up" data-mv="77.33,78.73,30,-10" style="left:322px;top:820px;--c:var(--rose);">메신저</div><div class="chip dot abs hlbox" data-in="76.9" data-a="up" data-mv="77.33,78.73,60,50" style="left:572px;top:820px;--c:var(--rose);">누군가의 메모장</div>
+  <div class="abs h3" data-in="77.33" data-a="up" style="left:72px;top:1020px"><span class="acc">흩어져</span> 있을 뿐이에요</div></div>
+<div class="scene light" data-in="78.71" data-out="88.32" data-a="scene"><div class="lbg"></div>
+  <div class="deco disc" data-in="79.01" data-a="scale" style="left:890px;top:160px;width:200px;height:200px;--c:var(--green);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="78.71" data-a="up">YOUR BIGGEST ASSET</div><div class="h2" data-in="78.86" data-a="up">한곳에 쌓이면<br><span class="acc">가장 큰 자산</span></div></div>
+  <div class="numtag abs hlbox" data-in="79.11" data-a="left" data-dim="81.61" style="left:72px;top:580px;width:860px;--c:var(--green);"><span class="num">1</span><span>한곳에 쌓이면 → <span class="acc">자산</span></span></div>
+  <div class="numtag abs hlbox" data-in="81.61" data-a="left" data-dim="84.57" style="left:72px;top:710px;width:860px;--c:var(--rose);"><span class="num">2</span><span>흩어져 있으면 → 성장 증거로 못 써요</span></div>
+  <div class="numtag abs hlbox" data-in="84.57" data-a="left" style="left:72px;top:840px;width:860px;--c:var(--amber);"><span class="num">3</span><span>일 아는 직원이 나가면 → 회사가 흔들려요</span></div></div>
+<div class="scene" data-in="88.07" data-out="99.4" data-a="scene">
+  <div class="deco ring" data-in="88.37" data-a="scale" style="left:840px;top:150px;width:260px;height:260px;--c:var(--blue);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="88.07" data-a="up">OUR RESEARCH · 최근 3년</div><div class="h2" data-in="88.22" data-a="up">정책자금·투자를 잘 받는<br>회사는 <span class="acc">뭐가 다를까?</span></div></div>
+  <div class="chip dot abs hlbox" data-in="93.68" data-a="up" style="left:72px;top:590px;--c:var(--teal);">정책자금</div>
+  <div class="chip dot abs hlbox" data-in="94.78" data-a="up" style="left:300px;top:590px;--c:var(--blue);">정부 R&D</div>
+  <div class="chip dot abs hlbox" data-in="95.4" data-a="up" style="left:540px;top:590px;--c:var(--amber);">투자</div>
+  <div class="kpi abs" data-in="96.8" data-a="scale" style="left:72px;top:730px;">250건<small>가까이</small></div>
+  <div class="abs p" data-in="97.3" data-a="up" style="left:72px;top:960px">사례를 살펴봤습니다</div>
+  <div class="note" data-in="88.67" data-a="fade">미래AI랩이 공개 사례를 조사한 숫자입니다 · 미래AI랩 실적이 아닙니다</div></div>
+<div class="scene light" data-in="99.15" data-out="108.94" data-a="scene"><div class="lbg"></div>
+  <div class="deco sq" data-in="99.45" data-a="scale" style="left:880px;top:1100px;width:210px;height:210px;--c:var(--teal);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="99.15" data-a="up">THE PATTERN</div><div class="h2" data-in="99.3" data-a="up">거기서 <span class="acc">반복되는</span><br>흐름이 있었어요</div></div>
+  <div class="numtag abs hlbox" data-in="101.19" data-a="left" data-dim="102.87" style="left:72px;top:580px;width:860px;--c:var(--teal);"><span class="num">1</span><span>고객 데이터를 꾸준히 <span class="acc">쌓고</span></span></div>
+  <div class="numtag abs hlbox" data-in="102.87" data-a="left" data-dim="105.47" style="left:72px;top:720px;width:860px;--c:var(--blue);"><span class="num">2</span><span>고객이 쓰는 <span class="acc">플랫폼</span>으로 키우고</span></div>
+  <div class="numtag abs hlbox" data-in="105.47" data-a="left" style="left:72px;top:860px;width:860px;--c:var(--copper);"><span class="num">3</span><span>회사 안 운영과 <span class="acc">하나로</span> 연결</span></div>
+  <svg class="abs draw" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible" data-in="99.15" data-a="fade"><path d="M101 676L101 722" pathLength="1" data-draw="102.47,102.87" style="stroke-width:3px"/><path d="M101 816L101 862" pathLength="1" data-draw="105.07,105.47" style="stroke-width:3px"/></svg></div>
+<div class="scene" data-in="108.69" data-out="119.48" data-a="scene">
+  <div class="deco disc" data-in="108.99" data-a="scale" style="left:-80px;top:1120px;width:240px;height:240px;--c:var(--violet);"></div>
+  <div class="abs eyebrow" data-in="108.74" data-a="up" style="left:72px;top:250px">WHAT WE MEAN BY PLATFORM</div>
+  <div class="h3 strike-wrap abs dimtxt" data-in="108.99" data-a="up" style="left:72px;top:310px;"><span class="st">쿠팡·네이버 같은 거대한 서비스<span class="sl" data-strike="112.23"></span></span></div>
+  <div class="abs h2" data-in="113.31" data-a="up" style="left:72px;top:400px">우리 업종에 특화된<br><span class="acc">작은 서비스</span></div>
+  <div class="node abs hlbox" data-in="115.4" data-a="scale" style="left:72px;top:700px;width:260px;--c:var(--teal);"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i>고객</div>
+  <div class="node abs hlbox" data-in="115.98" data-a="scale" style="left:700px;top:700px;width:260px;--c:var(--blue);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 21V5l8-2.5V21M12 8.5l8 2.5V21M2 21h20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 8h2M7 11.5h2M7 15h2M15 13h2M15 16.5h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>거래처</div>
+  <div class="hub abs" data-in="116.42" data-a="scale" style="left:421px;top:660px">작은<br>서비스</div>
+  <svg class="abs draw" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible" data-in="108.69" data-a="fade"><path d="M332 790L421 760" pathLength="1" data-draw="116.12,116.62" style="stroke-width:4px"/><path d="M700 790L611 760" pathLength="1" data-draw="116.12,116.62" style="stroke-width:4px"/></svg></div>
+<div class="scene light" data-in="119.23" data-out="132.12" data-a="scene"><div class="lbg"></div>
+  <div class="deco ring" data-in="119.53" data-a="scale" style="left:860px;top:160px;width:240px;height:240px;--c:var(--amber);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="119.23" data-a="up">CASE · 렌털업체</div><div class="h2" data-in="119.38" data-a="up">실제로 이런<br><span class="acc">사례</span>가 있었어요</div></div>
+  <div class="node abs hlbox" data-in="121.05" data-a="scale" style="left:72px;top:570px;width:270px;--c:var(--amber);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 4h-4a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h4z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i>손으로 쓰던 장부</div>
+  <div class="node abs hlbox" data-in="123.01" data-a="scale" style="left:381px;top:570px;width:270px;--c:var(--blue);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.3 1.6A3.3 3.3 0 0 0 7 18z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></i>클라우드 시스템</div>
+  <div class="node abs hlbox" data-in="125.89" data-a="scale" style="left:690px;top:570px;width:270px;--c:var(--violet);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>금융 사업 논리</div>
+  <svg class="abs draw" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible" data-in="119.23" data-a="fade"><path d="M342 660L381 660" pathLength="1" data-draw="122.71,123.01" style="stroke-width:4px"/><path d="M651 660L690 660" pathLength="1" data-draw="125.59,125.89" style="stroke-width:4px"/></svg>
+  <div class="kpi abs" data-in="128.36" data-a="scale" style="left:72px;top:820px;">15억 원<small>규모</small></div>
+  <div class="abs h3" data-in="128.86" data-a="up" style="left:72px;top:1050px">보증과 금융지원</div>
+  <div class="note" data-in="119.83" data-a="fade">공개 사례 조사 요약 · 미래AI랩 실적이 아닙니다</div></div>
+<div class="scene" data-in="131.87" data-out="145.38" data-a="scene">
+  <div class="deco sq" data-in="132.17" data-a="scale" style="left:880px;top:1100px;width:200px;height:200px;--c:var(--teal);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="131.87" data-a="up">MORE CASES</div><div class="h2" data-in="132.02" data-a="up">그 밖에도<br><span class="acc">성장자금</span>을 받은 회사들</div></div>
+  <div class="row abs hlbox" data-in="132.27" data-a="left" style="left:72px;top:580px;width:888px;--c:var(--teal);"><span class="rl">히트펌프</span><span class="rr">→ 운영·모니터링 구독</span></div>
+  <div class="row abs hlbox" data-in="135.75" data-a="left" style="left:72px;top:710px;width:888px;--c:var(--blue);"><span class="rl">수산물 유통</span><span class="rr">→ 데이터 B2B 플랫폼</span></div>
+  <div class="row abs hlbox" data-in="139.01" data-a="left" style="left:72px;top:840px;width:888px;--c:var(--amber);"><span class="rl">부동산 중개</span><span class="rr">→ 공실 관리 자동화</span></div>
+  <div class="tagline abs" data-in="142.63" data-a="fade" style="left:72px;top:990px;"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>모두 성장자금 확보</div>
+  <div class="note" data-in="132.47" data-a="fade">공개 사례 조사 요약 · 미래AI랩 실적이 아닙니다</div></div>
+<div class="scene light" data-in="145.13" data-out="156.66" data-a="scene"><div class="lbg"></div>
+  <div class="deco disc" data-in="145.43" data-a="scale" style="left:890px;top:160px;width:200px;height:200px;--c:var(--rose);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="145.13" data-a="up">SAME STRUCTURE</div><div class="h2" data-in="145.28" data-a="up">업종은 달라도<br><span class="acc">흐름은 같았어요</span></div></div>
+  <div class="chip dot abs hlbox" data-in="145.18" data-a="up" style="left:72px;top:570px;--c:var(--teal);">제조</div>
+  <div class="chip dot abs hlbox" data-in="145.56" data-a="up" style="left:230px;top:570px;--c:var(--blue);">유통</div>
+  <div class="chip dot abs hlbox" data-in="146.14" data-a="up" style="left:388px;top:570px;--c:var(--amber);">숙박</div>
+  <div class="node abs hlbox" data-in="150.27" data-a="scale" style="left:72px;top:720px;width:420px;--c:var(--teal);"><i class="ic "><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i>데이터가 쌓이고</div>
+  <div class="node abs hlbox" data-in="151.18" data-a="scale" style="left:540px;top:720px;width:420px;--c:var(--blue);"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i>사람이 모이고</div>
+  <svg class="abs draw" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible" data-in="145.13" data-a="fade"><path d="M282 880L282 930" pathLength="1" data-draw="152.33,152.63" style="stroke-width:4px"/><path d="M750 880L750 930" pathLength="1" data-draw="152.33,152.63" style="stroke-width:4px"/><path d="M282 930L750 930" pathLength="1" data-draw="152.63,153.03" style="stroke-width:4px"/><path d="M516 930L516 970" pathLength="1" data-draw="152.93,153.23" style="stroke-width:4px"/></svg>
+  <div class="glass abs hlbox hiedge" data-in="153.03" data-a="card" style="left:72px;top:970px;width:888px;--c:var(--copper);"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 18l7-7 4 4 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13V8h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i></span><div><b>회사가 <span class="acc">커질 수 있는</span> 구조</b><small>이게 공통점이었어요</small></div></div></div></div>
+<div class="scene" data-in="156.41" data-out="170.56" data-a="scene">
+  <div class="deco ring" data-in="156.71" data-a="scale" style="left:860px;top:1100px;width:240px;height:240px;--c:var(--blue);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="156.41" data-a="up">GOVERNMENT · 공식 발표</div><div class="h2" data-in="156.56" data-a="up">AI를 적극 도입한 기업을<br><span class="acc">밀어주겠다</span></div></div>
+  <div class="chip dot abs hlbox" data-in="160.98" data-a="up" style="left:72px;top:580px;--c:var(--violet);">AI</div>
+  <div class="chip dot abs hlbox" data-in="161.36" data-a="up" style="left:210px;top:580px;--c:var(--teal);">데이터</div>
+  <div class="chip dot abs hlbox" data-in="162.66" data-a="up" style="left:410px;top:580px;--c:var(--copper);">일하는 방식을 바꾸는 것 = <span class="acc">AX</span></div>
+  <div class="abs p" data-in="164.31" data-a="up" style="left:72px;top:720px">중소벤처기업부 · AX 도입 기업 융자</div>
+  <div class="kpi abs" data-in="167.54" data-a="scale" style="left:72px;top:820px;font-size:150px;">7,540억 원<small>규모</small></div>
+  <div class="note" data-in="157.01" data-a="fade">정부 발표 내용입니다 · 미래AI랩 실적이 아닙니다</div></div>
+<div class="scene light" data-in="170.31" data-out="182.72" data-a="scene"><div class="lbg"></div>
+  <div class="deco sq" data-in="170.61" data-a="scale" style="left:880px;top:1100px;width:210px;height:210px;--c:var(--amber);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="170.31" data-a="up">MIRAE AI LAB</div><div class="h2" data-in="170.46" data-a="up">그래서 저희는<br><span class="acc">한 걸음 더</span></div></div>
+  <div class="chip dot abs hlbox" data-in="174.16" data-a="up" style="left:72px;top:570px;--c:var(--teal);">정부</div>
+  <div class="chip dot abs hlbox" data-in="174.48" data-a="up" style="left:230px;top:570px;--c:var(--violet);">심사위원</div>
+  <div class="chip dot abs hlbox" data-in="175.4" data-a="up" style="left:450px;top:570px;--c:var(--amber);">투자자</div>
+  <div class="abs h3" data-in="175.77" data-a="up" style="left:72px;top:690px">모두 <span class="acc">좋아할 수밖에</span> 없도록</div>
+  <div class="node abs hlbox" data-in="177.51" data-a="scale" style="left:72px;top:830px;width:300px;--c:var(--blue);"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i>플랫폼</div>
+  <div class="node abs hlbox" data-in="178.58" data-a="scale" style="left:660px;top:830px;width:300px;--c:var(--violet);"><i class="ic "><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 2.5v2.5M15 2.5v2.5M9 19v2.5M15 19v2.5M2.5 9h2.5M2.5 15h2.5M19 9h2.5M19 15h2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="12" y="15" text-anchor="middle" font-size="7" font-weight="900" fill="currentColor">AI</text></svg></i>AX</div>
+  <div class="hub abs" data-in="179.2" data-a="scale" style="left:421px;top:800px">결합한<br>서비스</div></div>
+<div class="scene" data-in="182.47" data-out="191.56" data-a="scene">
+  <div class="deco ring" data-in="182.77" data-a="scale" style="left:860px;top:1120px;width:240px;height:240px;--c:var(--teal);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="182.47" data-a="up">INSIDE</div><div class="h2" data-in="182.62" data-a="up">회사의 안과 밖을<br><span class="acc">함께</span> 연결해요</div></div>
+  <div class="phone" data-in="186.37" data-a="card" style="left:72px;top:540px;width:338px"><div class="screen" style="width:310px;height:671px"><img class="kb" src="assets/flows/lvax-00.jpg" style="width:310px"  alt=""><img class="kb" src="assets/flows/lvax-01.jpg" style="width:310px" data-in="189.83" data-a="none"  alt=""></div><div class="notch"></div></div>
+  <div class="check abs" data-in="186.88" data-a="left" style="left:510px;top:580px;--c:var(--blue);"><span class="mark">✓</span><span>직원</span></div>
+  <div class="check abs" data-in="187.64" data-a="left" style="left:510px;top:690px;--c:var(--teal);"><span class="mark">✓</span><span>고객</span></div>
+  <div class="check abs" data-in="188.12" data-a="left" style="left:510px;top:800px;--c:var(--amber);"><span class="mark">✓</span><span>재고</span></div>
+  <div class="check abs" data-in="188.66" data-a="left" style="left:510px;top:910px;--c:var(--green);"><span class="mark">✓</span><span>정산</span></div>
+  <div class="tagline abs" data-in="189.03" data-a="fade" style="left:510px;top:1030px;"><i class="ic "><svg viewBox="0 0 24 24"><path d="M7.5 2.5h9a1.5 1.5 0 0 1 1.5 1.5v16a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 20V4a1.5 1.5 0 0 1 1.5-1.5zM10.5 18.5h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>대표님 폰 한 화면에</div>
+  <div class="note" data-in="186.87" data-a="fade">영상 속 화면은 미래AI랩이 직접 만든 샘플(예시 데이터)입니다</div></div>
+<div class="scene light" data-in="191.31" data-out="197.08" data-a="scene"><div class="lbg"></div>
+  <div class="deco disc" data-in="191.61" data-a="scale" style="left:890px;top:170px;width:200px;height:200px;--c:var(--rose);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="191.31" data-a="up">OUTSIDE</div><div class="h2" data-in="191.46" data-a="up">고객과 거래처가<br><span class="acc">직접</span> 하는 플랫폼</div></div>
+  <div class="phone" data-in="191.51" data-a="card" style="left:72px;top:540px;width:338px"><div class="screen" style="width:310px;height:671px"><img class="kb" src="assets/flows/lvcu-00.jpg" style="width:310px"  alt=""><img class="kb" src="assets/flows/lvcu-01.jpg" style="width:310px" data-in="193.98" data-a="none"  alt=""><img class="kb" src="assets/flows/lvcu-02.jpg" style="width:310px" data-in="195.28" data-a="none"  alt=""><span class="touch" data-touch="193.53" style="left:87px;top:452px"></span><span class="touch" data-touch="194.83" style="left:83px;top:401px"></span></div><div class="notch"></div></div>
+  <div class="check abs" data-in="193.68" data-a="left" style="left:510px;top:600px;--c:var(--blue);"><span class="mark">✓</span><span>견적</span></div>
+  <div class="check abs" data-in="194.4" data-a="left" style="left:510px;top:710px;--c:var(--amber);"><span class="mark">✓</span><span>주문</span></div>
+  <div class="check abs" data-in="194.98" data-a="left" style="left:510px;top:820px;--c:var(--copper);"><span class="mark">✓</span><span>예약</span></div>
+  <div class="note" data-in="191.91" data-a="fade">영상 속 화면은 미래AI랩이 직접 만든 샘플(예시 데이터)입니다</div></div>
+<div class="scene" data-in="196.83" data-out="208.9" data-a="scene">
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="196.83" data-a="up">CONNECTED BY AI</div><div class="h2" data-in="196.98" data-a="up">AI가 데이터를 읽고<br><span class="acc">다음 할 일</span>까지</div></div>
+  <div class="node abs hlbox" data-in="197.13" data-a="scale" data-dim="202.61" style="left:72px;top:560px;width:280px;--c:var(--teal);"><i class="ic "><svg viewBox="0 0 24 24"><path d="M4 21V5l8-2.5V21M12 8.5l8 2.5V21M2 21h20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 8h2M7 11.5h2M7 15h2M15 13h2M15 16.5h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></i>안 · 운영</div>
+  <div class="node abs hlbox" data-in="197.33" data-a="scale" data-dim="202.61" style="left:680px;top:560px;width:280px;--c:var(--blue);"><i class="ic "><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3.2" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".7"/><path d="M2.5 20c0-3.6 2.7-6 6-6s6 2.4 6 6z" fill="currentColor"/><path d="M13.5 20c.3-2.6 1.6-4.6 4-4.6 2.6 0 4 2 4 4.6z" fill="currentColor" opacity=".7"/></svg></i>밖 · 고객</div>
+  <div class="hub abs" data-in="198.54" data-a="scale" style="left:421px;top:530px">AI</div>
+  <svg class="abs draw" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible" data-in="196.83" data-a="fade"><path d="M352 640L421 625" pathLength="1" data-draw="197.43,197.93" style="stroke-width:4px"/><path d="M680 640L611 625" pathLength="1" data-draw="197.43,197.93" style="stroke-width:4px"/></svg>
+  <div class="browser" data-in="202.61" data-a="card" style="left:72px;top:800px;width:888px;height:440px"><div class="bar"><i></i><i></i><i></i><span>SAMPLE · 성장 계획</span></div><div class="view" style="height:402px"><img class="kb" src="assets/shots/ax-livarte.jpg" style="width:888px" data-kb="202.61,208.57,1.0,0,0,1.08,-30,-18" alt=""></div></div>
+  <div class="note" data-in="203.01" data-a="fade">영상 속 화면은 미래AI랩이 직접 만든 샘플(예시 데이터)입니다</div></div>
+<div class="scene light" data-in="208.65" data-out="222.91" data-a="scene"><div class="lbg"></div>
+  <div class="deco ring" data-in="208.95" data-a="scale" style="left:860px;top:150px;width:240px;height:240px;--c:var(--violet);"></div>
+  <div class="h3 strike-wrap abs dimtxt" data-in="208.75" data-a="up" style="left:72px;top:260px;"><span class="st">“자금이 들어오면 하겠다”<span class="sl" data-strike="209.86"></span></span></div>
+  <div class="abs h2" data-in="210.75" data-a="up" style="left:72px;top:340px">이미 <span class="acc">돌아가는 화면</span>을</div>
+  <div class="phone" data-in="210.95" data-a="card" style="left:72px;top:470px;width:370px"><div class="screen" style="width:342px;height:740px"><img class="kb" src="assets/flows/lvstyle-00.jpg" style="width:342px"  alt=""><img class="kb" src="assets/flows/lvstyle-01.jpg" style="width:342px" data-in="216.04" data-a="none"  alt=""><img class="kb" src="assets/flows/lvstyle-02.jpg" style="width:342px" data-in="217.24" data-a="none"  alt=""><span class="touch" data-touch="215.59" style="left:245px;top:452px"></span><span class="touch" data-touch="216.79" style="left:83px;top:449px"></span></div><div class="notch"></div></div>
+  <div class="bubble abs r" data-in="213.03" data-a="up" style="left:510px;top:520px;--c:var(--violet);">“이거 진짜<br><span class="acc">되나요?</span>”</div>
+  <div class="check abs" data-in="215.69" data-a="left" style="left:510px;top:760px;--c:var(--green);"><span class="mark">✓</span><span>직접 눌러 보시게</span></div>
+  <div class="glass abs hlbox" data-in="218.63" data-a="card" style="left:510px;top:900px;width:450px;--c:var(--copper);"><div class="ci"><span class="cic"><i class="ic "><svg viewBox="0 0 24 24"><path d="M3 18l7-7 4 4 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13V8h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></i></span><div><b><span class="acc">다음 단계</span>가 보이는 회사</b><small>성장이 멈춰 보였던 회사가</small></div></div></div>
+  <div class="note" data-in="211.25" data-a="fade">영상 속 화면은 미래AI랩이 직접 만든 샘플(예시 데이터)입니다</div></div>
+<div class="scene" data-in="222.66" data-out="234.13" data-a="scene">
+  <div class="deco disc" data-in="222.96" data-a="scale" style="left:880px;top:1120px;width:220px;height:220px;--c:var(--amber);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="222.66" data-a="up">BUILT BY US</div><div class="h2" data-in="222.81" data-a="up">업종별 화면을<br><span class="acc">직접</span> 만들었어요</div></div>
+  <div class="browser" data-in="222.86" data-a="card" style="left:72px;top:560px;width:888px;height:520px"><div class="bar"><i></i><i></i><i></i><span>SAMPLE · AX</span></div><div class="view" style="height:482px"><img class="kb" src="assets/shots/ax-gounsot.jpg" style="width:888px" data-kb="222.66,233.88,1.02,0,0,1.08,-20,-14" alt=""><img class="kb" src="assets/shots/ax-edumaster.jpg" style="width:888px" data-in="224.87" data-a="none" data-kb="222.66,233.88,1.02,0,0,1.08,-20,-14" alt=""><img class="kb" src="assets/shots/ax-seum.jpg" style="width:888px" data-in="225.49" data-a="none" data-kb="222.66,233.88,1.02,0,0,1.08,-20,-14" alt=""><img class="kb" src="assets/shots/ax-nexmart.jpg" style="width:888px" data-in="226.09" data-a="none" data-kb="222.66,233.88,1.02,0,0,1.08,-20,-14" alt=""></div></div>
+  <div class="chip dot abs hlbox" data-in="222.76" data-a="up" style="left:72px;top:1110px;--c:var(--amber);">음식점</div><div class="chip dot abs hlbox" data-in="224.87" data-a="up" style="left:252px;top:1110px;--c:var(--blue);">학원</div><div class="chip dot abs hlbox" data-in="225.49" data-a="up" style="left:432px;top:1110px;--c:var(--teal);">제조</div><div class="chip dot abs hlbox" data-in="226.09" data-a="up" style="left:612px;top:1110px;--c:var(--violet);">유통</div>
+  <div class="tagline abs" data-in="226.72" data-a="fade" style="left:72px;top:1210px;"><i class="ic "><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>업종별 AX·MVP 화면 20개 넘게 · 지금도 실제 기업과 함께</div></div>
+<div class="scene light" data-in="233.88" data-out="248.95" data-a="scene"><div class="lbg"></div>
+  <div class="deco sq" data-in="234.18" data-a="scale" style="left:880px;top:200px;width:200px;height:200px;--c:var(--blue);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="233.88" data-a="up">WE WORK WITH AX</div><div class="h2" data-in="234.03" data-a="up">저희도 <span class="acc">AX로</span><br>일하고 있어요</div></div>
+  <div class="status abs" data-in="236.24" data-a="up" style="left:72px;top:570px;"><i></i>AX 핵심기술 특허 5건 출원 · 올해 9월</div>
+  <div class="abs h3" data-in="239.7" data-a="up" style="left:72px;top:700px">회사 정보를 넣으면 <span class="acc">한 화면에</span> 먼저</div>
+  <div class="row abs hlbox" data-in="243.91" data-a="left" style="left:72px;top:800px;width:888px;--c:var(--green);"><span class="rl">받을 수 있는 지원금</span></div>
+  <div class="row abs hlbox" data-in="245.43" data-a="left" style="left:72px;top:920px;width:888px;--c:var(--blue);"><span class="rl">챙겨야 할 인증</span></div>
+  <div class="row abs hlbox" data-in="246.08" data-a="left" style="left:72px;top:1040px;width:888px;--c:var(--amber);"><span class="rl">절세 포인트</span></div>
+  <div class="note" data-in="236.64" data-a="fade">특허는 출원 상태입니다(등록 아님)</div></div>
+<div class="scene" data-in="248.7" data-out="258.67" data-a="scene">
+  <div class="deco ring" data-in="249" data-a="scale" style="left:-100px;top:1100px;width:260px;height:260px;--c:var(--green);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="248.7" data-a="up">SYSTEM FIRST</div><div class="h2" data-in="248.85" data-a="up">새 지원사업도<br><span class="acc">매일</span> 알려 드려요</div></div>
+  <div class="h3 strike-wrap abs dimtxt" data-in="251.4" data-a="up" style="left:72px;top:600px;"><span class="st">감과 기억에만 의존하는 컨설팅<span class="sl" data-strike="254.17"></span></span></div>
+  <div class="check abs" data-in="254.56" data-a="left" style="left:72px;top:720px;--c:var(--teal);"><span class="mark">✓</span><span>시스템이 <span class="acc">먼저</span> 알려 드려요</span></div>
+  <div class="check abs" data-in="256.28" data-a="left" style="left:72px;top:840px;--c:var(--copper);"><span class="mark">✓</span><span>놓치는 부분이 <span class="acc">훨씬 적어요</span></span></div></div>
+<div class="scene light" data-in="258.42" data-out="265.75" data-a="scene"><div class="lbg"></div>
+  <div class="deco disc" data-in="258.72" data-a="scale" style="left:890px;top:160px;width:200px;height:200px;--c:var(--violet);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:250px;gap:20px"><div class="eyebrow" data-in="258.42" data-a="up">NEXT REVIEW</div><div class="h2" data-in="258.57" data-a="up">다음 심사에서는<br><span class="acc">말 대신 화면</span>을</div></div>
+  <div class="bubble abs" data-in="259.41" data-a="up" style="left:72px;top:580px;--c:var(--violet);">“그래서, <span class="acc">다음은</span><br>어떻게 되나요?”</div>
+  <div class="phone" data-in="262.76" data-a="card" style="left:540px;top:520px;width:347px"><div class="screen" style="width:319px;height:690px"><img class="kb" src="assets/flows/cwax-00.jpg" style="width:319px"  alt=""><img class="kb" src="assets/flows/cwax-01.jpg" style="width:319px" data-in="263.36" data-a="none"  alt=""><span class="touch" data-touch="262.91" style="left:71px;top:743px"></span></div><div class="notch"></div></div>
+  <div class="note" data-in="262.96" data-a="fade">영상 속 화면은 미래AI랩이 직접 만든 샘플(예시 데이터)입니다</div></div>
+<div class="scene" data-in="265.5" data-out="272.39" data-a="scene">
+  <div class="deco ring" data-in="265.8" data-a="scale" style="left:840px;top:150px;width:260px;height:260px;--c:var(--copper);"></div>
+  <div class="abs col" style="left:72px;right:120px;top:360px;gap:20px"><div class="eyebrow" data-in="265.55" data-a="up">START HERE</div><div class="h1 long" data-in="265.7" data-a="up">우리 회사는<br><span class="acc">무엇부터</span> 보여 줘야<br>할까요?</div></div>
+  <div class="chip dot abs big hlbox" data-in="268.12" data-a="up" style="left:72px;top:800px;--c:var(--copper);">3분 기업성장·AX Fit 진단</div></div>
+<div class="scene light" data-in="272.14" data-out="280.6" data-a="scene"><div class="lbg"></div>
+  <div class="deco ring" data-in="272.34" data-a="scale" style="left:840px;top:120px;width:260px;height:260px;--c:var(--teal);"></div><div class="deco disc" data-in="272.54" data-a="scale" style="left:-80px;top:1150px;width:240px;height:240px;--c:var(--amber);"></div>
+  
+    <div class="logo-box" data-in="272.24" data-a="scale" style="left:290px;top:400px"><img src="assets/logo.png" alt="미래AI랩"></div>
+    <div class="abs p center-x" data-in="272.44" data-a="up" style="top:640px">진행 방식과 비용은 다음 영상에서</div>
+    <div class="abs h2 center-x" data-in="273.88" data-a="up" style="top:720px">영상 2 · 어떻게 진행하고,<br><span class="acc">얼마가 드나</span></div>
+    <div class="abs col" style="left:140px;right:140px;top:990px;gap:20px;align-items:center"><div class="ctab" data-in="276.6" data-a="up">3분 AX Fit 진단</div><div class="ctab sub" data-in="276.8" data-a="up">miraeailab.com</div></div></div>
+  <div id="sub"><span></span></div>
+  <div class="guide" style="left:0;right:0;top:0;height:220px"></div>
+  <div class="guide" style="left:72px;width:888px;top:220px;height:1080px"></div>
+  <div class="guide" style="left:132px;right:132px;top:1330px;height:180px"></div>
+  <div class="guide" style="left:0;right:0;top:1520px;bottom:0"></div>
+  <div class="guide" style="left:960px;right:0;top:220px;height:1300px"></div>
+</div>
+<script>
+  const SUBS = [[0.79,3.99,"정책자금도, 투자도,\n정부지원사업도,"],[4.07,6.35,"매번 한 끗 차이로\n놓치고 계신가요?"],[6.43,9.29,"요즘 자금이랑 정부지원사업\n시장, 쉽지 않죠?"],[9.37,11.01,"경쟁이 굉장히 치열합니다."],[11.09,14.09,"게다가 매주 엄청난 기술들이\n쏟아져 나오고 있어서,"],[14.17,16.23,"AI 시대에 우리 회사만\n제자리인 것 같아"],[16.31,18.45,"뒤처질까 불안하기도 하실 겁니다."],[18.59,19.67,"그럼에도 이 세 분야에서"],[19.75,22.21,"좋은 결과를 내는\n회사들은 분명히 있죠."],[22.41,24.73,"이런 회사, 투자자와\n심사위원이 보기에도"],[24.81,26.71,"매력적인 회사로 만들고 싶은 분은"],[26.79,27.77,"끝까지 봐 주세요."],[28.11,29.51,"왜 이렇게 점점\n어려워지는 걸까요?"],[29.59,32.87,"예전에는 계획서만 잘\n써도 통했습니다."],[32.99,35.83,"하지만 지금은 계획서만으로는\n경쟁력이 없어요."],[35.91,38.01,"계획서는 결국 계획일 뿐이니까요."],[38.09,41.17,"브리핑이 끝나면 심사하시는\n분이 꼭 묻습니다."],[41.29,42.89,"“그래서, 다음은\n어떻게 되나요?”"],[43.03,45.83,"여기서 “자금이 들어오면\n하겠습니다”라고 답하면,"],[45.91,48.11,"우리 회사가 제출한 사업계획서는"],[48.19,50.88,"누구나 AI로 쓴 비슷비슷한\n계획서 중 하나가"],[50.96,52.11,"되어 버리고 맙니다."],[52.21,53.73,"계획이 부족한 게 아니에요."],[53.81,55.11,"보여 줄 게 없는 거죠."],[55.41,56.85,"이제는 계획을 넘어서"],[56.93,59.07,"실제로 무언가를 보여\n줘야 되는 시대예요."],[59.15,61.97,"심사하는 쪽이 결국\n보는 건 하나입니다."],[62.05,64.49,"이 회사가 다음 단계로\n커질 수 있는지,"],[64.57,67.67,"그래야 빌려준 돈과 투자한\n돈이 돌아오니까요."],[67.75,69.85,"그럼 보여 줄 화면은\n어디서 나올까요?"],[69.93,72.09,"재료는 이미 회사 안에 있습니다."],[72.17,74.87,"고객, 매출, 재고,\n직원의 기록이"],[74.95,77.25,"엑셀과 메신저, 누군가의 메모장에"],[77.33,78.69,"흩어져 있을 뿐이에요."],[78.81,81.53,"이게 한곳에 쌓이면 회사의\n가장 큰 자산인데,"],[81.61,84.49,"흩어져 있으면 성장했다는\n증거로도 쓸 수 없고,"],[84.57,86.23,"일을 아는 직원 한 명이 나가면"],[86.31,87.99,"회사가 통째로 흔들릴\n수도 있습니다."],[88.07,90.85,"그럼 정책자금이나 투자를\n잘 받는 회사들은"],[90.93,92.11,"뭐가 다를까요?"],[92.35,95.27,"저희는 최근 3년간\n정책자금과 정부 R&D,"],[95.35,96.77,"투자를 받은 회사 사례를"],[96.85,99.07,"250건 가까이 살펴봤습니다."],[99.15,101.11,"거기서 반복되는 흐름이 있었어요."],[101.19,102.79,"고객 데이터를 꾸준히 쌓고,"],[102.87,105.39,"그걸 고객이 직접 쓰는\n플랫폼으로 키우고,"],[105.47,108.61,"회사 안 운영과 하나로\n연결해 뒀다는 겁니다."],[108.69,109.99,"여기서 말하는 플랫폼은"],[110.07,112.15,"쿠팡이나 네이버 같은\n거대한 서비스를"],[112.23,113.23,"말씀드리는 게 아니에요."],[113.31,115.27,"우리 업종에 특화된,"],[115.35,117.53,"고객과 거래처가 모이는\n작은 서비스 정도로"],[117.61,119.15,"생각하시면 됩니다."],[119.23,120.97,"실제로 이런 사례가 있었어요."],[121.05,122.93,"렌털업체가 손으로 쓰던 장부를"],[123.01,124.65,"클라우드 시스템으로 바꾸고,"],[124.73,125.81,"그 데이터를 바탕으로"],[125.89,128.33,"금융 사업까지 넓힐\n논리까지 갖춰서"],[128.41,131.79,"15억 원 규모의 보증과\n금융지원을 받았습니다."],[131.87,135.67,"그 밖에도 히트펌프는\n운영·모니터링 구독 서비스로,"],[135.75,138.93,"수산물 유통은 데이터\n기반 B2B 플랫폼으로,"],[139.01,142.55,"부동산 중개 현장은 공실 관리\n자동화 플랫폼으로 바꾸어"],[142.63,145.05,"성장자금을 받은\n회사들이 있었고요."],[145.13,148.33,"제조, 유통, 숙박까지\n업종은 모두 달랐지만"],[148.41,150.19,"대부분 흐름은 같았습니다."],[150.27,152.55,"데이터가 쌓이고 사람이\n모이는 구조가,"],[152.63,154.69,"회사가 더 커질 수 있다는\n걸 보여 줬다는 점이"],[154.77,156.33,"공통점이었습니다."],[156.41,158.51,"정부도 올해 AI를\n적극 도입한 기업을"],[158.59,160.75,"밀어주겠다고 공식 발표했습니다."],[160.93,164.23,"AI와 데이터로 일하는 방식을\n바꾸는 걸 AX라고 하는데,"],[164.31,167.51,"올해 중소벤처기업부가\nAX를 도입한 기업에"],[167.59,170.23,"7,540억 원 규모의\n융자 지원을 내놨어요."],[170.31,174.03,"그래서 저희 미래AI랩은\n한 걸음 더 나아갔습니다."],[174.11,175.69,"정부와 심사위원, 투자자가"],[175.77,177.43,"모두 좋아할 수밖에 없도록,"],[177.51,179.89,"이 플랫폼에 AX를 결합한 형태로"],[179.97,182.07,"만들어 드리는 서비스를\n설계했습니다."],[182.47,184.59,"그래서 저희는 대표님\n회사의 안과 밖을"],[184.67,186.25,"함께 연결해 드립니다."],[186.37,188.95,"안에서는 직원,\n고객, 재고, 정산을"],[189.03,191.33,"한 화면에 모아\n대표님 폰으로 보고,"],[191.41,193.25,"밖으로는 고객과 거래처가"],[193.33,196.75,"직접 견적, 주문, 예약을\n하는 플랫폼을 만들어요."],[196.83,198.41,"그리고 둘을 이어서,"],[198.49,200.29,"AI가 쌓이는 데이터를 읽고"],[200.37,202.53,"다음 할 일까지 알려 줍니다."],[202.61,204.15,"이 플랫폼을 통해 우리 회사가"],[204.23,206.17,"앞으로 어떻게 성장할 예정인지,"],[206.25,208.57,"화면으로 직접 보여\n드릴 수가 있어요."],[208.65,210.67,"“자금이 들어오면 하겠다” 대신에"],[210.75,212.95,"이미 돌아가는 화면을\n보여 드릴 수 있고,"],[213.03,215.61,"“이거 진짜\n되나요?”라는 질문에는"],[215.69,218.15,"직접 눌러 보시게\n할 수 있습니다."],[218.63,220.47,"그러면 성장이 멈춰\n보였던 회사가,"],[220.55,222.58,"다음 단계가 보이는\n회사가 되는 거예요."],[222.66,226.64,"저희는 음식점, 학원,\n제조, 유통까지"],[226.72,230.94,"업종별 AX와 MVP 화면을\n20개 넘게 직접 만들었고,"],[231.02,233.8,"지금도 실제 기업들과\n함께 만들고 있습니다."],[233.88,236.16,"그리고 저희도 AX로\n일하고 있어요."],[236.24,239.62,"올해 9월에 AX 핵심기술\n특허 5건을 출원한"],[239.7,243.08,"직접 개발한 시스템에 대표님의\n회사 정보를 넣으면,"],[243.16,246,"받을 수 있는 지원금과\n챙겨야 할 인증,"],[246.08,248.62,"절세 포인트가 한\n화면에 먼저 나옵니다."],[248.7,251.32,"새로 뜨는 지원사업도\n매일 알려 주고요."],[251.4,254.48,"감과 기억에만 의존하는\n일반적인 컨설팅이 아니라"],[254.56,256.2,"시스템이 먼저 알려 드리니까,"],[256.28,258.34,"놓치는 부분이 훨씬 적습니다."],[258.42,261.6,"다음 심사에서 또 “그래서,\n다음은 어떻게 되나요?”라는"],[261.68,262.88,"질문을 받는다면,"],[262.96,265.38,"이번엔 말 대신\n화면을 보여 주세요."],[265.6,267.9,"우리 회사는 무엇부터\n보여 줘야 할까요?"],[268.12,270.26,"3분 기업성장·AX\nFit 진단으로"],[270.34,272.16,"먼저 확인해 보시기 바랍니다."],[272.24,273.8,"진행 방식과 비용 등은"],[273.88,276.86,"아래 두 번째 영상에서 이어서\n말씀드리도록 하겠습니다."]];
+  window.DUR = 279.6;
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('guide')) document.body.classList.add('show-guide');
+
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const eo = (x) => 1 - Math.pow(1 - x, 3);
+  const eio = (x) => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+  const lerp = (a, b, x) => a + (b - a) * x;
+  const vis = (t, tin, tout, d = .6) => Math.min(eo(clamp((t - tin) / d)), 1 - eio(clamp((t - (tout - d * .8)) / (d * .8))));
+  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const DUR_IN = { up: .7, left: .7, scale: .8, card: .8, fade: .7, scene: .55, none: .35 };
+  const num = (v) => v == null ? null : +v;
+  const arr = (v) => v ? v.split(',').map(Number) : null;
+
+  const items = [...document.querySelectorAll('[data-in]')].map((el) => {
+    const isScene = el.classList.contains('scene');
+    const sc = isScene ? null : el.closest('.scene');
+    const a = el.dataset.a || 'fade';
+    return { el, isScene, sc, a, tin: +el.dataset.in, tout: el.dataset.out != null ? +el.dataset.out : (sc ? +sc.dataset.out : 1e9),
+             dim: num(el.dataset.dim), hl: num(el.dataset.hl), d: DUR_IN[a] ?? .7, mv: arr(el.dataset.mv) };
+  });
+  const scenes = items.filter((x) => x.isScene);
+  const pick = (sel, f) => [...document.querySelectorAll(sel)].map((el) => ({ el, sc: el.closest('.scene'), ...f(el) }));
+  const kbs = pick('[data-kb]', (el) => ({ v: arr(el.dataset.kb) }));
+  const draws = pick('[data-draw]', (el) => ({ v: arr(el.dataset.draw) }));
+  const grows = pick('[data-grow]', (el) => ({ v: arr(el.dataset.grow) }));
+  const strikes = pick('[data-strike]', (el) => ({ t: +el.dataset.strike }));
+  const orbits = pick('[data-orbit]', (el) => ({ v: arr(el.dataset.orbit) }));
+  const fills = pick('[data-fill]', (el) => ({ v: arr(el.dataset.fill) }));
+  const touches = pick('[data-touch]', (el) => ({ t: +el.dataset.touch }));
+  const shown = (sc) => !sc || sc.style.visibility !== 'hidden';
+
+  const subEl = document.querySelector('#sub span');
+  let subIdx = -2;
+
+  function render(t) {
+    document.getElementById('bg').style.transform = `translate(${Math.sin(t / 9) * 30}px, ${Math.cos(t / 11) * 20}px) scale(1.04)`;
+    for (const s of scenes) {
+      const o = vis(t, s.tin, s.tout, .55);
+      s.el.style.opacity = o;
+      s.el.style.visibility = o > 0.001 ? 'visible' : 'hidden';
+    }
+    for (const x of items) {
+      if (x.isScene || !shown(x.sc)) continue;
+      const { el, tin, tout, a, d } = x;
+      let o = vis(t, tin, tout, d);
+      // 목록이 쌓일 땐 지난 것을 흐리게 (.62, 0.4초)
+      if (x.dim != null) o *= lerp(1, .62, eo(clamp((t - x.dim) / .4)));
+      el.style.opacity = o;
+      const p = eo(clamp((t - tin) / (d + .1)));
+      let tr = ''
+      if (a === 'up') tr = `translateY(${(1 - p) * 34}px)`;
+      else if (a === 'left') tr = `translateX(${(1 - p) * -60}px)`;
+      else if (a === 'scale') tr = `scale(${lerp(.94, 1, p)})`;
+      else if (a === 'card') tr = `translateY(${(1 - p) * 60}px) scale(${lerp(.92, 1, p)})`;
+      // 옮기기: data-mv="t0,t1,dx,dy"
+      if (x.mv) { const [m0, m1, dx, dy] = x.mv; const q = eio(clamp((t - m0) / (m1 - m0))); tr += ` translate(${dx * q}px, ${dy * q}px)`; }
+      if (tr || el.style.transform) el.style.transform = tr;
+      if (x.hl != null) el.style.setProperty('--hl', eo(clamp((t - x.hl) / .5)));
+    }
+    // 앱 화면 천천히 확대(켄 번즈): data-kb="시작,끝,배율0,x0,y0,배율1,x1,y1"
+    for (const k of kbs) {
+      if (!shown(k.sc)) continue;
+      const [a, b, s0, x0, y0, s1, x1, y1] = k.v;
+      const q = eio(clamp((t - a) / (b - a)));
+      k.el.style.transform = `translate(${lerp(x0, x1, q)}px, ${lerp(y0, y1, q)}px) scale(${lerp(s0, s1, q)})`;
+    }
+    // 선 그리기: data-draw="시작,끝" (pathLength=1)
+    for (const k of draws) { if (shown(k.sc)) { k.el.style.strokeDasharray = '1 1'; k.el.style.strokeDashoffset = 1 - eio(clamp((t - k.v[0]) / Math.max(.01, k.v[1] - k.v[0]))); } }
+    // 막대 폭: data-grow="시작,끝,최종폭px"
+    for (const k of grows) { if (shown(k.sc)) k.el.style.width = `${lerp(0, k.v[2], eio(clamp((t - k.v[0]) / (k.v[1] - k.v[0]))))}px`; }
+    // 취소선: 0.8초
+    for (const k of strikes) { if (shown(k.sc)) k.el.style.transform = `scaleX(${eio(clamp((t - k.t) / .8))})`; }
+    // 도는 점: data-orbit="시작,cx,cy,rx,ry,한바퀴초" — 12시 방향에서 시작
+    for (const k of orbits) {
+      if (!shown(k.sc)) continue;
+      const [t0, cx, cy, rx, ry, per] = k.v;
+      const g = -Math.PI / 2 + Math.max(0, t - t0) / per * Math.PI * 2;
+      k.el.style.left = `${cx + rx * Math.cos(g)}px`; k.el.style.top = `${cy + ry * Math.sin(g)}px`;
+      k.el.style.opacity = t < t0 ? 0 : clamp((t - t0) / .4);
+    }
+    // 앱 화면 속 막대: data-fill="t0,t1,값"
+    for (const k of fills) { if (shown(k.sc)) k.el.style.transform = `scaleX(${lerp(0, k.v[2], eo(clamp((t - k.v[0]) / (k.v[1] - k.v[0]))))})`; }
+    // 누르는 곳 물결: 0.6초
+    for (const k of touches) {
+      if (!shown(k.sc)) continue;
+      const q = (t - k.t) / .6;
+      k.el.style.opacity = q < 0 || q > 1 ? 0 : (1 - q) * .95;
+      k.el.style.transform = `scale(${lerp(.4, 1.5, eo(clamp(q)))})`;
+    }
+    // 자막 — 투명도만 0.12초
+    const i = SUBS.findIndex(([a, b]) => t >= a - .12 && t < b + .12);
+    if (i !== subIdx) { subIdx = i; if (i >= 0) subEl.innerHTML = esc(SUBS[i][2]).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
+    const box = subEl.parentElement;
+    if (i < 0) box.style.opacity = 0;
+    else { const [a, b] = SUBS[i]; box.style.opacity = Math.min(clamp((t - a + .12) / .12), clamp((b + .12 - t) / .12)); }
+  }
+  window.render = render;
+  window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((im) => im.decode().catch(() => {}))]);
+  render(+(qs.get('t') || 0));
+</script>
+</body></html>

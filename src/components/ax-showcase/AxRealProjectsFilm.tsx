@@ -1,12 +1,12 @@
 // 실제 프로젝트 영상 1편 · 2편 + 그 밖에 진행 중인 프로젝트 — AX 페이지 '직접 만든 화면 22개' 다음, 영상 2(비용) 바로 앞.
 // 대표님 요청: 금액을 보기 전에 실제 사례부터. 소개 영상(AxFilms)과 같은 살구색 바탕 · 같은 FilmBlock(핵심만 옆에)으로 단순하게.
-//  - 1편 의료폐기물 수거·운반 기업(2분 31초) — 일반 중소기업 사례
-//  - 2편 웰니스 케어 기업(쑥뜸원, 2분 51초) — 소상공인 사례
+//  - 1편 의료폐기물 수거·운반 기업(2분 28초) — 일반 중소기업 사례
+//  - 2편 웰니스 케어 기업(쑥뜸원, 2분 41초) — 소상공인 사례
 //  - 진행 상태는 두 곳 모두 같은 말: 완성 · 실무에서 쓰며 안정화하는 유지보수 단계 / 정책자금·지원사업은 따로 계속 신청 중
 //    (승인·선정을 약속하지 않는다 — '신청 중'까지만)
 //  1편이 끝나면 '2편 이어 보기', 2편이 끝나면 '진행 방식·비용(영상 2) 보기'. 재생 속도 1 · 1.25 · 1.5배.
 //  회사 이름은 밝히지 않고 업종만. 영상 속 실제 화면은 업체·병원·고객 이름을 ○○ 로 바꾸거나 흐리게 가린 캡처이고 짧게만 나온다.
-//  나머지 앱 모양 화면은 예시 데이터로 다시 그렸다. 영상 원본·녹음·자막: media/ax-videos/real-ep1 · real-ep2.
+//  나머지 앱 모양 화면은 예시 데이터로 다시 그렸다. 영상 원본·녹음·자막: media/ax-videos/v2/real-ep1 · real-ep2(영상 스타일 v2).
 import { Link } from 'react-router-dom'
 import { DEEP_PROJECTS } from '../../data/realProjectsDeep'
 import { END_PRIMARY, END_REPLAY, END_SECONDARY, FilmBlock, playFilm, type Film } from './AxFilms'
@@ -27,7 +27,7 @@ const REAL: readonly [Film, Film] = [
     mp4: '/business/ax/ax-real-ep1.mp4',
     webm: '/business/ax/ax-real-ep1.webm',
     poster: '/business/ax/ax-real-ep1-poster.webp',
-    length: '2분 31초',
+    length: '2분 28초',
     who: '일반 중소기업 사례',
     emoji: '🚛',
     title: '의료폐기물 수거·운반 기업',
@@ -44,7 +44,7 @@ const REAL: readonly [Film, Film] = [
     mp4: '/business/ax/ax-real-ep2.mp4',
     webm: '/business/ax/ax-real-ep2.webm',
     poster: '/business/ax/ax-real-ep2-poster.webp',
-    length: '2분 51초',
+    length: '2분 41초',
     who: '소상공인 사례',
     emoji: '🌿',
     title: '웰니스 케어 기업(쑥뜸원)',

@@ -2,7 +2,8 @@
 //   node ../lib/reels-render.mjs .                       전체 렌더(구간을 나눠 동시에) → renders/video.mp4 → 음성 합치기 → renders/final.mp4
 //   node ../lib/reels-render.mjs . snap 1.5,8,12.3       그 순간 화면들을 이어 붙인 한 장 → snapshots/sheet.jpg (안전 영역 선 포함: GUIDE=1)
 // 환경 변수: FF(ffmpeg 경로) · WORKERS(동시에 돌릴 수, 기본 3) · CRF(기본 18) · CHROMIUM(크롬 경로)
-// 음성: assets/voice-fast.wav 를 앞 여백(reel.json offset)만큼 늦추고, -14 LUFS 로 맞추고(두 번 재서 정확히), 끝 1초는 줄인다.
+// 음성: reel.json 의 voice(v1 은 assets/voice-fast.wav)를 앞 여백(offset)만큼 늦추고, 끝 1초는 줄인다.
+//   v1 은 여기서 -14 LUFS 로 맞추고(두 번 재서), v2(normalized) 는 voice2.py 가 맞춘 음성을 그대로 쓴다.
 import { spawn, spawnSync, execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from 'node:fs'
 import { resolve, join } from 'node:path'
@@ -16,7 +17,7 @@ const meta = JSON.parse(readFileSync(join(dir, 'reel.json'), 'utf8'))
 const DUR = meta.duration
 
 async function loadChromium() {
-  const tries = [process.env.PW, resolve(dir, '../../../e2e/node_modules/playwright/index.mjs'), 'playwright'].filter(Boolean)
+  const tries = [process.env.PW, new URL('../../../e2e/node_modules/playwright/index.mjs', import.meta.url).pathname, 'playwright'].filter(Boolean)
   for (const p of tries) {
     try { return (await import(p.startsWith('/') ? pathToFileURL(p).href : p)).chromium } catch {}
   }
@@ -105,13 +106,18 @@ execFileSync(FF, ['-loglevel', 'error', '-y', '-f', 'concat', '-safe', '0', '-i'
 console.log(`영상 ${N}프레임 · ${Math.round((Date.now() - t0) / 1000)}초`)
 
 // ── 음성: 앞 여백 + -14 LUFS(두 번 재기) + 끝 1초 줄이기 → 합치기 ──
-const voice = join(dir, 'assets/voice-fast.wav')
+const voice = join(dir, meta.voice || 'assets/voice-fast.wav')
 const ms = Math.round(meta.offset * 1000)
 const pre = `adelay=${ms}|${ms},apad,atrim=0:${DUR}`
-const m1 = spawnSync(FF, ['-hide_banner', '-i', voice, '-af', `${pre},loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json`, '-f', 'null', '-'], { encoding: 'utf8' }).stderr
-const L = JSON.parse(m1.slice(m1.lastIndexOf('{'), m1.lastIndexOf('}') + 1))
-const ln = `loudnorm=I=-14:TP=-1.5:LRA=11:measured_I=${L.input_i}:measured_TP=${L.input_tp}:measured_LRA=${L.input_lra}:measured_thresh=${L.input_thresh}:offset=${L.target_offset}:linear=true`
+let ln = 'anull'
+if (!meta.normalized) {
+  // v1: 여기서 -14 LUFS 로 맞춘다(두 번 재서). v2 는 voice2.py 가 이미 맞춰 둔 음성을 그대로 쓴다.
+  const m1 = spawnSync(FF, ['-hide_banner', '-i', voice, '-af', `${pre},loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json`, '-f', 'null', '-'], { encoding: 'utf8' }).stderr
+  const L = JSON.parse(m1.slice(m1.lastIndexOf('{'), m1.lastIndexOf('}') + 1))
+  ln = `loudnorm=I=-14:TP=-1.5:LRA=11:measured_I=${L.input_i}:measured_TP=${L.input_tp}:measured_LRA=${L.input_lra}:measured_thresh=${L.input_thresh}:offset=${L.target_offset}:linear=true`
+}
 const final = join(dir, process.env.OUT || 'renders/final.mp4')
+// 음성 앞 여백만큼 늦추고, 뒤는 무음으로 채워(apad) 영상 길이에 맞춘다(-shortest 를 쓰지 않는다 — 끝 로고 장면이 잘린다)
 execFileSync(FF, ['-loglevel', 'error', '-y', '-i', video, '-i', voice, '-filter_complex', `[1:a]${pre},${ln},afade=t=out:st=${(DUR - 1).toFixed(2)}:d=1,aresample=48000[a]`,
   '-map', '0:v', '-map', '[a]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-ac', '2', '-ar', '48000', '-t', String(DUR), '-movflags', '+faststart', final])
 console.log('→', final, `· 전체 ${Math.round((Date.now() - t0) / 1000)}초`)

@@ -8,7 +8,7 @@
 //    한 편을 소리 켜고 보면 이 페이지의 다른 영상은 모두 멈춘다(ax-film-sound 알림, 두 소리가 겹치지 않게).
 //  - 끝나면 다음에 볼 것을 띄운다. 다른 구간의 영상을 틀 때는 playFilm(id) — 그 영상으로 내려가 소리 켜고 재생.
 //  - preload="none" — 이 구간 근처에 오기 전에는 영상을 받지 않는다(첫 화면 속도 보호).
-//  - 영상 원본(HyperFrames)·녹음·자막 파일은 media/ax-videos/ 에 있다. 게시본은 대표님이 음악을 넣어 다듬은 최종본.
+//  - 영상 스타일 v2(어두운/밝은 장면 교차 · 대표님 녹음 1.13배 · -14 LUFS) — 원본·녹음·자막은 media/ax-videos/v2/film-1 · film-2.
 // ⚠️ 소개 영상 속 화면은 자체 데모(샘플)다 — 아래 안내 문구를 지우지 않는다.
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
@@ -49,7 +49,7 @@ const FILMS: readonly [Film, Film] = [
     mp4: '/business/ax/ax-film-1.mp4',
     webm: '/business/ax/ax-film-1.webm',
     poster: '/business/ax/ax-film-1-poster.webp',
-    length: '4분 29초',
+    length: '4분 40초',
     who: 'AX가 아직 생소하다면',
     title: 'AX가 뭐고, 왜 필요한가',
     lead: '정책자금·투자·지원사업 심사에서 왜 ‘보여 줄 화면’이 중요해졌는지, AX가 회사 안과 밖을 어떻게 잇는지 담았어요.',
@@ -63,7 +63,7 @@ const FILMS: readonly [Film, Film] = [
     mp4: '/business/ax/ax-film-2.mp4',
     webm: '/business/ax/ax-film-2.webm',
     poster: '/business/ax/ax-film-2-poster.webp',
-    length: '4분 15초',
+    length: '4분 14초',
     who: '도입 방식과 비용이 궁금하다면',
     title: '어떻게 진행하고, 얼마가 드나',
     lead: '진단부터 2주 안에 기본 틀을 만드는 진행 4단계, 비용과 정산 방식, 정책자금·지원사업 신청까지 담았어요.',

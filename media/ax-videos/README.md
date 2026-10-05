@@ -1,3 +1,38 @@
+# 지금 AX 페이지에 올라가 있는 영상 4편 — 영상 스타일 v2(`v2/`)
+
+| 폴더 | 제목 | 길이 | AX 페이지 자리 |
+|---|---|---|---|
+| `v2/film-1/` | 영상 1 · AX가 뭐고, 왜 필요한가(대표님 녹음) | 4분 40초 · 28장면(밝음 14) | 히어로 다음(`#film-1`) |
+| `v2/real-ep1/` | 실제 프로젝트 1편 · 의료폐기물 수거·운반(일반 중소기업 사례) | 2분 28초 · 14장면(밝음 7) | 22개 화면 다음(`#real-project-1`) |
+| `v2/real-ep2/` | 실제 프로젝트 2편 · 쑥뜸원(소상공인 사례) | 2분 41초 · 16장면(밝음 8) | 그 아래(`#real-project-2`) |
+| `v2/film-2/` | 영상 2 · 어떻게 진행하고, 얼마가 드나(대표님 녹음) | 4분 14초 · 26장면(밝음 13) | FAQ 앞(`#film-2`) |
+
+**스타일 v2**: 9:16 · 음성 1.13배 + 0.35초 넘는 쉼만 살짝 줄임(넘는 부분 55%) · -14 LUFS(loudnorm 두 번 + 미세 보정) ·
+어두운 차콜 장면과 따뜻한 미색 장면을 번갈아(첫 장면 어두움 · 마지막 장면 밝음 + 로고) · 글자는 흰색/차콜 · 구리 · 살구(밝은 장면은 진한 주황) 3색만,
+상자·도형은 7색 팔레트(청록 · 파랑 · 호박 · 초록 · 장미 · 보라 · 구리, 결론은 구리) · 옅은 장식 도형(링 · 원판 · 둥근 사각)을 가장자리에 ·
+자막은 대본 글자 그대로(시각만 최종 음성에서, 시작 −0.05초 · 끝 +0.35초 · 최소 0.9초) · 영상 길이 = 음성 + 앞 0.6초 + 뒤 2.6초.
+
+| 도구 | 하는 일 |
+|---|---|
+| `lib/voice2.py` | 원본 녹음 → (조각 순서 바꾸기·문장 빼기) → 1.13배 → 쉼 줄이기 → -14 LUFS → `assets/voice.wav`(저장소에 넣지 않음) |
+| `lib/asr2.py` | 최종 음성 받아쓰기(faster-whisper medium, 단어 시각) → `asr.json` |
+| `lib/subs2.py` | 대본(`spoken.txt`)을 단어 시각에 글자 단위 정렬 → `timing.json`(자막·글자별 시각) · 일치율 보고 |
+| `lib/reels2.mjs` + `lib/reels2-base.html` | 장면 도구(번호 태그 · 체크 · 목록 줄 · 칩 · 말풍선 · 노드 · 허브 · 순환도 · 막대 · 휴대폰 · 브라우저 · 장식 · 로고) → `comp.html` · `subtitles.srt` |
+| `lib/reels-render.mjs` | 프레임 렌더(Playwright → ffmpeg) + 음성 합치기(`apad` + `-t`, 끝 1초 페이드) → `renders/final.mp4` |
+
+```bash
+cd v2
+FF=<ffmpeg> ./run-audio.sh        # 4편 음성 + 받아쓰기(영상 2는 녹음 순서 바꿈 · 중복 문장 뺌)
+(cd real-ep1 && python3 ../../lib/subs2.py . && node build.mjs)                 # 자막 정렬 + 장면 파일
+(cd real-ep1 && GUIDE=1 node ../../lib/reels-render.mjs . snap 3,12,20 snapshots/s.jpg)   # 시험 프레임(안전 영역 선)
+FF=<ffmpeg> ./render-all.sh       # 4편 전체 렌더
+```
+
+- 영상 1·2의 음성은 예전 폴더(`video-1/assets/voice.mp3`, `video-2/assets/voice-orig.mp3`), 실제 프로젝트는 `real-ep1·2/assets/voice-orig.mp3` 를 원본으로 쓴다.
+- 앱 화면: 소개 영상은 직접 만든 샘플(`assets/flows`, `assets/shots`) · 실제 프로젝트는 이름을 ○○ 로 바꾼 캡처(`real-projects/assets/real`) — 장면마다 표기.
+- 조사 사례·정부 발표는 '미래AI랩 실적 아님'을 따로 적고, 특허는 '출원', 벤처기업확인은 '신청까지'. 금액·횟수는 녹음에서 말한 그대로.
+- 아래 예전 폴더(`video-1`·`video-2`·`real-ep1`·`real-ep2`·`real-projects`)는 v1 이전 원본으로 남겨 둔다.
+
 # AX 영상 1·2 (릴스 9:16, 녹음 맞춤) 원본
 
 대표님이 직접 녹음·컷 편집한 목소리에 맞춰 [HyperFrames](https://github.com/heygen-com/hyperframes) 로 만든 두 편입니다.
