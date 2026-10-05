@@ -12,7 +12,9 @@ export const C = { teal: 'var(--teal)', blue: 'var(--blue)', amber: 'var(--amber
 const col = (c) => (c ? `--c:${C[c] ?? c};` : '')
 const norm = (s) => String(s).toLowerCase().replace(/[^0-9a-z가-힣]/g, '')
 
-export function createReel2(dir, { title, offset = 0.6, tail = 2.6 } = {}) {
+export function createReel2(dir, { title, offset = 0.6, tail = 2.6, v33 = false } = {}) {
+  // v3.3: 자막 52px · 한 줄 16자(공백 포함) — 그 밖에는 18자
+  const LINE = v33 ? 16 : 18
   const T = JSON.parse(readFileSync(`${dir}/timing.json`, 'utf8'))
   const O = offset
   const cue = (spec) => {
@@ -150,10 +152,10 @@ export function createReel2(dir, { title, offset = 0.6, tail = 2.6 } = {}) {
     ${el(lineAt ?? at + 0.5, line, { cls: 'abs h2 center-x', style: `top:${sub ? 720 : 680}px` })}
     <div class="abs col" style="left:140px;right:140px;top:${sub ? 990 : 930}px;gap:20px;align-items:center">${cta.map((t, i) => el((ctaAt ?? at + 0.9) + i * 0.2, t, { cls: `ctab${i ? ' sub' : ''}` })).join('')}</div>`
 
-  // ── 자막: 두 줄 이내, 한 줄 18자(공백 포함) 안, 강조 안에서는 끊지 않는다 ──
+  // ── 자막: 두 줄 이내, 한 줄 LINE자(공백 포함) 안, 강조 안에서는 끊지 않는다 ──
   function wrapSub(text) {
     const plain = text.replace(/\*\*/g, '')
-    if (plain.length <= 18) return text
+    if (plain.length <= LINE) return text
     const cands = []
     let inB = false, pi = 0
     for (let i = 0; i < text.length; i++) {
@@ -162,13 +164,13 @@ export function createReel2(dir, { title, offset = 0.6, tail = 2.6 } = {}) {
       pi++
     }
     const mid = plain.length / 2
-    const ok = cands.filter((cd) => cd.p <= 18 && plain.length - cd.p - 1 <= 18)
+    const ok = cands.filter((cd) => cd.p <= LINE && plain.length - cd.p - 1 <= LINE)
     const pick = (ok.length ? ok : cands).sort((a, b) => Math.abs(a.p - mid) - Math.abs(b.p - mid))[0]
     return pick ? text.slice(0, pick.i) + '\n' + text.slice(pick.i + 1) : text
   }
   const SUBS = T.cues.map((x) => [r2(x.start + O), r2(x.end + O), wrapSub(x.text.trim())])
   SUBS.forEach((s) => {
-    for (const ln of s[2].replace(/\*\*/g, '').split('\n')) if (ln.length > 18) console.warn(`  ⚠️ 긴 자막 줄(${ln.length}자): ${ln}`)
+    for (const ln of s[2].replace(/\*\*/g, '').split('\n')) if (ln.length > LINE) console.warn(`  ⚠️ 긴 자막 줄(${ln.length}자): ${ln}`)
     if (s[2].split('\n').length > 2) console.warn('  ⚠️ 3줄 자막:', s[2])
     if ((s[2].match(/\*\*/g) || []).length > 2) console.warn('  ⚠️ 강조 두 군데:', s[2])
   })
@@ -186,6 +188,7 @@ export function createReel2(dir, { title, offset = 0.6, tail = 2.6 } = {}) {
     }).join('\n')
     const html = readFileSync(new URL('./reels2-base.html', import.meta.url), 'utf8')
       .replace('%TITLE%', esc(title || 'reel'))
+      .replace('<body>', v33 ? '<body class="v33">' : '<body>')
       .replace('%SCENES%', () => body)
       .replace('%SUBS%', () => JSON.stringify(SUBS))
       .replace('%DUR%', String(END))

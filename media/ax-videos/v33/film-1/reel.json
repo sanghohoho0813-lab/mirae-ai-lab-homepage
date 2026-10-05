@@ -1,0 +1,9 @@
+{
+ "duration": 279.6,
+ "offset": 0.6,
+ "voiceEnd": 277,
+ "voice": "assets/voice.wav",
+ "normalized": true,
+ "scenes": 29,
+ "light": 15
+}
