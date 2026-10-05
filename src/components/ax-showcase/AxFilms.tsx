@@ -19,6 +19,10 @@ export type Film = {
   /** 구간 주소(#film-1 · #real-project-1 …) — playFilm 으로 부를 때도 쓴다 */
   id: string
   no: number
+  /** 머리표 번호 — 위 '골라 보기'·메뉴 번호와 같다(1 영상 1 · 2 직접 만든 화면 · 3 실제 프로젝트 · 4 영상 2) */
+  mark: string
+  /** 같은 번호 안에서 몇 번째인지(실제 프로젝트 '1편' · '2편') */
+  part?: string
   /** intro: 소개 영상(data-ax-film) · real: 실제 프로젝트(data-real-episode) */
   kind?: 'intro' | 'real'
   mp4: string
@@ -44,6 +48,7 @@ const FILMS: readonly [Film, Film] = [
   {
     id: 'film-1',
     no: 1,
+    mark: '1',
     short: '영상 1',
     caption: DEMO_CAPTION,
     mp4: '/business/ax/ax-film-1.mp4',
@@ -58,6 +63,7 @@ const FILMS: readonly [Film, Film] = [
   {
     id: 'film-2',
     no: 2,
+    mark: '4',
     short: '영상 2',
     caption: DEMO_CAPTION,
     mp4: '/business/ax/ax-film-2.mp4',
@@ -67,7 +73,7 @@ const FILMS: readonly [Film, Film] = [
     who: '도입 방식과 비용이 궁금하다면',
     title: '어떻게 진행하고, 얼마가 드나',
     lead: '진단부터 2주 안에 기본 틀을 만드는 진행 4단계, 비용과 정산 방식, 정책자금·지원사업 신청까지 담았어요.',
-    points: ['진단 → 2주 안에 MVP·기본 틀 → 데이터 쌓기 → 인증·재무', 'MVP 500만 · 플랫폼형 1,500만 · 풀 패키지 3,000만 원부터', '착수금으로 시작 · 개발비 후불 가능 · 유지보수 1년 무상'],
+    points: ['진단 → 2주 안에 MVP·기본 틀 → 데이터 쌓기 → 인증·재무', '500만 원부터', '착수금으로 시작 · 개발비 후불 가능 · 유지보수 1년 무상'],
   },
 ]
 
@@ -267,9 +273,10 @@ export function FilmBlock({
     >
       <div className={`text-center md:text-left ${flip ? 'md:order-2' : ''}`}>
         <p className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-1.5 text-[0.98rem] font-black text-[#B4532A] ring-1 ring-[#D47A4A]/40">
-          <span className="grid h-6 w-6 place-items-center rounded-full bg-[#171B20] text-[0.82rem] text-white">{film.no}</span>
+          <span aria-hidden className="grid h-6 w-6 place-items-center rounded-full bg-[#171B20] text-[0.82rem] text-white" data-film-mark>{film.mark}</span>
           <span className="sr-only">{film.short} ·</span>
           {film.who}
+          {film.part && <span className="font-bold text-[#5E6670]">· {film.part}</span>}
           <span className="hidden font-bold text-[#5E6670] sm:inline">· {film.length}</span>
         </p>
         <h3 className="mt-3.5 break-keep text-[1.7rem] font-black leading-[1.25] tracking-tight sm:text-[2.1rem]">

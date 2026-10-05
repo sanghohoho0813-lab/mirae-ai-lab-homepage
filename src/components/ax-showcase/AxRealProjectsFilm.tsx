@@ -22,6 +22,8 @@ const REAL: readonly [Film, Film] = [
   {
     id: 'real-project-1',
     no: 1,
+    mark: '3',
+    part: '1편',
     kind: 'real',
     short: '실제 프로젝트 1편',
     mp4: '/business/ax/ax-real-ep1.mp4',
@@ -39,6 +41,8 @@ const REAL: readonly [Film, Film] = [
   {
     id: 'real-project-2',
     no: 2,
+    mark: '3',
+    part: '2편',
     kind: 'real',
     short: '실제 프로젝트 2편',
     mp4: '/business/ax/ax-real-ep2.mp4',

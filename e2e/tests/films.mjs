@@ -54,6 +54,10 @@ for (const W of [390, 1280]) {
     const picks = await p.$$eval('[data-ax-film-pick]', (bs) => bs.map((x) => { const r = x.getBoundingClientRect(); return { id: x.dataset.axFilmPick, no: x.querySelector('span').textContent.trim(), top: Math.round(r.top), left: Math.round(r.left) } }))
     ok('골라 보기 번호 1~4 = 페이지 순서(영상 1 → 22개 화면 → 실제 프로젝트 → 영상 2)', picks.map((x) => x.no).join('') === '1234' && picks.map((x) => x.id).join() === 'film-1,samples,real-projects-film,film-2', JSON.stringify(picks.map((x) => x.no + x.id)))
     ok('골라 보기는 읽는 순서대로 놓임(왼쪽→오른쪽, 위→아래)', picks.every((x, i) => i === 0 || x.top > picks[i - 1].top || (x.top === picks[i - 1].top && x.left > picks[i - 1].left)))
+    const marks = await p.evaluate(() => ['film-1', 'real-project-1', 'real-project-2', 'film-2'].map((id) => document.querySelector(`#${id} [data-film-mark]`)?.textContent.trim() + '|' + document.getElementById(id)?.querySelector('p')?.textContent))
+    ok('영상 머리표 번호 = 골라 보기 번호(1 · 3 1편 · 3 2편 · 4)', marks[0].startsWith('1|') && marks[1].startsWith('3|') && marks[1].includes('1편') && marks[2].startsWith('3|') && marks[2].includes('2편') && marks[3].startsWith('4|'), JSON.stringify(marks.map((m) => m.slice(0, 20))))
+    const cost = await p.locator('#film-2').evaluate((el) => el.textContent) // 휴대폰에서는 요점 목록이 접혀 있어 글자 기준으로 본다
+    ok('비용 영상 설명: "500만 원부터"만(플랫폼형·풀 패키지 금액 없음)', cost.includes('500만 원부터') && !/1,500만|3,000만/.test(cost))
     ok('22개 화면 구간에는 실제 프로젝트 없음', (await p.locator('#samples [data-ax-real-project], #samples [data-real-episode]').count()) === 0)
     ok('실제 프로젝트는 살구색 바탕(영상 1·2와 같은 색)', await p.evaluate(() => ['films', 'real-projects-film'].map((id) => getComputedStyle(document.getElementById(id)).backgroundColor).every((c, _, a) => c === a[0])))
     ok('두 편 연달아(1편 → 2편)', (await sec.locator('[data-real-episode]').count()) === 2 && (await p.evaluate(() => document.getElementById('real-project-1').getBoundingClientRect().top < document.getElementById('real-project-2').getBoundingClientRect().top)))
