@@ -173,6 +173,8 @@ export function createReel2(dir, { title, offset = 0.6, tail = 2.6 } = {}) {
     const L = scenes.filter((s) => s.light).length
     const lens = scenes.map((s, i) => r2((scenes[i + 1]?.tin ?? END) - s.tin))
     console.log(`장면 ${scenes.length}개(밝음 ${L}) · 자막 ${SUBS.length}개 · 길이 ${END}초 · 장면 길이 ${Math.min(...lens)}~${Math.max(...lens)}초`)
+    let run = 1
+    scenes.forEach((s, i) => { if (i && s.light === scenes[i - 1].light) { run++; if (run === 4) console.warn(`  ⚠️ 같은 톤 4장면 연속(장면 ${i - 2}~${i + 1})`) } else run = 1 })
     if (scenes[0]?.light) console.warn('  ⚠️ 첫 장면은 어두워야 해요')
     if (!scenes[scenes.length - 1]?.light) console.warn('  ⚠️ 마지막 장면은 밝아야 해요')
   }

@@ -99,6 +99,31 @@
   .strike-wrap .sl { position:absolute; left:-6px; right:-6px; top:52%; height:5px; border-radius:3px; background:var(--acc); transform-origin:0 50%; transform:scaleX(0); }
   .kpi { font-size:200px; font-weight:900; letter-spacing:-.04em; line-height:1; color:var(--hi); }
   .kpi small { font-size:72px; font-weight:800; letter-spacing:-.02em; margin-left:10px; color:var(--ink); }
+  /* ── 스타일 v3(BIG INFOGRAPHIC) — 크게 · 적게: 큰 제목 · 큰 노드 · 큰 칩 · 숫자 ── */
+  .h1.xl { font-size:104px; } .h1.xxl { font-size:120px; letter-spacing:-.03em; line-height:1.08; }
+  .node.lg { padding:30px 26px; border-radius:28px; font-size:46px; font-weight:800; line-height:1.2; }
+  .node.lg .ic { width:60px; height:60px; margin-bottom:12px; } .node.lg small { font-size:28px; margin-top:8px; }
+  .node.hz { display:flex; align-items:center; gap:26px; text-align:left; }
+  .node.hz .ic { margin:0; }
+  .chip.xl { font-size:44px; padding:22px 38px; } .chip.xl.dot::before { width:18px; height:18px; margin-right:18px; }
+  .bubble.lg { font-size:44px; padding:26px 36px; border-radius:34px 34px 34px 10px; }
+  .check.lg { font-size:46px; gap:26px; } .check.lg .mark { width:68px; height:68px; font-size:32px; }
+  .kpi.md { font-size:150px; } .kpi.sm { font-size:112px; } .kpi.sm small { font-size:56px; }
+  .klabel { font-size:34px; font-weight:700; color:var(--ink2); }
+  .ibadge { display:grid; place-items:center; flex:none; width:112px; height:112px; border-radius:50%; background:var(--c, var(--acc)); }
+  .ibadge .ic { width:60px; height:60px; color:#fff; }
+  .panel { display:flex; align-items:center; gap:32px; padding:34px 40px 34px 48px; }
+  .panel b { display:block; font-size:52px; font-weight:800; letter-spacing:-.02em; line-height:1.2; }
+  .panel small { display:block; margin-top:8px; font-size:30px; font-weight:600; color:var(--ink2); }
+  .trav { position:absolute; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%; background:var(--c, var(--hi)); box-shadow:0 0 22px 6px color-mix(in srgb, var(--c, #e8b89a) 55%, transparent); }
+  .stamp { position:absolute; width:96px; height:96px; border-radius:50%; border:4px dashed rgba(244,241,236,.3); }
+  .stamp.on { border:none; background:var(--c, var(--acc)); display:grid; place-items:center; }
+  .stamp.on .ic { width:50px; height:50px; color:#fff; }
+  .zone { position:absolute; border:4px dashed rgba(232,184,154,.45); border-radius:44px; }
+  .zone em { position:absolute; left:34px; top:-24px; padding:4px 16px; border-radius:12px; background:#171b20; font-style:normal; font-size:30px; font-weight:800; color:var(--hi); }
+  .plan { display:inline-flex; align-items:center; gap:12px; padding:10px 22px; border-radius:999px; border:2px dashed var(--hi); font-size:30px; font-weight:800; color:var(--hi); }
+  .plan .ic { width:32px; height:32px; color:var(--hi); }
+  .mock.lgm .mrow { font-size:40px; padding:30px 30px; } .mock.lgm .mrow small { font-size:30px; } .mock.lgm .mh { font-size:38px; padding:32px 36px; }
   /* 강조로 바뀌는 상자: data-hl 시각부터 --hl 0 → 1 */
   .hlbox:not(.abs) { position:relative; }
   .hlbox::before { content:''; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none; opacity:var(--hl,0);
@@ -178,6 +203,8 @@
   .light .mock { box-shadow:0 0 0 1px rgba(23,27,32,.08), 0 40px 80px -30px rgba(70,45,20,.45); }
   .light .orbit { box-shadow:0 0 14px 3px rgba(194,94,44,.45); }
   .light svg.draw .base { stroke:rgba(23,27,32,.14); }
+  .light .stamp { border-color:rgba(23,27,32,.25); }
+  .light .zone { border-color:rgba(194,94,44,.45); } .light .zone em { background:#f5f0e8; }
 
   /* 자막 — 밝은 장면에서도 같은 어두운 상자 */
   #sub { position:absolute; left:132px; right:132px; top:1330px; height:180px; display:flex; align-items:flex-end; justify-content:center; opacity:0; z-index:20; }
