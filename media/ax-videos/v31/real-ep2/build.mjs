@@ -213,16 +213,22 @@ const B = {
   ${panel('heart', 'green', '이탈 ↓<br>재방문·재구매 ↑', '쑥뜸원', two, { y: 820, hiedge: true })}`)
 }
 
-// 15 L · C — '데이터 직접 뒤지기' 취소선 → 실제 PC 화면(AX 코치): 오늘 먼저 할 일 · 근거
+// 15 L · C — '데이터 직접 뒤지기' 취소선 → 실제 PC 대시보드: 오늘 챙길 고객(AI 추천) → 실행 브리핑(권장 행동 · 판단 이유 · 처리/보류)
+//   대표만 보는 AX 코치 화면은 쓰지 않는다(대시보드 캡처에서도 AX 코치 띠는 숨김). 왼쪽 메뉴는 잘라 내고 본문만 크게.
 {
-  const t = B.s15, pr = w('우선순위와', '9.2.1')
+  const t = B.s15, dg = c('9.2.0'), pr = w('우선순위와', '9.2.1'), why = w('근거만', '9.2.1'), dec = c('9.2.2')
+  const Z = [310, 760]
   scene(t, `
   ${head({ t: '대표님은<br>*보고 결정*만', size: 'h1', at: t + 0.05, y: 250 })}
-  ${strikeLine('데이터 직접 뒤지기', c('9.2.0'), w('필요', '9.2.0'), { y: 480 })}
-  ${browser31({ x: 72, y: 580, w: 888, at: c('9.2.0') + 0.2, url: 'WELLNESS AX · AX 코치', layers: [{ src: 'assets/real/well-coach-pc.jpg',
-    scroll: [[pr - 0.6, pr + 0.6, 0, 140]],
-    focus: [{ t0: pr + 0.4, t1: pr + 2.2, x: 330, y: 405, w: 1070, h: 200 }, { t0: pr + 2.2, t1: pr + 6, x: 330, y: 608, w: 1070, h: 190 }] }] })}
-  ${rnote(pr - 0.2)}`, { light: true })
+  ${strikeLine('데이터 직접 뒤지기', dg, w('필요', '9.2.0'), { y: 480 })}
+  ${browser31({ x: 72, y: 580, w: 888, h: 640, at: t + 0.8, url: 'WELLNESS AX · 대시보드', layers: [
+    { src: A + 'well-today-pc.jpg', zoom: Z,
+      scroll: [[t, t + 0.01, 110, 110], [dg + 1.2, dg + 2.3, 110, 560]],
+      focus: [{ t0: dg + 0.4, t1: dg + 1.3, x: 312, y: 262, w: 360, h: 220 }, { t0: dg + 2.3, t1: why - 0.2, x: 330, y: 700, w: 735, h: 240 }] },
+    { src: A + 'well-brief-pc.jpg', zoom: Z, at: why - 0.3,
+      scroll: [[why - 0.3, why - 0.29, 590, 590]],
+      focus: [{ t0: why, t1: dec, x: 378, y: 745, w: 560, h: 82 }, { t0: dec, t1: dec + 3, x: 378, y: 832, w: 230, h: 56 }] }] })}
+  ${rnote(t + 1)}`, { light: true })
 }
 
 // 16 L · G — 바뀔 수 있어요 → 로고 + 3분 AX Fit 진단
