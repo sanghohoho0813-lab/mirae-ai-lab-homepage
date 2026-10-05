@@ -6,7 +6,7 @@
 //    (승인·선정을 약속하지 않는다 — '신청 중'까지만)
 //  1편이 끝나면 '2편 이어 보기', 2편이 끝나면 '진행 방식·비용(영상 2) 보기'. 재생 속도 1 · 1.25 · 1.5배.
 //  회사 이름은 밝히지 않고 업종만. 영상 속 실제 화면은 업체·병원·고객 이름을 ○○ 로 바꾸거나 흐리게 가린 캡처이고 짧게만 나온다.
-//  나머지 앱 모양 화면은 예시 데이터로 다시 그렸다. 영상 원본·자막: media/ax-videos/v3/real-ep1 · real-ep2(영상 스타일 v3 · 장면표 v3/SCENES.md).
+//  나머지 앱 모양 화면은 예시 데이터로 다시 그렸다. 영상 원본·자막: media/ax-videos/v31/real-ep1 · real-ep2(영상 스타일 v3.1 · 장면표 v31/SCENES.md).
 import { Link } from 'react-router-dom'
 import { DEEP_PROJECTS } from '../../data/realProjectsDeep'
 import { END_PRIMARY, END_REPLAY, END_SECONDARY, FilmBlock, playFilm, type Film } from './AxFilms'

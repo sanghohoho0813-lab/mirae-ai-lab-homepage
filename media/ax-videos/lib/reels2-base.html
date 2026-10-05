@@ -123,6 +123,11 @@
   .zone em { position:absolute; left:34px; top:-24px; padding:4px 16px; border-radius:12px; background:#171b20; font-style:normal; font-size:30px; font-weight:800; color:var(--hi); }
   .plan { display:inline-flex; align-items:center; gap:12px; padding:10px 22px; border-radius:999px; border:2px dashed var(--hi); font-size:30px; font-weight:800; color:var(--hi); }
   .plan .ic { width:32px; height:32px; color:var(--hi); }
+  /* v3.1 — 실제 스크롤 · 강조 */
+  .scroller { position:absolute; left:0; top:0; }
+  .scroller img { display:block; width:100%; height:auto; }
+  .focus { position:absolute; border-radius:18px; border:4px solid var(--acc); background:rgba(212,122,74,.10); box-shadow:0 0 0 6px rgba(212,122,74,.18), 0 0 26px rgba(212,122,74,.45); opacity:0; pointer-events:none; }
+  .devtag { position:absolute; padding:6px 14px; border-radius:10px; background:rgba(15,18,22,.78); color:#f4f1ec; font-size:22px; font-weight:800; letter-spacing:.12em; }
   .mock.lgm .mrow { font-size:40px; padding:30px 30px; } .mock.lgm .mrow small { font-size:30px; } .mock.lgm .mh { font-size:38px; padding:32px 36px; }
   /* 강조로 바뀌는 상자: data-hl 시각부터 --hl 0 → 1 */
   .hlbox:not(.abs) { position:relative; }
@@ -257,6 +262,8 @@
   const orbits = pick('[data-orbit]', (el) => ({ v: arr(el.dataset.orbit) }));
   const fills = pick('[data-fill]', (el) => ({ v: arr(el.dataset.fill) }));
   const touches = pick('[data-touch]', (el) => ({ t: +el.dataset.touch }));
+  const scrolls = pick('[data-scroll]', (el) => ({ v: el.dataset.scroll.split(';').map((g) => g.split(',').map(Number)) }));
+  const focuses = pick('[data-focus]', (el) => ({ v: arr(el.dataset.focus) }));
   const shown = (sc) => !sc || sc.style.visibility !== 'hidden';
 
   const subEl = document.querySelector('#sub span');
@@ -294,6 +301,15 @@
       const q = eio(clamp((t - a) / (b - a)));
       k.el.style.transform = `translate(${lerp(x0, x1, q)}px, ${lerp(y0, y1, q)}px) scale(${lerp(s0, s1, q)})`;
     }
+    // 실제 스크롤: data-scroll="t0,t1,y0,y1;…" — 구간 안은 eio, 구간 사이는 멈춤
+    for (const k of scrolls) {
+      if (!shown(k.sc)) continue;
+      let y = k.v[0][2];
+      for (const [a, b, y0, y1] of k.v) { if (t >= a) y = lerp(y0, y1, eio(clamp((t - a) / Math.max(.01, b - a)))); }
+      k.el.style.transform = `translateY(${-y}px)`;
+    }
+    // 강조: data-focus="t0,t1" — 0.3초에 걸쳐 나타나고 사라짐
+    for (const k of focuses) { if (shown(k.sc)) k.el.style.opacity = Math.min(eo(clamp((t - k.v[0]) / .3)), 1 - eio(clamp((t - k.v[1]) / .3))); }
     // 선 그리기: data-draw="시작,끝" (pathLength=1)
     for (const k of draws) { if (shown(k.sc)) { k.el.style.strokeDasharray = '1 1'; k.el.style.strokeDashoffset = 1 - eio(clamp((t - k.v[0]) / Math.max(.01, k.v[1] - k.v[0]))); } }
     // 막대 폭: data-grow="시작,끝,최종폭px"

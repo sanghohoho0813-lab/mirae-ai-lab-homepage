@@ -93,6 +93,28 @@ export function createReel2(dir, { title, offset = 0.6, tail = 2.6 } = {}) {
       ...swaps.map((s) => `<img class="kb" src="${s.src}" style="width:${w}px" data-in="${r2(s.at)}" data-a="none" ${s.kb || kb ? `data-kb="${s.kb || kb}"` : ''} alt="">`)].join('')
     return el(at, `<div class="bar"><i></i><i></i><i></i><span>${esc(url)}</span></div><div class="view" style="height:${h - 38}px">${imgs}</div>`, { cls: 'browser', a, style: `left:${x}px;top:${y}px;width:${w}px;height:${h}px` })
   }
+  // ── v3.1 — 실제 기기 비율 휴대폰(9:19.7) · 실제 스크롤 · 강조(focus) · PC+모바일 짝 ──
+  /** 화면 층(layer) — 긴 캡처를 기기 안에서 실제로 스크롤한다. 좌표는 캡처의 CSS px(cssW 기준)
+   *  scroll: [[t0,t1,y0,y1], …] (eio, 구간 사이는 멈춤) · focus: [{t0,t1,x,y,w,h}] · at/out: 층 교체(0.35초 교차) */
+  const layer = (L, sw, k0) => {
+    const iw = L.coverW ? Math.max(sw, L.coverW) : sw, k = k0 * iw / sw
+    const segs = (L.scroll ?? [[0, 0.01, L.y ?? 0, L.y ?? 0]]).map(([a, b, y0, y1]) => [r2(a), r2(b), r2(y0 * k), r2(y1 * k)].join(',')).join(';')
+    const fx = (L.focus ?? []).map((f) => `<i class="focus" data-focus="${r2(f.t0)},${r2(f.t1)}" style="left:${r2(f.x * k)}px;top:${r2(f.y * k)}px;width:${r2(f.w * k)}px;height:${r2(f.h * k)}px"></i>`).join('')
+    const tch = (L.touch ?? []).map(([x, y, at]) => `<span class="touch" data-touch="${r2(at)}" style="left:${r2(x * k)}px;top:${r2(y * k)}px"></span>`).join('')
+    const attrs = L.at != null ? ` data-in="${r2(L.at)}" data-a="none"${L.out != null ? ` data-out="${r2(L.out)}"` : ''}` : ''
+    return `<div class="scroller" data-scroll="${segs}"${attrs} style="width:${iw}px;left:${r2((sw - iw) / 2)}px"><img src="${L.src}" alt="">${fx}${tch}</div>`
+  }
+  /** 휴대폰 — 바깥 비율 9:19.7 고정(찌그러뜨리지 않음). 폭 w 를 주면 높이는 자동 */
+  const phone31 = ({ x = 72, y = 230, w = 480, at, layers, cssW = 390, a = 'card', out }) => {
+    const H = Math.round(w * 19.7 / 9), sw = w - 28, sh = H - 28, k = sw / cssW
+    return el(at, `<div class="screen" style="width:${sw}px;height:${sh}px">${layers.map((L) => layer(L, sw, k)).join('')}</div><div class="notch"></div>`, { cls: 'phone', a, out, style: `left:${x}px;top:${y}px;width:${w}px;height:${H}px` })
+  }
+  /** 브라우저(PC) — 같은 시스템의 PC 화면. 긴 캡처면 실제로 스크롤 */
+  const browser31 = ({ x = 72, y = 400, w = 780, h, at, layers, cssW = 1440, url = 'BUSINESS AX', a = 'card', out }) => {
+    const k = w / cssW, vh = (h ?? Math.round(w * 900 / 1440) + 38) - 38
+    return el(at, `<div class="bar"><i></i><i></i><i></i><span>${esc(url)}</span></div><div class="view" style="height:${vh}px">${layers.map((L) => layer(L, w, k)).join('')}</div>`, { cls: 'browser', a, out, style: `left:${x}px;top:${y}px;width:${w}px;height:${vh + 38}px` })
+  }
+
   /** 앱 화면을 닮은 예시 카드 */
   const mock = ({ theme = 'ops', title: tt, tag = '예시 화면', rows = '', at, x = 120, y = 400, w = 840 }) =>
     el(at, `<div class="mh">${tt}<em>${esc(tag)}</em></div><div class="mb">${rows}</div>`, { cls: `mock ${theme}`, a: 'card', style: `left:${x}px;top:${y}px;width:${w}px` })
@@ -179,5 +201,5 @@ export function createReel2(dir, { title, offset = 0.6, tail = 2.6 } = {}) {
     if (!scenes[scenes.length - 1]?.light) console.warn('  ⚠️ 마지막 장면은 밝아야 해요')
   }
 
-  return { T, O, c, ce, w, END, VOICE_END, scene, el, head, note, numtag, check, row, chip, bubble, node, nodeIn, hub, card, cardIn, mini, status, strike, deco, tagline, kpi, touch, lines, phone, browser, mock, loop, bars, endCard, finish, ICONS }
+  return { phone31, browser31, T, O, c, ce, w, END, VOICE_END, scene, el, head, note, numtag, check, row, chip, bubble, node, nodeIn, hub, card, cardIn, mini, status, strike, deco, tagline, kpi, touch, lines, phone, browser, mock, loop, bars, endCard, finish, ICONS }
 }
