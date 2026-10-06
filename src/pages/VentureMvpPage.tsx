@@ -94,7 +94,7 @@ export default function VentureMvpPage() {
             />
             <Link
               to={BUSINESS_CHOOSER_PATH}
-              className="hidden min-h-10 items-center gap-1 whitespace-nowrap text-[0.9rem] font-semibold text-[#5E6670] transition-colors hover:text-[#171B20] min-[420px]:inline-flex sm:text-[0.95rem]"
+              className="hidden min-h-10 items-center gap-1 whitespace-nowrap text-[0.9rem] font-semibold text-[#4A535D] transition-colors hover:text-[#171B20] min-[420px]:inline-flex sm:text-[0.95rem]"
             >
               <span aria-hidden>←</span> 대표님 서비스 선택
             </Link>
