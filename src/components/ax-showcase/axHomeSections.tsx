@@ -196,7 +196,7 @@ export function AxOutcome() {
             </span>
           </p>
         </div>
-        <Divider className="mt-[19svh] lg:mt-28" />
+        <Divider className="mt-[19svh] lg:mt-[24svh]" />
         <p data-ax-outcome-brand className={brandCls('ax')}>
           <span data-reveal className="block reveal-soft">
             <span className={NW}>AI를 도입하는 데서</span> <span className={NW}>끝내지 않습니다.</span>

@@ -40,17 +40,17 @@ export function Mark({ children }: { children: string }) {
 /** 구간 제목 — 폰은 그 페이지 히어로 제목 크기(36px 안팎), PC 는 44px. hero: 그 페이지 히어로 제목 크기 상한 */
 export const bigTitle = (hero: 'ax' | 'mvp') =>
   hero === 'ax'
-    ? 'break-keep text-[clamp(1.95rem,9.3vw,2.255rem)] font-black leading-[1.3] text-[#FAFAF8] sm:text-[2.76rem] lg:text-[3.3rem]'
-    : 'break-keep text-[1.95rem] font-black leading-[1.3] text-[#FAFAF8] min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[3.3rem]'
+    ? 'break-keep text-[clamp(1.95rem,9.3vw,2.255rem)] font-black leading-[1.3] text-[#FAFAF8] sm:text-[2.76rem] lg:text-[3.8rem]'
+    : 'break-keep text-[1.95rem] font-black leading-[1.3] text-[#FAFAF8] min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[3.3rem] xl:text-[3.6rem]'
 
 /** 마지막 정리 문단 묶음 — 폰 28.8px · PC 26.9px(처음 22.4px 의 1.2배), 모두 굵게 */
 export const OUT_BODY =
-  'mx-auto mt-[15svh] max-w-3xl space-y-[19svh] break-keep text-[clamp(1.5rem,7.4vw,1.8rem)] font-bold leading-[1.55] text-slate-200 sm:text-[1.8rem] lg:mt-24 lg:max-w-4xl lg:space-y-28 lg:text-[1.68rem]'
+  'mx-auto mt-[15svh] max-w-3xl space-y-[19svh] break-keep text-[clamp(1.5rem,7.4vw,1.8rem)] font-bold leading-[1.55] text-slate-200 sm:text-[1.8rem] lg:mt-[16svh] lg:max-w-6xl lg:space-y-[24svh] lg:text-[2.25rem]'
 
 /** 마지막 두 문장(핵심 메시지) — 정리 구간에서 가장 크다. hero: 그 페이지 히어로 제목 크기 상한 */
 export const brandCls = (hero: 'ax' | 'mvp') =>
   `mx-auto mt-10 max-w-4xl break-keep font-black leading-[1.32] text-[#FAFAF8] sm:mt-12 lg:max-w-6xl ${
-    hero === 'ax' ? 'text-[clamp(1.95rem,9.3vw,2.3rem)] sm:text-[2.76rem] lg:text-[3.6rem]' : 'text-[1.95rem] min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[3.5rem]'
+    hero === 'ax' ? 'text-[clamp(1.95rem,9.3vw,2.3rem)] sm:text-[2.76rem] lg:text-[4.2rem]' : 'text-[1.95rem] min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[3.48rem] xl:text-[3.66rem]'
   }`
 
 /** 짧은 구리색 선(가운데에서 양옆으로 그어진다) — 마지막 두 문장 위 */
@@ -65,25 +65,24 @@ export function Divider({ className = '' }: { className?: string }) {
 export type Concern = { lead: string; mid?: string; key: readonly string[] }
 
 /** 고민 N개 — 번호 + 원문 줄마다. 위아래 가는 선 사이 한가운데에 놓인다.
- *  폰·태블릿은 1열(선 사이를 화면 높이의 30%로 띄워 1번을 볼 때 2번은 안 보이게), PC(1024px~)는 2열(홀수면 마지막 항목은 가운데 한 줄 전체).
+ *  폰·태블릿·PC 모두 가운데 한 열 — 선 사이를 화면 높이의 30~34%로 띄워 한 화면에 메시지 하나(다음 항목은 살짝 보일 정도).
  *  data: 이 페이지의 e2e 표지(예: 'ax' → data-ax-concern) */
 export function ConcernList({ items, data }: { items: readonly Concern[]; data: string }) {
-  const odd = items.length % 2 === 1
   const line = 'rv-line absolute inset-x-0 h-px bg-white/[0.12]'
   return (
     <>
-      <ol className="mx-auto mt-[12svh] grid max-w-2xl lg:mt-20 lg:max-w-none lg:grid-cols-2 lg:gap-x-16">
+      <ol className="mx-auto mt-[12svh] grid max-w-2xl lg:max-w-4xl">
         {items.map((c, i) => (
           <li
             key={c.key.join('')}
             data-reveal
             {...{ [`data-${data}-concern`]: '' }}
-            className={`relative flex flex-col justify-center py-[15svh] lg:py-14 ${odd && i === items.length - 1 ? 'lg:col-span-2 lg:mx-auto lg:w-1/2' : ''}`}
+            className="relative flex flex-col justify-center py-[15svh] lg:py-[17svh]"
           >
             <span aria-hidden className={`${line} top-0`} />
-            <p className="text-[1.2rem] font-black tabular-nums tracking-[0.12em] text-[#D9824F] sm:text-[1.26rem] lg:text-[1.5rem]">{String(i + 1).padStart(2, '0')}</p>
+            <p className="text-[1.2rem] font-black tabular-nums tracking-[0.12em] text-[#D9824F] sm:text-[1.26rem] lg:text-[1.75rem]">{String(i + 1).padStart(2, '0')}</p>
             {/* 모두 굵게 · 핵심 문장은 살구색. 원문 줄마다 따로(줄 안에서는 고르게 나눠 접는다) */}
-            <p className="mt-4 break-keep text-[clamp(1.45rem,7vw,1.7rem)] font-bold leading-[1.6] text-[#E7EAEE] sm:text-[1.7rem] lg:text-[1.87rem]">
+            <p className="mt-4 break-keep text-[clamp(1.45rem,7vw,1.7rem)] font-bold leading-[1.6] text-[#E7EAEE] sm:text-[1.7rem] lg:text-[2.4rem]">
               <span className={LINE}>{keepDots(c.lead)}</span>
               {c.mid && <span className={LINE}>{keepDots(c.mid)}</span>}
               {c.key.map((k) => (
@@ -95,16 +94,9 @@ export function ConcernList({ items, data }: { items: readonly Concern[]; data: 
           </li>
         ))}
       </ol>
-      {/* 마지막 아래 선 — PC 2열이면 칸마다(짝수) 또는 한 줄 전체(홀수 · 마지막 항목 폭) */}
-      <div data-reveal aria-hidden className={`mx-auto grid max-w-2xl lg:max-w-none ${odd ? '' : 'lg:grid-cols-2 lg:gap-x-16'}`}>
-        <span className={`relative block h-px ${odd ? 'lg:mx-auto lg:w-1/2' : ''}`}>
-          <span className={`${line} top-0`} />
-        </span>
-        {!odd && (
-          <span className="relative hidden h-px lg:block">
-            <span className={`${line} top-0`} />
-          </span>
-        )}
+      {/* 마지막 아래 선 */}
+      <div data-reveal aria-hidden className="relative mx-auto h-px max-w-2xl lg:max-w-4xl">
+        <span className={`${line} top-0`} />
       </div>
     </>
   )
@@ -116,7 +108,7 @@ export function ConcernsNext({ data, children }: { data: string; children: React
     <p
       data-reveal
       {...{ [`data-${data}-concerns-next`]: '' }}
-      className="mx-auto mt-[12svh] max-w-3xl break-keep text-[clamp(1.35rem,6.4vw,1.55rem)] font-bold leading-[1.65] text-[#E7EAEE] sm:text-[1.68rem] lg:mt-24 lg:text-[2rem]"
+      className="mx-auto mt-[12svh] max-w-3xl break-keep text-[clamp(1.35rem,6.4vw,1.55rem)] font-bold leading-[1.65] text-[#E7EAEE] sm:text-[1.68rem] lg:mt-[14svh] lg:max-w-5xl lg:text-[2.5rem]"
     >
       {children}
     </p>

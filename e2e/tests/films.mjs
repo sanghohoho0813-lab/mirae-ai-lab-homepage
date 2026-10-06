@@ -78,7 +78,7 @@ for (const W of [390, 1280]) {
     ].join('|'), JSON.stringify(extra.cItems))
     ok('고민 항목은 모두 굵게 · 핵심 문장은 살구색(항목마다 하나)', extra.allBold && extra.keyColored.length === 4, JSON.stringify(extra.keyColored))
     ok('연결 문구 원문 그대로', extra.cNext === '하나라도 해당된다면, 우리 회사가 AX로 어떻게 달라질 수 있는지 영상으로 먼저 보여드릴게요.', extra.cNext)
-    ok(`고민 4개 배치: ${W < 1024 ? '1열' : '2×2'}`, extra.cols === (W < 1024 ? 1 : 2), String(extra.cols))
+    ok('고민 4개는 가운데 한 열(한 화면에 하나씩)', extra.cols === 1, String(extra.cols))
     ok('마지막 정리 제목', extra.oH2 === '그래서, 우리 회사에 AX를 도입하면?', extra.oH2)
     ok('마지막 정리 문구 원문 그대로', extra.oText === '그래서, 우리 회사에 AX를 도입하면? 같은 인원으로 더 많은 고객과 업무를 처리하고, 놓치던 고객과 기회를 매출로 연결할 수 있는 구조를 만들고, 대표가 일일이 챙기지 않아도 일이 이어집니다. 밖에서도 휴대폰 하나면 우리 회사가 지금 어떻게 돌아가고 있는지 한눈에 볼 수 있습니다. 그리고 이런 변화가 쌓여 매출·정책자금·지원사업·투자로 이어질 수 있는 회사의 경쟁력과 성장 증거가 됩니다. AI를 도입하는 데서 끝내지 않습니다. 회사를 한 단계 더 성장시킵니다.', extra.oText)
     ok('강조: 매출·정책자금·지원사업·투자 · 회사의 경쟁력과 성장 증거', extra.oBold.join('|') === '매출·정책자금·지원사업·투자|회사의 경쟁력과 성장 증거', extra.oBold.join('|'))

@@ -74,7 +74,7 @@ export default function VentureMvpFilm({
       <div aria-hidden className="pointer-events-none absolute -right-28 top-10 h-[24rem] w-[24rem] rounded-full bg-[#D47A4A]/20 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-[18rem] w-[18rem] rounded-full bg-[#E8B89A]/35 blur-3xl" />
 
-      <div className="relative mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-16 md:grid md:grid-cols-[1fr_minmax(0,400px)] md:items-center md:gap-12 lg:grid-cols-[1fr_minmax(0,340px)] lg:gap-16 xl:grid-cols-[1fr_minmax(0,310px)]">
+      <div className="relative mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-16 md:grid md:grid-cols-[minmax(0,28rem)_minmax(0,400px)] md:items-center md:justify-center md:gap-12 lg:grid-cols-[minmax(0,28rem)_340px] lg:gap-14 xl:grid-cols-[minmax(0,28rem)_310px]">
         <div className="text-center md:text-left">
           <p className="inline-flex items-center gap-2 rounded-full bg-[#171B20] px-4 py-2 text-[0.98rem] font-black text-white shadow-md sm:text-[1.02rem]">
             <span aria-hidden className="relative flex h-2.5 w-2.5">

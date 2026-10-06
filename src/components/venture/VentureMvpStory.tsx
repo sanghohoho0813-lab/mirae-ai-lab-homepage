@@ -100,13 +100,13 @@ export function VentureMvpOutcome() {
         </div>
 
         {/* 벤처기업확인 혜택 — 숫자만 짧게 한 번 더(자세한 요건·예상 절감액은 아래 FAQ) */}
-        <div data-mvp-benefits className="mx-auto mt-[19svh] max-w-3xl break-keep font-bold lg:mt-28">
-          <p data-reveal className="reveal-soft text-[clamp(1.5rem,7.4vw,1.8rem)] leading-[1.5] text-[#FAFAF8] [text-wrap:balance] sm:text-[1.8rem] lg:text-[1.68rem]">
+        <div data-mvp-benefits className="mx-auto mt-[19svh] max-w-3xl break-keep font-bold lg:mt-[24svh] lg:max-w-5xl">
+          <p data-reveal className="reveal-soft text-[clamp(1.5rem,7.4vw,1.8rem)] leading-[1.5] text-[#FAFAF8] [text-wrap:balance] sm:text-[1.8rem] lg:text-[2.25rem]">
             창업 초기라면 벤처기업확인의 <span className={EM}>시점</span>도 중요합니다.
           </p>
-          <ul className="mx-auto mt-10 max-w-2xl sm:mt-12">
+          <ul className="mx-auto mt-10 max-w-2xl sm:mt-12 lg:mt-16 lg:max-w-4xl">
             {BENEFITS.map((b) => (
-              <li key={b.em} data-reveal className="relative py-6 text-[clamp(1.3rem,6.2vw,1.5rem)] leading-[1.45] text-slate-200 [text-wrap:balance] sm:py-7 sm:text-[1.5rem]">
+              <li key={b.em} data-reveal className="relative py-6 text-[clamp(1.3rem,6.2vw,1.5rem)] leading-[1.45] text-slate-200 [text-wrap:balance] sm:py-7 sm:text-[1.5rem] lg:py-9 lg:text-[1.95rem]">
                 <span aria-hidden className="rv-line absolute inset-x-0 top-0 h-px bg-white/[0.12]" />
                 {b.pre.map((t) => (
                   <span key={t}>
@@ -124,13 +124,13 @@ export function VentureMvpOutcome() {
             }}
             data-reveal
             data-mvp-benefits-faq
-            className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[1.05rem] font-bold text-[#E8B89A] underline decoration-[#E8B89A]/40 underline-offset-4 transition-colors hover:text-white sm:text-[1.12rem]"
+            className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[1.05rem] font-bold text-[#E8B89A] underline decoration-[#E8B89A]/40 underline-offset-4 transition-colors hover:text-white sm:text-[1.12rem] lg:mt-10 lg:text-[1.3rem]"
           >
             자세한 요건과 예상 절감액은 자주 묻는 질문에서 <span aria-hidden>↓</span>
           </a>
         </div>
 
-        <Divider className="mt-[19svh] lg:mt-28" />
+        <Divider className="mt-[19svh] lg:mt-[24svh]" />
         <p data-mvp-outcome-brand className={brandCls('mvp')}>
           <span data-reveal className="block reveal-soft [text-wrap:balance]">
             <span className={NW}>벤처기업확인만 받고</span> <span className={NW}>끝내지 않습니다.</span>

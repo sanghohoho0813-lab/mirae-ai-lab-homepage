@@ -270,7 +270,7 @@ export function FilmBlock({
     <div
       id={film.id}
       {...dataAttr}
-      className={`relative mx-auto max-w-6xl scroll-mt-16 px-5 py-11 sm:px-6 sm:py-16 md:grid md:items-center md:gap-12 lg:gap-16 ${flip ? 'md:grid-cols-[minmax(0,400px)_1fr] lg:grid-cols-[minmax(0,340px)_1fr] xl:grid-cols-[minmax(0,300px)_1fr]' : 'md:grid-cols-[1fr_minmax(0,400px)] lg:grid-cols-[1fr_minmax(0,340px)] xl:grid-cols-[1fr_minmax(0,300px)]'}`}
+      className={`relative mx-auto max-w-6xl scroll-mt-16 px-5 py-11 sm:px-6 sm:py-16 md:grid md:items-center md:justify-center md:gap-12 lg:gap-14 ${flip ? 'md:grid-cols-[minmax(0,400px)_minmax(0,28rem)] lg:grid-cols-[340px_minmax(0,28rem)] xl:grid-cols-[300px_minmax(0,28rem)]' : 'md:grid-cols-[minmax(0,28rem)_minmax(0,400px)] lg:grid-cols-[minmax(0,28rem)_340px] xl:grid-cols-[minmax(0,28rem)_300px]'}`}
     >
       <div className={`text-center md:text-left ${flip ? 'md:order-2' : ''}`}>
         <p className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-1.5 text-[0.98rem] font-black text-[#B4532A] ring-1 ring-[#D47A4A]/40">
