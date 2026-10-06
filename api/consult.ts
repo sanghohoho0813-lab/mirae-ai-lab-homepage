@@ -30,7 +30,11 @@ type ConsultBody = {
   website?: unknown
 }
 
-/** 신청 데이터를 Supabase consult_leads 에 저장 (비치명적 — 실패해도 이메일 발송은 계속) */
+/** 신청 데이터를 Supabase consult_leads 에 저장하고 운영 OS 에 알린다 (비치명적 — 실패해도 이메일 발송은 계속).
+ *  운영 OS(같은 Supabase)는 customer_events 를 읽어 상담신청함 · 알림 종 · 메뉴 숫자에 띄운다.
+ *  consult_leads 에 붙는 OS 트리거(bridge_on_consult_lead)만 믿지 않고 여기서도 같은 함수(bridge_emit_customer_event)를 부른다:
+ *    - consult_leads 표가 아직 없는 환경(2026-10 확인: 운영 DB 에 없음)에서도 OS 에는 뜬다
+ *    - 트리거가 이미 올렸으면 dedupe_key('consult_lead:<id>:consultation_requested')가 같아 한 번만 남는다 */
 async function saveConsultLead(row: {
   name: string
   contact: string
@@ -41,11 +45,11 @@ async function saveConsultLead(row: {
   program: string | null
   structured: Record<string, unknown> | null
   context: Array<[string, string]>
-}): Promise<string | null> {
+}): Promise<{ leadId: string | null; osEvent: boolean }> {
   try {
     const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    if (!url || !serviceKey) return null
+    if (!url || !serviceKey) return { leadId: null, osEvent: false }
     const { createClient } = await import('@supabase/supabase-js')
     const supabase = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
     const { data, error } = await supabase
@@ -63,14 +67,31 @@ async function saveConsultLead(row: {
       })
       .select('id')
       .single()
-    if (error) {
-      console.error('[consult] supabase insert error:', detailOf(error))
-      return null
-    }
-    return (data as { id?: string } | null)?.id ?? null
+    let leadId: string | null = null
+    if (error) console.error('[consult] supabase insert error:', detailOf(error))
+    else leadId = (data as { id?: string } | null)?.id ?? null
+
+    // 운영 OS 알림 — 표에 저장 못 했으면 임시 번호로라도 올린다(같은 신청이 두 번 오지 않게 한 번만 부른다)
+    const sourceId = leadId ?? `site-${globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`}`
+    const { error: evError } = await supabase.rpc('bridge_emit_customer_event', {
+      p_event_type: 'consultation_requested',
+      p_source_type: 'consult_lead',
+      p_source_id: sourceId,
+      p_payload: {
+        name: row.name,
+        contact: row.contact,
+        company: row.company || null,
+        program: row.program,
+        message: row.message || null,
+        source: row.source || null,
+      },
+      p_priority: 'high',
+    })
+    if (evError) console.error('[consult] os event error:', detailOf(evError))
+    return { leadId, osEvent: !evError }
   } catch (e) {
     console.error('[consult] supabase save skipped:', detailOf(e))
-    return null
+    return { leadId: null, osEvent: false }
   }
 }
 
@@ -252,7 +273,7 @@ export default async function handler(req: any, res: any) {
     ).slice(0, 400)
 
     // Supabase 저장 (비치명적 — 미설정/실패 시 이메일 발송만 진행)
-    const leadId = await saveConsultLead({
+    const { leadId, osEvent } = await saveConsultLead({
       name,
       contact,
       company,
@@ -330,7 +351,7 @@ export default async function handler(req: any, res: any) {
     //    ⚠️ 저장에 실패했다면(leadId 없음) 메일이 유일한 전달 수단이므로 예전처럼 끝까지 기다렸다가 결과를 알린다.
     const respondedEarly = !!leadId
     if (respondedEarly) {
-      res.status(200).json({ ok: true, message: '상담 신청이 접수됐어요. 확인하고 빠르게 연락드릴게요.', leadId })
+      res.status(200).json({ ok: true, message: '상담 신청이 접수됐어요. 확인하고 빠르게 연락드릴게요.', leadId, osEvent })
     }
 
     // 5) Resend 모듈 동적 import
@@ -372,7 +393,7 @@ export default async function handler(req: any, res: any) {
     if (respondedEarly) return
     return res
       .status(200)
-      .json({ ok: true, message: '상담 신청이 접수됐어요. 확인하고 빠르게 연락드릴게요.', id: data?.id, leadId })
+      .json({ ok: true, message: '상담 신청이 접수됐어요. 확인하고 빠르게 연락드릴게요.', id: data?.id, leadId, osEvent })
   } catch (error) {
     console.error('[consult] unhandled error:', detailOf(error))
     if (res.headersSent) return
