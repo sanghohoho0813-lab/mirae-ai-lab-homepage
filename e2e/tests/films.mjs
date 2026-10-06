@@ -59,10 +59,10 @@ for (const W of [390, 1280]) {
       return {
         hero: fs(h1), vw: innerWidth,
         cH2: t(c.querySelector('h2')), cItems: [...c.querySelectorAll('[data-ax-concern]')].map((li) => t(li)), cNext: t(c.querySelector('[data-ax-concerns-next]')),
-        cSize: Math.max(fs(c.querySelector('h2')), fs(c.querySelector('[data-ax-concerns-next]'))), cMid: ((r) => Math.round(r.left + r.width / 2))(c.querySelector('h2').getBoundingClientRect()),
+        cTitle: fs(c.querySelector('h2')), cItem: fs(c.querySelector('[data-ax-concern] p:last-child')), cMid: ((r) => Math.round(r.left + r.width / 2))(c.querySelector('h2').getBoundingClientRect()),
         cols: new Set([...c.querySelectorAll('[data-ax-concern]')].map((li) => Math.round(li.getBoundingClientRect().left))).size,
         bold: [...c.querySelectorAll('[data-ax-concern] b')].map((b) => t(b)),
-        oH2: t(o.querySelector('h2')), oText: t(o), oSize: Math.max(fs(o.querySelector('h2')), fs(o.querySelector('[data-ax-outcome-brand]'))), oMid: ((r) => Math.round(r.left + r.width / 2))(o.querySelector('h2').getBoundingClientRect()),
+        oH2: t(o.querySelector('h2')), oText: t(o), oTitle: fs(o.querySelector('h2')), oBody: fs(o.querySelector('[data-ax-outcome-key]').parentElement), oBrand: fs(o.querySelector('[data-ax-outcome-brand]')), oMid: ((r) => Math.round(r.left + r.width / 2))(o.querySelector('h2').getBoundingClientRect()),
         heroIcons: ['.ax-nudge-down', '.ax-nudge-up', '.ax-glint'].every((q) => document.querySelector(`[data-ax-hero-card] ${q}`)),
         oBold: [...o.querySelectorAll('[data-ax-outcome-key] b')].map((b) => t(b)),
       }
@@ -80,7 +80,10 @@ for (const W of [390, 1280]) {
     ok('마지막 정리 제목', extra.oH2 === '그래서, 우리 회사에 AX를 도입하면?', extra.oH2)
     ok('마지막 정리 문구 원문 그대로', extra.oText === '그래서, 우리 회사에 AX를 도입하면? 같은 인원으로 더 많은 고객과 업무를 처리하고, 놓치던 고객과 기회를 매출로 연결할 수 있는 구조를 만들고, 대표가 일일이 챙기지 않아도 일이 이어집니다. 밖에서도 휴대폰 하나면 우리 회사가 지금 어떻게 돌아가고 있는지 한눈에 볼 수 있습니다. 그리고 이런 변화가 쌓여 매출·정책자금·지원사업·투자로 이어질 수 있는 회사의 경쟁력과 성장 증거가 됩니다. AI를 도입하는 데서 끝내지 않습니다. 회사를 한 단계 더 성장시킵니다.', extra.oText)
     ok('강조: 매출·정책자금·지원사업·투자 · 회사의 경쟁력과 성장 증거', extra.oBold.join('|') === '매출·정책자금·지원사업·투자|회사의 경쟁력과 성장 증거', extra.oBold.join('|'))
-    ok('두 구간 글자는 히어로 제목보다 작게', extra.cSize < extra.hero && extra.oSize < extra.hero, `${extra.cSize}/${extra.oSize} < ${extra.hero}`)
+    // 대표님 요청(2026-10): 폰은 히어로 메인 문구 크기를 기준으로 큼직하게, PC는 처음 크기(제목 36.8 · 항목 20.8 · 문단 22.4px)의 1.2배
+    ok('두 구간 제목은 히어로 제목 크기를 넘지 않음', extra.cTitle <= extra.hero + 0.5 && extra.oTitle <= extra.hero + 0.5, `${extra.cTitle}/${extra.oTitle} ≤ ${extra.hero}`)
+    ok('고민 항목·정리 문단은 큼직하게(24px 이상)', extra.cItem >= 24 && extra.oBody >= 24, `${extra.cItem}/${extra.oBody}`)
+    ok('마지막 두 문장이 정리 구간에서 가장 큼', extra.oBrand >= extra.oTitle && extra.oBrand > extra.oBody, `${extra.oBrand} ≥ ${extra.oTitle} > ${extra.oBody}`)
     ok('두 구간 제목은 가운데 정렬', Math.abs(extra.cMid - extra.vw / 2) <= 2 && Math.abs(extra.oMid - extra.vw / 2) <= 2, `${extra.cMid}/${extra.oMid}/${extra.vw / 2}`)
     ok('히어로 상자 아이콘: 화살표 아래·위로 움직임 · 별 반짝임', extra.heroIcons)
     // 스크롤 등장 — 화면에 들어오면 하나씩 떠올라 결국 모두 보인다(가리고 끝나지 않는다)
