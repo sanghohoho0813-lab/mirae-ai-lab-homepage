@@ -26,6 +26,8 @@ type ConsultBody = {
   context?: ContextRow[]
   /** 구조화 응답(진행방식·자금계획·AX 문항·동의) — Supabase consult_leads 저장용 */
   structured?: Record<string, unknown>
+  /** 스팸 차단용 함정 칸 — 화면에서 숨겨져 사람은 비워 두고, 자동 입력 봇만 채운다(출시 알림 신청 폼) */
+  website?: unknown
 }
 
 /** 신청 데이터를 Supabase consult_leads 에 저장 (비치명적 — 실패해도 이메일 발송은 계속) */
@@ -188,6 +190,11 @@ export default async function handler(req: any, res: any) {
       return res
         .status(400)
         .json({ ok: false, message: '요청 본문(JSON)을 해석할 수 없습니다.', debugCode: 'bad_body', detail: detailOf(e) })
+    }
+
+    // 함정 칸이 채워졌으면 봇 — 저장·메일 없이 성공처럼 답한다(봇이 다시 시도하지 않게)
+    if (typeof body.website === 'string' && body.website.trim()) {
+      return res.status(200).json({ ok: true, message: '상담 신청이 접수됐어요. 확인하고 빠르게 연락드릴게요.' })
     }
 
     const name = (body.name ?? '').trim().slice(0, 80)

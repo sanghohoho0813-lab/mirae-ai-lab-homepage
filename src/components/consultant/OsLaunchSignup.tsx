@@ -1,6 +1,8 @@
 // 컨설턴트 운영 OS 출시 알림 신청 — 이름 · 소속 · 이메일 · 연락처만 받는다(영상 끝 안내와 같은 네 칸).
-// 새 서버 함수를 만들지 않고 기존 문의 메일(/api/inquiry)로 보낸다:
-//   contact = 이메일(답장 주소가 되도록) · role = 소속 · 필수인 repetitiveTask/message 에는 신청 내용을 채운다.
+// 새 서버 함수를 만들지 않고 기존 상담 신청(/api/consult)으로 보낸다(대표님 요청 2026-10: 운영 OS 에 알림으로 뜨게):
+//   /api/consult 가 메일을 보내고 Supabase consult_leads 에 저장 → 운영 OS 의 DB 트리거(bridge_on_consult_lead)가
+//   customer_events 에 '상담 신청' 으로 올려 상담신청함 · 알림 종 · 메뉴 숫자에 뜬다.
+//   contact = '이메일 / 연락처'(답장 주소는 이메일) · company = 소속 · source · program 으로 '출시 알림 신청' 임을 표시한다.
 import { useState, type FormEvent } from 'react'
 import { consultLinks } from '../../config/businessInfo'
 import { postJson } from '../../lib/apiFetch'
@@ -13,6 +15,8 @@ const input =
 const label = 'mb-2 block text-base font-semibold text-slate-800'
 
 export const OS_SIGNUP_ID = 'signup'
+/** 운영 OS 상담신청함 '유입 경로' · 메일 제목에 그대로 보인다 */
+export const OS_SIGNUP_SOURCE = '컨설턴트 운영 OS 출시 알림'
 
 export default function OsLaunchSignup() {
   const [status, setStatus] = useState<Status>('idle')
@@ -26,13 +30,18 @@ export default function OsLaunchSignup() {
     setStatus('submitting')
     setMsg('')
     try {
-      await postJson('/api/inquiry', {
+      await postJson('/api/consult', {
         name: f.name,
-        contact: f.email,
-        role: f.org,
-        toolType: '컨설턴트 운영 OS · 출시 알림 신청',
-        repetitiveTask: '출시 알림 신청',
+        contact: `${f.email} / ${f.phone}`,
+        company: f.org,
+        source: OS_SIGNUP_SOURCE,
         message: `컨설턴트 운영 OS(미래AI랩 OS) 출시 알림 신청\n이름: ${f.name}\n소속: ${f.org}\n이메일: ${f.email}\n연락처: ${f.phone}`,
+        context: [
+          { label: '이메일', value: f.email },
+          { label: '연락처', value: f.phone },
+        ],
+        structured: { program: '출시 알림 신청' },
+        page: typeof window !== 'undefined' ? window.location.href : '',
         website: f.website ?? '',
       })
       setStatus('success')

@@ -8,9 +8,9 @@ const b = await launch()
 for (const W of [390, 1280]) {
   h(`컨설턴트 페이지 — 영상 '준비 중' · 출시 알림 신청 · ${W}px`)
   {
-    let sent = null
+    let sent = null, sentUrl = ''
     const { ctx, p, errs } = await newPage(b, W, W < 768 ? 844 : 900, {
-      api: (r) => { try { sent = JSON.parse(r.request().postData() || '{}') } catch {} r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }) },
+      api: (r) => { if (r.request().method() === 'POST') { sentUrl = r.request().url(); try { sent = JSON.parse(r.request().postData() || '{}') } catch {} } r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }) },
     })
     const media = []
     p.on('request', (r) => { if (/os-film/.test(r.url())) media.push(r.url()) })
@@ -32,7 +32,7 @@ for (const W of [390, 1280]) {
     await p.locator('#os-name').fill('홍길동'); await p.locator('#os-org').fill('테스트 컨설팅')
     await p.locator('#os-email').fill('qa@example.com'); await p.locator('#os-phone').fill('010-1234-5678')
     await p.locator('#signup button[type="submit"]').click(); await p.waitForTimeout(800)
-    ok('보낸 내용: 이름·소속·이메일(답장 주소)·연락처 · 함정 칸 비어 있음', sent && sent.name === '홍길동' && sent.role === '테스트 컨설팅' && sent.contact === 'qa@example.com' && String(sent.message).includes('010-1234-5678') && !sent.website, JSON.stringify(sent))
+    ok('보낸 곳 /api/consult(메일 + 운영 OS 상담신청함) · 이름·소속·이메일/연락처 · 출시 알림 표시 · 함정 칸 비어 있음', sentUrl.endsWith('/api/consult') && sent && sent.name === '홍길동' && sent.company === '테스트 컨설팅' && sent.contact === 'qa@example.com / 010-1234-5678' && sent.source === '컨설턴트 운영 OS 출시 알림' && sent.structured?.program === '출시 알림 신청' && String(sent.message).includes('010-1234-5678') && !sent.website, JSON.stringify(sent))
     ok('신청 완료 안내', await p.locator('[data-os-signup-ok]').isVisible())
     ok('스팸 함정 칸은 화면·키보드에서 숨김', await p.locator('#signup input[name="website"]').evaluate((el) => el.tabIndex === -1 && el.closest('[aria-hidden="true"]') !== null && el.getBoundingClientRect().right < 0))
     ok('오류 없음', errs.length === 0, errs.join('|'))
