@@ -69,11 +69,12 @@ export default function VentureMvpFilm({
   const goSamples = () => document.getElementById(samplesAnchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return (
-    <section id="film" data-mvp-film className="relative scroll-mt-16 overflow-hidden bg-[#F4ECE4] text-[#171B20]">
+    <section id="film" data-mvp-film className="relative scroll-mt-16 overflow-hidden bg-[#F4ECE4] text-[#171B20] lg:[zoom:1.15] xl:[zoom:1.35]">
+      {/* PC 글자 크게(대표님 요청 2026-10) — 1.15배 · 1.35배(zoom). 영상 칸은 그만큼 좁혀 화면 높이를 넘지 않게 */}
       <div aria-hidden className="pointer-events-none absolute -right-28 top-10 h-[24rem] w-[24rem] rounded-full bg-[#D47A4A]/20 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-[18rem] w-[18rem] rounded-full bg-[#E8B89A]/35 blur-3xl" />
 
-      <div className="relative mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-16 md:grid md:grid-cols-[1fr_minmax(0,400px)] md:items-center md:gap-12 lg:gap-16">
+      <div className="relative mx-auto max-w-6xl px-5 py-11 sm:px-6 sm:py-16 md:grid md:grid-cols-[1fr_minmax(0,400px)] md:items-center md:gap-12 lg:grid-cols-[1fr_minmax(0,340px)] lg:gap-16 xl:grid-cols-[1fr_minmax(0,310px)]">
         <div className="text-center md:text-left">
           <p className="inline-flex items-center gap-2 rounded-full bg-[#171B20] px-4 py-2 text-[0.98rem] font-black text-white shadow-md sm:text-[1.02rem]">
             <span aria-hidden className="relative flex h-2.5 w-2.5">
@@ -117,7 +118,7 @@ export default function VentureMvpFilm({
           <div
             ref={boxRef}
             data-mvp-video-box
-            className="relative mx-auto w-full max-w-[min(100%,calc(72svh*9/16))] rounded-[1.4rem] p-1.5 shadow-[0_30px_70px_-20px_rgba(200,97,46,0.55)] ring-2 ring-[#D47A4A]/70 md:max-w-[400px]"
+            className="relative mx-auto w-full max-w-[min(100%,calc(72svh*9/16))] rounded-[1.4rem] p-1.5 shadow-[0_30px_70px_-20px_rgba(200,97,46,0.55)] ring-2 ring-[#D47A4A]/70 md:max-w-[400px] lg:max-w-[340px] xl:max-w-[310px]"
           >
             <video
               ref={videoRef}

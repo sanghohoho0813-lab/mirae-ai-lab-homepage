@@ -22,7 +22,7 @@ const h2Light = 'break-keep text-[1.6rem] font-black leading-tight text-slate-90
  *  승인·선정을 약속하는 표현은 절대 쓰지 않는다('경쟁력 있는 회사로' 까지만). */
 // 첫 화면 상자 세 칸 — 글 대신 큰 화살표로 '무엇이 달라지는지' 한눈에(시간·비용 ↓ · 매출 ↑ · 혁신기업)
 // 끝이 둥근 면 화살표(살구 → 구리 그라데이션, 끝이 진하게). 시간·비용은 아래로 · 매출은 위로 살짝씩 움직이고, 혁신기업 별은 은은하게 반짝인다.
-const ARROW = 'h-[1.925rem] w-[1.925rem] sm:h-[2.2rem] sm:w-[2.2rem]'
+const ARROW = 'h-[1.925rem] w-[1.925rem] sm:h-[2.2rem] sm:w-[2.2rem] lg:h-[2.64rem] lg:w-[2.64rem]'
 const ARROW_PATH =
   'M12 2.6a1.9 1.9 0 0 1 1.9 1.9v10.05l3.35-3.35a1.9 1.9 0 1 1 2.69 2.69l-6.6 6.6a1.9 1.9 0 0 1-2.69 0l-6.6-6.6a1.9 1.9 0 1 1 2.69-2.69l3.35 3.35V4.5A1.9 1.9 0 0 1 12 2.6z'
 const STAR_PATH =
@@ -76,10 +76,10 @@ export function AxHeroV2() {
           PC 는 3.5rem 만 덜어 제목이 경계에 살짝 걸치게 둔다.
           320px 같은 작은 화면·세로가 짧은 폰(높이 760px 이하)은 위 여백부터 줄여 한 화면에 담는다. */}
       {/* 폰에서는 하단 고정 바(약 64px)가 처음부터 떠 있으므로 아래 여백을 그만큼 더 둔다 (pb-24 / 작은 화면 pb-20) */}
-      <div className={`relative flex min-h-[calc(100svh-53px)] sm:min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-24 pt-12 max-[359px]:pb-20 max-[359px]:pt-7 [@media(max-height:700px)]:pb-20 [@media(max-height:700px)]:pt-7 [@media(max-width:639px)_and_(max-height:760px)]:pt-7 sm:px-6 sm:pb-12 sm:pt-14`}>
+      <div className={`relative flex min-h-[calc(100svh-53px)] sm:min-h-[calc(100svh-53px-3.5rem)] w-full flex-col items-start justify-center ${wrap} px-5 pb-24 pt-12 max-[359px]:pb-20 max-[359px]:pt-7 [@media(max-height:700px)]:pb-20 [@media(max-height:700px)]:pt-7 [@media(max-width:639px)_and_(max-height:760px)]:pt-7 sm:px-6 sm:pb-12 sm:pt-14 lg:max-w-7xl`}>
         {/* 윗배지(경영컨설턴트가 설계하는 50인 미만 중소기업 맞춤 AX)는 뺐다 — 서비스 선택 화면과 헤더에서 이미 본다 */}
         {/* 정체성 한 문장 — 모바일은 PC 대비 체감이 작지 않게 크게 유지한다 */}
-        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] max-[359px]:text-[2.0rem] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)]">
+        <h1 style={{ animationDelay: '0.16s' }} className="hero-anim max-w-4xl break-keep sm:max-w-5xl text-[clamp(2.255rem,8.36vw,3.52rem)] max-[359px]:text-[2.0rem] font-black leading-[1.3] tracking-normal text-[#FAFAF8] [text-rendering:geometricPrecision] [text-shadow:0_1px_0_rgba(255,255,255,0.08),0_16px_34px_rgba(0,0,0,0.34)] sm:mt-9 sm:text-[clamp(2.75rem,5.28vw,3.96rem)] lg:max-w-none lg:text-[clamp(3.3rem,5.9vw,4.75rem)]">
           {/* PC 는 두 줄. 폰은 말 덩어리대로 나뉜다 — 가운뎃점은 앞 낱말에 붙여 두고(줄 맨 앞에 '·' 가 오지 않게),
               점 뒤(<wbr />)에서만 끊는다 */}
           <span className={NW}>정책자금·</span>
@@ -96,23 +96,23 @@ export function AxHeroV2() {
         {/* 글자가 많으면 눈에 안 들어와서(대표님 피드백), 2주 기술사업 빌드 첫 화면처럼 '짧은 한 문단 + 상자 하나' 로 둔다.
             문단: 왜(심사위원·투자자는 이미 시도하고 실제로 보여 주는 혁신기업을 더 선호한다).
             상자: 무엇을 해 주나(AI와 데이터로 일하는 회사로 → 시간·비용 ↓ · 매출 ↑ · 혁신기업으로) — 글 대신 큰 화살표로 한눈에 */}
-        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-3xl break-keep text-[1.22rem] font-medium leading-[1.7] text-[#E7EAEE] [@media(max-width:639px)_and_(max-height:700px)]:mt-5 max-[359px]:mt-5 max-[359px]:text-[1.08rem] sm:mt-8 sm:text-[1.4rem]">
+        <p style={{ animationDelay: '0.34s' }} className="hero-anim mt-7 max-w-3xl break-keep text-[1.22rem] font-medium leading-[1.7] text-[#E7EAEE] [@media(max-width:639px)_and_(max-height:700px)]:mt-5 max-[359px]:mt-5 max-[359px]:text-[1.08rem] sm:mt-8 sm:text-[1.4rem] lg:max-w-4xl lg:text-[1.68rem]">
           <span className={NW}>심사위원과 투자자는</span>{' '}
           <span className={NW}><b className="font-bold text-[#E8B89A]">이미 시도하고</b></span>{' '}
           <span className={NW}><b className="font-bold text-[#E8B89A]">실제로 보여 주는</b></span>{' '}
           <span className={NW}><b className="font-bold text-[#FAFAF8]">혁신기업</b>을</span> <span className={NW}>더 선호해요.</span>
         </p>
-        <div data-ax-hero-card style={{ animationDelay: '0.46s' }} className="hero-anim mt-7 w-full max-w-xl rounded-2xl border border-white/10 bg-white/[0.04] p-4 [@media(max-width:639px)_and_(max-height:700px)]:mt-5 [@media(max-width:639px)_and_(max-height:700px)]:py-3.5 max-[359px]:mt-5 sm:mt-8 sm:p-5">
-          <p className="break-keep text-[1.1rem] font-medium leading-snug text-slate-300 sm:text-[1.19rem]">
+        <div data-ax-hero-card style={{ animationDelay: '0.46s' }} className="hero-anim mt-7 w-full max-w-xl rounded-2xl border border-white/10 bg-white/[0.04] p-4 [@media(max-width:639px)_and_(max-height:700px)]:mt-5 [@media(max-width:639px)_and_(max-height:700px)]:py-3.5 max-[359px]:mt-5 sm:mt-8 sm:p-5 lg:max-w-[43rem] lg:p-6">
+          <p className="break-keep text-[1.1rem] font-medium leading-snug text-slate-300 sm:text-[1.19rem] lg:text-[1.43rem]">
             <span className={NW}>대표님의 회사를</span> <span className={NW}><b className="font-bold text-[#FAFAF8]">AI와 데이터로</b></span>{' '}
             <span className={NW}>일하는 회사로</span>
           </p>
           <ul className="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:gap-3">
             {AX_HERO_GAINS.map((g) => (
-              <li key={g.label} className="flex flex-col items-center rounded-xl bg-white/[0.05] px-1.5 py-3 text-center ring-1 ring-inset ring-white/10 [@media(max-width:639px)_and_(max-height:700px)]:py-2.5 sm:py-4">
-                <span className="whitespace-nowrap text-[clamp(0.95rem,4.3vw,1.12rem)] font-black text-[#FAFAF8] sm:text-[1.19rem]">{g.label}</span>
+              <li key={g.label} className="flex flex-col items-center rounded-xl bg-white/[0.05] px-1.5 py-3 text-center ring-1 ring-inset ring-white/10 [@media(max-width:639px)_and_(max-height:700px)]:py-2.5 sm:py-4 lg:py-5">
+                <span className="whitespace-nowrap text-[clamp(0.95rem,4.3vw,1.12rem)] font-black text-[#FAFAF8] sm:text-[1.19rem] lg:text-[1.43rem]">{g.label}</span>
                 <span aria-hidden className="my-1.5 text-[#E8B89A] [@media(max-width:639px)_and_(max-height:700px)]:my-1">{g.icon}</span>
-                <span className="whitespace-nowrap text-[clamp(0.84rem,3.75vw,0.97rem)] font-semibold text-slate-400 sm:text-[1.01rem]">{g.note}</span>
+                <span className="whitespace-nowrap text-[clamp(0.84rem,3.75vw,0.97rem)] font-semibold text-slate-400 sm:text-[1.01rem] lg:text-[1.21rem]">{g.note}</span>
               </li>
             ))}
           </ul>
@@ -141,7 +141,7 @@ export function AxConcerns() {
   return (
     <section ref={ref} id="concerns" data-ax-concerns className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
-      <div className={`relative w-full ${wrap} px-5 pb-24 pt-20 text-center sm:px-6 sm:pb-28 sm:pt-24`}>
+      <div className={`relative w-full ${wrap} px-5 pb-24 pt-20 text-center sm:px-6 sm:pb-28 sm:pt-24 lg:max-w-6xl`}>
         <h2 data-reveal className={bigTitle('ax')}>
           <span className={NW}>혹시, <span className={EM}>이런 고민</span>을</span> <span className={NW}>하고 계시진 않나요?</span>
         </h2>
@@ -215,7 +215,8 @@ export function AxOutcome() {
  *  ⚠️ 직접 만든 예시 화면과 실제 기업 프로젝트는 섞지 않는다. */
 export function AxSamplesBand() {
   return (
-    <section id="samples" className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
+    <section id="samples" className="relative scroll-mt-16 overflow-hidden bg-[#050B11] lg:[zoom:1.15] xl:[zoom:1.4]">
+      {/* PC 글자 크게 — 영상 구간과 같이 1.15배 · 1.4배(zoom) */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16`}>
         <p className="text-[1.02rem] font-black tracking-tight text-[#D9824F] sm:text-[1.1rem]">AX PREVIEW</p>

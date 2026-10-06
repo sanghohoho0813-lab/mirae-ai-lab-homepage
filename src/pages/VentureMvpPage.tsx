@@ -172,7 +172,8 @@ export default function VentureMvpPage() {
 
         {/* 마지막 CTA — FAQ 가 끝나자마자 이어지도록 위쪽 경계선·여백을 두지 않는다 */}
         <div ref={ctaRef}>
-          <section className="bg-[#171B20] text-white">
+          <section className="bg-[#171B20] text-white lg:[zoom:1.15] xl:[zoom:1.4]">
+            {/* PC 글자 크게(대표님 요청 2026-10) — 1.15배 · 1.4배(zoom) */}
             <div className="mx-auto max-w-[880px] px-5 py-14 text-center sm:px-6 sm:py-16">
               <p className="text-[1.02rem] font-bold text-[#E8B89A] sm:text-[1.1rem]">우리 회사도 가능할까요?</p>
               <h2 className="mt-2.5 text-[1.65rem] font-black leading-tight tracking-tight sm:text-[2.1rem]">대표님 회사를 알려주세요.</h2>

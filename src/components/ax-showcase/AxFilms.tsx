@@ -86,7 +86,8 @@ export const playFilm = (id: string) => window.dispatchEvent(new CustomEvent('ax
 export function AxFilmIntro({ samplesAnchor, realAnchor }: { samplesAnchor: string; realAnchor: string }) {
   const film = FILMS[0]
   return (
-    <section id="films" data-ax-films className="relative scroll-mt-16 overflow-hidden bg-[#F4ECE4] text-[#171B20]">
+    <section id="films" data-ax-films className="relative scroll-mt-16 overflow-hidden bg-[#F4ECE4] text-[#171B20] lg:[zoom:1.15] xl:[zoom:1.4]">
+      {/* PC 글자 크게(대표님 요청 2026-10): 1024px~ 1.15배 · 1280px~ 1.4배로 구간 전체를 비율 그대로 키운다(zoom). 영상 칸은 그만큼 좁혀 화면 높이를 넘지 않게 */}
       <div aria-hidden className="pointer-events-none absolute -right-28 top-10 h-[24rem] w-[24rem] rounded-full bg-[#D47A4A]/20 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute -left-24 top-[45%] h-[18rem] w-[18rem] rounded-full bg-[#E8B89A]/35 blur-3xl" />
 
@@ -165,7 +166,7 @@ export function AxFilmIntro({ samplesAnchor, realAnchor }: { samplesAnchor: stri
 /** 영상 2 — 실제 프로젝트 다음, FAQ 바로 앞(살구색). 금액은 실제 사례를 본 뒤에 */
 export function AxFilmCost({ diagnosisHref }: { diagnosisHref: string }) {
   return (
-    <section data-ax-films-cost className="relative overflow-hidden bg-[#F4ECE4] text-[#171B20]">
+    <section data-ax-films-cost className="relative overflow-hidden bg-[#F4ECE4] text-[#171B20] lg:[zoom:1.15] xl:[zoom:1.4]">
       <div aria-hidden className="pointer-events-none absolute -left-24 top-16 h-[20rem] w-[20rem] rounded-full bg-[#D47A4A]/15 blur-3xl" />
       <div aria-hidden className="relative mx-auto h-px max-w-4xl bg-[#171B20]/10" />
       <FilmBlock
@@ -269,7 +270,7 @@ export function FilmBlock({
     <div
       id={film.id}
       {...dataAttr}
-      className={`relative mx-auto max-w-6xl scroll-mt-16 px-5 py-11 sm:px-6 sm:py-16 md:grid md:items-center md:gap-12 lg:gap-16 ${flip ? 'md:grid-cols-[minmax(0,400px)_1fr]' : 'md:grid-cols-[1fr_minmax(0,400px)]'}`}
+      className={`relative mx-auto max-w-6xl scroll-mt-16 px-5 py-11 sm:px-6 sm:py-16 md:grid md:items-center md:gap-12 lg:gap-16 ${flip ? 'md:grid-cols-[minmax(0,400px)_1fr] lg:grid-cols-[minmax(0,340px)_1fr] xl:grid-cols-[minmax(0,300px)_1fr]' : 'md:grid-cols-[1fr_minmax(0,400px)] lg:grid-cols-[1fr_minmax(0,340px)] xl:grid-cols-[1fr_minmax(0,300px)]'}`}
     >
       <div className={`text-center md:text-left ${flip ? 'md:order-2' : ''}`}>
         <p className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-1.5 text-[0.98rem] font-black text-[#B4532A] ring-1 ring-[#D47A4A]/40">
@@ -321,7 +322,7 @@ export function FilmBlock({
         <div
           ref={boxRef}
           data-ax-video-box
-          className="relative mx-auto w-full max-w-[min(100%,calc(72svh*9/16))] rounded-[1.4rem] p-1.5 shadow-[0_30px_70px_-20px_rgba(200,97,46,0.55)] ring-2 ring-[#D47A4A]/70 md:max-w-[400px]"
+          className="relative mx-auto w-full max-w-[min(100%,calc(72svh*9/16))] rounded-[1.4rem] p-1.5 shadow-[0_30px_70px_-20px_rgba(200,97,46,0.55)] ring-2 ring-[#D47A4A]/70 md:max-w-[400px] lg:max-w-[340px] xl:max-w-[300px]"
         >
           <video
             ref={videoRef}

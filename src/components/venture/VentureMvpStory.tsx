@@ -4,6 +4,7 @@
 // ⚠️ 문구는 대표님 원문 그대로. 세제혜택은 반드시 '요건 충족 시'(자세한 요건·예상 절감액은 아래 FAQ). 선정·승인을 약속하지 않는다.
 import { useRef } from 'react'
 import { useReveal } from '../../lib/useReveal'
+import { scrollToSection } from '../../lib/businessPageScroll'
 import { ConcernList, ConcernsNext, Divider, EM, Mark, NW, OUT_BODY, OUT_LINE, bigTitle, brandCls, type Concern } from '../ax-showcase/bigStory'
 
 const wrap = 'mx-auto max-w-6xl'
@@ -118,6 +119,9 @@ export function VentureMvpOutcome() {
           </ul>
           <a
             href="#faq"
+            onClick={(e) => {
+              if (scrollToSection('faq', 'smooth')) e.preventDefault()
+            }}
             data-reveal
             data-mvp-benefits-faq
             className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[1.05rem] font-bold text-[#E8B89A] underline decoration-[#E8B89A]/40 underline-offset-4 transition-colors hover:text-white sm:text-[1.12rem]"

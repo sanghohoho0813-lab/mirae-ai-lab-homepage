@@ -31,7 +31,8 @@ export default function VentureMvpExamples() {
   })
 
   return (
-    <section id={VENTURE_MVP_EXAMPLES_ID} data-mvp-examples className="scroll-mt-16 border-b border-[#E7EAEE] bg-[#FAFAF8]">
+    <section id={VENTURE_MVP_EXAMPLES_ID} data-mvp-examples className="scroll-mt-16 border-b border-[#E7EAEE] bg-[#FAFAF8] lg:[zoom:1.15] xl:[zoom:1.4]">
+      {/* PC 글자 크게(대표님 요청 2026-10) — 1.15배 · 1.4배(zoom) */}
       <div className="mx-auto max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
         <p className="text-[1rem] font-black text-[#A84F26]">예를 들면</p>
         <h2 className="mt-2 break-keep text-[1.75rem] font-black leading-tight tracking-tight text-[#171B20] sm:text-[2.2rem]">

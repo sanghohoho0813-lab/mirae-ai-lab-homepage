@@ -40,8 +40,8 @@ export function Mark({ children }: { children: string }) {
 /** 구간 제목 — 폰은 그 페이지 히어로 제목 크기(36px 안팎), PC 는 44px. hero: 그 페이지 히어로 제목 크기 상한 */
 export const bigTitle = (hero: 'ax' | 'mvp') =>
   hero === 'ax'
-    ? 'break-keep text-[clamp(1.95rem,9.3vw,2.255rem)] font-black leading-[1.3] text-[#FAFAF8] sm:text-[2.76rem]'
-    : 'break-keep text-[1.95rem] font-black leading-[1.3] text-[#FAFAF8] min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[2.76rem]'
+    ? 'break-keep text-[clamp(1.95rem,9.3vw,2.255rem)] font-black leading-[1.3] text-[#FAFAF8] sm:text-[2.76rem] lg:text-[3.3rem]'
+    : 'break-keep text-[1.95rem] font-black leading-[1.3] text-[#FAFAF8] min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[3.3rem]'
 
 /** 마지막 정리 문단 묶음 — 폰 28.8px · PC 26.9px(처음 22.4px 의 1.2배), 모두 굵게 */
 export const OUT_BODY =
@@ -49,8 +49,8 @@ export const OUT_BODY =
 
 /** 마지막 두 문장(핵심 메시지) — 정리 구간에서 가장 크다. hero: 그 페이지 히어로 제목 크기 상한 */
 export const brandCls = (hero: 'ax' | 'mvp') =>
-  `mx-auto mt-10 max-w-4xl break-keep font-black leading-[1.32] text-[#FAFAF8] sm:mt-12 ${
-    hero === 'ax' ? 'text-[clamp(1.95rem,9.3vw,2.3rem)] sm:text-[2.76rem] lg:text-[3.12rem]' : 'text-[1.95rem] min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[3.05rem]'
+  `mx-auto mt-10 max-w-4xl break-keep font-black leading-[1.32] text-[#FAFAF8] sm:mt-12 lg:max-w-6xl ${
+    hero === 'ax' ? 'text-[clamp(1.95rem,9.3vw,2.3rem)] sm:text-[2.76rem] lg:text-[3.6rem]' : 'text-[1.95rem] min-[380px]:text-[2.15rem] sm:text-[2.6rem] lg:text-[3.5rem]'
   }`
 
 /** 짧은 구리색 선(가운데에서 양옆으로 그어진다) — 마지막 두 문장 위 */
@@ -81,9 +81,9 @@ export function ConcernList({ items, data }: { items: readonly Concern[]; data: 
             className={`relative flex flex-col justify-center py-[15svh] lg:py-14 ${odd && i === items.length - 1 ? 'lg:col-span-2 lg:mx-auto lg:w-1/2' : ''}`}
           >
             <span aria-hidden className={`${line} top-0`} />
-            <p className="text-[1.2rem] font-black tabular-nums tracking-[0.12em] text-[#D9824F] sm:text-[1.26rem]">{String(i + 1).padStart(2, '0')}</p>
+            <p className="text-[1.2rem] font-black tabular-nums tracking-[0.12em] text-[#D9824F] sm:text-[1.26rem] lg:text-[1.5rem]">{String(i + 1).padStart(2, '0')}</p>
             {/* 모두 굵게 · 핵심 문장은 살구색. 원문 줄마다 따로(줄 안에서는 고르게 나눠 접는다) */}
-            <p className="mt-4 break-keep text-[clamp(1.45rem,7vw,1.7rem)] font-bold leading-[1.6] text-[#E7EAEE] sm:text-[1.7rem] lg:text-[1.56rem]">
+            <p className="mt-4 break-keep text-[clamp(1.45rem,7vw,1.7rem)] font-bold leading-[1.6] text-[#E7EAEE] sm:text-[1.7rem] lg:text-[1.87rem]">
               <span className={LINE}>{keepDots(c.lead)}</span>
               {c.mid && <span className={LINE}>{keepDots(c.mid)}</span>}
               {c.key.map((k) => (
@@ -116,7 +116,7 @@ export function ConcernsNext({ data, children }: { data: string; children: React
     <p
       data-reveal
       {...{ [`data-${data}-concerns-next`]: '' }}
-      className="mx-auto mt-[12svh] max-w-3xl break-keep text-[clamp(1.35rem,6.4vw,1.55rem)] font-bold leading-[1.65] text-[#E7EAEE] sm:text-[1.68rem] lg:mt-24"
+      className="mx-auto mt-[12svh] max-w-3xl break-keep text-[clamp(1.35rem,6.4vw,1.55rem)] font-bold leading-[1.65] text-[#E7EAEE] sm:text-[1.68rem] lg:mt-24 lg:text-[2rem]"
     >
       {children}
     </p>

@@ -134,7 +134,8 @@ export default function AxStartPage() {
 
       {/* 7. 마무리 — 버튼 두 개만 */}
       <div ref={bridgeRef}>
-        <section id="cta" className="border-t border-[#343B44] bg-[#171B20]">
+        <section id="cta" className="border-t border-[#343B44] bg-[#171B20] lg:[zoom:1.15] xl:[zoom:1.3]">
+          {/* PC 글자 크게 — 1.15배 · 1.3배(zoom) */}
           <div className="mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
             <h2 className="break-keep text-[1.7rem] font-black leading-[1.4] tracking-[-0.015em] text-white sm:text-[2.1rem]">
               다음 단계로 가려면,<br className="hidden sm:block" /> 지금 무엇을 보여줘야 할까요?

@@ -65,7 +65,8 @@ const FEATURED = ['medwaste', 'wellness']
 export default function AxRealProjectsFilm({ diagnosisHref }: { diagnosisHref: string }) {
   const rest = DEEP_PROJECTS.filter((p) => !FEATURED.includes(p.slug))
   return (
-    <section id={AX_REAL_FILM_ID} data-ax-real-film className="relative scroll-mt-16 overflow-hidden bg-[#F4ECE4] text-[#171B20]">
+    <section id={AX_REAL_FILM_ID} data-ax-real-film className="relative scroll-mt-16 overflow-hidden bg-[#F4ECE4] text-[#171B20] lg:[zoom:1.15] xl:[zoom:1.4]">
+      {/* PC 글자 크게 — 영상 1·2 구간과 같이 1.15배 · 1.4배(zoom) */}
       <div aria-hidden className="pointer-events-none absolute -right-28 top-10 h-[24rem] w-[24rem] rounded-full bg-[#D47A4A]/20 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute -left-24 top-[55%] h-[18rem] w-[18rem] rounded-full bg-[#E8B89A]/35 blur-3xl" />
 
