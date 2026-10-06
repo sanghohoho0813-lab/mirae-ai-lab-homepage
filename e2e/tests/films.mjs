@@ -48,9 +48,39 @@ for (const W of [390, 1280]) {
     const { ctx, p, errs } = await newPage(b, W, W < 768 ? 844 : 900)
     await go(p, AX)
     const sec = p.locator('#real-projects-film')
-    const order = ['film-1', 'samples', 'real-projects-film', 'film-2', 'faq', 'cta']
+    const order = ['concerns', 'film-1', 'samples', 'real-projects-film', 'film-2', 'outcome', 'faq', 'cta']
     const tops = await p.evaluate((ids) => ids.map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? null), order)
     ok(`구간 순서 ${order.join(' → ')}`, tops.every((t, i) => t !== null && (i === 0 || t > tops[i - 1])), tops.map(Math.round).join(' < '))
+    // 히어로 다음 '고민 4개' · FAQ 앞 '그래서 AX를 도입하면?' — 문구는 대표님 원문 그대로, 글자는 히어로 제목보다 작게, 왼쪽 기준선은 히어로와 같게
+    const extra = await p.evaluate(() => {
+      const fs = (el) => parseFloat(getComputedStyle(el).fontSize)
+      const h1 = document.querySelector('h1'), c = document.getElementById('concerns'), o = document.getElementById('outcome')
+      const t = (el) => el.innerText.replace(/\s+/g, ' ').trim()
+      return {
+        hero: fs(h1), heroL: Math.round(h1.getBoundingClientRect().left),
+        cH2: t(c.querySelector('h2')), cItems: [...c.querySelectorAll('[data-ax-concern]')].map((li) => t(li)), cNext: t(c.querySelector('[data-ax-concerns-next]')),
+        cSize: Math.max(fs(c.querySelector('h2')), fs(c.querySelector('[data-ax-concerns-next]'))), cL: Math.round(c.querySelector('h2').getBoundingClientRect().left),
+        cols: new Set([...c.querySelectorAll('[data-ax-concern]')].map((li) => Math.round(li.getBoundingClientRect().left))).size,
+        bold: [...c.querySelectorAll('[data-ax-concern] b')].map((b) => t(b)),
+        oH2: t(o.querySelector('h2')), oText: t(o), oSize: Math.max(fs(o.querySelector('h2')), fs(o.querySelector('[data-ax-outcome-brand]'))), oL: Math.round(o.querySelector('h2').getBoundingClientRect().left),
+        oBold: [...o.querySelectorAll('[data-ax-outcome-key] b')].map((b) => t(b)),
+      }
+    })
+    ok('고민 구간 제목', extra.cH2 === '혹시, 이런 고민을 하고 계시진 않나요?', extra.cH2)
+    ok('고민 4개 = 01~04 · 원문 그대로', extra.cItems.join('|') === [
+      '01 지금은 매출이 나오고 있지만, 지금 방식 그대로 앞으로도 계속 성장할 수 있을지 불안하다.',
+      '02 AI를 도입하지 않으면 뒤처질 것 같은데, 챗GPT·클로드를 쓰는 수준을 넘어 우리 회사 업무를 어디부터 어떻게 바꿔야 할지 모르겠다.',
+      '03 매출은 늘어도 사람·관리비·리스크까지 같이 늘어, 정작 이익률은 좀처럼 좋아지지 않는다.',
+      '04 정책자금·지원사업·투자 같은 기회가 와도, 왜 우리 회사가 경쟁력 있고 선택받아야 하는지 보여줄 근거가 부족하다.',
+    ].join('|'), JSON.stringify(extra.cItems))
+    ok('항목마다 핵심 문장 하나만 굵게', extra.bold.length === 4, JSON.stringify(extra.bold))
+    ok('연결 문구 원문 그대로', extra.cNext === '하나라도 해당된다면, 우리 회사가 AX로 어떻게 달라질 수 있는지 영상으로 먼저 보여드릴게요.', extra.cNext)
+    ok(`고민 4개 배치: ${W < 1024 ? '1열' : '2×2'}`, extra.cols === (W < 1024 ? 1 : 2), String(extra.cols))
+    ok('마지막 정리 제목', extra.oH2 === '그래서, 우리 회사에 AX를 도입하면?', extra.oH2)
+    ok('마지막 정리 문구 원문 그대로', extra.oText === '그래서, 우리 회사에 AX를 도입하면? 같은 인원으로 더 많은 고객과 업무를 처리하고, 놓치던 고객과 기회를 매출로 연결할 수 있는 구조를 만들고, 대표가 일일이 챙기지 않아도 일이 이어집니다. 밖에서도 휴대폰 하나면 우리 회사가 지금 어떻게 돌아가고 있는지 한눈에 볼 수 있습니다. 그리고 이런 변화가 쌓여 매출·정책자금·지원사업·투자로 이어질 수 있는 회사의 경쟁력과 성장 증거가 됩니다. AI를 도입하는 데서 끝내지 않습니다. 회사를 한 단계 더 성장시킵니다.', extra.oText)
+    ok('강조: 매출·정책자금·지원사업·투자 · 회사의 경쟁력과 성장 증거', extra.oBold.join('|') === '매출·정책자금·지원사업·투자|회사의 경쟁력과 성장 증거', extra.oBold.join('|'))
+    ok('두 구간 글자는 히어로 제목보다 작게', extra.cSize < extra.hero && extra.oSize < extra.hero, `${extra.cSize}/${extra.oSize} < ${extra.hero}`)
+    ok('두 구간 왼쪽 기준선 = 히어로 제목', extra.cL === extra.heroL && extra.oL === extra.heroL, `${extra.cL}/${extra.oL}/${extra.heroL}`)
     const picks = await p.$$eval('[data-ax-film-pick]', (bs) => bs.map((x) => { const r = x.getBoundingClientRect(); return { id: x.dataset.axFilmPick, no: x.querySelector('span').textContent.trim(), top: Math.round(r.top), left: Math.round(r.left) } }))
     ok('골라 보기 번호 1~4 = 페이지 순서(영상 1 → 22개 화면 → 실제 프로젝트 → 영상 2)', picks.map((x) => x.no).join('') === '1234' && picks.map((x) => x.id).join() === 'film-1,samples,real-projects-film,film-2', JSON.stringify(picks.map((x) => x.no + x.id)))
     ok('골라 보기는 읽는 순서대로 놓임(왼쪽→오른쪽, 위→아래)', picks.every((x, i) => i === 0 || x.top > picks[i - 1].top || (x.top === picks[i - 1].top && x.left > picks[i - 1].left)))

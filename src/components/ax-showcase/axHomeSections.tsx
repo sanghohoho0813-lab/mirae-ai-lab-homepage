@@ -109,6 +109,108 @@ export function AxHeroV2() {
   )
 }
 
+// 히어로 아래 구간 제목 — '직접 만든 화면 22개' 제목과 같은 크기(히어로 제목보다 작게)
+const SUB_H2 = 'break-keep text-[1.75rem] font-black leading-[1.3] text-[#FAFAF8] sm:text-[2.3rem]'
+// 히어로 문단과 같은 글자(크기 · 굵기 · 줄 간격)
+const LEAD_P = 'break-keep text-[1.22rem] font-medium leading-[1.7] max-[359px]:text-[1.08rem] sm:text-[1.4rem]'
+
+// 대표님 원문 그대로 — lead(앞 말) / mid(가운데 줄) / key(굵게, 핵심 문장). 줄은 원문 줄바꿈대로 나눈다
+const AX_CONCERNS = [
+  { lead: '지금은 매출이 나오고 있지만,', key: '지금 방식 그대로 앞으로도 계속 성장할 수 있을지 불안하다.' },
+  { lead: 'AI를 도입하지 않으면 뒤처질 것 같은데,', mid: '챗GPT·클로드를 쓰는 수준을 넘어', key: '우리 회사 업무를 어디부터 어떻게 바꿔야 할지 모르겠다.' },
+  { lead: '매출은 늘어도 사람·관리비·리스크까지 같이 늘어,', key: '정작 이익률은 좀처럼 좋아지지 않는다.' },
+  { lead: '정책자금·지원사업·투자 같은 기회가 와도,', mid: '왜 우리 회사가 경쟁력 있고 선택받아야 하는지', key: '보여줄 근거가 부족하다.' },
+] as const
+
+/** 히어로 바로 다음 · 영상 1 바로 위 — 영상을 보기 전에 '우리 회사 얘기'라고 느끼게 하는 짧은 공감 구간.
+ *  AX 설명이나 해결책은 말하지 않고 대표의 고민 4개만 보여 준 뒤 영상으로 넘긴다.
+ *  히어로와 같은 먹색 바탕 · 같은 폭(max-w-5xl) · 왼쪽 정렬. 카드 대신 얇은 선과 번호만, 항목 안 글자 크기는 한 가지(핵심 문장만 굵게). */
+export function AxConcerns() {
+  return (
+    <section id="concerns" data-ax-concerns className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
+      <div className={`relative w-full ${wrap} px-5 pb-14 pt-12 sm:px-6 sm:pb-20 sm:pt-16`}>
+        <h2 className={SUB_H2}>
+          <span className={NW}>혹시, <span className="text-[#E8B89A]">이런 고민</span>을</span> <span className={NW}>하고 계시진 않나요?</span>
+        </h2>
+        <ol className="mt-7 grid gap-x-12 gap-y-6 sm:mt-9 lg:grid-cols-2 lg:gap-y-8">
+          {AX_CONCERNS.map((c, i) => (
+            <li key={c.key} data-ax-concern className="border-t border-white/10 pt-5 sm:pt-6">
+              <p className="text-[0.95rem] font-black tabular-nums tracking-[0.08em] text-[#D9824F]">{String(i + 1).padStart(2, '0')}</p>
+              <p className="mt-2 break-keep text-[1.1rem] leading-[1.7] text-slate-300 sm:text-[1.19rem]">
+                {c.lead}
+                <br />
+                {'mid' in c && (
+                  <>
+                    {c.mid}
+                    <br />
+                  </>
+                )}
+                <b className="font-bold text-[#FAFAF8]">{c.key}</b>
+              </p>
+            </li>
+          ))}
+        </ol>
+        <p data-ax-concerns-next className={`mt-10 max-w-3xl text-[#E7EAEE] sm:mt-14 ${LEAD_P}`}>
+          하나라도 해당된다면,
+          <br />
+          <span className={NW}>우리 회사가 AX로</span> <span className={NW}>어떻게 달라질 수 있는지</span>
+          <br className="hidden sm:block" />{' '}
+          <b className="font-bold text-[#E8B89A]">
+            <span className={NW}>영상으로 먼저</span> <span className={NW}>보여드릴게요.</span>
+          </b>
+        </p>
+      </div>
+    </section>
+  )
+}
+
+/** FAQ 바로 앞 — '그래서 결국 뭐가 좋아지는데?'에 짧게 답하는 마지막 정리.
+ *  히어로와 같은 먹색 바탕 · 같은 폭 · 같은 강조색(살구 · 구리). 문단은 히어로 문단 글자 그대로,
+ *  '매출·정책자금·지원사업·투자' 와 '회사의 경쟁력과 성장 증거' 만 굵게, 맨 끝 두 문장을 가장 크게(히어로 제목보다는 작게). */
+export function AxOutcome() {
+  return (
+    <section id="outcome" data-ax-outcome className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
+      <div className={`relative w-full ${wrap} px-5 pb-16 pt-14 sm:px-6 sm:pb-24 sm:pt-20`}>
+        <h2 className={SUB_H2}>
+          <span className={NW}>그래서, 우리 회사에</span> <span className={`${NW} text-[#E8B89A]`}>AX를 도입하면?</span>
+        </h2>
+        <div className={`mt-7 max-w-3xl space-y-5 text-slate-300 sm:mt-9 sm:space-y-6 ${LEAD_P}`}>
+          <p>
+            같은 인원으로 더 많은 고객과 업무를 처리하고,
+            <br />
+            놓치던 고객과 기회를 매출로 연결할 수 있는 구조를 만들고,
+            <br />
+            대표가 일일이 챙기지 않아도 일이 이어집니다.
+          </p>
+          <p>
+            밖에서도 휴대폰 하나면
+            <br />
+            <span className={NW}>우리 회사가 지금</span> <span className={NW}>어떻게 돌아가고 있는지</span>
+            <br />
+            한눈에 볼 수 있습니다.
+          </p>
+          <p data-ax-outcome-key className="text-[#E7EAEE]">
+            그리고 이런 변화가 쌓여
+            <br />
+            <b className={`${NW} font-bold text-[#E8B89A]`}>매출·정책자금·지원사업·투자</b>로 <span className={NW}>이어질 수 있는</span>
+            <br />
+            <b className="font-bold text-[#FAFAF8]">회사의 경쟁력과 성장 증거</b>가 됩니다.
+          </p>
+        </div>
+        <p data-ax-outcome-brand className="mt-10 max-w-3xl break-keep border-t border-white/10 pt-8 text-[1.9rem] font-black leading-[1.35] text-[#FAFAF8] max-[359px]:text-[1.66rem] sm:mt-14 sm:pt-10 sm:text-[2.4rem] lg:text-[2.6rem]">
+          <span className={NW}>AI를 도입하는 데서</span> <span className={NW}>끝내지 않습니다.</span>
+          <br />
+          <span className="text-[#D47A4A]">
+            <span className={NW}>회사를 한 단계 더</span> <span className={NW}>성장시킵니다.</span>
+          </span>
+        </p>
+      </div>
+    </section>
+  )
+}
+
 /** 직접 만든 화면 22개 — 영상 1 바로 다음. 히어로와 같은 먹색 바탕에 두 줄로 흐른다(눌러서 실제 화면 열기).
  *  실제 기업 프로젝트(1편·2편 영상 + 그 밖의 4곳)는 이 다음 살구색 구간(AxRealProjectsFilm)으로 옮겼다.
  *  ⚠️ 직접 만든 예시 화면과 실제 기업 프로젝트는 섞지 않는다. */
@@ -118,7 +220,7 @@ export function AxSamplesBand() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
       <div className={`relative w-full ${wrap} px-5 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16`}>
         <p className="text-[1.02rem] font-black tracking-tight text-[#D9824F] sm:text-[1.1rem]">AX PREVIEW</p>
-        <h2 className="mt-2 break-keep text-[1.75rem] font-black leading-[1.3] text-[#FAFAF8] sm:text-[2.3rem]">
+        <h2 className={`mt-2 ${SUB_H2}`}>
           직접 만든 화면 22개,
           <br /> <span className="text-[#E8B89A]">눌러서 확인해 보세요</span>
         </h2>

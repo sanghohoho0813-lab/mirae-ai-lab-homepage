@@ -6,7 +6,7 @@ import KakaoFloat from '../components/KakaoFloat'
 import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import BusinessHeader from '../components/business/BusinessHeader'
 import BusinessStickyCta from '../components/business/BusinessStickyCta'
-import { AxHeroV2, AxSamplesBand } from '../components/ax-showcase/axHomeSections'
+import { AxConcerns, AxHeroV2, AxOutcome, AxSamplesBand } from '../components/ax-showcase/axHomeSections'
 import { AxFilmCost, AxFilmIntro } from '../components/ax-showcase/AxFilms'
 import AxFaqSection from '../components/ax-showcase/AxFaqSection'
 import AxRealProjectsFilm, { AX_REAL_FILM_ID } from '../components/ax-showcase/AxRealProjectsFilm'
@@ -24,7 +24,8 @@ import { canonicalUrl } from '../lib/site'
 // /business-services 는 이제 AX 도입 / 기술사업·MVP 를 고르는 2-Track 선택 페이지이고,
 // 거기서 "AX 도입 알아보기" 를 고르면 여기로 온다.
 //
-// 지금 구성(기술사업·MVP 페이지처럼 간결하게): 히어로 → 영상 1 → 직접 만든 화면 22개 → 실제 프로젝트 1편·2편(+ 그 밖의 4곳) → 영상 2(비용) → FAQ → 마무리.
+// 지금 구성(기술사업·MVP 페이지처럼 간결하게): 히어로 → 고민 4개(공감) → 영상 1 → 직접 만든 화면 22개 → 실제 프로젝트 1편·2편(+ 그 밖의 4곳)
+// → 영상 2(비용) → 그래서 AX를 도입하면?(마지막 정리) → FAQ → 마무리.
 // 금액을 보기 전에 실제 사례를 먼저 보여 준다(대표님 요청).
 // 스토리 01~03 · 이어보기('AX 상세 안내 보기')와 AX 상세 안내(스토리 04~12)는 지우지 않고 잠시 숨겼다
 // (SHOW_STORY 아래 · businessRoutes 의 SHOW_AX_GUIDE). 아래 설명은 숨기기 전 구성에 대한 것이다.
@@ -109,6 +110,9 @@ export default function AxStartPage() {
       {/* 1. Hero — 무엇을 파는 회사인지 5초 안에 */}
       <AxHeroV2 />
 
+      {/* 1-1. 고민 4개 — 영상을 보기 전에 '우리 회사 얘기'라고 느끼게(히어로와 같은 먹색). 마지막 줄이 영상 1로 넘긴다 */}
+      <AxConcerns />
+
       {/* 2. 영상 1 — AX가 뭐고 왜 필요한가(살구색) */}
       <AxFilmIntro samplesAnchor="samples" realAnchor={AX_REAL_FILM_ID} />
 
@@ -121,6 +125,9 @@ export default function AxStartPage() {
 
       {/* 5. 영상 2 — 어떻게 진행하고 얼마가 드나(살구색) */}
       <AxFilmCost diagnosisHref={AX_DIAG_HREF} />
+
+      {/* 5-1. 그래서, 우리 회사에 AX를 도입하면? — FAQ 직전 마지막 정리(히어로와 같은 먹색) */}
+      <AxOutcome />
 
       {/* 6. FAQ — 구매 판단에 중요한 5개만 먼저, 나머지는 '질문 더 보기' */}
       <AxFaqSection featured={5} />
