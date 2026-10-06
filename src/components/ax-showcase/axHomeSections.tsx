@@ -1,9 +1,11 @@
 // 섹션 모음 — Hero·월 5개사는 홈에서, 세 가지 가치·5단계 방법론은 정책자금 상세페이지에서 사용한다.
 // 한 섹션에서는 하나의 주장만 전달하고, 주장 바로 아래 증명(화면·산출물·근거)을 배치한다.
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import AxSampleStrip from './AxSampleStrip'
 import { samplesHref } from '../../lib/businessRoutes'
 import { saveBusinessReturn } from '../../lib/businessServicesReturn'
+import { useReveal } from '../../lib/useReveal'
 import { AX_CORE_VALUES, AX_METHOD_STEPS, AX_SELECTION_DECLINE, AX_SELECTION_PRIORITY } from '../../data/axPackages'
 
 const band = 'px-5 py-16 sm:px-6 sm:py-24'
@@ -19,32 +21,43 @@ const NW = 'whitespace-nowrap'
  *    2문단은 AX 가 실제로 하는 일(시간·비용은 줄이고 매출은 올린다). 서비스 선택 02 카드도 같은 말을 쓴다.
  *  승인·선정을 약속하는 표현은 절대 쓰지 않는다('경쟁력 있는 회사로' 까지만). */
 // 첫 화면 상자 세 칸 — 글 대신 큰 화살표로 '무엇이 달라지는지' 한눈에(시간·비용 ↓ · 매출 ↑ · 혁신기업)
+// 끝이 둥근 면 화살표(살구 → 구리 그라데이션, 끝이 진하게). 시간·비용은 아래로 · 매출은 위로 살짝씩 움직이고, 혁신기업 별은 은은하게 반짝인다.
 const ARROW = 'h-[1.925rem] w-[1.925rem] sm:h-[2.2rem] sm:w-[2.2rem]'
+const ARROW_PATH =
+  'M12 2.6a1.9 1.9 0 0 1 1.9 1.9v10.05l3.35-3.35a1.9 1.9 0 1 1 2.69 2.69l-6.6 6.6a1.9 1.9 0 0 1-2.69 0l-6.6-6.6a1.9 1.9 0 1 1 2.69-2.69l3.35 3.35V4.5A1.9 1.9 0 0 1 12 2.6z'
+const STAR_PATH =
+  'M12 1.6c.62 4.55 2.05 7.5 4.35 8.8 1.4.8 3.35 1.3 6.05 1.6-2.7.3-4.65.8-6.05 1.6-2.3 1.3-3.73 4.25-4.35 8.8-.62-4.55-2.05-7.5-4.35-8.8-1.4-.8-3.35-1.3-6.05-1.6 2.7-.3 4.65-.8 6.05-1.6 2.3-1.3 3.73-4.25 4.35-8.8z'
+const heroArrow = (dir: 'down' | 'up') => (
+  <svg viewBox="0 0 24 24" className={`${ARROW} ${dir === 'down' ? 'ax-nudge-down' : 'ax-nudge-up'}`}>
+    <defs>
+      <linearGradient id={`ax-hero-${dir}`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#F8DCC6" />
+        <stop offset="1" stopColor="#D47A4A" />
+      </linearGradient>
+    </defs>
+    <path d={ARROW_PATH} fill={`url(#ax-hero-${dir})`} transform={dir === 'up' ? 'rotate(180 12 12)' : undefined} />
+  </svg>
+)
 const AX_HERO_GAINS = [
-  {
-    label: '시간·비용',
-    note: '낭비는 줄이고',
-    icon: (
-      <svg viewBox="0 0 24 24" className={ARROW} fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 4v15M6 13l6 6 6-6" />
-      </svg>
-    ),
-  },
-  {
-    label: '매출',
-    note: '더 끌어올리고',
-    icon: (
-      <svg viewBox="0 0 24 24" className={ARROW} fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 20V5M6 11l6-6 6 6" />
-      </svg>
-    ),
-  },
+  { label: '시간·비용', note: '낭비는 줄이고', icon: heroArrow('down') },
+  { label: '매출', note: '더 끌어올리고', icon: heroArrow('up') },
   {
     label: '혁신기업으로',
     note: '만들어 드려요',
     icon: (
-      <svg viewBox="0 0 24 24" className={ARROW} fill="currentColor">
-        <path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3L3.5 11l6.3-2.2z" />
+      <svg viewBox="0 0 24 24" className={ARROW} overflow="visible">
+        <defs>
+          <linearGradient id="ax-hero-star" x1="0.15" y1="0.1" x2="0.85" y2="0.95">
+            <stop offset="0" stopColor="#FFF1E6" />
+            <stop offset="0.45" stopColor="#F2C4A2" />
+            <stop offset="1" stopColor="#D47A4A" />
+          </linearGradient>
+        </defs>
+        <g className="ax-glint">
+          <path d={STAR_PATH} fill="url(#ax-hero-star)" />
+        </g>
+        <path className="ax-glint-dot" d="M20.2 1.4l.55 1.5 1.5.55-1.5.55-.55 1.5-.55-1.5-1.5-.55 1.5-.55z" fill="#FBE3D0" />
+        <circle className="ax-glint-dot ax-glint-dot-late" cx="3.9" cy="20.3" r="1.05" fill="#F2C4A2" />
       </svg>
     ),
   },
@@ -114,6 +127,12 @@ const SUB_H2 = 'break-keep text-[1.75rem] font-black leading-[1.3] text-[#FAFAF8
 // 히어로 문단과 같은 글자(크기 · 굵기 · 줄 간격)
 const LEAD_P = 'break-keep text-[1.22rem] font-medium leading-[1.7] max-[359px]:text-[1.08rem] sm:text-[1.4rem]'
 
+// 가운데 정렬 문장의 한 줄 — 줄 안에서 접힐 때는 위아래 길이가 고르게(balance)
+const LINE = 'block [text-wrap:balance]'
+/** '사람·관리비·리스크까지' 처럼 가운뎃점으로 이은 말은 통째로 — 줄 맨 앞에 '·' 가 오지 않게 */
+const keepDots = (t: string) =>
+  t.split(' ').flatMap((w, i) => [i ? ' ' : '', w.includes('·') ? <span key={i} className={NW}>{w}</span> : w])
+
 // 대표님 원문 그대로 — lead(앞 말) / mid(가운데 줄) / key(굵게, 핵심 문장). 줄은 원문 줄바꿈대로 나눈다
 const AX_CONCERNS = [
   { lead: '지금은 매출이 나오고 있지만,', key: '지금 방식 그대로 앞으로도 계속 성장할 수 있을지 불안하다.' },
@@ -124,34 +143,33 @@ const AX_CONCERNS = [
 
 /** 히어로 바로 다음 · 영상 1 바로 위 — 영상을 보기 전에 '우리 회사 얘기'라고 느끼게 하는 짧은 공감 구간.
  *  AX 설명이나 해결책은 말하지 않고 대표의 고민 4개만 보여 준 뒤 영상으로 넘긴다.
- *  히어로와 같은 먹색 바탕 · 같은 폭(max-w-5xl) · 왼쪽 정렬. 카드 대신 얇은 선과 번호만, 항목 안 글자 크기는 한 가지(핵심 문장만 굵게). */
+ *  히어로와 같은 먹색 바탕 · 같은 폭(max-w-5xl) · 가운데 정렬(대표님 요청). 카드 대신 얇은 선과 번호만, 항목 안 글자 크기는 한 가지(핵심 문장만 굵게).
+ *  스크롤하면 제목 → 01 → 02 → 03 → 04 → 연결 문구가 하나씩 떠오르고, 항목 위 선은 가운데에서 양옆으로 그어진다. */
 export function AxConcerns() {
+  const ref = useRef<HTMLElement>(null)
+  useReveal(ref)
   return (
-    <section id="concerns" data-ax-concerns className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
+    <section ref={ref} id="concerns" data-ax-concerns className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
-      <div className={`relative w-full ${wrap} px-5 pb-14 pt-12 sm:px-6 sm:pb-20 sm:pt-16`}>
-        <h2 className={SUB_H2}>
+      <div className={`relative w-full ${wrap} px-5 pb-16 pt-14 text-center sm:px-6 sm:pb-24 sm:pt-20`}>
+        <h2 data-reveal className={SUB_H2}>
           <span className={NW}>혹시, <span className="text-[#E8B89A]">이런 고민</span>을</span> <span className={NW}>하고 계시진 않나요?</span>
         </h2>
-        <ol className="mt-7 grid gap-x-12 gap-y-6 sm:mt-9 lg:grid-cols-2 lg:gap-y-8">
+        <ol className="mx-auto mt-10 grid max-w-2xl gap-y-9 sm:mt-14 lg:max-w-none lg:grid-cols-2 lg:gap-x-14 lg:gap-y-12">
           {AX_CONCERNS.map((c, i) => (
-            <li key={c.key} data-ax-concern className="border-t border-white/10 pt-5 sm:pt-6">
-              <p className="text-[0.95rem] font-black tabular-nums tracking-[0.08em] text-[#D9824F]">{String(i + 1).padStart(2, '0')}</p>
-              <p className="mt-2 break-keep text-[1.1rem] leading-[1.7] text-slate-300 sm:text-[1.19rem]">
-                {c.lead}
-                <br />
-                {'mid' in c && (
-                  <>
-                    {c.mid}
-                    <br />
-                  </>
-                )}
-                <b className="font-bold text-[#FAFAF8]">{c.key}</b>
+            <li key={c.key} data-reveal data-ax-concern className="relative pt-6 sm:pt-7">
+              <span aria-hidden className="rv-line absolute inset-x-0 top-0 h-px bg-white/[0.12]" />
+              <p className="text-[1rem] font-black tabular-nums tracking-[0.12em] text-[#D9824F] sm:text-[1.05rem]">{String(i + 1).padStart(2, '0')}</p>
+              {/* 원문 줄마다 따로(줄 안에서는 고르게 나눠 접는다) */}
+              <p className="mt-3 break-keep text-[1.22rem] leading-[1.7] text-slate-300 max-[359px]:text-[1.1rem] sm:text-[1.3rem]">
+                <span className={LINE}>{keepDots(c.lead)}</span>
+                {'mid' in c && <span className={LINE}>{keepDots(c.mid)}</span>}
+                <b className={`${LINE} font-bold text-[#FAFAF8]`}>{keepDots(c.key)}</b>
               </p>
             </li>
           ))}
         </ol>
-        <p data-ax-concerns-next className={`mt-10 max-w-3xl text-[#E7EAEE] sm:mt-14 ${LEAD_P}`}>
+        <p data-reveal data-ax-concerns-next className={`mx-auto mt-14 max-w-3xl text-[#E7EAEE] sm:mt-20 ${LEAD_P}`}>
           하나라도 해당된다면,
           <br />
           <span className={NW}>우리 회사가 AX로</span> <span className={NW}>어떻게 달라질 수 있는지</span>
@@ -165,44 +183,54 @@ export function AxConcerns() {
   )
 }
 
+// 마지막 정리 — 줄마다 따로 떠오른다(흐릿 → 또렷). 줄이 짧게 끊겨 보여 한 번에 읽히는 양이 적다
+const OUT_LINE = `${LINE} reveal-soft`
+
 /** FAQ 바로 앞 — '그래서 결국 뭐가 좋아지는데?'에 짧게 답하는 마지막 정리.
- *  히어로와 같은 먹색 바탕 · 같은 폭 · 같은 강조색(살구 · 구리). 문단은 히어로 문단 글자 그대로,
- *  '매출·정책자금·지원사업·투자' 와 '회사의 경쟁력과 성장 증거' 만 굵게, 맨 끝 두 문장을 가장 크게(히어로 제목보다는 작게). */
+ *  히어로와 같은 먹색 바탕 · 같은 폭 · 같은 강조색(살구 · 구리) · 가운데 정렬(대표님 요청). 문단은 히어로 문단 글자 그대로, 문단 사이는 넉넉히.
+ *  '매출·정책자금·지원사업·투자' 와 '회사의 경쟁력과 성장 증거' 만 굵게(나타난 뒤 밑에 은은한 띠가 차오른다),
+ *  맨 끝 두 문장을 가장 크게(히어로 제목보다는 작게). */
 export function AxOutcome() {
+  const ref = useRef<HTMLElement>(null)
+  useReveal(ref, 130)
   return (
-    <section id="outcome" data-ax-outcome className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
+    <section ref={ref} id="outcome" data-ax-outcome className="relative scroll-mt-16 overflow-hidden bg-[#050B11]">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#D47A4A]/35" />
-      <div className={`relative w-full ${wrap} px-5 pb-16 pt-14 sm:px-6 sm:pb-24 sm:pt-20`}>
-        <h2 className={SUB_H2}>
+      <div className={`relative w-full ${wrap} px-5 pb-20 pt-16 text-center sm:px-6 sm:pb-28 sm:pt-24`}>
+        <h2 data-reveal className={SUB_H2}>
           <span className={NW}>그래서, 우리 회사에</span> <span className={`${NW} text-[#E8B89A]`}>AX를 도입하면?</span>
         </h2>
-        <div className={`mt-7 max-w-3xl space-y-5 text-slate-300 sm:mt-9 sm:space-y-6 ${LEAD_P}`}>
+        <div className={`mx-auto mt-10 max-w-3xl space-y-10 text-slate-300 sm:mt-14 sm:space-y-14 ${LEAD_P}`}>
           <p>
-            같은 인원으로 더 많은 고객과 업무를 처리하고,
-            <br />
-            놓치던 고객과 기회를 매출로 연결할 수 있는 구조를 만들고,
-            <br />
-            대표가 일일이 챙기지 않아도 일이 이어집니다.
+            <span data-reveal className={OUT_LINE}>같은 인원으로 더 많은 고객과 업무를 처리하고,</span>
+            <span data-reveal className={OUT_LINE}>놓치던 고객과 기회를 매출로 연결할 수 있는 구조를 만들고,</span>
+            <span data-reveal className={OUT_LINE}>대표가 일일이 챙기지 않아도 일이 이어집니다.</span>
           </p>
           <p>
-            밖에서도 휴대폰 하나면
-            <br />
-            <span className={NW}>우리 회사가 지금</span> <span className={NW}>어떻게 돌아가고 있는지</span>
-            <br />
-            한눈에 볼 수 있습니다.
+            <span data-reveal className={OUT_LINE}>밖에서도 휴대폰 하나면</span>
+            <span data-reveal className={OUT_LINE}>
+              <span className={NW}>우리 회사가 지금</span> <span className={NW}>어떻게 돌아가고 있는지</span>
+            </span>
+            <span data-reveal className={OUT_LINE}>한눈에 볼 수 있습니다.</span>
           </p>
           <p data-ax-outcome-key className="text-[#E7EAEE]">
-            그리고 이런 변화가 쌓여
-            <br />
-            <b className={`${NW} font-bold text-[#E8B89A]`}>매출·정책자금·지원사업·투자</b>로 <span className={NW}>이어질 수 있는</span>
-            <br />
-            <b className="font-bold text-[#FAFAF8]">회사의 경쟁력과 성장 증거</b>가 됩니다.
+            <span data-reveal className={OUT_LINE}>그리고 이런 변화가 쌓여</span>
+            <span data-reveal className={OUT_LINE}>
+              <b className={`${NW} rv-mark font-bold text-[#E8B89A]`}>매출·정책자금·지원사업·투자</b>로 <span className={NW}>이어질 수 있는</span>
+            </span>
+            <span data-reveal className={OUT_LINE}>
+              <b className="rv-mark font-bold text-[#FAFAF8]">회사의 경쟁력과 성장 증거</b>가 됩니다.
+            </span>
           </p>
         </div>
-        <p data-ax-outcome-brand className="mt-10 max-w-3xl break-keep border-t border-white/10 pt-8 text-[1.9rem] font-black leading-[1.35] text-[#FAFAF8] max-[359px]:text-[1.66rem] sm:mt-14 sm:pt-10 sm:text-[2.4rem] lg:text-[2.6rem]">
-          <span className={NW}>AI를 도입하는 데서</span> <span className={NW}>끝내지 않습니다.</span>
-          <br />
-          <span className="text-[#D47A4A]">
+        <div data-reveal className="mx-auto mt-14 max-w-3xl sm:mt-20">
+          <span aria-hidden className="rv-line mx-auto block h-px w-24 bg-[#D47A4A]/60" />
+        </div>
+        <p data-ax-outcome-brand className="mx-auto mt-8 max-w-3xl break-keep text-[1.9rem] font-black leading-[1.35] text-[#FAFAF8] max-[359px]:text-[1.66rem] sm:mt-10 sm:text-[2.4rem] lg:text-[2.6rem]">
+          <span data-reveal className="block reveal-soft">
+            <span className={NW}>AI를 도입하는 데서</span> <span className={NW}>끝내지 않습니다.</span>
+          </span>
+          <span data-reveal className="block reveal-soft text-[#D47A4A]">
             <span className={NW}>회사를 한 단계 더</span> <span className={NW}>성장시킵니다.</span>
           </span>
         </p>

@@ -57,12 +57,13 @@ for (const W of [390, 1280]) {
       const h1 = document.querySelector('h1'), c = document.getElementById('concerns'), o = document.getElementById('outcome')
       const t = (el) => el.innerText.replace(/\s+/g, ' ').trim()
       return {
-        hero: fs(h1), heroL: Math.round(h1.getBoundingClientRect().left),
+        hero: fs(h1), vw: innerWidth,
         cH2: t(c.querySelector('h2')), cItems: [...c.querySelectorAll('[data-ax-concern]')].map((li) => t(li)), cNext: t(c.querySelector('[data-ax-concerns-next]')),
-        cSize: Math.max(fs(c.querySelector('h2')), fs(c.querySelector('[data-ax-concerns-next]'))), cL: Math.round(c.querySelector('h2').getBoundingClientRect().left),
+        cSize: Math.max(fs(c.querySelector('h2')), fs(c.querySelector('[data-ax-concerns-next]'))), cMid: ((r) => Math.round(r.left + r.width / 2))(c.querySelector('h2').getBoundingClientRect()),
         cols: new Set([...c.querySelectorAll('[data-ax-concern]')].map((li) => Math.round(li.getBoundingClientRect().left))).size,
         bold: [...c.querySelectorAll('[data-ax-concern] b')].map((b) => t(b)),
-        oH2: t(o.querySelector('h2')), oText: t(o), oSize: Math.max(fs(o.querySelector('h2')), fs(o.querySelector('[data-ax-outcome-brand]'))), oL: Math.round(o.querySelector('h2').getBoundingClientRect().left),
+        oH2: t(o.querySelector('h2')), oText: t(o), oSize: Math.max(fs(o.querySelector('h2')), fs(o.querySelector('[data-ax-outcome-brand]'))), oMid: ((r) => Math.round(r.left + r.width / 2))(o.querySelector('h2').getBoundingClientRect()),
+        heroIcons: ['.ax-nudge-down', '.ax-nudge-up', '.ax-glint'].every((q) => document.querySelector(`[data-ax-hero-card] ${q}`)),
         oBold: [...o.querySelectorAll('[data-ax-outcome-key] b')].map((b) => t(b)),
       }
     })
@@ -80,7 +81,20 @@ for (const W of [390, 1280]) {
     ok('마지막 정리 문구 원문 그대로', extra.oText === '그래서, 우리 회사에 AX를 도입하면? 같은 인원으로 더 많은 고객과 업무를 처리하고, 놓치던 고객과 기회를 매출로 연결할 수 있는 구조를 만들고, 대표가 일일이 챙기지 않아도 일이 이어집니다. 밖에서도 휴대폰 하나면 우리 회사가 지금 어떻게 돌아가고 있는지 한눈에 볼 수 있습니다. 그리고 이런 변화가 쌓여 매출·정책자금·지원사업·투자로 이어질 수 있는 회사의 경쟁력과 성장 증거가 됩니다. AI를 도입하는 데서 끝내지 않습니다. 회사를 한 단계 더 성장시킵니다.', extra.oText)
     ok('강조: 매출·정책자금·지원사업·투자 · 회사의 경쟁력과 성장 증거', extra.oBold.join('|') === '매출·정책자금·지원사업·투자|회사의 경쟁력과 성장 증거', extra.oBold.join('|'))
     ok('두 구간 글자는 히어로 제목보다 작게', extra.cSize < extra.hero && extra.oSize < extra.hero, `${extra.cSize}/${extra.oSize} < ${extra.hero}`)
-    ok('두 구간 왼쪽 기준선 = 히어로 제목', extra.cL === extra.heroL && extra.oL === extra.heroL, `${extra.cL}/${extra.oL}/${extra.heroL}`)
+    ok('두 구간 제목은 가운데 정렬', Math.abs(extra.cMid - extra.vw / 2) <= 2 && Math.abs(extra.oMid - extra.vw / 2) <= 2, `${extra.cMid}/${extra.oMid}/${extra.vw / 2}`)
+    ok('히어로 상자 아이콘: 화살표 아래·위로 움직임 · 별 반짝임', extra.heroIcons)
+    // 스크롤 등장 — 화면에 들어오면 하나씩 떠올라 결국 모두 보인다(가리고 끝나지 않는다)
+    for (const id of ['concerns', 'outcome']) {
+      const n = await p.evaluate(async (i) => {
+        const s = document.getElementById(i)
+        for (let y = s.offsetTop - innerHeight / 2; y < s.offsetTop + s.offsetHeight; y += innerHeight / 2) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 350)) }
+        await new Promise((r) => setTimeout(r, 1800))
+        const els = [...s.querySelectorAll('[data-reveal]')]
+        return { all: els.length, shown: els.filter((e) => getComputedStyle(e).opacity === '1').length }
+      }, id)
+      ok(`${id}: 스크롤하면 하나씩 떠오르고 모두 보임(${n.shown}/${n.all})`, n.all > 3 && n.shown === n.all)
+    }
+    await p.evaluate(() => scrollTo(0, 0))
     const picks = await p.$$eval('[data-ax-film-pick]', (bs) => bs.map((x) => { const r = x.getBoundingClientRect(); return { id: x.dataset.axFilmPick, no: x.querySelector('span').textContent.trim(), top: Math.round(r.top), left: Math.round(r.left) } }))
     ok('골라 보기 번호 1~4 = 페이지 순서(영상 1 → 22개 화면 → 실제 프로젝트 → 영상 2)', picks.map((x) => x.no).join('') === '1234' && picks.map((x) => x.id).join() === 'film-1,samples,real-projects-film,film-2', JSON.stringify(picks.map((x) => x.no + x.id)))
     ok('골라 보기는 읽는 순서대로 놓임(왼쪽→오른쪽, 위→아래)', picks.every((x, i) => i === 0 || x.top > picks[i - 1].top || (x.top === picks[i - 1].top && x.left > picks[i - 1].left)))
