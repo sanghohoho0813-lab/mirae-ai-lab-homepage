@@ -61,7 +61,9 @@ for (const W of [390, 1280]) {
         cH2: t(c.querySelector('h2')), cItems: [...c.querySelectorAll('[data-ax-concern]')].map((li) => t(li)), cNext: t(c.querySelector('[data-ax-concerns-next]')),
         cTitle: fs(c.querySelector('h2')), cItem: fs(c.querySelector('[data-ax-concern] p:last-child')), cMid: ((r) => Math.round(r.left + r.width / 2))(c.querySelector('h2').getBoundingClientRect()),
         cols: new Set([...c.querySelectorAll('[data-ax-concern]')].map((li) => Math.round(li.getBoundingClientRect().left))).size,
-        bold: [...c.querySelectorAll('[data-ax-concern] b')].map((b) => t(b)),
+        // 모두 굵게 · 핵심 문장은 살구색(rgb 232,184,154)
+        allBold: [...c.querySelectorAll('[data-ax-concern] p:last-child')].every((e) => Number(getComputedStyle(e).fontWeight) >= 700),
+        keyColored: [...c.querySelectorAll('[data-ax-concern] p:last-child > span')].filter((e) => getComputedStyle(e).color === 'rgb(232, 184, 154)').map((e) => t(e)),
         oH2: t(o.querySelector('h2')), oText: t(o), oTitle: fs(o.querySelector('h2')), oBody: fs(o.querySelector('[data-ax-outcome-key]').parentElement), oBrand: fs(o.querySelector('[data-ax-outcome-brand]')), oMid: ((r) => Math.round(r.left + r.width / 2))(o.querySelector('h2').getBoundingClientRect()),
         heroIcons: ['.ax-nudge-down', '.ax-nudge-up', '.ax-glint'].every((q) => document.querySelector(`[data-ax-hero-card] ${q}`)),
         oBold: [...o.querySelectorAll('[data-ax-outcome-key] b')].map((b) => t(b)),
@@ -74,7 +76,7 @@ for (const W of [390, 1280]) {
       '03 매출은 늘어도 사람·관리비·리스크까지 같이 늘어, 정작 이익률은 좀처럼 좋아지지 않는다.',
       '04 정책자금·지원사업·투자 같은 기회가 와도, 왜 우리 회사가 경쟁력 있고 선택받아야 하는지 보여줄 근거가 부족하다.',
     ].join('|'), JSON.stringify(extra.cItems))
-    ok('항목마다 핵심 문장 하나만 굵게', extra.bold.length === 4, JSON.stringify(extra.bold))
+    ok('고민 항목은 모두 굵게 · 핵심 문장은 살구색(항목마다 하나)', extra.allBold && extra.keyColored.length === 4, JSON.stringify(extra.keyColored))
     ok('연결 문구 원문 그대로', extra.cNext === '하나라도 해당된다면, 우리 회사가 AX로 어떻게 달라질 수 있는지 영상으로 먼저 보여드릴게요.', extra.cNext)
     ok(`고민 4개 배치: ${W < 1024 ? '1열' : '2×2'}`, extra.cols === (W < 1024 ? 1 : 2), String(extra.cols))
     ok('마지막 정리 제목', extra.oH2 === '그래서, 우리 회사에 AX를 도입하면?', extra.oH2)
@@ -154,6 +156,61 @@ for (const W of [390, 1280]) {
       ok('영상 2 소리 켜고 재생', await vc.evaluate((x) => !x.muted && !x.paused && x.controls))
       ok('2편은 멈춤', await v2.evaluate((x) => x.paused))
       ok('영상 2가 화면에 보임', await vc.evaluate((x) => { const r = x.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }))
+    }
+    ok('가로 넘침 없음', (await overflow(p)) <= 0)
+    ok('오류 없음', errs.length === 0, errs.join('|'))
+    await ctx.close()
+  }
+
+  h(`2주 기술사업 빌드 — 고민 5개(히어로 → 고민 → 영상) · 그래서 2주 기술사업 빌드를 하면?(FAQ 앞) · ${W}px`)
+  {
+    const { ctx, p, errs } = await newPage(b, W, W < 768 ? 844 : 900)
+    await go(p, '/business-services/venture-mvp')
+    const order = ['concerns', 'film', 'outcome', 'faq']
+    const tops = await p.evaluate((ids) => ids.map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? null), order)
+    ok(`구간 순서 히어로 → ${order.join(' → ')}`, tops.every((t, i) => t !== null && (i === 0 || t > tops[i - 1])) && (await p.evaluate(() => document.querySelector('[data-mvp-hero]').nextElementSibling?.id === 'concerns')), tops.map(Math.round).join(' < '))
+    const v = await p.evaluate(() => {
+      const t = (el) => el.innerText.replace(/\s+/g, ' ').trim()
+      const fs = (el) => parseFloat(getComputedStyle(el).fontSize)
+      const c = document.getElementById('concerns'), o = document.getElementById('outcome'), h1 = document.querySelector('h1')
+      const mid = (el) => { const r = el.getBoundingClientRect(); return Math.round(r.left + r.width / 2) }
+      return {
+        hero: fs(h1), vw: innerWidth, cTitle: fs(c.querySelector('h2')), oTitle: fs(o.querySelector('h2')), brand: fs(o.querySelector('[data-mvp-outcome-brand]')),
+        cMid: mid(c.querySelector('h2')), oMid: mid(o.querySelector('h2')),
+        h2: [t(c.querySelector('h2')), t(o.querySelector('h2'))],
+        items: [...c.querySelectorAll('[data-mvp-concern]')].map(t),
+        keyColored: [...c.querySelectorAll('[data-mvp-concern] p:last-child > span')].filter((e) => getComputedStyle(e).color === 'rgb(232, 184, 154)').length,
+        next: t(c.querySelector('[data-mvp-concerns-next]')),
+        oText: t(o),
+        marks: [...o.querySelectorAll('[data-mvp-outcome-key] b')].map(t),
+        faqLink: o.querySelector('[data-mvp-benefits-faq]')?.getAttribute('href'),
+      }
+    })
+    ok('제목 두 개', v.h2.join('|') === '혹시, 이런 고민을 하고 계시진 않나요?|그래서, 2주 기술사업 빌드를 하면?', v.h2.join('|'))
+    ok('고민 5개 = 01~05 · 원문 그대로', v.items.join('|') === [
+      '01 지금 사업은 잘하고 있지만, 앞으로 회사를 한 단계 더 키울 새로운 성장동력이 잘 보이지 않는다.',
+      '02 AI·플랫폼 같은 기술사업을 시작해보고 싶은데, 우리 회사 업종에서 실제로 무엇을 만들어야 할지 막막하다.',
+      '03 아이디어가 있어도 처음부터 수천만원을 들여 개발하기는 부담스럽고, 사업계획서만으로 기술성과 가능성을 보여주는 데도 한계를 느낀다.',
+      '04 창업한 지 3년이 지나기 전에 벤처기업확인을 받아 받을 수 있는 세제혜택은 미리 챙기고, 기술사업도 함께 준비하고 싶다.',
+      '05 정책자금·정부지원사업 같은 기회가 왔을 때 비슷한 회사들 사이에서 우리 회사가 조금이라도 더 경쟁력 있고 눈에 띄었으면 좋겠다.',
+    ].join('|'), JSON.stringify(v.items))
+    ok('핵심 문장은 살구색(5개 항목 · 9줄)', v.keyColored === 9, String(v.keyColored))
+    ok('영상 연결 문구 원문 그대로', v.next === '하나라도 해당된다면, 벤처기업확인 준비부터 실제 기술사업 MVP까지 어떻게 함께 만드는지 영상으로 먼저 보여드릴게요.', v.next)
+    ok('마지막 정리 원문 그대로(본문 4 · 혜택 요약 · 마지막 두 문장)', v.oText.startsWith('그래서, 2주 기술사업 빌드를 하면? 우리 회사의 기존 사업 안에서 다음 성장동력이 될 기술사업 하나를 찾아냅니다. 그 아이디어를 서류에만 남겨두지 않고, 직접 보여주고 시연할 수 있는 MVP로 만듭니다. 동시에 벤처기업확인을 준비해 받을 수 있는 혜택은 챙기고, ‘기술사업을 계획하는 회사’가 아니라 실제로 기술사업을 시작한 회사의 모습을 만듭니다. 그리고 그 결과물을 정부지원사업·정책자금·R&D·후속 AX로 이어질 수 있는 회사의 경쟁력과 성장 근거로 활용합니다. 창업 초기라면 벤처기업확인의 시점도 중요합니다. 요건 충족 시 소득세·법인세 50% 감면 요건 충족 시 사업용 부동산 취득세 75% 경감 정부지원·정책자금·R&D 등 후속 성장기회 활용') && v.oText.endsWith('벤처기업확인만 받고 끝내지 않습니다. 받을 수 있는 혜택은 챙기고, 앞으로 보여줄 기술사업 하나까지 남깁니다.'), v.oText)
+    ok('세제혜택은 모두 "요건 충족 시"', (v.oText.match(/요건 충족 시/g) || []).length === 2 && !/무조건|보장/.test(v.oText))
+    ok('형광펜 두 곳: 정부지원사업·정책자금·R&D·후속 AX · 회사의 경쟁력과 성장 근거', v.marks.join('|') === '정부지원사업·정책자금·R&D·후속 AX|회사의 경쟁력과 성장 근거', v.marks.join('|'))
+    ok('혜택 요약 → 아래 자주 묻는 질문(#faq)', v.faqLink === '#faq')
+    ok('제목·마지막 두 문장은 히어로 제목 크기를 넘지 않음', v.cTitle <= v.hero + 0.5 && v.oTitle <= v.hero + 0.5 && v.brand <= v.hero + 0.5, `${v.cTitle}/${v.oTitle}/${v.brand} ≤ ${v.hero}`)
+    ok('가운데 정렬', Math.abs(v.cMid - v.vw / 2) <= 2 && Math.abs(v.oMid - v.vw / 2) <= 2, `${v.cMid}/${v.oMid}/${v.vw / 2}`)
+    for (const id of ['concerns', 'outcome']) {
+      const n = await p.evaluate(async (i) => {
+        const s = document.getElementById(i)
+        for (let y = s.offsetTop - innerHeight / 2; y < s.offsetTop + s.offsetHeight; y += innerHeight / 2) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 350)) }
+        await new Promise((r) => setTimeout(r, 1800))
+        const els = [...s.querySelectorAll('[data-reveal]')]
+        return { all: els.length, shown: els.filter((e) => getComputedStyle(e).opacity === '1').length }
+      }, id)
+      ok(`${id}: 스크롤하면 하나씩 떠오르고 모두 보임(${n.shown}/${n.all})`, n.all > 5 && n.shown === n.all)
     }
     ok('가로 넘침 없음', (await overflow(p)) <= 0)
     ok('오류 없음', errs.length === 0, errs.join('|'))

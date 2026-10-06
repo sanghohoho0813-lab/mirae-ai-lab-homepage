@@ -1,6 +1,6 @@
 // 기술사업 · MVP · 벤처기업확인 패키지 (/business-services/venture-mvp).
-// 순서: 글자 히어로(VentureMvpHero) → 소개 영상(VentureMvpFilm, '꼭 봐 주세요') → '예를 들면'(자체 데모 10개 + AX 12개 더 보기)
-//   → 자주 묻는 질문(AX 페이지와 같은 모양, 이 상품에 맞춘 질문) → 마지막 CTA('우리 회사도 가능할까요?'). 영상이 '샘플 22개, 직접 눌러서 확인해 보세요' 로 끝나서 바로 예시로 이어진다.
+// 순서: 글자 히어로(VentureMvpHero) → 고민 5개(VentureMvpConcerns) → 소개 영상(VentureMvpFilm, '꼭 봐 주세요') → '예를 들면'(자체 데모 10개 + AX 12개 더 보기)
+//   → 그래서, 2주 기술사업 빌드를 하면?(VentureMvpOutcome) → 자주 묻는 질문(AX 페이지와 같은 모양, 이 상품에 맞춘 질문) → 마지막 CTA('우리 회사도 가능할까요?'). 영상이 '샘플 22개, 직접 눌러서 확인해 보세요' 로 끝나서 바로 예시로 이어진다.
 //   히어로의 '영상으로 모든 내용 확인하기' 를 누르면 영상이 소리를 켜고 처음부터 재생된다.
 // Drive 상세페이지 이미지 02~15 는 대표님 요청으로 잠시 숨겨 두었다(SHOW_STORY_IMAGES). 나중에 FAQ 로 마무리할 예정.
 //  - 02→15 순서 고정, 원본 비율 그대로(width:100%; height:auto), 이미지 사이 여백 없음
@@ -20,6 +20,7 @@ import ConsultModal from '../components/ConsultModal'
 import VentureMvpHero from '../components/venture/VentureMvpHero'
 import VentureMvpExamples, { VENTURE_MVP_EXAMPLES_ID } from '../components/venture/VentureMvpExamples'
 import VentureMvpFilm, { type VentureMvpFilmHandle } from '../components/venture/VentureMvpFilm'
+import { VentureMvpConcerns, VentureMvpOutcome } from '../components/venture/VentureMvpStory'
 import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import DetailMobileBar from '../components/business/DetailMobileBar'
 import FaqSection from '../components/ax-showcase/AxFaqSection'
@@ -113,6 +114,8 @@ export default function VentureMvpPage() {
 
       <main className="flex-1">
         <VentureMvpHero />
+        {/* 고민 5개 — 영상을 보기 전에 '우리 회사 얘기'라고 느끼게(히어로와 같은 먹색). 마지막 줄이 영상으로 넘긴다 */}
+        <VentureMvpConcerns />
         <VentureMvpFilm ref={filmRef} onConsult={() => setConsultOpen(true)} samplesAnchor={VENTURE_MVP_EXAMPLES_ID} />
         <VentureMvpExamples />
 
@@ -160,6 +163,9 @@ export default function VentureMvpPage() {
             ))}
           </div>
         )}
+
+        {/* 그래서, 2주 기술사업 빌드를 하면? — FAQ 직전 마지막 정리(벤처기업확인 + 기술사업 MVP + 다음 지원 · 혜택 요약 · 마지막 두 문장) */}
+        <VentureMvpOutcome />
 
         {/* 자주 묻는 질문 — 맨 마지막 CTA 바로 앞. 구매 판단에 중요한 5개만 먼저, 나머지는 '질문 더 보기'(AX 페이지와 같은 방식) */}
         <FaqSection items={VENTURE_MVP_FAQ} featured={5} />
