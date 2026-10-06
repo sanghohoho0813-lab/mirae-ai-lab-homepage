@@ -73,7 +73,7 @@ async function saveConsultLead(row: {
 
     // 운영 OS 알림 — 표에 저장 못 했으면 임시 번호로라도 올린다(같은 신청이 두 번 오지 않게 한 번만 부른다)
     const sourceId = leadId ?? `site-${globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`}`
-    const { error: evError } = await supabase.rpc('bridge_emit_customer_event', {
+    const { data: evId, error: evError } = await supabase.rpc('bridge_emit_customer_event', {
       p_event_type: 'consultation_requested',
       p_source_type: 'consult_lead',
       p_source_id: sourceId,
@@ -88,7 +88,8 @@ async function saveConsultLead(row: {
       p_priority: 'high',
     })
     if (evError) console.error('[consult] os event error:', detailOf(evError))
-    return { leadId, osEvent: !evError }
+    // 함수는 받을 워크스페이스가 없거나(설정 전) 이미 올라간 신청이면 빈 값을 돌려준다 — 새 번호가 왔거나, 저장돼 트리거가 올렸을 때만 true
+    return { leadId, osEvent: !evError && (evId != null || leadId != null) }
   } catch (e) {
     console.error('[consult] supabase save skipped:', detailOf(e))
     return { leadId: null, osEvent: false }
