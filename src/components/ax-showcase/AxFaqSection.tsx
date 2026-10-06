@@ -141,8 +141,8 @@ export default function AxFaqSection({
   const more = items.length - shown
   const [open, setOpen] = useState(false)
   return (
-    <section id="faq" className="scroll-mt-16 border-t border-[#E7EAEE] bg-[#FAFAF8] lg:[zoom:1.1] xl:[zoom:1.2]">
-      {/* PC 글자 크게(대표님 요청 2026-10) — 1024px~ 1.1배 · 1280px~ 1.2배(zoom) */}
+    <section id="faq" className="scroll-mt-16 border-t border-[#E7EAEE] bg-[#FAFAF8] lg:[zoom:1.2] xl:[zoom:1.35]">
+      {/* PC 글자 크게(대표님 요청 2026-10) — 1024px~ 1.2배 · 1280px~ 1.35배(zoom) */}
       <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-20">
         <p className="text-center text-[1.1rem] font-black tracking-tight text-[#B4532A] sm:text-[1.2rem]">FAQ</p>
         <h2 className="mt-3 break-keep text-center text-[1.87rem] font-black leading-[1.3] tracking-[-0.015em] text-[#171B20] sm:text-[2.4rem]">
