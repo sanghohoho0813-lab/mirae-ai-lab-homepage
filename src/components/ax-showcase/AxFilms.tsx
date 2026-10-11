@@ -35,6 +35,8 @@ export type Film = {
   emoji?: string
   /** 제목 아래 작은 상태 표시 */
   status?: readonly string[]
+  /** 실제 프로젝트 — 미래AI랩이 함께한 일(번호 목록)과 지금 진행 상황 한 줄. 폰·PC 모두 보인다 */
+  done?: { title: string; items: readonly string[]; now: string }
   lead: string
   points: readonly string[]
   /** '영상 1' · '실제 프로젝트 1편' — 버튼·화면 읽기에 쓴다 */
@@ -294,6 +296,38 @@ export function FilmBlock({
           </p>
         )}
         <p className="mx-auto mt-3 max-w-md break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem] md:mx-0">{film.lead}</p>
+        {film.done && (
+          <div data-film-done className="mx-auto mt-4 max-w-md rounded-2xl bg-white/80 p-4 text-left ring-1 ring-inset ring-[#171B20]/10 sm:p-5 md:mx-0">
+            <p className="text-[0.95rem] font-black text-[#B4532A]">{film.done.title}</p>
+            <ol className="mt-2.5 grid gap-2">
+              {film.done.items.map((t, i) => (
+                <li key={t} className="flex items-start gap-2.5 break-keep text-[0.98rem] font-semibold leading-snug text-[#343B44]">
+                  <span aria-hidden className="mt-px grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#171B20] text-[0.72rem] font-black tabular-nums text-white">
+                    {i + 1}
+                  </span>
+                  {/* ' · ' 로 이은 일은 덩어리째 접는다 — 줄 맨 앞에 '·' 가 오지 않게 */}
+                  <span>
+                    {t.split(' · ').map((c, j, all) => (
+                      <span key={c}>
+                        <span className="whitespace-nowrap">
+                          {c}
+                          {j < all.length - 1 ? ' ·' : ''}
+                        </span>
+                        {j < all.length - 1 ? ' ' : ''}
+                      </span>
+                    ))}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p data-film-now className="mt-3.5 flex items-start gap-2 border-t border-[#171B20]/10 pt-3.5 break-keep text-[0.98rem] font-black leading-snug text-[#171B20]">
+              <span aria-hidden className="slot-live mt-[0.42em] h-2 w-2 shrink-0 rounded-full bg-[#D2462E]" />
+              <span>
+                <span className="text-[#B4532A]">현재</span> {film.done.now}
+              </span>
+            </p>
+          </div>
+        )}
         <ul className="mt-5 hidden gap-2 md:grid">
           {film.points.map((t) => (
             <li key={t} className="flex items-start gap-2 break-keep text-[1.02rem] font-semibold text-[#343B44]">

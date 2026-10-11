@@ -119,6 +119,20 @@ for (const W of [390, 1280]) {
       ok(`${n}편 진행 상태: 완성 · 유지보수 단계 · 정책자금·지원사업 따로 신청 중`, /완성 · 실무에서 쓰며 안정화하는 유지보수 단계/.test(st) && /정책자금·지원사업은 따로 계속 신청 중/.test(st), st)
     }
     ok('업종만 공개 안내', /업종만/.test(body))
+    // 1편 — 미래AI랩이 함께한 일 4가지 + 현재 진행(신보 리틀펭귄 심사 중) · 2편에는 없음 · 회사 이름 없음
+    const done = await p.evaluate(() => {
+      const d = document.querySelector('#real-project-1 [data-film-done]')
+      const t = (el) => el.innerText.replace(/\s+/g, ' ').trim()
+      return d && { items: [...d.querySelectorAll('li')].map(t), now: t(d.querySelector('[data-film-now]')), shown: d.getBoundingClientRect().height > 0, in2: !!document.querySelector('#real-project-2 [data-film-done]') }
+    })
+    ok('1편: 미래AI랩이 함께한 일 4가지(원문)', done?.shown && done.items.join('|') === [
+      '1 연구개발전담부서 설립 · 연구전담요원 예정자 감사 사임 등기 · 법인 목적사항 변경 · 정관·임원보수계약서 개정',
+      '2 특허 출원',
+      '3 AX MVP 설계 + 반응형 홈페이지 제작',
+      '4 벤처기업확인(혁신성장유형) 완료',
+    ].join('|') && !done.in2, JSON.stringify(done?.items))
+    ok('1편: 현재 신용보증기금 리틀펭귄 심사 중(발표 준비 중)', done?.now === '현재 3년간 최대 20억원 보증 지원 프로그램인 신용보증기금 리틀펭귄 프로그램 심사 중(발표 준비 중)', done?.now)
+    ok('실제 프로젝트 구간: 회사 이름·금지 표현 없음(특허는 출원만 · 벤처인증 표현 없음)', !/비원미래|BEONEMIRAE|KPJK|특허 등록|벤처인증|무조건|보장/i.test(body))
     const f1 = p.locator('#real-project-1'), f2 = p.locator('#real-project-2'), fc = p.locator('#film-2')
     const v1 = f1.locator('video'), v2 = f2.locator('video'), vc = fc.locator('video')
     for (const [n, f, v] of [[1, f1, v1], [2, f2, v2]]) {
@@ -221,8 +235,11 @@ for (const W of [390, 1280]) {
     const FIVE_ONE = 'taken,taken,taken,taken,open'
     const hb = await slot('[data-mvp-slots]'), hl = await slot('[data-mvp-slots-left]')
     ok('첫 화면: 선착순 5개사(칸 5개 중 남은 칸 1개) · 4개사 마감 · 마지막 1개사 남았어요', hb?.text === '선착순 5개사' && hb.slots === FIVE_ONE && hl?.text === '5개사 중 4개사 마감 · 마지막 1개사 남았어요', JSON.stringify([hb, hl]))
-    ok('자주 묻는 질문: 지금은 마지막 1개사만 남아 있어요', (await p.evaluate(() => document.getElementById('faq')?.textContent.includes('선착순 5개사는 300만원에 진행해요. 지금은 마지막 1개사만 남아 있어요.'))) === true)
-    ok('검색 설명: 선착순 5개사 중 마지막 1개사 남음', (await p.evaluate(() => document.querySelector('meta[name=description]')?.content.endsWith('런칭 파트너 300만원 · 선착순 5개사 중 마지막 1개사 남음.'))) === true)
+    // 300만원은 가격 상자(첫 화면 · 01 카드)의 런칭 특가에만 — 자주 묻는 질문 · 검색 설명은 500만원
+    const faqText = await p.evaluate(() => document.getElementById('faq')?.textContent || '')
+    ok('자주 묻는 질문: 비용은 500만원 · 런칭 특가는 마지막 1개사 · 결제 500만원 · 300만원 없음', faqText.includes('비용은 500만원이에요. 런칭 특가는 선착순 5개사 중 지금 마지막 1개사만 남아 있어요.') && faqText.includes('500만원은 한 번에 결제') && !faqText.includes('300만'))
+    ok('검색 설명: 비용 500만원 · 런칭 특가는 선착순 5개사 중 마지막 1개사 남음', (await p.evaluate(() => document.querySelector('meta[name=description]')?.content.endsWith('비용 500만원 · 런칭 특가는 선착순 5개사 중 마지막 1개사 남음.'))) === true)
+    ok('300만원은 첫 화면 가격 상자에만(본문 다른 곳 없음)', (await p.evaluate(() => { const box = document.querySelector('[data-mvp-price]'); const all = document.body.innerText.split('300만').length - 1; const inBox = box.innerText.split('300만').length - 1; return inBox === 1 && all === inBox })) === true)
     ok('오류 없음', errs.length === 0, errs.join('|'))
     await go(p, '/business-services')
     const card = await slot('[data-first-come-row]')

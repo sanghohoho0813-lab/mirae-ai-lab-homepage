@@ -215,7 +215,7 @@ export default function BusinessServicesPage() {
           <Link
             to={VENTURE_MVP_PATH}
             data-track="venture-mvp"
-            aria-label="01 BASIC 2주 기술사업 빌드 — 아이디어는 작동하는 웹앱 서비스로, 회사는 벤처기업으로. 런칭 파트너 300만원. 2주 기술사업 패키지 보기"
+            aria-label="01 BASIC 2주 기술사업 빌드 — 아이디어는 작동하는 웹앱 서비스로, 회사는 벤처기업으로. 정상가 500만원, 런칭 특가는 선착순 5개사 중 마지막 1개사 남음. 2주 기술사업 패키지 보기"
             className="hero-anim group relative flex flex-col overflow-hidden rounded-3xl border border-[#E7EAEE] bg-[#FFFDF9] p-4 pt-5 text-[#171B20] shadow-lg shadow-[#D47A4A]/10 transition duration-200 hover:-translate-y-1 hover:border-[#D47A4A]/50 hover:shadow-2xl hover:shadow-[#D47A4A]/20 [animation-delay:200ms] sm:p-7"
           >
             <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#E8B89A]/40 blur-3xl" />
