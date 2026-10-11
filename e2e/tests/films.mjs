@@ -237,9 +237,9 @@ for (const W of [390, 1280]) {
     ok('첫 화면: 선착순 5개사(칸 5개 중 남은 칸 1개) · 4개사 마감 · 마지막 1개사 남았어요', hb?.text === '선착순 5개사' && hb.slots === FIVE_ONE && hl?.text === '5개사 중 4개사 마감 · 마지막 1개사 남았어요', JSON.stringify([hb, hl]))
     // 300만원은 가격 상자(첫 화면 · 01 카드)의 런칭 특가에만 — 자주 묻는 질문 · 검색 설명은 500만원
     const faqText = await p.evaluate(() => document.getElementById('faq')?.textContent || '')
-    ok('자주 묻는 질문: 비용은 500만원 · 런칭 특가는 마지막 1개사 · 결제 500만원 · 300만원 없음', faqText.includes('비용은 500만원이에요. 런칭 특가는 선착순 5개사 중 지금 마지막 1개사만 남아 있어요.') && faqText.includes('500만원은 한 번에 결제') && !faqText.includes('300만'))
+    ok('자주 묻는 질문: 비용은 500만원 · 런칭 특가는 마지막 1개사 · 결제 500만원 · 300만원 없음', faqText.includes('비용은 500만원이에요. 런칭 특가는 선착순 5개사 중 지금 마지막 1개사만 남아 있어요.') && faqText.includes('500만원은 한 번에 결제') && !/(^|[^\d,])300만/.test(faqText))
     ok('검색 설명: 비용 500만원 · 런칭 특가는 선착순 5개사 중 마지막 1개사 남음', (await p.evaluate(() => document.querySelector('meta[name=description]')?.content.endsWith('비용 500만원 · 런칭 특가는 선착순 5개사 중 마지막 1개사 남음.'))) === true)
-    ok('300만원은 첫 화면 가격 상자에만(본문 다른 곳 없음)', (await p.evaluate(() => { const box = document.querySelector('[data-mvp-price]'); const all = document.body.innerText.split('300만').length - 1; const inBox = box.innerText.split('300만').length - 1; return inBox === 1 && all === inBox })) === true)
+    ok('300만원은 첫 화면 가격 상자에만(본문 다른 곳 없음)', (await p.evaluate(() => { const box = document.querySelector('[data-mvp-price]'); const n = (t) => (t.match(/(^|[^\d,])300만/g) || []).length; const all = n(document.body.innerText); const inBox = n(box.innerText); return inBox === 1 && all === inBox })) === true)
     ok('오류 없음', errs.length === 0, errs.join('|'))
     await go(p, '/business-services')
     const card = await slot('[data-first-come-row]')
