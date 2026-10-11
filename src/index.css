@@ -199,6 +199,21 @@
 .ax-glint-dot { animation: ax-glint-dot 3.4s ease-in-out 1.2s infinite; transform-box: fill-box; transform-origin: center; }
 .ax-glint-dot-late { animation-delay: 2.1s; }
 
+/* ── 선착순 남은 자리 — 남은 칸은 숨 쉬듯 밝았다 흐려지고, 빨간 점은 테두리가 천천히 퍼진다(과하지 않게) ── */
+@keyframes slot-open {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6); }
+  50% { opacity: 0.45; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0); }
+}
+@keyframes slot-live {
+  0% { box-shadow: 0 0 0 0 rgba(255, 107, 74, 0.55); }
+  70%, 100% { box-shadow: 0 0 0 6px rgba(255, 107, 74, 0); }
+}
+.slot-open { animation: slot-open 1.9s ease-in-out infinite; }
+.slot-live { animation: slot-live 1.9s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .slot-open, .slot-live { animation: none; }
+}
+
 /* ── 첫 화면 등장 — 위에서부터 차례로, 전체 1.2초 안에 끝난다 ── */
 @keyframes hero-rise {
   from { opacity: 0; transform: translateY(14px); }

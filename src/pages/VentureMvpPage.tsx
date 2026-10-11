@@ -28,14 +28,14 @@ import { VENTURE_MVP_FAQ } from '../data/ventureMvpFaq'
 import { VENTURE_MVP_DIR, VENTURE_MVP_HOTSPOTS, VENTURE_MVP_IMAGES, type VentureMvpHotspot } from '../data/ventureMvpImages'
 import { BUSINESS_CHOOSER_PATH, SAMPLES_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { SAMPLE_TOTAL } from '../data/portfolioSamples'
+import { VENTURE_SLOTS_LINE } from '../data/ventureSlots'
 import { rememberInterest } from '../lib/interestTrack'
 import { usePageMeta } from '../lib/pageMeta'
 import { useHashScroll, useReturnScroll } from '../lib/businessPageScroll'
 import { saveBusinessReturn } from '../lib/businessServicesReturn'
 
 const PAGE_TITLE = '기술사업 · MVP · 벤처기업확인 | 미래AI랩'
-const PAGE_DESC =
-  '아이디어는 작동하는 웹앱 서비스로 만들어드리고, 회사는 벤처기업으로 만들어드려요. 경영컨설턴트가 기술사업 아이디어부터 MVP, 벤처기업확인 신청까지 2주 안에 함께합니다. 런칭 파트너 300만원 · 선착순 5개사.'
+const PAGE_DESC = `아이디어는 작동하는 웹앱 서비스로 만들어드리고, 회사는 벤처기업으로 만들어드려요. 경영컨설턴트가 기술사업 아이디어부터 MVP, 벤처기업확인 신청까지 2주 안에 함께합니다. 런칭 파트너 300만원 · ${VENTURE_SLOTS_LINE}.`
 
 /** 상담 리드의 신청 경로 — consult_leads.source 와 알림 메일 제목에 그대로 들어간다 */
 const CONSULT_SOURCE = '기술사업·MVP 상세페이지 (venture-mvp)'

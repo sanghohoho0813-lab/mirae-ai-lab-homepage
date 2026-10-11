@@ -3,7 +3,10 @@
 //   결과물은 '서비스(앱)'가 아니라 '회사의 성장(벤처기업)'이라는 컨설팅 관점 — 개발 외주사처럼 보이지 않게 한다.
 // ⚠️ '벤처인증까지'처럼 인증을 약속하는 표현은 쓰지 않는다 → '벤처기업확인 신청까지'.
 // ⚠️ 가격·선착순은 서비스 선택 페이지 01 카드와 같은 숫자여야 한다(정상가 500만원 → 런칭 파트너 300만원 · 선착순 5개사).
+//    선착순 남은 자리는 data/ventureSlots.ts 한 곳에서 고친다(지금: 5개사 중 마지막 1개사).
 import { VENTURE_FEE_SHORT } from '../../data/ventureFee'
+import { VENTURE_SLOTS_LEFT_WORD, VENTURE_SLOTS_TAKEN, VENTURE_SLOTS_TITLE, VENTURE_SLOTS_TOTAL } from '../../data/ventureSlots'
+import SlotMeter from './SlotMeter'
 import Orbit from '../business/VisualOrbit'
 
 
@@ -49,12 +52,27 @@ export default function VentureMvpHero() {
                 <span className="text-[0.95rem] font-bold text-slate-400 lg:text-[1.14rem]">정상가</span>
                 <del className="text-[1.6rem] font-black leading-none tabular-nums text-slate-300 decoration-[#FF6B4A] decoration-[3px] sm:text-[1.8rem] lg:text-[2.16rem]">500만원</del>
               </p>
-              <span className="rounded-full bg-[#D47A4A] px-3 py-1 text-[0.85rem] font-black text-[#171B20] lg:px-3.5 lg:text-[1.02rem]">선착순 5개사</span>
+              <span data-mvp-slots className="inline-flex items-center gap-2 rounded-full bg-[#D47A4A] px-3 py-1 text-[0.85rem] font-black text-[#171B20] lg:px-3.5 lg:text-[1.02rem]">
+                {VENTURE_SLOTS_TITLE}
+                <SlotMeter />
+              </span>
             </div>
             <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
               <span className="text-[1.1rem] font-black text-white lg:text-[1.32rem]">런칭 파트너 특가</span>
               <span className="text-[2.6rem] font-black leading-none tracking-tight text-[#E8894F] sm:text-[3rem] lg:text-[3.6rem]">300만원</span>
               <span className="rounded-full bg-[#D2462A] px-3 py-1.5 text-[0.9rem] font-black leading-none text-white lg:px-3.5 lg:text-[1.08rem]">200만원 할인</span>
+            </p>
+            {/* 선착순 남은 자리 — 가격 바로 아래 한 줄(빨간 점이 천천히 퍼진다) */}
+            <p data-mvp-slots-left className="mt-3 flex items-center gap-2 break-keep text-[0.95rem] font-black leading-snug text-[#FFB38A] lg:text-[1.14rem]">
+              <span aria-hidden className="slot-live h-2 w-2 shrink-0 rounded-full bg-[#FF6B4A]" />
+              <span>
+                <span className="whitespace-nowrap">
+                  {VENTURE_SLOTS_TOTAL}개사 중 {VENTURE_SLOTS_TAKEN}개사 마감 ·
+                </span>{' '}
+                <span className="whitespace-nowrap">
+                  <span className="text-white">{VENTURE_SLOTS_LEFT_WORD}</span> 남았어요
+                </span>
+              </span>
             </p>
             {/* 벤처기업확인은 신청 '준비'까지가 이 금액 — 확인기관에 내는 심사 수수료는 별도라는 걸 가격 바로 아래에 */}
             <p data-mvp-fee-note className="mt-2.5 break-keep text-[0.8rem] leading-snug text-slate-400 lg:text-[0.96rem]">{VENTURE_FEE_SHORT}</p>

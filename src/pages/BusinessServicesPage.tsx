@@ -20,6 +20,8 @@ import KakaoFloat from '../components/KakaoFloat'
 import { AX_START_PATH, BUSINESS_CHOOSER_PATH, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { usePageMeta } from '../lib/pageMeta'
 import Orbit from '../components/business/VisualOrbit'
+import SlotMeter from '../components/venture/SlotMeter'
+import { VENTURE_SLOTS_LEFT_SHORT, VENTURE_SLOTS_TITLE } from '../data/ventureSlots'
 
 const PAGE_TITLE = '대표님 서비스 선택 | 미래AI랩 — 50인 미만 중소기업 AX · 기술사업·MVP'
 const PAGE_DESC =
@@ -240,11 +242,15 @@ export default function BusinessServicesPage() {
                   <span className="text-[1.6rem] font-black leading-none tracking-tight text-[#171B20] sm:text-[1.8rem]">300만원</span>
                   <span className="rounded-full bg-[#D2462E] px-2.5 py-1 text-[0.8rem] font-black leading-none text-white">200만원 할인</span>
                 </p>
-                {/* 선착순은 카드 머리가 아니라 할인 바로 아래 — 가격과 한 덩어리로 읽힌다 */}
-                <p className="mt-1.5 sm:mt-2">
+                {/* 선착순은 카드 머리가 아니라 할인 바로 아래 — 가격과 한 덩어리로 읽힌다. 남은 자리는 data/ventureSlots.ts */}
+                <p data-first-come-row className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 sm:mt-2">
                   <span data-first-come className="inline-flex items-center gap-1.5 rounded-full bg-[#D47A4A] px-2.5 py-1 text-[0.8rem] font-black leading-none text-[#171B20]">
-                    <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#171B20]" />
-                    선착순 5개사
+                    {VENTURE_SLOTS_TITLE}
+                    <SlotMeter />
+                  </span>
+                  <span data-first-come-left className="inline-flex items-center gap-1.5 whitespace-nowrap text-[0.84rem] font-black text-[#A84F26]">
+                    <span aria-hidden className="slot-live h-1.5 w-1.5 rounded-full bg-[#D2462E]" />
+                    {VENTURE_SLOTS_LEFT_SHORT}
                   </span>
                 </p>
                 <p className="mt-1.5 break-keep text-[0.74rem] leading-snug text-[#646E78] sm:mt-2">벤처기업확인 심사 수수료는 별도예요.</p>

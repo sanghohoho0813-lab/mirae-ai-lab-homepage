@@ -213,7 +213,21 @@ for (const W of [390, 1280]) {
       ok(`${id}: 스크롤하면 하나씩 떠오르고 모두 보임(${n.shown}/${n.all})`, n.all > 5 && n.shown === n.all)
     }
     ok('가로 넘침 없음', (await overflow(p)) <= 0)
+    // 선착순 남은 자리(data/ventureSlots.ts) — 첫 화면 가격 상자 · 자주 묻는 질문 · 서비스 선택 01 카드가 같은 숫자
+    const slot = (sel) => p.evaluate((s) => {
+      const el = document.querySelector(s)
+      return el && { text: el.innerText.replace(/\s+/g, ' ').trim(), slots: [...el.querySelectorAll('[data-slot]')].map((e) => e.dataset.slot).join(',') }
+    }, sel)
+    const FIVE_ONE = 'taken,taken,taken,taken,open'
+    const hb = await slot('[data-mvp-slots]'), hl = await slot('[data-mvp-slots-left]')
+    ok('첫 화면: 선착순 5개사(칸 5개 중 남은 칸 1개) · 4개사 마감 · 마지막 1개사 남았어요', hb?.text === '선착순 5개사' && hb.slots === FIVE_ONE && hl?.text === '5개사 중 4개사 마감 · 마지막 1개사 남았어요', JSON.stringify([hb, hl]))
+    ok('자주 묻는 질문: 지금은 마지막 1개사만 남아 있어요', (await p.evaluate(() => document.getElementById('faq')?.textContent.includes('선착순 5개사는 300만원에 진행해요. 지금은 마지막 1개사만 남아 있어요.'))) === true)
+    ok('검색 설명: 선착순 5개사 중 마지막 1개사 남음', (await p.evaluate(() => document.querySelector('meta[name=description]')?.content.endsWith('런칭 파트너 300만원 · 선착순 5개사 중 마지막 1개사 남음.'))) === true)
     ok('오류 없음', errs.length === 0, errs.join('|'))
+    await go(p, '/business-services')
+    const card = await slot('[data-first-come-row]')
+    ok('서비스 선택 01 카드: 선착순 5개사(남은 칸 1개) · 마지막 1개사 남음 · 한 줄', card?.text === '선착순 5개사 마지막 1개사 남음' && card.slots === FIVE_ONE && (await p.evaluate(() => document.querySelector('[data-first-come-row]').getBoundingClientRect().height)) < 30, JSON.stringify(card))
+    ok('서비스 선택: 가로 넘침 없음', (await overflow(p)) <= 0)
     await ctx.close()
   }
 }

@@ -7,6 +7,7 @@
 import { DIFF_FAQ, type FaqItem } from '../components/ax-showcase/AxFaqSection'
 import { VENTURE_BENEFITS } from './ventureBenefits'
 import { VENTURE_FEE_FAQ, VENTURE_FEE_LINE } from './ventureFee'
+import { VENTURE_SLOTS_FAQ } from './ventureSlots'
 
 export const VENTURE_MVP_FAQ: readonly FaqItem[] = [
   // ── 먼저 보이는 5개 — 구매 판단에 가장 중요한 질문(무엇을 · 비용 · 기간 · 벤처기업확인 혜택 · 보장 여부) ──
@@ -16,7 +17,7 @@ export const VENTURE_MVP_FAQ: readonly FaqItem[] = [
   },
   {
     q: '비용은 얼마인가요? 나중에 더 키우려면요?',
-    a: `**정상가 500만원이고, 런칭 기념으로 선착순 5개사는 300만원**에 진행해요. ${VENTURE_FEE_FAQ}\n\n만든 MVP를 고객이 쓰는 플랫폼이나 AI를 붙인 AX로 키우고 싶으시면, **처음부터 다시 만들지 않고 이어서 넓혀 가요.** 그때 범위는 상담에서 따로 정해요(플랫폼형 1,500만원부터, AX와 플랫폼을 잇는 풀 패키지 3,000만원부터).`,
+    a: `**정상가 500만원이고, 런칭 기념으로 선착순 5개사는 300만원**에 진행해요. ${VENTURE_SLOTS_FAQ} ${VENTURE_FEE_FAQ}\n\n만든 MVP를 고객이 쓰는 플랫폼이나 AI를 붙인 AX로 키우고 싶으시면, **처음부터 다시 만들지 않고 이어서 넓혀 가요.** 그때 범위는 상담에서 따로 정해요(플랫폼형 1,500만원부터, AX와 플랫폼을 잇는 풀 패키지 3,000만원부터).`,
   },
   {
     q: '정말 2주 안에 끝나나요? 확인 결과는 언제 나오나요?',
