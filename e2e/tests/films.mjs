@@ -43,12 +43,12 @@ for (const W of [390, 1280]) {
     await ctx.close()
   }
 
-  h(`AX 페이지 순서 · 실제 프로젝트 영상(영상 1 → 22개 화면 → 실제 프로젝트 → 영상 2 · 비용 → FAQ) · ${W}px`)
+  h(`AX 페이지 순서 · 실제 프로젝트 영상(영상 1 → 22개 화면 → 실제 프로젝트 → 진행 방식·비용은 상담 때 안내 → FAQ) · ${W}px`)
   {
     const { ctx, p, errs } = await newPage(b, W, W < 768 ? 844 : 900)
     await go(p, AX)
     const sec = p.locator('#real-projects-film')
-    const order = ['concerns', 'film-1', 'samples', 'real-projects-film', 'film-2', 'outcome', 'faq', 'cta']
+    const order = ['concerns', 'film-1', 'samples', 'real-projects-film', 'ax-cost', 'outcome', 'faq', 'cta']
     const tops = await p.evaluate((ids) => ids.map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? null), order)
     ok(`구간 순서 ${order.join(' → ')}`, tops.every((t, i) => t !== null && (i === 0 || t > tops[i - 1])), tops.map(Math.round).join(' < '))
     // 히어로 다음 '고민 4개' · FAQ 앞 '그래서 AX를 도입하면?' — 문구는 대표님 원문 그대로, 글자는 히어로 제목보다 작게, 왼쪽 기준선은 히어로와 같게
@@ -101,12 +101,25 @@ for (const W of [390, 1280]) {
     }
     await p.evaluate(() => scrollTo(0, 0))
     const picks = await p.$$eval('[data-ax-film-pick]', (bs) => bs.map((x) => { const r = x.getBoundingClientRect(); return { id: x.dataset.axFilmPick, no: x.querySelector('span').textContent.trim(), top: Math.round(r.top), left: Math.round(r.left) } }))
-    ok('골라 보기 번호 1~4 = 페이지 순서(영상 1 → 22개 화면 → 실제 프로젝트 → 영상 2)', picks.map((x) => x.no).join('') === '1234' && picks.map((x) => x.id).join() === 'film-1,samples,real-projects-film,film-2', JSON.stringify(picks.map((x) => x.no + x.id)))
+    ok('골라 보기 번호 1~4 = 페이지 순서(영상 1 → 22개 화면 → 실제 프로젝트 → 진행 방식·비용 상담 안내)', picks.map((x) => x.no).join('') === '1234' && picks.map((x) => x.id).join() === 'film-1,samples,real-projects-film,ax-cost', JSON.stringify(picks.map((x) => x.no + x.id)))
     ok('골라 보기는 읽는 순서대로 놓임(왼쪽→오른쪽, 위→아래)', picks.every((x, i) => i === 0 || x.top > picks[i - 1].top || (x.top === picks[i - 1].top && x.left > picks[i - 1].left)))
-    const marks = await p.evaluate(() => ['film-1', 'real-project-1', 'real-project-2', 'film-2'].map((id) => document.querySelector(`#${id} [data-film-mark]`)?.textContent.trim() + '|' + document.getElementById(id)?.querySelector('p')?.textContent))
+    const marks = await p.evaluate(() => ['film-1', 'real-project-1', 'real-project-2', 'ax-cost'].map((id) => document.querySelector(`#${id} [data-film-mark]`)?.textContent.trim() + '|' + document.getElementById(id)?.querySelector('p')?.textContent))
     ok('영상 머리표 번호 = 골라 보기 번호(1 · 3 1편 · 3 2편 · 4)', marks[0].startsWith('1|') && marks[1].startsWith('3|') && marks[1].includes('1편') && marks[2].startsWith('3|') && marks[2].includes('2편') && marks[3].startsWith('4|'), JSON.stringify(marks.map((m) => m.slice(0, 20))))
-    const cost = await p.locator('#film-2').evaluate((el) => el.textContent) // 휴대폰에서는 요점 목록이 접혀 있어 글자 기준으로 본다
-    ok('비용 영상 설명: "500만 원부터"만(플랫폼형·풀 패키지 금액 없음)', cost.includes('500만 원부터') && !/1,500만|3,000만/.test(cost))
+    // 영상 2(진행 방식·비용)는 잠시 내림(data/axCostFilm.ts) — 그 자리에는 금액 없이 '상담 때 자세히 안내'
+    const cost = await p.evaluate(() => {
+      const s = document.getElementById('ax-cost')
+      return s && {
+        text: s.innerText.replace(/\s+/g, ' ').trim(),
+        videos: s.querySelectorAll('video').length + document.querySelectorAll('[data-ax-films-cost], #film-2 video, video source[src*="ax-film-2"]').length,
+        diag: s.querySelector('[data-ax-cost-diagnosis]')?.getAttribute('href'),
+        kakao: s.querySelector('[data-ax-cost-kakao]')?.getAttribute('href'),
+        oldAnchor: !!s.querySelector('#film-2'),
+        bodyPrice: /만 ?원부터|1,500만|3,000만/.test(document.body.innerText),
+      }
+    })
+    ok('영상 2(비용) 내림 · 그 자리: 진행 방식과 비용은 상담 때 자세히 안내드려요', cost?.text.includes('진행 방식과 비용은 상담 때 자세히 안내드려요') && cost.videos === 0, JSON.stringify(cost))
+    ok('상담 안내 자리: 진단 받기(/business-diagnosis?interest=ax) · 카톡 상담 · 예전 주소 #film-2 도 여기로', cost?.diag === '/business-diagnosis?interest=ax' && /pf\.kakao\.com/.test(cost.kakao || '') && cost.oldAnchor, JSON.stringify(cost))
+    ok('AX 페이지 본문에 금액(○만 원부터 · 1,500만 · 3,000만) 없음', cost?.bodyPrice === false)
     ok('22개 화면 구간에는 실제 프로젝트 없음', (await p.locator('#samples [data-ax-real-project], #samples [data-real-episode]').count()) === 0)
     ok('실제 프로젝트는 살구색 바탕(영상 1·2와 같은 색)', await p.evaluate(() => ['films', 'real-projects-film'].map((id) => getComputedStyle(document.getElementById(id)).backgroundColor).every((c, _, a) => c === a[0])))
     ok('두 편 연달아(1편 → 2편)', (await sec.locator('[data-real-episode]').count()) === 2 && (await p.evaluate(() => document.getElementById('real-project-1').getBoundingClientRect().top < document.getElementById('real-project-2').getBoundingClientRect().top)))
@@ -133,8 +146,8 @@ for (const W of [390, 1280]) {
     ].join('|') && !done.in2, JSON.stringify(done?.items))
     ok('1편: 현재 신용보증기금 리틀펭귄 심사 중(발표 준비 중)', done?.now === '현재 3년간 최대 20억원 보증 지원 프로그램인 신용보증기금 리틀펭귄 프로그램 심사 중(발표 준비 중)', done?.now)
     ok('실제 프로젝트 구간: 회사 이름·금지 표현 없음(특허는 출원만 · 벤처인증 표현 없음)', !/비원미래|BEONEMIRAE|KPJK|특허 등록|벤처인증|무조건|보장/i.test(body))
-    const f1 = p.locator('#real-project-1'), f2 = p.locator('#real-project-2'), fc = p.locator('#film-2')
-    const v1 = f1.locator('video'), v2 = f2.locator('video'), vc = fc.locator('video')
+    const f1 = p.locator('#real-project-1'), f2 = p.locator('#real-project-2')
+    const v1 = f1.locator('video'), v2 = f2.locator('video')
     for (const [n, f, v] of [[1, f1, v1], [2, f2, v2]]) {
       const srcs = await v.locator('source').evaluateAll((s) => s.map((x) => x.getAttribute('src')))
       ok(`${n}편 영상 주소 mp4 · webm`, JSON.stringify(srcs) === JSON.stringify([`/business/ax/ax-real-ep${n}.mp4`, `/business/ax/ax-real-ep${n}.webm`]), srcs.join(','))
@@ -161,15 +174,13 @@ for (const W of [390, 1280]) {
       ok('2편 소리 켜고 재생', await v2.evaluate((x) => !x.muted && !x.paused && x.controls))
       ok('1편은 멈춤', await v1.evaluate((x) => x.paused))
     }
-    // 2편 끝 → '진행 방식·비용(영상 2) 보기' → 영상 2가 소리 켜고 재생, 2편은 멈춤
+    // 2편 끝 → '진행 방식·비용 안내 보기' → 상담 안내 자리로 내려간다(영상 2는 잠시 내림)
     await toEnd(v2)
     await f2.locator('[data-real-cost]').waitFor({ timeout: 8000 }).catch(() => {})
-    ok('2편 끝 화면에 영상 2(비용) 보기', (await f2.locator('[data-real-cost]').count()) === 1)
+    ok('2편 끝 화면에 진행 방식·비용 안내 보기', (await f2.locator('[data-real-cost]').count()) === 1 && /진행 방식·비용 안내 보기/.test(await f2.locator('[data-real-cost]').innerText()))
     if (await f2.locator('[data-real-cost]').count()) {
-      await f2.locator('[data-real-cost]').click(); await p.waitForTimeout(1200)
-      ok('영상 2 소리 켜고 재생', await vc.evaluate((x) => !x.muted && !x.paused && x.controls))
-      ok('2편은 멈춤', await v2.evaluate((x) => x.paused))
-      ok('영상 2가 화면에 보임', await vc.evaluate((x) => { const r = x.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }))
+      await f2.locator('[data-real-cost]').click(); await p.waitForTimeout(1500)
+      ok('상담 안내 자리가 화면에 보임', await p.evaluate(() => { const r = document.querySelector('#ax-cost h2').getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 }))
     }
     ok('가로 넘침 없음', (await overflow(p)) <= 0)
     ok('오류 없음', errs.length === 0, errs.join('|'))

@@ -7,7 +7,8 @@ import SampleQuickNav from '../components/ax-showcase/SampleQuickNav'
 import BusinessHeader from '../components/business/BusinessHeader'
 import BusinessStickyCta from '../components/business/BusinessStickyCta'
 import { AxConcerns, AxHeroV2, AxOutcome, AxSamplesBand } from '../components/ax-showcase/axHomeSections'
-import { AxFilmCost, AxFilmIntro } from '../components/ax-showcase/AxFilms'
+import { AxCostByConsult, AxFilmCost, AxFilmIntro } from '../components/ax-showcase/AxFilms'
+import { SHOW_COST_FILM } from '../data/axCostFilm'
 import AxFaqSection from '../components/ax-showcase/AxFaqSection'
 import AxRealProjectsFilm, { AX_REAL_FILM_ID } from '../components/ax-showcase/AxRealProjectsFilm'
 import { AxStoryImages } from '../components/ax-showcase/axStoryHome'
@@ -123,8 +124,9 @@ export default function AxStartPage() {
              금액(영상 2)을 보기 전에 실제 사례부터(대표님 요청) */}
       <AxRealProjectsFilm diagnosisHref={AX_DIAG_HREF} />
 
-      {/* 5. 영상 2 — 어떻게 진행하고 얼마가 드나(살구색) */}
-      <AxFilmCost diagnosisHref={AX_DIAG_HREF} />
+      {/* 5. 영상 2 — 어떻게 진행하고 얼마가 드나(살구색).
+             대표님 요청(2026-11): 레퍼런스가 더 쌓일 때까지 잠시 내리고, 금액 없이 '상담 때 자세히 안내' 로(data/axCostFilm.ts) */}
+      {SHOW_COST_FILM ? <AxFilmCost diagnosisHref={AX_DIAG_HREF} /> : <AxCostByConsult diagnosisHref={AX_DIAG_HREF} />}
 
       {/* 5-1. 그래서, 우리 회사에 AX를 도입하면? — FAQ 직전 마지막 정리(히어로와 같은 먹색) */}
       <AxOutcome />

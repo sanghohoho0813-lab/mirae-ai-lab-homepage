@@ -11,6 +11,8 @@
 //  나머지 앱 모양 화면은 예시 데이터로 다시 그렸다. 영상 원본·자막: media/ax-videos/v31/real-ep1 · real-ep2(영상 스타일 v3.1 · 장면표 v31/SCENES.md).
 import { Link } from 'react-router-dom'
 import { DEEP_PROJECTS } from '../../data/realProjectsDeep'
+import { AX_COST_ID, SHOW_COST_FILM } from '../../data/axCostFilm'
+import { scrollToSection } from '../../lib/businessPageScroll'
 import { END_PRIMARY, END_REPLAY, END_SECONDARY, FilmBlock, playFilm, type Film } from './AxFilms'
 
 /** 메뉴 '실제 프로젝트 영상'이 오는 자리 */
@@ -120,8 +122,17 @@ export default function AxRealProjectsFilm({ diagnosisHref }: { diagnosisHref: s
               이제 진행 방식과
               <br /> 비용을 보세요
             </p>
-            <button type="button" data-real-cost onClick={() => playFilm('film-2')} className={END_PRIMARY}>
-              진행 방식·비용(영상 2) 보기 <span aria-hidden>▶</span>
+            {/* 영상 2(비용)를 내려 둔 동안에는 '상담 때 자세히 안내' 자리로(data/axCostFilm.ts) */}
+            <button type="button" data-real-cost onClick={() => (SHOW_COST_FILM ? playFilm('film-2') : scrollToSection(AX_COST_ID, 'smooth'))} className={END_PRIMARY}>
+              {SHOW_COST_FILM ? (
+                <>
+                  진행 방식·비용(영상 2) 보기 <span aria-hidden>▶</span>
+                </>
+              ) : (
+                <>
+                  진행 방식·비용 안내 보기 <span aria-hidden>↓</span>
+                </>
+              )}
             </button>
             <Link to={diagnosisHref} className={END_SECONDARY}>
               3분 AX Fit 진단 받기 <span aria-hidden>→</span>

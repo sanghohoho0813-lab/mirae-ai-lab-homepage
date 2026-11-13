@@ -14,6 +14,7 @@ import { loginPathWithNext } from '../lib/authRouting'
 import { scrollToSection } from '../lib/businessPageScroll'
 import { AX_GUIDE_PATH, AX_START_PATH, BUSINESS_CHOOSER_PATH, SAMPLES_PATH, SHOW_AX_GUIDE, VENTURE_MVP_PATH } from '../lib/businessRoutes'
 import { SAMPLE_TOTAL } from '../data/portfolioSamples'
+import { AX_COST_ANCHOR, SHOW_COST_FILM } from '../data/axCostFilm'
 import Avatar from './account/Avatar'
 import BrandLogo from './BrandLogo'
 import ConsultModal from './ConsultModal'
@@ -112,7 +113,8 @@ const BUSINESS_MENU: MenuConfig = {
             { no: '1', label: 'AX가 뭐예요?', desc: '영상 1 · AX가 뭐고, 왜 필요한가', to: `${AX_START_PATH}#film-1` },
             { no: '2', label: '실제 AX 구축 화면', desc: '업종별 화면을 직접 눌러 보기', to: `${AX_START_PATH}#samples` },
             { no: '3', label: '실제 프로젝트 영상', desc: '1편 의료폐기물 · 2편 웰니스 케어(업종만 공개)', to: `${AX_START_PATH}#real-projects-film` },
-            { no: '4', label: '진행 방식과 비용', desc: '영상 2 · 어떻게 진행하고, 얼마가 드나', to: `${AX_START_PATH}#film-2` },
+            // 영상 2(비용)는 잠시 내려 두었다(data/axCostFilm.ts) — 그동안은 '상담 때 자세히 안내' 자리로
+            { no: '4', label: '진행 방식과 비용', desc: SHOW_COST_FILM ? '영상 2 · 어떻게 진행하고, 얼마가 드나' : '상담 때 자세히 안내드려요', to: `${AX_START_PATH}#${AX_COST_ANCHOR}` },
             { no: '5', label: '자주 묻는 질문', desc: '기존 시스템 · 회사 규모 · 벤처기업확인', to: `${AX_START_PATH}#faq` },
           ],
     },

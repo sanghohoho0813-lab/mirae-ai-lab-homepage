@@ -13,6 +13,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { scrollToSection } from '../../lib/businessPageScroll'
+import { consultLinks } from '../../config/businessInfo'
+import { AX_COST_ID, SHOW_COST_FILM } from '../../data/axCostFilm'
 import PlaybackSpeed from '../video/PlaybackSpeed'
 
 export type Film = {
@@ -116,7 +118,10 @@ export function AxFilmIntro({ samplesAnchor, realAnchor }: { samplesAnchor: stri
             { id: 'film-1', mark: '1', who: FILMS[0].who, what: `영상 1 · ${FILMS[0].length}` },
             { id: samplesAnchor, mark: '2', who: '설명보다 화면이 먼저라면', what: '직접 만든 화면 22개' },
             { id: realAnchor, mark: '3', who: '실제 기업 사례가 궁금하다면', what: '실제 프로젝트 1편 · 2편' },
-            { id: 'film-2', mark: '4', who: FILMS[1].who, what: `영상 2 · ${FILMS[1].length}` },
+            // 영상 2(비용)를 내려 둔 동안 4번은 '상담 때 자세히 안내' 자리로(data/axCostFilm.ts)
+            SHOW_COST_FILM
+              ? { id: 'film-2', mark: '4', who: FILMS[1].who, what: `영상 2 · ${FILMS[1].length}` }
+              : { id: AX_COST_ID, mark: '4', who: '진행 방식·비용이 궁금하다면', what: '상담 때 자세히 안내드려요' },
           ].map((c) => (
             <li key={c.id} className="flex">
               <button
@@ -152,9 +157,15 @@ export function AxFilmIntro({ samplesAnchor, realAnchor }: { samplesAnchor: stri
             <button type="button" onClick={() => scrollToSection(samplesAnchor, 'smooth')} className={END_PRIMARY}>
               직접 만든 화면 보기 <span aria-hidden>↓</span>
             </button>
-            <button type="button" onClick={() => playFilm('film-2')} className={END_SECONDARY}>
-              진행 방식·비용(영상 2) 보기 <span aria-hidden>▶</span>
-            </button>
+            {SHOW_COST_FILM ? (
+              <button type="button" onClick={() => playFilm('film-2')} className={END_SECONDARY}>
+                진행 방식·비용(영상 2) 보기 <span aria-hidden>▶</span>
+              </button>
+            ) : (
+              <button type="button" onClick={() => scrollToSection(realAnchor, 'smooth')} className={END_SECONDARY}>
+                실제 기업 사례 보기 <span aria-hidden>↓</span>
+              </button>
+            )}
             <button type="button" onClick={replay} className={END_REPLAY}>
               1편 처음부터 다시 보기
             </button>
@@ -191,6 +202,51 @@ export function AxFilmCost({ diagnosisHref }: { diagnosisHref: string }) {
           </>
         )}
       />
+    </section>
+  )
+}
+
+/** 영상 2(진행 방식·비용)를 내려 둔 동안 그 자리 — 금액은 말하지 않고 '상담 때 자세히' 로(대표님 요청 2026-11 · data/axCostFilm.ts).
+ *  예전 주소(#film-2)로 들어와도 여기로 오게 빈 표지를 하나 둔다. 바탕은 영상 구간과 같은 살구색 */
+export function AxCostByConsult({ diagnosisHref }: { diagnosisHref: string }) {
+  return (
+    <section id={AX_COST_ID} data-ax-cost-consult className="relative scroll-mt-16 overflow-hidden bg-[#F4ECE4] text-[#171B20] lg:[zoom:1.15] xl:[zoom:1.4]">
+      <span id="film-2" aria-hidden className="absolute left-0 top-0" />
+      <div aria-hidden className="pointer-events-none absolute -left-24 top-10 h-[18rem] w-[18rem] rounded-full bg-[#D47A4A]/15 blur-3xl" />
+      <div aria-hidden className="relative mx-auto h-px max-w-4xl bg-[#171B20]/10" />
+      <div className="relative mx-auto max-w-3xl px-5 py-14 text-center sm:px-6 sm:py-20">
+        <p className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3.5 py-1.5 text-[0.98rem] font-black text-[#B4532A] ring-1 ring-[#D47A4A]/40">
+          <span aria-hidden data-film-mark className="grid h-6 w-6 place-items-center rounded-full bg-[#171B20] text-[0.82rem] text-white">
+            4
+          </span>
+          진행 방식 · 비용
+        </p>
+        <h2 className="mt-4 break-keep text-[2rem] font-black leading-[1.22] tracking-tight sm:text-[2.6rem]">
+          진행 방식과 비용은
+          <br /> <span className="text-[#B4532A]">상담 때 자세히 안내드려요</span>
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl break-keep text-[1.05rem] leading-relaxed text-[#4A535D] sm:text-[1.12rem]">
+          회사마다 업무와 필요한 범위가 달라요. 지금 사업과 일하는 방식을 먼저 듣고, 무엇부터 할지와 비용을 함께 정해요.
+        </p>
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link
+            to={diagnosisHref}
+            data-ax-cost-diagnosis
+            className="shine-cta flex min-h-14 w-full max-w-xs items-center justify-center gap-2 rounded-2xl bg-[#171B20] px-7 text-[1.1rem] font-black text-white shadow-xl shadow-[#171B20]/20 transition-transform hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 sm:w-auto"
+          >
+            3분 AX Fit 진단 받기 <span aria-hidden className="text-[#E8B89A]">→</span>
+          </Link>
+          <a
+            href={consultLinks.kakaoChat}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-ax-cost-kakao
+            className="flex min-h-14 w-full max-w-xs items-center justify-center gap-2 rounded-2xl bg-white/85 px-7 text-[1.1rem] font-black text-[#171B20] ring-1 ring-inset ring-[#171B20]/15 transition-colors hover:bg-white sm:w-auto"
+          >
+            카톡으로 상담하기
+          </a>
+        </div>
+      </div>
     </section>
   )
 }
