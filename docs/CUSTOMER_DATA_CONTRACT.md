@@ -36,3 +36,23 @@
 
 ## 준비 상태 판정
 RPC 가 없으면 PostgREST 가 `PGRST202`/`could not find the function` 을 돌려준다 → `isPortalNotReady()` 가 true → 화면은 "준비하고 있습니다"를 보여준다. 마이그레이션 적용 후 자동으로 LIVE.
+
+## 고객성장관리(D-681 · 내부 저장소 마이그레이션 0033) — 더한 것만
+
+원문: 내부 저장소 `supabase/migrations/20261127000033_customer_growth.sql` · `docs/CUSTOMER_GROWTH_DATA_CONTRACT.md`. 예전 RPC · 칸은 바꾸지 않았다.
+
+| RPC | 돌려주는 것 | 기록 |
+|---|---|---|
+| `portal_growth_summary()` | 내 활성 연결마다 `{link_id, reports_total, reports_unseen, reports_unacked, latest_report, first_visit_at}` | 없음 |
+| `portal_reports(p_link_id)` | 발행 중 보고서(최신 판만 · 내린 것 빼고 · 본문 없음) + 내가 연 때 `seen_at` · 확인한 때 `acknowledged_at` | 없음 |
+| `portal_report(p_link_id, p_report_id)` | 발행 중: 본문(`sections` · `staff_note`) + `company_name` · `consultant_name` / 정정된 판: `{status:'superseded', latest_id}` / 내린 판: `{status:'withdrawn'}`(본문 없음) | 없음 |
+| `portal_mark_report_seen(p_link_id, p_report_id)` | `{seen_at, acknowledged_at}` — 보고서 끝이 1초 넘게 보인 뒤 | 계정 · 판마다 한 줄 |
+| `portal_acknowledge_report(p_link_id, p_report_id)` | `{seen_at, acknowledged_at}` — 다시 눌러도 처음 때 그대로 | 확인 시각 |
+| `portal_mark_home()` | 활성 연결 수 — 성장 홈에 들어올 때 | 연결마다 방문 한 줄 |
+
+- 보고서는 업체 단위, 열람 · 확인은 **계정 단위**(같은 회사 두 계정이면 기록 따로).
+- '확인했어요' 는 보셨다는 표시 — 계약 검수 · 대금 승인이 아니다(화면에 늘 이 한 줄 · `REPORT_ACK_NOTE`).
+- 남의 연결 · 남의 보고서 · 멈춘/끊은 연결은 모두 `not found(P0002)` — 화면은 '이 계정에 연결된 프로젝트의 보고서만 볼 수 있어요'.
+- 고객 모양에 없는 것: 출처 · 발행한 사람 · 내린 까닭 · 발행 번호 · 작업공간 · 업체 id · 내부 메모 · 수수료.
+- **꺼짐**: 함수가 없거나(0033 전) 실행 권한을 거뒀으면(되돌리기) `isGrowthOff` → 성장 홈 칸 · '보고서' 탭만 숨고 예전 화면 그대로. 그 밖의 오류는 숨기지 않는다.
+

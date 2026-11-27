@@ -1,8 +1,8 @@
 // /my-projects/:linkId — 고객 프로젝트 상세 (My MIRAE).
-// 탭: 지금 해야 할 일 · 진행 상태 · 서류 · 업데이트 · 내 요청 · 결과.
+// 탭: 지금 해야 할 일 · 보고서(0033 이 켜진 곳만) · 진행 상태 · 서류 · 업데이트 · 내 요청 · 결과. ?tab= 으로 바로 열 수 있다.
 // 여기 보이는 모든 값은 서버가 고객용으로 골라 준 것(portal_project)이며 내부 메모·수임료·내부 단계는 포함되지 않는다.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
 import PageShell from '../components/PageShell'
 import NoIndex from '../components/NoIndex'
 import { useAuth } from '../lib/auth'
@@ -10,25 +10,29 @@ import {
   CUSTOMER_STAGE_LABEL,
   CUSTOMER_STAGE_ORDER,
   DOCUMENT_STATUS_LABEL,
+  REPORT_KIND_LABEL,
   REQUEST_STATUS_LABEL,
   REQUEST_TYPE_LABEL,
   UPDATE_CATEGORY_LABEL,
   completeAction,
   createRequest,
   fetchProject,
+  fetchReports,
   formatKDate,
   isPortalNotReady,
   signedFileUrl,
   uploadDocument,
   type PortalDocument,
   type PortalProject,
+  type PortalReportItem,
   type PortalRequestType,
 } from '../lib/customerPortal'
 import { PortalNotReady } from './MyProjectsPage'
 
-type Tab = 'todo' | 'progress' | 'documents' | 'updates' | 'requests' | 'results'
+type Tab = 'todo' | 'reports' | 'progress' | 'documents' | 'updates' | 'requests' | 'results'
 const TABS: { key: Tab; label: string }[] = [
   { key: 'todo', label: '지금 해야 할 일' },
+  { key: 'reports', label: '보고서' },
   { key: 'progress', label: '진행 상태' },
   { key: 'documents', label: '서류' },
   { key: 'updates', label: '업데이트' },
@@ -193,17 +197,27 @@ function RequestForm({ linkId, onCreated }: { linkId: string; onCreated: () => v
 export default function MyProjectDetailPage() {
   const { linkId = '' } = useParams()
   const { loading, configured, user, needsOnboarding } = useAuth()
-  const [tab, setTab] = useState<Tab>('todo')
+  const [search, setSearch] = useSearchParams()
+  const askedTab = search.get('tab') as Tab | null
+  const [tab, setTabState] = useState<Tab>(askedTab && TABS.some((t) => t.key === askedTab) ? askedTab : 'todo')
+  const setTab = (t: Tab) => {
+    setTabState(t)
+    setSearch((q) => { const n = new URLSearchParams(q); n.set('tab', t); return n }, { replace: true })
+  }
   const [data, setData] = useState<PortalProject | null>(null)
+  // 보고서 — null 이면 이 기능이 꺼진 환경(탭을 숨기고 예전 그대로)
+  const [reports, setReports] = useState<PortalReportItem[] | null>(null)
   const [state, setState] = useState<'loading' | 'ready' | 'not_ready' | 'denied' | 'error'>('loading')
   const [message, setMessage] = useState('')
   const [toast, setToast] = useState('')
 
   const load = useCallback(async () => {
     try {
-      const d = await fetchProject(linkId)
+      // 보고서는 따로 — 실패하거나 꺼진 환경이면 null(탭만 숨기고 프로젝트 화면은 그대로)
+      const [d, reps] = await Promise.all([fetchProject(linkId), fetchReports(linkId).catch(() => null)])
       if (!d.project) { setState('denied'); return }
       setData(d)
+      setReports(reps)
       setState('ready')
     } catch (e) {
       if (isPortalNotReady(e)) setState('not_ready')
@@ -216,6 +230,11 @@ export default function MyProjectDetailPage() {
     if (!user || !configured) return
     void load()
   }, [user, configured, load])
+
+  // 보고서가 꺼진 환경에서 ?tab=reports 로 왔으면 '지금 해야 할 일' 로
+  useEffect(() => {
+    if (state === 'ready' && reports === null && tab === 'reports') setTabState('todo')
+  }, [state, reports, tab])
 
   useEffect(() => {
     document.title = data?.project ? `${data.project.name} | 미래 AI 랩` : '내 프로젝트 | 미래 AI 랩'
@@ -272,6 +291,7 @@ export default function MyProjectDetailPage() {
   const p = data.project
   const stageIdx = CUSTOMER_STAGE_ORDER.indexOf(p.stage)
   const todoCount = todo.actions.length + todo.docs.length
+  const unseenReports = (reports ?? []).filter((r) => !r.seen_at).length
 
   return (
     <PageShell title={p.name} subtitle={`${CUSTOMER_STAGE_LABEL[p.stage]}${p.consultant_name ? ` · 담당 ${p.consultant_name}` : ''}${p.updated_at ? ` · 최근 업데이트 ${formatKDate(p.updated_at)}` : ''}`}>
@@ -292,7 +312,7 @@ export default function MyProjectDetailPage() {
 
       {/* 탭 */}
       <div className="mt-6 mb-5 flex gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {TABS.map((t) => (
+        {TABS.filter((t) => t.key !== 'reports' || reports !== null).map((t) => (
           <button
             key={t.key}
             type="button"
@@ -302,6 +322,7 @@ export default function MyProjectDetailPage() {
           >
             {t.label}
             {t.key === 'todo' && todoCount > 0 && <span className="ml-1 rounded-full bg-amber-500 px-1.5 text-[11px] text-white">{todoCount}</span>}
+            {t.key === 'reports' && unseenReports > 0 && <span className="ml-1 rounded-full bg-rose-500 px-1.5 text-[11px] text-white" data-testid="project-tab-reports-new">새 {unseenReports}</span>}
           </button>
         ))}
       </div>
@@ -334,6 +355,29 @@ export default function MyProjectDetailPage() {
               </Card>
             )}
           </>
+        )}
+
+        {tab === 'reports' && reports !== null && (
+          reports.length === 0 ? <Empty text="아직 받은 보고서가 없습니다. 담당자가 경과 보고를 보내면 여기에 쌓입니다." /> : (
+            <ol className="space-y-3" data-testid="project-reports">
+              {reports.map((r) => (
+                <li key={r.id}>
+                  <Link to={`/my-projects/reports/${r.id}?link=${p.link_id}`} className="block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors hover:border-slate-400" data-testid="project-report-item" data-seen={r.seen_at ? '1' : '0'}>
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 font-black text-slate-600">{REPORT_KIND_LABEL[r.kind] ?? '보고서'}</span>
+                      <span className="text-slate-400">{formatKDate(r.published_at)}</span>
+                      {r.corrected && <span className="rounded-full bg-slate-100 px-2 py-0.5 font-black text-slate-600">정정본</span>}
+                      <span className={`rounded-full px-2 py-0.5 font-black ${!r.seen_at ? 'bg-rose-50 text-rose-700' : r.acknowledged_at ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                        {!r.seen_at ? '새 보고서' : r.acknowledged_at ? '확인함' : '확인 전'}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-base font-black text-slate-900 [overflow-wrap:anywhere]">{r.title}</p>
+                    {r.summary && <p className="mt-1 line-clamp-2 text-sm text-slate-600">{r.summary}</p>}
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          )
         )}
 
         {tab === 'progress' && (

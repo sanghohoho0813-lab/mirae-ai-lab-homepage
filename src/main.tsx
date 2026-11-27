@@ -63,6 +63,7 @@ const RefundPolicyPage = lazyPage(() => import('./pages/legal/RefundPolicyPage')
 const BusinessInfoPage = lazyPage(() => import('./pages/legal/BusinessInfoPage'))
 const MyProjectsPage = lazyPage(() => import('./pages/MyProjectsPage'))
 const MyProjectDetailPage = lazyPage(() => import('./pages/MyProjectDetailPage'))
+const MyReportPage = lazyPage(() => import('./pages/MyReportPage'))
 
 // Vite 가 화면 파일을 미리 받다(preload) 실패한 경우 — 배포 직후 흔하다. 한 번만 새로고침한다.
 // 30초 안에 또 실패하면 막지 않고 에러 경계(직접 새로고침 버튼)로 넘긴다.
@@ -123,6 +124,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/my-orders" element={<MyOrdersPage />} />
               <Route path="/my-projects" element={<MyProjectsPage />} />
               <Route path="/my-projects/:linkId" element={<MyProjectDetailPage />} />
+              <Route path="/my-projects/reports/:reportId" element={<MyReportPage />} />
               {/* 대표님 2-Track 선택 → ① AX 홈(ax-start) → AX 상세 안내(ax) / ② 기술사업·MVP(venture-mvp) — 모두 :slug 보다 먼저 */}
               <Route path="/business-services" element={<BusinessServicesPage />} />
               <Route path="/business-services/ax-start" element={<AxStartPage />} />

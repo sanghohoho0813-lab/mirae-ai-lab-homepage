@@ -216,6 +216,144 @@ export async function signedFileUrl(storagePath: string): Promise<string> {
   return data.signedUrl
 }
 
+/* ------------------------------------------------------------------ */
+/* 고객성장관리 — 보고서 · 열람/확인 기록 (내부 저장소 0033)               */
+/* ------------------------------------------------------------------ */
+// 이 함수들이 아직 없는 환경(0033 전)이거나 운영자가 끈 환경(실행 권한 거둠)이면 '꺼짐' — 화면은 예전 그대로 둔다.
+// 열람 · 확인 표시는 '보고서를 보셨다' 는 뜻일 뿐, 계약 검수 · 대금 승인이 아니다.
+
+export type ReportKind = 'consult_summary' | 'progress' | 'interim' | 'final' | 'monthly' | 'annual'
+
+export const REPORT_KIND_LABEL: Record<ReportKind, string> = {
+  consult_summary: '상담 요약',
+  progress: '경과 보고',
+  interim: '중간 보고',
+  final: '최종 보고',
+  monthly: '월간 보고',
+  annual: '연간 보고',
+}
+
+export type PortalReportSection = { key: string; title: string; items: { text: string; date?: string | null }[] }
+
+/** 목록 · 요약에 오는 한 편(본문 없음) */
+export type PortalReportItem = {
+  id: string
+  version: number
+  kind: ReportKind
+  title: string
+  period_start: string | null
+  period_end: string | null
+  summary: string
+  status: 'published'
+  published_at: string
+  corrected: boolean
+  correction_note: string | null
+  /** 내가(이 계정이) 처음 열어 본 때 · 확인한 때 */
+  seen_at: string | null
+  acknowledged_at: string | null
+}
+
+/** 보고서 한 편 — 발행 중이면 본문까지 · 정정됐거나 내린 판이면 안내만 */
+export type PortalReportDetail =
+  | (PortalReportItem & { sections: PortalReportSection[]; staff_note: string | null; company_name: string | null; consultant_name: string | null })
+  | { id: string; status: 'superseded' | 'withdrawn'; title: string; version: number; kind: ReportKind; published_at: string; withdrawn_at: string | null; latest_id: string | null }
+
+export type GrowthSummary = {
+  link_id: string
+  reports_total: number
+  reports_unseen: number
+  reports_unacked: number
+  latest_report: PortalReportItem | null
+  first_visit_at: string | null
+}
+
+const GROWTH_FUNCS = 'portal_(?:reports|report|mark_report_seen|acknowledge_report|mark_home|growth_summary)'
+
+/** 고객성장 기능이 아직 없거나 꺼진 환경인지(그 칸만 숨기고 나머지는 예전 그대로) */
+export function isGrowthOff(e: unknown): boolean {
+  const o = e as { message?: unknown; code?: unknown; details?: unknown; hint?: unknown } | null
+  const msg = [o?.message, o?.code, o?.details, o?.hint].filter((v) => typeof v === 'string').join(' ') || String(e)
+  if (/could not find the function|schema cache|PGRST202|42883/i.test(msg)) return true
+  return new RegExp(`permission denied for function ${GROWTH_FUNCS}\\b`, 'i').test(msg)
+}
+
+/** 남의 보고서 · 끊긴 연결 · 없는 번호 — 서버는 모두 'not found' 로만 답한다 */
+export function isNotFound(e: unknown): boolean {
+  const o = e as { message?: unknown; code?: unknown } | null
+  return o?.code === 'P0002' || /not found|P0002/i.test(String(o?.message ?? e))
+}
+
+/** 내 프로젝트마다 보고서 수 · 안 열어 본 수 · 가장 최근 보고서. 꺼진 환경이면 null */
+export async function fetchGrowthSummary(): Promise<GrowthSummary[] | null> {
+  const { data, error } = await requireClient().rpc('portal_growth_summary')
+  if (error) {
+    if (isGrowthOff(error)) return null
+    throw error
+  }
+  return (Array.isArray(data) ? data : []) as GrowthSummary[]
+}
+
+/** 이 프로젝트의 보고서(최신 판만 · 내린 것 빼고 · 최근 것 먼저). 꺼진 환경이면 null */
+export async function fetchReports(linkId: string): Promise<PortalReportItem[] | null> {
+  const { data, error } = await requireClient().rpc('portal_reports', { p_link_id: linkId })
+  if (error) {
+    if (isGrowthOff(error)) return null
+    throw error
+  }
+  return (Array.isArray(data) ? data : []) as PortalReportItem[]
+}
+
+export async function fetchReport(linkId: string, reportId: string): Promise<PortalReportDetail> {
+  const { data, error } = await requireClient().rpc('portal_report', { p_link_id: linkId, p_report_id: reportId })
+  if (error) throw error
+  const d = (data ?? {}) as PortalReportDetail
+  if (d.status === 'published') return { ...d, sections: Array.isArray(d.sections) ? d.sections : [] }
+  return d
+}
+
+/** 고객 화면에 들어왔다(첫 방문 · 최근 방문). 실패해도 화면은 그대로 — 기록만 빠진다 */
+export async function markHome(): Promise<void> {
+  try {
+    await requireClient().rpc('portal_mark_home')
+  } catch {
+    /* 기록 실패는 고객 화면을 막지 않는다 */
+  }
+}
+
+/** 보고서를 끝까지 봤다(화면 끝이 1초 넘게 보인 뒤에 부른다) */
+export async function markReportSeen(linkId: string, reportId: string): Promise<{ seen_at: string | null; acknowledged_at: string | null } | null> {
+  const { data, error } = await requireClient().rpc('portal_mark_report_seen', { p_link_id: linkId, p_report_id: reportId })
+  if (error) {
+    if (isGrowthOff(error)) return null
+    throw error
+  }
+  return (data ?? null) as { seen_at: string | null; acknowledged_at: string | null } | null
+}
+
+/** [확인했어요] — 다시 눌러도 처음 때 그대로. 계약 검수 · 대금 승인이 아니다 */
+export async function acknowledgeReport(linkId: string, reportId: string): Promise<{ seen_at: string | null; acknowledged_at: string | null }> {
+  const { data, error } = await requireClient().rpc('portal_acknowledge_report', { p_link_id: linkId, p_report_id: reportId })
+  if (error) throw error
+  return (data ?? { seen_at: null, acknowledged_at: null }) as { seen_at: string | null; acknowledged_at: string | null }
+}
+
+/** 보고서 주소(/my-projects/reports/:id)로 왔을 때 — 내 프로젝트 가운데 그 보고서가 있는 곳을 찾는다(남의 것은 어디서도 'not found') */
+export async function findReport(reportId: string, linkHint?: string | null): Promise<{ linkId: string; report: PortalReportDetail } | null> {
+  const links = (await fetchMyProjects()).map((p) => p.link_id)
+  const order = linkHint && links.includes(linkHint) ? [linkHint, ...links.filter((l) => l !== linkHint)] : links
+  for (const linkId of order) {
+    try {
+      return { linkId, report: await fetchReport(linkId, reportId) }
+    } catch (e) {
+      if (isNotFound(e)) continue
+      throw e
+    }
+  }
+  return null
+}
+
+export const REPORT_ACK_NOTE = '확인 표시는 보고서를 보셨다는 뜻이에요. 계약 검수 · 대금 승인이 아니에요.'
+
 export function formatKDate(iso: string | null | undefined): string {
   if (!iso) return ''
   const d = new Date(iso)
