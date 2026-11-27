@@ -320,6 +320,18 @@ export async function markHome(): Promise<void> {
   }
 }
 
+/**
+ * 공유받은 결과 자료를 열었다(document = [열기] 로 파일을 연 뒤 · result = '결과' 탭에서 그 글이 1초 넘게 보인 뒤).
+ * 기록 실패(이 기능이 없는 환경 · 끊긴 연결)는 고객 화면을 막지 않는다 — 조용히 넘어간다.
+ */
+export async function markItemSeen(linkId: string, kind: 'document' | 'result', itemId: string): Promise<void> {
+  try {
+    await requireClient().rpc('portal_mark_item_seen', { p_link_id: linkId, p_kind: kind, p_item_id: itemId })
+  } catch {
+    /* 기록 실패는 고객 화면을 막지 않는다 */
+  }
+}
+
 /** 보고서를 끝까지 봤다(화면 끝이 1초 넘게 보인 뒤에 부른다) */
 export async function markReportSeen(linkId: string, reportId: string): Promise<{ seen_at: string | null; acknowledged_at: string | null } | null> {
   const { data, error } = await requireClient().rpc('portal_mark_report_seen', { p_link_id: linkId, p_report_id: reportId })

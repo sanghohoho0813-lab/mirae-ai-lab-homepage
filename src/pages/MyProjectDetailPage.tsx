@@ -20,6 +20,7 @@ import {
   fetchReports,
   formatKDate,
   isPortalNotReady,
+  markItemSeen,
   signedFileUrl,
   uploadDocument,
   type PortalDocument,
@@ -82,6 +83,8 @@ function DocumentRow({
     try {
       const url = await signedFileUrl(doc.storage_path)
       window.open(url, '_blank', 'noopener,noreferrer')
+      // 공유받은 결과 자료를 연 때 — 담당자 화면에 '열어 보심' 으로(기록 실패는 화면을 막지 않는다)
+      if (doc.visibility === 'shared_with_customer') void markItemSeen(linkId, 'document', doc.id)
     } catch (e) {
       setError(e instanceof Error ? e.message : '파일을 열지 못했습니다.')
     }
@@ -239,6 +242,21 @@ export default function MyProjectDetailPage() {
   useEffect(() => {
     document.title = data?.project ? `${data.project.name} | 미래 AI 랩` : '내 프로젝트 | 미래 AI 랩'
   }, [data])
+
+  // '결과' 탭에서 결과 글이 1초 넘게 보이면 열어 본 것으로(이 화면에서 한 번씩 · 기록 실패는 화면을 막지 않는다)
+  const seenResults = useRef(new Set<string>())
+  useEffect(() => {
+    if (tab !== 'results' || !data) return
+    const ids = data.updates.filter((u) => u.category === 'result' && !seenResults.current.has(u.id)).map((u) => u.id)
+    if (!ids.length) return
+    const t = window.setTimeout(() => {
+      for (const id of ids) {
+        seenResults.current.add(id)
+        void markItemSeen(linkId, 'result', id)
+      }
+    }, 1000)
+    return () => window.clearTimeout(t)
+  }, [tab, data, linkId])
 
   useEffect(() => {
     if (!toast) return
