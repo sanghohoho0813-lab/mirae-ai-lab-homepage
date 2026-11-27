@@ -145,13 +145,18 @@ for (const W of [390, 1280]) {
       '4 벤처기업확인(혁신성장유형) 완료',
     ].join('|') && !done.in2, JSON.stringify(done?.items))
     ok('1편 결과: 2026년 11월 19일 신용보증기금 뉴본펭귄 최종 선정(최대 10억원 보증) · 선정 당시 부채비율 6,925% · 업력 4년차 · 연매출 5억대', done?.result === '🎉 최종 선정 2026년 11월 19일 신용보증기금 뉴본펭귄 최대 10억원 보증 선정 당시 회사 부채비율 6,925% 업력 4년차 연매출 5억대' && done.now === null && !/리틀펭귄|심사 중/.test(body), done?.result)
-    const win = await p.evaluate(async () => {
+    const winOf = () => p.evaluate(async () => {
       const box = document.querySelector('#real-project-1 [data-film-result]')
       box.scrollIntoView({ block: 'center' }); await new Promise((r) => setTimeout(r, 900))
       const sp = box.querySelectorAll('[data-spark]')
       return { hl: document.querySelector('#real-project-1 [data-film-highlight]')?.innerText.replace(/\s+/g, ' ').trim(), sparks: sp.length, on: box.classList.contains('win-on'), anim: getComputedStyle(sp[0]).animationName, glow: getComputedStyle(box).animationName, in2: !!document.querySelector('#real-project-2 [data-film-highlight]') }
     })
-    ok('1편 강조: 제목 아래 "🎉 신용보증기금 뉴본펭귄 최종 선정" · 결과 상자 폭죽 16개 · 보이면 반짝임 시작', win.hl === '🎉 신용보증기금 뉴본펭귄 최종 선정' && !win.in2 && win.sparks === 16 && win.on && win.anim === 'win-spark' && win.glow === 'win-glow', JSON.stringify(win))
+    const win = await winOf() // 테스트 기본값: 움직임 줄이기 → 효과는 멈춰 있어야 한다
+    ok('1편 강조: 제목 아래 "🎉 신용보증기금 뉴본펭귄 최종 선정" · 결과 상자 폭죽 16개 · 움직임 줄이기면 멈춤', win.hl === '🎉 신용보증기금 뉴본펭귄 최종 선정' && !win.in2 && win.sparks === 16 && win.on && win.anim === 'none' && win.glow === 'none', JSON.stringify(win))
+    await p.emulateMedia({ reducedMotion: 'no-preference' })
+    const winMove = await winOf()
+    ok('1편 강조: 보통 설정이면 보일 때 폭죽 · 테두리 빛 시작', winMove.anim === 'win-spark' && winMove.glow === 'win-glow', JSON.stringify(winMove))
+    await p.emulateMedia({ reducedMotion: 'reduce' })
     ok('실제 프로젝트 구간: 회사 이름·금지 표현 없음(특허는 출원만 · 벤처인증 표현 없음)', !/비원미래|BEONEMIRAE|KPJK|특허 등록|벤처인증|무조건|보장/i.test(body))
     const f1 = p.locator('#real-project-1'), f2 = p.locator('#real-project-2')
     const v1 = f1.locator('video'), v2 = f2.locator('video')
