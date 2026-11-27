@@ -37,8 +37,14 @@ export type Film = {
   emoji?: string
   /** 제목 아래 작은 상태 표시 */
   status?: readonly string[]
-  /** 실제 프로젝트 — 미래AI랩이 함께한 일(번호 목록)과 지금 진행 상황 한 줄. 폰·PC 모두 보인다 */
-  done?: { title: string; items: readonly string[]; now: string }
+  /** 실제 프로젝트 — 미래AI랩이 함께한 일(번호 목록) + 지금 진행 상황 한 줄(now) 또는 결과 상자(result). 폰·PC 모두 보인다 */
+  done?: {
+    title: string
+    items: readonly string[]
+    now?: string
+    /** 결과(선정 등) — 먹색 강조 상자. facts 는 그때 회사 숫자(첫 번째를 살구색으로) */
+    result?: { badge: string; date: string; title: string; em: string; factsLabel: string; facts: readonly string[] }
+  }
   lead: string
   points: readonly string[]
   /** '영상 1' · '실제 프로젝트 1편' — 버튼·화면 읽기에 쓴다 */
@@ -376,12 +382,37 @@ export function FilmBlock({
                 </li>
               ))}
             </ol>
-            <p data-film-now className="mt-3.5 flex items-start gap-2 border-t border-[#171B20]/10 pt-3.5 break-keep text-[0.98rem] font-black leading-snug text-[#171B20]">
-              <span aria-hidden className="slot-live mt-[0.42em] h-2 w-2 shrink-0 rounded-full bg-[#D2462E]" />
-              <span>
-                <span className="text-[#B4532A]">현재</span> {film.done.now}
-              </span>
-            </p>
+            {film.done.now && (
+              <p data-film-now className="mt-3.5 flex items-start gap-2 border-t border-[#171B20]/10 pt-3.5 break-keep text-[0.98rem] font-black leading-snug text-[#171B20]">
+                <span aria-hidden className="slot-live mt-[0.42em] h-2 w-2 shrink-0 rounded-full bg-[#D2462E]" />
+                <span>
+                  <span className="text-[#B4532A]">현재</span> {film.done.now}
+                </span>
+              </p>
+            )}
+            {film.done.result && (
+              <div data-film-result className="mt-3.5 rounded-xl bg-[#171B20] p-3.5 text-white sm:p-4">
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="rounded-full bg-[#E8894F] px-2.5 py-0.5 text-[0.82rem] font-black text-[#171B20]">
+                    <span aria-hidden>🎉 </span>
+                    {film.done.result.badge}
+                  </span>
+                  <span className="text-[0.86rem] font-bold text-slate-300">{film.done.result.date}</span>
+                </p>
+                <p className="mt-2 break-keep text-[1.1rem] font-black leading-snug">
+                  <span className="whitespace-nowrap">{film.done.result.title}</span>{' '}
+                  <span className="whitespace-nowrap text-[#E8B89A]">{film.done.result.em}</span>
+                </p>
+                <p className="mt-3 text-[0.82rem] font-bold text-slate-400">{film.done.result.factsLabel}</p>
+                <ul className="mt-1.5 flex flex-wrap gap-1.5">
+                  {film.done.result.facts.map((f, i) => (
+                    <li key={f} className={`rounded-lg px-2.5 py-1 text-[0.92rem] font-black tabular-nums ${i === 0 ? 'bg-[#E8894F]/20 text-[#F5C7A6]' : 'bg-white/10 text-white'}`}>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
         <ul className="mt-5 hidden gap-2 md:grid">

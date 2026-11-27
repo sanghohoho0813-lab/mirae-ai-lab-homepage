@@ -136,7 +136,7 @@ for (const W of [390, 1280]) {
     const done = await p.evaluate(() => {
       const d = document.querySelector('#real-project-1 [data-film-done]')
       const t = (el) => el.innerText.replace(/\s+/g, ' ').trim()
-      return d && { items: [...d.querySelectorAll('li')].map(t), now: t(d.querySelector('[data-film-now]')), shown: d.getBoundingClientRect().height > 0, in2: !!document.querySelector('#real-project-2 [data-film-done]') }
+      return d && { items: [...d.querySelectorAll('ol > li')].map(t), now: d.querySelector('[data-film-now]') ? t(d.querySelector('[data-film-now]')) : null, result: d.querySelector('[data-film-result]') ? t(d.querySelector('[data-film-result]')) : null, shown: d.getBoundingClientRect().height > 0, in2: !!document.querySelector('#real-project-2 [data-film-done]') }
     })
     ok('1편: 미래AI랩이 함께한 일 4가지(원문)', done?.shown && done.items.join('|') === [
       '1 연구개발전담부서 설립 · 연구전담요원 예정자 감사 사임 등기 · 법인 목적사항 변경 · 정관·임원보수계약서 개정',
@@ -144,7 +144,7 @@ for (const W of [390, 1280]) {
       '3 AX MVP 설계 + 반응형 홈페이지 제작',
       '4 벤처기업확인(혁신성장유형) 완료',
     ].join('|') && !done.in2, JSON.stringify(done?.items))
-    ok('1편: 현재 신용보증기금 리틀펭귄 심사 중(발표 준비 중)', done?.now === '현재 3년간 최대 20억원 보증 지원 프로그램인 신용보증기금 리틀펭귄 프로그램 심사 중(발표 준비 중)', done?.now)
+    ok('1편 결과: 2026년 11월 19일 신용보증기금 뉴본펭귄 최종 선정(최대 10억원 보증) · 선정 당시 부채비율 6,925% · 업력 4년차 · 연매출 5억대', done?.result === '🎉 최종 선정 2026년 11월 19일 신용보증기금 뉴본펭귄 최대 10억원 보증 선정 당시 회사 부채비율 6,925% 업력 4년차 연매출 5억대' && done.now === null && !/리틀펭귄|심사 중/.test(body), done?.result)
     ok('실제 프로젝트 구간: 회사 이름·금지 표현 없음(특허는 출원만 · 벤처인증 표현 없음)', !/비원미래|BEONEMIRAE|KPJK|특허 등록|벤처인증|무조건|보장/i.test(body))
     const f1 = p.locator('#real-project-1'), f2 = p.locator('#real-project-2')
     const v1 = f1.locator('video'), v2 = f2.locator('video')
