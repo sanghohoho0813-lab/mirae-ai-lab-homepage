@@ -214,6 +214,53 @@
   .slot-open, .slot-live { animation: none; }
 }
 
+/* ── 실제 프로젝트 결과(선정) 상자 — 6초마다 한 번: 배지 폭죽 · 테두리 빛 · 조금 뒤 빛줄기(과하지 않게) ── */
+.win-box { box-shadow: 0 0 0 1px rgba(232, 137, 79, 0.35); }
+.win-spark, .win-ring { opacity: 0; transform: translate(-50%, -50%); }
+.win-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.24), transparent);
+  transform: translateX(-160%) skewX(-20deg);
+}
+@keyframes win-ring {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0.9; }
+  16% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
+}
+@keyframes win-spark {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  3% { opacity: 1; }
+  20% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1); opacity: 1; }
+  30% { transform: translate(calc(-50% + var(--dx) * 1.15), calc(-50% + var(--dy) * 1.15 + 6px)) scale(0.5); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+}
+@keyframes win-badge {
+  0%, 12%, 100% { transform: scale(1); }
+  4% { transform: scale(1.14); }
+}
+@keyframes win-glow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(232, 137, 79, 0.35), 0 0 0 0 rgba(232, 137, 79, 0); }
+  8% { box-shadow: 0 0 0 1.5px rgba(232, 137, 79, 0.95), 0 0 34px 6px rgba(232, 137, 79, 0.55); }
+  40% { box-shadow: 0 0 0 1px rgba(232, 137, 79, 0.45), 0 0 10px 0 rgba(232, 137, 79, 0.12); }
+}
+@keyframes win-shine {
+  0%, 45% { transform: translateX(-160%) skewX(-20deg); }
+  62%, 100% { transform: translateX(320%) skewX(-20deg); }
+}
+.win-on .win-spark { animation: win-spark 6s ease-out infinite; }
+.win-on .win-ring { animation: win-ring 6s ease-out infinite; }
+.win-on .win-badge { display: inline-block; animation: win-badge 6s ease-out infinite; }
+.win-on.win-box { animation: win-glow 6s ease-in-out infinite; }
+.win-on .win-shine::after { animation: win-shine 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .win-on .win-spark, .win-on .win-ring, .win-on .win-badge, .win-on.win-box, .win-on .win-shine::after { animation: none; }
+}
+
 /* ── 첫 화면 등장 — 위에서부터 차례로, 전체 1.2초 안에 끝난다 ── */
 @keyframes hero-rise {
   from { opacity: 0; transform: translateY(14px); }

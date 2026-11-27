@@ -38,6 +38,7 @@ const REAL: readonly [Film, Film] = [
     who: '일반 중소기업 사례',
     emoji: '🚛',
     title: '의료폐기물 수거·운반 기업',
+    highlight: '신용보증기금 뉴본펭귄 최종 선정',
     status: [stageOf('medwaste'), FUNDING_STATUS],
     lead: '현장·사무실·거래처가 따로 움직이는 중소기업이라면 꼭 한번 보세요.',
     points: ['현장에서 한 번 입력 → 수거·자재·정산까지', '병원은 전용 포털에서 미리 요청', '다시 필요할 시점을 먼저 알려 주기'],

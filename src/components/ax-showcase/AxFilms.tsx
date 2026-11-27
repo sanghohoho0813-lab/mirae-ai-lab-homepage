@@ -10,7 +10,7 @@
 //  - preload="none" — 이 구간 근처에 오기 전에는 영상을 받지 않는다(첫 화면 속도 보호).
 //  - 영상 원본(HyperFrames)·녹음·자막 파일은 media/ax-videos/ 에 있다. 게시본은 대표님이 음악을 넣어 다듬은 최종본.
 // ⚠️ 소개 영상 속 화면은 자체 데모(샘플)다 — 아래 안내 문구를 지우지 않는다.
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { scrollToSection } from '../../lib/businessPageScroll'
 import { consultLinks } from '../../config/businessInfo'
@@ -35,6 +35,8 @@ export type Film = {
   who: string
   title: string
   emoji?: string
+  /** 제목 바로 아래 강조 표시(예: 선정 소식) — 먹색 바탕에 살구색 테두리 · 가끔 빛이 지나간다 */
+  highlight?: string
   /** 제목 아래 작은 상태 표시 */
   status?: readonly string[]
   /** 실제 프로젝트 — 미래AI랩이 함께한 일(번호 목록) + 지금 진행 상황 한 줄(now) 또는 결과 상자(result). 폰·PC 모두 보인다 */
@@ -257,6 +259,76 @@ export function AxCostByConsult({ diagnosisHref }: { diagnosisHref: string }) {
   )
 }
 
+type FilmResult = NonNullable<NonNullable<Film['done']>['result']>
+
+/** 폭죽 불꽃 — [가로, 세로(px), 색, 시작 지연(초)]. '최종 선정' 배지 가운데에서 사방으로 퍼진다 */
+const SPARKS: readonly (readonly [number, number, string, number])[] = [
+  [-48, -36, '#FFD27A', 0], [0, -54, '#E8894F', 0.05], [50, -34, '#F5C7A6', 0], [78, 2, '#FFFFFF', 0.08],
+  [58, 42, '#FFD27A', 0.04], [10, 56, '#E8894F', 0.1], [-42, 42, '#F5C7A6', 0.06], [-70, 2, '#FFFFFF', 0.02],
+  [104, -22, '#E8894F', 0.12], [-86, -22, '#FFD27A', 0.1], [96, 36, '#F5C7A6', 0.14], [30, -68, '#FFFFFF', 0.09],
+  [-24, -62, '#E8894F', 0.13], [128, 6, '#FFD27A', 0.16], [-20, 64, '#FFFFFF', 0.11], [36, 70, '#F5C7A6', 0.15],
+]
+
+/** 결과(선정) 상자 — 먹색 바탕. 화면에 들어오면 6초마다 한 번씩:
+ *  배지에서 작은 폭죽이 터지고(살짝 커졌다 돌아옴) · 테두리가 은은하게 빛나고 · 조금 뒤 빛줄기가 한 번 지나간다.
+ *  움직임 줄이기 설정이면 모두 멈춘다(index.css win-*) */
+function ResultBox({ r }: { r: FilmResult }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [on, setOn] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === 'undefined') return setOn(true)
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setOn(true)
+          io.disconnect()
+        }
+      },
+      { threshold: 0.6 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+  return (
+    <div ref={ref} data-film-result className={`win-box relative mt-3.5 rounded-xl bg-[#171B20] p-3.5 text-white sm:p-4 ${on ? 'win-on' : ''}`}>
+      <span aria-hidden className="win-shine pointer-events-none absolute inset-0 overflow-hidden rounded-xl" />
+      <p className="relative flex flex-wrap items-center gap-x-2 gap-y-1">
+        <span className="relative inline-flex">
+          <span className="win-badge rounded-full bg-[#E8894F] px-2.5 py-0.5 text-[0.86rem] font-black text-[#171B20]">
+            <span aria-hidden>🎉 </span>
+            {r.badge}
+          </span>
+          <span aria-hidden className="pointer-events-none absolute left-1/2 top-1/2">
+            {/* 퍼지는 빛 고리 + 불꽃 */}
+            <span className="win-ring absolute left-0 top-0 h-10 w-10 rounded-full border-2 border-[#FFD27A]" />
+            {SPARKS.map(([dx, dy, c, d], i) => (
+              <span
+                key={i}
+                data-spark
+                className={`win-spark absolute left-0 top-0 rounded-full ${i % 3 === 0 ? 'h-2.5 w-2.5' : 'h-2 w-2'}`}
+                style={{ '--dx': `${dx}px`, '--dy': `${dy}px`, background: c, boxShadow: `0 0 8px 1px ${c}`, animationDelay: `${d}s` } as CSSProperties}
+              />
+            ))}
+          </span>
+        </span>
+        <span className="text-[0.86rem] font-bold text-slate-300">{r.date}</span>
+      </p>
+      <p className="relative mt-2 break-keep text-[1.18rem] font-black leading-snug sm:text-[1.22rem]">
+        <span className="whitespace-nowrap">{r.title}</span> <span className="whitespace-nowrap text-[#E8B89A]">{r.em}</span>
+      </p>
+      <p className="relative mt-3 text-[0.82rem] font-bold text-slate-400">{r.factsLabel}</p>
+      <ul className="relative mt-1.5 flex flex-wrap gap-1.5">
+        {r.facts.map((f, i) => (
+          <li key={f} className={`rounded-lg px-2.5 py-1 text-[0.92rem] font-black tabular-nums ${i === 0 ? 'bg-[#E8894F]/20 text-[#F5C7A6]' : 'bg-white/10 text-white'}`}>
+            {f}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 export const END_PRIMARY =
   'flex min-h-12 w-full max-w-[16rem] items-center justify-center gap-1.5 rounded-xl bg-[#E8894F] px-4 text-[1.02rem] font-black text-[#171B20] transition-colors hover:bg-[#E8B89A]'
 export const END_SECONDARY =
@@ -348,6 +420,14 @@ export function FilmBlock({
           {film.emoji && <span aria-hidden className="mr-2">{film.emoji}</span>}
           {film.title}
         </h3>
+        {film.highlight && (
+          <p data-film-highlight className="mt-3 flex justify-center md:justify-start">
+            <span className="shine-cta inline-flex items-center gap-1.5 rounded-full bg-[#171B20] px-3.5 py-1.5 text-[0.95rem] font-black text-white ring-1 ring-[#E8894F]/70">
+              <span aria-hidden>🎉</span>
+              {film.highlight}
+            </span>
+          </p>
+        )}
         {film.status && (
           <p data-film-status className="mt-3 flex flex-wrap items-center justify-center gap-1.5 md:justify-start">
             {film.status.map((t) => (
@@ -390,29 +470,7 @@ export function FilmBlock({
                 </span>
               </p>
             )}
-            {film.done.result && (
-              <div data-film-result className="mt-3.5 rounded-xl bg-[#171B20] p-3.5 text-white sm:p-4">
-                <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className="rounded-full bg-[#E8894F] px-2.5 py-0.5 text-[0.82rem] font-black text-[#171B20]">
-                    <span aria-hidden>🎉 </span>
-                    {film.done.result.badge}
-                  </span>
-                  <span className="text-[0.86rem] font-bold text-slate-300">{film.done.result.date}</span>
-                </p>
-                <p className="mt-2 break-keep text-[1.1rem] font-black leading-snug">
-                  <span className="whitespace-nowrap">{film.done.result.title}</span>{' '}
-                  <span className="whitespace-nowrap text-[#E8B89A]">{film.done.result.em}</span>
-                </p>
-                <p className="mt-3 text-[0.82rem] font-bold text-slate-400">{film.done.result.factsLabel}</p>
-                <ul className="mt-1.5 flex flex-wrap gap-1.5">
-                  {film.done.result.facts.map((f, i) => (
-                    <li key={f} className={`rounded-lg px-2.5 py-1 text-[0.92rem] font-black tabular-nums ${i === 0 ? 'bg-[#E8894F]/20 text-[#F5C7A6]' : 'bg-white/10 text-white'}`}>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            {film.done.result && <ResultBox r={film.done.result} />}
           </div>
         )}
         <ul className="mt-5 hidden gap-2 md:grid">
