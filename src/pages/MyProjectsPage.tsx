@@ -1,6 +1,6 @@
 // /my-projects — My MIRAE 성장 홈(고객 프로젝트 목록).
 // 미래AI랩과 진행 중인 컨설팅 프로젝트가 연결된 회원에게만 내용이 있고, 그 외에는 안내만 보인다.
-// 맨 위 '지금 할 일'(3개까지 — 새 보고서 · 올릴 서류 · 해야 할 일) → 최근 보고서(3편) → 프로젝트 카드.
+// 맨 위 '지금 할 일'(3개까지 — 새 보고서 · 새 결과 자료 · 올릴 서류 · 해야 할 일) → 최근 보고서(3편) → 프로젝트 카드.
 // 보고서 칸은 0033 이 켜진 곳에서만 — 꺼져 있으면 예전 목록 그대로.
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
@@ -11,6 +11,7 @@ import {
   CUSTOMER_STAGE_LABEL,
   REPORT_KIND_LABEL,
   fetchGrowthSummary,
+  fetchResultSummary,
   fetchMyProjects,
   fetchReports,
   formatKDate,
@@ -67,6 +68,8 @@ export default function MyProjectsPage() {
   const [state, setState] = useState<LoadState>({ kind: 'loading' })
   // 보고서 칸 — null 이면 꺼진 환경(예전 그대로)
   const [growth, setGrowth] = useState<{ summary: GrowthSummary[]; recent: Recent[] } | null>(null)
+  // 새 결과 자료 수(프로젝트마다 · 이 계정 기준) — null 이면 이 기능이 없는 환경(표시만 빠짐)
+  const [resultNew, setResultNew] = useState<Map<string, number> | null>(null)
 
   useEffect(() => { document.title = '내 프로젝트 | 미래 AI 랩' }, [])
 
@@ -79,6 +82,9 @@ export default function MyProjectsPage() {
         setState({ kind: 'ready', projects })
         if (!projects.length) return
         void markHome()
+        void fetchResultSummary().then((rs) => {
+          if (alive && rs) setResultNew(new Map(rs.map((x) => [x.link_id, Number(x.results_new) || 0])))
+        })
         try {
           const summary = await fetchGrowthSummary()
           if (!alive || summary === null) return
@@ -108,11 +114,15 @@ export default function MyProjectsPage() {
       if (!r.seen_at) out.push({ key: `r:${r.id}`, to: `/my-projects/reports/${r.id}?link=${r.link_id}`, label: `새 보고서 · ${r.title}`, sub: `${r.project} · ${formatKDate(r.published_at)}` })
     }
     for (const p of projects) {
+      const n = resultNew?.get(p.link_id) ?? 0
+      if (n > 0) out.push({ key: `res:${p.link_id}`, to: `/my-projects/${p.link_id}?tab=results`, label: `새 결과 자료 ${n}개`, sub: p.name })
+    }
+    for (const p of projects) {
       if (p.requested_documents > 0) out.push({ key: `d:${p.link_id}`, to: `/my-projects/${p.link_id}?tab=todo`, label: `서류 ${p.requested_documents}개 올려 주세요`, sub: p.name })
       if (p.pending_actions > 0) out.push({ key: `a:${p.link_id}`, to: `/my-projects/${p.link_id}?tab=todo`, label: `해야 할 일 ${p.pending_actions}건`, sub: p.name })
     }
     return out
-  }, [growth, projects])
+  }, [growth, projects, resultNew])
   const reportsOf = (linkId: string) => growth?.summary.find((x) => x.link_id === linkId) ?? null
 
   if (!configured) {
@@ -210,6 +220,7 @@ export default function MyProjectsPage() {
                 <span>요청받은 서류 {p.requested_documents}</span>
                 <span>내 요청 {p.open_requests}</span>
                 {g && <span data-testid="project-reports-count">보고서 {g.reports_total}{g.reports_unseen > 0 ? ` · 새 보고서 ${g.reports_unseen}` : ''}</span>}
+                {(resultNew?.get(p.link_id) ?? 0) > 0 && <span data-testid="project-results-new">새 결과 자료 {resultNew?.get(p.link_id)}</span>}
               </div>
             </Link>
           )

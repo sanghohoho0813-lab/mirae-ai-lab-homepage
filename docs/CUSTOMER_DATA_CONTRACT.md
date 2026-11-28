@@ -65,3 +65,12 @@ RPC 가 없으면 PostgREST 가 `PGRST202`/`could not find the function` 을 돌
 - 그 연결(활성)의 고객 · 그 연결에 공유한 것만 기록된다(그 밖은 `not found`). 열어 봤다는 표시일 뿐 — 검수 · 승인이 아니다.
 - 기록 실패(0034 전 · 되돌림 · 끊긴 연결)는 화면을 막지 않는다 — `markItemSeen` 이 조용히 넘긴다. 화면 · 경로 · 디자인은 그대로.
 
+## 고객 화면 '새 결과 자료'(D-686 · 내부 저장소 마이그레이션 0035) — 더한 것만
+
+| RPC(읽기만) | 화면 |
+|---|---|
+| `portal_result_summary()` → 내 활성 연결마다 `{link_id, results_new}` | 성장 홈 '지금 할 일' 의 '새 결과 자료 n개'(새 보고서 다음) · 프로젝트 카드 '새 결과 자료 n' |
+| `portal_results_state(p_link_id)` → `{kind, id, seen_at, is_new}[]` | 상세 '결과' 탭 이름 옆 '새 n' · 자료마다 '새' 알약 — 결과 글 1초 · 서류 [열기] 뒤 그 자리에서 내림 |
+
+- 계정마다 따로 · 기록 시작 전에 공유한 자료는 '새' 아님. 실패(0035 전 · 되돌림)는 표시만 빠지고 화면 그대로(`fetchResultSummary` · `fetchResultsState` → null).
+

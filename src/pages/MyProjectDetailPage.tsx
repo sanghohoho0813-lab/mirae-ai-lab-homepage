@@ -18,6 +18,7 @@ import {
   createRequest,
   fetchProject,
   fetchReports,
+  fetchResultsState,
   formatKDate,
   isPortalNotReady,
   markItemSeen,
@@ -27,6 +28,7 @@ import {
   type PortalProject,
   type PortalReportItem,
   type PortalRequestType,
+  type ResultState,
 } from '../lib/customerPortal'
 import { PortalNotReady } from './MyProjectsPage'
 
@@ -54,10 +56,15 @@ function DocumentRow({
   doc,
   linkId,
   onChanged,
+  isNew = false,
+  onOpened,
 }: {
   doc: PortalDocument
   linkId: string
   onChanged: () => void
+  /** 결과 탭 — 이 계정이 아직 안 연 공유 자료면 '새' */
+  isNew?: boolean
+  onOpened?: () => void
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
@@ -84,7 +91,10 @@ function DocumentRow({
       const url = await signedFileUrl(doc.storage_path)
       window.open(url, '_blank', 'noopener,noreferrer')
       // 공유받은 결과 자료를 연 때 — 담당자 화면에 '열어 보심' 으로(기록 실패는 화면을 막지 않는다)
-      if (doc.visibility === 'shared_with_customer') void markItemSeen(linkId, 'document', doc.id)
+      if (doc.visibility === 'shared_with_customer') {
+        void markItemSeen(linkId, 'document', doc.id)
+        onOpened?.()
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : '파일을 열지 못했습니다.')
     }
@@ -103,6 +113,7 @@ function DocumentRow({
           <p className="text-sm font-bold text-slate-900">{doc.title}</p>
           <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${badge}`}>{DOCUMENT_STATUS_LABEL[doc.status] ?? doc.status}</span>
           {doc.visibility === 'shared_with_customer' && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-black text-slate-600">미래AI랩이 공유</span>}
+          {isNew && <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[11px] font-black text-white" data-testid="result-new">새</span>}
         </div>
         <p className="mt-0.5 text-xs text-slate-500">
           {doc.customer_note ? `${doc.customer_note} · ` : ''}
@@ -210,6 +221,8 @@ export default function MyProjectDetailPage() {
   const [data, setData] = useState<PortalProject | null>(null)
   // 보고서 — null 이면 이 기능이 꺼진 환경(탭을 숨기고 예전 그대로)
   const [reports, setReports] = useState<PortalReportItem[] | null>(null)
+  // 결과 자료마다 '새' 인지(이 계정 기준 · 0035) — null 이면 표시만 빠짐
+  const [results, setResults] = useState<ResultState[] | null>(null)
   const [state, setState] = useState<'loading' | 'ready' | 'not_ready' | 'denied' | 'error'>('loading')
   const [message, setMessage] = useState('')
   const [toast, setToast] = useState('')
@@ -217,10 +230,11 @@ export default function MyProjectDetailPage() {
   const load = useCallback(async () => {
     try {
       // 보고서는 따로 — 실패하거나 꺼진 환경이면 null(탭만 숨기고 프로젝트 화면은 그대로)
-      const [d, reps] = await Promise.all([fetchProject(linkId), fetchReports(linkId).catch(() => null)])
+      const [d, reps, res] = await Promise.all([fetchProject(linkId), fetchReports(linkId).catch(() => null), fetchResultsState(linkId)])
       if (!d.project) { setState('denied'); return }
       setData(d)
       setReports(reps)
+      setResults(res)
       setState('ready')
     } catch (e) {
       if (isPortalNotReady(e)) setState('not_ready')
@@ -254,6 +268,8 @@ export default function MyProjectDetailPage() {
         seenResults.current.add(id)
         void markItemSeen(linkId, 'result', id)
       }
+      // 이 화면의 '새' 표시도 바로 내림(서버 기록은 위에서)
+      setResults((cur) => (cur ? cur.map((r) => (r.kind === 'result' && ids.includes(r.id) ? { ...r, is_new: false } : r)) : cur))
     }, 1000)
     return () => window.clearTimeout(t)
   }, [tab, data, linkId])
@@ -310,6 +326,9 @@ export default function MyProjectDetailPage() {
   const stageIdx = CUSTOMER_STAGE_ORDER.indexOf(p.stage)
   const todoCount = todo.actions.length + todo.docs.length
   const unseenReports = (reports ?? []).filter((r) => !r.seen_at).length
+  const newResults = (results ?? []).filter((r) => r.is_new).length
+  const isNewResult = (kind: 'document' | 'result', id: string) => (results ?? []).some((r) => r.kind === kind && r.id === id && r.is_new)
+  const markOpened = (id: string) => setResults((cur) => (cur ? cur.map((r) => (r.kind === 'document' && r.id === id ? { ...r, is_new: false } : r)) : cur))
 
   return (
     <PageShell title={p.name} subtitle={`${CUSTOMER_STAGE_LABEL[p.stage]}${p.consultant_name ? ` · 담당 ${p.consultant_name}` : ''}${p.updated_at ? ` · 최근 업데이트 ${formatKDate(p.updated_at)}` : ''}`}>
@@ -341,6 +360,7 @@ export default function MyProjectDetailPage() {
             {t.label}
             {t.key === 'todo' && todoCount > 0 && <span className="ml-1 rounded-full bg-amber-500 px-1.5 text-[11px] text-white">{todoCount}</span>}
             {t.key === 'reports' && unseenReports > 0 && <span className="ml-1 rounded-full bg-rose-500 px-1.5 text-[11px] text-white" data-testid="project-tab-reports-new">새 {unseenReports}</span>}
+            {t.key === 'results' && newResults > 0 && <span className="ml-1 rounded-full bg-rose-500 px-1.5 text-[11px] text-white" data-testid="project-tab-results-new">새 {newResults}</span>}
           </button>
         ))}
       </div>
@@ -488,7 +508,10 @@ export default function MyProjectDetailPage() {
             <>
               {results.map((u) => (
                 <Card key={u.id}>
-                  <p className="text-xs text-slate-400">{formatKDate(u.published_at)}</p>
+                  <p className="text-xs text-slate-400">
+                    {formatKDate(u.published_at)}
+                    {isNewResult('result', u.id) && <span className="ml-2 rounded-full bg-rose-500 px-2 py-0.5 text-[11px] font-black text-white" data-testid="result-new">새</span>}
+                  </p>
                   <p className="mt-1 text-base font-black text-slate-900">{u.title}</p>
                   {u.body && <p className="mt-1 whitespace-pre-wrap text-sm text-slate-700">{u.body}</p>}
                 </Card>
@@ -497,7 +520,7 @@ export default function MyProjectDetailPage() {
                 <Card>
                   <p className="text-base font-black text-slate-900">공유된 자료</p>
                   <ul className="mt-2 divide-y divide-slate-100">
-                    {shared.map((d) => <DocumentRow key={d.id} doc={d} linkId={p.link_id} onChanged={() => void load()} />)}
+                    {shared.map((d) => <DocumentRow key={d.id} doc={d} linkId={p.link_id} onChanged={() => void load()} isNew={isNewResult('document', d.id)} onOpened={() => markOpened(d.id)} />)}
                   </ul>
                 </Card>
               )}

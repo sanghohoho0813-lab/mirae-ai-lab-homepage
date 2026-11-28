@@ -320,6 +320,34 @@ export async function markHome(): Promise<void> {
   }
 }
 
+/** 결과 자료 하나의 '새' 상태(이 계정 기준) — 0035 */
+export type ResultState = { kind: 'document' | 'result'; id: string; seen_at: string | null; is_new: boolean }
+
+/**
+ * 내 프로젝트마다 새 결과 자료 수(공유 서류 · 결과 글 가운데 이 계정이 아직 안 연 것).
+ * 이 기능이 없거나 꺼진 환경 · 그 밖의 실패는 null — '새 결과 자료' 표시만 빠지고 화면은 그대로.
+ */
+export async function fetchResultSummary(): Promise<{ link_id: string; results_new: number }[] | null> {
+  try {
+    const { data, error } = await requireClient().rpc('portal_result_summary')
+    if (error) return null
+    return (Array.isArray(data) ? data : []) as { link_id: string; results_new: number }[]
+  } catch {
+    return null
+  }
+}
+
+/** 이 프로젝트의 결과 자료마다 새 것인지(읽기만 — 기록 0). 실패하면 null(표시만 빠짐) */
+export async function fetchResultsState(linkId: string): Promise<ResultState[] | null> {
+  try {
+    const { data, error } = await requireClient().rpc('portal_results_state', { p_link_id: linkId })
+    if (error) return null
+    return (Array.isArray(data) ? data : []) as ResultState[]
+  } catch {
+    return null
+  }
+}
+
 /**
  * 공유받은 결과 자료를 열었다(document = [열기] 로 파일을 연 뒤 · result = '결과' 탭에서 그 글이 1초 넘게 보인 뒤).
  * 기록 실패(이 기능이 없는 환경 · 끊긴 연결)는 고객 화면을 막지 않는다 — 조용히 넘어간다.
