@@ -348,6 +348,42 @@ export async function fetchResultsState(linkId: string): Promise<ResultState[] |
   }
 }
 
+/** D-689 담당자가 추천해요 — 담당자가 고른 공고 · 다음 과제(서버가 고른 칸만 · 내부 출처 0) */
+export interface PortalRecommendation {
+  id: string
+  kind: 'grant' | 'task'
+  title: string
+  reason: string
+  deadline: string | null
+  link_url: string | null
+  shown_at: string
+  /** 이 계정이 [관심 있어요] 누른 때(없으면 null) */
+  interested_at: string | null
+}
+
+/** 이 프로젝트에 담당자가 올린 추천(읽기만). 이 기능이 없거나 실패하면 null(그 칸만 빠짐 · 화면 그대로) */
+export async function fetchRecommendations(linkId: string): Promise<PortalRecommendation[] | null> {
+  try {
+    const { data, error } = await requireClient().rpc('portal_recommendations', { p_link_id: linkId })
+    if (error) return null
+    return (Array.isArray(data) ? data : []) as PortalRecommendation[]
+  } catch {
+    return null
+  }
+}
+
+/** [관심 있어요] — 계정마다 한 번(다시 눌러도 처음 때). 신청 · 계약이 아니다 — 담당자가 연락드린다. 실패하면 null */
+export async function markRecommendationInterest(linkId: string, recId: string): Promise<string | null> {
+  try {
+    const { data, error } = await requireClient().rpc('portal_recommendation_interest', { p_link_id: linkId, p_rec_id: recId })
+    if (error) return null
+    const at = (data as { interested_at?: unknown } | null)?.interested_at
+    return typeof at === 'string' ? at : null
+  } catch {
+    return null
+  }
+}
+
 /**
  * 공유받은 결과 자료를 열었다(document = [열기] 로 파일을 연 뒤 · result = '결과' 탭에서 그 글이 1초 넘게 보인 뒤).
  * 기록 실패(이 기능이 없는 환경 · 끊긴 연결)는 고객 화면을 막지 않는다 — 조용히 넘어간다.

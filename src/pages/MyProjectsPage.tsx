@@ -12,6 +12,9 @@ import {
   REPORT_KIND_LABEL,
   fetchGrowthSummary,
   fetchResultSummary,
+  fetchRecommendations,
+  markRecommendationInterest,
+  type PortalRecommendation,
   fetchMyProjects,
   fetchReports,
   formatKDate,
@@ -62,6 +65,21 @@ export function PortalNotReady() {
 
 type Recent = PortalReportItem & { link_id: string; project: string }
 type TodoItem = { key: string; to: string; label: string; sub: string }
+type Reco = PortalRecommendation & { link_id: string; project: string }
+
+const RECO_KIND_LABEL = { grant: '지원사업', task: '다음 과제' } as const
+const safeUrl = (u: string | null) => (u && /^https?:\/\/[^\s<>"]+$/i.test(u) ? u : null)
+/** 마감 글 — '1/15 마감' · 7일 안이면 남은 날 · 지났으면 '마감' */
+function recoDeadline(deadline: string | null): string {
+  if (!deadline || !/^\d{4}-\d{2}-\d{2}$/.test(deadline)) return ''
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  const [y, m, d] = deadline.split('-').map(Number)
+  const left = Math.round((new Date(y, m - 1, d).getTime() - today) / 86_400_000)
+  if (left < 0) return '마감'
+  if (left === 0) return '오늘 마감'
+  return left <= 7 ? `${m}/${d} 마감 · ${left}일 남음` : `${m}/${d} 마감`
+}
 
 export default function MyProjectsPage() {
   const { loading, configured, user, needsOnboarding } = useAuth()
@@ -70,6 +88,9 @@ export default function MyProjectsPage() {
   const [growth, setGrowth] = useState<{ summary: GrowthSummary[]; recent: Recent[] } | null>(null)
   // 새 결과 자료 수(프로젝트마다 · 이 계정 기준) — null 이면 이 기능이 없는 환경(표시만 빠짐)
   const [resultNew, setResultNew] = useState<Map<string, number> | null>(null)
+  // 담당자가 추천해요 — null 이면 이 기능이 없는 환경(그 칸만 빠짐)
+  const [recos, setRecos] = useState<Reco[] | null>(null)
+  const [interestBusy, setInterestBusy] = useState('')
 
   useEffect(() => { document.title = '내 프로젝트 | 미래 AI 랩' }, [])
 
@@ -84,6 +105,10 @@ export default function MyProjectsPage() {
         void markHome()
         void fetchResultSummary().then((rs) => {
           if (alive && rs) setResultNew(new Map(rs.map((x) => [x.link_id, Number(x.results_new) || 0])))
+        })
+        void Promise.all(projects.slice(0, 5).map((p) => fetchRecommendations(p.link_id))).then((lists) => {
+          if (!alive || lists.every((l) => l === null)) return
+          setRecos(lists.flatMap((l, i) => (l ?? []).map((r) => ({ ...r, link_id: projects[i].link_id, project: projects[i].name }))))
         })
         try {
           const summary = await fetchGrowthSummary()
@@ -166,6 +191,54 @@ export default function MyProjectsPage() {
               ))}
             </ul>
             {todo.length > 3 && <p className="mt-1 text-xs text-slate-500">그 밖에 {todo.length - 3}건은 프로젝트 화면에서 볼 수 있어요.</p>}
+          </section>
+        )}
+
+        {/* 담당자가 추천해요 — 담당자가 고른 것만(업체마다 3개까지) · [관심 있어요] 는 계정마다 한 번 */}
+        {state.kind === 'ready' && recos && recos.length > 0 && (
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" data-testid="growth-recos">
+            <p className="text-base font-black text-slate-900">담당자가 추천해요 <span className="text-slate-400">{recos.length}</span></p>
+            <ul className="mt-2 divide-y divide-slate-100">
+              {recos.map((r) => {
+                const dl = recoDeadline(r.deadline)
+                const url = safeUrl(r.link_url)
+                return (
+                  <li key={r.id} className="py-3" data-testid="growth-reco" data-interested={r.interested_at ? '1' : '0'}>
+                    <p className="text-xs text-slate-500">{RECO_KIND_LABEL[r.kind] ?? '추천'}{dl ? ` · ${dl}` : ''}{projects.length > 1 ? ` · ${r.project}` : ''}</p>
+                    <p className="text-[15px] font-bold text-slate-900 [overflow-wrap:anywhere]">{r.title}</p>
+                    {r.reason && <p className="text-sm text-slate-600 [overflow-wrap:anywhere]">{r.reason}</p>}
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      {url && (
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center rounded-xl border border-slate-300 px-3 text-sm font-bold text-slate-800 hover:bg-slate-50" data-testid="growth-reco-link">
+                          자세히
+                        </a>
+                      )}
+                      {r.interested_at ? (
+                        <span className="text-sm font-bold text-emerald-700" data-testid="growth-reco-sent">관심 보냄 {formatKDate(r.interested_at)} · 담당자가 연락드려요</span>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled={!!interestBusy}
+                          onClick={() => {
+                            setInterestBusy(r.id)
+                            void markRecommendationInterest(r.link_id, r.id)
+                              .then((at) => {
+                                if (at) setRecos((cur) => (cur ? cur.map((x) => (x.id === r.id && x.link_id === r.link_id ? { ...x, interested_at: at } : x)) : cur))
+                              })
+                              .finally(() => setInterestBusy(''))
+                          }}
+                          className="inline-flex min-h-10 items-center rounded-xl bg-slate-900 px-4 text-sm font-bold text-white hover:bg-slate-700 disabled:opacity-60"
+                          data-testid="growth-reco-interest"
+                        >
+                          관심 있어요
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+            <p className="mt-1 text-xs text-slate-500">[관심 있어요] 를 누르면 담당자가 연락드려요. 신청 · 계약이 아니에요.</p>
           </section>
         )}
 
