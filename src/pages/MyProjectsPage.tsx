@@ -194,6 +194,8 @@ export default function MyProjectsPage() {
         {state.kind === 'ready' && state.projects.map((p) => {
           const todoN = p.pending_actions + p.requested_documents
           const g = reportsOf(p.link_id)
+          // 해야 할 일이 없어도 새 보고서 · 새 결과 자료가 있으면 '확인할 일 없음' 이라고 하지 않는다(위 '지금 할 일' 과 같은 말)
+          const newN = (g?.reports_unseen ?? 0) + (resultNew?.get(p.link_id) ?? 0)
           return (
             <Link
               key={p.link_id}
@@ -212,6 +214,8 @@ export default function MyProjectsPage() {
                 </div>
                 {todoN > 0 ? (
                   <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">해야 할 일 {todoN}</span>
+                ) : newN > 0 ? (
+                  <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-black text-sky-700" data-testid="project-new-pill">새로 온 자료 {newN}</span>
                 ) : (
                   <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">확인할 일 없음</span>
                 )}

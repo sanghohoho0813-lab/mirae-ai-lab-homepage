@@ -327,6 +327,8 @@ export default function MyProjectDetailPage() {
   const todoCount = todo.actions.length + todo.docs.length
   const unseenReports = (reports ?? []).filter((r) => !r.seen_at).length
   const newResults = (results ?? []).filter((r) => r.is_new).length
+  // 해야 할 일은 없어도 새로 온 것(새 보고서 · 새 결과 자료)이 있으면 '확인할 내용이 없습니다' 라고 하지 않는다
+  const newCount = unseenReports + newResults
   const isNewResult = (kind: 'document' | 'result', id: string) => (results ?? []).some((r) => r.kind === kind && r.id === id && r.is_new)
   const markOpened = (id: string) => setResults((cur) => (cur ? cur.map((r) => (r.kind === 'document' && r.id === id ? { ...r, is_new: false } : r)) : cur))
 
@@ -336,13 +338,18 @@ export default function MyProjectDetailPage() {
       <Link to="/my-projects" className="text-sm font-semibold text-slate-500 hover:text-slate-900">← 내 프로젝트</Link>
 
       {/* 지금 확인할 내용 */}
-      <div className={`mt-4 rounded-2xl border p-5 ${todoCount > 0 ? 'border-amber-200 bg-amber-50' : 'border-emerald-200 bg-emerald-50'}`}>
-        <p className={`text-base font-black ${todoCount > 0 ? 'text-amber-900' : 'text-emerald-800'}`}>
-          {todoCount > 0 ? `지금 확인할 내용이 ${todoCount}건 있습니다` : '지금 확인할 내용이 없습니다'}
+      <div
+        className={`mt-4 rounded-2xl border p-5 ${todoCount > 0 ? 'border-amber-200 bg-amber-50' : newCount > 0 ? 'border-sky-200 bg-sky-50' : 'border-emerald-200 bg-emerald-50'}`}
+        data-testid="project-summary"
+      >
+        <p className={`text-base font-black ${todoCount > 0 ? 'text-amber-900' : newCount > 0 ? 'text-sky-900' : 'text-emerald-800'}`}>
+          {todoCount > 0 ? `지금 확인할 내용이 ${todoCount}건 있습니다` : newCount > 0 ? `새로 온 자료가 ${newCount}개 있습니다` : '지금 확인할 내용이 없습니다'}
         </p>
         <p className="mt-1 text-sm text-slate-600">
           {todo.docs.length > 0 && `서류 ${todo.docs.length}개 요청됨 · `}
           {todo.actions.length > 0 && `해야 할 일 ${todo.actions.length}건 · `}
+          {unseenReports > 0 && `새 보고서 ${unseenReports}개 · `}
+          {newResults > 0 && `새 결과 자료 ${newResults}개 · `}
           {data.updates.length > 0 ? `진행 업데이트 ${data.updates.length}건` : '아직 업데이트가 없습니다'}
         </p>
       </div>
