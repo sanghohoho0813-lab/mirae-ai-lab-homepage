@@ -74,3 +74,13 @@ RPC 가 없으면 PostgREST 가 `PGRST202`/`could not find the function` 을 돌
 
 - 계정마다 따로 · 기록 시작 전에 공유한 자료는 '새' 아님. 실패(0035 전 · 되돌림)는 표시만 빠지고 화면 그대로(`fetchResultSummary` · `fetchResultsState` → null).
 
+
+## 고객 화면 '담당자가 추천해요'(D-689 · 내부 저장소 마이그레이션 0036) — 더한 것만
+
+| RPC | 화면 |
+|---|---|
+| `portal_recommendations(p_link_id)`(읽기만) → `{id, kind, title, reason, deadline, link_url, shown_at, interested_at}[]` | 성장 홈 '담당자가 추천해요 n' — 지원사업 · 다음 과제 · 근거 한 줄 · 마감 · [자세히](공고 주소 · 새 창 · http(s) 만) |
+| `portal_recommendation_interest(p_link_id, p_rec_id)` → `{interested_at}` | [관심 있어요] → '관심 보냄 m/d · 담당자가 연락드려요'(계정마다 한 번 · 신청 · 계약 아님) |
+
+- 담당자가 고른 것만 보인다(업체마다 3개까지 · 저절로 나가는 것 0). 내부 출처 · 판정 · 금액은 받지 않는다.
+- 실패(0036 전 · 되돌림 · 끊긴 연결)는 그 칸만 빠지고 화면 그대로(`fetchRecommendations` → null · `markRecommendationInterest` → null). 화면 · 경로 · 디자인은 그대로.
