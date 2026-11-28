@@ -74,7 +74,8 @@ export async function postJson<T extends Record<string, unknown>>(url: string, b
 export function errorText(e: unknown, fallback: string): string {
   const o = e as { message?: unknown } | null
   const msg = typeof o?.message === 'string' ? o.message : typeof e === 'string' ? e : ''
-  if (isHumanKorean(msg)) return msg
+  // 한국어여도 영어 오류 원문이 섞였으면(예: '…못했습니다. Failed to fetch') 그대로 쓰지 않는다
+  if (isHumanKorean(msg) && !/[A-Za-z]*Error\b|fetch|undefined|null\b|exception/i.test(msg)) return msg
   if (msg) console.warn('[portal]', msg)
   const offline = typeof navigator !== 'undefined' && navigator.onLine === false
   if (offline || /Failed to fetch|NetworkError|Load failed|FetchError|network|ERR_INTERNET|ERR_NETWORK/i.test(msg)) return '인터넷 연결이 불안정해요. 연결을 확인한 뒤 다시 시도해 주세요.'

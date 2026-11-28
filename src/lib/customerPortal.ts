@@ -168,7 +168,10 @@ function uploadErrorMessage(raw: string): string {
   if (t.includes('duplicate') || t.includes('already exists')) {
     return '같은 이름의 파일이 방금 올라갔습니다. 잠시 뒤 다시 시도해 주세요.'
   }
-  return `파일을 올리지 못했습니다. ${raw}`
+  // D-691 원문(영어)은 화면에 붙이지 않는다 — 콘솔에만
+  console.warn('[portal] upload', raw)
+  if (t.includes('failed to fetch') || t.includes('network') || t.includes('load failed')) return '인터넷 연결이 불안정해 올리지 못했습니다. 연결을 확인한 뒤 다시 올려 주세요.'
+  return '파일을 올리지 못했습니다. 잠시 뒤 다시 올려 주세요.'
 }
 
 /**
