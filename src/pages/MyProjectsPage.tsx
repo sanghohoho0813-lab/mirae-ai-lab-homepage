@@ -24,6 +24,7 @@ import {
   type MyProject,
   type PortalReportItem,
 } from '../lib/customerPortal'
+import { errorText } from '../lib/apiFetch'
 
 type LoadState = { kind: 'loading' } | { kind: 'ready'; projects: MyProject[] } | { kind: 'not_ready' } | { kind: 'error'; message: string }
 
@@ -127,7 +128,7 @@ export default function MyProjectsPage() {
       .catch((e) => {
         if (!alive) return
         if (isPortalNotReady(e)) setState({ kind: 'not_ready' })
-        else setState({ kind: 'error', message: e instanceof Error ? e.message : '불러오지 못했습니다.' })
+        else setState({ kind: 'error', message: errorText(e, '불러오지 못했어요. 잠시 후 [다시 시도] 를 눌러 주세요.') })
       })
     return () => { alive = false }
   }, [user, configured])

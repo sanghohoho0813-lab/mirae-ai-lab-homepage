@@ -31,6 +31,7 @@ import {
   type ResultState,
 } from '../lib/customerPortal'
 import { PortalNotReady } from './MyProjectsPage'
+import { errorText } from '../lib/apiFetch'
 
 type Tab = 'todo' | 'reports' | 'progress' | 'documents' | 'updates' | 'requests' | 'results'
 const TABS: { key: Tab; label: string }[] = [
@@ -78,7 +79,7 @@ function DocumentRow({
       await uploadDocument(linkId, file, { documentId: doc.id, documentType: doc.document_type, title: doc.title })
       onChanged()
     } catch (e) {
-      setError(e instanceof Error ? e.message : '올리지 못했습니다.')
+      setError(errorText(e, '올리지 못했어요. 잠시 후 다시 올려 주세요.'))
     } finally {
       setBusy(false)
       if (inputRef.current) inputRef.current.value = ''
@@ -96,7 +97,7 @@ function DocumentRow({
         onOpened?.()
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : '파일을 열지 못했습니다.')
+      setError(errorText(e, '파일을 열지 못했어요. 잠시 후 다시 눌러 주세요.'))
     }
   }
 
@@ -162,7 +163,7 @@ function RequestForm({ linkId, onCreated }: { linkId: string; onCreated: () => v
       setTitle(''); setBody('')
       onCreated()
     } catch (e) {
-      setError(e instanceof Error ? e.message : '보내지 못했습니다.')
+      setError(errorText(e, '보내지 못했어요. 잠시 후 다시 보내 주세요.'))
     } finally {
       setBusy(false)
     }
@@ -239,7 +240,7 @@ export default function MyProjectDetailPage() {
     } catch (e) {
       if (isPortalNotReady(e)) setState('not_ready')
       else if (/not found|P0002|permission/i.test(e instanceof Error ? e.message : String(e))) setState('denied')
-      else { setState('error'); setMessage(e instanceof Error ? e.message : '불러오지 못했습니다.') }
+      else { setState('error'); setMessage(errorText(e, '불러오지 못했어요. 잠시 후 다시 열어 주세요.')) }
     }
   }, [linkId])
 
@@ -384,7 +385,7 @@ export default function MyProjectDetailPage() {
                 {u.due_date && <p className="mt-1 text-xs font-semibold text-amber-700">{u.due_date}까지</p>}
                 <button
                   type="button"
-                  onClick={() => void completeAction(u.id).then(() => { setToast('완료로 표시했습니다.'); void load() }).catch((e) => setToast(e instanceof Error ? e.message : '실패했습니다.'))}
+                  onClick={() => void completeAction(u.id).then(() => { setToast('완료로 표시했습니다.'); void load() }).catch((e) => setToast(errorText(e, '완료로 표시하지 못했어요. 잠시 후 다시 눌러 주세요.')))}
                   className="mt-3 rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800"
                 >
                   완료했어요

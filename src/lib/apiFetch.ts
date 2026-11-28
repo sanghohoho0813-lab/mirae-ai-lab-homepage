@@ -64,3 +64,21 @@ export async function postJson<T extends Record<string, unknown>>(url: string, b
     clearTimeout(timer)
   }
 }
+
+/**
+ * 화면에 보일 오류 글(D-691) — 서버 라이브러리 오류도 같은 규칙으로.
+ *  - 사람에게 보여도 되는 한국어 문장이면 그대로(서버가 한국어로 막은 까닭 · 파일 올리기 안내)
+ *  - 인터넷 끊김 · 시간 초과 · 로그인 만료는 그 말로
+ *  - 그 밖(영어 원문 · 코드)은 화면이 정한 글 — 원문은 콘솔에만
+ */
+export function errorText(e: unknown, fallback: string): string {
+  const o = e as { message?: unknown } | null
+  const msg = typeof o?.message === 'string' ? o.message : typeof e === 'string' ? e : ''
+  if (isHumanKorean(msg)) return msg
+  if (msg) console.warn('[portal]', msg)
+  const offline = typeof navigator !== 'undefined' && navigator.onLine === false
+  if (offline || /Failed to fetch|NetworkError|Load failed|FetchError|network|ERR_INTERNET|ERR_NETWORK/i.test(msg)) return '인터넷 연결이 불안정해요. 연결을 확인한 뒤 다시 시도해 주세요.'
+  if (/abort|timed? ?out|timeout/i.test(msg)) return '응답이 너무 늦어 멈췄어요. 잠시 후 다시 시도해 주세요.'
+  if (/JWT|expired|refresh token|not authenticated|401/i.test(msg)) return '로그인이 끝났어요. 다시 로그인해 주세요.'
+  return fallback
+}
